@@ -1,0 +1,21 @@
+.formWrapper{
+    .container {
+        width: 600px;
+        margin: 20px;
+        border-radius: 20px;
+    }
+}
+
+.container {
+    .button {
+        margin-right: 5px;
+    }
+    .inputField {
+        width: inherit;
+        padding: 5px;
+    }
+    .searchDivider {
+        margin-left: 2px;
+        height: 20px;
+    }
+}
