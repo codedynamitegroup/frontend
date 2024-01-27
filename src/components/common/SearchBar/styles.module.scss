@@ -1,21 +1,23 @@
-.formWrapper{
-    .container {
-        width: 600px;
-        margin: 20px;
-        border-radius: 20px;
-    }
-}
-
-.container {
-    .button {
-        margin-right: 5px;
-    }
-    .inputField {
-        width: inherit;
-        padding: 5px;
-    }
-    .searchDivider {
-        margin-left: 2px;
-        height: 20px;
+.gridContainer {
+    max-width: 600px;
+    .formWrapper{
+        width: 100%;
+        .container {
+            margin: 20px;
+            border-radius: 20px;
+            .inputField {
+                width: 100%;
+            }
+            .button {
+                margin-right: 5px;
+            }
+            .inputField {
+                padding: 5px;
+            }
+            .searchDivider {
+                margin-left: 2px;
+                height: 20px;
+            }
+        }
     }
 }

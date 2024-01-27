@@ -9,7 +9,7 @@ import InputBase from "@mui/material/InputBase";
 import Icon from "@mui/material/Icon";
 
 import classes from "./styles.module.scss";
-import { Divider, InputAdornment } from "@mui/material";
+import { Divider, Grid, InputAdornment } from "@mui/material";
 
 const SearchBar = ({ onSearchClick }: any) => {
   const [iconButtonVisibility, setIconButtonVisibility] = useState(false);
@@ -31,44 +31,48 @@ const SearchBar = ({ onSearchClick }: any) => {
   }, [searchText]);
 
   return (
-    <FormControl className={classes.formWrapper}>
-      <Paper className={classes.container}>
-        <InputBase
-          className={classes.inputField}
-          placeholder='Tìm kiếm'
-          onChange={handleOnChange}
-          value={searchText}
-          startAdornment={
-            <InputAdornment position='start'>
-              <Tooltip title='Nhấn để tìm' arrow disableInteractive>
-                <IconButton onClick={handleClickSearchButton}>
-                  <SearchIcon />
-                </IconButton>
-              </Tooltip>
+    <Grid container className={classes.gridContainer}>
+      <Grid item xs={12} md={12} sm={12} lg={12}>
+        <FormControl className={classes.formWrapper}>
+          <Paper className={classes.container}>
+            <InputBase
+              className={classes.inputField}
+              placeholder='Tìm kiếm'
+              onChange={handleOnChange}
+              value={searchText}
+              startAdornment={
+                <InputAdornment position='start'>
+                  <Tooltip title='Nhấn để tìm' arrow disableInteractive>
+                    <IconButton onClick={handleClickSearchButton}>
+                      <SearchIcon />
+                    </IconButton>
+                  </Tooltip>
 
-              <Divider className={classes.searchDivider} orientation='vertical' />
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position='end'>
-              {iconButtonVisibility ? (
-                <IconButton
-                  onClick={handleRemoveAllTextButton}
-                  className={classes.button}
-                  edge='end'
-                >
-                  <RemoveIcon />
-                </IconButton>
-              ) : (
-                <IconButton className={classes.button} disabled edge='end'>
-                  <Icon />
-                </IconButton>
-              )}
-            </InputAdornment>
-          }
-        />
-      </Paper>
-    </FormControl>
+                  <Divider className={classes.searchDivider} orientation='vertical' />
+                </InputAdornment>
+              }
+              endAdornment={
+                <InputAdornment position='end'>
+                  {iconButtonVisibility ? (
+                    <IconButton
+                      onClick={handleRemoveAllTextButton}
+                      className={classes.button}
+                      edge='end'
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton className={classes.button} disabled edge='end'>
+                      <Icon />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              }
+            />
+          </Paper>
+        </FormControl>
+      </Grid>
+    </Grid>
   );
 };
 
