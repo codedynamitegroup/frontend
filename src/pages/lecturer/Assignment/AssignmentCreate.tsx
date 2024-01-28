@@ -25,6 +25,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import TextEditor from "components/editor/TextEditor";
 import useWindowDimensions from "utils/useWindowDimensions";
+import FileManager from "components/editor/FileManager";
+import "./AssignmentCreate.scss";
 
 const drawerWidth = 500;
 
@@ -89,6 +91,7 @@ export default function PersistentDrawerRight() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [assignmentDescription, setAssignmentDescription] = React.useState("");
+  const [activityInstructions, setActivityInstructions] = React.useState("");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -108,13 +111,7 @@ export default function PersistentDrawerRight() {
   }, [width]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        backgroundColor: "#BCB9B9",
-        height: "100vh"
-      }}
-    >
+    <Box className='container'>
       <CssBaseline />
       <AppBar position='fixed' open={open}>
         <Toolbar>
@@ -135,11 +132,10 @@ export default function PersistentDrawerRight() {
       <Main open={open}>
         <DrawerHeader />
         <Card
-          sx={{
-            padding: "10px",
-            height: "calc(100vh - 120px)",
+          style={{
             overflowY: "scroll"
           }}
+          className='left-card'
         >
           <TextField
             id='assignment-name'
@@ -148,28 +144,20 @@ export default function PersistentDrawerRight() {
             size='small'
             fullWidth
           />
-          <RedBar />
-          <TextTitle sx={{ margin: "20px 0px 10px 0px" }}>Mô tả bài tập</TextTitle>
-          <TextEditor
-            value={assignmentDescription}
-            onChange={setAssignmentDescription}
-            style={{ height: "200px" }}
-          />
-          <RedBar />
-          {/* <TextTitle sx={{ margin: "20px 0px 10px 0px" }}>Hướng dẫn nộp bài tập</TextTitle>
-          <ReactQuill
-            theme='snow'
-            style={{ height: "200px" }}
-            value={assignmentDescription}
-            onChange={setAssignmentDescription}
-          />
-          <TextTitle sx={{ margin: "20px 0px 10px 0px" }}>Tệp đính kèm (nếu có)</TextTitle>
-          <ReactQuill
-            theme='snow'
-            style={{ height: "200px" }}
-            value={assignmentDescription}
-            onChange={setAssignmentDescription}
-          /> */}
+          <Box id='assignment-description'>
+            <TextTitle className='text-title'>Mô tả bài tập</TextTitle>
+            <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
+          </Box>
+
+          <Box id='activity-instructions'>
+            <TextTitle className='text-title'>Hướng dẫn nộp bài tập</TextTitle>
+            <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
+          </Box>
+
+          <Box id='file-manager'>
+            <TextTitle className='text-title'>Tệp đính kèm (nếu có)</TextTitle>
+            <FileManager />
+          </Box>
         </Card>
       </Main>
       <Drawer
@@ -213,17 +201,5 @@ export default function PersistentDrawerRight() {
         </List>
       </Drawer>
     </Box>
-  );
-}
-
-function RedBar() {
-  return (
-    <Box
-      sx={{
-        height: 20,
-        backgroundColor: (theme) =>
-          theme.palette.mode === "light" ? "rgba(255, 0, 0, 0.1)" : "rgb(255 132 132 / 25%)"
-      }}
-    />
   );
 }
