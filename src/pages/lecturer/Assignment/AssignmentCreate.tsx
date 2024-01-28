@@ -86,7 +86,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function PersistentDrawerRight() {
+export default function AssignmentCreate() {
   const { width } = useWindowDimensions();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
