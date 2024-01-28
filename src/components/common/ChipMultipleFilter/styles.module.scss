@@ -1,0 +1,13 @@
+.container {
+    .formWrapperContainer {
+        margin: 10px;
+        max-width: 350px;
+        width: 100%;
+
+        .selectedChip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+    }
+}

@@ -12,6 +12,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
 import CourseList from "./components/CouseList";
+import ChipMultipleFilter from "components/common/ChipMultipleFilter";
 
 enum EView {
   cardView = 1,
@@ -179,6 +180,7 @@ const LecturerCourseManagement = () => {
       teacherList: tempTeacher2
     }
   ];
+  const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
 
   const [viewType, setViewType] = useState(EView.listView);
   const searchHandle = (searchVal: string) => {
@@ -187,12 +189,24 @@ const LecturerCourseManagement = () => {
   const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
     setViewType(nextView);
   };
+  const handleCategoryFilterChange = (selectedCategoryList: Array<string>) => {
+    console.log(selectedCategoryList);
+  };
 
   return (
     <Box className={classes.container}>
       <Typography className={classes.pageTitle}>Danh sách khóa học</Typography>
+      <SearchBar onSearchClick={searchHandle} />
+
       <Box className={classes.featureGroup}>
-        <SearchBar onSearchClick={searchHandle} />
+        <Box className={classes.filterContainer}>
+          <ChipMultipleFilter
+            label='Lọc theo loại'
+            filterList={tempCategories}
+            onFilterListChangeHandler={handleCategoryFilterChange}
+          />
+        </Box>
+
         <ToggleButtonGroup
           className={classes.changeViewButtonGroup}
           value={viewType}
