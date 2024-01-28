@@ -7,4 +7,12 @@
         font-weight: 800;
         margin: 10px 0 0 20px;
     }
+    .featureGroup {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .changeViewButtonGroup {
+            padding: 20px;
+        }
+    }
 }

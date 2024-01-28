@@ -6,6 +6,17 @@ import { User } from "models/courseService/user";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { useState } from "react";
+import ToggleButton from "@mui/material/ToggleButton";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import ViewCardIcon from "@mui/icons-material/ViewModule";
+import CourseList from "./components/CouseList";
+
+enum EView {
+  cardView = 1,
+  listView = 2
+}
 
 const LecturerCourseManagement = () => {
   const tempTeacher: Array<User> = [
@@ -61,7 +72,7 @@ const LecturerCourseManagement = () => {
       lastName: "Nguyễn",
       phone: "123456789",
       address: "217 nguyen van cu",
-      avatarUrl: "avc",
+      avatarUrl: "https://picsum.photos/200",
       lastLogin: new Date(2000, 0, 1),
       isDeleted: false,
       createdAt: new Date(2000, 0, 1),
@@ -82,11 +93,10 @@ const LecturerCourseManagement = () => {
       updatedAt: new Date(2000, 0, 1)
     }
   ];
-
   const tempCourse = [
     {
       id: 1,
-      avatarUrl: "abcd",
+      avatarUrl: "https://picsum.photos/200",
       category: "Chất lượng cao",
       name: "Kỹ thuật lập trình",
       teacherList: tempTeacher
@@ -170,28 +180,65 @@ const LecturerCourseManagement = () => {
     }
   ];
 
+  const [viewType, setViewType] = useState(EView.listView);
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
+  };
+  const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
+    setViewType(nextView);
   };
 
   return (
     <Box className={classes.container}>
       <Typography className={classes.pageTitle}>Danh sách khóa học</Typography>
-      <SearchBar onSearchClick={searchHandle} />
-      <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-        <Grid container spacing={2}>
-          {tempCourse.map((course, index) => (
-            <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
-              <CourseCard
-                courseAvatarUrl={course.avatarUrl}
-                courseCategory={course.category}
-                courseName={course.name}
-                teacherList={course.teacherList}
-              />
-            </Grid>
-          ))}
-        </Grid>
+      <Box className={classes.featureGroup}>
+        <SearchBar onSearchClick={searchHandle} />
+        <ToggleButtonGroup
+          className={classes.changeViewButtonGroup}
+          value={viewType}
+          exclusive
+          onChange={handleViewChange}
+        >
+          <ToggleButton value={EView.listView} aria-label='list'>
+            <ViewListIcon />
+          </ToggleButton>
+          <ToggleButton value={EView.cardView} aria-label='module'>
+            <ViewCardIcon />
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Box>
+
+      {viewType === EView.cardView ? (
+        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+          <Grid container spacing={2}>
+            {tempCourse.map((course, index) => (
+              <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
+                <CourseCard
+                  courseAvatarUrl={course.avatarUrl}
+                  courseCategory={course.category}
+                  courseName={course.name}
+                  teacherList={course.teacherList}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      ) : (
+        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+          <Grid container spacing={2}>
+            {tempCourse.map((course) => (
+              <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
+                <CourseList
+                  courseAvatarUrl={course.avatarUrl}
+                  courseCategory={course.category}
+                  courseName={course.name}
+                  teacherList={course.teacherList}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
     </Box>
   );
 };
