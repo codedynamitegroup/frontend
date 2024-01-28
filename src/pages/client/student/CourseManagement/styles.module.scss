@@ -1,0 +1,25 @@
+.container {
+    .gridContainer {
+        margin: 10px;
+    }
+    .pageTitle {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 10px 0 0 10px;
+    }
+    .featureGroup {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end    ;
+
+        .changeViewButtonGroup {
+            padding: 20px;
+            height: 100%;
+            
+        }
+        .filterContainer {
+            width: 100%;
+        }
+    }
+}

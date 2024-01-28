@@ -1,0 +1,35 @@
+.container {
+    width: inherit;
+    padding: 10px;
+    .courseImage {
+        max-width: 128px;
+        max-height: 128px;
+    }
+    .teacherItemText {
+        margin-left: 0;
+    }
+
+    .teacherListGridContainer {
+        li {
+            padding: 2px 0px 0px 0px;
+
+            .teacherAvatarContainer {
+                min-width: 20px;
+                height: 35px;
+                margin-right: 10px;
+                
+                .teacherAvatar {
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                }
+            }
+            .primaryTeacherText {
+                font-size: 15px;
+            }
+            .secondaryTeacherText {
+                font-size: 13px;
+            }
+        }
+    }
+}
