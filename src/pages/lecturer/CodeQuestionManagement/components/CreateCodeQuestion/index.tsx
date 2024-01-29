@@ -8,6 +8,7 @@ import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {}
 
@@ -21,14 +22,17 @@ const CodeQuestionCreated = (props: Props) => {
   );
   const [contraints, setContraints] = useState<string>("a và b là số nguyên");
   const [questionName, setQuestionName] = useState<string>("Tổng 2 số");
+  const navigate = useNavigate();
 
   return (
     <Grid className={classes.root}>
       <Header />
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>
-          <ParagraphBody colorName='--gray-50' fontWeight={"600"}>
-            <span>Quản lý câu hỏi code</span> {">"} <span>Tạo câu hỏi</span>
+          <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
+            <span onClick={() => navigate("/lecturer/code-management")}>Quản lý câu hỏi code</span>{" "}
+            {">"}{" "}
+            <span onClick={() => navigate("/lecturer/code-management/create")}>Tạo câu hỏi</span>
           </ParagraphBody>
         </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
