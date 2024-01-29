@@ -9,19 +9,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
 
 :root {
-  --darkblue-50: #e8ebee;
-  --darkblue-100: #cfd5dc;
-  --darkblue-200: #a0abb8;
-  --darkblue-300: #708195;
-  --darkblue-400: #415771;
-  --darkblue-500: #112d4e;
-  --darkblue-600: #0d223b;
-  --darkblue-700: #091727;
-  --darkblue-800: #040b14;
-  --darkblue-900: #020508;
-
-  --green-500: #365a38;
-  --green-600: #00b300;
+  --6bros-blue: #1f61a9;
+  --6bros-theme-blue: #1c5fa7;
+  --6bros-blue-light: #73b1f4;
+  --6bros-green: #a6cc17;
+  --6bros-green-dark: #7c9911;
+  --6bros-black: #333333;
+  --6bros-gray: #c2baad;
+  --6bros-danger: #af1c10;
+  --6bros-blue-light-1: #3b87db;
+  --6bros-blue-light-2: #7cafe7;
+  --6bros-blue-light-3: #bed7f3;
+  --6bros-blue-light-4: #e8f1fb;
+  --6bros-blue-light-5: #f6f9fc;
+  --6bros-blue-dark-1: #17497f;
+  --6bros-blue-dark-2: #103055;
+  --6bros-blue-dark-3: #08182a;
+  --6bros-green-light-2: #d9f180;
+  --6bros-green-light-4: #f0f9cc;
+  --6bros-green-dark-1: #7c9911;
+  --6bros-green-dark-2: #53660c;
+  --6bros-green-dark-3: #293306;
+  --6bros-theme-light-on-surface: #1a1c1e;
 
   --blue-50: #ecf1f8;
   --blue-100: #d9e3ef;
@@ -33,6 +42,17 @@
   --blue-700: #203958;
   --blue-800: #101d2c;
   --blue-900: #060b12;
+
+  --darkblue-50: #e8ebee;
+  --darkblue-100: #cfd5dc;
+  --darkblue-200: #a0abb8;
+  --darkblue-300: #708195;
+  --darkblue-400: #415771;
+  --darkblue-500: #112d4e;
+  --darkblue-600: #0d223b;
+  --darkblue-700: #091727;
+  --darkblue-800: #040b14;
+  --darkblue-900: #020508;
 
   --gray-02: #373d3f;
   --gray-1: #fbfbfb;

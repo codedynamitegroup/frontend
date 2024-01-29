@@ -9,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={routes.lecturer.code_management} Component={CodeQuestionManagement} />
+        <Route path={routes.lecturer.code_question_management} Component={CodeQuestionManagement} />
         <Route path={routes.lecturer.assignment_management} Component={AssignmentCreate} />
       </Routes>
     </BrowserRouter>

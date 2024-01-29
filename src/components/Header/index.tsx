@@ -18,10 +18,11 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
+import Heading4 from "components/text/Heading4";
 const pages = ["Khám phá", "Luyện tập", "Cuộc thi"];
 const auth = ["Đăng nhập", "Đăng ký"];
 
-function ResponsiveAppBar() {
+function Header() {
   const drawerWidth = 240;
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     open?: boolean;
@@ -119,9 +120,9 @@ function ResponsiveAppBar() {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Typography variant='h6' noWrap component='a' className={classes.logo}>
-            6BrosT
-          </Typography>
+          <Heading4 colorName='--white' fontWeight={700}>
+            6Bros
+          </Heading4>
           <Box className={classes.navbarItem}>
             {pages.map((page) => (
               <Button key={page} className={classes.item}>
@@ -178,4 +179,4 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default Header;
