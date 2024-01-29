@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
@@ -69,7 +70,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", ...pro
             const formData = new FormData();
             formData.append("image", file);
 
-            fetch("https://api.imgbb.com/1/upload?key=334ecea9ec1213784db5cb9a14dac265", {
+            fetch("https://api.imgbb.com/1/upload?key=b063ca6690752179df86e2b5f2f5a786", {
               method: "POST",
               body: formData
             })
@@ -138,6 +139,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", ...pro
         formats={formats}
         onChange={onChange}
         placeholder={placeholder}
+        className='text-editor'
         {...props}
       />
     </>
