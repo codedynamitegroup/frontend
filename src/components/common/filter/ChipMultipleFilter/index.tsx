@@ -5,7 +5,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Theme, useTheme } from "@mui/material/styles";
 import { useState } from "react";
 import classes from "./styles.module.scss";
 
@@ -21,6 +20,7 @@ const MenuProps = {
 
 interface ChipFilterPropData {
   label: string;
+  defaultChipList: Array<string>;
   filterList: Array<string>;
   onFilterListChangeHandler: any;
 }
@@ -41,8 +41,8 @@ const ChipMultipleFilter = (props: ChipFilterPropData) => {
       <FormControl className={classes.formWrapperContainer}>
         <InputLabel id='multipleChipLabel'>{props.label}</InputLabel>
         <Select
-          labelId='demo-multipleChipLabel-chip-label'
           id='multipleChip'
+          labelId='demo-multipleChipLabel-chip-label'
           multiple
           value={selectedChipList}
           onChange={handleChange}
@@ -55,8 +55,9 @@ const ChipMultipleFilter = (props: ChipFilterPropData) => {
             </Box>
           )}
           MenuProps={MenuProps}
+          fullWidth
         >
-          {props.filterList.map((selectedChip) => (
+          {props.defaultChipList.map((selectedChip) => (
             <MenuItem key={selectedChip} value={selectedChip}>
               {selectedChip}
             </MenuItem>
