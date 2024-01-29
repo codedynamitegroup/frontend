@@ -24,6 +24,7 @@ const auth = ["Đăng nhập", "Đăng ký"];
 
 function Header() {
   const drawerWidth = 240;
+
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     open?: boolean;
   }>(({ theme, open }) => ({

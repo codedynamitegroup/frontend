@@ -202,6 +202,7 @@ const LecturerCourseManagement = () => {
         <Box className={classes.filterContainer}>
           <ChipMultipleFilter
             label='Lọc theo loại'
+            defaultChipList={[]}
             filterList={tempCategories}
             onFilterListChangeHandler={handleCategoryFilterChange}
           />
