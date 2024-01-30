@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Link, Outlet, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 
 interface PropsData {

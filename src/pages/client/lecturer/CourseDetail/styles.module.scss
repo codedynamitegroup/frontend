@@ -1,0 +1,57 @@
+.container {
+    margin: 20px;
+    .gridContainer {
+        .courseImgCardContainer{
+            position: relative;
+            height: 200px;
+            margin: 10px;
+            margin-top: 0;
+            .courseImage{
+                object-fit: cover;
+                height: 100%;
+            }
+            .classNameOverlay {
+                font-weight: bold;
+                font-size: 28px;
+                position: absolute;
+                color: white;
+                top: 75%;
+                left: 10px;
+                padding: 5px;
+                border-radius: 10px solid;
+            }
+            
+        }
+        .resourceContainer {
+            margin: 0;                
+        }
+        .resourceAccordionContainer {
+            margin: 0 10px 0 10px;
+            flex-grow: 1;
+            .resourceSummaryContainer {
+                cursor: default;
+                .MuiAccordionSummary-content {
+                    display: flex;
+                    align-items: center;
+                    flex-direction: row;
+                }
+                .resourceSummaryText {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .editTopicTitleImageContainer {
+                    width: 30px;
+                    height: 30px;
+                    margin-left: 10px;
+                    svg {
+                        width: 30px;
+                    }
+                }
+            }
+            .accordDetail {
+                padding: 0;
+            }
+        }
+    }
+}
