@@ -7,5 +7,8 @@ export const routes = {
     assignment: {
       create: "/lecturer/assignment-management/create"
     }
+  },
+  user: {
+    problem: "/problem"
   }
 };

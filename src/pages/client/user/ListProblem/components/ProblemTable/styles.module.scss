@@ -1,0 +1,14 @@
+.filterSearch {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  .ant-input-search {
+    width: 300px;
+  }
+  gap: 10px;
+}
+
+.icon {
+  margin-right: 10px;
+}

@@ -14,6 +14,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.6",
     "@mui/joy": "^5.0.0-beta.24",
+    "@mui/lab": "^5.0.0-alpha.162",
     "@mui/material": "^5.15.6",
     "@mui/x-date-pickers": "^6.19.2",
     "@testing-library/jest-dom": "^5.17.0",
