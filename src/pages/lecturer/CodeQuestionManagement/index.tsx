@@ -40,9 +40,11 @@ const CodeQuestionManagement = () => {
   ];
   const customHeading = ["STT", "Tên câu hỏi", "Người tạo", "Độ khó", "Ngày chỉnh sửa"];
   const customColumns = ["id", "name", "owner", "difficulty", "updateAt"];
-  const onEdit = (id: number) => {};
-  const onDelete = (id: number) => {};
   const navigate = useNavigate();
+  const onEdit = (id: number) => {
+    navigate(`/lecturer/code-management/${id}`);
+  };
+  const onDelete = (id: number) => {};
 
   return (
     <Grid className={classes.root}>

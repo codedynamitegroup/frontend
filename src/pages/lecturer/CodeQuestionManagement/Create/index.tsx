@@ -9,6 +9,7 @@ import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button, { BtnType } from "components/common/buttons/Button";
 
 interface Props {}
 
@@ -21,7 +22,7 @@ const CodeQuestionCreated = (props: Props) => {
     "Là một số nguyên cho biết tổng của a và b"
   );
   const [contraints, setContraints] = useState<string>("a và b là số nguyên");
-  const [questionName, setQuestionName] = useState<string>("Tổng 2 số");
+  const [questionName] = useState<string>("Tổng 2 số");
   const navigate = useNavigate();
 
   return (
@@ -29,7 +30,7 @@ const CodeQuestionCreated = (props: Props) => {
       <Header />
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
+          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
             <span onClick={() => navigate("/lecturer/code-management")}>Quản lý câu hỏi code</span>{" "}
             {">"}{" "}
             <span onClick={() => navigate("/lecturer/code-management/create")}>Tạo câu hỏi</span>
@@ -85,6 +86,12 @@ const CodeQuestionCreated = (props: Props) => {
           </Grid>
         </Box>
       </Container>
+      <Box className={classes.stickyFooterContainer}>
+        <Box className={classes.phantom} />
+        <Box className={classes.stickyFooterItem}>
+          <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
+        </Box>
+      </Box>
     </Grid>
   );
 };
