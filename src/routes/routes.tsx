@@ -6,6 +6,11 @@ export const routes = {
     },
     assignment: {
       create: "/lecturer/assignment-management/create"
+    },
+    question: {
+      essay: {
+        create: "/lecturer/question-management/essay/create"
+      }
     }
   },
   user: {
