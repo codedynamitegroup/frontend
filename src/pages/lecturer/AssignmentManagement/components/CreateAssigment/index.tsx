@@ -155,7 +155,8 @@ export default function AssignmentCreated() {
             <Box className={classes.tabWrapper}>
               <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
                 {/* TODO */}
-                <span onClick={() => navigate("/")}>Quản lý bài tập</span> {">"}{" "}
+                <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
+                <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
                 <span onClick={() => navigate("/lecturer/assignment-management/create")}>
                   Tạo bài tập
                 </span>
@@ -282,7 +283,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Chủ đề</TextTitle>
-              <FormControl className={classes.formControl} fullWidth size='small'>
+              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
                 <InputLabel id='select-assignment-section-label'>Chọn chủ đề</InputLabel>
                 <Select
                   labelId='select-assignment-section-label'
