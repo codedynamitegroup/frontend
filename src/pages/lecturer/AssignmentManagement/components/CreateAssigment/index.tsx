@@ -1,7 +1,20 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Card,
+  CssBaseline,
+  Divider,
+  Drawer,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Toolbar
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
@@ -21,6 +34,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { BtnType } from "components/common/buttons/Button";
+import LoadButton from "components/common/buttons/LoadingButton";
 
 const drawerWidth = 450;
 
@@ -94,6 +109,16 @@ export default function AssignmentCreated() {
     React.useState<Dayjs | null>(dayjs());
   const [assignmentSubmissionDueDate, setAssignmentSubmissionDueDate] =
     React.useState<Dayjs | null>(dayjs());
+  const [assignmentSection, setAssignmentSection] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
+  function handleClick() {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -206,16 +231,8 @@ export default function AssignmentCreated() {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <Box
-            sx={{
-              padding: "20px"
-            }}
-          >
-            <Box
-              sx={{
-                marginBottom: "20px"
-              }}
-            >
+          <Box className={classes.drawerBody}>
+            <Box className={classes.drawerFieldContainer}>
               <TextTitle>Dạng bài tập</TextTitle>
               <ChipMultipleFilter
                 label='Dạng bài tập'
@@ -224,11 +241,7 @@ export default function AssignmentCreated() {
                 onFilterListChangeHandler={setAssignmentTypes}
               />
             </Box>
-            <Box
-              sx={{
-                marginBottom: "20px"
-              }}
-            >
+            <Box className={classes.drawerFieldContainer}>
               <TextTitle>Điểm tối đa</TextTitle>
               <InputTextField
                 type='number'
@@ -237,11 +250,7 @@ export default function AssignmentCreated() {
                 placeholder='Nhập điểm tối đa'
               />
             </Box>
-            <Box
-              sx={{
-                marginBottom: "20px"
-              }}
-            >
+            <Box className={classes.drawerFieldContainer}>
               <TextTitle>Cho phép nộp bài kể từ</TextTitle>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
@@ -256,19 +265,49 @@ export default function AssignmentCreated() {
                 </DemoContainer>
               </LocalizationProvider>
             </Box>
-            <Box
-              sx={{
-                marginBottom: "20px"
-              }}
-            >
+            <Box className={classes.drawerFieldContainer}>
               <TextTitle>Hạn nộp bài</TextTitle>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
+                  <DateTimePicker
+                    label='Chọn ngày giờ'
+                    value={assignmentSubmissionDueDate}
+                    onChange={(newValue) => {
+                      setAssignmentSubmissionDueDate(newValue);
+                    }}
+                    slotProps={{ textField: { fullWidth: true } }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
             </Box>
-            <Box
-              sx={{
-                marginBottom: "20px"
-              }}
-            >
+            <Box className={classes.drawerFieldContainer}>
               <TextTitle>Chủ đề</TextTitle>
+              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
+                <InputLabel id='select-assignment-section-label'>Chọn chủ đề</InputLabel>
+                <Select
+                  labelId='select-assignment-section-label'
+                  id='select-assignment-section'
+                  value={assignmentSection}
+                  label='Chủ đề'
+                  onChange={(e) => setAssignmentSection(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value={0}>Chủ đề 1</MenuItem>
+                  <MenuItem value={1}>Chủ đề 2</MenuItem>
+                  <MenuItem value={2}>Chủ đề 3</MenuItem>
+                </Select>
+              </FormControl>
+
+              <LoadButton
+                btnType={BtnType.Outlined}
+                fullWidth
+                style={{ marginTop: "20px" }}
+                padding='10px'
+                loading={loading}
+                onClick={handleClick}
+              >
+                Tạo bài tập
+              </LoadButton>
             </Box>
           </Box>
         </Drawer>
