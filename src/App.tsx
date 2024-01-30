@@ -10,6 +10,7 @@ import { routes } from "routes/routes";
 import CodeQuestionManagement from "pages/lecturer/CodeQuestionManagement";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/components/CreateAssigment";
 import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/components/CreateCodeQuestion";
+import ListProblem from "pages/client/user/ListProblem";
 import QuestionCreated  from "pages/lecturer/QuestionManagement/components/CreateQuestion";
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,7 +18,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement/>} />
         <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated/>} />
         <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated/>} />
-        {/* <Route path={routes.lecturer.question.essay.create} element={QuestionCreated}/> */}
+        <Route path={routes.user.problem} Component={ListProblem} />
     </Route>
   )
 );

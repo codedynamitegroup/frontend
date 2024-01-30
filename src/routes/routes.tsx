@@ -12,5 +12,8 @@ export const routes = {
         create: "/lecturer/question-management/essay/create"
       }
     }
+  },
+  user: {
+    problem: "/problem"
   }
 };
