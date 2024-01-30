@@ -3,12 +3,12 @@ import { Box, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
 import TextTitle from "components/text/TextTitle";
-import { useState } from "react";
+import { memo, useState } from "react";
 import classes from "./styles.module.scss";
 
 type Props = {};
 
-const CodeQuestionInformation = (props: Props) => {
+const CodeQuestionInformation = memo((props: Props) => {
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
     "Gồm 2 số nguyên a và b cách nhau bởi dấu cách, được nhập từ bàn phím"
@@ -69,6 +69,6 @@ const CodeQuestionInformation = (props: Props) => {
       </Grid>
     </Box>
   );
-};
+});
 
 export default CodeQuestionInformation;

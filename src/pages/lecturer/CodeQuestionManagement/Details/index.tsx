@@ -3,11 +3,14 @@ import Header from "components/Header";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TabPanel from "components/TabPanel";
 import CodeQuestionInformation from "./components/Information";
+import CodeQuestionTestCases from "./components/TestCases";
+import CodeQuestionCodeStubs from "./components/CodeStubs";
+import CodeQuestionLanguages from "./components/Languages";
 
 interface Props {}
 enum ETab {
@@ -17,7 +20,7 @@ enum ETab {
   LANGUAGES
 }
 
-const CodeQuestionDetails = (props: Props) => {
+const CodeQuestionDetails = memo((props: Props) => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<ETab>(ETab.DETAILS);
@@ -70,6 +73,15 @@ const CodeQuestionDetails = (props: Props) => {
           <TabPanel value={activeTab} index={ETab.DETAILS}>
             <CodeQuestionInformation />
           </TabPanel>
+          <TabPanel value={activeTab} index={ETab.TEST_CASES}>
+            <CodeQuestionTestCases />
+          </TabPanel>
+          <TabPanel value={activeTab} index={ETab.CODE_STUBS}>
+            <CodeQuestionCodeStubs />
+          </TabPanel>
+          <TabPanel value={activeTab} index={ETab.LANGUAGES}>
+            <CodeQuestionLanguages />
+          </TabPanel>
         </Box>
       </Container>
       <Box className={classes.stickyFooterContainer}>
@@ -80,6 +92,6 @@ const CodeQuestionDetails = (props: Props) => {
       </Box>
     </Grid>
   );
-};
+});
 
 export default CodeQuestionDetails;

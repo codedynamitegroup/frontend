@@ -7,13 +7,13 @@ import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 
 interface Props {}
 
-const CodeQuestionCreated = (props: Props) => {
+const CodeQuestionCreated = memo((props: Props) => {
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
     "Gồm 2 số nguyên a và b cách nhau bởi dấu cách, được nhập từ bàn phím"
@@ -94,6 +94,6 @@ const CodeQuestionCreated = (props: Props) => {
       </Box>
     </Grid>
   );
-};
+});
 
 export default CodeQuestionCreated;
