@@ -29,9 +29,22 @@
     gap: 15px;
 }
 
+.formControl {
+    margin-top: 15px;
+    min-width: 120;
+}
+
 .linkLevel {
     span:hover {
         cursor: pointer;
         color: black;
     }
+}
+
+.drawerBody {
+    padding: 20px;
+}
+
+.drawerFieldContainer {
+    margin-bottom: 20px;
 }
