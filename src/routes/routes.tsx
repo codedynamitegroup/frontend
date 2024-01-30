@@ -5,7 +5,8 @@ export const routes = {
       create: "/lecturer/code-management/create"
     },
     assignment: {
-      create: "/lecturer/assignment-management/create"
+      create: "/lecturer/assignment-management/create",
+      grading: "/lecturer/assignment-management/:submissionId/grading"
     }
   }
 };

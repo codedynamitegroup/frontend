@@ -157,8 +157,11 @@ export default function AssignmentCreated() {
                 {/* TODO */}
                 <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
                 <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                <span onClick={() => navigate("/lecturer/assignment-management/create")}>
-                  Tạo bài tập
+                <span onClick={() => navigate("/")}>Bài tập 1</span> {"> "}
+                <span
+                  onClick={() => navigate("/lecturer/assignment-management/:submissionId/grading")}
+                >
+                  Đánh giá bài tập
                 </span>
               </ParagraphBody>
             </Box>
