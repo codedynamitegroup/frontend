@@ -7,14 +7,12 @@ import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import EditImageIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import AddIcon from "@mui/icons-material/AddCircleOutline";
+import SettingIcon from "@mui/icons-material/Settings";
+
 import CourseAnnouncement from "./components/Announcement";
-import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
-  Button
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, TextField } from "@mui/material";
 import CourseResource from "./components/CourseResource";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseResourceType } from "models/courseService/course";
@@ -44,19 +42,43 @@ const LecturerCourseDetail = () => {
       ]
     }
   ];
-  const editTopicHandler = (index: number) => {};
   const [isTopicOpen, setIsTopicOpen] = useState<Array<Boolean>>([]);
-  const toggleItem = (index: number) => {
-    isTopicOpen[index] === undefined
-      ? setIsTopicOpen((prevState: Array<Boolean>) => ({
+  const [isOpenEditTitle, setIsOpenEditTitle] = useState<Array<Boolean>>([]);
+  const toggleTextField = (index: number) => {
+    isOpenEditTitle[index] === undefined
+      ? setIsOpenEditTitle((prevState: any) => ({
           ...prevState,
           [index]: false
         }))
-      : setIsTopicOpen((prevState: any) => ({
+      : setIsOpenEditTitle((prevState: any) => ({
           ...prevState,
           [index]: !Boolean(prevState[index])
         }));
-    console.log(isTopicOpen);
+  };
+  const saveEditTopicTitleHandler = (index: number) => {
+    setIsOpenEditTitle((prevState: any) => ({
+      ...prevState,
+      [index]: !Boolean(prevState[index])
+    }));
+  };
+  const toggleItem = (index: number) => {
+    if (isTopicOpen[index] === undefined)
+      setIsTopicOpen((prevState: Array<Boolean>) => ({
+        ...prevState,
+        [index]: false
+      }));
+    else {
+      setIsTopicOpen((prevState: any) => ({
+        ...prevState,
+        [index]: !Boolean(prevState[index])
+      }));
+
+      if (!isOpenEditTitle[index])
+        setIsOpenEditTitle((prevState: any) => ({
+          ...prevState,
+          [index]: !Boolean(prevState[index])
+        }));
+    }
   };
 
   return (
@@ -84,21 +106,52 @@ const LecturerCourseDetail = () => {
               <Accordion expanded={isOpen} className={classes.resourceAccordionContainer}>
                 <AccordionSummary
                   expandIcon={
-                    <IconButton onClick={() => toggleItem(index)}>
-                      <ExpandMoreIcon />
-                    </IconButton>
+                    <Box>
+                      {isOpen ? (
+                        <>
+                          <IconButton>
+                            <AddIcon />
+                          </IconButton>
+                          <IconButton>
+                            <SettingIcon />
+                          </IconButton>
+                        </>
+                      ) : null}
+                      <IconButton
+                        onClick={() => toggleItem(index)}
+                        style={{ transform: `rotate(${isOpen ? 0 : 180}deg)` }}
+                      >
+                        <ExpandMoreIcon />
+                      </IconButton>
+                    </Box>
                   }
                   className={classes.resourceSummaryContainer}
                 >
-                  <Typography className={classes.resourceSummaryText}>{topic.title}</Typography>
+                  {isOpenEditTitle[index] === undefined || isOpenEditTitle[index] ? (
+                    <Typography className={classes.resourceSummaryText} align='center'>
+                      {topic.title}
+                    </Typography>
+                  ) : (
+                    <TextField variant='standard' defaultValue={topic.title} />
+                  )}
+
                   {isOpen ? (
-                    <Box order={100}>
-                      <IconButton
-                        onClick={() => editTopicHandler(index)}
-                        className={classes.editTopicTitleImageContainer}
-                      >
-                        <EditImageIcon />
-                      </IconButton>
+                    <Box>
+                      {isOpenEditTitle[index] || isOpenEditTitle[index] === undefined ? (
+                        <IconButton
+                          onClick={() => toggleTextField(index)}
+                          className={classes.editTopicTitleImageContainer}
+                        >
+                          <EditImageIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          onClick={() => saveEditTopicTitleHandler(index)}
+                          className={classes.editTopicTitleImageContainer}
+                        >
+                          <SaveIcon />
+                        </IconButton>
+                      )}
                     </Box>
                   ) : (
                     <></>
