@@ -282,7 +282,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Chủ đề</TextTitle>
-              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
+              <FormControl className={classes.formControl} fullWidth size='small'>
                 <InputLabel id='select-assignment-section-label'>Chọn chủ đề</InputLabel>
                 <Select
                   labelId='select-assignment-section-label'
