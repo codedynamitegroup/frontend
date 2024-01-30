@@ -7,6 +7,14 @@ export const routes = {
     assignment: {
       create: "/lecturer/assignment-management/create",
       grading: "/lecturer/assignment-management/:submissionId/grading"
+    },
+    question: {
+      essay: {
+        create: "/lecturer/question-management/essay/create"
+      }
     }
+  },
+  user: {
+    problem: "/problem"
   }
 };
