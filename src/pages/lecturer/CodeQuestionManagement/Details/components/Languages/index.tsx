@@ -84,7 +84,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
                   align='left'
                   className={`${classes["table-cell"]} ${
                     heading === "STT" ? classes["small-heading"] : ""
-                  }`}
+                  } ${heading === "Ngôn ngữ" ? classes["col-table-language-name"] : ""}  `}
                 >
                   <ParagraphBody fontWeight={700}>{heading}</ParagraphBody>
                 </TableCell>

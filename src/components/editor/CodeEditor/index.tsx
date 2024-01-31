@@ -1,23 +1,24 @@
-import React, { Dispatch } from "react";
 import Editor from "@monaco-editor/react";
 import editorAPI from "monaco-editor/esm/vs/editor/editor.api";
+import classes from "./styles.module.scss";
 interface CodeEditorProps {
   value: string;
-  setValue: Dispatch<React.SetStateAction<string>>;
   language: string;
+  showMinimap: boolean;
+  readOnly: boolean;
 }
 
-const CodeEditor = ({ value, setValue, language }: CodeEditorProps) => {
+const CodeEditor = ({ value, language, showMinimap, readOnly }: CodeEditorProps) => {
   const options: editorAPI.editor.IStandaloneEditorConstructionOptions = {
     autoIndent: "full",
     contextmenu: true,
     fontFamily: "monospace",
-    fontSize: 13,
+    fontSize: 14,
     lineHeight: 24,
     hideCursorInOverviewRuler: true,
     matchBrackets: "always",
     minimap: {
-      enabled: true
+      enabled: showMinimap
     },
     scrollbar: {
       horizontalSliderSize: 4,
@@ -25,22 +26,18 @@ const CodeEditor = ({ value, setValue, language }: CodeEditorProps) => {
     },
     selectOnLineNumbers: true,
     roundedSelection: false,
-    readOnly: false,
+    readOnly: readOnly,
     cursorStyle: "line",
     automaticLayout: true
   };
 
   return (
     <Editor
-      height='100vh'
-      width='100vw'
       theme='light'
-      defaultLanguage={language}
-      defaultValue={value}
-      onChange={(e: any) => {
-        setValue(e.target.value);
-      }}
+      language={language}
+      value={value}
       options={options}
+      className={classes.editor}
     />
   );
 };

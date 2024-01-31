@@ -101,7 +101,7 @@ const CodeQuestionTestCases = memo((props: Props) => {
     <Box className={classes["body"]}>
       <Box className={classes["btn-wrapper"]}>
         <Button btnType={BtnType.Outlined}>Tải lên tệp zip</Button>
-        <Button btnType={BtnType.Secondary}>Thêm test case</Button>
+        <Button btnType={BtnType.Primary}>Thêm test case</Button>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='custom table'>

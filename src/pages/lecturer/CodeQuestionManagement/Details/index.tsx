@@ -3,30 +3,49 @@ import Header from "components/Header";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
-import { memo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { memo, useMemo } from "react";
+import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
-import TabPanel from "components/TabPanel";
 import CodeQuestionInformation from "./components/Information";
 import CodeQuestionTestCases from "./components/TestCases";
 import CodeQuestionCodeStubs from "./components/CodeStubs";
 import CodeQuestionLanguages from "./components/Languages";
+import { routes } from "routes/routes";
 
 interface Props {}
-enum ETab {
-  DETAILS,
-  TEST_CASES,
-  CODE_STUBS,
-  LANGUAGES
-}
 
 const CodeQuestionDetails = memo((props: Props) => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { pathname } = useLocation();
 
-  const [activeTab, setActiveTab] = useState<ETab>(ETab.DETAILS);
-  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
+  const handleChange = (_: React.SyntheticEvent, newTab: number) => {
+    if (id) navigate(tabs[newTab].replace(":id", id));
   };
+
+  const tabs: string[] = useMemo(() => {
+    return [
+      routes.lecturer.code_question.information,
+      routes.lecturer.code_question.test_cases,
+      routes.lecturer.code_question.code_stubs,
+      routes.lecturer.code_question.languages
+    ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routes]);
+
+  const activeRoute = (routeName: string) => {
+    const match = matchPath(pathname, routeName);
+    return !!match;
+  };
+
+  const activeTab = useMemo(() => {
+    if (id) {
+      const index = tabs.findIndex((it) => activeRoute(it.replace(":id", id)));
+      if (index === -1) return 0;
+      return index;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, tabs]);
 
   return (
     <Grid className={classes.root}>
@@ -34,8 +53,17 @@ const CodeQuestionDetails = memo((props: Props) => {
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate("/lecturer/code-management")}>Quản lý câu hỏi code</span>{" "}
-            {">"} <span onClick={() => navigate("/lecturer/code-management/1")}>Tổng 2 số</span>
+            <span onClick={() => navigate(routes.lecturer.code_question.management)}>
+              Quản lý câu hỏi code
+            </span>{" "}
+            {">"}{" "}
+            <span
+              onClick={() => {
+                if (id) navigate(routes.lecturer.code_question.details.replace(":id", id));
+              }}
+            >
+              Tổng 2 số
+            </span>
           </ParagraphBody>
         </Box>
 
@@ -51,37 +79,31 @@ const CodeQuestionDetails = memo((props: Props) => {
               <Tab
                 sx={{ textTransform: "none" }}
                 label={<ParagraphBody>Thông tin</ParagraphBody>}
-                value={ETab.DETAILS}
+                value={0}
               />
               <Tab
                 sx={{ textTransform: "none" }}
                 label={<ParagraphBody>Test cases</ParagraphBody>}
-                value={ETab.TEST_CASES}
+                value={1}
               />
               <Tab
                 sx={{ textTransform: "none" }}
                 label={<ParagraphBody>Code mẫu</ParagraphBody>}
-                value={ETab.CODE_STUBS}
+                value={2}
               />
               <Tab
                 sx={{ textTransform: "none" }}
                 label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
-                value={ETab.LANGUAGES}
+                value={3}
               />
             </Tabs>
           </Box>
-          <TabPanel value={activeTab} index={ETab.DETAILS}>
-            <CodeQuestionInformation />
-          </TabPanel>
-          <TabPanel value={activeTab} index={ETab.TEST_CASES}>
-            <CodeQuestionTestCases />
-          </TabPanel>
-          <TabPanel value={activeTab} index={ETab.CODE_STUBS}>
-            <CodeQuestionCodeStubs />
-          </TabPanel>
-          <TabPanel value={activeTab} index={ETab.LANGUAGES}>
-            <CodeQuestionLanguages />
-          </TabPanel>
+          <Routes>
+            <Route path={"information"} element={<CodeQuestionInformation />} />
+            <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
+            <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
+            <Route path={"languages"} element={<CodeQuestionLanguages />} />
+          </Routes>
         </Box>
       </Container>
       <Box className={classes.stickyFooterContainer}>

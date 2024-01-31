@@ -7,6 +7,7 @@ import TableTemplate from "components/common/table/TableTemplate";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
+import { routes } from "routes/routes";
 
 const CodeQuestionManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -42,7 +43,7 @@ const CodeQuestionManagement = () => {
   const customColumns = ["id", "name", "owner", "difficulty", "updateAt"];
   const navigate = useNavigate();
   const onEdit = (id: number) => {
-    navigate(`/lecturer/code-management/${id}`);
+    navigate(routes.lecturer.code_question.information.replace(":id", id.toString()));
   };
   const onDelete = (id: number) => {};
 
@@ -58,7 +59,7 @@ const CodeQuestionManagement = () => {
             btnType={BtnType.Primary}
             width='150px'
             onClick={() => {
-              navigate("/lecturer/code-management/create");
+              navigate(routes.lecturer.code_question.create);
             }}
           />
         </Box>

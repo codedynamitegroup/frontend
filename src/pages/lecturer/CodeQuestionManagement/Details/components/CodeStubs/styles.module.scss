@@ -1,0 +1,28 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.codeStubsWrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #bcb9b9;
+}
+
+.codeStubHead {
+  display: flex;
+  border-bottom: 0.5px solid #bcb9b9;
+  align-items: center;
+  background: #e5e5e5;
+  padding: 10px 20px;
+}
+
+.codeStubBody {
+  height: 272px;
+}
