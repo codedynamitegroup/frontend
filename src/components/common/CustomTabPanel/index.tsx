@@ -3,6 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
+import ResponsiveAppBar from "components/Header";
 
 interface PropsData {
   routeList: Array<string>;
@@ -23,6 +24,8 @@ const CustomTabPanel = (props: PropsData) => {
 
   return (
     <Box className={classes.container}>
+      <ResponsiveAppBar />
+
       <Tabs
         className={classes.tabContainer}
         value={history.pathname}

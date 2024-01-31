@@ -21,7 +21,11 @@ function App() {
         <Route
           element={
             <CustomTabPanel
-              routeList={[routes.lecturer.course.detail.path, routes.lecturer.course.grade.path]}
+              routeList={[
+                routes.lecturer.course.detail.path,
+                routes.lecturer.course.grade.path,
+                routes.lecturer.course.participant.path
+              ]}
               labelList={["Lớp học", "Bài tập", "Điểm", "Thành viên"]}
             />
           }
@@ -33,6 +37,10 @@ function App() {
           <Route
             path={routes.lecturer.course.detail.path}
             element={<routes.lecturer.course.detail.Component />}
+          />
+          <Route
+            path={routes.lecturer.course.participant.path}
+            element={<routes.lecturer.course.participant.Component />}
           />
         </Route>
       </Routes>

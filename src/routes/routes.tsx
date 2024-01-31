@@ -1,6 +1,7 @@
 import LecturerCourseDetail from "pages/client/lecturer/CourseDetail";
 import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
+import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 
 export const routes = {
   lecturer: {
@@ -14,7 +15,10 @@ export const routes = {
       detail: { path: "/lecturer/course/:courseId/detail", Component: LecturerCourseDetail },
       assignment: { path: "/lecturer/course/:courseId/assignment" },
       grade: { path: "/lecturer/course/:courseId/grade", Component: LecturerCourseGrade },
-      participant: { path: "/lecturer/course/:courseId/participant" }
+      participant: {
+        path: "/lecturer/course/:courseId/participant",
+        Component: LecturerCourseParticipant
+      }
     }
   }
 };
