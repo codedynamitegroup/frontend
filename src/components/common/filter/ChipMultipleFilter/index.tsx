@@ -23,10 +23,11 @@ interface ChipFilterPropData {
   defaultChipList: Array<string>;
   filterList: Array<string>;
   onFilterListChangeHandler: any;
+  readOnly?: boolean;
 }
 
 const ChipMultipleFilter = (props: ChipFilterPropData) => {
-  const [selectedChipList, setSelectedChipList] = useState<string[]>([]);
+  const [selectedChipList, setSelectedChipList] = useState<string[]>(props.filterList);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedChipList>) => {
     const {
@@ -56,6 +57,7 @@ const ChipMultipleFilter = (props: ChipFilterPropData) => {
           )}
           MenuProps={MenuProps}
           fullWidth
+          readOnly={props.readOnly}
         >
           {props.defaultChipList.map((selectedChip) => (
             <MenuItem key={selectedChip} value={selectedChip}>

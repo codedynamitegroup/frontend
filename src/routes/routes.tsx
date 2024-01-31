@@ -16,6 +16,9 @@ export const routes = {
     }
   },
   user: {
-    problem: "/problem"
+    problem: "/problem",
+    assignment: {
+      submission: "/assignments/:assignmentId/submission"
+    }
   }
 };
