@@ -17,6 +17,7 @@ import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import Heading5 from "components/text/Heading5";
 
 type Props = {};
 
@@ -74,6 +75,9 @@ const CodeQuestionLanguages = memo((props: Props) => {
 
   return (
     <Box className={classes["body"]}>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+        Dưới đây là danh sách các ngôn ngữ lập trình có sẵn
+      </Heading5>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='custom table'>
           <TableHead className={classes["table-head"]}>

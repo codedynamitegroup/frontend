@@ -6,11 +6,12 @@ import { Textarea } from "@mui/joy";
 import Button, { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import CodeEditor from "components/editor/CodeEditor";
+import Heading5 from "components/text/Heading5";
 
 type Props = {};
 
 const CodeQuestionCodeStubs = memo((props: Props) => {
-  const [codeStubHead, setCodeStubHead] = useState<string>(
+  const [codeStubHead] = useState<string>(
     `	import java.io.*;
 	import java.math.*;
 	import java.security.*;
@@ -24,7 +25,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
 	import static java.util.stream.Collectors.toList;
 	`
   );
-  const [codeStubBody, setCodeStubBody] = useState<string>(`class Result {
+  const [codeStubBody] = useState<string>(`class Result {
 
     /*
      * Complete the 'sumOfTwoIntegers' function below.
@@ -42,7 +43,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
 
 }
 	`);
-  const [codeStubTail, setCodeStubTail] = useState<string>(`public class Solution {
+  const [codeStubTail] = useState<string>(`public class Solution {
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
@@ -64,6 +65,10 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
   return (
     <>
       <Box component='form' autoComplete='off' className={classes.formBody}>
+        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+          Để đọc dữ liệu test case đầu vào một cách tiêu chuẩn, bạn có thể sử dụng ngôn ngữ DSL của
+          chúng tôi như một cách tiếp cận hiệu quả và dễ sử dụng
+        </Heading5>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle>DSL cho code mẫu</TextTitle>
@@ -91,7 +96,10 @@ print(integer,result)`}
           </Button>
         </Box>
       </Box>
-      <Box className={classes.codeStubsBody}>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+        Xem các đoạn mã nguồn đã được tạo tự động ở bên dươi
+      </Heading5>
+      <Box mt={2}>
         <Box className={classes.codeStubsWrapper}>
           <Box className={classes.codeStubHead}>
             <ParagraphBody fontWeight={700}>Head</ParagraphBody>

@@ -5,6 +5,7 @@ import TextEditor from "components/editor/TextEditor";
 import TextTitle from "components/text/TextTitle";
 import { memo, useState } from "react";
 import classes from "./styles.module.scss";
+import Heading5 from "components/text/Heading5";
 
 type Props = {};
 
@@ -30,6 +31,9 @@ const CodeQuestionInformation = memo((props: Props) => {
 
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+        Dưới đây là một số thông tin cần thiết về câu hỏi code của bạn
+      </Heading5>
       <InputTextField title='Tên câu hỏi' type='text' value={questionName} />
       <FormControl>
         <Grid container spacing={1} columns={12}>

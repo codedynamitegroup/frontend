@@ -52,6 +52,12 @@
   text-align: center;
 }
 
+.head-wrapper {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
 .btn-wrapper {
   display: flex;
   gap: 15px;

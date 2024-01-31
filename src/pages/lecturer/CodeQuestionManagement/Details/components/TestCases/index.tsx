@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TestCasePopup from "./components/PopupAddTestCase";
+import Heading5 from "components/text/Heading5";
 
 type Props = {};
 
@@ -117,11 +118,16 @@ const CodeQuestionTestCases = memo((props: Props) => {
 
   return (
     <Box className={classes["body"]}>
-      <Box className={classes["btn-wrapper"]}>
-        <Button btnType={BtnType.Outlined}>Tải lên tệp zip</Button>
-        <Button btnType={BtnType.Primary} onClick={() => setOpenTestCasePopup(true)}>
-          Thêm test case
-        </Button>
+      <Box className={classes["head-wrapper"]}>
+        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+          Để đánh giá tính chính xác của mã của người dùng, bạn cần thêm các trường hợp kiểm thử
+        </Heading5>
+        <Box className={classes["btn-wrapper"]}>
+          <Button btnType={BtnType.Outlined}>Tải lên tệp zip</Button>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenTestCasePopup(true)}>
+            Thêm test case
+          </Button>
+        </Box>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='custom table'>

@@ -98,12 +98,14 @@ const CodeQuestionDetails = memo((props: Props) => {
               />
             </Tabs>
           </Box>
-          <Routes>
-            <Route path={"information"} element={<CodeQuestionInformation />} />
-            <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
-            <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-            <Route path={"languages"} element={<CodeQuestionLanguages />} />
-          </Routes>
+          <Box mt={2}>
+            <Routes>
+              <Route path={"information"} element={<CodeQuestionInformation />} />
+              <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
+              <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
+              <Route path={"languages"} element={<CodeQuestionLanguages />} />
+            </Routes>
+          </Box>
         </Box>
       </Container>
       <Box className={classes.stickyFooterContainer}>
