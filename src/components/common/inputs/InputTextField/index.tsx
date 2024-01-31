@@ -39,10 +39,10 @@ const InputTextField = memo((props: InputsProps) => {
     <>
       <FormControl className={classes.inputContainer}>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={title ? 3 : 0}>
+          <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
             {title && <TextTitle>{title}</TextTitle>}
           </Grid>
-          <Grid item xs={title ? 9 : 12}>
+          <Grid item xs={title ? 12 : 12} md={title ? 9 : 0}>
             <OutlinedInput
               placeholder={placeholder}
               fullWidth

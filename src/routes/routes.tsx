@@ -10,6 +10,9 @@ export const routes = {
     question: {
       essay: {
         create: "/lecturer/question-management/essay/create"
+      },
+      muiltiplechoice: {
+        create: "/lecturer/question-management/multiple-choice/create"
       }
     }
   }
