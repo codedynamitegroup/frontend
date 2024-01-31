@@ -1,17 +1,19 @@
 .btnRoot {
-  text-transform: none;
-  border-radius: 4px;
-  padding: 8px 16px;
+  text-transform: none !important;
+  border-radius: 4px !important;
+  padding: 8px 16px !important;
 }
 .btnPrimary {
-  background-color: var(--6bros-blue) !important;
+  background-color: var(--blue-500) !important;
   border: 1px solid transparent !important;
-  color: #ffffff !important;
+  p {
+    color: #ffffff !important;
+  }
   &:hover {
-    background: var(--6bros-blue-light-1) !important;
+    background: var(--blue-400) !important;
   }
   &:active {
-    background: var(--6bros-blue-dark-1) !important;
+    background: var(--blue-400) !important;
   }
   &[class~="Mui-disabled"] {
     background: var(--eerie-black-5) !important;
@@ -21,22 +23,16 @@
   }
 }
 .btnSecondary {
-  background: var(--6bros-blue-light-4) !important;
+  background: var(--green-500) !important;
   border: 1px solid transparent !important;
   p {
-    color: var(--6bros-blue) !important;
+    color: white !important;
   }
   &:hover {
-    background: var(--6bros-blue-light-4) !important;
-    p {
-      color: var(--6bros-blue-light-1) !important;
-    }
+    background: var(--green-600) !important;
   }
   &:active {
-    background: var(--6bros-blue-light-4) !important;
-    p {
-      color: var(--6bros-blue-dark-1) !important;
-    }
+    background: var(--green-500) !important;
   }
   &[class~="Mui-disabled"] {
     background: var(--eerie-black-5) !important;
@@ -46,23 +42,17 @@
   }
 }
 .btnOutlined {
-  background: var(--6bros-blue-light-4) !important;
-  border: 1px solid var(--6bros-blue-light-2) !important;
+  background: var(--blue-light-4) !important;
+  border: 1px solid var(--blue-light-2) !important;
   p {
-    color: var(--6bros-blue) !important;
+    color: var(--blue-500) !important;
   }
   &:hover {
-    background: var(--6bros-blue-light-4) !important;
-    p {
-      color: var(--6bros-blue-light-1) !important;
-    }
+    background: var(--blue-light-3) !important;
   }
   &:active {
-    color: var(--6bros-blue-dark-1) !important;
-    background: var(--6bros-blue-light-4) !important;
-    p {
-      color: var(--6bros-blue-dark-1) !important;
-    }
+    color: var(--blue-dark-1) !important;
+    background: var(--blue-light-3) !important;
   }
   &[class~="Mui-disabled"] {
     background: var(--eerie-black-5) !important;
@@ -80,18 +70,20 @@
     margin: 0;
   }
   p {
-    color: var(--6bros-blue);
+    color: var(--blue-500);
   }
   &:hover {
     background: transparent !important;
+    background-color: var(--blue-light-4) !important;
     p {
-      color: var(--6bros-blue-light-1) !important;
+      color: var(--blue-light-1) !important;
     }
   }
   &:active {
     background: transparent !important;
+    background-color: var(--blue-light-4) !important;
     p {
-      color: var(--6bros-blue-dark-1) !important;
+      color: var(--blue-dark-1) !important;
     }
   }
   &[class~="Mui-disabled"] {

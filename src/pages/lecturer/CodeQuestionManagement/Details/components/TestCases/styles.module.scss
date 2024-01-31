@@ -1,10 +1,8 @@
 .table-head {
   background-color: var(--blue-500);
-
   p {
     color: #fff;
   }
-
   .table-cell {
     min-width: 180px;
     color: #fff !important;
@@ -52,4 +50,15 @@
 
 .noList {
   text-align: center;
+}
+
+.btn-wrapper {
+  display: flex;
+  gap: 15px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }

@@ -1,6 +1,5 @@
 .table-head {
   background-color: var(--blue-500);
-
   p {
     color: #fff;
   }
@@ -52,4 +51,21 @@
 
 .noList {
   text-align: center;
+}
+
+.btn-wrapper {
+  display: flex;
+  gap: 15px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.col-table-language-name {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }

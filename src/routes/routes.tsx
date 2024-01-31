@@ -2,7 +2,8 @@ export const routes = {
   lecturer: {
     code_question: {
       management: "/lecturer/code-management",
-      create: "/lecturer/code-management/create"
+      create: "/lecturer/code-management/create",
+      details: "/lecturer/code-management/:id"
     },
     assignment: {
       create: "/lecturer/assignment-management/create",

@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Button as ButtonMUI, ButtonProps as ButtonPropsMUI } from "@mui/material";
 import clsx from "clsx";
 import classes from "./styles.module.scss";
+import ParagraphBody from "components/text/ParagraphBody";
 
 export enum BtnType {
   Primary = "Primary",
@@ -35,7 +36,7 @@ const Button = memo((props: ButtonProps) => {
       {...rest}
       sx={{ ...sx, minWidth: width, padding: padding, whiteSpace: nowrap ? "nowrap" : "unset" }}
     >
-      {children}
+      <ParagraphBody>{children}</ParagraphBody>
     </ButtonMUI>
   );
 });

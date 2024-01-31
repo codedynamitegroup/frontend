@@ -63,15 +63,15 @@ function TableTemplate({
                 align='left'
                 className={`${classes["table-cell"]} ${
                   heading === "STT" ? classes["small-heading"] : ""
-                } ${heading === "Địa chỉ" ? classes["large-heading"] : ""}`}
+                }`}
               >
-                {heading}
+                <ParagraphBody fontWeight={700}>{heading}</ParagraphBody>
               </TableCell>
             ))}
             {/* Action column heading */}
             {isActionColumn && (
               <TableCell align='left' className={classes["table-cell"]}>
-                Hành động
+                <ParagraphBody fontWeight={700}>Hành động</ParagraphBody>
               </TableCell>
             )}
           </TableRow>
@@ -85,15 +85,10 @@ function TableTemplate({
                   <TableCell
                     key={colIndex}
                     align='left'
-                    className={`${classes["col-table-body"]} ${
-                      column === "objectStatus"
-                        ? row[column].value
-                          ? `${classes["active"]}`
-                          : `${classes["inactive"]} }`
-                        : ""
-                    }${column === "address" ? `${classes["cell-limit-text"]}` : ""}`}
+                    className={`${classes["col-table-body"]}                           
+										`}
                   >
-                    {column === "objectStatus" ? row[column].name : row[column]}
+                    <ParagraphBody>{row[column]}</ParagraphBody>
                   </TableCell>
                 ))}
 
@@ -107,7 +102,7 @@ function TableTemplate({
                           size='medium'
                           onClick={() => handleViewDetailsClick(row.id)}
                         >
-                          <FontAwesomeIcon icon={faEye} color='var(--blue-700)' />
+                          <FontAwesomeIcon icon={faEye} />
                         </IconButton>
                       </Tooltip>
                     )}
@@ -120,14 +115,14 @@ function TableTemplate({
                             handleEditClick(row.id);
                           }}
                         >
-                          <FontAwesomeIcon icon={faEdit} color='#FFA500' />
+                          <FontAwesomeIcon icon={faEdit} />
                         </IconButton>
                       </Tooltip>
                     )}
                     {onDeleteClick && (
                       <Tooltip title='Xóa'>
                         <IconButton size='medium' onClick={() => handleDeleteClick(row.id)}>
-                          <FontAwesomeIcon icon={faTrash} style={{ color: "var(--red-error)" }} />
+                          <FontAwesomeIcon icon={faTrash} />
                         </IconButton>
                       </Tooltip>
                     )}
