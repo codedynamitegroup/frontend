@@ -19,12 +19,15 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Button, { BtnType } from "components/common/buttons/Button";
+import TestCasePopup from "./components/PopupAddTestCase";
 
 type Props = {};
 
 const CodeQuestionTestCases = memo((props: Props) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
+  const [itemEdit, setItemEdit] = useState<any>(null);
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
@@ -41,6 +44,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 1,
       input: "input01.txt",
       output: "output01.txt",
+      inputValue: "1\n2",
+      outputValue: "3",
       sample: true,
       score: 0
     },
@@ -48,6 +53,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 2,
       input: "input02.txt",
       output: "output02.txt",
+      inputValue: "3\n2",
+      outputValue: "5",
       sample: false,
       score: 10
     },
@@ -55,6 +62,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 3,
       input: "input03.txt",
       output: "output03.txt",
+      inputValue: "2\n2",
+      outputValue: "4",
       sample: false,
       score: 100
     },
@@ -62,6 +71,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 4,
       input: "input04.txt",
       output: "output04.txt",
+      inputValue: "3\n3",
+      outputValue: "6",
       sample: false,
       score: 5
     },
@@ -69,6 +80,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 5,
       input: "input05.txt",
       output: "output05.txt",
+      inputValue: "5\n2",
+      outputValue: "7",
       sample: false,
       score: 10
     },
@@ -76,13 +89,18 @@ const CodeQuestionTestCases = memo((props: Props) => {
       id: 6,
       input: "input06.txt",
       output: "output06.txt",
+      inputValue: "2\n12",
+      outputValue: "14",
       sample: false,
       score: 10
     }
   ]);
   const tableHeads = ["STT", "Đầu vào", "Đầu ra", "Mẫu", "Điểm", "Hành động"];
 
-  const onEdit = (id: number) => {};
+  const onEdit = (id: number) => {
+    setOpenTestCasePopup(true);
+    setItemEdit(data.find((item) => item.id === id));
+  };
   const onDelete = (id: number) => {};
   const handleCheckboxChange = (id: number) => {
     setData((prevData) =>
@@ -101,7 +119,9 @@ const CodeQuestionTestCases = memo((props: Props) => {
     <Box className={classes["body"]}>
       <Box className={classes["btn-wrapper"]}>
         <Button btnType={BtnType.Outlined}>Tải lên tệp zip</Button>
-        <Button btnType={BtnType.Primary}>Thêm test case</Button>
+        <Button btnType={BtnType.Primary} onClick={() => setOpenTestCasePopup(true)}>
+          Thêm test case
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='custom table'>
@@ -208,6 +228,12 @@ const CodeQuestionTestCases = memo((props: Props) => {
         rowsPerPage={rowsPerPage}
         labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <TestCasePopup
+        itemEdit={itemEdit}
+        open={openTestCasePopup}
+        setOpen={setOpenTestCasePopup}
+        setItemEdit={setItemEdit}
       />
     </Box>
   );

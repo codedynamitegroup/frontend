@@ -1,5 +1,5 @@
 import { Textarea } from "@mui/joy";
-import { Box, Grid } from "@mui/material";
+import { Box, FormControl, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
 import TextTitle from "components/text/TextTitle";
@@ -8,6 +8,11 @@ import classes from "./styles.module.scss";
 
 type Props = {};
 
+enum EDifficulty {
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD"
+}
 const CodeQuestionInformation = memo((props: Props) => {
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
@@ -18,23 +23,43 @@ const CodeQuestionInformation = memo((props: Props) => {
   );
   const [contraints, setContraints] = useState<string>("a và b là số nguyên");
   const [questionName] = useState<string>("Tổng 2 số");
+  const [difficulty, setDifficulty] = useState<string>(EDifficulty.EASY);
+  const handleChange = (event: SelectChangeEvent) => {
+    setDifficulty(event.target.value);
+  };
 
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
       <InputTextField title='Tên câu hỏi' type='text' value={questionName} />
-      <Grid container spacing={1} columns={12}>
-        <Grid item xs={3}>
-          <TextTitle>Mô tả câu hỏi</TextTitle>
+      <FormControl>
+        <Grid container spacing={1} columns={12}>
+          <Grid item xs={3}>
+            <TextTitle>Độ khó</TextTitle>
+          </Grid>
+          <Grid item xs={9}>
+            <Select value={difficulty} onChange={handleChange} sx={{ width: "200px" }}>
+              <MenuItem value={EDifficulty.EASY}>Dễ</MenuItem>
+              <MenuItem value={EDifficulty.MEDIUM}>Trung bình</MenuItem>
+              <MenuItem value={EDifficulty.HARD}>Khó</MenuItem>
+            </Select>
+          </Grid>
         </Grid>
-        <Grid item xs={9}>
-          <Textarea
-            defaultValue='Mô tả bài toán'
-            sx={{ backgroundColor: "white" }}
-            minRows={3}
-            maxRows={3}
-          />
+      </FormControl>
+      <FormControl>
+        <Grid container spacing={1} columns={12}>
+          <Grid item xs={3}>
+            <TextTitle>Mô tả câu hỏi</TextTitle>
+          </Grid>
+          <Grid item xs={9}>
+            <Textarea
+              defaultValue='Mô tả bài toán'
+              sx={{ backgroundColor: "white" }}
+              minRows={3}
+              maxRows={3}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </FormControl>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
           <TextTitle>Phát biểu bài toán</TextTitle>
