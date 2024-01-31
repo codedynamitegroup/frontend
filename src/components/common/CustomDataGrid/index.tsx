@@ -7,6 +7,7 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
+import classes from "./styles.module.scss";
 
 interface DataGridProps {
   dataList: Array<any>;
@@ -43,7 +44,7 @@ const CustomDataGrid = (props: DataGridProps) => {
   };
 
   return (
-    <Box>
+    <Box className={classes.container}>
       <DataGrid
         rows={dataList}
         columns={tableHeader}
