@@ -1,0 +1,95 @@
+.btnRoot {
+  text-transform: none !important;
+  border-radius: 4px !important;
+  padding: 8px 16px !important;
+}
+.btnPrimary {
+  background-color: var(--blue-500) !important;
+  border: 1px solid transparent !important;
+  p {
+    color: #ffffff !important;
+  }
+  &:hover {
+    background: var(--blue-400) !important;
+  }
+  &:active {
+    background: var(--blue-400) !important;
+  }
+  &[class~="Mui-disabled"] {
+    background: var(--eerie-black-5) !important;
+    p {
+      color: var(--eerie-black-40) !important;
+    }
+  }
+}
+.btnSecondary {
+  background: var(--green-500) !important;
+  border: 1px solid transparent !important;
+  p {
+    color: white !important;
+  }
+  &:hover {
+    background: var(--green-600) !important;
+  }
+  &:active {
+    background: var(--green-500) !important;
+  }
+  &[class~="Mui-disabled"] {
+    background: var(--eerie-black-5) !important;
+    p {
+      color: var(--eerie-black-40) !important;
+    }
+  }
+}
+.btnOutlined {
+  background: var(--blue-light-4) !important;
+  border: 1px solid var(--blue-light-2) !important;
+  p {
+    color: var(--blue-500) !important;
+  }
+  &:hover {
+    background: var(--blue-light-3) !important;
+  }
+  &:active {
+    color: var(--blue-dark-1) !important;
+    background: var(--blue-light-3) !important;
+  }
+  &[class~="Mui-disabled"] {
+    background: var(--eerie-black-5) !important;
+    border: 1px solid var(--eerie-black-20) !important;
+    p {
+      color: var(--eerie-black-40) !important;
+    }
+  }
+}
+
+.btnText {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  span {
+    margin: 0;
+  }
+  p {
+    color: var(--blue-500);
+  }
+  &:hover {
+    background: transparent !important;
+    background-color: var(--blue-light-4) !important;
+    p {
+      color: var(--blue-light-1) !important;
+    }
+  }
+  &:active {
+    background: transparent !important;
+    background-color: var(--blue-light-4) !important;
+    p {
+      color: var(--blue-dark-1) !important;
+    }
+  }
+  &[class~="Mui-disabled"] {
+    background: transparent !important;
+    p {
+      color: var(--eerie-black-40) !important;
+    }
+  }
+}

@@ -1,28 +1,43 @@
-import React, { Dispatch } from "react";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
-import { langs } from "@uiw/codemirror-extensions-langs";
-import { githubLight } from "@uiw/codemirror-theme-github";
-
+import Editor from "@monaco-editor/react";
+import editorAPI from "monaco-editor/esm/vs/editor/editor.api";
+import classes from "./styles.module.scss";
 interface CodeEditorProps {
   value: string;
-  setValue: Dispatch<React.SetStateAction<string>>;
+  language: string;
+  showMinimap: boolean;
+  readOnly: boolean;
 }
 
-const CodeEditor = ({ value, setValue }: CodeEditorProps) => {
-  const onChange = (value: string, viewUpdate: ViewUpdate) => {
-    setValue(value);
-    console.log(value);
+const CodeEditor = ({ value, language, showMinimap, readOnly }: CodeEditorProps) => {
+  const options: editorAPI.editor.IStandaloneEditorConstructionOptions = {
+    autoIndent: "full",
+    contextmenu: true,
+    fontFamily: "monospace",
+    fontSize: 14,
+    lineHeight: 24,
+    hideCursorInOverviewRuler: true,
+    matchBrackets: "always",
+    minimap: {
+      enabled: showMinimap
+    },
+    scrollbar: {
+      horizontalSliderSize: 4,
+      verticalSliderSize: 18
+    },
+    selectOnLineNumbers: true,
+    roundedSelection: false,
+    readOnly: readOnly,
+    cursorStyle: "line",
+    automaticLayout: true
   };
+
   return (
-    <CodeMirror
+    <Editor
+      theme='light'
+      language={language}
       value={value}
-      height='100vh'
-      theme={githubLight}
-      onChange={onChange}
-      basicSetup={{
-        autocompletion: true
-      }}
-      extensions={[langs.java(), langs.javascript()]}
+      options={options}
+      className={classes.editor}
     />
   );
 };

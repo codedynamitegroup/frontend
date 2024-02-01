@@ -1,0 +1,39 @@
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 10px;
+}
+.boxTitle {
+  font-size: 24px;
+  margin: 10px 0;
+}
+.boxContent {
+  display: flex !important;
+  flex-direction: column;
+  padding: 0px 20px 20px 20px;
+  background-color: white;
+  border-radius: 15px;
+  height: 100%;
+  gap: 20px;
+}
+.typeAlgorithm {
+  margin-bottom: 10px;
+}
+.algorithm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 15px;
+  row-gap: 20px;
+}
+.algorithmItem {
+  cursor: pointer;
+  &:hover {
+    color: var(--blue-500) !important;
+  }
+}

@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-import SearchBar from "components/common/SearchBar";
+import SearchBar from "components/common/search/SearchBar";
 import CourseCard from "./components/CourseCard";
 import { User } from "models/courseService/user";
 
@@ -12,7 +12,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
 import CourseList from "./components/CouseList";
-import ChipMultipleFilter from "components/common/ChipMultipleFilter";
+import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 
 enum EView {
   cardView = 1,
@@ -202,6 +202,7 @@ const LecturerCourseManagement = () => {
         <Box className={classes.filterContainer}>
           <ChipMultipleFilter
             label='Lọc theo loại'
+            defaultChipList={[]}
             filterList={tempCategories}
             onFilterListChangeHandler={handleCategoryFilterChange}
           />

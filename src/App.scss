@@ -9,19 +9,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
 
 :root {
-  --darkblue-50: #e8ebee;
-  --darkblue-100: #cfd5dc;
-  --darkblue-200: #a0abb8;
-  --darkblue-300: #708195;
-  --darkblue-400: #415771;
-  --darkblue-500: #112d4e;
-  --darkblue-600: #0d223b;
-  --darkblue-700: #091727;
-  --darkblue-800: #040b14;
-  --darkblue-900: #020508;
+  --blue-light: #73b1f4;
+  --blue-light-1: #3b87db;
+  --blue-light-2: #7cafe7;
+  --blue-light-3: #bed7f3;
+  --blue-light-4: #e8f1fb;
+  --blue-light-5: #f6f9fc;
+  --blue-dark-1: #17497f;
+  --blue-dark-2: #103055;
+  --blue-dark-3: #08182a;
 
-  --green-500: #365a38;
-  --green-600: #00b300;
+  --green-500: #32cd32;
+  --green-600: #33b249;
 
   --blue-50: #ecf1f8;
   --blue-100: #d9e3ef;
@@ -33,6 +32,17 @@
   --blue-700: #203958;
   --blue-800: #101d2c;
   --blue-900: #060b12;
+
+  --darkblue-50: #e8ebee;
+  --darkblue-100: #cfd5dc;
+  --darkblue-200: #a0abb8;
+  --darkblue-300: #708195;
+  --darkblue-400: #415771;
+  --darkblue-500: #112d4e;
+  --darkblue-600: #0d223b;
+  --darkblue-700: #091727;
+  --darkblue-800: #040b14;
+  --darkblue-900: #020508;
 
   --gray-02: #373d3f;
   --gray-1: #fbfbfb;
