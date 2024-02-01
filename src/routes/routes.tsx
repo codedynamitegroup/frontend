@@ -31,12 +31,15 @@ export const routes = {
     },
     assignment: {
       create: "/lecturer/assignment-management/create",
-      grading: "/lecturer/assignment-management/:submissionId/grading"
+      grading: "/lecturer/assignment-management/grading"
     },
     question: {
       essay: {
         create: "/lecturer/question-management/essay/create"
       }
+    },
+    exam: {
+      create: "/lecturer/exam-management/create"
     }
   },
   user: {

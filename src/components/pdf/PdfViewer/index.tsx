@@ -25,7 +25,7 @@ export default function PdfViewer(props: any) {
     })();
 
     return () => PSPDFKit && PSPDFKit.unload(container);
-  }, []);
+  }, [props.document]);
 
   // This div element will render the document to the DOM.
   return <div ref={containerRef} style={{ width: "100%", height: "100vh" }} />;

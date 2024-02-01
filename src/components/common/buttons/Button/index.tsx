@@ -34,7 +34,7 @@ const Button = memo((props: ButtonProps) => {
       )}
       type='button'
       {...rest}
-      sx={{ ...sx, minWidth: width, padding: padding, whiteSpace: nowrap ? "nowrap" : "unset" }}
+      sx={{ ...sx, width: width, padding: padding, whiteSpace: nowrap ? "nowrap" : "unset" }}
     >
       <ParagraphBody>{children}</ParagraphBody>
     </ButtonMUI>

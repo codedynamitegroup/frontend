@@ -95,7 +95,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function AssignmentGrading() {
+export default function AssignmentCreated() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -262,7 +262,7 @@ export default function AssignmentGrading() {
                     onChange={(newValue) => {
                       setAssignmentAllowSubmissionFromDate(newValue);
                     }}
-                    slotProps={{ textField: { fullWidth: true } }}
+                    slotProps={{ textField: { fullWidth: true, size: "small" } }}
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -277,7 +277,7 @@ export default function AssignmentGrading() {
                     onChange={(newValue) => {
                       setAssignmentSubmissionDueDate(newValue);
                     }}
-                    slotProps={{ textField: { fullWidth: true } }}
+                    slotProps={{ textField: { fullWidth: true, size: "small" } }}
                   />
                 </DemoContainer>
               </LocalizationProvider>

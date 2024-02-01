@@ -17,6 +17,7 @@ import PdfViewer from "components/pdf/PdfViewer";
 import AssignmentSubmission from "pages/client/user/AssignmentSubmission";
 import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/Create";
 import CodeQuestionDetails from "pages/lecturer/CodeQuestionManagement/Details";
+import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
       <Route path={routes.user.assignment.submission} element={<AssignmentSubmission />} />
+      <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
       <Route
         path={routes.lecturer.course_management.path}
         element={<routes.lecturer.course_management.Component />}

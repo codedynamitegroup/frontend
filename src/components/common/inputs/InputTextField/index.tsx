@@ -17,7 +17,9 @@ interface InputsProps extends OutlinedInputProps {
   errorMessage?: string | null;
   optional?: boolean;
   readOnly?: boolean;
+  disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  backgroundColor?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -32,7 +34,9 @@ const InputTextField = memo((props: InputsProps) => {
     errorMessage,
     autoComplete,
     readOnly,
-    onChange
+    disabled,
+    onChange,
+    backgroundColor
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -48,12 +52,16 @@ const InputTextField = memo((props: InputsProps) => {
               fullWidth
               size='small'
               readOnly={readOnly}
+              disabled={disabled}
               name={name}
               type={type}
               classes={{
                 root: clsx(classes.inputTextfield, {
                   [classes.inputInvalid]: !!errorMessage
                 })
+              }}
+              style={{
+                backgroundColor: backgroundColor || "#D9E2ED"
               }}
               defaultValue={defaultValue}
               value={value}

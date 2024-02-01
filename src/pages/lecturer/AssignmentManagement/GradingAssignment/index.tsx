@@ -88,7 +88,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function AssignmentCreated() {
+export default function AssignmentGrading() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
