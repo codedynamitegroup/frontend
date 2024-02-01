@@ -97,7 +97,7 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
     <Box className={classes.boxContainer}>
       <Drawer variant='permanent' anchor='left' className={classes.sideBar}>
         <Box className={classes.TitleContainer} sx={{ padding: "0 16px" }}>
-          <Heading1>Hello</Heading1>
+          <Heading1>Giảng viên</Heading1>
         </Box>
         <Box>
           <List>

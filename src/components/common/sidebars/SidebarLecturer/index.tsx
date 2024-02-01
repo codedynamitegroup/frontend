@@ -10,12 +10,11 @@ import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Header from "components/Header";
+import Header, { DrawerHeader } from "components/Header";
 
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
@@ -72,14 +71,6 @@ const AppBar = styled(MuiAppBar, {
   })
 }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end"
-}));
-
 export default function SideBarLecturer({ children }: any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -96,14 +87,7 @@ export default function SideBarLecturer({ children }: any) {
     <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
       <AppBar position='fixed' open={open}>
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#1976d2"
-          }}
-        >
+        <Toolbar className={classes.toolbar}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               aria-label='open drawer'
@@ -111,7 +95,7 @@ export default function SideBarLecturer({ children }: any) {
               edge='start'
               sx={{ mr: 2, ...(open && { display: "none" }) }}
             >
-              <MenuIcon />
+              <MenuIcon sx={{ color: "white" }} />
             </IconButton>
           </Box>
           <Header></Header>
