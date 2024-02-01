@@ -13,6 +13,8 @@ import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface TableTemplateProps {
   data: Array<{ [key: string]: any }>;
@@ -115,14 +117,14 @@ function TableTemplate({
                             handleEditClick(row.id);
                           }}
                         >
-                          <FontAwesomeIcon icon={faEdit} />
+                          <EditIcon />
                         </IconButton>
                       </Tooltip>
                     )}
                     {onDeleteClick && (
                       <Tooltip title='Xóa'>
                         <IconButton size='medium' onClick={() => handleDeleteClick(row.id)}>
-                          <FontAwesomeIcon icon={faTrash} />
+                          <DeleteIcon />
                         </IconButton>
                       </Tooltip>
                     )}
