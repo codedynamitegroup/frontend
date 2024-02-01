@@ -1,6 +1,9 @@
 .table-head {
   background-color: var(--blue-500);
-  color: #fff;
+
+  p {
+    color: #fff;
+  }
 
   .table-cell {
     min-width: 180px;

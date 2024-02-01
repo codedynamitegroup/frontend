@@ -18,24 +18,17 @@ import {
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
+import { BtnType } from "components/common/buttons/Button";
+import LoadButton from "components/common/buttons/LoadingButton";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
-import FileManager from "components/editor/FileManager";
 import TextEditor from "components/editor/TextEditor";
-import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { BtnType } from "components/common/buttons/Button";
-import LoadButton from "components/common/buttons/LoadingButton";
 
 const drawerWidth = 450;
 
@@ -100,17 +93,11 @@ export default function AssignmentCreated() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [assignmentName, setAssignmentName] = React.useState("");
-  const [assignmentDescription, setAssignmentDescription] = React.useState("");
-  const [activityInstructions, setActivityInstructions] = React.useState("");
   const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận", "Nộp tệp"]);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
-  const [assignmentAllowSubmissionFromDate, setAssignmentAllowSubmissionFromDate] =
-    React.useState<Dayjs | null>(dayjs());
-  const [assignmentSubmissionDueDate, setAssignmentSubmissionDueDate] =
-    React.useState<Dayjs | null>(dayjs());
-  const [assignmentSection, setAssignmentSection] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
+  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState("0");
 
   function handleClick() {
     setLoading(true);
@@ -157,8 +144,11 @@ export default function AssignmentCreated() {
                 {/* TODO */}
                 <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
                 <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                <span onClick={() => navigate("/lecturer/assignment-management/create")}>
-                  Tạo bài tập
+                <span onClick={() => navigate("/")}>Bài tập 1</span> {"> "}
+                <span
+                  onClick={() => navigate("/lecturer/assignment-management/:submissionId/grading")}
+                >
+                  Đánh giá
                 </span>
               </ParagraphBody>
             </Box>
@@ -176,40 +166,11 @@ export default function AssignmentCreated() {
         <Main open={open} className={classes.mainContent}>
           <DrawerHeader />
           <Card>
-            <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"}>Tạo bài tập</Heading1>
-              <InputTextField
-                type='text'
-                title='Tên bài tập'
-                value={assignmentName}
-                onChange={(e) => setAssignmentName(e.target.value)}
-                placeholder='Nhập tên bài tập'
-              />
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={3}>
-                  <TextTitle>Mô tả bài tập</TextTitle>
-                </Grid>
-                <Grid item xs={9}>
-                  <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
-                </Grid>
-              </Grid>
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={3}>
-                  <TextTitle>Hướng dẫn nộp bài tập</TextTitle>
-                </Grid>
-                <Grid item xs={9}>
-                  <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
-                </Grid>
-              </Grid>
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={3}>
-                  <TextTitle>Tệp đính kèm (nếu có)</TextTitle>
-                </Grid>
-                <Grid item xs={9}>
-                  <FileManager />
-                </Grid>
-              </Grid>
-            </Box>
+            <iframe
+              title='grading-pdf'
+              style={{ width: "100%", height: "100vh" }}
+              src='http://localhost:3000/grading-pdf'
+            />
           </Card>
         </Main>
         <Drawer
@@ -240,10 +201,46 @@ export default function AssignmentCreated() {
                 defaultChipList={["Tự luận", "Nộp tệp"]}
                 filterList={assignmentTypes}
                 onFilterListChangeHandler={setAssignmentTypes}
+                readOnly={true}
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm tối đa</TextTitle>
+              <TextTitle>Sinh viên</TextTitle>
+              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
+                <InputLabel id='select-assignment-submission-student-label'>
+                  Chọn sinh viên
+                </InputLabel>
+                <Select
+                  labelId='select-assignment-submission-student-label'
+                  id='select-assignment-submission-student'
+                  value={assignmentSubmissionStudent}
+                  label='Chọn sinh viên'
+                  onChange={(e) => setAssignmentSubmissionStudent(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value={0}>
+                    <Box>
+                      <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
+                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value={1}>
+                    <Box>
+                      <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
+                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value={2}>
+                    <Box>
+                      <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
+                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box className={classes.drawerFieldContainer}>
+              <TextTitle>Điểm trên thang điểm 100</TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}
@@ -252,64 +249,25 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Cho phép nộp bài kể từ</TextTitle>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-                  <DateTimePicker
-                    label='Chọn ngày giờ'
-                    value={assignmentAllowSubmissionFromDate}
-                    onChange={(newValue) => {
-                      setAssignmentAllowSubmissionFromDate(newValue);
-                    }}
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+              <TextTitle>Nhận xét</TextTitle>
+              <TextEditor
+                style={{
+                  marginTop: "10px"
+                }}
+                value={assignmentFeedback}
+                onChange={setAssignmentFeedback}
+              />
             </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Hạn nộp bài</TextTitle>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-                  <DateTimePicker
-                    label='Chọn ngày giờ'
-                    value={assignmentSubmissionDueDate}
-                    onChange={(newValue) => {
-                      setAssignmentSubmissionDueDate(newValue);
-                    }}
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Chủ đề</TextTitle>
-              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
-                <InputLabel id='select-assignment-section-label'>Chọn chủ đề</InputLabel>
-                <Select
-                  labelId='select-assignment-section-label'
-                  id='select-assignment-section'
-                  value={assignmentSection}
-                  label='Chủ đề'
-                  onChange={(e) => setAssignmentSection(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value={0}>Chủ đề 1</MenuItem>
-                  <MenuItem value={1}>Chủ đề 2</MenuItem>
-                  <MenuItem value={2}>Chủ đề 3</MenuItem>
-                </Select>
-              </FormControl>
-
-              <LoadButton
-                btnType={BtnType.Outlined}
-                fullWidth
-                style={{ marginTop: "20px" }}
-                padding='10px'
-                loading={loading}
-                onClick={handleClick}
-              >
-                Tạo bài tập
-              </LoadButton>
-            </Box>
+            <LoadButton
+              btnType={BtnType.Outlined}
+              fullWidth
+              style={{ marginTop: "20px" }}
+              padding='10px'
+              loading={loading}
+              onClick={handleClick}
+            >
+              Đánh giá
+            </LoadButton>
           </Box>
         </Drawer>
       </Box>

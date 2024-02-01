@@ -7,20 +7,19 @@
 }
 
 .container {
-  display: flex !important;
-  flex-direction: column;
+  display: flex;
   background-color: white;
-  border-radius: 5px;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  height: 100%;
+}
+
+.mainContent {
+  background-color: #f5f5f5;
+  margin-top: -10px;
 }
 
 .tabWrapper {
-  border-bottom: 1px solid var(--gray-10);
   display: flex;
   align-items: center;
-  padding: 15px 40px;
+  flex-grow: 1;
 }
 
 .formBody {
@@ -35,4 +34,12 @@
     cursor: pointer;
     color: black;
   }
+}
+
+.drawerBody {
+  padding: 20px;
+}
+
+.drawerFieldContainer {
+  margin-bottom: 20px;
 }

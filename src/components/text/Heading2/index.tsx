@@ -4,11 +4,12 @@ interface Props {
   colorName?: string;
   fontSizeMobile?: string | number;
   $lineHeightMobile?: string | number;
+  fontStyle?: string;
 }
 
 const Heading2 = styled(Typography)<Props>`
   font-family: "Inter";
-  font-style: normal;
+  font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: 600;
   font-size: 24px;
   line-height: 32px;

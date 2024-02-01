@@ -3,11 +3,12 @@ import { Typography, styled } from "@mui/material";
 interface Props {
   colorName?: string;
   fontWeight?: number | string;
+  fontStyle?: string;
 }
 
 const Heading6 = styled(Typography)<Props>`
-  font-family: "Montserrat";
-  font-style: normal;
+  font-family: "Inter";
+  font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 600};
   font-size: 14px;
   line-height: 24px;

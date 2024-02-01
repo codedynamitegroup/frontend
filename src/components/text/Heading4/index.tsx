@@ -5,11 +5,12 @@ interface Props {
   fontSizeMobile?: string;
   $lineHeightMobile?: string;
   fontWeight?: number | string;
+  fontStyle?: string;
 }
 
 const Heading4 = styled(Typography)<Props>`
   font-family: "Inter";
-  font-style: normal;
+  font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 600};
   font-size: 18px;
   line-height: 24px;

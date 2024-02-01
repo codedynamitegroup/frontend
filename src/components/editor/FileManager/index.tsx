@@ -1,22 +1,24 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
-  ChonkyFileActionData,
   ChonkyActions,
-  FullFileBrowser,
+  ChonkyFileActionData,
+  FileAction,
+  FileArray,
+  FileBrowser,
   FileContextMenu,
+  FileData,
   FileHelper,
   FileList,
   FileNavbar,
   FileToolbar,
-  setChonkyDefaults,
-  FileData,
-  FileArray
+  setChonkyDefaults
 } from "chonky";
 import { ChonkyIconFA } from "chonky-icon-fontawesome";
-import { uploadToCloudinary } from "utils/uploadToCloudinary";
+import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
-import { saveAs } from "file-saver";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Nullable } from "tsdef";
+import { uploadToCloudinary } from "utils/uploadToCloudinary";
 
 declare global {
   interface Window {
@@ -40,9 +42,17 @@ export interface CustomFileMap {
 
 // Hook that sets up our file map and defines functions used to mutate - `deleteFiles`,
 // `moveFiles`, and so on.
-const useCustomFileMap = () => {
+const useCustomFileMap = ({
+  fileMap,
+  // setFileMap
+  onFileMapChange
+}: {
+  fileMap?: CustomFileMap;
+  // setFileMap: React.Dispatch<React.SetStateAction<CustomFileMap>>;
+  onFileMapChange: (fileMap: CustomFileMap) => void;
+}) => {
   // Setup the React state for our file map and the current folder.
-  const [fileMap, setFileMap] = useState({
+  fileMap = fileMap ?? {
     root: {
       id: "root",
       name: "Files",
@@ -50,7 +60,7 @@ const useCustomFileMap = () => {
       childrenIds: [],
       childrenCount: 0
     }
-  });
+  };
   const [currentFolderId, setCurrentFolderId] = useState("root");
 
   // Setup logic to listen to changes in current folder ID without having to update
@@ -63,14 +73,15 @@ const useCustomFileMap = () => {
 
   // Function that will be called when user deletes files either using the toolbar
   // button or `Delete` key.
-  const deleteFiles = useCallback((files: CustomFileData[]) => {
-    // We use the so-called "functional update" to set the new file map. This
-    // lets us access the current file map value without having to track it
-    // explicitly. Read more about it here:
-    // https://reactjs.org/docs/hooks-reference.html#functional-updates
-    setFileMap((currentFileMap) => {
+  const deleteFiles = useCallback(
+    (files: CustomFileData[]) => {
+      // We use the so-called "functional update" to set the new file map. This
+      // lets us access the current file map value without having to track it
+      // explicitly. Read more about it here:
+      // https://reactjs.org/docs/hooks-reference.html#functional-updates
+      // setFileMap((currentFileMap) => {
       // Create a copy of the file map to make sure we don't mutate it.
-      const newFileMap = { ...currentFileMap };
+      const newFileMap = { ...fileMap };
 
       files.forEach((file) => {
         // Delete file from the file map.
@@ -90,52 +101,58 @@ const useCustomFileMap = () => {
             childrenCount: newChildrenIds.length
           };
         }
-      });
+        onFileMapChange(newFileMap);
+        // });
 
-      return newFileMap;
-    });
-  }, []);
+        return newFileMap;
+      });
+    },
+    [fileMap, onFileMapChange]
+  );
 
   // Function that will be called when files are moved from one folder to another
   // using drag & drop.
   const moveFiles = useCallback(
     (files: CustomFileData[], source: CustomFileData, destination: CustomFileData) => {
-      setFileMap((currentFileMap) => {
-        const newFileMap = { ...currentFileMap };
-        const moveFileIds = new Set(files.map((f) => f.id));
+      // setFileMap((currentFileMap) => {
+      const newFileMap = { ...fileMap };
+      const moveFileIds = new Set(files.map((f) => f.id));
 
-        // Delete files from their source folder.
-        const newSourceChildrenIds = source.childrenIds!.filter((id) => !moveFileIds.has(id));
+      // Delete files from their source folder.
+      const newSourceChildrenIds = source.childrenIds!.filter((id) => !moveFileIds.has(id));
+      // @ts-ignore
+      newFileMap[source.id] = {
+        ...source,
+        childrenIds: newSourceChildrenIds,
+        childrenCount: newSourceChildrenIds.length
+      };
+
+      // Add the files to their destination folder.
+      const newDestinationChildrenIds = [...destination.childrenIds!, ...files.map((f) => f.id)];
+      // @ts-ignore
+      newFileMap[destination.id] = {
+        ...destination,
+        childrenIds: newDestinationChildrenIds,
+        childrenCount: newDestinationChildrenIds.length
+      };
+
+      // Finally, update the parent folder ID on the files from source folder
+      // ID to the destination folder ID.
+      files.forEach((file) => {
         // @ts-ignore
-        newFileMap[source.id] = {
-          ...source,
-          childrenIds: newSourceChildrenIds,
-          childrenCount: newSourceChildrenIds.length
+        newFileMap[file.id] = {
+          ...file,
+          parentId: destination.id
         };
-
-        // Add the files to their destination folder.
-        const newDestinationChildrenIds = [...destination.childrenIds!, ...files.map((f) => f.id)];
-        // @ts-ignore
-        newFileMap[destination.id] = {
-          ...destination,
-          childrenIds: newDestinationChildrenIds,
-          childrenCount: newDestinationChildrenIds.length
-        };
-
-        // Finally, update the parent folder ID on the files from source folder
-        // ID to the destination folder ID.
-        files.forEach((file) => {
-          // @ts-ignore
-          newFileMap[file.id] = {
-            ...file,
-            parentId: destination.id
-          };
-        });
-
-        return newFileMap;
       });
+
+      onFileMapChange(newFileMap);
+
+      // return newFileMap;
+      // });
     },
-    []
+
+    [fileMap, onFileMapChange]
   );
 
   // Function that will be called when user creates a new folder using the toolbar
@@ -143,9 +160,10 @@ const useCustomFileMap = () => {
   // not a good practice in production! Instead, you should use something like UUIDs
   // or MD5 hashes for file paths.
   const idCounter = React.useRef(0);
-  const createFolder = useCallback((folderName: string) => {
-    setFileMap((currentFileMap) => {
-      const newFileMap = { ...currentFileMap };
+  const createFolder = useCallback(
+    (folderName: string) => {
+      // setFileMap((currentFileMap) => {
+      const newFileMap = { ...fileMap };
 
       // Create the new folder
       const newFolderId = `new-folder-${idCounter.current++}`;
@@ -169,13 +187,18 @@ const useCustomFileMap = () => {
         childrenIds: [...parent.childrenIds!, newFolderId]
       };
 
-      return newFileMap;
-    });
-  }, []);
+      onFileMapChange(newFileMap);
 
-  const uploadFiles = useCallback((files: CustomFileData[]) => {
-    setFileMap((currentFileMap) => {
-      const newFileMap = { ...currentFileMap };
+      // return newFileMap;
+      // });
+    },
+    [fileMap, onFileMapChange]
+  );
+
+  const uploadFiles = useCallback(
+    (files: CustomFileData[]) => {
+      // setFileMap((currentFileMap) => {
+      const newFileMap = { ...fileMap };
 
       files.forEach((file) => {
         // @ts-ignore
@@ -185,22 +208,27 @@ const useCustomFileMap = () => {
           thumbnailUrl: file.thumbnailUrl,
           size: file.size,
           modDate: new Date(),
-          parentId: currentFolderIdRef.current
+          parentId: file.parentId
         };
 
         // Update parent folder to reference the new file.
         // @ts-ignore
-        const parent = newFileMap[currentFolderIdRef.current];
+        const parent = newFileMap[file.parentId];
         // @ts-ignore
-        newFileMap[currentFolderIdRef.current] = {
+        newFileMap[file.parentId] = {
           ...parent,
-          childrenIds: [...parent.childrenIds!, file.id]
+          childrenIds: [...parent.childrenIds!, file.id],
+          childrenCount: parent.childrenCount + 1
         };
       });
 
-      return newFileMap;
-    });
-  }, []);
+      onFileMapChange(newFileMap);
+
+      //   return newFileMap;
+      // });
+    },
+    [fileMap, onFileMapChange]
+  );
 
   const downloadFiles = (
     selectedFiles: CustomFileData[] = [],
@@ -384,13 +412,25 @@ export const useFileActionHandler = (
   );
 };
 
-const FileManager = ({ multiFileName = undefined, singleFileName = undefined }) => {
+interface FileManagerProps extends React.HTMLAttributes<HTMLDivElement> {
+  fileMap?: CustomFileMap;
+  // setFileMap?: React.Dispatch<React.SetStateAction<CustomFileMap>>;
+  onFileMapChange?: (fileMap: CustomFileMap) => void;
+  defaultFileViewActionId?: string;
+  disableDragAndDrop?: boolean;
+  disableDefaultFileActions?: boolean;
+  disableDragAndDropProvider?: boolean;
+  allowedActions?: Nullable<FileAction[]> | undefined;
+}
+
+const FileManager = (props: FileManagerProps) => {
   // specify the actions we want including any custom ones that we define
-  const rootActions = [
+  const rootActions = props.allowedActions ?? [
     ChonkyActions.CreateFolder,
     ChonkyActions.UploadFiles,
     ChonkyActions.DownloadFiles,
-    ChonkyActions.DeleteFiles
+    ChonkyActions.DeleteFiles,
+    ChonkyActions.MoveFiles
   ];
 
   const {
@@ -402,11 +442,14 @@ const FileManager = ({ multiFileName = undefined, singleFileName = undefined }) 
     createFolder,
     uploadFiles,
     downloadFiles
-  } = useCustomFileMap();
+  } = useCustomFileMap({
+    fileMap: props.fileMap,
+    onFileMapChange: props.onFileMapChange ?? (() => {})
+  });
+
   const files = useFiles(fileMap, currentFolderId);
   const folderChain = useFolderChain(fileMap, currentFolderId);
 
-  // const handleFileAction = useFileActionHandler(setCurrentFolderId);
   const handleFileAction = useFileActionHandler(
     fileMap,
     currentFolderId,
@@ -419,19 +462,23 @@ const FileManager = ({ multiFileName = undefined, singleFileName = undefined }) 
   );
 
   return (
-    <div style={{ height: 300 }}>
+    <div style={{ height: 300 }} {...props}>
       {/* @ts-ignore */}
-      <FullFileBrowser
+      <FileBrowser
         files={files}
         folderChain={folderChain}
         fileActions={rootActions}
         onFileAction={handleFileAction}
+        defaultFileViewActionId={props.defaultFileViewActionId ?? ChonkyActions.EnableGridView.id}
+        disableDragAndDrop={props.disableDragAndDrop}
+        disableDefaultFileActions={props.disableDefaultFileActions}
+        disableDragAndDropProvider={props.disableDragAndDropProvider}
       >
         <FileNavbar />
         <FileToolbar />
         <FileList />
         <FileContextMenu />
-      </FullFileBrowser>
+      </FileBrowser>
     </div>
   );
 };
