@@ -9,9 +9,9 @@ import {
   SelectChangeEvent
 } from "@mui/material";
 import classes from "./style.module.scss";
-import SearchBar from "components/common/SearchBar";
 import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useState } from "react";
+import SearchBar from "components/common/search/SearchBar";
 
 const CourseParticipantFeatureBar = () => {
   const searchBarHandler = (val: string) => {

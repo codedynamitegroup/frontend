@@ -1,13 +1,13 @@
 import { Box, Container, Grid, TablePagination } from "@mui/material";
 import Header from "components/Header";
 import classes from "./styles.module.scss";
-import SearchBar from "components/common/search/SearchBar";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TableTemplate from "components/common/table/TableTemplate";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
+import SearchBar from "components/common/search/SearchBar";
 
 const CodeQuestionManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -46,6 +46,7 @@ const CodeQuestionManagement = () => {
     navigate(routes.lecturer.code_question.information.replace(":id", id.toString()));
   };
   const onDelete = (id: number) => {};
+  const onSearchClickHandler = (val: string) => {};
 
   return (
     <Grid className={classes.root}>
@@ -53,7 +54,7 @@ const CodeQuestionManagement = () => {
       <Container className={classes.container}>
         <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
         <Box className={classes.btnWrapper}>
-          <SearchBar />
+          <SearchBar onSearchClick={onSearchClickHandler} />
           <Button
             children='Thêm câu hỏi'
             btnType={BtnType.Primary}
