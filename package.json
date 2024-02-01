@@ -16,6 +16,7 @@
     "@mui/joy": "^5.0.0-beta.24",
     "@mui/lab": "^5.0.0-alpha.162",
     "@mui/material": "^5.15.6",
+    "@mui/x-data-grid": "^6.19.2",
     "@mui/x-date-pickers": "^6.19.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
