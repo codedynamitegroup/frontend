@@ -1,0 +1,82 @@
+.root {
+    display: flex;
+    flex-direction: column !important;
+    gap: 20px;
+    padding-bottom: 20px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    display: flex;
+    background-color: white;
+}
+
+.mainContent {
+    background-color: #f5f5f5;
+    margin-top: -10px;
+}
+
+.tabWrapper {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.formBody {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    gap: 15px;
+}
+
+.linkLevel {
+    span:hover {
+        cursor: pointer;
+        color: black;
+    }
+}
+
+.drawerBody {
+    padding: 20px;
+}
+
+.drawerFieldContainer {
+    margin-bottom: 20px;
+}
+
+.inputTextfield {
+    &[class~="Mui-disabled"] {
+        background: var(--gray-5);
+        ::placeholder {
+            color: var(--gray-20);
+        }
+        .iconErrorOutline {
+            display: none;
+        }
+    }
+    ::placeholder {
+        color: var(--gray-50);
+        font-weight: 400;
+        font-size: 16px;
+        opacity: 1;
+    }
+
+    :focus {
+        caret-color: var(--blue-500);
+    }
+
+    input {
+        padding: 8px 16px;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px !important;
+        line-height: 24px;
+        letter-spacing: 0.015em;
+        color: var(--eerie-black);
+    }
+
+    fieldset {
+        border-width: 1px !important;
+        border-color: var(--gray-40);
+    }
+}
