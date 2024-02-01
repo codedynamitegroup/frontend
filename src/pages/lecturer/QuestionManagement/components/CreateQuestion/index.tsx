@@ -20,13 +20,14 @@ import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/joy/Button";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
-import AnswerPoint from "utils/AnswerPoint";
+import AddIcon from "@mui/icons-material/Add";
+import qtype from "utils/constant/Qtype";
 
 interface Props {
   qtype: String;
@@ -35,6 +36,10 @@ interface Props {
 const QuestionCreated = (props: Props) => {
   const [answerOpen, setAnswerOpen] = useState(true);
   const theme = createTheme();
+  const vi_name = useMemo(
+    () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
+    [props.qtype]
+  );
 
   return (
     <Grid className={classes.root}>
@@ -42,7 +47,7 @@ const QuestionCreated = (props: Props) => {
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>...&gt;...</Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
-          <Heading1 fontWeight={"500"}>Thêm câu hỏi tự luận</Heading1>
+          <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
               <TextTitle>Category</TextTitle>
@@ -83,7 +88,7 @@ const QuestionCreated = (props: Props) => {
             </Grid>
           </Grid>
 
-          {props.qtype === "essay" && (
+          {props.qtype === qtype.essay.code && (
             <Grid container spacing={1} columns={12}>
               <Grid item xs={12} md={3}>
                 <TextTitle>Tiêu chí đánh giá </TextTitle>
@@ -93,23 +98,36 @@ const QuestionCreated = (props: Props) => {
               </Grid>
             </Grid>
           )}
-          {props.qtype === "true-false" && (
+          {props.qtype === qtype.true_false.code && (
             <div>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={12} md={3}>
                   <TextTitle>Đáp án đúng *</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                  <Select defaultValue={0} size='small'>
+                  <Select defaultValue={0} size='small' required>
                     <MenuItem value={0}>False</MenuItem>
                     <MenuItem value={1}>True</MenuItem>
                   </Select>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Nhận xét trả lời true</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <TextEditor placeholder='Nhập nhận xét ...' value={""} />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Nhận xét trả lời false</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <TextEditor placeholder='Nhập nhận xét ...' value={""} />
                 </Grid>
               </Grid>
             </div>
           )}
 
-          {props.qtype === "multiple-choice" && (
+          {(props.qtype === qtype.multiple_choice.code ||
+            props.qtype === qtype.short_answer.code) && (
             <div>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={12} md={3}>
@@ -139,9 +157,18 @@ const QuestionCreated = (props: Props) => {
               </ListItemButton>
 
               <Collapse in={answerOpen} timeout='auto' unmountOnExit>
-                <Stack spacing={{ xs: 2 }} useFlexGap>
+                <Stack spacing={{ xs: 4 }} useFlexGap>
                   <Divider />
-                  <AnswerEditor answerNumber={1} />
+                  <AnswerEditor answerNumber={1} qtype={props.qtype} />
+                  <AnswerEditor answerNumber={2} qtype={props.qtype} />
+                  <AnswerEditor answerNumber={3} qtype={props.qtype} />
+                  <Grid container justifyContent={"center"}>
+                    <Button>
+                      <AddIcon />
+                    </Button>
+                  </Grid>
+
+                  <Divider />
                 </Stack>
               </Collapse>
             </div>

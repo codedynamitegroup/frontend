@@ -1,3 +1,4 @@
+import qtype from "utils/constant/Qtype";
 export const routes = {
   lecturer: {
     code_question: {
@@ -9,7 +10,7 @@ export const routes = {
     },
     question: {
       path: "lecturer/question-management",
-      qtype: ["essay", "multiple-choice", "true-false"],
+      qtype: Object.values(qtype).map((value) => value.code),
       create: {
         path: "create"
       }
