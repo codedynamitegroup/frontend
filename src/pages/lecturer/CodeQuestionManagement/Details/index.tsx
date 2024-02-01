@@ -11,6 +11,7 @@ import CodeQuestionTestCases from "./components/TestCases";
 import CodeQuestionCodeStubs from "./components/CodeStubs";
 import CodeQuestionLanguages from "./components/Languages";
 import { routes } from "routes/routes";
+import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 
 interface Props {}
 
@@ -49,71 +50,72 @@ const CodeQuestionDetails = memo((props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Container className={classes.container}>
-        <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate(routes.lecturer.code_question.management)}>
-              Quản lý câu hỏi code
-            </span>{" "}
-            {">"}{" "}
-            <span
-              onClick={() => {
-                if (id) navigate(routes.lecturer.code_question.details.replace(":id", id));
-              }}
-            >
-              Tổng 2 số
-            </span>
-          </ParagraphBody>
-        </Box>
+      <SideBarLecturer>
+        <Container className={classes.container}>
+          <Box className={classes.tabWrapper}>
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate(routes.lecturer.code_question.management)}>
+                Quản lý câu hỏi code
+              </span>{" "}
+              {">"}{" "}
+              <span
+                onClick={() => {
+                  if (id) navigate(routes.lecturer.code_question.details.replace(":id", id));
+                }}
+              >
+                Tổng 2 số
+              </span>
+            </ParagraphBody>
+          </Box>
 
-        <Box className={classes.body}>
-          <Heading1 fontWeight={"500"}>Tổng 2 số</Heading1>
-          <Box sx={{ border: 1, borderColor: "divider" }}>
-            <Tabs
-              value={activeTab}
-              onChange={handleChange}
-              aria-label='basic tabs example'
-              className={classes.tabs}
-            >
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Thông tin</ParagraphBody>}
-                value={0}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Test cases</ParagraphBody>}
-                value={1}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Code mẫu</ParagraphBody>}
-                value={2}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
-                value={3}
-              />
-            </Tabs>
+          <Box className={classes.body}>
+            <Heading1 fontWeight={"500"}>Tổng 2 số</Heading1>
+            <Box sx={{ border: 1, borderColor: "divider" }}>
+              <Tabs
+                value={activeTab}
+                onChange={handleChange}
+                aria-label='basic tabs example'
+                className={classes.tabs}
+              >
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Thông tin</ParagraphBody>}
+                  value={0}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Test cases</ParagraphBody>}
+                  value={1}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Code mẫu</ParagraphBody>}
+                  value={2}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
+                  value={3}
+                />
+              </Tabs>
+            </Box>
+            <Box mt={2}>
+              <Routes>
+                <Route path={"information"} element={<CodeQuestionInformation />} />
+                <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
+                <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
+                <Route path={"languages"} element={<CodeQuestionLanguages />} />
+              </Routes>
+            </Box>
           </Box>
-          <Box mt={2}>
-            <Routes>
-              <Route path={"information"} element={<CodeQuestionInformation />} />
-              <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
-              <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-              <Route path={"languages"} element={<CodeQuestionLanguages />} />
-            </Routes>
+        </Container>
+        <Box className={classes.stickyFooterContainer}>
+          <Box className={classes.phantom} />
+          <Box className={classes.stickyFooterItem}>
+            <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
           </Box>
         </Box>
-      </Container>
-      <Box className={classes.stickyFooterContainer}>
-        <Box className={classes.phantom} />
-        <Box className={classes.stickyFooterItem}>
-          <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
-        </Box>
-      </Box>
+      </SideBarLecturer>
     </Grid>
   );
 });

@@ -1,41 +1,27 @@
-import {
-  Box,
-  Checkbox,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Tooltip
-} from "@mui/material";
-import React, { memo, useState } from "react";
+import { Box } from "@mui/material";
+import React, { memo } from "react";
 import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import Heading5 from "components/text/Heading5";
+import {
+  GridRowsProp,
+  GridRowModesModel,
+  GridRowModes,
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridEventListener,
+  GridRowId,
+  GridRowModel,
+  GridRowEditStopReasons
+} from "@mui/x-data-grid";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 
 type Props = {};
 
 const CodeQuestionLanguages = memo((props: Props) => {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const [data, setData] = useState([
+  const initialRows: GridRowsProp = [
     {
       id: 1,
       name: "ADA",
@@ -57,114 +43,137 @@ const CodeQuestionLanguages = memo((props: Props) => {
       memoryLimit: 2048,
       isSelected: false
     }
-  ]);
-  const tableHeads = [
-    "STT",
-    "Ngôn ngữ",
-    "Giới hạn thời gian(giây)",
-    "Giới hạn bộ nhớ(MB)",
-    "Hành động"
   ];
 
-  const onEdit = (id: number) => {};
-  const handleCheckboxChange = (id: number) => {
-    setData((prevData) =>
-      prevData.map((item) => (item.id === id ? { ...item, isSelected: !item.isSelected } : item))
-    );
+  const [rows, setRows] = React.useState(initialRows);
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+
+  const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
   };
+
+  const handleEditClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true }
+    });
+
+    const editedRow = rows.find((row: any) => row.id === id);
+    if (editedRow!.isNew) {
+      setRows(rows.filter((row: any) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "STT", width: 150, editable: false },
+    {
+      field: "name",
+      headerName: "Ngôn ngữ",
+      type: "text",
+      width: 150,
+      align: "left",
+      headerAlign: "left",
+      editable: false
+    },
+    {
+      field: "timeLimit",
+      headerName: "Giới hạn thời gian(giây)",
+      width: 300,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+      editable: true
+    },
+    {
+      field: "memoryLimit",
+      width: 300,
+      headerName: "Giới hạn bộ nhớ(MB)",
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+      type: "number"
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Hành động",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon className={classes.icon} />}
+              label='Save'
+              sx={{
+                color: "primary.main"
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon className={classes.icon} />}
+              label='Cancel'
+              className='textPrimary'
+              onClick={handleCancelClick(id)}
+              color='inherit'
+            />
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon className={classes.icon} />}
+            label='Edit'
+            className='textPrimary'
+            onClick={handleEditClick(id)}
+            color='inherit'
+          />
+        ];
+      }
+    }
+  ];
 
   return (
     <Box className={classes["body"]}>
       <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
         Dưới đây là danh sách các ngôn ngữ lập trình có sẵn
       </Heading5>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='custom table'>
-          <TableHead className={classes["table-head"]}>
-            <TableRow>
-              {tableHeads.map((heading, index) => (
-                <TableCell
-                  key={index}
-                  align='left'
-                  className={`${classes["table-cell"]} ${
-                    heading === "STT" ? classes["small-heading"] : ""
-                  } ${heading === "Ngôn ngữ" ? classes["col-table-language-name"] : ""}  `}
-                >
-                  <ParagraphBody fontWeight={700}>{heading}</ParagraphBody>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data &&
-              data.length > 0 &&
-              data.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.id}</ParagraphBody>
-                  </TableCell>
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]} ${classes["col-table-language-name"]}`}
-                  >
-                    <Checkbox
-                      value={row.isSelected}
-                      color='primary'
-                      checked={row.isSelected}
-                      onChange={() => handleCheckboxChange(row.id)}
-                    />
-                    <ParagraphBody>{row.name}</ParagraphBody>
-                  </TableCell>
-
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.timeLimit} giây</ParagraphBody>
-                  </TableCell>
-
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.memoryLimit} MB</ParagraphBody>
-                  </TableCell>
-
-                  <TableCell align='center' className={classes["cell-actions"]}>
-                    <Box>
-                      <Tooltip title='Chỉnh sửa'>
-                        <IconButton
-                          aria-label='edit'
-                          size='medium'
-                          onClick={() => {
-                            onEdit(row.id);
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component='div'
-        rowsPerPageOptions={[5, 10, 25, 100]}
-        count={data.length}
-        page={Number(page)}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
-        onRowsPerPageChange={handleChangeRowsPerPage}
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode='row'
+        className={classes.dataGrid}
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel }
+        }}
       />
     </Box>
   );

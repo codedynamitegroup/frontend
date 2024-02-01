@@ -11,7 +11,13 @@ import Icon from "@mui/material/Icon";
 import classes from "./styles.module.scss";
 import { Divider, Grid, InputAdornment } from "@mui/material";
 
-const SearchBar = ({ onSearchClick }: any) => {
+interface PropsData {
+  onSearchClick: any;
+  placeHolder?: string;
+}
+
+const SearchBar = (props: PropsData) => {
+  const { onSearchClick, placeHolder } = props;
   const [iconButtonVisibility, setIconButtonVisibility] = useState(false);
   const [searchText, setSearchText] = useState("");
   const handleOnChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
@@ -37,7 +43,7 @@ const SearchBar = ({ onSearchClick }: any) => {
           <Paper className={classes.container}>
             <InputBase
               className={classes.inputField}
-              placeholder='Tìm kiếm'
+              placeholder={placeHolder ? placeHolder : "Tìm kiếm"}
               onChange={handleOnChange}
               value={searchText}
               startAdornment={

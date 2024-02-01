@@ -1,119 +1,219 @@
-import {
-  Box,
-  Checkbox,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TextField,
-  Tooltip
-} from "@mui/material";
+import { Box } from "@mui/material";
 import React, { memo, useState } from "react";
 import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TestCasePopup from "./components/PopupAddTestCase";
 import Heading5 from "components/text/Heading5";
+import {
+  GridRowsProp,
+  GridRowModesModel,
+  GridRowModes,
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridEventListener,
+  GridRowId,
+  GridRowModel,
+  GridRowEditStopReasons
+} from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
 
 type Props = {};
 
 const CodeQuestionTestCases = memo((props: Props) => {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
   const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
+  const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const [data, setData] = useState([
+  const initialRows: GridRowsProp = [
     {
       id: 1,
-      input: "input01.txt",
-      output: "output01.txt",
+      input: "input01",
+      output: "output01",
       inputValue: "1\n2",
       outputValue: "3",
-      sample: true,
+      isSample: true,
       score: 0
     },
     {
       id: 2,
-      input: "input02.txt",
-      output: "output02.txt",
+      input: "input02",
+      output: "output02",
       inputValue: "3\n2",
       outputValue: "5",
-      sample: false,
+      isSample: true,
       score: 10
     },
     {
       id: 3,
-      input: "input03.txt",
-      output: "output03.txt",
+      input: "input03",
+      output: "output03",
       inputValue: "2\n2",
       outputValue: "4",
-      sample: false,
+      isSample: true,
       score: 100
     },
     {
       id: 4,
-      input: "input04.txt",
-      output: "output04.txt",
+      input: "input04",
+      output: "output04",
       inputValue: "3\n3",
       outputValue: "6",
-      sample: false,
+      isSample: false,
       score: 5
     },
     {
       id: 5,
-      input: "input05.txt",
-      output: "output05.txt",
+      input: "input05",
+      output: "output05",
       inputValue: "5\n2",
       outputValue: "7",
-      sample: false,
+      isSample: false,
       score: 10
     },
     {
       id: 6,
-      input: "input06.txt",
-      output: "output06.txt",
+      input: "input06",
+      output: "output06",
       inputValue: "2\n12",
       outputValue: "14",
-      sample: false,
+      isSample: false,
       score: 10
     }
-  ]);
-  const tableHeads = ["STT", "Đầu vào", "Đầu ra", "Mẫu", "Điểm", "Hành động"];
+  ];
 
-  const onEdit = (id: number) => {
+  const [rows, setRows] = React.useState(initialRows);
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+
+  const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id: GridRowId) => () => {
+    setItemEdit(rows.find((row: any) => row.id === id));
     setOpenTestCasePopup(true);
-    setItemEdit(data.find((item) => item.id === id));
-  };
-  const onDelete = (id: number) => {};
-  const handleCheckboxChange = (id: number) => {
-    setData((prevData) =>
-      prevData.map((item) => (item.id === id ? { ...item, sample: !item.sample } : item))
-    );
   };
 
-  const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
-    const { value } = event.target;
-    setData((prevData) =>
-      prevData.map((item) => (item.id === id ? { ...item, score: parseInt(value) } : item))
-    );
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDeleteClick = (id: GridRowId) => () => {
+    setOpenConfirmAlert(true);
+  };
+
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true }
+    });
+
+    const editedRow = rows.find((row: any) => row.id === id);
+    if (editedRow!.isNew) {
+      setRows(rows.filter((row: any) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "STT", width: 100, editable: false },
+    {
+      field: "input",
+      headerName: "Đầu vào",
+      type: "text",
+      width: 200,
+      align: "left",
+      headerAlign: "left",
+      editable: false
+    },
+    {
+      field: "output",
+      headerName: "Đầu ra",
+      width: 200,
+      type: "text",
+      align: "left",
+      headerAlign: "left",
+      editable: false
+    },
+    {
+      field: "isSample",
+      width: 150,
+      headerName: "Mẫu",
+      editable: true,
+      type: "boolean"
+    },
+    {
+      field: "score",
+      headerName: "Điểm",
+      width: 150,
+      editable: true,
+      type: "number"
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Hành động",
+      width: 300,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon className={classes.icon} />}
+              label='Save'
+              sx={{
+                color: "primary.main"
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon className={classes.icon} />}
+              label='Cancel'
+              className='textPrimary'
+              onClick={handleCancelClick(id)}
+              color='inherit'
+            />
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon className={classes.icon} />}
+            label='Edit'
+            className='textPrimary'
+            onClick={handleEditClick(id)}
+            color='inherit'
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon className={classes.icon} />}
+            label='Delete'
+            onClick={handleDeleteClick(id)}
+            color='inherit'
+          />
+        ];
+      }
+    }
+  ];
+
+  const handleDelete = () => {
+    setOpenConfirmAlert(false);
   };
 
   return (
@@ -129,117 +229,31 @@ const CodeQuestionTestCases = memo((props: Props) => {
           </Button>
         </Box>
       </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='custom table'>
-          <TableHead className={classes["table-head"]}>
-            <TableRow>
-              {tableHeads.map((heading, index) => (
-                <TableCell
-                  key={index}
-                  align='left'
-                  className={`${classes["table-cell"]} ${
-                    heading === "STT" ? classes["small-heading"] : ""
-                  }`}
-                >
-                  <ParagraphBody fontWeight={700}>{heading}</ParagraphBody>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data &&
-              data.length > 0 &&
-              data.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.id}</ParagraphBody>
-                  </TableCell>
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.input}</ParagraphBody>
-                  </TableCell>
-
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <ParagraphBody>{row.output}</ParagraphBody>
-                  </TableCell>
-
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <Checkbox
-                      value={row.sample}
-                      color='primary'
-                      checked={row.sample}
-                      onChange={() => handleCheckboxChange(row.id)}
-                    />
-                  </TableCell>
-
-                  <TableCell
-                    align='left'
-                    className={`${classes["col-table-body"]}                           
-										`}
-                  >
-                    <TextField
-                      value={row.score}
-                      type='number'
-                      size='small'
-                      onChange={(e: any) => handleScoreChange(e, row.id)}
-                    />
-                  </TableCell>
-
-                  <TableCell align='left' className={classes["cell-actions"]}>
-                    <Box>
-                      <Tooltip title='Chỉnh sửa'>
-                        <IconButton
-                          aria-label='edit'
-                          size='medium'
-                          onClick={() => {
-                            onEdit(row.id);
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title='Xóa'>
-                        <IconButton size='medium' onClick={() => onDelete(row.id)}>
-                          <FontAwesomeIcon icon={faTrash} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component='div'
-        rowsPerPageOptions={[5, 10, 25, 100]}
-        count={data.length}
-        page={Number(page)}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
-        onRowsPerPageChange={handleChangeRowsPerPage}
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode='row'
+        className={classes.dataGrid}
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel }
+        }}
       />
       <TestCasePopup
         itemEdit={itemEdit}
         open={openTestCasePopup}
         setOpen={setOpenTestCasePopup}
         setItemEdit={setItemEdit}
+      />
+      <ConfirmAlert
+        open={openConfirmAlert}
+        setOpen={setOpenConfirmAlert}
+        title='Xác nhận xóa?'
+        content='Bạn có chắc chắn muốn xóa test case này?'
+        handleDelete={handleDelete}
       />
     </Box>
   );

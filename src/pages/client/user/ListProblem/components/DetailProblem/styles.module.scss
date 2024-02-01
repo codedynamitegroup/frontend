@@ -1,0 +1,75 @@
+.root {
+  background-color: var(--gray-3);
+}
+
+.boxContainer {
+  display: flex;
+  flex-direction: column;
+}
+.tabWrapper {
+  border-bottom: 1px solid var(--gray-10);
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+}
+.codeContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 10px;
+  .stickyTabList {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fafafa;
+    border-radius: 8px;
+  }
+  .tabContent {
+    background-color: white !important;
+    height: calc(100vh - 110px);
+    width: 100%;
+    border: 1px solid #dadada;
+    border-radius: 8px;
+    .tabPanelTopic {
+      height: calc(100% - 48px);
+      overflow: auto;
+      padding: 0px 0 !important;
+    }
+    .tabPanel {
+      padding: 0 !important;
+    }
+  }
+  .editorCode {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+
+    // Adjust the height to 100% for the .editorCode
+    height: 100%;
+
+    .editorCodeBody {
+      width: 100%;
+      height: 50%;
+      border: 1px solid black;
+      background-color: white !important;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    .submit {
+      width: 100%;
+      height: 50%;
+      border: 1px solid black;
+      background-color: white !important;
+    }
+  }
+}
+.title {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  .codeIcon {
+    color: green;
+  }
+}

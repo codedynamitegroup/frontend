@@ -41,7 +41,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
   useEffect(() => {
     if (itemEdit) {
       setScore(itemEdit.score);
-      setIsSample(itemEdit.sample);
+      setIsSample(itemEdit.isSample);
     }
   }, [itemEdit]);
   const handleCheckboxChange = () => {

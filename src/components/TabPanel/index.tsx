@@ -1,7 +1,11 @@
-import React from 'react';
-import classes from './styles.module.scss';
+import React from "react";
+import classes from "./styles.module.scss";
 
-export interface TabPanelProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref'> {
+export interface TabPanelProps
+  extends Omit<
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+    "ref"
+  > {
   index: any;
   value: any;
 }
@@ -11,7 +15,7 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <div
-      role="tabpanel"
+      role='tabpanel'
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
@@ -26,6 +30,3 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 export default TabPanel;
-
-
-

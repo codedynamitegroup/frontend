@@ -4,8 +4,9 @@ import classes from "./styles.module.scss";
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import LabTabs from "./components/TabTopic";
+import exp from "constants";
 
-export default function ListProblem() {
+const ListProblem = () => {
   const algorithms = [
     "Mảng",
     "Cây",
@@ -92,4 +93,6 @@ export default function ListProblem() {
       </Box>
     </Grid>
   );
-}
+};
+
+export default ListProblem;
