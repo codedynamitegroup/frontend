@@ -85,6 +85,7 @@ const LecturerCourseParticipant = () => {
             pageSize={pageSize}
             totalElement={totalElement}
             onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={false}
           />
         </Grid>
       </Grid>

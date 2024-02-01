@@ -19,6 +19,9 @@ interface DataGridProps {
   page: number;
   totalElement: number;
   onPaginationModelChange: any;
+  columnGroupingModel?: any;
+  showVerticalCellBorder: boolean;
+  customColumnMenu?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -31,7 +34,10 @@ const CustomDataGrid = (props: DataGridProps) => {
     pageSize,
     page,
     totalElement,
-    onPaginationModelChange
+    onPaginationModelChange,
+    columnGroupingModel,
+    showVerticalCellBorder,
+    customColumnMenu
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -49,11 +55,13 @@ const CustomDataGrid = (props: DataGridProps) => {
         rows={dataList}
         columns={tableHeader}
         columnVisibilityModel={visibleColumn}
+        columnGroupingModel={columnGroupingModel}
         initialState={{
           pagination: {
             paginationModel: { page: page, pageSize: pageSize }
           }
         }}
+        showCellVerticalBorder={showVerticalCellBorder}
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
         checkboxSelection
@@ -62,6 +70,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         disableColumnFilter
         disableColumnSelector
         disableRowSelectionOnClick
+        experimentalFeatures={{ columnGrouping: true }}
         slotProps={{
           toolbar: {
             printOptions: { disableToolbarButton: true },
@@ -78,9 +87,14 @@ const CustomDataGrid = (props: DataGridProps) => {
           toolbarDensity: "Độ rộng của hàng",
           toolbarDensityCompact: "Gọn nhẹ",
           toolbarDensityStandard: "Tiêu chuẩn",
-          toolbarDensityComfortable: "Thoải mái"
+          toolbarDensityComfortable: "Thoải mái",
+          columnMenuSortAsc: "Xếp tăng dần",
+          columnMenuSortDesc: "Xếp giảm dần"
         }}
-        slots={dataGridToolBar && dataGridToolBar.enableToolbar ? { toolbar: GridToolbar } : {}}
+        slots={{
+          toolbar: dataGridToolBar && dataGridToolBar.enableToolbar ? GridToolbar : null,
+          columnMenu: customColumnMenu
+        }}
         onPaginationModelChange={pageChangeHandler}
       />
     </Box>
