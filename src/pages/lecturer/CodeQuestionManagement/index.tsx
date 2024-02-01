@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
 import SearchBar from "components/common/search/SearchBar";
+import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 
 const CodeQuestionManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -50,39 +51,40 @@ const CodeQuestionManagement = () => {
 
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Container className={classes.container}>
-        <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
-        <Box className={classes.btnWrapper}>
-          <SearchBar onSearchClick={onSearchClickHandler} />
-          <Button
-            children='Thêm câu hỏi'
-            btnType={BtnType.Primary}
-            width='150px'
-            onClick={() => {
-              navigate(routes.lecturer.code_question.create);
-            }}
+      <SideBarLecturer>
+        <Container className={classes.container}>
+          <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
+          <Box className={classes.btnWrapper}>
+            <SearchBar onSearchClick={onSearchClickHandler} />
+            <Button
+              children='Thêm câu hỏi'
+              btnType={BtnType.Primary}
+              width='150px'
+              onClick={() => {
+                navigate(routes.lecturer.code_question.create);
+              }}
+            />
+          </Box>
+          <TableTemplate
+            data={data}
+            customColumns={customColumns}
+            customHeading={customHeading}
+            isActionColumn={true}
+            onEditClick={onEdit}
+            onDeleteClick={onDelete}
           />
-        </Box>
-        <TableTemplate
-          data={data}
-          customColumns={customColumns}
-          customHeading={customHeading}
-          isActionColumn={true}
-          onEditClick={onEdit}
-          onDeleteClick={onDelete}
-        />
-        <TablePagination
-          component='div'
-          rowsPerPageOptions={[5, 10, 25, 100]}
-          count={data.length}
-          page={Number(page)}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Container>
+          <TablePagination
+            component='div'
+            rowsPerPageOptions={[5, 10, 25, 100]}
+            count={data.length}
+            page={Number(page)}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Container>
+      </SideBarLecturer>
     </Grid>
   );
 };
