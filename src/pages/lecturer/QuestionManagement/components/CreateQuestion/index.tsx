@@ -48,7 +48,7 @@ const QuestionCreated = (props: Props) => {
               <TextTitle>Category</TextTitle>
             </Grid>
             <Grid item xs={12} md={9}>
-              <Select defaultValue={10} fullWidth={true} size='small'>
+              <Select defaultValue={10} fullWidth={true} size='small' required>
                 <MenuItem value={10}>Ten</MenuItem>
                 <MenuItem value={20}>Twenty</MenuItem>
                 <MenuItem value={30}>Thirty</MenuItem>
@@ -56,18 +56,23 @@ const QuestionCreated = (props: Props) => {
             </Grid>
           </Grid>
 
-          <InputTextField title='Tên câu hỏi' type='text' placeholder='Tên câu hỏi' />
+          <InputTextField title='Tên câu hỏi *' type='text' placeholder='Tên câu hỏi' required />
 
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
-              <TextTitle>Mô tả câu hỏi</TextTitle>
+              <TextTitle>Mô tả câu hỏi *</TextTitle>
             </Grid>
             <Grid item xs={12} md={9}>
-              <TextEditor placeholder='Nhập mô tả ...' value={""} />
+              <TextEditor placeholder='Nhập mô tả ...' value={""} required />
             </Grid>
           </Grid>
 
-          <InputTextField title='Điểm mặc định' type='text' placeholder='Điểm mặc định' />
+          <InputTextField
+            title='Điểm mặc định *'
+            type='text'
+            placeholder='Điểm mặc định'
+            required
+          />
 
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
@@ -81,12 +86,27 @@ const QuestionCreated = (props: Props) => {
           {props.qtype === "essay" && (
             <Grid container spacing={1} columns={12}>
               <Grid item xs={12} md={3}>
-                <TextTitle>Tiêu chí đánh giá</TextTitle>
+                <TextTitle>Tiêu chí đánh giá </TextTitle>
               </Grid>
               <Grid item xs={12} md={9}>
                 <TextEditor min placeholder='Nhập tiêu chí đánh giá ...' value={""} />
               </Grid>
             </Grid>
+          )}
+          {props.qtype === "true-false" && (
+            <div>
+              <Grid container spacing={1} columns={12}>
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Đáp án đúng *</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <Select defaultValue={0} size='small'>
+                    <MenuItem value={0}>False</MenuItem>
+                    <MenuItem value={1}>True</MenuItem>
+                  </Select>
+                </Grid>
+              </Grid>
+            </div>
           )}
 
           {props.qtype === "multiple-choice" && (
@@ -121,10 +141,7 @@ const QuestionCreated = (props: Props) => {
               <Collapse in={answerOpen} timeout='auto' unmountOnExit>
                 <Stack spacing={{ xs: 2 }} useFlexGap>
                   <Divider />
-                  <AnswerEditor />
-                  <AnswerEditor />
-                  <AnswerEditor />
-                  <AnswerEditor />
+                  <AnswerEditor answerNumber={1} />
                 </Stack>
               </Collapse>
             </div>

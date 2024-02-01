@@ -8,11 +8,10 @@ export const routes = {
       create: "/lecturer/assignment-management/create"
     },
     question: {
-      essay: {
-        create: "/lecturer/question-management/essay/create"
-      },
-      muiltiplechoice: {
-        create: "/lecturer/question-management/multiple-choice/create"
+      path: "lecturer/question-management",
+      qtype: ["essay", "multiple-choice", "true-false"],
+      create: {
+        path: "create"
       }
     }
   }

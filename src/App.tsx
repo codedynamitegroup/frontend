@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.scss";
 import {
   createBrowserRouter,
@@ -17,14 +16,14 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
-      <Route
-        path={routes.lecturer.question.essay.create}
-        element={<QuestionCreated qtype={"essay"} />}
-      />
-      <Route
-        path={routes.lecturer.question.muiltiplechoice.create}
-        element={<QuestionCreated qtype={"multiple-choice"} />}
-      />
+      <Route path={routes.lecturer.question.path}>
+        {routes.lecturer.question.qtype.map((qtype) => (
+          <Route
+            path={`${qtype}/${routes.lecturer.question.create.path}`}
+            element={<QuestionCreated qtype={qtype} />}
+          />
+        ))}
+      </Route>
     </Route>
   )
 );
