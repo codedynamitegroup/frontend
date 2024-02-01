@@ -14,6 +14,9 @@ export const routes = {
     }
   },
   user: {
-    problem: "/problem"
+    problem: {
+      list: "/problem",
+      detail: "/problem/:name"
+    }
   }
 };
