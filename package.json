@@ -25,6 +25,7 @@
     "chonky": "^2.3.2",
     "chonky-icon-fontawesome": "^2.3.2",
     "clsx": "^2.1.0",
+    "codemirror": "^6.0.1",
     "dayjs": "^1.11.10",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
