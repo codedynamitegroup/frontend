@@ -70,7 +70,7 @@ const ListProblem = () => {
   return (
     <Grid className={classes.root}>
       <Header />
-      <Box className={classes.boxContent}>
+      <Container className={classes.boxContent}>
         <Box className={classes.boxTitle}>Danh sách bài tập</Box>
         <Box className={classes.typeAlgorithm}>Các loại giải thuật:</Box>
         <Box className={classes.algorithm}>
@@ -90,7 +90,7 @@ const ListProblem = () => {
         <Box className={classes.topic}>
           <LabTabs />
         </Box>
-      </Box>
+      </Container>
     </Grid>
   );
 };
