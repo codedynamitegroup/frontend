@@ -2,6 +2,7 @@ import LecturerCourseDetail from "pages/client/lecturer/CourseDetail";
 import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
+import StudentCourseDetail from "pages/client/student/CourseDetail";
 
 export const routes = {
   lecturer: {
@@ -49,6 +50,9 @@ export const routes = {
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"
+    },
+    course: {
+      detail: { path: "student/courses/:id/detail", Component: StudentCourseDetail }
     }
   }
 };

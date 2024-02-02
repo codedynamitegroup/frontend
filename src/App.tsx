@@ -63,6 +63,10 @@ const router = createBrowserRouter(
           element={<routes.lecturer.course.participant.Component />}
         />
       </Route>
+      <Route
+        path={routes.user.course.detail.path}
+        element={<routes.user.course.detail.Component />}
+      />
     </Route>
   )
 );
