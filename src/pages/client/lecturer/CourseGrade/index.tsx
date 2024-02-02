@@ -1,12 +1,4 @@
-import {
-  Box,
-  ButtonBase,
-  Grid,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem
-} from "@mui/material";
+import { Box, Grid, IconButton, ListItemIcon, ListItemText, MenuItem, Paper } from "@mui/material";
 import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
@@ -14,18 +6,12 @@ import CourseParticipantFeatureBar from "./components/FeatureBar";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
-import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridActionsCellItem";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
 import CustomDataGrid from "../../../../components/common/CustomDataGrid";
-import { GridCellParams } from "@mui/x-data-grid/models/params/gridCellParams";
-import { clsx } from "clsx";
 import { GridColumnGroupingModel } from "@mui/x-data-grid/models/gridColumnGrouping";
 import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuProps";
 import { GridColumnMenuItemProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuItemProps";
-import { useGridApiContext } from "@mui/x-data-grid/hooks/utils/useGridApiContext";
-import { useCallback } from "react";
 import { GridColumnMenu } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -162,7 +148,7 @@ const LecturerCourseGrade = () => {
   const totalElement = 100;
 
   return (
-    <Box className={classes.container}>
+    <Paper className={classes.container}>
       <Grid container spacing={1} className={classes.gridContainer}>
         <Grid item xs={12}>
           <Heading1>Báo cáo điểm</Heading1>
@@ -187,7 +173,7 @@ const LecturerCourseGrade = () => {
           />
         </Grid>
       </Grid>
-    </Box>
+    </Paper>
   );
 };
 

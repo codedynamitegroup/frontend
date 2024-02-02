@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid";
 import classes from "./styles.module.scss";
 
 import Box from "@mui/material/Box";
+
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
@@ -12,7 +13,7 @@ import AddIcon from "@mui/icons-material/AddCircleOutline";
 import SettingIcon from "@mui/icons-material/Settings";
 
 import CourseAnnouncement from "./components/Announcement";
-import { Accordion, AccordionDetails, AccordionSummary, TextField } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Paper, TextField } from "@mui/material";
 import CourseResource from "./components/CourseResource";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseResourceType } from "models/courseService/course";
@@ -82,7 +83,7 @@ const LecturerCourseDetail = () => {
   };
 
   return (
-    <Box className={classes.container}>
+    <Paper className={classes.container}>
       <Grid container spacing={2} className={classes.gridContainer}>
         <Grid item xs={12}>
           <Card className={classes.courseImgCardContainer}>
@@ -168,7 +169,7 @@ const LecturerCourseDetail = () => {
           );
         })}
       </Grid>
-    </Box>
+    </Paper>
   );
 };
 
