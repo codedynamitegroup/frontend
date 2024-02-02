@@ -195,3 +195,31 @@
     font-size: 14px;
   }
 }
+.stickyBack {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fafafa;
+  padding: 10px 0;
+}
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #737373;
+  font-size: 14px;
+  padding: 5px;
+
+  &:hover {
+    cursor: pointer;
+    color: black;
+    .backIcon {
+      font-size: 20px;
+      color: black;
+    }
+  }
+  .backIcon {
+    font-size: 20px;
+    color: #737373;
+  }
+}

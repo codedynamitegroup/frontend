@@ -21,6 +21,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
+import { routes } from "routes/routes";
 
 const drawerWidth = 450;
 
@@ -141,11 +142,15 @@ export default function AssignmentCreated() {
             <Box className={classes.tabWrapper}>
               <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
                 {/* TODO */}
-                <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
-                <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                <span onClick={() => navigate("/lecturer/assignment-management/create")}>
-                  Tạo bài tập
-                </span>
+                <span onClick={() => navigate(routes.lecturer.course.management)}>
+                  Quản lý khoá học
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                  Xem bài tập
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.course.assignment)}>Tạo bài tập</span>
               </ParagraphBody>
             </Box>
             <IconButton

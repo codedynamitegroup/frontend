@@ -46,7 +46,7 @@ export default function LabTabs() {
             TabIndicatorProps={{ hidden: true }}
           >
             {topics.map((topic, index) => (
-              <Tab key={index} label={topic} value={index.toString()} />
+              <Tab sx={{ fontSize: "12px" }} key={index} label={topic} value={index.toString()} />
             ))}
           </StyledTabList>
         </Box>
