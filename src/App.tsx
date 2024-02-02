@@ -42,6 +42,18 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
 
       <Route
+        path={routes.user.course.detail.path}
+        element={<routes.user.course.detail.Component />}
+      />
+      <Route
+        path={routes.user.course.grade.path}
+        element={<routes.user.course.grade.Component />}
+      />
+      <Route
+        path={routes.user.course.participant.path}
+        element={<routes.user.course.participant.Component />}
+      />
+      <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
       />
