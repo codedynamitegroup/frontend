@@ -1,62 +1,80 @@
+import { FormControl, Grid } from "@mui/material";
+import { DialogProps } from "@mui/material/Dialog";
+import CustomDialog from "components/common/dialogs/CustomDialog";
+import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
+import ParagraphBody from "components/text/ParagraphBody";
+import TextTitle from "components/text/TextTitle";
 import * as React from "react";
-import Dialog, { DialogProps } from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button, { BtnType } from "components/common/buttons/Button";
-import { Box, Divider, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
 interface PickQuestionTypeToAddDialogProps extends DialogProps {
   title?: string;
+  questionType: string;
+  handleChangeQuestionType: (value: string) => void;
   handleClose: () => void;
   children?: React.ReactNode;
   cancelText?: string;
   confirmText?: string;
+  onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
 }
 
 export default function PickQuestionTypeToAddDialog({
   open,
   title,
+  questionType,
+  handleChangeQuestionType,
   handleClose,
   children,
   cancelText,
   confirmText,
+  onHandleCancel,
   onHanldeConfirm,
   ...props
 }: PickQuestionTypeToAddDialogProps) {
   return (
-    <Dialog
+    <CustomDialog
       open={open}
-      onClose={handleClose}
-      aria-labelledby='alert-dialog-title'
-      aria-describedby='alert-dialog-description'
+      handleClose={handleClose}
+      title={title}
+      cancelText={cancelText}
+      confirmText={confirmText}
+      onHandleCancel={onHandleCancel}
+      onHanldeConfirm={onHanldeConfirm}
       {...props}
     >
-      <DialogTitle id='id'>
-        <Box display='flex' alignItems='center'>
-          <Box flexGrow={1}>{title || ""}</Box>
-          <Box>
-            <IconButton onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </Box>
-      </DialogTitle>
-      <Divider />
-      <DialogContent>
-        <DialogContentText id='alert-dialog-description'>{children}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onHanldeConfirm ? onHanldeConfirm : handleClose} btnType={BtnType.Primary}>
-          {confirmText || "Xác nhận"}
-        </Button>
-        <Button onClick={handleClose} btnType={BtnType.Outlined}>
-          {cancelText || "Hủy bỏ"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <Grid container spacing={1} columns={12} minWidth='450px'>
+        <Grid item xs={6}>
+          <TextTitle paddingBottom='10px'>Câu hỏi</TextTitle>
+          <FormControl
+            component='fieldset'
+            sx={{
+              maxHeight: "200px",
+              overflowY: "auto"
+            }}
+          >
+            <BasicRadioGroup
+              ariaLabel='question-type'
+              value={questionType}
+              handleChangeQuestionType={handleChangeQuestionType}
+              items={[
+                { value: "essay", label: "Essay" },
+                { value: "multiple-choice", label: "Multiple choice" },
+                { value: "short-answer", label: "Short answer" },
+                { value: "true-false", label: "True/False" }
+              ]}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <ParagraphBody>
+            {/* Display the description of the selected question type description */}
+            {questionType === "essay" && "Câu hỏi tự luận"}
+            {questionType === "multiple-choice" && "Câu hỏi trắc nghiệm"}
+            {questionType === "short-answer" && "Câu hỏi trả lời ngắn"}
+            {questionType === "true-false" && "Câu hỏi đúng/sai"}
+          </ParagraphBody>
+        </Grid>
+      </Grid>
+    </CustomDialog>
   );
 }

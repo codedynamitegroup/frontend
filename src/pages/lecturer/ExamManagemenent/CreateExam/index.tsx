@@ -1,5 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,
@@ -8,21 +10,26 @@ import {
   CssBaseline,
   Divider,
   Drawer,
-  FormControl,
   FormControlLabel,
   Grid,
   IconButton,
+  Link,
   Toolbar
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
+import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridActionsCellItem";
+import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
+import { GridColDef } from "@mui/x-data-grid/models/colDef";
+import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
+import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import Header from "components/Header";
+import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import MenuPopup from "components/common/menu/MenuPopup";
-import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
 import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
@@ -32,8 +39,10 @@ import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
+import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 
 const drawerWidth = 400;
 
@@ -116,10 +125,104 @@ export default function ExamCreated() {
   const [overdueHandling, setOverdueHandling] = React.useState<string>(OVERDUE_HANDLING.AUTOSUBMIT);
   const [maxAttempts, setMaxAttempts] = React.useState(0);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = React.useState(false);
+  const [isAddQuestionFromBankDialogOpen, setIsAddQuestionFromBankDialogOpen] =
+    React.useState(false);
   const [questionType, setQuestionType] = React.useState("essay");
 
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
+
+  const questionList = [
+    {
+      id: 4,
+      name: "Trắc nghiệm lập trình C++",
+      description: "Hãy cho biết con trỏ trong C++ là gì?",
+      max_grade: 10,
+      type: "Essay"
+    },
+    {
+      id: 2,
+      name: "Câu hỏi về phát triển phần mềm",
+      description: "Who is the father of Software Engineering?",
+      max_grade: 10,
+      type: "Multiple choice"
+    },
+    {
+      id: 3,
+      name: "Câu hỏi về phát triển phần mềm",
+      description: "What is the full form of HTML?",
+      max_grade: 10,
+      type: "Short answer"
+    },
+    {
+      id: 1,
+      name: "Câu hỏi về phát triển phần mềm",
+      description: "HTML stands for Hyper Text Markup Language",
+      max_grade: 10,
+      type: "True/False"
+    }
+  ];
+  const tableHeading: GridColDef[] = React.useMemo(
+    () => [
+      { field: "id", headerName: "STT", minWidth: 1 },
+      {
+        field: "name",
+        headerName: "Tên câu hỏi",
+        width: 200,
+        flex: 0.8,
+        renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+      },
+      {
+        field: "description",
+        headerName: "Mô tả câu hỏi",
+        width: 200,
+        flex: 0.8
+      },
+      {
+        field: "max_grade",
+        headerName: "Điểm tối đa",
+        width: 50,
+        flex: 0.4,
+        renderCell: (params) => (
+          <InputTextField
+            type='number'
+            value={params.value}
+            onChange={(e) => console.log(e.target.value)}
+            placeholder='Nhập điểm tối đa'
+            backgroundColor='white'
+          />
+        )
+      },
+      { field: "type", headerName: "Kiểu", width: 50, flex: 0.4 },
+      {
+        field: "action",
+        headerName: "Actions",
+        type: "actions",
+        width: 200,
+        flex: 0.5,
+        getActions: () => [
+          <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+        ]
+      }
+    ],
+    []
+  );
+
+  const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
+  const dataGridToolbar = { enableToolbar: true };
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    console.log(selectedRowId);
+  };
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    console.log(model);
+  };
+  const page = 0;
+  const pageSize = 5;
+  const totalElement = 100;
 
   function handleClick() {
     setLoading(true);
@@ -145,14 +248,21 @@ export default function ExamCreated() {
     setIsAddNewQuestionDialogOpen(false);
   };
 
+  const handleOpenAddQuestionFromBankDialog = () => {
+    setIsAddQuestionFromBankDialogOpen(true);
+  };
+
+  const handleCloseAddQuestionFromBankDialog = () => {
+    setIsAddQuestionFromBankDialogOpen(false);
+  };
+
   const onCreateNewQuestion = async (popupState: any) => {
-    console.log("Tạo câu hỏi mới");
     handleOpenAddNewQuestionDialog();
     popupState.close();
   };
 
   const onAddQuestionFromBank = async (popupState: any) => {
-    console.log("Từ ngân hàng câu hỏi");
+    handleOpenAddQuestionFromBankDialog();
     popupState.close();
   };
 
@@ -178,41 +288,34 @@ export default function ExamCreated() {
         cancelText='Hủy bỏ'
         confirmText='Thêm'
         onHanldeConfirm={handleCloseAddNewQuestionDialog}
-      >
-        <Grid container spacing={1} columns={12} minWidth='450px'>
-          <Grid item xs={6}>
-            <TextTitle paddingBottom='10px'>Câu hỏi</TextTitle>
-            <FormControl
-              component='fieldset'
-              sx={{
-                maxHeight: "200px",
-                overflowY: "auto"
-              }}
-            >
-              <BasicRadioGroup
-                ariaLabel='question-type'
-                value={questionType}
-                handleChangeQuestionType={handleChangeQuestionType}
-                items={[
-                  { value: "essay", label: "Essay" },
-                  { value: "multiple-choice", label: "Multiple choice" },
-                  { value: "short-answer", label: "Short answer" },
-                  { value: "true-false", label: "True/False" }
-                ]}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <ParagraphBody>
-              {/* Display the description of the selected question type description */}
-              {questionType === "essay" && "Câu hỏi tự luận"}
-              {questionType === "multiple-choice" && "Câu hỏi trắc nghiệm"}
-              {questionType === "short-answer" && "Câu hỏi trả lời ngắn"}
-              {questionType === "true-false" && "Câu hỏi đúng/sai"}
-            </ParagraphBody>
-          </Grid>
-        </Grid>
-      </PickQuestionTypeToAddDialog>
+        onHandleCancel={handleCloseAddNewQuestionDialog}
+        questionType={questionType}
+        handleChangeQuestionType={handleChangeQuestionType}
+      />
+      <PickQuestionFromQuestionBankDialog
+        open={isAddQuestionFromBankDialogOpen}
+        handleClose={handleCloseAddQuestionFromBankDialog}
+        title='Thêm từ ngân hàng câu hỏi'
+        cancelText='Hủy bỏ'
+        confirmText='Thêm'
+        onHanldeConfirm={handleCloseAddQuestionFromBankDialog}
+        onHandleCancel={handleCloseAddQuestionFromBankDialog}
+        categoryPickTitle='Chọn danh mục'
+        categoryList={[
+          {
+            value: "0",
+            label: "Danh mục 1"
+          },
+          {
+            value: "1",
+            label: "Danh mục 2"
+          },
+          {
+            value: "2",
+            label: "Danh mục 3"
+          }
+        ]}
+      />
       <Grid className={classes.root}>
         <Header />
         <Box className={classes.container}>
@@ -294,6 +397,28 @@ export default function ExamCreated() {
                     }
                   ]}
                 />
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <Heading1 fontWeight={"500"}>Danh sách câu hỏi</Heading1>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <QuestionsFeatureBar />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CustomDataGrid
+                      dataList={questionList}
+                      tableHeader={tableHeading}
+                      onSelectData={rowSelectionHandler}
+                      visibleColumn={visibleColumnList}
+                      dataGridToolBar={dataGridToolbar}
+                      page={page}
+                      pageSize={pageSize}
+                      totalElement={totalElement}
+                      onPaginationModelChange={pageChangeHandler}
+                      showVerticalCellBorder={false}
+                    />
+                  </Grid>
+                </Grid>
               </Box>
             </Card>
           </Main>
