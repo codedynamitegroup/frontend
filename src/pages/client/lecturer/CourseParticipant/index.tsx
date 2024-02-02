@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
@@ -66,7 +66,7 @@ const LecturerCourseParticipant = () => {
   const totalElement = 100;
 
   return (
-    <Box className={classes.container}>
+    <Paper className={classes.container}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Heading1>Danh sách thành viên</Heading1>
@@ -89,7 +89,7 @@ const LecturerCourseParticipant = () => {
           />
         </Grid>
       </Grid>
-    </Box>
+    </Paper>
   );
 };
 

@@ -1,5 +1,11 @@
+body {
+    background-color: var(--gray-3);
 .container {
     margin: 20px;
+    margin-top: 40px;
+    background-color: white;
+    padding-bottom: 10px;
+    min-height: 100svh;
     .gridContainer {
         .courseImgCardContainer{
             position: relative;
@@ -50,4 +56,5 @@
             }
         }
     }
+}
 }
