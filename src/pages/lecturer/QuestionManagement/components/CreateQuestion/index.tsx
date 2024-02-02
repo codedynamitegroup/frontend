@@ -54,7 +54,12 @@ const QuestionCreated = (props: Props) => {
               Quản lý khoá học
             </span>{" "}
             {"> "}
-            <span onClick={() => navigate("/")}>CS202 - Nhập môn lập trình</span> {"> "}
+            <span
+              onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
+            >
+              CS202 - Nhập môn lập trình
+            </span>{" "}
+            {"> "}
             <span onClick={() => navigate(routes.lecturer.course.assignment)}>
               Xem bài tập
             </span>{" "}
