@@ -36,6 +36,15 @@ export const routes = {
     question: {
       essay: {
         create: "/lecturer/question-management/essay/create"
+      },
+      multiple_choice: {
+        create: "/lecturer/question-management/multiple-choice/create"
+      },
+      short_answer: {
+        create: "/lecturer/question-management/short-answer/create"
+      },
+      true_false: {
+        create: "/lecturer/question-management/true-false/create"
       }
     },
     exam: {
