@@ -17,6 +17,8 @@ import CodeIcon from "@mui/icons-material/Code";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import ListSolution from "./components/ListSolution";
+import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
+import TextEditor from "components/editor/TextEditor";
 
 export default function DetailProblem() {
   const navigate = useNavigate();
@@ -61,6 +63,23 @@ export default function DetailProblem() {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+  const CustomReactQuill = styled(ReactQuill)`
+    .ql-editor {
+      overflow: hidden !important;
+      height: 100% !important;
+    }
+    .ql-container {
+      height: 100% !important;
+    }
+    .ql-snow .ql-editor pre.ql-syntax {
+      background-color: #f2f3f4;
+      color: black;
+    }
+    .ql-container.ql-snow {
+      border: none;
+    }
+  `;
+
   return (
     <Box className={classes.root}>
       <Header />
@@ -89,16 +108,14 @@ export default function DetailProblem() {
               </Box>
               <TabPanel value='0' className={classes.tabPanelTopic}>
                 <Box className={classes.tabPanelContent}>
-                  <ParagraphBody className={classes.tabPanelContentText}>
-                    <ReactQuill
-                      theme='bubble'
-                      value={htmlContent}
-                      readOnly={true}
-                      modules={{
-                        toolbar: false
-                      }}
-                    />
-                  </ParagraphBody>
+                  <CustomReactQuill
+                    value={htmlContent}
+                    readOnly={true}
+                    modules={{
+                      toolbar: false
+                    }}
+                    className={classes.quillEditor}
+                  />
                 </Box>
               </TabPanel>
               <TabPanel value='1' className={classes.tabPanel}>
