@@ -22,7 +22,8 @@ import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/joy/Button";
+// import Button from "@mui/joy/Button";
+import Button, { BtnType } from "components/common/buttons/Button";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
@@ -45,7 +46,12 @@ const QuestionCreated = (props: Props) => {
     <Grid className={classes.root}>
       <Header />
       <Container className={classes.container}>
-        <Box className={classes.tabWrapper}>...&gt;...</Box>
+        <Box className={classes.tabWrapper}>
+          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <span>Quản lý câu hỏi</span> {">"} <span>Học thuật toán</span> {">"}{" "}
+            <span>Tạo câu hỏi</span>
+          </ParagraphBody>
+        </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
           <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>
           <Grid container spacing={1} columns={12}>
@@ -143,6 +149,14 @@ const QuestionCreated = (props: Props) => {
               <Checkbox defaultChecked />
             </Grid>
           )}
+          {props.qtype === qtype.short_answer.code && (
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={3}>
+                <TextTitle>Phân biệt hoa thường</TextTitle>
+              </Grid>
+              <Checkbox defaultChecked />
+            </Grid>
+          )}
           {(props.qtype === qtype.short_answer.code ||
             props.qtype === qtype.multiple_choice.code) && (
             <div>
@@ -174,7 +188,7 @@ const QuestionCreated = (props: Props) => {
               </Collapse>
             </div>
           )}
-          <Grid container justifyContent={"center"}>
+          {/* <Grid container justifyContent={"center"}>
             <Button
               color='primary'
               type='submit'
@@ -185,7 +199,13 @@ const QuestionCreated = (props: Props) => {
             >
               Thêm câu hỏi
             </Button>
-          </Grid>
+          </Grid> */}
+          <Box className={classes.stickyFooterContainer}>
+            <Box className={classes.phantom} />
+            <Box className={classes.stickyFooterItem}>
+              <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
+            </Box>
+          </Box>
         </Box>
       </Container>
     </Grid>
