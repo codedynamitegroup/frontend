@@ -126,25 +126,26 @@ const QuestionCreated = (props: Props) => {
             </div>
           )}
 
-          {(props.qtype === qtype.multiple_choice.code ||
-            props.qtype === qtype.short_answer.code) && (
-            <div>
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Một hoặc nhiều câu trả lời đúng</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Select defaultValue={1} fullWidth={true} size='small'>
-                    <MenuItem value={1}>Một câu trả lời đúng</MenuItem>
-                    <MenuItem value={2}>Nhiều câu trả lời đúng</MenuItem>
-                  </Select>
-                </Grid>
-                <Grid item xs={3}>
-                  <TextTitle>Xáo trộn đáp án</TextTitle>
-                </Grid>
-                <Checkbox defaultChecked />
+          {props.qtype === qtype.multiple_choice.code && (
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={12} md={3}>
+                <TextTitle>Một hoặc nhiều câu trả lời đúng</TextTitle>
               </Grid>
-
+              <Grid item xs={12} md={9}>
+                <Select defaultValue={1} fullWidth={true} size='small'>
+                  <MenuItem value={1}>Một câu trả lời đúng</MenuItem>
+                  <MenuItem value={2}>Nhiều câu trả lời đúng</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={3}>
+                <TextTitle>Xáo trộn đáp án</TextTitle>
+              </Grid>
+              <Checkbox defaultChecked />
+            </Grid>
+          )}
+          {(props.qtype === qtype.short_answer.code ||
+            props.qtype === qtype.multiple_choice.code) && (
+            <div>
               <ListItemButton onClick={() => setAnswerOpen(!answerOpen)} sx={{ paddingX: 0 }}>
                 <Grid container alignItems={"center"} columns={12}>
                   <Grid item xs={12} md={3}>

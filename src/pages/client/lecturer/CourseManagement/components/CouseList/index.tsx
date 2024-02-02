@@ -3,8 +3,6 @@ import classes from "./styles.module.scss";
 
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import ButtonBase from "@mui/material/ButtonBase";
-import Typography from "@mui/material/Typography";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
@@ -12,6 +10,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
 import Avatar from "@mui/material/Avatar";
+import Heading5 from "components/text/Heading5";
+import Heading4 from "components/text/Heading4";
+import { routes } from "routes/routes";
 
 interface ListProps {
   courseAvatarUrl: string;
@@ -24,20 +25,20 @@ const CourseList = (props: ListProps) => {
   return (
     <Paper className={classes.container}>
       <Grid container spacing={1}>
-        <Grid item className={classes.courseImageGridContainer}>
-          <ButtonBase sx={{ maxWidth: "128px", maxHeight: "128px" }}>
-            <img className={classes.courseImage} alt='complex' src={props.courseAvatarUrl} />
-          </ButtonBase>
-        </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction='column' spacing={2}>
-            <Grid item xs>
-              <Typography fontSize='18px' gutterBottom variant='subtitle1' component='div'>
-                {props.courseName}
-              </Typography>
-              <Typography variant='body2' color='text.secondary'>
-                {props.courseCategory}
-              </Typography>
+            <Grid item xs className={classes.courseInfo}>
+              <Link
+                href={routes.lecturer.course.information.replace(":courseId", "1")}
+                underline='hover'
+                color='inherit'
+              >
+                <Heading4 gutterBottom variant='subtitle1'>
+                  {props.courseName}
+                </Heading4>
+              </Link>
+
+              <Heading5 colorName='--blue-600'>{props.courseCategory}</Heading5>
             </Grid>
             <Grid item className={classes.teacherListGridContainer}>
               {props.teacherList.map((teacher) => (

@@ -23,7 +23,7 @@ interface PreviewMultipleChoiceProps extends DialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
+const PreviewTrueFalse = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
   const [value1, setValue1] = useState<String>();
   const [submitedValue1, setSubmitedValue1] = useState<String>();
 
@@ -33,7 +33,7 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
   return (
     <Dialog {...props}>
       <DialogTitle sx={{ m: 0, p: 2 }} id={props["aria-labelledby"]}>
-        Câu 1: nhiều lựa chọn
+        Câu 1: Lựa chọn đúng sai
       </DialogTitle>
       <IconButton
         aria-label='close'
@@ -57,8 +57,7 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
           </Grid>
           <Grid item xs={12} md={10}>
             <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
-              <Typography gutterBottom>Con trỏ là gì?</Typography>
-              <Typography>Chọn một trong các đáp án sau:</Typography>
+              <Typography gutterBottom>HTML stands for Hyper Text Markup Language</Typography>
               <FormControl>
                 <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>
                   <FormControlLabel
@@ -69,7 +68,7 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
                         <Box
                           sx={{ backgroundColor: submitedValue1 === "1" ? red[100] : undefined }}
                         >
-                          Tham trị đến địa chỉ bộ nhớ
+                          False
                         </Box>
                         {submitedValue1 === "1" && (
                           <Box sx={{ backgroundColor: yellow[100] }}>
@@ -79,16 +78,7 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
                       </Stack>
                     }
                   />
-                  <FormControlLabel
-                    value='2'
-                    control={<Radio />}
-                    label='Một kiểu dữ liệu dùng để lưu trữ các giá trị có thể thay đổi'
-                  />
-                  <FormControlLabel
-                    value='3'
-                    control={<Radio />}
-                    label='Tham chiếu đến địa chỉ bộ nhớ'
-                  />
+                  <FormControlLabel value='2' control={<Radio />} label='True' />
                 </RadioGroup>
               </FormControl>
             </Box>
@@ -113,4 +103,4 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
   );
 };
 
-export default PreviewMultipleChoice;
+export default PreviewTrueFalse;
