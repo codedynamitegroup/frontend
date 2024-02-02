@@ -14,6 +14,9 @@ export const routes = {
       create: {
         path: "create"
       }
+    },
+    question_bank: {
+      path: "lecturer/question-bank-management"
     }
   }
 };

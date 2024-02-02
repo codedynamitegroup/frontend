@@ -10,6 +10,7 @@ import CodeQuestionManagement from "pages/lecturer/CodeQuestionManagement";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/components/CreateAssigment";
 import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/components/CreateCodeQuestion";
 import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
+import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
           />
         ))}
       </Route>
+      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
     </Route>
   )
 );
