@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React, { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
-import TestCasePopup from "./components/PopupAddTestCase";
+import TestCasePopup from "./components/PopupTestCase";
 import Heading5 from "components/text/Heading5";
 import {
   GridRowsProp,

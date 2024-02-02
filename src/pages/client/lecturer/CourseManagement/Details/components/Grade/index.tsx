@@ -2,18 +2,18 @@ import { Box, Grid, IconButton, ListItemIcon, ListItemText, MenuItem, Paper } fr
 import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
-import CourseParticipantFeatureBar from "./components/FeatureBar";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import EditIcon from "@mui/icons-material/Edit";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "../../../../components/common/CustomDataGrid";
+import CustomDataGrid from "../../../../../../../components/common/CustomDataGrid";
 import { GridColumnGroupingModel } from "@mui/x-data-grid/models/gridColumnGrouping";
 import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuProps";
 import { GridColumnMenuItemProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuItemProps";
 import { GridColumnMenu } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CourseGradeFeatureBar from "./components/FeatureBar";
 
 function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
   const { customEditHandler, customEditValue } = props;
@@ -148,32 +148,30 @@ const LecturerCourseGrade = () => {
   const totalElement = 100;
 
   return (
-    <Paper className={classes.container}>
-      <Grid container spacing={1} className={classes.gridContainer}>
-        <Grid item xs={12}>
-          <Heading1>Báo cáo điểm</Heading1>
-        </Grid>
-        <Grid item xs={12}>
-          <CourseParticipantFeatureBar />
-        </Grid>
-        <Grid item xs={12}>
-          <CustomDataGrid
-            dataList={participantList}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            columnGroupingModel={columnGroupingModel}
-            showVerticalCellBorder={true}
-            customColumnMenu={CustomColumnMenu}
-          />
-        </Grid>
+    <Box className={classes.gradeBody}>
+      <Grid item xs={12}>
+        <Heading1>Báo cáo điểm</Heading1>
       </Grid>
-    </Paper>
+      <Grid item xs={12}>
+        <CourseGradeFeatureBar />
+      </Grid>
+      <Grid item xs={12}>
+        <CustomDataGrid
+          dataList={participantList}
+          tableHeader={tableHeading}
+          onSelectData={rowSelectionHandler}
+          visibleColumn={visibleColumnList}
+          dataGridToolBar={dataGridToolbar}
+          page={page}
+          pageSize={pageSize}
+          totalElement={totalElement}
+          onPaginationModelChange={pageChangeHandler}
+          columnGroupingModel={columnGroupingModel}
+          showVerticalCellBorder={true}
+          customColumnMenu={CustomColumnMenu}
+        />
+      </Grid>
+    </Box>
   );
 };
 

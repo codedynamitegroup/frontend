@@ -61,7 +61,7 @@ const InputTextField = memo((props: InputsProps) => {
                 })
               }}
               style={{
-                backgroundColor: backgroundColor || "#D9E2ED"
+                backgroundColor: backgroundColor || "white"
               }}
               defaultValue={defaultValue}
               value={value}

@@ -1,41 +1,26 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Box,
-  Card,
-  CssBaseline,
-  Divider,
-  Drawer,
-  FormControl,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Toolbar
-} from "@mui/material";
+import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
+import { BtnType } from "components/common/buttons/Button";
+import LoadButton from "components/common/buttons/LoadingButton";
+import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
+import BasicSelect from "components/common/select/BasicSelect";
 import FileManager from "components/editor/FileManager";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
+import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { BtnType } from "components/common/buttons/Button";
-import LoadButton from "components/common/buttons/LoadingButton";
 
 const drawerWidth = 450;
 
@@ -109,7 +94,7 @@ export default function AssignmentCreated() {
     React.useState<Dayjs | null>(dayjs());
   const [assignmentSubmissionDueDate, setAssignmentSubmissionDueDate] =
     React.useState<Dayjs | null>(dayjs());
-  const [assignmentSection, setAssignmentSection] = React.useState("");
+  const [assignmentSection, setAssignmentSection] = React.useState("0");
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
 
@@ -237,10 +222,11 @@ export default function AssignmentCreated() {
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Dạng bài tập</TextTitle>
               <ChipMultipleFilter
-                label='Dạng bài tập'
+                label=''
                 defaultChipList={["Tự luận", "Nộp tệp"]}
                 filterList={assignmentTypes}
                 onFilterListChangeHandler={setAssignmentTypes}
+                backgroundColor='#D9E2ED'
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
@@ -250,77 +236,74 @@ export default function AssignmentCreated() {
                 value={assignmentMaximumGrade}
                 onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
                 placeholder='Nhập điểm tối đa'
+                backgroundColor='#D9E2ED'
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Cho phép nộp bài kể từ</TextTitle>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-                  <DateTimePicker
-                    label='Chọn ngày giờ'
-                    value={assignmentAllowSubmissionFromDate}
-                    onChange={(newValue) => {
-                      setAssignmentAllowSubmissionFromDate(newValue);
-                    }}
-                    slotProps={{ textField: { fullWidth: true, size: "small" } }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+              <BasicDateTimePicker
+                value={assignmentAllowSubmissionFromDate}
+                onHandleValueChange={(newValue) => {
+                  setAssignmentAllowSubmissionFromDate(newValue);
+                }}
+                backgroundColor='#D9E2ED'
+              />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Hạn nộp bài</TextTitle>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-                  <DateTimePicker
-                    label='Chọn ngày giờ'
-                    value={assignmentSubmissionDueDate}
-                    onChange={(newValue) => {
-                      setAssignmentSubmissionDueDate(newValue);
-                    }}
-                    slotProps={{ textField: { fullWidth: true, size: "small" } }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+              <BasicDateTimePicker
+                value={assignmentSubmissionDueDate}
+                onHandleValueChange={(newValue) => {
+                  setAssignmentSubmissionDueDate(newValue);
+                }}
+                backgroundColor='#D9E2ED'
+              />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Chủ đề</TextTitle>
-              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
-                <InputLabel id='select-assignment-section-label'>Chọn chủ đề</InputLabel>
-                <Select
-                  labelId='select-assignment-section-label'
-                  id='select-assignment-section'
-                  value={assignmentSection}
-                  label='Chủ đề'
-                  onChange={(e) => setAssignmentSection(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value={0}>Chủ đề 1</MenuItem>
-                  <MenuItem value={1}>Chủ đề 2</MenuItem>
-                  <MenuItem value={2}>Chủ đề 3</MenuItem>
-                </Select>
-              </FormControl>
+              <BasicSelect
+                labelId='select-assignment-section-label'
+                value={assignmentSection}
+                onHandleChange={(value) => setAssignmentSection(value)}
+                items={[
+                  {
+                    value: "0",
+                    label: "Chủ đề 1"
+                  },
+                  {
+                    value: "1",
+                    label: "Chủ đề 2"
+                  },
+                  {
+                    value: "2",
+                    label: "Chủ đề 3"
+                  }
+                ]}
+                backgroundColor='#D9E2ED'
+              />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Tính khả dụng</TextTitle>
-              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
-                <InputLabel id='select-assignment-availability-label'>
-                  Chọn tính khả dụng
-                </InputLabel>
-                <Select
-                  labelId='select-assignment-availability-label'
-                  id='select-assignment-availability'
-                  value={assignmentAvailability}
-                  label='Tính khả dụng'
-                  onChange={(e) => setAssignmentAvailability(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value={"0"}>Hiện và có thể truy cập trên trang khoá học</MenuItem>
-                  <MenuItem value={"1"}>Ẩn và không thể truy cập trên trang khoá học</MenuItem>
-                  <MenuItem value={"2"}>
-                    Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <BasicSelect
+                labelId='select-assignment-availability-label'
+                value={assignmentAvailability}
+                onHandleChange={(value) => setAssignmentAvailability(value)}
+                items={[
+                  {
+                    value: "0",
+                    label: "Hiện và có thể truy cập trên trang khoá học"
+                  },
+                  {
+                    value: "1",
+                    label: "Ẩn và không thể truy cập trên trang khoá học"
+                  },
+                  {
+                    value: "2",
+                    label: "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn"
+                  }
+                ]}
+                backgroundColor='#D9E2ED'
+              />
             </Box>
             <LoadButton
               btnType={BtnType.Outlined}
