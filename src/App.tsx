@@ -5,9 +5,7 @@ import {
   RouterProvider,
   Route
 } from "react-router-dom";
-import { routes } from "routes/routes";
 import CodeQuestionManagement from "pages/lecturer/CodeQuestionManagement";
-import CustomTabPanel from "components/common/CustomTabPanel";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
 import ListProblem from "pages/client/user/ListProblem";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
@@ -22,6 +20,9 @@ import QuestionCreated from "pages/lecturer/QuestionManagement/components/Create
 import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
 import qtype from "utils/constant/Qtype";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
+import { routes } from "routes/routes";
+import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -36,10 +37,7 @@ const router = createBrowserRouter(
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
       <Route path={routes.user.assignment.submission} element={<AssignmentSubmission />} />
       <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
-      <Route
-        path={routes.lecturer.course.management.path}
-        element={<routes.lecturer.course.management.Component />}
-      />
+      <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
 
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
 

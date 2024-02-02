@@ -24,10 +24,10 @@ const CourseDetail = memo((props: Props) => {
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.lecturer.course.information.path,
-      routes.lecturer.course.assignment.path,
-      routes.lecturer.course.grade.path,
-      routes.lecturer.course.participant.path
+      routes.lecturer.course.information,
+      routes.lecturer.course.assignment,
+      routes.lecturer.course.grade,
+      routes.lecturer.course.participant
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);

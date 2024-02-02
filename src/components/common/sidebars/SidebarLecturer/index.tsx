@@ -21,7 +21,7 @@ const sideBarItemListData: SidebarItem[] = [
   {
     name: "Trang chủ",
     icon: <DashboardIcon className={classes.itemIcon} />,
-    link: routes.lecturer.course.management.path
+    link: routes.lecturer.course.management
   },
   {
     name: "Quản lý câu hỏi code",

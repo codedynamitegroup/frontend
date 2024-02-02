@@ -1,29 +1,13 @@
-import LecturerCourseDetail from "pages/client/lecturer/CourseManagement/Details/components/Information";
-import LecturerCourseGrade from "pages/client/lecturer/CourseManagement/Details/components/Grade";
-import LecturerCourseParticipant from "pages/client/lecturer/CourseManagement/Details/components/Participant";
-import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
-
 export const routes = {
   lecturer: {
     assignment_management: "/lecturer/assignment-management",
     course: {
-      management: {
-        path: "/lecturer/courses",
-        Component: LecturerCourseManagement
-      },
+      management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",
-      information: {
-        path: "/lecturer/courses/:courseId/information",
-        Component: LecturerCourseDetail
-      },
-      assignment: {
-        path: "/lecturer/courses/:courseId/assignment"
-      },
-      grade: { path: "/lecturer/courses/:courseId/grade", Component: LecturerCourseGrade },
-      participant: {
-        path: "/lecturer/courses/:courseId/participant",
-        Component: LecturerCourseParticipant
-      }
+      information: "/lecturer/courses/:courseId/information",
+      assignment: "/lecturer/courses/:courseId/assignment",
+      grade: "/lecturer/courses/:courseId/grade",
+      participant: "/lecturer/courses/:courseId/participant"
     },
     code_question: {
       management: "/lecturer/code-questions",
