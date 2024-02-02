@@ -8,10 +8,7 @@
   gap: 20px;
   padding-bottom: 10px;
 }
-.boxTitle {
-  font-size: 24px;
-  margin: 10px 0;
-}
+
 .boxContent {
   display: flex !important;
   flex-direction: column;
@@ -21,14 +18,12 @@
   height: 100%;
   gap: 20px;
 }
-.typeAlgorithm {
-  margin-bottom: 10px;
-}
+
 .algorithm {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 15px;
+  column-gap: 25px;
   row-gap: 20px;
 }
 .algorithmItem {

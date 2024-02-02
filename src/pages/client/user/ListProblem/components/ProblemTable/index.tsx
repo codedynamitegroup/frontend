@@ -10,6 +10,7 @@ import TableTemplate from "components/common/table/TableTemplate";
 import TablePagination from "@mui/material/TablePagination";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { routes } from "routes/routes";
 
 export default function ProblemTable() {
   const status = [
@@ -150,7 +151,7 @@ export default function ProblemTable() {
           customColumns={customColumns}
           data={data}
           isActionColumn={true}
-          onViewDetailsClick={() => navigate("/problem/1")}
+          onViewDetailsClick={() => navigate(routes.user.problem.detail.replace(":id", "1"))}
         />
         <TablePagination
           component='div'
