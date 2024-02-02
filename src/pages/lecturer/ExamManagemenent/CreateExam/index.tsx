@@ -370,10 +370,16 @@ export default function ExamCreated() {
                   fontWeight={"600"}
                 >
                   {/* TODO */}
-                  <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
+                  <span onClick={() => navigate(routes.lecturer.course.management)}>
+                    Quản lý khoá học
+                  </span>{" "}
+                  {"> "}
                   <span onClick={() => navigate("/")}>CS202 - Nhập môn lập trình</span> {"> "}
-                  <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                  <span onClick={() => navigate("/lecturer/exam-management/create")}>
+                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                    Xem bài tập
+                  </span>{" "}
+                  {"> "}
+                  <span onClick={() => navigate(routes.lecturer.exam.create)}>
                     Tạo bài kiểm tra
                   </span>
                 </ParagraphBody>
@@ -419,6 +425,7 @@ export default function ExamCreated() {
                   triggerButtonProps={{
                     width: "150px"
                   }}
+                  btnType={BtnType.Outlined}
                   menuItems={[
                     {
                       label: "Tạo câu hỏi mới",
