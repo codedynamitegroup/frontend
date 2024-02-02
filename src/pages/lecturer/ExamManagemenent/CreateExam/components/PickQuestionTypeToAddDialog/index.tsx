@@ -57,10 +57,10 @@ export default function PickQuestionTypeToAddDialog({
               value={questionType}
               handleChangeQuestionType={handleChangeQuestionType}
               items={[
-                { value: "essay", label: "Essay" },
-                { value: "multiple-choice", label: "Multiple choice" },
-                { value: "short-answer", label: "Short answer" },
-                { value: "true-false", label: "True/False" }
+                { value: "essay", label: "Tự luận" },
+                { value: "multiple-choice", label: "Trắc nghiệm" },
+                { value: "short-answer", label: "Trả lời ngắn" },
+                { value: "true-false", label: "Đúng/Sai" }
               ]}
             />
           </FormControl>

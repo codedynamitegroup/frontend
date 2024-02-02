@@ -43,6 +43,7 @@ import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
+import { routes } from "routes/routes";
 
 const drawerWidth = 400;
 
@@ -138,28 +139,40 @@ export default function ExamCreated() {
       name: "Trắc nghiệm lập trình C++",
       description: "Hãy cho biết con trỏ trong C++ là gì?",
       max_grade: 10,
-      type: "Essay"
+      type: {
+        value: "essay",
+        label: "Tự luận"
+      }
     },
     {
       id: 2,
       name: "Câu hỏi về phát triển phần mềm",
       description: "Who is the father of Software Engineering?",
       max_grade: 10,
-      type: "Multiple choice"
+      type: {
+        value: "multiple-choice",
+        label: "Trắc nghiệm"
+      }
     },
     {
       id: 3,
       name: "Câu hỏi về phát triển phần mềm",
       description: "What is the full form of HTML?",
       max_grade: 10,
-      type: "Short answer"
+      type: {
+        value: "short-answer",
+        label: "Trả lời ngắn"
+      }
     },
     {
       id: 1,
       name: "Câu hỏi về phát triển phần mềm",
       description: "HTML stands for Hyper Text Markup Language",
       max_grade: 10,
-      type: "True/False"
+      type: {
+        value: "true-false",
+        label: "Đúng/Sai"
+      }
     }
   ];
   const tableHeading: GridColDef[] = React.useMemo(
@@ -193,7 +206,13 @@ export default function ExamCreated() {
           />
         )
       },
-      { field: "type", headerName: "Kiểu", width: 50, flex: 0.4 },
+      {
+        field: "type",
+        headerName: "Kiểu",
+        width: 50,
+        flex: 0.4,
+        renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+      },
       {
         field: "action",
         headerName: "Actions",
@@ -208,7 +227,6 @@ export default function ExamCreated() {
     ],
     []
   );
-
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -270,6 +288,26 @@ export default function ExamCreated() {
     setQuestionType(value);
   };
 
+  const onClickConfirmAddNewQuestion = () => {
+    switch (questionType) {
+      case "essay":
+        navigate(routes.lecturer.question.essay.create);
+        break;
+      case "multiple-choice":
+        navigate(routes.lecturer.question.multiple_choice.create);
+        break;
+      case "short-answer":
+        navigate(routes.lecturer.question.short_answer.create);
+        break;
+      case "true-false":
+        navigate(routes.lecturer.question.true_false.create);
+        break;
+      default:
+        break;
+    }
+    handleCloseAddNewQuestionDialog();
+  };
+
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {
     if (width < 1080) {
@@ -287,7 +325,7 @@ export default function ExamCreated() {
         title='Chọn kiểu câu hỏi muốn thêm'
         cancelText='Hủy bỏ'
         confirmText='Thêm'
-        onHanldeConfirm={handleCloseAddNewQuestionDialog}
+        onHanldeConfirm={onClickConfirmAddNewQuestion}
         onHandleCancel={handleCloseAddNewQuestionDialog}
         questionType={questionType}
         handleChangeQuestionType={handleChangeQuestionType}
@@ -402,7 +440,14 @@ export default function ExamCreated() {
                     <Heading1 fontWeight={"500"}>Danh sách câu hỏi</Heading1>
                   </Grid>
                   <Grid item xs={12}>
-                    <QuestionsFeatureBar />
+                    <QuestionsFeatureBar
+                      colSearchLabel='Tìm kiếm theo cột'
+                      shuffleQuestionsLabel='Xáo trộn câu hỏi'
+                      colItems={[
+                        { label: "Tên câu hỏi", value: "name" },
+                        { label: "Kiểu", value: "type" }
+                      ]}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
