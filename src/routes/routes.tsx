@@ -3,7 +3,6 @@ import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 
-import qtype from "utils/constant/Qtype";
 export const routes = {
   lecturer: {
     code_management: "/lecturer/code-management",
