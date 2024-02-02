@@ -29,6 +29,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import AddIcon from "@mui/icons-material/Add";
 import qtype from "utils/constant/Qtype";
+import { routes } from "routes/routes";
 
 interface Props {
   qtype: String;
@@ -41,6 +42,7 @@ const QuestionCreated = (props: Props) => {
     () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
     [props.qtype]
   );
+  const navigate = useNavigate();
 
   return (
     <Grid className={classes.root}>
@@ -48,7 +50,17 @@ const QuestionCreated = (props: Props) => {
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <span>Quản lý câu hỏi</span> {">"} <span>Học thuật toán</span> {">"}{" "}
+            <span onClick={() => navigate(routes.lecturer.course.management)}>
+              Quản lý khoá học
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate("/")}>CS202 - Nhập môn lập trình</span> {"> "}
+            <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+              Xem bài tập
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate(routes.lecturer.exam.create)}>Tạo bài kiểm tra</span>{" "}
+            {"> "}
             <span>Tạo câu hỏi</span>
           </ParagraphBody>
         </Box>
