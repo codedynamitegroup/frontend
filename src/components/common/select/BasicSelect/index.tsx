@@ -9,7 +9,7 @@ interface BasicSelectProps extends DefaultComponentProps<FormControlTypeMap<{}, 
   value: string;
   onHandleChange: (value: string) => void;
   label?: string;
-  items?: { value: string; label: string }[];
+  items?: { value: string; label: string; customNode?: React.ReactNode }[];
   disabled?: boolean;
   backgroundColor?: string;
 }
@@ -29,7 +29,7 @@ const BasicSelect = ({
       <InputLabel id={labelId}>{label || ""}</InputLabel>
       <Select
         style={{
-          backgroundColor: backgroundColor || "#D9E2ED"
+          backgroundColor: backgroundColor || "white"
         }}
         labelId={labelId}
         id='select-id'
@@ -44,7 +44,7 @@ const BasicSelect = ({
       >
         {items?.map((item) => (
           <MenuItem key={item.value} value={item.value}>
-            {item.label}
+            {item.customNode || item.label}
           </MenuItem>
         ))}
       </Select>

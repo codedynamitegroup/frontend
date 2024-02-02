@@ -490,6 +490,7 @@ export default function ExamCreated() {
                   value={examMaximumGrade}
                   onChange={(e) => setExamMaximumGrade(parseInt(e.target.value))}
                   placeholder='Nhập điểm tối đa'
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -499,6 +500,7 @@ export default function ExamCreated() {
                   onHandleValueChange={(newValue) => {
                     setExamOpenTime(newValue);
                   }}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -508,6 +510,7 @@ export default function ExamCreated() {
                   onHandleValueChange={(newValue) => {
                     setExamCloseTime(newValue);
                   }}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -520,6 +523,7 @@ export default function ExamCreated() {
                       onChange={(e) => setExamTimeLimitNumber(parseInt(e.target.value))}
                       placeholder='Nhập số lượng'
                       disabled={!examTimeLimitEnabled}
+                      backgroundColor='#D9E2ED'
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -551,6 +555,7 @@ export default function ExamCreated() {
                         }
                       ]}
                       disabled={!examTimeLimitEnabled}
+                      backgroundColor='#D9E2ED'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -588,6 +593,7 @@ export default function ExamCreated() {
                       label: "Tự động hủy bài làm khi hết thời gian"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -606,6 +612,7 @@ export default function ExamCreated() {
                       label: (i + 1).toString()
                     }))
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -628,6 +635,7 @@ export default function ExamCreated() {
                       label: "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -650,6 +658,7 @@ export default function ExamCreated() {
                       label: "Chủ đề 3"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <LoadButton
