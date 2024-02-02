@@ -28,7 +28,7 @@ const BasicDateTimePicker = ({
               fullWidth: true,
               size: "small",
               style: {
-                backgroundColor: backgroundColor || "#D9E2ED"
+                backgroundColor: backgroundColor || "white"
               }
             }
           }}

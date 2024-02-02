@@ -1,36 +1,26 @@
-import LecturerCourseDetail from "pages/client/lecturer/CourseDetail";
-import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
-import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
-import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 import StudentCourseDetail from "pages/client/student/CourseDetail";
 import StudentCourseGrade from "pages/client/student/CourseGrade";
 import StudentCourseParticipant from "pages/client/student/CourseParticipant";
 
 export const routes = {
   lecturer: {
-    code_management: "/lecturer/code-management",
     assignment_management: "/lecturer/assignment-management",
-    course_management: {
-      path: "/lecturer/course-management",
-      Component: LecturerCourseManagement
-    },
     course: {
-      detail: { path: "/lecturer/course/:courseId/detail", Component: LecturerCourseDetail },
-      assignment: { path: "/lecturer/course/:courseId/assignment" },
-      grade: { path: "/lecturer/course/:courseId/grade", Component: LecturerCourseGrade },
-      participant: {
-        path: "/lecturer/course/:courseId/participant",
-        Component: LecturerCourseParticipant
-      }
+      management: "/lecturer/courses",
+      detail: "/lecturer/courses/:courseId/*",
+      information: "/lecturer/courses/:courseId/information",
+      assignment: "/lecturer/courses/:courseId/assignment",
+      grade: "/lecturer/courses/:courseId/grade",
+      participant: "/lecturer/courses/:courseId/participant"
     },
     code_question: {
-      management: "/lecturer/code-management",
-      create: "/lecturer/code-management/create",
-      details: "/lecturer/code-management/edit/:id/*",
-      information: "/lecturer/code-management/edit/:id/information",
-      test_cases: "/lecturer/code-management/edit/:id/test-cases",
-      code_stubs: "/lecturer/code-management/edit/:id/code-stubs",
-      languages: "/lecturer/code-management/edit/:id/languages"
+      management: "/lecturer/code-questions",
+      create: "/lecturer/code-questions/create",
+      detail: "/lecturer/code-questions/edit/:id/*",
+      information: "/lecturer/code-questions/edit/:id/information",
+      test_cases: "/lecturer/code-questions/edit/:id/test-cases",
+      code_stubs: "/lecturer/code-questions/edit/:id/code-stubs",
+      languages: "/lecturer/code-questions/edit/:id/languages"
     },
     assignment: {
       create: "/lecturer/assignment-management/create",
@@ -39,7 +29,19 @@ export const routes = {
     question: {
       essay: {
         create: "/lecturer/question-management/essay/create"
+      },
+      multiple_choice: {
+        create: "/lecturer/question-management/multiple-choice/create"
+      },
+      short_answer: {
+        create: "/lecturer/question-management/short-answer/create"
+      },
+      true_false: {
+        create: "/lecturer/question-management/true-false/create"
       }
+    },
+    question_bank: {
+      path: "lecturer/question-bank-management"
     },
     exam: {
       create: "/lecturer/exam-management/create"
@@ -48,7 +50,7 @@ export const routes = {
   user: {
     problem: {
       list: "/problem",
-      detail: "/problem/:name"
+      detail: "/problem/:id"
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"

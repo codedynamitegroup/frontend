@@ -43,6 +43,13 @@ import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
+import { routes } from "routes/routes";
+import PreviewIcon from "@mui/icons-material/Preview";
+import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
+import qtype from "utils/constant/Qtype";
+import PreviewEssay from "components/dialog/preview/PreviewEssay";
+import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
+import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 
 const drawerWidth = 400;
 
@@ -131,35 +138,51 @@ export default function ExamCreated() {
 
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
-
+  const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
+    React.useState(false);
+  const [openPreviewEssay, setOpenPreviewEssay] = React.useState(false);
+  const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
+  const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const questionList = [
     {
       id: 4,
       name: "Trắc nghiệm lập trình C++",
       description: "Hãy cho biết con trỏ trong C++ là gì?",
       max_grade: 10,
-      type: "Essay"
+      type: {
+        value: qtype.multiple_choice.code,
+        label: "Trắc nghiệm"
+      }
     },
     {
       id: 2,
       name: "Câu hỏi về phát triển phần mềm",
       description: "Who is the father of Software Engineering?",
       max_grade: 10,
-      type: "Multiple choice"
+      type: {
+        value: qtype.essay.code,
+        label: "Tự luận"
+      }
     },
     {
       id: 3,
       name: "Câu hỏi về phát triển phần mềm",
       description: "What is the full form of HTML?",
       max_grade: 10,
-      type: "Short answer"
+      type: {
+        value: qtype.short_answer.code,
+        label: "Trả lời ngắn"
+      }
     },
     {
       id: 1,
       name: "Câu hỏi về phát triển phần mềm",
       description: "HTML stands for Hyper Text Markup Language",
       max_grade: 10,
-      type: "True/False"
+      type: {
+        value: qtype.true_false.code,
+        label: "Đúng/Sai"
+      }
     }
   ];
   const tableHeading: GridColDef[] = React.useMemo(
@@ -168,21 +191,18 @@ export default function ExamCreated() {
       {
         field: "name",
         headerName: "Tên câu hỏi",
-        width: 200,
-        flex: 0.8,
+        minWidth: 250,
         renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
       },
       {
         field: "description",
         headerName: "Mô tả câu hỏi",
-        width: 200,
-        flex: 0.8
+        minWidth: 500
       },
       {
         field: "max_grade",
         headerName: "Điểm tối đa",
-        width: 50,
-        flex: 0.4,
+        minWidth: 50,
         renderCell: (params) => (
           <InputTextField
             type='number'
@@ -193,22 +213,45 @@ export default function ExamCreated() {
           />
         )
       },
-      { field: "type", headerName: "Kiểu", width: 50, flex: 0.4 },
+      {
+        field: "type",
+        headerName: "Kiểu",
+        minWidth: 150,
+        renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+      },
       {
         field: "action",
         headerName: "Actions",
         type: "actions",
-        width: 200,
-        flex: 0.5,
-        getActions: () => [
+        minWidth: 200,
+        getActions: (params) => [
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            onClick={() => {
+              switch (params.row.type.value) {
+                case qtype.multiple_choice.code:
+                  setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
+                  break;
+                case qtype.essay.code:
+                  setOpenPreviewEssay(!openPreviewEssay);
+                  break;
+                case qtype.short_answer.code:
+                  setOpenPreviewShortAnswer(!openPreviewShortAnswer);
+                  break;
+                case qtype.true_false.code:
+                  setOpenPreviewTrueFalse(!openPreviewTrueFalse);
+                  break;
+              }
+            }}
+            icon={<PreviewIcon />}
+            label='Preview'
+          />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
         ]
       }
     ],
     []
   );
-
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -270,6 +313,26 @@ export default function ExamCreated() {
     setQuestionType(value);
   };
 
+  const onClickConfirmAddNewQuestion = () => {
+    switch (questionType) {
+      case "essay":
+        navigate(routes.lecturer.question.essay.create);
+        break;
+      case "multiple-choice":
+        navigate(routes.lecturer.question.multiple_choice.create);
+        break;
+      case "short-answer":
+        navigate(routes.lecturer.question.short_answer.create);
+        break;
+      case "true-false":
+        navigate(routes.lecturer.question.true_false.create);
+        break;
+      default:
+        break;
+    }
+    handleCloseAddNewQuestionDialog();
+  };
+
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {
     if (width < 1080) {
@@ -287,11 +350,40 @@ export default function ExamCreated() {
         title='Chọn kiểu câu hỏi muốn thêm'
         cancelText='Hủy bỏ'
         confirmText='Thêm'
-        onHanldeConfirm={handleCloseAddNewQuestionDialog}
+        onHanldeConfirm={onClickConfirmAddNewQuestion}
         onHandleCancel={handleCloseAddNewQuestionDialog}
         questionType={questionType}
         handleChangeQuestionType={handleChangeQuestionType}
       />
+      <PreviewMultipleChoice
+        open={openPreviewMultipleChoiceDialog}
+        setOpen={setOpenPreviewMultipleChoiceDialog}
+        aria-labelledby={"customized-dialog-title1"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewEssay
+        open={openPreviewEssay}
+        setOpen={setOpenPreviewEssay}
+        aria-labelledby={"customized-dialog-title2"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewShortAnswer
+        open={openPreviewShortAnswer}
+        setOpen={setOpenPreviewShortAnswer}
+        aria-labelledby={"customized-dialog-title3"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewTrueFalse
+        open={openPreviewTrueFalse}
+        setOpen={setOpenPreviewTrueFalse}
+        aria-labelledby={"customized-dialog-title4"}
+        maxWidth='md'
+        fullWidth
+      />
+
       <PickQuestionFromQuestionBankDialog
         open={isAddQuestionFromBankDialogOpen}
         handleClose={handleCloseAddQuestionFromBankDialog}
@@ -337,10 +429,16 @@ export default function ExamCreated() {
                   fontWeight={"600"}
                 >
                   {/* TODO */}
-                  <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
+                  <span onClick={() => navigate(routes.lecturer.course.management)}>
+                    Quản lý khoá học
+                  </span>{" "}
+                  {"> "}
                   <span onClick={() => navigate("/")}>CS202 - Nhập môn lập trình</span> {"> "}
-                  <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                  <span onClick={() => navigate("/lecturer/exam-management/create")}>
+                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                    Xem bài tập
+                  </span>{" "}
+                  {"> "}
+                  <span onClick={() => navigate(routes.lecturer.exam.create)}>
                     Tạo bài kiểm tra
                   </span>
                 </ParagraphBody>
@@ -386,6 +484,7 @@ export default function ExamCreated() {
                   triggerButtonProps={{
                     width: "150px"
                   }}
+                  btnType={BtnType.Outlined}
                   menuItems={[
                     {
                       label: "Tạo câu hỏi mới",
@@ -402,7 +501,14 @@ export default function ExamCreated() {
                     <Heading1 fontWeight={"500"}>Danh sách câu hỏi</Heading1>
                   </Grid>
                   <Grid item xs={12}>
-                    <QuestionsFeatureBar />
+                    <QuestionsFeatureBar
+                      colSearchLabel='Tìm kiếm theo cột'
+                      shuffleQuestionsLabel='Xáo trộn câu hỏi'
+                      colItems={[
+                        { label: "Tên câu hỏi", value: "name" },
+                        { label: "Kiểu", value: "type" }
+                      ]}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
@@ -450,6 +556,7 @@ export default function ExamCreated() {
                   value={examMaximumGrade}
                   onChange={(e) => setExamMaximumGrade(parseInt(e.target.value))}
                   placeholder='Nhập điểm tối đa'
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -459,6 +566,7 @@ export default function ExamCreated() {
                   onHandleValueChange={(newValue) => {
                     setExamOpenTime(newValue);
                   }}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -468,6 +576,7 @@ export default function ExamCreated() {
                   onHandleValueChange={(newValue) => {
                     setExamCloseTime(newValue);
                   }}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -480,6 +589,7 @@ export default function ExamCreated() {
                       onChange={(e) => setExamTimeLimitNumber(parseInt(e.target.value))}
                       placeholder='Nhập số lượng'
                       disabled={!examTimeLimitEnabled}
+                      backgroundColor='#D9E2ED'
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -511,6 +621,7 @@ export default function ExamCreated() {
                         }
                       ]}
                       disabled={!examTimeLimitEnabled}
+                      backgroundColor='#D9E2ED'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -548,6 +659,7 @@ export default function ExamCreated() {
                       label: "Tự động hủy bài làm khi hết thời gian"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -566,6 +678,7 @@ export default function ExamCreated() {
                       label: (i + 1).toString()
                     }))
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -588,6 +701,7 @@ export default function ExamCreated() {
                       label: "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
@@ -610,6 +724,7 @@ export default function ExamCreated() {
                       label: "Chủ đề 3"
                     }
                   ]}
+                  backgroundColor='#D9E2ED'
                 />
               </Box>
               <LoadButton

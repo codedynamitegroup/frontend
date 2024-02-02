@@ -1,6 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
@@ -15,17 +13,19 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Header, { DrawerHeader } from "components/Header";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CodeIcon from "@mui/icons-material/Code";
 
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
   {
     name: "Trang chủ",
-    icon: <FontAwesomeIcon icon={faPeopleRoof} size='lg' className={classes.itemIcon} />,
-    link: routes.lecturer.course_management.path
+    icon: <DashboardIcon className={classes.itemIcon} />,
+    link: routes.lecturer.course.management
   },
   {
     name: "Quản lý câu hỏi code",
-    icon: <FontAwesomeIcon icon={faPeopleRoof} size='lg' className={classes.itemIcon} />,
+    icon: <CodeIcon className={classes.itemIcon} />,
     link: routes.lecturer.code_question.management
   }
 ];

@@ -11,6 +11,7 @@ import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import { routes } from "routes/routes";
 
 interface Props {}
 
@@ -32,11 +33,13 @@ const CodeQuestionCreated = memo((props: Props) => {
         <Container className={classes.container}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate("/lecturer/code-management")}>
+              <span onClick={() => navigate(routes.lecturer.code_question.management)}>
                 Quản lý câu hỏi code
               </span>{" "}
               {">"}{" "}
-              <span onClick={() => navigate("/lecturer/code-management/create")}>Tạo câu hỏi</span>
+              <span onClick={() => navigate(routes.lecturer.code_question.create)}>
+                Tạo câu hỏi
+              </span>
             </ParagraphBody>
           </Box>
           <Box component='form' className={classes.formBody} autoComplete='off'>

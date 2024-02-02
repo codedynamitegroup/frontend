@@ -14,6 +14,7 @@ import { Divider, Grid, InputAdornment } from "@mui/material";
 interface PropsData {
   onSearchClick: any;
   placeHolder?: string;
+  maxWidth?: string;
 }
 
 const SearchBar = (props: PropsData) => {
@@ -37,7 +38,13 @@ const SearchBar = (props: PropsData) => {
   }, [searchText]);
 
   return (
-    <Grid container className={classes.gridContainer}>
+    <Grid
+      container
+      className={classes.gridContainer}
+      style={{
+        maxWidth: props.maxWidth ? props.maxWidth : "600px"
+      }}
+    >
       <Grid item xs={12} md={12} sm={12} lg={12}>
         <FormControl className={classes.formWrapper}>
           <Paper className={classes.container}>

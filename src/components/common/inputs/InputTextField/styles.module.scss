@@ -8,10 +8,8 @@
   color: var(--gray-80);
   margin: 0;
 }
-
 .inputContainer {
-  width: 100% !important;
-  flex-direction: row !important;
+  flex-direction: row;
   gap: 20px;
   align-items: center;
 }

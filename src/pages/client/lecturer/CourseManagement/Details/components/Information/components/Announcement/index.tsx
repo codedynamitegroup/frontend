@@ -19,6 +19,7 @@ const CourseAnnouncement = () => {
     <Box className={classes.container}>
       <Accordion expanded={announcementExpansion} className={classes.accordionContainer}>
         <AccordionSummary
+          className={classes.accordionSummary}
           onClick={() => {
             setAnnouncementExpansion(true);
           }}

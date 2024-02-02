@@ -116,6 +116,7 @@ export default function ProblemTable() {
     <Box className={classes.container}>
       <Box className={classes.filterSearch}>
         <Autocomplete
+          size='small'
           disablePortal
           id='combo-box-demo'
           options={status}
@@ -124,12 +125,14 @@ export default function ProblemTable() {
         />
         <Autocomplete
           disablePortal
+          size='small'
           id='combo-box-demo'
           options={difficulty}
           fullWidth
           renderInput={(params) => <TextField {...params} label='Độ khó' />}
         />
         <OutlinedInput
+          size='small'
           fullWidth
           placeholder='Tìm kiếm'
           startAdornment={
