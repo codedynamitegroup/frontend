@@ -9,8 +9,8 @@
   margin: 0;
 }
 
-.inputContainer {
-  flex-direction: row !important;
+[class~="MuiFormControl-root"] {
+  flex-direction: row;
   gap: 20px;
   align-items: center;
 }

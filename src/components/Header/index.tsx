@@ -22,6 +22,15 @@ import Heading4 from "components/text/Heading4";
 const pages = ["Khám phá", "Luyện tập", "Cuộc thi"];
 const auth = ["Đăng nhập", "Đăng ký"];
 
+export const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: "flex-end"
+}));
+
 function Header() {
   const drawerWidth = 240;
 
@@ -32,6 +41,7 @@ function Header() {
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open"
   })<AppBarProps>(({ theme, open }) => ({
+    boxShadow: "none",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -44,15 +54,6 @@ function Header() {
         duration: theme.transitions.duration.enteringScreen
       })
     })
-  }));
-
-  const DrawerHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
   }));
 
   const theme = useTheme();
@@ -119,6 +120,7 @@ function Header() {
           </Box>
         </Toolbar>
         <Drawer
+          className={classes.drawer}
           sx={{
             width: drawerWidth,
             flexShrink: 0,

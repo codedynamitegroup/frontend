@@ -17,7 +17,9 @@ interface InputsProps extends OutlinedInputProps {
   errorMessage?: string | null;
   optional?: boolean;
   readOnly?: boolean;
+  disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  backgroundColor?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -32,28 +34,34 @@ const InputTextField = memo((props: InputsProps) => {
     errorMessage,
     autoComplete,
     readOnly,
-    onChange
+    disabled,
+    onChange,
+    backgroundColor
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
     <>
       <FormControl className={classes.inputContainer}>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={title ? 3 : 0}>
+          <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
             {title && <TextTitle>{title}</TextTitle>}
           </Grid>
-          <Grid item xs={title ? 9 : 12}>
+          <Grid item xs={title ? 12 : 12} md={title ? 9 : 0}>
             <OutlinedInput
               placeholder={placeholder}
               fullWidth
               size='small'
               readOnly={readOnly}
+              disabled={disabled}
               name={name}
               type={type}
               classes={{
                 root: clsx(classes.inputTextfield, {
                   [classes.inputInvalid]: !!errorMessage
                 })
+              }}
+              style={{
+                backgroundColor: backgroundColor || "white"
               }}
               defaultValue={defaultValue}
               value={value}

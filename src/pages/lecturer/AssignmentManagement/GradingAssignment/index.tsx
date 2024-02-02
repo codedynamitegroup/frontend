@@ -1,20 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Box,
-  Card,
-  CssBaseline,
-  Divider,
-  Drawer,
-  FormControl,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Toolbar
-} from "@mui/material";
+import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
@@ -22,6 +9,7 @@ import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
+import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
@@ -88,7 +76,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function AssignmentCreated() {
+export default function AssignmentGrading() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -197,47 +185,54 @@ export default function AssignmentCreated() {
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Dạng bài tập</TextTitle>
               <ChipMultipleFilter
-                label='Dạng bài tập'
+                label=''
                 defaultChipList={["Tự luận", "Nộp tệp"]}
                 filterList={assignmentTypes}
                 onFilterListChangeHandler={setAssignmentTypes}
                 readOnly={true}
+                backgroundColor='#D9E2ED'
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Sinh viên</TextTitle>
-              <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small'>
-                <InputLabel id='select-assignment-submission-student-label'>
-                  Chọn sinh viên
-                </InputLabel>
-                <Select
-                  labelId='select-assignment-submission-student-label'
-                  id='select-assignment-submission-student'
-                  value={assignmentSubmissionStudent}
-                  label='Chọn sinh viên'
-                  onChange={(e) => setAssignmentSubmissionStudent(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value={0}>
-                    <Box>
-                      <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={1}>
-                    <Box>
-                      <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={2}>
-                    <Box>
-                      <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                      <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
-                    </Box>
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <BasicSelect
+                labelId='select-assignment-submission-student-label'
+                value={assignmentSubmissionStudent}
+                onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
+                items={[
+                  {
+                    value: "0",
+                    label: "Nguyễn Văn A",
+                    customNode: (
+                      <Box>
+                        <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
+                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                      </Box>
+                    )
+                  },
+                  {
+                    value: "1",
+                    label: "Nguyễn Văn B",
+                    customNode: (
+                      <Box>
+                        <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
+                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                      </Box>
+                    )
+                  },
+                  {
+                    value: "2",
+                    label: "Nguyễn Văn C",
+                    customNode: (
+                      <Box>
+                        <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
+                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                      </Box>
+                    )
+                  }
+                ]}
+                backgroundColor='#D9E2ED'
+              />
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Điểm trên thang điểm 100</TextTitle>
@@ -246,6 +241,7 @@ export default function AssignmentCreated() {
                 value={assignmentMaximumGrade}
                 onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
                 placeholder='Nhập điểm tối đa'
+                backgroundColor='#D9E2ED'
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>

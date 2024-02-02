@@ -24,6 +24,7 @@ interface ChipFilterPropData {
   filterList: Array<string>;
   onFilterListChangeHandler: any;
   readOnly?: boolean;
+  backgroundColor?: string;
 }
 
 const ChipMultipleFilter = (props: ChipFilterPropData) => {
@@ -42,6 +43,9 @@ const ChipMultipleFilter = (props: ChipFilterPropData) => {
       <FormControl className={classes.formWrapperContainer}>
         <InputLabel id='multipleChipLabel'>{props.label}</InputLabel>
         <Select
+          style={{
+            backgroundColor: props.backgroundColor || "white"
+          }}
           id='multipleChip'
           labelId='demo-multipleChipLabel-chip-label'
           multiple

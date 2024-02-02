@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React, { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
-import TestCasePopup from "./components/PopupAddTestCase";
+import TestCasePopup from "./components/PopupTestCase";
 import Heading5 from "components/text/Heading5";
 import {
   GridRowsProp,
@@ -20,18 +20,20 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
 
 type Props = {};
 
 const CodeQuestionTestCases = memo((props: Props) => {
   const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
+  const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
 
   const initialRows: GridRowsProp = [
     {
       id: 1,
-      input: "input01.txt",
-      output: "output01.txt",
+      input: "input01",
+      output: "output01",
       inputValue: "1\n2",
       outputValue: "3",
       isSample: true,
@@ -39,8 +41,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       id: 2,
-      input: "input02.txt",
-      output: "output02.txt",
+      input: "input02",
+      output: "output02",
       inputValue: "3\n2",
       outputValue: "5",
       isSample: true,
@@ -48,8 +50,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       id: 3,
-      input: "input03.txt",
-      output: "output03.txt",
+      input: "input03",
+      output: "output03",
       inputValue: "2\n2",
       outputValue: "4",
       isSample: true,
@@ -57,8 +59,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       id: 4,
-      input: "input04.txt",
-      output: "output04.txt",
+      input: "input04",
+      output: "output04",
       inputValue: "3\n3",
       outputValue: "6",
       isSample: false,
@@ -66,8 +68,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       id: 5,
-      input: "input05.txt",
-      output: "output05.txt",
+      input: "input05",
+      output: "output05",
       inputValue: "5\n2",
       outputValue: "7",
       isSample: false,
@@ -75,8 +77,8 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       id: 6,
-      input: "input06.txt",
-      output: "output06.txt",
+      input: "input06",
+      output: "output06",
       inputValue: "2\n12",
       outputValue: "14",
       isSample: false,
@@ -102,7 +104,9 @@ const CodeQuestionTestCases = memo((props: Props) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {};
+  const handleDeleteClick = (id: GridRowId) => () => {
+    setOpenConfirmAlert(true);
+  };
 
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
@@ -208,6 +212,10 @@ const CodeQuestionTestCases = memo((props: Props) => {
     }
   ];
 
+  const handleDelete = () => {
+    setOpenConfirmAlert(false);
+  };
+
   return (
     <Box className={classes["body"]}>
       <Box className={classes["head-wrapper"]}>
@@ -239,6 +247,13 @@ const CodeQuestionTestCases = memo((props: Props) => {
         open={openTestCasePopup}
         setOpen={setOpenTestCasePopup}
         setItemEdit={setItemEdit}
+      />
+      <ConfirmAlert
+        open={openConfirmAlert}
+        setOpen={setOpenConfirmAlert}
+        title='Xác nhận xóa?'
+        content='Bạn có chắc chắn muốn xóa test case này?'
+        handleDelete={handleDelete}
       />
     </Box>
   );

@@ -13,6 +13,8 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
 import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
+import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import { Container } from "@mui/material";
 
 enum EView {
   cardView = 1,
@@ -194,67 +196,81 @@ const LecturerCourseManagement = () => {
   };
 
   return (
-    <Box className={classes.container}>
-      <Typography className={classes.pageTitle}>Danh sách khóa học</Typography>
-      <SearchBar onSearchClick={searchHandle} />
+    <Grid className={classes.root}>
+      <SideBarLecturer>
+        <Container className={classes.container}>
+          <Box className={classes.body}>
+            <Typography className={classes.pageTitle}>Danh sách khóa học</Typography>
+            <SearchBar onSearchClick={searchHandle} />
 
-      <Box className={classes.featureGroup}>
-        <Box className={classes.filterContainer}>
-          <ChipMultipleFilter
-            label='Lọc theo loại'
-            defaultChipList={[]}
-            filterList={tempCategories}
-            onFilterListChangeHandler={handleCategoryFilterChange}
-          />
-        </Box>
-
-        <ToggleButtonGroup
-          className={classes.changeViewButtonGroup}
-          value={viewType}
-          exclusive
-          onChange={handleViewChange}
-        >
-          <ToggleButton value={EView.listView} aria-label='list'>
-            <ViewListIcon />
-          </ToggleButton>
-          <ToggleButton value={EView.cardView} aria-label='module'>
-            <ViewCardIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-
-      {viewType === EView.cardView ? (
-        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-          <Grid container spacing={2}>
-            {tempCourse.map((course, index) => (
-              <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
-                <CourseCard
-                  courseAvatarUrl={course.avatarUrl}
-                  courseCategory={course.category}
-                  courseName={course.name}
-                  teacherList={course.teacherList}
+            <Box className={classes.featureGroup}>
+              <Box className={classes.filterContainer}>
+                <ChipMultipleFilter
+                  label='Lọc theo loại'
+                  defaultChipList={[]}
+                  filterList={tempCategories}
+                  onFilterListChangeHandler={handleCategoryFilterChange}
                 />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ) : (
-        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-          <Grid container spacing={2}>
-            {tempCourse.map((course) => (
-              <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
-                <CourseList
-                  courseAvatarUrl={course.avatarUrl}
-                  courseCategory={course.category}
-                  courseName={course.name}
-                  teacherList={course.teacherList}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
-    </Box>
+              </Box>
+
+              <ToggleButtonGroup
+                className={classes.changeViewButtonGroup}
+                value={viewType}
+                exclusive
+                onChange={handleViewChange}
+              >
+                <ToggleButton value={EView.listView} aria-label='list'>
+                  <ViewListIcon />
+                </ToggleButton>
+                <ToggleButton value={EView.cardView} aria-label='module'>
+                  <ViewCardIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+
+            {viewType === EView.cardView ? (
+              <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+                <Grid container spacing={2}>
+                  {tempCourse.map((course, index) => (
+                    <Grid
+                      className={classes.gridItem}
+                      item
+                      key={course.id}
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                    >
+                      <CourseCard
+                        courseAvatarUrl={course.avatarUrl}
+                        courseCategory={course.category}
+                        courseName={course.name}
+                        teacherList={course.teacherList}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            ) : (
+              <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+                <Grid container spacing={2}>
+                  {tempCourse.map((course) => (
+                    <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
+                      <CourseList
+                        courseAvatarUrl={course.avatarUrl}
+                        courseCategory={course.category}
+                        courseName={course.name}
+                        teacherList={course.teacherList}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            )}
+          </Box>
+        </Container>
+      </SideBarLecturer>
+    </Grid>
   );
 };
 
