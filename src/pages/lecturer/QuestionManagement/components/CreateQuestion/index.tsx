@@ -50,7 +50,7 @@ const QuestionCreated = (props: Props) => {
           <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
-              <TextTitle>Category</TextTitle>
+              <TextTitle>Danh mục</TextTitle>
             </Grid>
             <Grid item xs={12} md={9}>
               <Select defaultValue={10} fullWidth={true} size='small' required>
@@ -111,13 +111,13 @@ const QuestionCreated = (props: Props) => {
                   </Select>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét trả lời true</TextTitle>
+                  <TextTitle>Nhận xét câu trả lời đúng</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét trả lời false</TextTitle>
+                  <TextTitle>Nhận xét câu trả lời sai</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />

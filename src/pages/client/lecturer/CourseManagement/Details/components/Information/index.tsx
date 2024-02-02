@@ -89,10 +89,10 @@ const LecturerCourseInformation = () => {
           <CardMedia
             component='img'
             className={classes.courseImage}
-            src='https://picsum.photos/1800/300'
+            src='https://fastly.picsum.photos/id/618/1800/300.jpg?hmac=dSj-blpDAziIOEDzEpHGBgKO33KdTfTMhydPn_opXjw'
           />
           <Typography variant='h1' className={classes.classNameOverlay}>
-            Tên khóa học dài
+            Kỹ thuật lập trình - 20CLC
           </Typography>
         </Card>
       </Grid>

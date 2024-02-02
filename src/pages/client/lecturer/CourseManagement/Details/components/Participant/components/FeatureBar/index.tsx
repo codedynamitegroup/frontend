@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -12,6 +11,7 @@ import classes from "./style.module.scss";
 import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useState } from "react";
 import SearchBar from "components/common/search/SearchBar";
+import Button, { BtnType } from "components/common/buttons/Button";
 
 const CourseParticipantFeatureBar = () => {
   const searchBarHandler = (val: string) => {
@@ -43,7 +43,11 @@ const CourseParticipantFeatureBar = () => {
         </FormControl>
       </Box>
 
-      <Button startIcon={<ExportIcon />} variant='outlined' className={classes.exportButton}>
+      <Button
+        btnType={BtnType.Primary}
+        startIcon={<ExportIcon sx={{ color: "white" }} />}
+        sx={{ marginLeft: "15px", marginBottom: "10px" }}
+      >
         Xuất dữ liệu
       </Button>
     </Paper>

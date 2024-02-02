@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -15,6 +14,7 @@ import classes from "./style.module.scss";
 import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useState } from "react";
 import SearchBar from "components/common/search/SearchBar";
+import Button, { BtnType } from "components/common/buttons/Button";
 
 interface QuestionsFeatureBarProps {
   colSearchLabel?: string;
@@ -51,7 +51,7 @@ const QuestionsFeatureBar = ({
           <Grid item xs={6}>
             <SearchBar onSearchClick={searchBarHandler} maxWidth='100%' />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControl className={classes.colSearchContainer}>
               <InputLabel id='colSearch'>{colSearchLabel}</InputLabel>
               <Select
@@ -71,7 +71,7 @@ const QuestionsFeatureBar = ({
           {shuffleQuestionsLabel && (
             <Grid
               item
-              xs={2}
+              xs={3}
               style={{
                 display: "flex",
                 justifyContent: "flex-end"
@@ -83,7 +83,6 @@ const QuestionsFeatureBar = ({
                     checked={isShuffleQuestions}
                     onChange={handleShuffleQuestionsChange}
                     name='shuffleQuestions'
-                    color='primary'
                   />
                 }
                 label={shuffleQuestionsLabel || "Xáo trộn câu hỏi"}
@@ -92,7 +91,11 @@ const QuestionsFeatureBar = ({
           )}
         </Grid>
       </Box>
-      <Button startIcon={<ExportIcon />} variant='outlined' className={classes.exportButton}>
+      <Button
+        btnType={BtnType.Primary}
+        startIcon={<ExportIcon sx={{ color: "white" }} />}
+        sx={{ marginLeft: "15px", marginBottom: "10px" }}
+      >
         Xuất dữ liệu
       </Button>
     </Paper>

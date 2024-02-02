@@ -49,7 +49,7 @@ const LecturerCourseAssignment = () => {
                 onClick: onCreateNewAssignment
               },
               {
-                label: "Từ bài kiểm tra",
+                label: "Tạo bài kiểm tra",
                 onClick: onCreateNewExam
               }
             ]}

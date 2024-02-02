@@ -222,7 +222,7 @@ export default function ExamCreated() {
       },
       {
         field: "action",
-        headerName: "Actions",
+        headerName: "Hành động",
         type: "actions",
         minWidth: 200,
         getActions: (params) => [
