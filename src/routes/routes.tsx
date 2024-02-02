@@ -22,7 +22,7 @@ export const routes = {
   user: {
     problem: {
       list: "/problem",
-      detail: "/problem/:name"
+      detail: "/problem/:id"
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"
