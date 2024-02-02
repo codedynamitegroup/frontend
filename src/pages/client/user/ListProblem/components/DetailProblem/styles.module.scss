@@ -26,8 +26,8 @@
   }
   .tabContent {
     background-color: white !important;
-    height: calc(100vh - 110px);
     width: 100%;
+    height: calc(100vh - 110px) !important;
     border: 1px solid #dadada;
     border-radius: 8px;
     .tabPanelTopic {

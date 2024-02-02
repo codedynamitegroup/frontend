@@ -200,7 +200,7 @@ export default function ListSolution() {
       }
     };
   }, [stickyFilterRef]);
-  const [solutionDetail, setSolutionDetail] = useState(false);
+  const [solutionDetail, setSolutionDetail] = useState(true);
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);
   };
