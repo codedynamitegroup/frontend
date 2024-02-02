@@ -50,7 +50,12 @@ const CustomDataGrid = (props: DataGridProps) => {
   };
 
   return (
-    <Box className={classes.container}>
+    <Box
+      className={classes.container}
+      sx={{
+        width: "100%"
+      }}
+    >
       <DataGrid
         rows={dataList}
         columns={tableHeader}

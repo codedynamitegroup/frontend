@@ -181,21 +181,18 @@ export default function ExamCreated() {
       {
         field: "name",
         headerName: "Tên câu hỏi",
-        width: 200,
-        flex: 0.8,
+        minWidth: 250,
         renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
       },
       {
         field: "description",
         headerName: "Mô tả câu hỏi",
-        width: 200,
-        flex: 0.8
+        minWidth: 500
       },
       {
         field: "max_grade",
         headerName: "Điểm tối đa",
-        width: 50,
-        flex: 0.4,
+        minWidth: 50,
         renderCell: (params) => (
           <InputTextField
             type='number'
@@ -209,16 +206,14 @@ export default function ExamCreated() {
       {
         field: "type",
         headerName: "Kiểu",
-        width: 50,
-        flex: 0.4,
+        minWidth: 150,
         renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
       {
         field: "action",
         headerName: "Actions",
         type: "actions",
-        width: 200,
-        flex: 0.5,
+        minWidth: 200,
         getActions: () => [
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />

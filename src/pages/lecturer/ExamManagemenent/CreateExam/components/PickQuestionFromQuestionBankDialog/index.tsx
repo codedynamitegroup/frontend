@@ -58,7 +58,7 @@ export default function PickQuestionFromQuestionBankDialog({
       description: "Who is the father of Software Engineering?",
       max_grade: 10,
       type: {
-        value: "multiple-choice",
+        value: "multiple_choice",
         label: "Trắc nghiệm"
       }
     },
@@ -89,21 +89,18 @@ export default function PickQuestionFromQuestionBankDialog({
       {
         field: "name",
         headerName: "Tên câu hỏi",
-        width: 200,
-        flex: 0.8,
+        minWidth: 250,
         renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
       },
       {
         field: "description",
         headerName: "Mô tả câu hỏi",
-        width: 200,
-        flex: 0.8
+        minWidth: 400
       },
       {
         field: "type",
         headerName: "Kiểu",
-        width: 50,
-        flex: 0.4,
+        minWidth: 150,
         renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       }
     ],
