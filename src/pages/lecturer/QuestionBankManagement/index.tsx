@@ -30,7 +30,7 @@ const QuestionBankManagement = () => {
       <Button onClick={() => setOpen1(true)}>Preview trắc nghiệm</Button>
       <PreviewMultipleChoice
         open={open1}
-        toggleOpen={setOpen1}
+        setOpen={setOpen1}
         aria-labelledby={"customized-dialog-title"}
         maxWidth={maxWidth}
         fullWidth

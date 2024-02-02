@@ -20,13 +20,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import React, { useState, useRef } from "react";
 import { blue, grey, red, yellow } from "@mui/material/colors";
 interface PreviewMultipleChoiceProps extends DialogProps {
-  toggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewMultipleChoice = ({ toggleOpen, ...props }: PreviewMultipleChoiceProps) => {
+const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
   const [value1, setValue1] = useState<String>();
   const [submitedValue1, setSubmitedValue1] = useState<String>();
-  const radioRef = useRef<HTMLButtonElement>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue1((event.target as HTMLInputElement).value);
@@ -38,7 +37,7 @@ const PreviewMultipleChoice = ({ toggleOpen, ...props }: PreviewMultipleChoicePr
       </DialogTitle>
       <IconButton
         aria-label='close'
-        onClick={() => toggleOpen(false)}
+        onClick={() => setOpen(false)}
         sx={{
           position: "absolute",
           right: 8,
@@ -59,19 +58,12 @@ const PreviewMultipleChoice = ({ toggleOpen, ...props }: PreviewMultipleChoicePr
           <Grid item xs={12} md={10}>
             <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
               <Typography gutterBottom>Con trỏ là gì?</Typography>
-
+              <Typography>Chọn một trong các đáp án sau:</Typography>
               <FormControl>
-                <FormLabel id='guide-text'>Chọn một trong các đáp án sau:</FormLabel>
-                <RadioGroup
-                  aria-labelledby='guide-text'
-                  defaultValue='female'
-                  name='radio-buttons-group'
-                  value={value1}
-                  onChange={handleChange}
-                >
+                <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>
                   <FormControlLabel
                     value='1'
-                    control={<Radio ref={radioRef} />}
+                    control={<Radio />}
                     label={
                       <Stack direction={"row"} spacing={1}>
                         <Box
@@ -101,13 +93,12 @@ const PreviewMultipleChoice = ({ toggleOpen, ...props }: PreviewMultipleChoicePr
             onClick={() => {
               setSubmitedValue1(undefined);
               setValue1(undefined);
-              radioRef.current?.setAttribute("checked", "false");
             }}
           >
             Bắt đầu lại
           </Button>
           <Button onClick={() => setSubmitedValue1(value1)}>Kiểm tra kết quả</Button>
-          <Button>Đóng preview</Button>
+          <Button onClick={() => setOpen(false)}>Đóng preview</Button>
         </Stack>
       </Grid>
     </Dialog>
