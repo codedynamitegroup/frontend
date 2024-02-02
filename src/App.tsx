@@ -71,6 +71,10 @@ const router = createBrowserRouter(
         path={routes.user.course.grade.path}
         element={<routes.user.course.grade.Component />}
       />
+      <Route
+        path={routes.user.course.participant.path}
+        element={<routes.user.course.participant.Component />}
+      />
     </Route>
   )
 );

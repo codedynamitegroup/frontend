@@ -4,6 +4,7 @@ import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 import StudentCourseDetail from "pages/client/student/CourseDetail";
 import StudentCourseGrade from "pages/client/student/CourseGrade";
+import StudentCourseParticipant from "pages/client/student/CourseParticipant";
 
 export const routes = {
   lecturer: {
@@ -54,7 +55,8 @@ export const routes = {
     },
     course: {
       detail: { path: "student/courses/:id/detail", Component: StudentCourseDetail },
-      grade: { path: "student/courses/:id/grade", Component: StudentCourseGrade }
+      grade: { path: "student/courses/:id/grade", Component: StudentCourseGrade },
+      participant: { path: "student/courses/:id/participant", Component: StudentCourseParticipant }
     }
   }
 };

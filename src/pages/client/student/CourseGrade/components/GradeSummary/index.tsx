@@ -9,7 +9,7 @@ const GradeSummary = () => {
           <Box className={classes.courseDetail}>
             <Box>
               <Typography variant='h4'>Tên khóa học</Typography>
-              <Typography sx={{ color: "var(--gray-20)" }}>mô tả khóa học</Typography>
+              <Typography sx={{ color: "var(--gray-50)" }}>mô tả khóa học</Typography>
             </Box>
             <Button startIcon={<ExportIcon />} variant='outlined' className={classes.exportButton}>
               Xuất dữ liệu
@@ -18,15 +18,27 @@ const GradeSummary = () => {
         </Grid>
 
         <Grid item xs={2} sx={{ m: 1 }}>
-          <Typography sx={{ color: "var(--gray-30)" }}>Điểm trung bình</Typography>
-          <Box component='span' className={classes.textBadge}>
-            <Typography variant='h5'>100</Typography>
+          <Typography sx={{ color: "var(--gray-50)" }}>Điểm trung bình</Typography>
+          <Box
+            component='span'
+            className={classes.textBadge}
+            sx={{ backgroundColor: "var(--green-200)" }}
+          >
+            <Typography variant='h5' className={classes.badgeTypoText}>
+              100
+            </Typography>
           </Box>
         </Grid>
         <Grid item xs={2} sx={{ m: 1 }}>
-          <Typography sx={{ color: "var(--gray-30)" }}>Số mục đã nộp</Typography>
-          <Box component='span' className={classes.textBadge}>
-            <Typography variant='h5'>7</Typography>
+          <Typography sx={{ color: "var(--gray-50)" }}>Số mục đã nộp</Typography>
+          <Box
+            component='span'
+            className={classes.textBadge}
+            sx={{ backgroundColor: "var(--blue-200)" }}
+          >
+            <Typography variant='h5' className={classes.badgeTypoText}>
+              7
+            </Typography>
           </Box>
         </Grid>
       </Grid>
