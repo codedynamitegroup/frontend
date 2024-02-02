@@ -52,9 +52,9 @@ const CustomDataGrid = (props: DataGridProps) => {
   return (
     <Box
       className={classes.container}
-      sx={{
-        width: "100%"
-      }}
+      // sx={{
+      //   width: "100%"
+      // }}
     >
       <DataGrid
         rows={dataList}
