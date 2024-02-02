@@ -47,7 +47,12 @@ const SearchBar = (props: PropsData) => {
     >
       <Grid item xs={12} md={12} sm={12} lg={12}>
         <FormControl className={classes.formWrapper}>
-          <Paper className={classes.container}>
+          <Paper
+            className={classes.container}
+            style={{
+              width: "100%"
+            }}
+          >
             <InputBase
               className={classes.inputField}
               placeholder={placeHolder ? placeHolder : "Tìm kiếm"}

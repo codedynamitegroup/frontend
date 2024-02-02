@@ -1,3 +1,4 @@
+import * as React from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -17,7 +18,6 @@ import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
