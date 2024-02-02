@@ -45,8 +45,8 @@ export const routes = {
   },
   user: {
     problem: {
-      list: "/problem",
-      detail: "/problem/:id"
+      list: "/problems",
+      detail: "/problems/:id"
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"
