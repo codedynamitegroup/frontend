@@ -41,6 +41,7 @@ function Header() {
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open"
   })<AppBarProps>(({ theme, open }) => ({
+    boxShadow: "none",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -119,6 +120,7 @@ function Header() {
           </Box>
         </Toolbar>
         <Drawer
+          className={classes.drawer}
           sx={{
             width: drawerWidth,
             flexShrink: 0,

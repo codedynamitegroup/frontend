@@ -60,7 +60,7 @@ const CodeQuestionDetails = memo((props: Props) => {
               {">"}{" "}
               <span
                 onClick={() => {
-                  if (id) navigate(routes.lecturer.code_question.details.replace(":id", id));
+                  if (id) navigate(pathname);
                 }}
               >
                 Tổng 2 số
