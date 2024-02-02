@@ -1,5 +1,4 @@
 import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
-import Header from "components/Header";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";

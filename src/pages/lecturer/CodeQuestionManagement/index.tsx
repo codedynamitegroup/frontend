@@ -1,5 +1,4 @@
 import { Box, Container, Grid, TablePagination } from "@mui/material";
-import Header from "components/Header";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TableTemplate from "components/common/table/TableTemplate";

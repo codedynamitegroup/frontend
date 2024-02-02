@@ -1,33 +1,38 @@
-import LecturerCourseDetail from "pages/client/lecturer/CourseDetail";
-import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
+import LecturerCourseDetail from "pages/client/lecturer/CourseManagement/Details/components/Information";
+import LecturerCourseGrade from "pages/client/lecturer/CourseManagement/Details/components/Grade";
+import LecturerCourseParticipant from "pages/client/lecturer/CourseManagement/Details/components/Participant";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
-import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 
 export const routes = {
   lecturer: {
-    code_management: "/lecturer/code-management",
     assignment_management: "/lecturer/assignment-management",
-    course_management: {
-      path: "/lecturer/course-management",
-      Component: LecturerCourseManagement
-    },
     course: {
-      detail: { path: "/lecturer/course/:courseId/detail", Component: LecturerCourseDetail },
-      assignment: { path: "/lecturer/course/:courseId/assignment" },
-      grade: { path: "/lecturer/course/:courseId/grade", Component: LecturerCourseGrade },
+      management: {
+        path: "/lecturer/courses",
+        Component: LecturerCourseManagement
+      },
+      detail: "/lecturer/courses/:courseId/*",
+      information: {
+        path: "/lecturer/courses/:courseId/information",
+        Component: LecturerCourseDetail
+      },
+      assignment: {
+        path: "/lecturer/courses/:courseId/assignment"
+      },
+      grade: { path: "/lecturer/courses/:courseId/grade", Component: LecturerCourseGrade },
       participant: {
-        path: "/lecturer/course/:courseId/participant",
+        path: "/lecturer/courses/:courseId/participant",
         Component: LecturerCourseParticipant
       }
     },
     code_question: {
-      management: "/lecturer/code-management",
-      create: "/lecturer/code-management/create",
-      details: "/lecturer/code-management/edit/:id/*",
-      information: "/lecturer/code-management/edit/:id/information",
-      test_cases: "/lecturer/code-management/edit/:id/test-cases",
-      code_stubs: "/lecturer/code-management/edit/:id/code-stubs",
-      languages: "/lecturer/code-management/edit/:id/languages"
+      management: "/lecturer/code-questions",
+      create: "/lecturer/code-questions/create",
+      detail: "/lecturer/code-questions/edit/:id/*",
+      information: "/lecturer/code-questions/edit/:id/information",
+      test_cases: "/lecturer/code-questions/edit/:id/test-cases",
+      code_stubs: "/lecturer/code-questions/edit/:id/code-stubs",
+      languages: "/lecturer/code-questions/edit/:id/languages"
     },
     assignment: {
       create: "/lecturer/assignment-management/create",

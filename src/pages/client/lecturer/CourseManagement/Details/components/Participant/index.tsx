@@ -1,8 +1,7 @@
-import { Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
-import CourseParticipantFeatureBar from "./components/FeatureBar";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
@@ -10,7 +9,8 @@ import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridAction
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "../../../../components/common/CustomDataGrid";
+import CourseParticipantFeatureBar from "./components/FeatureBar";
+import CustomDataGrid from "components/common/CustomDataGrid";
 
 const LecturerCourseParticipant = () => {
   const participantList = [
@@ -66,30 +66,28 @@ const LecturerCourseParticipant = () => {
   const totalElement = 100;
 
   return (
-    <Paper className={classes.container}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Heading1>Danh sách thành viên</Heading1>
-        </Grid>
-        <Grid item xs={12}>
-          <CourseParticipantFeatureBar />
-        </Grid>
-        <Grid item xs={12}>
-          <CustomDataGrid
-            dataList={participantList}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={false}
-          />
-        </Grid>
+    <Box className={classes.participantBody}>
+      <Grid item xs={12}>
+        <Heading1>Danh sách thành viên</Heading1>
       </Grid>
-    </Paper>
+      <Grid item xs={12}>
+        <CourseParticipantFeatureBar />
+      </Grid>
+      <Grid item xs={12}>
+        <CustomDataGrid
+          dataList={participantList}
+          tableHeader={tableHeading}
+          onSelectData={rowSelectionHandler}
+          visibleColumn={visibleColumnList}
+          dataGridToolBar={dataGridToolbar}
+          page={page}
+          pageSize={pageSize}
+          totalElement={totalElement}
+          onPaginationModelChange={pageChangeHandler}
+          showVerticalCellBorder={false}
+        />
+      </Grid>
+    </Box>
   );
 };
 

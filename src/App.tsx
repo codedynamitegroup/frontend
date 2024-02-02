@@ -21,6 +21,7 @@ import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
 import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
 import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
 import qtype from "utils/constant/Qtype";
+import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -29,42 +30,19 @@ const router = createBrowserRouter(
       <Route path={routes.user.problem.list} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
 
-      <Route path={routes.lecturer.code_question.details} Component={CodeQuestionDetails} />
+      <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
       <Route path={routes.user.assignment.submission} element={<AssignmentSubmission />} />
       <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
       <Route
-        path={routes.lecturer.course_management.path}
-        element={<routes.lecturer.course_management.Component />}
+        path={routes.lecturer.course.management.path}
+        element={<routes.lecturer.course.management.Component />}
       />
 
-      <Route
-        element={
-          <CustomTabPanel
-            routeList={[
-              routes.lecturer.course.detail.path,
-              routes.lecturer.course.grade.path,
-              routes.lecturer.course.participant.path
-            ]}
-            labelList={["Lớp học", "Bài tập", "Điểm", "Thành viên"]}
-          />
-        }
-      >
-        <Route
-          path={routes.lecturer.course.grade.path}
-          element={<routes.lecturer.course.grade.Component />}
-        />
-        <Route
-          path={routes.lecturer.course.detail.path}
-          element={<routes.lecturer.course.detail.Component />}
-        />
-        <Route
-          path={routes.lecturer.course.participant.path}
-          element={<routes.lecturer.course.participant.Component />}
-        />
-      </Route>
+      <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
+
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
