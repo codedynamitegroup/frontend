@@ -58,7 +58,6 @@ const router = createBrowserRouter(
         element={<QuestionCreated qtype={qtype.true_false.code} />}
       />
       <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
-      <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
     </Route>
   )
 );

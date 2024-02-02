@@ -44,6 +44,12 @@ import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialo
 import classes from "./styles.module.scss";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 import { routes } from "routes/routes";
+import PreviewIcon from "@mui/icons-material/Preview";
+import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
+import qtype from "utils/constant/Qtype";
+import PreviewEssay from "components/dialog/preview/PreviewEssay";
+import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
+import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 
 const drawerWidth = 400;
 
@@ -51,6 +57,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
+  width: `calc(100% - ${drawerWidth}px)`,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
@@ -132,7 +139,11 @@ export default function ExamCreated() {
 
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
-
+  const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
+    React.useState(false);
+  const [openPreviewEssay, setOpenPreviewEssay] = React.useState(false);
+  const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
+  const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const questionList = [
     {
       id: 4,
@@ -140,8 +151,8 @@ export default function ExamCreated() {
       description: "Hãy cho biết con trỏ trong C++ là gì?",
       max_grade: 10,
       type: {
-        value: "essay",
-        label: "Tự luận"
+        value: qtype.multiple_choice.code,
+        label: "Trắc nghiệm"
       }
     },
     {
@@ -150,8 +161,8 @@ export default function ExamCreated() {
       description: "Who is the father of Software Engineering?",
       max_grade: 10,
       type: {
-        value: "multiple-choice",
-        label: "Trắc nghiệm"
+        value: qtype.essay.code,
+        label: "Tự luận"
       }
     },
     {
@@ -160,7 +171,7 @@ export default function ExamCreated() {
       description: "What is the full form of HTML?",
       max_grade: 10,
       type: {
-        value: "short-answer",
+        value: qtype.short_answer.code,
         label: "Trả lời ngắn"
       }
     },
@@ -170,7 +181,7 @@ export default function ExamCreated() {
       description: "HTML stands for Hyper Text Markup Language",
       max_grade: 10,
       type: {
-        value: "true-false",
+        value: qtype.true_false.code,
         label: "Đúng/Sai"
       }
     }
@@ -211,11 +222,31 @@ export default function ExamCreated() {
       },
       {
         field: "action",
-        headerName: "Actions",
+        headerName: "Hành động",
         type: "actions",
         minWidth: 200,
-        getActions: () => [
+        getActions: (params) => [
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            onClick={() => {
+              switch (params.row.type.value) {
+                case qtype.multiple_choice.code:
+                  setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
+                  break;
+                case qtype.essay.code:
+                  setOpenPreviewEssay(!openPreviewEssay);
+                  break;
+                case qtype.short_answer.code:
+                  setOpenPreviewShortAnswer(!openPreviewShortAnswer);
+                  break;
+                case qtype.true_false.code:
+                  setOpenPreviewTrueFalse(!openPreviewTrueFalse);
+                  break;
+              }
+            }}
+            icon={<PreviewIcon />}
+            label='Preview'
+          />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
         ]
       }
@@ -325,6 +356,35 @@ export default function ExamCreated() {
         questionType={questionType}
         handleChangeQuestionType={handleChangeQuestionType}
       />
+      <PreviewMultipleChoice
+        open={openPreviewMultipleChoiceDialog}
+        setOpen={setOpenPreviewMultipleChoiceDialog}
+        aria-labelledby={"customized-dialog-title1"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewEssay
+        open={openPreviewEssay}
+        setOpen={setOpenPreviewEssay}
+        aria-labelledby={"customized-dialog-title2"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewShortAnswer
+        open={openPreviewShortAnswer}
+        setOpen={setOpenPreviewShortAnswer}
+        aria-labelledby={"customized-dialog-title3"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewTrueFalse
+        open={openPreviewTrueFalse}
+        setOpen={setOpenPreviewTrueFalse}
+        aria-labelledby={"customized-dialog-title4"}
+        maxWidth='md'
+        fullWidth
+      />
+
       <PickQuestionFromQuestionBankDialog
         open={isAddQuestionFromBankDialogOpen}
         handleClose={handleCloseAddQuestionFromBankDialog}
@@ -370,10 +430,16 @@ export default function ExamCreated() {
                   fontWeight={"600"}
                 >
                   {/* TODO */}
-                  <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
+                  <span onClick={() => navigate(routes.lecturer.course.management)}>
+                    Quản lý khoá học
+                  </span>{" "}
+                  {"> "}
                   <span onClick={() => navigate("/")}>CS202 - Nhập môn lập trình</span> {"> "}
-                  <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                  <span onClick={() => navigate("/lecturer/exam-management/create")}>
+                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                    Xem bài tập
+                  </span>{" "}
+                  {"> "}
+                  <span onClick={() => navigate(routes.lecturer.exam.create)}>
                     Tạo bài kiểm tra
                   </span>
                 </ParagraphBody>
@@ -419,6 +485,7 @@ export default function ExamCreated() {
                   triggerButtonProps={{
                     width: "150px"
                   }}
+                  btnType={BtnType.Outlined}
                   menuItems={[
                     {
                       label: "Tạo câu hỏi mới",

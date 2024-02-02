@@ -45,10 +45,11 @@ type Props = {
   value: string;
   placeholder?: string;
   onChange?: OnChangeHandler;
+  readOnly?: boolean;
   [key: string]: any;
 };
 
-const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", ...props }) => {
+const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", readOnly, ...props }) => {
   const reactQuillRef: any = useRef(null);
 
   const modules = React.useMemo(
@@ -111,13 +112,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", ...pro
                 quality: 0.7
               })
               .then((miniImageData) => {
-                // const blob = miniImageData.toBlob();
                 const file = miniImageData.toFile("my_cool_image.png");
-
-                // console.log(`type: ${type}`);
-                // console.log(`dataUrl: ${dataUrl}`);
-                // console.log(`blob: ${blob}`);
-                // console.log(`file: ${file}`);
 
                 const formData = new FormData();
                 formData.append("image", file);
@@ -133,7 +128,8 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", ...pro
     <>
       <ReactQuill
         ref={reactQuillRef}
-        theme='snow'
+        theme={readOnly ? "bubble" : "snow"}
+        readOnly={readOnly}
         value={value || ""}
         modules={modules}
         formats={formats}

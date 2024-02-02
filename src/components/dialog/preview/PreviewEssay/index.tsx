@@ -15,7 +15,7 @@ import {
   Grid,
   Stack
 } from "@mui/material";
-import { Button } from "@mui/joy";
+import { Button, Textarea } from "@mui/joy";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState, useRef } from "react";
 import { blue, grey, red, yellow } from "@mui/material/colors";
@@ -23,9 +23,9 @@ interface PreviewMultipleChoiceProps extends DialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
+const PreviewEssay = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
   const [value1, setValue1] = useState<String>();
-  const [submitedValue1, setSubmitedValue1] = useState<String>();
+  const [submitedValue1, setSubmitedValue1] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue1((event.target as HTMLInputElement).value);
@@ -33,7 +33,7 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
   return (
     <Dialog {...props}>
       <DialogTitle sx={{ m: 0, p: 2 }} id={props["aria-labelledby"]}>
-        Câu 1: nhiều lựa chọn
+        Câu 1: Tự luận
       </DialogTitle>
       <IconButton
         aria-label='close'
@@ -57,40 +57,13 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
           </Grid>
           <Grid item xs={12} md={10}>
             <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
-              <Typography gutterBottom>Con trỏ là gì?</Typography>
-              <Typography>Chọn một trong các đáp án sau:</Typography>
-              <FormControl>
-                <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>
-                  <FormControlLabel
-                    value='1'
-                    control={<Radio />}
-                    label={
-                      <Stack direction={"row"} spacing={1}>
-                        <Box
-                          sx={{ backgroundColor: submitedValue1 === "1" ? red[100] : undefined }}
-                        >
-                          Tham trị đến địa chỉ bộ nhớ
-                        </Box>
-                        {submitedValue1 === "1" && (
-                          <Box sx={{ backgroundColor: yellow[100] }}>
-                            Đáp án 1 không đúng vì ...
-                          </Box>
-                        )}
-                      </Stack>
-                    }
-                  />
-                  <FormControlLabel
-                    value='2'
-                    control={<Radio />}
-                    label='Một kiểu dữ liệu dùng để lưu trữ các giá trị có thể thay đổi'
-                  />
-                  <FormControlLabel
-                    value='3'
-                    control={<Radio />}
-                    label='Tham chiếu đến địa chỉ bộ nhớ'
-                  />
-                </RadioGroup>
-              </FormControl>
+              <Typography gutterBottom>Ai là cha của SE? Nêu những thành tựu nổi bật</Typography>
+              <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={5} />
+              {submitedValue1 && (
+                <Typography sx={{ backgroundColor: yellow[100] }} gutterBottom>
+                  Nhận xét: Cha của SE là ....
+                </Typography>
+              )}
             </Box>
           </Grid>
         </Grid>
@@ -99,13 +72,12 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
         <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
           <Button
             onClick={() => {
-              setSubmitedValue1(undefined);
-              setValue1(undefined);
+              setSubmitedValue1(false);
             }}
           >
             Bắt đầu lại
           </Button>
-          <Button onClick={() => setSubmitedValue1(value1)}>Kiểm tra kết quả</Button>
+          <Button onClick={() => setSubmitedValue1(true)}>Kiểm tra kết quả</Button>
           <Button onClick={() => setOpen(false)}>Đóng preview</Button>
         </Stack>
       </Grid>
@@ -113,4 +85,4 @@ const PreviewMultipleChoice = ({ setOpen, ...props }: PreviewMultipleChoiceProps
   );
 };
 
-export default PreviewMultipleChoice;
+export default PreviewEssay;

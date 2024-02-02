@@ -11,6 +11,7 @@ interface MenuPopupProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
   triggerButtonText: string;
   triggerButtonProps?: React.ComponentProps<typeof Button>;
   menuItems: { label: string; onClick?: (popupState: any) => void }[];
+  btnType: BtnType;
 }
 
 const MenuPopup = ({
@@ -19,6 +20,7 @@ const MenuPopup = ({
   triggerButtonText,
   triggerButtonProps,
   menuItems,
+  btnType,
   ...props
 }: MenuPopupProps) => {
   return (
@@ -26,7 +28,7 @@ const MenuPopup = ({
       <PopupState variant='popover' popupId={popupId ?? "menu-popup"} {...popupProps}>
         {(popupState) => (
           <React.Fragment>
-            <Button {...bindTrigger(popupState)} btnType={BtnType.Outlined} {...triggerButtonProps}>
+            <Button {...bindTrigger(popupState)} btnType={btnType} {...triggerButtonProps}>
               {triggerButtonText}
             </Button>
             <Menu {...bindMenu(popupState)}>

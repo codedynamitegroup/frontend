@@ -8,8 +8,7 @@
   color: var(--gray-80);
   margin: 0;
 }
-
-[class~="MuiFormControl-root"] {
+.inputContainer {
   flex-direction: row;
   gap: 20px;
   align-items: center;
