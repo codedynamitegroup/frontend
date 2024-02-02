@@ -15,6 +15,7 @@ import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 import { Container } from "@mui/material";
+import Heading1 from "components/text/Heading1";
 
 enum EView {
   cardView = 1,
@@ -55,8 +56,8 @@ const LecturerCourseManagement = () => {
       id: 3,
       email: "abc",
       dob: new Date(2000, 0, 1),
-      firstName: "Tiến",
-      lastName: "Trương Gia",
+      firstName: "Yên",
+      lastName: "Nguyễn Bình",
       phone: "123456789",
       address: "217 nguyen van cu",
       avatarUrl: "avc",
@@ -200,7 +201,7 @@ const LecturerCourseManagement = () => {
       <SideBarLecturer>
         <Container className={classes.container}>
           <Box className={classes.body}>
-            <Typography className={classes.pageTitle}>Danh sách khóa học</Typography>
+            <Heading1 className={classes.pageTitle}>Danh sách khóa học</Heading1>
             <SearchBar onSearchClick={searchHandle} />
 
             <Box className={classes.featureGroup}>

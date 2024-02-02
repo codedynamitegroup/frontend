@@ -16,6 +16,7 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
+import { routes } from "routes/routes";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -41,18 +42,21 @@ const CourseCard = (props: CardProps) => {
     <Paper className={classes.cardContainer}>
       <Box className={classes.topGroup}>
         <Box className={classes.detailGroup}>
-          <Avatar className={classes.courseAvatar} src={props.courseAvatarUrl} alt='Course' />
           <Typography fontWeight='20px' fontSize='18px'>
             {props.courseCategory}
           </Typography>
         </Box>
 
         <IconButton>
-          <MoreVertIcon />
+          <MoreVertIcon sx={{ color: "white" }} />
         </IconButton>
       </Box>
       <Divider className={classes.cardDivider} />
-      <Link href='#' underline='hover' color='inherit'>
+      <Link
+        href={routes.lecturer.course.information.replace(":courseId", "1")}
+        underline='hover'
+        color='inherit'
+      >
         <Typography className={classes.courseNameText}>{props.courseName}</Typography>
       </Link>
       <List>

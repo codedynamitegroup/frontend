@@ -5,7 +5,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import { Box } from "@mui/material";
-import { Dispatch, useState } from "react";
+import { useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TextEditor from "components/editor/TextEditor";
