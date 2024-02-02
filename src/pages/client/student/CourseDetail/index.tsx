@@ -7,20 +7,8 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import EditImageIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import AddIcon from "@mui/icons-material/AddCircleOutline";
-import SettingIcon from "@mui/icons-material/Settings";
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Divider,
-  List,
-  Paper,
-  TextField
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Divider, List, Paper } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import { useState } from "react";

@@ -3,6 +3,7 @@ import LecturerCourseGrade from "pages/client/lecturer/CourseGrade";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import LecturerCourseParticipant from "pages/client/lecturer/CourseParticipant";
 import StudentCourseDetail from "pages/client/student/CourseDetail";
+import StudentCourseGrade from "pages/client/student/CourseGrade";
 
 export const routes = {
   lecturer: {
@@ -52,7 +53,8 @@ export const routes = {
       submission: "/assignments/:assignmentId/submission"
     },
     course: {
-      detail: { path: "student/courses/:id/detail", Component: StudentCourseDetail }
+      detail: { path: "student/courses/:id/detail", Component: StudentCourseDetail },
+      grade: { path: "student/courses/:id/grade", Component: StudentCourseGrade }
     }
   }
 };
