@@ -9,6 +9,7 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import CustomDataGrid from "../../../../components/common/CustomDataGrid";
 import StudentCourseGradeAssignment from "./components/CourseResource";
 import { ECourseResourceType } from "models/courseService/course";
+import GradeSummary from "./components/GradeSummary";
 
 const StudentCourseGrade = () => {
   const courseAssignmentList = [
@@ -175,7 +176,9 @@ const StudentCourseGrade = () => {
         <Grid item xs={12}>
           <Heading1>Báo cáo điểm</Heading1>
         </Grid>
-
+        <Grid item xs={12}>
+          <GradeSummary />
+        </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
             dataList={courseAssignmentList}

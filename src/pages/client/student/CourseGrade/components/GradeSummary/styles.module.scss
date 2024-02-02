@@ -1,0 +1,22 @@
+.container {
+    .courseDetail {
+        margin: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .exportButton {
+            height: 40px;
+        }
+    }
+    .textBadge {
+        width: 50px;
+        height: 50px;
+
+        border-radius: 50%;
+        background-color: var(--gray-5);
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+}
