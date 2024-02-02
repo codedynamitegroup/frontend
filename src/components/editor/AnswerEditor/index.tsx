@@ -36,11 +36,13 @@ const AnswerEditor = (props: AnswerEditorProps) => {
       container
     >
       <Grid item xs={12} md={3} textAlign={{ xs: "left", md: "right" }}>
-        {props.qtype === qtype.essay.code && `Lựa chọn ${props.answerNumber}`}
+        {props.qtype === qtype.multiple_choice.code && `Lựa chọn ${props.answerNumber}`}
         {props.qtype === qtype.short_answer.code && `Đáp án ${props.answerNumber}`}
       </Grid>
       <Grid item xs={12} md={9}>
-        {props.qtype === qtype.essay.code && <TextEditor placeholder='Nhập nội dung' value={""} />}
+        {props.qtype === qtype.multiple_choice.code && (
+          <TextEditor placeholder='Nhập nội dung' value={""} />
+        )}
         {props.qtype === qtype.short_answer.code && <TextField size='small' />}
       </Grid>
 
