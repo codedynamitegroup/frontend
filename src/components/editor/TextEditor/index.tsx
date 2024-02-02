@@ -44,7 +44,7 @@ interface OnChangeHandler {
 type Props = {
   value: string;
   placeholder?: string;
-  onChange: OnChangeHandler;
+  onChange?: OnChangeHandler;
   [key: string]: any;
 };
 

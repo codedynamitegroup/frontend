@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.scss";
 import {
   createBrowserRouter,
@@ -19,6 +18,9 @@ import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/Create";
 import CodeQuestionDetails from "pages/lecturer/CodeQuestionManagement/Details";
 import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
 
+import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
+import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
+import qtype from "utils/constant/Qtype";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -63,6 +65,24 @@ const router = createBrowserRouter(
           element={<routes.lecturer.course.participant.Component />}
         />
       </Route>
+      <Route
+        path={routes.lecturer.question.essay.create}
+        element={<QuestionCreated qtype={qtype.essay.code} />}
+      />
+      <Route
+        path={routes.lecturer.question.multiple_choice.create}
+        element={<QuestionCreated qtype={qtype.multiple_choice.code} />}
+      />
+      <Route
+        path={routes.lecturer.question.short_answer.create}
+        element={<QuestionCreated qtype={qtype.short_answer.code} />}
+      />
+      <Route
+        path={routes.lecturer.question.true_false.create}
+        element={<QuestionCreated qtype={qtype.true_false.code} />}
+      />
+      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
+      <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
     </Route>
   )
 );
