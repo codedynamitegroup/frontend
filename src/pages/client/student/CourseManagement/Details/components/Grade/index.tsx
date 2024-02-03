@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
@@ -6,17 +6,17 @@ import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "../../../../components/common/CustomDataGrid";
 import StudentCourseGradeAssignment from "./components/CourseResource";
 import { ECourseResourceType } from "models/courseService/course";
 import GradeSummary from "./components/GradeSummary";
+import CustomDataGrid from "components/common/CustomDataGrid";
 
 const StudentCourseGrade = () => {
   const courseAssignmentList = [
     {
       id: 1,
       type: ECourseResourceType.assignment,
-      item: "Test 1",
+      item: "Bài tập 1",
       weight: 0,
       grade: undefined,
       range: 100,
@@ -25,7 +25,7 @@ const StudentCourseGrade = () => {
     {
       id: 2,
       type: ECourseResourceType.assignment,
-      item: "Very Long Test 2 Name",
+      item: "Bài tập 2",
       weight: 0,
       grade: 10,
       range: 100
@@ -33,7 +33,7 @@ const StudentCourseGrade = () => {
     {
       id: 3,
       type: ECourseResourceType.assignment,
-      item: "Very Test 2 Name",
+      item: "Bài tập 3",
       weight: 0,
       grade: 10,
       range: 100
@@ -41,7 +41,7 @@ const StudentCourseGrade = () => {
     {
       id: 4,
       type: ECourseResourceType.assignment,
-      item: "Very 2 Name",
+      item: "Bài kiểm tra 1",
       weight: 0,
       grade: 10,
       range: 100
@@ -49,7 +49,7 @@ const StudentCourseGrade = () => {
     {
       id: 5,
       type: ECourseResourceType.assignment,
-      item: "Very Name",
+      item: "Bài kiểm tra 2",
       weight: 0,
       grade: 10,
       range: 100
@@ -57,7 +57,7 @@ const StudentCourseGrade = () => {
     {
       id: 6,
       type: ECourseResourceType.assignment,
-      item: "Very Name",
+      item: "Bài kiểm tra 3",
       weight: 0,
       grade: 10,
       range: 100
@@ -171,30 +171,28 @@ const StudentCourseGrade = () => {
   const totalElement = 100;
 
   return (
-    <Paper className={classes.container}>
-      <Grid container spacing={1} className={classes.gridContainer}>
-        <Grid item xs={12}>
-          <Heading1>Báo cáo điểm</Heading1>
-        </Grid>
-        <Grid item xs={12}>
-          <GradeSummary />
-        </Grid>
-        <Grid item xs={12}>
-          <CustomDataGrid
-            dataList={courseAssignmentList}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={true}
-          />
-        </Grid>
+    <Grid container spacing={1} className={classes.gridContainer}>
+      <Grid item xs={12}>
+        <Heading1>Báo cáo điểm</Heading1>
       </Grid>
-    </Paper>
+      <Grid item xs={12}>
+        <GradeSummary />
+      </Grid>
+      <Grid item xs={12}>
+        <CustomDataGrid
+          dataList={courseAssignmentList}
+          tableHeader={tableHeading}
+          onSelectData={rowSelectionHandler}
+          visibleColumn={visibleColumnList}
+          dataGridToolBar={dataGridToolbar}
+          page={page}
+          pageSize={pageSize}
+          totalElement={totalElement}
+          onPaginationModelChange={pageChangeHandler}
+          showVerticalCellBorder={true}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

@@ -12,7 +12,6 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
 import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 import { Container } from "@mui/material";
 import Heading1 from "components/text/Heading1";
 import SideBarStudent from "components/common/sidebars/SidebarStudent";
@@ -22,7 +21,7 @@ enum EView {
   listView = 2
 }
 
-const LecturerCourseManagement = () => {
+const StudentCourseManagement = () => {
   const tempTeacher: Array<User> = [
     {
       id: 1,
@@ -198,7 +197,7 @@ const LecturerCourseManagement = () => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SideBarStudent>
         <Container className={classes.container}>
           <Box className={classes.body}>
             <Heading1 className={classes.pageTitle}>Danh sách khóa học</Heading1>
@@ -270,9 +269,9 @@ const LecturerCourseManagement = () => {
             )}
           </Box>
         </Container>
-      </SideBarLecturer>
+      </SideBarStudent>
     </Grid>
   );
 };
 
-export default LecturerCourseManagement;
+export default StudentCourseManagement;

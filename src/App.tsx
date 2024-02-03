@@ -22,6 +22,8 @@ import qtype from "utils/constant/Qtype";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
 import { routes } from "routes/routes";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
+import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
+import StudentCourseManagement from "pages/client/student/CourseManagement";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,20 +41,11 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
       <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
 
+      <Route path={routes.student.course.management} element={<StudentCourseManagement />} />
+
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
 
-      <Route
-        path={routes.user.course.detail.path}
-        element={<routes.user.course.detail.Component />}
-      />
-      <Route
-        path={routes.user.course.grade.path}
-        element={<routes.user.course.grade.Component />}
-      />
-      <Route
-        path={routes.user.course.participant.path}
-        element={<routes.user.course.participant.Component />}
-      />
+      <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}

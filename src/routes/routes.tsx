@@ -1,7 +1,3 @@
-import StudentCourseDetail from "pages/client/student/CourseDetail";
-import StudentCourseGrade from "pages/client/student/CourseGrade";
-import StudentCourseParticipant from "pages/client/student/CourseParticipant";
-
 export const routes = {
   lecturer: {
     assignment_management: "/lecturer/assignment-management",
@@ -47,6 +43,16 @@ export const routes = {
       create: "/lecturer/exam-management/create"
     }
   },
+  student: {
+    course: {
+      management: "/student/courses",
+      detail: "/student/courses/:courseId/*",
+      information: "/student/courses/:courseId/information",
+      assignment: "/student/courses/:courseId/assignment",
+      grade: "/student/courses/:courseId/grade",
+      participant: "/student/courses/:courseId/participant"
+    }
+  },
   user: {
     problem: {
       list: "/problems",
@@ -54,11 +60,6 @@ export const routes = {
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"
-    },
-    course: {
-      detail: { path: "student/courses/:id/detail", Component: StudentCourseDetail },
-      grade: { path: "student/courses/:id/grade", Component: StudentCourseGrade },
-      participant: { path: "student/courses/:id/participant", Component: StudentCourseParticipant }
     }
   }
 };

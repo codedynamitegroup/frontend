@@ -1,0 +1,42 @@
+.pageTitle {
+  margin: 10px 0 0 10px;
+}
+.featureGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+
+  .changeViewButtonGroup {
+    padding: 20px;
+    height: 100%;
+  }
+  .filterContainer {
+    width: 100%;
+  }
+}
+
+.root {
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 20px;
+  background-color: var(--gray-3);
+}
+
+.container {
+  display: flex !important;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  height: 100%;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}

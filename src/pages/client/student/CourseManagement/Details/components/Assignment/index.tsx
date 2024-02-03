@@ -7,12 +7,12 @@ import { Grid } from "@mui/material";
 import Heading3 from "components/text/Heading3";
 import Heading2 from "components/text/Heading2";
 import Heading1 from "components/text/Heading1";
-import AssignmentResource from "./components/Resource";
 import MenuPopup from "components/common/menu/MenuPopup";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
+import AssignmentResource from "./Resource";
 
-const LecturerCourseAssignment = () => {
+const StudentCourseAssignment = () => {
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
   };
@@ -32,28 +32,8 @@ const LecturerCourseAssignment = () => {
     <Box className={classes.assignmentBody}>
       <Heading1>Danh sách bài tập</Heading1>
       <Grid container>
-        <Grid item xs={7}>
+        <Grid item xs={12}>
           <SearchBar onSearchClick={searchHandle} />
-        </Grid>
-        <Grid item xs={5}>
-          <MenuPopup
-            popupId='add-question-popup'
-            triggerButtonText='Thêm mới'
-            triggerButtonProps={{
-              width: "150px"
-            }}
-            btnType={BtnType.Primary}
-            menuItems={[
-              {
-                label: "Tạo bài tập",
-                onClick: onCreateNewAssignment
-              },
-              {
-                label: "Tạo bài kiểm tra",
-                onClick: onCreateNewExam
-              }
-            ]}
-          />
         </Grid>
       </Grid>
       <Box className={classes.assignmentsWrapper}>
@@ -72,4 +52,4 @@ const LecturerCourseAssignment = () => {
   );
 };
 
-export default LecturerCourseAssignment;
+export default StudentCourseAssignment;
