@@ -22,6 +22,7 @@ interface DataGridProps {
   columnGroupingModel?: any;
   showVerticalCellBorder: boolean;
   customColumnMenu?: any;
+  customFooter?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -37,7 +38,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     onPaginationModelChange,
     columnGroupingModel,
     showVerticalCellBorder,
-    customColumnMenu
+    customColumnMenu,
+    customFooter
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -93,7 +95,8 @@ const CustomDataGrid = (props: DataGridProps) => {
         }}
         slots={{
           toolbar: dataGridToolBar && dataGridToolBar.enableToolbar ? GridToolbar : null,
-          columnMenu: customColumnMenu
+          columnMenu: customColumnMenu,
+          footer: customFooter
         }}
         onPaginationModelChange={pageChangeHandler}
       />

@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 20px;
+  background-color: var(--gray-3);
+}
+
+.container {
+  display: flex !important;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  height: 100%;
+}
+
+.tabWrapper {
+  border-bottom: 1px solid var(--gray-10);
+  display: flex;
+  align-items: center;
+}
+
+.tabs {
+  & [class~="Mui-selected"] {
+    & [class~="MuiTypography-root"] {
+      font-weight: 700;
+      color: var(--blue-500);
+    }
+  }
+
+  & [class~="MuiTabs-indicator"] {
+    background-color: var(--blue-500);
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}

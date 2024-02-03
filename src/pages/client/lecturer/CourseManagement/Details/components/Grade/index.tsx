@@ -1,5 +1,4 @@
 import { Box, Grid, IconButton, ListItemIcon, ListItemText, MenuItem, Paper } from "@mui/material";
-import Link from "@mui/material/Link";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -62,12 +61,11 @@ function CustomColumnMenu(props: GridColumnMenuProps) {
 
 const LecturerCourseGrade = () => {
   const courseAssignmentList = [
-    { id: 1, name: "Test 1", range: 100 },
-    { id: 2, name: "Very Long Test 2 Name", range: 10 },
-    { id: 3, name: "Very Test 2 Name", range: 10 },
-    { id: 4, name: "Very 2 Name", range: 10 },
-    { id: 5, name: "Very Name", range: 10 },
-    { id: 6, name: "Very Name", range: 10 }
+    { id: 1, name: "Bài tập 1", range: 100 },
+    { id: 2, name: "Bài tập 2", range: 10 },
+    { id: 3, name: "Bài tập 3", range: 10 },
+    { id: 4, name: "Bài kiểm tra 1", range: 10 },
+    { id: 5, name: "Bài kiểm tra 2", range: 10 }
   ];
   const groupChildren = courseAssignmentList.map((assignment) => {
     return { field: `${assignment.id}-${assignment.name}` };
@@ -76,15 +74,14 @@ const LecturerCourseGrade = () => {
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "name",
-      headerName: "First name / Last name",
+      headerName: "Họ và tên",
       width: 100,
       flex: 0.2,
-      disableColumnMenu: true,
-      renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+      disableColumnMenu: true
     },
     {
       field: "email",
-      headerName: "Email address",
+      headerName: "Email",
       minWidth: 100,
       disableColumnMenu: true,
       flex: 0.2
@@ -96,9 +93,7 @@ const LecturerCourseGrade = () => {
       headerName: assignment.name,
       renderCell: (params: any) => (
         <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-          <Link href={`${params.row.id}`}>
-            {params.value} /{assignment.range}
-          </Link>
+          {params.value} /{assignment.range}
           <IconButton sx={{ marginLeft: "auto" }}>
             <MoreVertIcon />
           </IconButton>
@@ -126,10 +121,10 @@ const LecturerCourseGrade = () => {
     },
     { id: 2, name: "Đặng Ngọc Tiến", email: "dnt@gmail.com", roles: 2 },
     { id: 3, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 1, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 5, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 6, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 7, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 }
+    { id: 1, name: "Dương Chí Thông", email: "nqt@gmail.com", roles: 3 },
+    { id: 5, name: "Nguyễn Văn A", email: "nqt@gmail.com", roles: 3 },
+    { id: 6, name: "Nguyễn Văn B", email: "nqt@gmail.com", roles: 3 },
+    { id: 7, name: "Nguyễn Văn C", email: "nqt@gmail.com", roles: 3 }
   ];
 
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };

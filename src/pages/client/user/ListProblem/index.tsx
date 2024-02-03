@@ -1,10 +1,12 @@
 import Header from "components/Header";
-import { Box, Container, Grid, TablePagination } from "@mui/material";
+import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import LabTabs from "./components/TabTopic";
-import exp from "constants";
+import Heading1 from "components/text/Heading1";
+import Heading3 from "components/text/Heading3";
+import ParagraphBody from "components/text/ParagraphBody";
 
 const ListProblem = () => {
   const algorithms = [
@@ -31,8 +33,6 @@ const ListProblem = () => {
     "Tìm kiếm nhị phân trên cây",
     "Tìm kiếm nhị phân trên đồ thị"
   ];
-
-  const topics = ["Tất cả", "Thuật toán", "Cơ sở dữ liệu", "Javascript"];
 
   // Số lượng phần tử hiển thị ban đầu
   const [visibleItemCount, setVisibleItemCount] = useState(0);
@@ -71,11 +71,14 @@ const ListProblem = () => {
     <Grid className={classes.root}>
       <Header />
       <Container className={classes.boxContent}>
-        <Box className={classes.boxTitle}>Danh sách bài tập</Box>
-        <Box className={classes.typeAlgorithm}>Các loại giải thuật:</Box>
+        <Heading1>Danh sách bài tập</Heading1>
+        <Heading3>Các loại giải thuật:</Heading3>
         <Box className={classes.algorithm}>
-          {algorithms.slice(0, visibleItemCount).map((algorithm) => (
-            <Box className={classes.algorithmItem}>{algorithm}</Box>
+          {algorithms.slice(0, visibleItemCount).map((algorithm, index) => (
+            <Box display={"flex"} gap={1} key={index}>
+              <ParagraphBody className={classes.algorithmItem}>{algorithm}</ParagraphBody>
+              <Chip label={index} size='small' />
+            </Box>
           ))}
           {!isShow ? (
             <Button className={classes.showMoreButton} onClick={showAllItems}>

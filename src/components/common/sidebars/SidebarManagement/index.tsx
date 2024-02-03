@@ -96,9 +96,9 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
   return (
     <Box className={classes.boxContainer}>
       <Drawer variant='permanent' anchor='left' className={classes.sideBar}>
-        <Box className={classes.TitleContainer} sx={{ padding: "0 16px" }}>
+        {/* <Box className={classes.TitleContainer} sx={{ padding: "0 16px" }}>
           <Heading1>Giảng viên</Heading1>
-        </Box>
+        </Box> */}
         <Box>
           <List>
             {sideBar.map((list, index) => (

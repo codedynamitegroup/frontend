@@ -1,0 +1,23 @@
+.container {
+  border: 1px solid var(--gray-50);
+  border-radius: 5px;
+  [class~="MuiAccordionSummary-content"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  [class~="MuiAccordionDetails-root"] {
+    max-height: 220px;
+    background-color: var(--gray-3);
+    border-top: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--gray-50);
+  }
+  .accordionContainer {
+    .announcementSubject {
+      margin-bottom: 10px;
+      .MuiInputBase-root {
+        border-radius: 20px solid;
+      }
+    }
+  }
+}

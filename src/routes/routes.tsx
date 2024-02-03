@@ -42,10 +42,20 @@ export const routes = {
       create: "/lecturer/exam-management/create"
     }
   },
+  student: {
+    course: {
+      management: "/student/courses",
+      detail: "/student/courses/:courseId/*",
+      information: "/student/courses/:courseId/information",
+      assignment: "/student/courses/:courseId/assignment",
+      grade: "/student/courses/:courseId/grade",
+      participant: "/student/courses/:courseId/participant"
+    }
+  },
   user: {
     problem: {
-      list: "/problem",
-      detail: "/problem/:id"
+      list: "/problems",
+      detail: "/problems/:id"
     },
     assignment: {
       submission: "/assignments/:assignmentId/submission"

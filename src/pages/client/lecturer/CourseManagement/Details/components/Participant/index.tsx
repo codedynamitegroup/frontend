@@ -18,29 +18,29 @@ const LecturerCourseParticipant = () => {
       id: 4,
       name: "Trương Gia Tiến",
       email: "truongtien577@gmail.com",
-      roles: "JD"
+      roles: "Giảng viên"
     },
-    { id: 2, name: "Đặng Ngọc Tiến", email: "dnt@gmail.com", roles: 2 },
-    { id: 3, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 1, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 5, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 6, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 },
-    { id: 7, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: 3 }
+    { id: 2, name: "Đặng Ngọc Tiến", email: "dnt@gmail.com", roles: "Giảng viên" },
+    { id: 3, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
+    { id: 1, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
+    { id: 5, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
+    { id: 6, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
+    { id: 7, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" }
   ];
   const tableHeading: GridColDef[] = [
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "name",
-      headerName: "First name / Last name",
+      headerName: "Họ và tên",
       width: 200,
       flex: 0.8,
       renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
     },
-    { field: "email", headerName: "Email address", width: 200, flex: 0.8 },
-    { field: "roles", headerName: "Roles", width: 50, flex: 0.4 },
+    { field: "email", headerName: "Email", width: 200, flex: 0.8 },
+    { field: "roles", headerName: "Vai trò", width: 50, flex: 0.4 },
     {
       field: "action",
-      headerName: "Actions",
+      headerName: "Hành động",
       type: "actions",
       width: 200,
       flex: 0.5,

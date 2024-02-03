@@ -22,12 +22,14 @@ import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/joy/Button";
+// import Button from "@mui/joy/Button";
+import Button, { BtnType } from "components/common/buttons/Button";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import AddIcon from "@mui/icons-material/Add";
 import qtype from "utils/constant/Qtype";
+import { routes } from "routes/routes";
 
 interface Props {
   qtype: String;
@@ -40,17 +42,38 @@ const QuestionCreated = (props: Props) => {
     () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
     [props.qtype]
   );
+  const navigate = useNavigate();
 
   return (
     <Grid className={classes.root}>
       <Header />
       <Container className={classes.container}>
-        <Box className={classes.tabWrapper}>...&gt;...</Box>
+        <Box className={classes.tabWrapper}>
+          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <span onClick={() => navigate(routes.lecturer.course.management)}>
+              Quản lý khoá học
+            </span>{" "}
+            {"> "}
+            <span
+              onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
+            >
+              CS202 - Nhập môn lập trình
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+              Xem bài tập
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate(routes.lecturer.exam.create)}>Tạo bài kiểm tra</span>{" "}
+            {"> "}
+            <span>Tạo câu hỏi</span>
+          </ParagraphBody>
+        </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
           <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
-              <TextTitle>Category</TextTitle>
+              <TextTitle>Danh mục</TextTitle>
             </Grid>
             <Grid item xs={12} md={9}>
               <Select defaultValue={10} fullWidth={true} size='small' required>
@@ -111,13 +134,13 @@ const QuestionCreated = (props: Props) => {
                   </Select>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét trả lời true</TextTitle>
+                  <TextTitle>Nhận xét câu trả lời đúng</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét trả lời false</TextTitle>
+                  <TextTitle>Nhận xét câu trả lời sai</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />
@@ -139,6 +162,14 @@ const QuestionCreated = (props: Props) => {
               </Grid>
               <Grid item xs={3}>
                 <TextTitle>Xáo trộn đáp án</TextTitle>
+              </Grid>
+              <Checkbox defaultChecked />
+            </Grid>
+          )}
+          {props.qtype === qtype.short_answer.code && (
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={3}>
+                <TextTitle>Phân biệt hoa thường</TextTitle>
               </Grid>
               <Checkbox defaultChecked />
             </Grid>
@@ -174,7 +205,7 @@ const QuestionCreated = (props: Props) => {
               </Collapse>
             </div>
           )}
-          <Grid container justifyContent={"center"}>
+          {/* <Grid container justifyContent={"center"}>
             <Button
               color='primary'
               type='submit'
@@ -185,7 +216,13 @@ const QuestionCreated = (props: Props) => {
             >
               Thêm câu hỏi
             </Button>
-          </Grid>
+          </Grid> */}
+          <Box className={classes.stickyFooterContainer}>
+            <Box className={classes.phantom} />
+            <Box className={classes.stickyFooterItem}>
+              <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
+            </Box>
+          </Box>
         </Box>
       </Container>
     </Grid>
