@@ -4,12 +4,14 @@ import {
   FileAction,
   FileArray,
   FileBrowser,
+  FileBrowserProps,
   FileContextMenu,
   FileData,
   FileHelper,
   FileList,
   FileNavbar,
   FileToolbar,
+  FullFileBrowser,
   setChonkyDefaults
 } from "chonky";
 import { ChonkyIconFA } from "chonky-icon-fontawesome";
@@ -277,8 +279,8 @@ const useCustomFileMap = ({
 };
 
 // used to create timestamp string for zip filename
-export const zeroPad = (num: number) => ("0" + num).slice(-2);
-export const getTimestamp = (timestamp: Date | undefined = undefined) => {
+const zeroPad = (num: number) => ("0" + num).slice(-2);
+const getTimestamp = (timestamp: Date | undefined = undefined) => {
   if (!timestamp) timestamp = new Date();
 
   const month = zeroPad(timestamp.getUTCMonth() + 1),
@@ -291,7 +293,7 @@ export const getTimestamp = (timestamp: Date | undefined = undefined) => {
   return `${year}${month}${day}_${hour}${minute}${seconds}`;
 };
 
-export const useFolderChain = (fileMap: CustomFileMap, currentFolderId: string): FileArray => {
+const useFolderChain = (fileMap: CustomFileMap, currentFolderId: string): FileArray => {
   return useMemo(() => {
     if (!fileMap || !currentFolderId || !fileMap[currentFolderId]) return [];
 
@@ -313,7 +315,7 @@ export const useFolderChain = (fileMap: CustomFileMap, currentFolderId: string):
   }, [currentFolderId, fileMap]);
 };
 
-export const useFiles = (fileMap: CustomFileMap, currentFolderId: string): FileArray => {
+const useFiles = (fileMap: CustomFileMap, currentFolderId: string): FileArray => {
   return useMemo(() => {
     if (!fileMap || !currentFolderId || !fileMap[currentFolderId]) return [];
 
@@ -336,7 +338,7 @@ const checkExistNameInFolder = (fileMap: CustomFileMap, folderId: string, name: 
   });
 };
 
-export const useFileActionHandler = (
+const useFileActionHandler = (
   fileMap: CustomFileMap,
   currentFolderId: string,
   setCurrentFolderId: (folderId: string) => void,
@@ -412,9 +414,10 @@ export const useFileActionHandler = (
   );
 };
 
-interface FileManagerProps extends React.HTMLAttributes<HTMLDivElement> {
-  fileMap?: CustomFileMap;
-  // setFileMap?: React.Dispatch<React.SetStateAction<CustomFileMap>>;
+export type VFSProps = Partial<FileBrowserProps>;
+
+interface FileManagerProps extends VFSProps {
+  defaultFileMap?: CustomFileMap;
   onFileMapChange?: (fileMap: CustomFileMap) => void;
   defaultFileViewActionId?: string;
   disableDragAndDrop?: boolean;
@@ -423,64 +426,82 @@ interface FileManagerProps extends React.HTMLAttributes<HTMLDivElement> {
   allowedActions?: Nullable<FileAction[]> | undefined;
 }
 
-const FileManager = (props: FileManagerProps) => {
-  // specify the actions we want including any custom ones that we define
-  const rootActions = props.allowedActions ?? [
-    ChonkyActions.CreateFolder,
-    ChonkyActions.UploadFiles,
-    ChonkyActions.DownloadFiles,
-    ChonkyActions.DeleteFiles,
-    ChonkyActions.MoveFiles
-  ];
+const FileManager: React.FC<FileManagerProps> = React.memo(
+  ({
+    allowedActions,
+    defaultFileMap,
+    onFileMapChange,
+    defaultFileViewActionId,
+    disableDragAndDrop,
+    disableDefaultFileActions,
+    disableDragAndDropProvider,
+    ...props
+  }) => {
+    // specify the actions we want including any custom ones that we define
+    const rootActions = allowedActions ?? [
+      ChonkyActions.CreateFolder,
+      ChonkyActions.UploadFiles,
+      ChonkyActions.DownloadFiles,
+      ChonkyActions.DeleteFiles,
+      ChonkyActions.MoveFiles
+    ];
 
-  const {
-    fileMap,
-    currentFolderId,
-    setCurrentFolderId,
-    deleteFiles,
-    moveFiles,
-    createFolder,
-    uploadFiles,
-    downloadFiles
-  } = useCustomFileMap({
-    fileMap: props.fileMap,
-    onFileMapChange: props.onFileMapChange ?? (() => {})
-  });
+    const {
+      fileMap,
+      currentFolderId,
+      setCurrentFolderId,
+      deleteFiles,
+      moveFiles,
+      createFolder,
+      uploadFiles,
+      downloadFiles
+    } = useCustomFileMap({
+      fileMap: defaultFileMap,
+      onFileMapChange: onFileMapChange ?? (() => {})
+    });
 
-  const files = useFiles(fileMap, currentFolderId);
-  const folderChain = useFolderChain(fileMap, currentFolderId);
+    console.log("1");
 
-  const handleFileAction = useFileActionHandler(
-    fileMap,
-    currentFolderId,
-    setCurrentFolderId,
-    uploadFiles,
-    downloadFiles,
-    deleteFiles,
-    moveFiles,
-    createFolder
-  );
+    const files = useFiles(fileMap, currentFolderId);
+    const folderChain = useFolderChain(fileMap, currentFolderId);
 
-  return (
-    <div style={{ height: 300 }} {...props}>
-      {/* @ts-ignore */}
-      <FileBrowser
-        files={files}
-        folderChain={folderChain}
-        fileActions={rootActions}
-        onFileAction={handleFileAction}
-        defaultFileViewActionId={props.defaultFileViewActionId ?? ChonkyActions.EnableGridView.id}
-        disableDragAndDrop={props.disableDragAndDrop}
-        disableDefaultFileActions={props.disableDefaultFileActions}
-        disableDragAndDropProvider={props.disableDragAndDropProvider}
-      >
-        <FileNavbar />
-        <FileToolbar />
-        <FileList />
-        <FileContextMenu />
-      </FileBrowser>
-    </div>
-  );
-};
+    console.log("2");
+
+    const handleFileAction = useFileActionHandler(
+      fileMap,
+      currentFolderId,
+      setCurrentFolderId,
+      uploadFiles,
+      downloadFiles,
+      deleteFiles,
+      moveFiles,
+      createFolder
+    );
+
+    console.log("3");
+
+    return (
+      <div style={{ height: 300 }}>
+        {/* @ts-ignore */}
+        <FileBrowser
+          files={files}
+          folderChain={folderChain}
+          fileActions={rootActions}
+          onFileAction={handleFileAction}
+          defaultFileViewActionId={defaultFileViewActionId ?? ChonkyActions.EnableGridView.id}
+          disableDragAndDrop={disableDragAndDrop}
+          disableDefaultFileActions={disableDefaultFileActions}
+          disableDragAndDropProvider={disableDragAndDropProvider}
+          {...props}
+        >
+          <FileNavbar />
+          <FileToolbar />
+          <FileList />
+          <FileContextMenu />
+        </FileBrowser>
+      </div>
+    );
+  }
+);
 
 export default FileManager;

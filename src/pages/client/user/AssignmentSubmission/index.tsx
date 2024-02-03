@@ -232,14 +232,13 @@ export default function AssignmentSubmission() {
                     dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
                   ></div>
                   <FileManager
-                    style={{ height: 250 }}
-                    fileMap={assignmentFileMap}
-                    // setFileMap={setAssignmentFileMap}
-                    onFileMapChange={onAssignmentFileMapChange}
-                    defaultFileViewActionId={ChonkyActions.EnableListView.id}
-                    disableDragAndDrop={true}
-                    disableDragAndDropProvider={true}
-                    allowedActions={[ChonkyActions.DownloadFiles]}
+                  // style={{ height: 250 }}
+                  // defaultFileMap={assignmentFileMap}
+                  // onFileMapChange={onAssignmentFileMapChange}
+                  // defaultFileViewActionId={ChonkyActions.EnableListView.id}
+                  // disableDragAndDrop={true}
+                  // disableDragAndDropProvider={true}
+                  // allowedActions={[ChonkyActions.DownloadFiles]}
                   />
                 </Box>
               </Card>
@@ -259,16 +258,16 @@ export default function AssignmentSubmission() {
                     </Grid>
                     <Grid item xs={9}>
                       <FileManager
-                        style={{ height: 250 }}
-                        fileMap={submissionFileMap}
-                        // setFileMap={setSubmissionFileMap}
-                        onFileMapChange={onSubmissionFileMapChange}
-                        defaultFileViewActionId={ChonkyActions.EnableListView.id}
-                        allowedActions={[
-                          ChonkyActions.UploadFiles,
-                          ChonkyActions.DownloadFiles,
-                          ChonkyActions.DeleteFiles
-                        ]}
+                      // style={{ height: 250 }}
+                      // defaultFileMap={submissionFileMap}
+                      // setFileMap={setSubmissionFileMap}
+                      // onFileMapChange={onSubmissionFileMapChange}
+                      // defaultFileViewActionId={ChonkyActions.EnableListView.id}
+                      // allowedActions={[
+                      //   ChonkyActions.UploadFiles,
+                      //   ChonkyActions.DownloadFiles,
+                      //   ChonkyActions.DeleteFiles
+                      // ]}
                       />
                     </Grid>
                   </Grid>

@@ -32,9 +32,9 @@ const router = createBrowserRouter(
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
+      <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
-      <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
       <Route path={routes.user.assignment.submission} element={<AssignmentSubmission />} />
       <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
       <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />

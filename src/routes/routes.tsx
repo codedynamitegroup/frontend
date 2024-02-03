@@ -1,6 +1,5 @@
 export const routes = {
   lecturer: {
-    assignment_management: "/lecturer/assignment-management",
     course: {
       management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",
