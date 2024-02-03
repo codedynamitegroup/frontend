@@ -6,7 +6,7 @@ import { ReactComponent as SubmissionLogoSvg } from "assets/img/paper-upload-svg
 import { ChonkyActions } from "chonky";
 import Header from "components/Header";
 import BasicAccordion from "components/common/accordion/BasicAccordion";
-import Button from "components/common/buttons/Button";
+import Button, { BtnType } from "components/common/buttons/Button";
 import FileManager, { CustomFileMap } from "components/editor/FileManager";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
@@ -231,15 +231,16 @@ export default function AssignmentSubmission() {
                     }}
                     dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
                   ></div>
-                  <FileManager
-                  // style={{ height: 250 }}
-                  // defaultFileMap={assignmentFileMap}
-                  // onFileMapChange={onAssignmentFileMapChange}
-                  // defaultFileViewActionId={ChonkyActions.EnableListView.id}
-                  // disableDragAndDrop={true}
-                  // disableDragAndDropProvider={true}
-                  // allowedActions={[ChonkyActions.DownloadFiles]}
-                  />
+                  {/* <FileManager
+                    style={{ height: 250 }}
+                    defaultFileMap={assignmentFileMap}
+                    // setFileMap={setAssignmentFileMap}
+                    onFileMapChange={onAssignmentFileMapChange}
+                    defaultFileViewActionId={ChonkyActions.EnableListView.id}
+                    disableDragAndDrop={true}
+                    disableDragAndDropProvider={true}
+                    allowedActions={[ChonkyActions.DownloadFiles]}
+                  /> */}
                 </Box>
               </Card>
               <BasicAccordion title='Thêm bài nộp'>
@@ -276,14 +277,10 @@ export default function AssignmentSubmission() {
               <Divider />
               <Grid container direction='row' justifyContent='center' gap={1}>
                 <Grid item>
-                  <Button variant='contained' color='primary'>
-                    Lưu thay đổi
-                  </Button>
+                  <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
                 </Grid>
                 <Grid item>
-                  <Button variant='outlined' color='error'>
-                    Huỷ bỏ
-                  </Button>
+                  <Button btnType={BtnType.Outlined}>Huỷ bỏ</Button>
                 </Grid>
               </Grid>
             </Box>

@@ -9,15 +9,22 @@ import { useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TextEditor from "components/editor/TextEditor";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface Props {
   resourceTitle: string;
   resourceEndedDate: string;
 }
 const AssignmentResource = ({ resourceTitle, resourceEndedDate }: Props) => {
+  const navigate = useNavigate();
   const [resourceExpansion, setResourceExpansion] = useState(false);
   const cancelResourceHandler = () => {
     setResourceExpansion(false);
+  };
+
+  const onDetailClick = () => {
+    navigate(routes.lecturer.assignment.detail);
   };
 
   return (
@@ -42,7 +49,9 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate }: Props) => {
           <Button btnType={BtnType.Text} onClick={cancelResourceHandler}>
             Hủy
           </Button>
-          <Button btnType={BtnType.Primary}>Xem chi tiết</Button>
+          <Button btnType={BtnType.Primary} onClick={onDetailClick}>
+            Xem chi tiết
+          </Button>
         </AccordionActions>
       </Accordion>
     </Box>

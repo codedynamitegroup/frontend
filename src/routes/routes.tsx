@@ -4,7 +4,7 @@ export const routes = {
       management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",
       information: "/lecturer/courses/:courseId/information",
-      assignment: "/lecturer/courses/:courseId/assignment",
+      assignment: "/lecturer/courses/:courseId/assignments",
       grade: "/lecturer/courses/:courseId/grade",
       participant: "/lecturer/courses/:courseId/participant"
     },
@@ -18,21 +18,24 @@ export const routes = {
       languages: "/lecturer/code-questions/edit/:id/languages"
     },
     assignment: {
-      create: "/lecturer/assignment-management/create",
-      grading: "/lecturer/assignment-management/grading"
+      detail: "/lecturer/courses/:courseId/assignments/:assignmentId",
+      create: "/lecturer/courses/:courseId/assignments/create",
+      grading:
+        "/lecturer/courses/:courseId/assignments/:assignmentId/submissions/:submissionId/grading",
+      submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions"
     },
     question: {
       essay: {
-        create: "/lecturer/question-management/essay/create"
+        create: "/lecturer/questions/essay/create"
       },
       multiple_choice: {
-        create: "/lecturer/question-management/multiple-choice/create"
+        create: "/lecturer/questions/multiple-choice/create"
       },
       short_answer: {
-        create: "/lecturer/question-management/short-answer/create"
+        create: "/lecturer/questions/short-answer/create"
       },
       true_false: {
-        create: "/lecturer/question-management/true-false/create"
+        create: "/lecturer/questions/true-false/create"
       }
     },
     question_bank: {
@@ -50,15 +53,15 @@ export const routes = {
       assignment: "/student/courses/:courseId/assignment",
       grade: "/student/courses/:courseId/grade",
       participant: "/student/courses/:courseId/participant"
+    },
+    assignment: {
+      submit: "/student/assignments/:assignmentId/submit"
     }
   },
   user: {
     problem: {
       list: "/problems",
       detail: "/problems/:id"
-    },
-    assignment: {
-      submission: "/assignments/:assignmentId/submission"
     }
   }
 };

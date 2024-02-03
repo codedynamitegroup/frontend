@@ -1,15 +1,16 @@
 import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import Heading1 from "components/text/Heading1";
-import { memo, useMemo } from "react";
-import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
-import { routes } from "routes/routes";
 import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
-import LecturerCourseInformation from "./components/Information";
+import ParagraphBody from "components/text/ParagraphBody";
+import { memo, useMemo } from "react";
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
 import LecturerCourseAssignment from "./components/Assignment";
+import LecturerCourseAssignmentDetails from "./components/Assignment/AssignmentDetails";
 import LecturerCourseGrade from "./components/Grade";
+import LecturerCourseInformation from "./components/Information";
 import LecturerCourseParticipant from "./components/Participant";
+import LecturerCourseAssignmentSubmission from "./components/Submission";
+import classes from "./styles.module.scss";
 
 interface Props {}
 
@@ -33,7 +34,7 @@ const CourseDetail = memo((props: Props) => {
   }, [routes]);
 
   const activeRoute = (routeName: string) => {
-    const match = matchPath(pathname, routeName);
+    const match = pathname.startsWith(routeName);
     return !!match;
   };
 
@@ -84,7 +85,15 @@ const CourseDetail = memo((props: Props) => {
             <Box mt={2}>
               <Routes>
                 <Route path={"information"} element={<LecturerCourseInformation />} />
-                <Route path={"assignment"} element={<LecturerCourseAssignment />} />
+                <Route path={"assignments"} element={<LecturerCourseAssignment />} />
+                <Route
+                  path={"assignments/:assignmentId"}
+                  element={<LecturerCourseAssignmentDetails />}
+                />
+                <Route
+                  path={"assignments/:assignmentId/submissions"}
+                  element={<LecturerCourseAssignmentSubmission />}
+                />
                 <Route path={"grade"} element={<LecturerCourseGrade />} />
                 <Route path={"participant"} element={<LecturerCourseParticipant />} />
               </Routes>
