@@ -3,6 +3,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MenuIcon from "@mui/icons-material/Menu";
+import PreviewIcon from "@mui/icons-material/Preview";
 import {
   Box,
   Card,
@@ -31,6 +32,10 @@ import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker"
 import InputTextField from "components/common/inputs/InputTextField";
 import MenuPopup from "components/common/menu/MenuPopup";
 import BasicSelect from "components/common/select/BasicSelect";
+import PreviewEssay from "components/dialog/preview/PreviewEssay";
+import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
+import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
+import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -38,18 +43,13 @@ import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
+import qtype from "utils/constant/Qtype";
 import useWindowDimensions from "utils/useWindowDimensions";
 import QuestionsFeatureBar from "./components/FeatureBar";
+import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
-import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
-import { routes } from "routes/routes";
-import PreviewIcon from "@mui/icons-material/Preview";
-import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
-import qtype from "utils/constant/Qtype";
-import PreviewEssay from "components/dialog/preview/PreviewEssay";
-import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
-import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 
 const drawerWidth = 400;
 

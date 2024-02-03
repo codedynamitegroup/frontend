@@ -23,6 +23,7 @@ interface DataGridProps {
   showVerticalCellBorder: boolean;
   customColumnMenu?: any;
   customFooter?: any;
+  getRowHeight?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -99,6 +100,7 @@ const CustomDataGrid = (props: DataGridProps) => {
           footer: customFooter
         }}
         onPaginationModelChange={pageChangeHandler}
+        getRowHeight={props.getRowHeight}
       />
     </Box>
   );

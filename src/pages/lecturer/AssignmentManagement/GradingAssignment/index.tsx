@@ -17,6 +17,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
+import { routes } from "routes/routes";
 
 const drawerWidth = 450;
 
@@ -24,6 +25,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
+  width: `calc(100% - ${drawerWidth}px)`,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
@@ -133,11 +135,7 @@ export default function AssignmentGrading() {
                 <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
                 <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
                 <span onClick={() => navigate("/")}>Bài tập 1</span> {"> "}
-                <span
-                  onClick={() => navigate("/lecturer/assignment-management/:submissionId/grading")}
-                >
-                  Đánh giá
-                </span>
+                <span onClick={() => navigate(routes.lecturer.assignment.grading)}>Đánh giá</span>
               </ParagraphBody>
             </Box>
             <IconButton
