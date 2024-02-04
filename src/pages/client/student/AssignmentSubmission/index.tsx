@@ -258,7 +258,7 @@ export default function AssignmentSubmission() {
                       <TextTitle>Tệp bài nộp</TextTitle>
                     </Grid>
                     <Grid item xs={9}>
-                      <FileManager
+                      {/* <FileManager
                       // style={{ height: 250 }}
                       // defaultFileMap={submissionFileMap}
                       // setFileMap={setSubmissionFileMap}
@@ -269,7 +269,7 @@ export default function AssignmentSubmission() {
                       //   ChonkyActions.DownloadFiles,
                       //   ChonkyActions.DeleteFiles
                       // ]}
-                      />
+                      /> */}
                     </Grid>
                   </Grid>
                 </Box>

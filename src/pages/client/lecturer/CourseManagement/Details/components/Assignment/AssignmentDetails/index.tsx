@@ -1,24 +1,18 @@
-import React from "react";
-import SearchBar from "components/common/search/SearchBar";
-import classes from "./styles.module.scss";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { Card, Divider, Grid } from "@mui/material";
-import Heading3 from "components/text/Heading3";
-import Heading2 from "components/text/Heading2";
 import Heading1 from "components/text/Heading1";
-import MenuPopup from "components/common/menu/MenuPopup";
-import { routes } from "routes/routes";
-import { useNavigate } from "react-router-dom";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
+import AssignmentTable from "./components/AssignmentTable";
+import classes from "./styles.module.scss";
 
 const LecturerCourseAssignmentDetails = () => {
-  const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
-  };
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
@@ -122,11 +116,31 @@ const LecturerCourseAssignmentDetails = () => {
           <ParagraphBody>Chấm điểm</ParagraphBody>
         </Button>
       </Box>
-
-      <Heading1>
-        <ParagraphBody>Tổng quan chấm điểm</ParagraphBody>
-      </Heading1>
-
+      <Heading2>Tổng quan chấm điểm</Heading2>
+      <AssignmentTable
+        rows={[
+          {
+            header: "Ẩn khỏi sinh viên",
+            data: "Có"
+          },
+          {
+            header: "Số lượng sinh viên",
+            data: "1"
+          },
+          {
+            header: "Đã nộp",
+            data: "1"
+          },
+          {
+            header: "Cần chấm điểm",
+            data: "1"
+          },
+          {
+            header: "Thời gian còn lại",
+            data: "1 ngày 2 giờ"
+          }
+        ]}
+      />
       <Button
         btnType={BtnType.Primary}
         onClick={() => {

@@ -198,7 +198,7 @@ export default function AssignmentCreated() {
                   <TextTitle>Tệp đính kèm (nếu có)</TextTitle>
                 </Grid>
                 <Grid item xs={9}>
-                  <FileManager />
+                  {/* <FileManager /> */}
                 </Grid>
               </Grid>
             </Box>
