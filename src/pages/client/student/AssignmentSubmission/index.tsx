@@ -3,11 +3,10 @@ import { Box, Card, CssBaseline, Divider, Grid, IconButton, Toolbar } from "@mui
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import { ReactComponent as SubmissionLogoSvg } from "assets/img/paper-upload-svgrepo-com.svg";
-import { ChonkyActions } from "chonky";
 import Header from "components/Header";
 import BasicAccordion from "components/common/accordion/BasicAccordion";
 import Button, { BtnType } from "components/common/buttons/Button";
-import FileManager, { CustomFileMap } from "components/editor/FileManager";
+import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -17,6 +16,7 @@ import dayjs from "dayjs";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 
 const drawerWidth = 450;
 
@@ -90,42 +90,6 @@ export default function AssignmentSubmission() {
     <p>Đây là hướng dẫn bài tập</p>
     </div>
     `;
-  const [assignmentFileMap, setAssignmentFileMap] = React.useState<CustomFileMap>({
-    root: {
-      id: "root",
-      name: "Files",
-      isDir: true,
-      childrenIds: ["mcv"],
-      childrenCount: 1
-    },
-    mcv: {
-      id: "mcv",
-      name: "rafal olbinski ambrella.jpg",
-      thumbnailUrl:
-        "https://static.wixstatic.com/media/2f9864_47b60a2645a345fc8e31d011cce466ef~mv2_d_1216_1575_s_2.jpg",
-      size: 1024,
-      modDate: new Date("December 17, 1995 03:24:00"),
-      parentId: "root"
-    }
-  });
-
-  const onAssignmentFileMapChange = React.useCallback((fileMap: CustomFileMap) => {
-    setAssignmentFileMap({ ...fileMap });
-  }, []);
-
-  const [submissionFileMap, setSubmissionFileMap] = React.useState<CustomFileMap>({
-    root: {
-      id: "root",
-      name: "Files",
-      isDir: true,
-      childrenIds: [],
-      childrenCount: 0
-    }
-  });
-
-  const onSubmissionFileMapChange = React.useCallback((fileMap: CustomFileMap) => {
-    setSubmissionFileMap({ ...fileMap });
-  }, []);
 
   return (
     <Grid className={classes.root}>
@@ -231,16 +195,28 @@ export default function AssignmentSubmission() {
                     }}
                     dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
                   ></div>
-                  {/* <FileManager
-                    style={{ height: 250 }}
-                    defaultFileMap={assignmentFileMap}
-                    // setFileMap={setAssignmentFileMap}
-                    onFileMapChange={onAssignmentFileMapChange}
-                    defaultFileViewActionId={ChonkyActions.EnableListView.id}
-                    disableDragAndDrop={true}
-                    disableDragAndDropProvider={true}
-                    allowedActions={[ChonkyActions.DownloadFiles]}
-                  /> */}
+                  <CustomFileList
+                    files={[
+                      {
+                        id: "1",
+                        name: "test1.jpg",
+                        size: 1024,
+                        type: "image/jpg",
+                        uploadStatus: "success",
+                        downloadUrl:
+                          "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
+                      },
+                      {
+                        id: "2",
+                        name: "dummy.pdf",
+                        size: 1024,
+                        type: "application/pdf",
+                        uploadStatus: "success",
+                        downloadUrl:
+                          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                      }
+                    ]}
+                  />
                 </Box>
               </Card>
               <BasicAccordion title='Thêm bài nộp'>
@@ -258,18 +234,7 @@ export default function AssignmentSubmission() {
                       <TextTitle>Tệp bài nộp</TextTitle>
                     </Grid>
                     <Grid item xs={9}>
-                      {/* <FileManager
-                      // style={{ height: 250 }}
-                      // defaultFileMap={submissionFileMap}
-                      // setFileMap={setSubmissionFileMap}
-                      // onFileMapChange={onSubmissionFileMapChange}
-                      // defaultFileViewActionId={ChonkyActions.EnableListView.id}
-                      // allowedActions={[
-                      //   ChonkyActions.UploadFiles,
-                      //   ChonkyActions.DownloadFiles,
-                      //   ChonkyActions.DeleteFiles
-                      // ]}
-                      /> */}
+                      <FileUploader />
                     </Grid>
                   </Grid>
                 </Box>

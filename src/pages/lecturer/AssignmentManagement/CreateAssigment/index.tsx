@@ -12,7 +12,7 @@ import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker"
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
-import FileManager from "components/editor/FileManager";
+import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -198,7 +198,7 @@ export default function AssignmentCreated() {
                   <TextTitle>Tệp đính kèm (nếu có)</TextTitle>
                 </Grid>
                 <Grid item xs={9}>
-                  {/* <FileManager /> */}
+                  <FileUploader />
                 </Grid>
               </Grid>
             </Box>

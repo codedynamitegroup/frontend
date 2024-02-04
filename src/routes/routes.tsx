@@ -55,7 +55,7 @@ export const routes = {
       participant: "/student/courses/:courseId/participant"
     },
     assignment: {
-      submit: "/student/assignments/:assignmentId/submit"
+      submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
     }
   },
   user: {
