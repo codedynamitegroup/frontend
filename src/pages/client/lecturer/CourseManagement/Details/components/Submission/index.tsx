@@ -150,9 +150,6 @@ const tableHeading: GridColDef[] = [
 ];
 
 const LecturerCourseAssignmentSubmission = () => {
-  const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
-  };
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -227,7 +224,7 @@ const LecturerCourseAssignmentSubmission = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.course.assignment);
+          navigate(routes.lecturer.assignment.detail);
         }}
         startIcon={
           <ChevronLeftIcon
