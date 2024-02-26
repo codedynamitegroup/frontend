@@ -60,8 +60,11 @@ export const routes = {
   },
   user: {
     problem: {
-      list: "/problems",
+      root: "/problems",
       detail: "/problems/:id"
+    },
+    course_certificate: {
+      root: "/course-certificates"
     }
   }
 };

@@ -25,7 +25,7 @@ const BasicSelect = ({
   ...props
 }: BasicSelectProps) => {
   return (
-    <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small' {...props}>
+    <FormControl sx={{ minWidth: 120 }} fullWidth size='small' {...props}>
       <InputLabel id={labelId}>{label || ""}</InputLabel>
       <Select
         style={{
