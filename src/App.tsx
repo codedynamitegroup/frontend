@@ -26,6 +26,8 @@ import {
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
+import HomePage from "pages/client/user/HomePage";
+import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +37,7 @@ const router = createBrowserRouter(
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
       <Route path={routes.user.password_change} element={<UserPasswordChange />} />
+      <Route path={routes.user.homepage.root} element={<HomePage />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
@@ -69,6 +72,8 @@ const router = createBrowserRouter(
       <Route path={routes.user.information} element={<UserInformation />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+
+      <Route path={routes.user.course_certificate.detail} element={<CourseCertificateDetail />} />
     </Route>
   )
 );

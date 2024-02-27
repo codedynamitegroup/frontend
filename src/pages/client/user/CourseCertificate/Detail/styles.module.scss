@@ -1,0 +1,105 @@
+#root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+}
+
+#main {
+  padding: 30px 0px;
+  height: 100%;
+  background-color: var(--gray-3);
+
+  #container {
+    height: 100%;
+
+    #bodyWrapper {
+      height: 100%;
+
+      #leftBody {
+        background-color: white;
+        border-radius: 10px;
+      }
+
+      #rightBody {
+        background-color: white;
+        border-radius: 10px;
+
+        #breadcumpWrapper {
+          display: flex;
+          align-items: center;
+          padding: 10px 30px;
+
+          span:hover {
+            cursor: pointer;
+            color: black;
+          }
+        }
+
+        #courseInfoWrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding: 15px 30px;
+
+          #courseTitle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            #imgCourseRecommend {
+              width: 70px;
+              height: 70px;
+              border-radius: 5px;
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+          }
+
+          #courseDetails {
+            .courseDetailsWrapper {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              #userRating {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                #icStar {
+                  color: #fcd12a;
+                }
+              }
+            }
+          }
+
+          #courseProgress {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            #progressTitle {
+              display: flex;
+              gap: 10px;
+
+              #icFlag {
+                color: var(--gray-80);
+              }
+            }
+          }
+        }
+
+        #courseCatalog {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding: 15px 30px;
+        }
+      }
+    }
+  }
+}
