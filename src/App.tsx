@@ -24,6 +24,7 @@ import { routes } from "routes/routes";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
+import UserInformation from "pages/client/user/Details/UserInformation";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +64,7 @@ const router = createBrowserRouter(
         element={<QuestionCreated qtype={qtype.true_false.code} />}
       />
       <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
+      <Route path={routes.user.information} element={<UserInformation />} />
     </Route>
   )
 );

@@ -59,6 +59,7 @@ export const routes = {
     }
   },
   user: {
+    information: "/users/:userId/information",
     problem: {
       list: "/problems",
       detail: "/problems/:id"
