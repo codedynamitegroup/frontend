@@ -67,6 +67,10 @@ export const routes = {
     course_certificate: {
       root: "/course-certificates",
       detail: "/course-certificates/:id"
+
+    },
+    homepage: {
+      root: "/"
     }
   }
 };
