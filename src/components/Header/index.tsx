@@ -19,8 +19,13 @@ import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
 import Heading4 from "components/text/Heading4";
-const pages = ["Khám phá", "Luyện tập", "Cuộc thi"];
-const auth = ["Đăng nhập", "Đăng ký"];
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
+
+interface ILinkMenu {
+  name: string;
+  path: string;
+}
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -37,6 +42,32 @@ function Header() {
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
+
+  const pages: ILinkMenu[] = [
+    {
+      name: "Khám phá",
+      path: routes.user.course_certificate.root
+    },
+    {
+      name: "Luyện tập",
+      path: routes.user.problem.root
+    },
+    {
+      name: "Cuộc thi",
+      path: "/"
+    }
+  ];
+
+  const auth: ILinkMenu[] = [
+    {
+      name: "Đăng nhập",
+      path: "/"
+    },
+    {
+      name: "Đăng ký",
+      path: "/"
+    }
+  ];
 
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open"
@@ -58,6 +89,7 @@ function Header() {
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -107,9 +139,9 @@ function Header() {
             6Bros
           </Heading4>
           <Box className={classes.navbarItem}>
-            {pages.map((page) => (
-              <Button key={page} className={classes.item}>
-                {page}
+            {pages.map((page, index) => (
+              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -140,20 +172,20 @@ function Header() {
             </IconButton>
           </DrawerHeader>
           <List>
-            {pages.map((text, index) => (
-              <ListItem key={text} disablePadding>
+            {pages.map((item, index) => (
+              <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <ListItemText primary={<Typography align='center'>{text}</Typography>} />
+                  <ListItemText primary={<Typography align='center'>{item.name}</Typography>} />
                 </ListItemButton>
               </ListItem>
             ))}
           </List>
           <Divider />
           <List>
-            {auth.map((text, index) => (
-              <ListItem key={text} disablePadding>
+            {auth.map((item, index) => (
+              <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <ListItemText primary={<Typography align='center'>{text}</Typography>} />
+                  <ListItemText primary={<Typography align='center'>{item.name}</Typography>} />
                 </ListItemButton>
               </ListItem>
             ))}

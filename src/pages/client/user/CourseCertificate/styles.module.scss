@@ -1,0 +1,154 @@
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  padding-bottom: 10px;
+}
+
+main {
+  #banner {
+    background-image: url(https://img.freepik.com/free-vector/minimal-geometric-stripe-shape-background_1409-1014.jpg);
+    height: 200px;
+    display: flex;
+    align-items: center;
+
+    #bannerContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #bannerSearch {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+  }
+
+  #courseRecommendsWrapper {
+    background-color: #ffbe98;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    padding: 32px 32px 24px;
+    gap: 24px;
+
+    .courseRecommend {
+      background-color: white;
+      border-radius: 8px;
+      padding: 16px;
+      height: 155px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 2px var(--gray-50);
+
+      &:hover {
+        box-shadow: 0 2px 10px #0000001a;
+      }
+
+      .titleCourseRecommend {
+        display: flex;
+        align-items: center;
+
+        .imgCourseRecommend {
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+          }
+        }
+
+        .titleCard {
+          .botCard {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            .fileIcon {
+              color: var(--gray-50);
+            }
+
+            p {
+              color: var(--gray-50);
+            }
+          }
+        }
+      }
+
+      .contentCourseRecommend {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  #couseCertificatesWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .couseCertificatesByTopic {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .courseCerticate {
+        background-color: white;
+        border-radius: 8px;
+        padding: 16px;
+        height: fit-content;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--gray-30);
+        gap: 16px;
+
+        &:hover {
+          box-shadow: 0 2px 10px #0000001a;
+        }
+
+        .imgCourse {
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+          }
+        }
+
+        .courseDescription {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .iconCourse {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .fileIcon {
+            color: var(--gray-50);
+          }
+
+          .iconLevel {
+            width: 16px;
+            height: 16px;
+          }
+
+          p {
+            color: var(--gray-50);
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,12 +5,14 @@ import courseFile from "assets/img/icon/course/courseDetail/file.svg";
 import moodleLogo from "assets/img/logo/moodle_logo.png";
 import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
+import icLevel from "assets/img/icon/skill-level-advanced.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
   logo: { moodleLogo, microsoftLogo },
-  null: { mailboxEmpty }
+  null: { mailboxEmpty },
+  icLevel
 };
 
 export default images;

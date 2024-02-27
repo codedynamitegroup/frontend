@@ -25,13 +25,14 @@ import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import UserInformation from "pages/client/user/Details/UserInformation";
+import CourseCertificates from "pages/client/user/CourseCertificate";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
-      <Route path={routes.user.problem.list} element={<ListProblem />} />
+      <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
@@ -65,6 +66,8 @@ const router = createBrowserRouter(
       />
       <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
       <Route path={routes.user.information} element={<UserInformation />} />
+
+      <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
     </Route>
   )
 );

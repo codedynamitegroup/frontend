@@ -61,8 +61,11 @@ export const routes = {
   user: {
     information: "/users/:userId/information",
     problem: {
-      list: "/problems",
+      root: "/problems",
       detail: "/problems/:id"
+    },
+    course_certificate: {
+      root: "/course-certificates"
     }
   }
 };
