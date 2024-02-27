@@ -25,6 +25,7 @@ import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import CourseCertificates from "pages/client/user/CourseCertificate";
+import HomePage from "pages/client/user/HomePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.homepage.root} element={<HomePage />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
