@@ -65,6 +65,13 @@ export const routes = {
     },
     course_certificate: {
       root: "/course-certificates"
+    },
+    contest: {
+      root: "/contests",
+      detail: "/contests/:contestId",
+      participant: "/contests/:contestId/participant",
+      leaderboard: "/contests/:contestId/leaderboard",
+      submission: "/contests/:contestId/submission"
     }
   }
 };

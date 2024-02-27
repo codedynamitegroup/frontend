@@ -25,6 +25,7 @@ import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import CourseCertificates from "pages/client/user/CourseCertificate";
+import ContestList from "pages/client/user/Contest/ContestList";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -66,6 +67,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+      <Route path={routes.user.contest.root} element={<ContestList />} />
     </Route>
   )
 );
