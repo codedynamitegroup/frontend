@@ -39,7 +39,8 @@ export const routes = {
       }
     },
     question_bank: {
-      path: "lecturer/question-bank-management"
+      path: "lecturer/question-bank-management",
+      questions_list_of_course: { path: ":id" }
     },
     exam: {
       create: "/lecturer/exam-management/create"
