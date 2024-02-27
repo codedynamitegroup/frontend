@@ -6,9 +6,10 @@
   display: flex;
   flex-direction: column !important;
   padding-bottom: 10px;
+  background-color: var(--gray-3);
 }
 
-main {
+#main {
   #banner {
     background-image: url(https://img.freepik.com/free-vector/minimal-geometric-stripe-shape-background_1409-1014.jpg);
     height: 200px;
@@ -29,7 +30,7 @@ main {
   }
 
   #courseRecommendsWrapper {
-    background-color: #ffbe98;
+    background-color: #ffcc99;
     display: flex;
     flex-direction: column;
     border-radius: 16px;

@@ -11,6 +11,8 @@ import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -103,10 +105,12 @@ const CourseCertificates = () => {
     }
   ];
 
+  const navigate = useNavigate();
+
   return (
     <Grid className={classes.root}>
       <Header />
-      <main>
+      <main id={classes.main}>
         <Box id={classes.banner}>
           <Container id={classes.bannerContainer}>
             <Heading2 colorName={"--white"}>
@@ -149,7 +153,14 @@ const CourseCertificates = () => {
               <Grid container spacing={2}>
                 {courseCertificatesRecommend.map((course, index) => (
                   <Grid item xs={4} key={index}>
-                    <Box className={classes.courseRecommend}>
+                    <Box
+                      className={classes.courseRecommend}
+                      onClick={() => {
+                        navigate(
+                          routes.user.course_certificate.detail.replace(":id", index.toString())
+                        );
+                      }}
+                    >
                       <Grid item container className={classes.titleCourseRecommend}>
                         <Grid item xs={2} className={classes.imgCourseRecommend}>
                           <img src={course.imgUrl} alt='img course recommend' />
@@ -194,7 +205,14 @@ const CourseCertificates = () => {
                 <Grid container spacing={3}>
                   {courseCertificatesBasic.map((course, index) => (
                     <Grid item xs={4} key={index}>
-                      <Box className={classes.courseCerticate}>
+                      <Box
+                        className={classes.courseCerticate}
+                        onClick={() => {
+                          navigate(
+                            routes.user.course_certificate.detail.replace(":id", index.toString())
+                          );
+                        }}
+                      >
                         <Grid container direction={"column"} margin={0} gap={2}>
                           <Grid item container xs={5} className={classes.titleCourse}>
                             <Grid item xs={3} className={classes.imgCourse}>
