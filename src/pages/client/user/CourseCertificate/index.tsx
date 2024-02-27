@@ -190,12 +190,12 @@ const CourseCertificates = () => {
           <Container>
             <Box id={classes.couseCertificatesWrapper}>
               <Box className={classes.couseCertificatesByTopic}>
-                <Heading2>Kiến thức cơ sở</Heading2>
+                <Heading2>Kiến thức cơ bản</Heading2>
                 <Grid container spacing={3}>
                   {courseCertificatesBasic.map((course, index) => (
                     <Grid item xs={4} key={index}>
                       <Box className={classes.courseCerticate}>
-                        <Grid container direction={"column"} spacing={3}>
+                        <Grid container direction={"column"} margin={0} gap={2}>
                           <Grid item container xs={5} className={classes.titleCourse}>
                             <Grid item xs={3} className={classes.imgCourse}>
                               <img alt='img course' src={course.imgUrl} />
@@ -204,11 +204,13 @@ const CourseCertificates = () => {
                               <Heading3>{course.title}</Heading3>
                             </Grid>
                           </Grid>
+                          <Divider />
                           <Grid item xs={5}>
                             <ParagraphBody className={classes.courseDescription}>
                               {course.description}
                             </ParagraphBody>
                           </Grid>
+                          <Divider />
                           <Grid item xs={2}>
                             <Box className={classes.iconCourse}>
                               <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
@@ -235,7 +237,7 @@ const CourseCertificates = () => {
                   {courseCertificatesAdvanced.map((course, index) => (
                     <Grid item xs={4} key={index}>
                       <Box className={classes.courseCerticate}>
-                        <Grid container direction={"column"} spacing={3}>
+                        <Grid container direction={"column"} margin={0} gap={2}>
                           <Grid item container xs={5} className={classes.titleCourse}>
                             <Grid item xs={3} className={classes.imgCourse}>
                               <img alt='img course' src={course.imgUrl} />
@@ -244,11 +246,13 @@ const CourseCertificates = () => {
                               <Heading3>{course.title}</Heading3>
                             </Grid>
                           </Grid>
+                          <Divider />
                           <Grid item xs={5}>
                             <ParagraphBody className={classes.courseDescription}>
                               {course.description}
                             </ParagraphBody>
                           </Grid>
+                          <Divider />
                           <Grid item xs={2}>
                             <Box className={classes.iconCourse}>
                               <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
