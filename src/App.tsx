@@ -26,6 +26,7 @@ import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import UserInformation from "pages/client/user/Details/UserInformation";
 import CourseCertificates from "pages/client/user/CourseCertificate";
+import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,6 +69,8 @@ const router = createBrowserRouter(
       <Route path={routes.user.information} element={<UserInformation />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+
+      <Route path={routes.user.course_certificate.detail} element={<CourseCertificateDetail />} />
     </Route>
   )
 );

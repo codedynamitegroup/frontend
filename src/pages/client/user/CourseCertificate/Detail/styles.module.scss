@@ -1,0 +1,9 @@
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  padding-bottom: 10px;
+}
