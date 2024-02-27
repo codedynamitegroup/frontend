@@ -12,6 +12,8 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import Header from "components/Header";
 import ContestContentCard from "./components/ContestContentCard";
 import Heading5 from "components/text/Heading5";
+import Heading4 from "components/text/Heading4";
+import ContestFilter from "./components/ContestFilter";
 
 const responsive = {
   desktop: {
@@ -105,26 +107,27 @@ const ContestList = () => {
               <SearchBar onSearchClick={onSearchClick} />
             </Grid>
             <Grid item xs={12} md={10} lg={7}>
-              <Grid container spacing={1}>
+              <Grid container spacing={2}>
                 <Grid item sm={12} xs={12} md={12} lg={8}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Box className={classes.contestListButtonGroup}>
-                        <ToggleButtonGroup {...control}>
-                          <ToggleButton
-                            key='happening'
-                            value='happening'
-                            className={classes.listStateButton}
-                          >
-                            Đang diễn ra
-                          </ToggleButton>
-                          <ToggleButton key='ended' value='ended'>
-                            Đã kết thúc
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                      </Box>
-                      <Divider />
-                    </Grid>
+                  <Box className={classes.contestListButtonGroup}>
+                    <ToggleButtonGroup {...control}>
+                      <ToggleButton
+                        key='happening'
+                        value='happening'
+                        className={classes.listStateButton}
+                      >
+                        Đang diễn ra
+                      </ToggleButton>
+                      <ToggleButton key='ended' value='ended'>
+                        Đã kết thúc
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Box>
+                  <Divider />
+                </Grid>
+
+                <Grid item sm={12} xs={12} md={12} lg={8}>
+                  <Grid container spacing={2} alignItems={"flex-start"}>
                     <Grid item xs={12}>
                       <ContestContentCard />
                     </Grid>
@@ -139,17 +142,13 @@ const ContestList = () => {
                     </Grid>
                   </Grid>
                 </Grid>
+
                 <Grid item sm={12} xs={12} md={12} lg={4}>
                   <Grid container spacing={1}>
+                    <Grid item xs={12} />
+
                     <Grid item xs={12}>
-                      <Heading5>Lọc</Heading5>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Paper>
-                        <Button borderRadius='20px' variant='contained'>
-                          Bds
-                        </Button>
-                      </Paper>
+                      <ContestFilter />
                     </Grid>
                   </Grid>
                 </Grid>

@@ -1,6 +1,6 @@
 .container {
     margin-top: 10px;
-    background-color: var(--gray-3) !important;
+    background-color: var(--gray-2) !important;
     .contestImage {
         max-height:100%; max-width:100%;
         border-radius: 10px;
@@ -10,5 +10,8 @@
         margin-bottom: 5px;
         padding-bottom: 10px;
     }
-    
+    .contestFilterContainer {
+        padding: 10px;
+    }
 }
+
