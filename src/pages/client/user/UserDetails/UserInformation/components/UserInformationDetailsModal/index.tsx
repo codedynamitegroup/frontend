@@ -1,4 +1,4 @@
-import { Avatar, Card, Divider, Grid } from "@mui/material";
+import { Avatar, DialogProps, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
 import InputTextField from "components/common/inputs/InputTextField";
@@ -11,25 +11,56 @@ import dayjs from "dayjs";
 import classes from "./styles.module.scss";
 import { useState } from "react";
 import CustomDatePicker from "components/common/datetime/CustomDatePicker";
+import CustomDialog from "components/common/dialogs/CustomDialog";
+import { useNavigate, useParams } from "react-router-dom";
 
-const UserInformationDetails = () => {
-  const [data, setData] = useState({
-    id: "0",
-    name: "Nguyễn Đinh Quang Khánh",
-    gender: "0",
-    email: "khanhndq2002@gmail.com",
-    dob: "30/06/2002"
-  });
+interface UserInformationDetailsModalProps extends DialogProps {
+  initialData: {
+    id: string;
+    name: string;
+    gender: string;
+    email: string;
+    dob: string;
+  };
+  title?: string;
+  handleClose: () => void;
+  children?: React.ReactNode;
+  cancelText?: string;
+  confirmText?: string;
+  onHandleCancel?: () => void;
+  onHanldeConfirm?: () => void;
+}
+
+const UserInformationDetailsModal = ({
+  initialData,
+  open,
+  title,
+  handleClose,
+  children,
+  cancelText,
+  confirmText,
+  onHandleCancel,
+  onHanldeConfirm,
+  ...props
+}: UserInformationDetailsModalProps) => {
+  const navigate = useNavigate();
+  const userId = useParams().userId;
+  const [data, setData] = useState(initialData);
 
   return (
-    <Card
-      sx={{
-        height: "100%"
-      }}
+    <CustomDialog
+      open={open}
+      handleClose={handleClose}
+      title={title}
+      cancelText={cancelText}
+      confirmText={confirmText}
+      onHandleCancel={onHandleCancel}
+      onHanldeConfirm={onHanldeConfirm}
+      minWidth='1000px'
+      actionsDisabled
+      {...props}
     >
       <Box component='form' className={classes.formBody} autoComplete='off'>
-        <Heading1 fontWeight={"500"}>Thông tin cá nhân</Heading1>
-        <Divider />
         <InputTextField
           type='text'
           title='Họ và tên'
@@ -81,7 +112,6 @@ const UserInformationDetails = () => {
                   label: "Nữ"
                 }
               ]}
-              // backgroundColor='#D9E2ED'
             />
           </Grid>
         </Grid>
@@ -91,7 +121,12 @@ const UserInformationDetails = () => {
             <TextTitle>Mật khẩu</TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <Button btnType={BtnType.Text} onClick={() => {}}>
+            <Button
+              btnType={BtnType.Text}
+              onClick={() => {
+                navigate(`/users/${userId}/password/change`);
+              }}
+            >
               Đổi mật khẩu
             </Button>
           </Grid>
@@ -219,8 +254,8 @@ const UserInformationDetails = () => {
           </Button>
         </Box>
       </Box>
-    </Card>
+    </CustomDialog>
   );
 };
 
-export default UserInformationDetails;
+export default UserInformationDetailsModal;

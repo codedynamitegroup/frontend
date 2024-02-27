@@ -6,14 +6,23 @@
   background-color: var(--gray-3);
 }
 
-.container {
+.leftContainer {
   display: flex !important;
   flex-direction: column;
-  background-color: white;
+  // background-color: white;
   border-radius: 5px;
   padding-left: 0px !important;
   padding-right: 0px !important;
-  height: 100%;
+}
+
+.rightContainer {
+  display: flex !important;
+  flex-direction: column;
+  // background-color: white;
+  border-radius: 5px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  // height: 100%;
 }
 
 .leftBody {

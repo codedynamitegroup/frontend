@@ -60,6 +60,7 @@ export const routes = {
   },
   user: {
     information: "/users/:userId/information",
+    password_change: "/users/:userId/password/change",
     problem: {
       root: "/problems",
       detail: "/problems/:id"
