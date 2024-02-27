@@ -14,7 +14,6 @@ import PdfViewer from "components/pdf/PdfViewer";
 import AssignmentSubmission from "pages/client/student/AssignmentSubmission";
 import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/Create";
 import CodeQuestionDetails from "pages/lecturer/CodeQuestionManagement/Details";
-import DetailSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/DetailSolution";
 import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
 import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
 import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
@@ -24,8 +23,10 @@ import { routes } from "routes/routes";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
+import UserInformation from "pages/client/user/Details/UserInformation";
 import CourseCertificates from "pages/client/user/CourseCertificate";
 import HomePage from "pages/client/user/HomePage";
+import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -66,8 +67,11 @@ const router = createBrowserRouter(
         element={<QuestionCreated qtype={qtype.true_false.code} />}
       />
       <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
+      <Route path={routes.user.information} element={<UserInformation />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+
+      <Route path={routes.user.course_certificate.detail} element={<CourseCertificateDetail />} />
     </Route>
   )
 );

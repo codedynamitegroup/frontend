@@ -8,7 +8,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
-import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker";
+import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -247,7 +247,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Cho phép nộp bài kể từ</TextTitle>
-              <BasicDateTimePicker
+              <CustomDateTimePicker
                 value={assignmentAllowSubmissionFromDate}
                 onHandleValueChange={(newValue) => {
                   setAssignmentAllowSubmissionFromDate(newValue);
@@ -257,7 +257,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Hạn nộp bài</TextTitle>
-              <BasicDateTimePicker
+              <CustomDateTimePicker
                 value={assignmentSubmissionDueDate}
                 onHandleValueChange={(newValue) => {
                   setAssignmentSubmissionDueDate(newValue);

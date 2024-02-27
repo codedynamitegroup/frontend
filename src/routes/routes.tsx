@@ -59,12 +59,15 @@ export const routes = {
     }
   },
   user: {
+    information: "/users/:userId/information",
     problem: {
       root: "/problems",
       detail: "/problems/:id"
     },
     course_certificate: {
-      root: "/course-certificates"
+      root: "/course-certificates",
+      detail: "/course-certificates/:id"
+
     },
     homepage: {
       root: "/"

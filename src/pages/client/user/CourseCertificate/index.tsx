@@ -12,12 +12,96 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
 
+interface CourseCertificate {
+  imgUrl: string;
+  title: string;
+  description?: string;
+  level?: string;
+  lesson?: number;
+}
 const CourseCertificates = () => {
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
   };
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
+
+  const courseCertificatesRecommend: CourseCertificate[] = [
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
+      title: "Học C++ cơ bản",
+      lesson: 10
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
+      title: "Học Python cơ bản",
+      lesson: 30
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+      title: "Học Go cơ bản",
+      lesson: 35
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+      title: "Học Go nâng cao",
+      lesson: 40
+    }
+  ];
+
+  const courseCertificatesBasic: CourseCertificate[] = [
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
+      title: "Học C++ cơ bản",
+      description:
+        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
+      lesson: 10,
+      level: "Dễ"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
+      title: "Học Python cơ bản",
+      description:
+        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
+      lesson: 30,
+      level: "Dễ"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+      title: "Học Go cơ bản",
+      description:
+        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
+      lesson: 35,
+      level: "Dễ"
+    }
+  ];
+
+  const courseCertificatesAdvanced: CourseCertificate[] = [
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
+      title: "Học C++ nâng cao",
+      description:
+        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
+      lesson: 10,
+      level: "Nâng cao"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
+      title: "Học Python nâng cao",
+      description:
+        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
+      lesson: 15,
+      level: "Nâng cao"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+      title: "Học Go nâng cao",
+      description:
+        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
+      lesson: 35,
+      level: "Nâng cao"
+    }
+  ];
 
   return (
     <Grid className={classes.root}>
@@ -62,108 +146,41 @@ const CourseCertificates = () => {
           <Container>
             <Box id={classes.courseRecommendsWrapper}>
               <Heading2>Các khóa học được đề xuất</Heading2>
-              <Grid container>
-                <Grid item xs={3.65} className={classes.courseRecommend}>
-                  <Grid item container className={classes.titleCourseRecommend}>
-                    <Grid item xs={2} className={classes.imgCourseRecommend}>
-                      <img
-                        src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        alt='img course recommend'
-                      />
-                    </Grid>
-                    <Grid item xs={1}></Grid>
-                    <Grid
-                      item
-                      xs={9}
-                      container
-                      direction={"column"}
-                      spacing={1.5}
-                      className={classes.titleCard}
-                    >
-                      <Grid item className={classes.topCard}>
-                        <ParagraphBody>Học C++ cơ bản</ParagraphBody>
+              <Grid container spacing={2}>
+                {courseCertificatesRecommend.map((course, index) => (
+                  <Grid item xs={4} key={index}>
+                    <Box className={classes.courseRecommend}>
+                      <Grid item container className={classes.titleCourseRecommend}>
+                        <Grid item xs={2} className={classes.imgCourseRecommend}>
+                          <img src={course.imgUrl} alt='img course recommend' />
+                        </Grid>
+                        <Grid item xs={1}></Grid>
+                        <Grid
+                          item
+                          xs={9}
+                          container
+                          direction={"column"}
+                          spacing={1.5}
+                          className={classes.titleCard}
+                        >
+                          <Grid item className={classes.topCard}>
+                            <ParagraphBody>{course.title}</ParagraphBody>
+                          </Grid>
+                          <Grid item className={classes.botCard}>
+                            <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                            <ParagraphBody>{`${course.lesson} bài học`}</ParagraphBody>
+                          </Grid>
+                        </Grid>
                       </Grid>
-                      <Grid item className={classes.botCard}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Grid>
-                    </Grid>
+                      <Divider />
+                      <Box className={classes.contentCourseRecommend}>
+                        <Button btnType={BtnType.Text}>
+                          <ParagraphBody>Xem chi tiết</ParagraphBody>
+                        </Button>
+                      </Box>
+                    </Box>
                   </Grid>
-                  <Divider />
-                  <Box className={classes.contentCourseRecommend}>
-                    <Button btnType={BtnType.Text}>
-                      <ParagraphBody>Xem chi tiết</ParagraphBody>
-                    </Button>
-                  </Box>
-                </Grid>
-                <Grid item xs={0.525}></Grid>
-                <Grid item xs={3.65} className={classes.courseRecommend}>
-                  <Grid item container className={classes.titleCourseRecommend}>
-                    <Grid item xs={2} className={classes.imgCourseRecommend}>
-                      <img
-                        src='https://cdn.codechef.com/images/self-learning/icons/python.svg'
-                        alt='img course recommend'
-                      />
-                    </Grid>
-                    <Grid item xs={1}></Grid>
-                    <Grid
-                      item
-                      xs={9}
-                      className={classes.titleCard}
-                      container
-                      direction={"column"}
-                      spacing={1.5}
-                    >
-                      <Grid item className={classes.topCard}>
-                        <ParagraphBody>Học Python cơ bản</ParagraphBody>
-                      </Grid>
-                      <Grid item className={classes.botCard}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Divider />
-                  <Box className={classes.contentCourseRecommend}>
-                    <Button btnType={BtnType.Text}>
-                      <ParagraphBody>Xem chi tiết</ParagraphBody>
-                    </Button>
-                  </Box>
-                </Grid>
-                <Grid item xs={0.525}></Grid>
-                <Grid item xs={3.65} className={classes.courseRecommend}>
-                  <Grid item container className={classes.titleCourseRecommend}>
-                    <Grid item xs={2} className={classes.imgCourseRecommend}>
-                      <img
-                        src='https://cdn.codechef.com/images/self-learning/icons/go.svg'
-                        alt='img course recommend'
-                      />
-                    </Grid>
-                    <Grid item xs={1}></Grid>
-                    <Grid
-                      item
-                      xs={9}
-                      className={classes.titleCard}
-                      container
-                      direction={"column"}
-                      spacing={1.5}
-                    >
-                      <Grid item className={classes.topCard}>
-                        <ParagraphBody>Học Go cơ bản</ParagraphBody>
-                      </Grid>
-                      <Grid item className={classes.botCard}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Divider />
-                  <Box className={classes.contentCourseRecommend}>
-                    <Button btnType={BtnType.Text}>
-                      <ParagraphBody>Xem chi tiết</ParagraphBody>
-                    </Button>
-                  </Box>
-                </Grid>
+                ))}
               </Grid>
             </Box>
           </Container>
@@ -173,263 +190,87 @@ const CourseCertificates = () => {
           <Container>
             <Box id={classes.couseCertificatesWrapper}>
               <Box className={classes.couseCertificatesByTopic}>
-                <Heading2>Kiến thức cơ sở</Heading2>
-                <Grid container>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Trung bình</ParagraphBody>
+                <Heading2>Kiến thức cơ bản</Heading2>
+                <Grid container spacing={3}>
+                  {courseCertificatesBasic.map((course, index) => (
+                    <Grid item xs={4} key={index}>
+                      <Box className={classes.courseCerticate}>
+                        <Grid container direction={"column"} margin={0} gap={2}>
+                          <Grid item container xs={5} className={classes.titleCourse}>
+                            <Grid item xs={3} className={classes.imgCourse}>
+                              <img alt='img course' src={course.imgUrl} />
+                            </Grid>
+                            <Grid item xs={9} className={classes.nameCourse}>
+                              <Heading3>{course.title}</Heading3>
+                            </Grid>
+                          </Grid>
+                          <Divider />
+                          <Grid item xs={5}>
+                            <ParagraphBody className={classes.courseDescription}>
+                              {course.description}
+                            </ParagraphBody>
+                          </Grid>
+                          <Divider />
+                          <Grid item xs={2}>
+                            <Box className={classes.iconCourse}>
+                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                              <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+                            </Box>
+                            <Box className={classes.iconCourse}>
+                              <img
+                                src={images.icLevel}
+                                alt='icon level'
+                                className={classes.iconLevel}
+                              />
+                              <ParagraphBody>{course.level}</ParagraphBody>
+                            </Box>
+                          </Grid>
+                        </Grid>
                       </Box>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={0.525}></Grid>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Dễ</ParagraphBody>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={0.525}></Grid>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Dễ</ParagraphBody>
-                      </Box>
-                    </Grid>
-                  </Grid>
+                  ))}
                 </Grid>
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
-                <Heading2>Kiến thức cơ sở</Heading2>
-                <Grid container>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Dễ</ParagraphBody>
+                <Heading2>Kiến thức nâng cao</Heading2>
+                <Grid container spacing={3}>
+                  {courseCertificatesAdvanced.map((course, index) => (
+                    <Grid item xs={4} key={index}>
+                      <Box className={classes.courseCerticate}>
+                        <Grid container direction={"column"} margin={0} gap={2}>
+                          <Grid item container xs={5} className={classes.titleCourse}>
+                            <Grid item xs={3} className={classes.imgCourse}>
+                              <img alt='img course' src={course.imgUrl} />
+                            </Grid>
+                            <Grid item xs={9} className={classes.nameCourse}>
+                              <Heading3>{course.title}</Heading3>
+                            </Grid>
+                          </Grid>
+                          <Divider />
+                          <Grid item xs={5}>
+                            <ParagraphBody className={classes.courseDescription}>
+                              {course.description}
+                            </ParagraphBody>
+                          </Grid>
+                          <Divider />
+                          <Grid item xs={2}>
+                            <Box className={classes.iconCourse}>
+                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                              <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+                            </Box>
+                            <Box className={classes.iconCourse}>
+                              <img
+                                src={images.icLevel}
+                                alt='icon level'
+                                className={classes.iconLevel}
+                              />
+                              <ParagraphBody>{course.level}</ParagraphBody>
+                            </Box>
+                          </Grid>
+                        </Grid>
                       </Box>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={0.525}></Grid>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Dễ</ParagraphBody>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={0.525}></Grid>
-                  <Grid
-                    item
-                    xs={3.65}
-                    container
-                    direction={"column"}
-                    className={classes.courseCerticate}
-                  >
-                    <Grid item container xs={4} className={classes.titleCourse}>
-                      <Grid item xs={3} className={classes.imgCourse}>
-                        <img
-                          alt='img course'
-                          src='https://cdn.codechef.com/images/self-learning/icons/cpp.svg'
-                        />
-                      </Grid>
-                      <Grid item xs={9} className={classes.nameCourse}>
-                        <Heading3>Học C++ Cơ bản</Heading3>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ParagraphBody className={classes.courseDescription}>
-                        Practice problems of C++, the language most used for DSA and low level
-                        programming due to its efficiency and speed.
-                      </ParagraphBody>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Divider />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box className={classes.iconCourse}>
-                        <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                        <ParagraphBody>67 bài học</ParagraphBody>
-                      </Box>
-                      <Box className={classes.iconCourse}>
-                        <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-                        <ParagraphBody>Dễ</ParagraphBody>
-                      </Box>
-                    </Grid>
-                  </Grid>
+                  ))}
                 </Grid>
               </Box>
             </Box>
