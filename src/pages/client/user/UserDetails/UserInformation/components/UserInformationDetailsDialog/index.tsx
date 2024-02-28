@@ -63,7 +63,6 @@ const UserInformationDetailsDialog = ({
       onHandleCancel={onHandleCancel}
       onHanldeConfirm={onHanldeConfirm}
       minWidth='1000px'
-      actionsDisabled
       {...props}
     >
       <Box component='form' className={classes.formBody} autoComplete='off'>
@@ -236,21 +235,6 @@ const UserInformationDetailsDialog = ({
           </Grid>
         </Grid>
         <Divider />
-
-        <Box
-          sx={{
-            marginTop: "10px",
-            display: "flex",
-            justifyContent: "space-between"
-          }}
-        >
-          <Button btnType={BtnType.Outlined} onClick={() => {}}>
-            Xoá tài khoản
-          </Button>
-          <Button btnType={BtnType.Primary} onClick={() => {}}>
-            Lưu thay đổi
-          </Button>
-        </Box>
       </Box>
     </CustomDialog>
   );

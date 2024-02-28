@@ -43,6 +43,7 @@ export default function CustomDialog({
           minWidth: minWidth || "550px"
         }
       }}
+      PaperProps={{ sx: { borderRadius: "10px" } }}
       {...props}
     >
       <DialogTitle id='id'>

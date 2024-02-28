@@ -5,6 +5,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
 import { useState } from "react";
 import classes from "./styles.module.scss";
+import images from "config/images";
 
 interface UserPasswordChangeDialogProps extends DialogProps {
   title?: string;
@@ -46,6 +47,15 @@ const UserPasswordChangeDialog = ({
       {...props}
     >
       <Box component='form' className={classes.formBody} autoComplete='off'>
+        <img
+          src={images.changePasswordThumbnail}
+          alt='password'
+          style={{
+            margin: "auto",
+            width: "200px",
+            height: "200px"
+          }}
+        />
         <Grid
           container
           spacing={1}
