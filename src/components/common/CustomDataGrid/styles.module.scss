@@ -1,9 +1,9 @@
 .container {
-    &[class~="MuiDataGrid-columnHeaderTitle"] {
-        white-space: normal;
-    }
-    &[class~="MuiDataGrid-columnHeader"] {
-        height: unset !important;
-        max-height: "168px !important";
-    }
+  &[class~="MuiDataGrid-columnHeaderTitle"] {
+    white-space: normal;
+  }
+  &[class~="MuiDataGrid-columnHeader"] {
+    height: unset !important;
+    max-height: "168px !important";
+  }
 }

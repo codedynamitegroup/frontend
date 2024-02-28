@@ -17,6 +17,7 @@ import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bu
 import Header from "components/Header";
 import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
+import Submission from "./components/Submission";
 
 enum ELanguage {
   JAVA = "java",
@@ -305,7 +306,9 @@ int sumOfTwoIntegers(int a, int b) {
                 </Box>
               </TabPanel>
               <TabPanel value='2' className={classes.tabPanel}>
-                <Box className={classes.tabPanelContent}></Box>
+                <Box className={classes.tabPanelContent}>
+                  <Submission />
+                </Box>
               </TabPanel>
             </TabContext>
           </Box>

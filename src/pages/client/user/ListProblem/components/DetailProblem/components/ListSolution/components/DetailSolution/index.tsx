@@ -22,6 +22,7 @@ import { TextareaAutosize } from "@mui/base";
 import Button from "@mui/material/Button";
 
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import MDEditor from "@uiw/react-md-editor";
 export default function DetailSolution() {
   const tags = [
     "Java",
@@ -171,13 +172,10 @@ public:
             return <Box className={classes.item}>{tag}</Box>;
           })}
         </Box>
-        <Markdown
-          children={markdownContent}
-          remarkPlugins={[gfm]}
-          components={{
-            code: Code
-          }}
-        />
+        <Box data-color-mode='light'>
+          <MDEditor.Markdown source={markdownContent} />
+        </Box>
+
         <Box className={classes.commentContainer}>
           <Box className={classes.commentTitleContainer}>
             <Box className={classes.commentTitle}>
@@ -250,10 +248,3 @@ public:
     </Box>
   );
 }
-const Code = ({ children }: any) => {
-  return (
-    <SyntaxHighlighter language='javascript' style={materialDark}>
-      {children}
-    </SyntaxHighlighter>
-  );
-};

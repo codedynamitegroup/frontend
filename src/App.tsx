@@ -22,6 +22,7 @@ import qtype from "utils/constant/Qtype";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
 import { routes } from "routes/routes";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.list} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />

@@ -7,7 +7,9 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
+import { GridSlotsComponentsProps } from "@mui/x-data-grid";
 import classes from "./styles.module.scss";
+import { truncate } from "fs";
 
 interface DataGridProps {
   dataList: Array<any>;
@@ -22,6 +24,7 @@ interface DataGridProps {
   columnGroupingModel?: any;
   showVerticalCellBorder: boolean;
   customColumnMenu?: any;
+  customFooter?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -37,7 +40,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     onPaginationModelChange,
     columnGroupingModel,
     showVerticalCellBorder,
-    customColumnMenu
+    customColumnMenu,
+    customFooter
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -64,7 +68,6 @@ const CustomDataGrid = (props: DataGridProps) => {
         showCellVerticalBorder={showVerticalCellBorder}
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
-        checkboxSelection
         onRowSelectionModelChange={rowSelectionHandler}
         density='comfortable'
         disableColumnFilter
@@ -93,12 +96,12 @@ const CustomDataGrid = (props: DataGridProps) => {
         }}
         slots={{
           toolbar: dataGridToolBar && dataGridToolBar.enableToolbar ? GridToolbar : null,
-          columnMenu: customColumnMenu
+          columnMenu: customColumnMenu,
+          footer: customFooter
         }}
         onPaginationModelChange={pageChangeHandler}
       />
     </Box>
   );
 };
-
 export default CustomDataGrid;
