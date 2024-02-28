@@ -1,12 +1,24 @@
-import { Box, Stack, Grid, Container, Button as MButton, Divider } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Grid,
+  Container,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  DialogTitle,
+  Dialog
+} from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
-
+import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   DataGrid,
@@ -17,6 +29,7 @@ import {
 } from "@mui/x-data-grid";
 import Button from "@mui/joy/Button";
 import SearchBar from "components/common/search/SearchBar";
+import InputTextField from "components/common/inputs/InputTextField";
 import { red, grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
@@ -74,6 +87,7 @@ const QuestionBankManagement = () => {
     page: 1,
     pageSize: 5
   });
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const columns: GridColDef[] = [
     {
       field: "stt",
@@ -170,6 +184,7 @@ const QuestionBankManagement = () => {
                   variant='outlined'
                   sx={{ fontSize: "120%", display: "block" }}
                   fullWidth
+                  onClick={() => setOpenCreateDialog(true)}
                 >
                   Thêm mới
                 </Button>
@@ -203,6 +218,43 @@ const QuestionBankManagement = () => {
         </Container>
       </TabPanel>
       <TabPanel value='2'>Item Two</TabPanel>
+      <Dialog
+        aria-labelledby='customized-dialog-title'
+        open={openCreateDialog}
+        onClose={() => setOpenCreateDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          Tạo danh mục
+        </DialogTitle>
+        <IconButton
+          aria-label='close'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+          onClick={() => setOpenCreateDialog(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Stack spacing={1}>
+            <Textarea name='Outlined' placeholder='Tên danh mục' variant='outlined' minRows={1} />
+            <Textarea
+              name='Outlined'
+              placeholder='Thông tin danh mục'
+              variant='outlined'
+              minRows={4}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus>Save changes</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

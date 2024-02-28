@@ -162,7 +162,7 @@ const QuestionListOfCourse = () => {
         <Container maxWidth='xl'>
           <Stack spacing={2}>
             <Typography level='h1'>Học thuật toán</Typography>
-
+            <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
             <Grid container spacing={1}>
               <Grid item xs={12} md={3}>
                 <Button
