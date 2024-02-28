@@ -5,7 +5,6 @@ import { User } from "models/courseService/user";
 
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { useState } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -16,6 +15,7 @@ import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 import { Container } from "@mui/material";
 import Heading1 from "components/text/Heading1";
+import SideBarStudent from "components/common/sidebars/SidebarStudent";
 
 enum EView {
   cardView = 1,

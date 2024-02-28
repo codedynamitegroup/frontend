@@ -1,11 +1,10 @@
 export const routes = {
   lecturer: {
-    assignment_management: "/lecturer/assignment-management",
     course: {
       management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",
       information: "/lecturer/courses/:courseId/information",
-      assignment: "/lecturer/courses/:courseId/assignment",
+      assignment: "/lecturer/courses/:courseId/assignments",
       grade: "/lecturer/courses/:courseId/grade",
       participant: "/lecturer/courses/:courseId/participant"
     },
@@ -19,21 +18,24 @@ export const routes = {
       languages: "/lecturer/code-questions/edit/:id/languages"
     },
     assignment: {
-      create: "/lecturer/assignment-management/create",
-      grading: "/lecturer/assignment-management/grading"
+      detail: "/lecturer/courses/:courseId/assignments/:assignmentId",
+      create: "/lecturer/courses/:courseId/assignments/create",
+      grading:
+        "/lecturer/courses/:courseId/assignments/:assignmentId/submissions/:submissionId/grading",
+      submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions"
     },
     question: {
       essay: {
-        create: "/lecturer/question-management/essay/create"
+        create: "/lecturer/questions/essay/create"
       },
       multiple_choice: {
-        create: "/lecturer/question-management/multiple-choice/create"
+        create: "/lecturer/questions/multiple-choice/create"
       },
       short_answer: {
-        create: "/lecturer/question-management/short-answer/create"
+        create: "/lecturer/questions/short-answer/create"
       },
       true_false: {
-        create: "/lecturer/question-management/true-false/create"
+        create: "/lecturer/questions/true-false/create"
       }
     },
     question_bank: {
@@ -43,16 +45,47 @@ export const routes = {
       create: "/lecturer/exam-management/create"
     }
   },
-  user: {
-    problem: {
-      list: "/problems",
-      detail: "/problems/:id",
-      solution: {
-        share: "/problems/:id/solution/share"
-      }
+  student: {
+    course: {
+      management: "/student/courses",
+      detail: "/student/courses/:courseId/*",
+      information: "/student/courses/:courseId/information",
+      assignment: "/student/courses/:courseId/assignment",
+      grade: "/student/courses/:courseId/grade",
+      participant: "/student/courses/:courseId/participant"
     },
     assignment: {
-      submission: "/assignments/:assignmentId/submission"
+      submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
+    }
+  },
+  user: {
+    information: "/users/:userId/information",
+    password_change: "/users/:userId/password/change",
+    problem: {
+      solution: {
+        share: "/problems/:id/solution/share"
+      },
+      root: "/problems",
+      detail: "/problems/:id"
+    },
+    course_certificate: {
+      root: "/course-certificates",
+      detail: "/course-certificates/:id/*",
+      introduction: "/course-certificates/:id/introduction",
+      lesson: "/course-certificates/:id/lesson",
+      certificate: "/course-certificates/:id/certificate"
+    },
+    homepage: {
+      root: "/"
+    },
+    login: {
+      root: "/login"
+    },
+    register: {
+      root: "/register"
+    },
+    forgot_password: {
+      root: "/forgot-password"
     }
   }
 };

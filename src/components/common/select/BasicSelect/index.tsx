@@ -11,6 +11,7 @@ interface BasicSelectProps extends DefaultComponentProps<FormControlTypeMap<{}, 
   label?: string;
   items?: { value: string; label: string; customNode?: React.ReactNode }[];
   disabled?: boolean;
+  readOnly?: boolean;
   backgroundColor?: string;
 }
 
@@ -21,11 +22,12 @@ const BasicSelect = ({
   label,
   items,
   disabled,
+  readOnly,
   backgroundColor,
   ...props
 }: BasicSelectProps) => {
   return (
-    <FormControl sx={{ marginTop: "15px", minWidth: 120 }} fullWidth size='small' {...props}>
+    <FormControl sx={{ minWidth: 120 }} fullWidth size='small' {...props}>
       <InputLabel id={labelId}>{label || ""}</InputLabel>
       <Select
         style={{
@@ -38,6 +40,7 @@ const BasicSelect = ({
         onChange={(e) => onHandleChange(e.target.value as string)}
         fullWidth
         disabled={disabled}
+        readOnly={readOnly}
         classes={{
           root: clsx(classes.inputTextfield)
         }}

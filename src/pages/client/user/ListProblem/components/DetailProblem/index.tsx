@@ -269,7 +269,7 @@ int sumOfTwoIntegers(int a, int b) {
       <Box className={classes.boxContainer}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate(routes.user.problem.list)}>Bài tập rèn luyện</span> {">"}{" "}
+            <span onClick={() => navigate(routes.user.problem.root)}>Bài tập rèn luyện</span> {">"}{" "}
             <span>Two sum</span>
           </ParagraphBody>
         </Box>

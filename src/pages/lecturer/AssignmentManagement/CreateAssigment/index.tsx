@@ -8,11 +8,11 @@ import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
-import BasicDateTimePicker from "components/common/datetime/BasicDateTimePicker";
+import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
-import FileManager from "components/editor/FileManager";
+import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -29,6 +29,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
+  width: `calc(100% - ${drawerWidth}px)`,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
@@ -180,7 +181,7 @@ export default function AssignmentCreated() {
                 <Grid item xs={3}>
                   <TextTitle>Mô tả bài tập</TextTitle>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
                 </Grid>
               </Grid>
@@ -188,7 +189,7 @@ export default function AssignmentCreated() {
                 <Grid item xs={3}>
                   <TextTitle>Hướng dẫn nộp bài tập</TextTitle>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
                 </Grid>
               </Grid>
@@ -197,7 +198,7 @@ export default function AssignmentCreated() {
                   <TextTitle>Tệp đính kèm (nếu có)</TextTitle>
                 </Grid>
                 <Grid item xs={9}>
-                  <FileManager />
+                  <FileUploader />
                 </Grid>
               </Grid>
             </Box>
@@ -246,7 +247,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Cho phép nộp bài kể từ</TextTitle>
-              <BasicDateTimePicker
+              <CustomDateTimePicker
                 value={assignmentAllowSubmissionFromDate}
                 onHandleValueChange={(newValue) => {
                   setAssignmentAllowSubmissionFromDate(newValue);
@@ -256,7 +257,7 @@ export default function AssignmentCreated() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Hạn nộp bài</TextTitle>
-              <BasicDateTimePicker
+              <CustomDateTimePicker
                 value={assignmentSubmissionDueDate}
                 onHandleValueChange={(newValue) => {
                   setAssignmentSubmissionDueDate(newValue);
