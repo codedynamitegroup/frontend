@@ -102,7 +102,7 @@ const QuestionListOfCourse = () => {
       field: "operation",
       headerName: "Tác vụ",
       sortable: false,
-      flex: 1,
+      flex: 2,
       type: "actions",
       cellClassName: "actions",
       getActions: ({ id }) => {
@@ -203,6 +203,7 @@ const QuestionListOfCourse = () => {
               pageSizeOptions={[5, 10, 30, 50]}
               paginationMode='server'
               disableColumnFilter
+              hideFooterSelectedRowCount
               // onRowClick={handleRowClick}
               // slots={{
               //   toolbar: EditToolbar
