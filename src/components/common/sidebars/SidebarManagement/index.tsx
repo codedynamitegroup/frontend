@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
+import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import classes from "./styles.module.scss";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import images from "config/images";
-import { Avatar } from "@mui/material";
-import { RootState } from "store";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import { selected } from "reduxes/Selected";
-import Heading1 from "components/text/Heading1";
+import { RootState } from "store";
+import classes from "./styles.module.scss";
 
 export interface SidebarItem {
   name: string;
@@ -95,46 +91,41 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
 
   return (
     <Box className={classes.boxContainer}>
-      <Drawer variant='permanent' anchor='left' className={classes.sideBar}>
-        {/* <Box className={classes.TitleContainer} sx={{ padding: "0 16px" }}>
-          <Heading1>Giảng viên</Heading1>
-        </Box> */}
-        <Box>
-          <List>
-            {sideBar.map((list, index) => (
-              <React.Fragment key={index}>
-                <ListItem disablePadding>
-                  <ListItemButton
-                    onClick={() => handleClick(index, list, list.children || [])}
-                    className={classes.item}
-                    selected={state.parentIndex === index && state.childIndex === -1}
-                  >
-                    <ListItemIcon>{list.icon}</ListItemIcon>
-                    <ListItemText primary={list.name} className={classes.itemText} />
-                    {list.children && (openItems === index ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
-                </ListItem>
-                {list.children && (
-                  <Collapse in={openItems === index} timeout='auto' unmountOnExit>
-                    <List component='div' disablePadding>
-                      {list.children.map((item, childIndex) => (
-                        <ListItemButton
-                          key={childIndex}
-                          onClick={() => handleClickChild(index, childIndex)}
-                          className={classes.childItem}
-                          selected={state.parentIndex === index && state.childIndex === childIndex}
-                        >
-                          <ListItemText secondary={item.name} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </React.Fragment>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
+      <Box className={classes.sideBar}>
+        <List>
+          {sideBar.map((list, index) => (
+            <React.Fragment key={index}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleClick(index, list, list.children || [])}
+                  className={classes.item}
+                  selected={state.parentIndex === index && state.childIndex === -1}
+                >
+                  <ListItemIcon>{list.icon}</ListItemIcon>
+                  <ListItemText primary={list.name} className={classes.itemText} />
+                  {list.children && (openItems === index ? <ExpandLess /> : <ExpandMore />)}
+                </ListItemButton>
+              </ListItem>
+              {list.children && (
+                <Collapse in={openItems === index} timeout='auto' unmountOnExit>
+                  <List component='div' disablePadding>
+                    {list.children.map((item, childIndex) => (
+                      <ListItemButton
+                        key={childIndex}
+                        onClick={() => handleClickChild(index, childIndex)}
+                        className={classes.childItem}
+                        selected={state.parentIndex === index && state.childIndex === childIndex}
+                      >
+                        <ListItemText secondary={item.name} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              )}
+            </React.Fragment>
+          ))}
+        </List>
+      </Box>
     </Box>
   );
 }

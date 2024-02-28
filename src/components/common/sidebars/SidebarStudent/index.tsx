@@ -1,20 +1,20 @@
-import React from "react";
-import SidebarManagement, { SidebarItem } from "../SidebarManagement";
-import classes from "./styles.module.scss";
-import { routes } from "routes/routes";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Header, { DrawerHeader } from "components/Header";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import MenuIcon from "@mui/icons-material/Menu";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import { styled, useTheme } from "@mui/material/styles";
 import { CalendarIcon } from "@mui/x-date-pickers";
+import Header, { DrawerHeader } from "components/Header";
+import React from "react";
+import { routes } from "routes/routes";
+import SidebarManagement, { SidebarItem } from "../SidebarManagement";
+import classes from "./styles.module.scss";
 
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
@@ -34,8 +34,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  height: "100%",
-  overflow: "auto",
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -62,7 +60,7 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
+    // width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
@@ -75,12 +73,16 @@ export default function SideBarStudent({ children }: any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // const handleDrawerOpen = () => {
+  //   setOpen(true);
+  // };
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const toogleDrawer = () => {
+    setOpen((pre) => !pre);
   };
 
   return (
@@ -91,9 +93,12 @@ export default function SideBarStudent({ children }: any) {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               aria-label='open drawer'
-              onClick={handleDrawerOpen}
+              onClick={toogleDrawer}
               edge='start'
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
+              sx={{
+                mr: 2
+                //...(open && { display: "none" })
+              }}
             >
               <MenuIcon sx={{ color: "white" }} />
             </IconButton>
@@ -107,7 +112,7 @@ export default function SideBarStudent({ children }: any) {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: "border-box"
+            marginTop: "64px"
           }
         }}
         variant='persistent'
