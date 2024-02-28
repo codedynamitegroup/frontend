@@ -13,6 +13,7 @@ import Heading3 from "components/text/Heading3";
 import images from "config/images";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import Heading1 from "components/text/Heading1";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -111,11 +112,17 @@ const CourseCertificates = () => {
     <Grid className={classes.root}>
       <Header />
       <main id={classes.main}>
-        <Box id={classes.banner}>
+        <Box
+          id={classes.banner}
+          sx={{
+            backgroundImage: `url(${images.background.courseCertificatesBackground})`
+          }}
+        >
           <Container id={classes.bannerContainer}>
-            <Heading2 colorName={"--white"}>
+            <Heading1 colorName={"--white"}>Khóa học chứng chỉ</Heading1>
+            <Heading3 colorName={"--white"}>
               Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau
-            </Heading2>
+            </Heading3>
             <Box id={classes.bannerSearch}>
               <SearchBar onSearchClick={searchHandle} />
               <BasicSelect
@@ -146,7 +153,7 @@ const CourseCertificates = () => {
             </Box>
           </Container>
         </Box>
-        <Box mt={"40px"}>
+        <Box id={classes.courseRecommendsBody}>
           <Container>
             <Box id={classes.courseRecommendsWrapper}>
               <Heading2>Các khóa học được đề xuất</Heading2>
@@ -157,7 +164,10 @@ const CourseCertificates = () => {
                       className={classes.courseRecommend}
                       onClick={() => {
                         navigate(
-                          routes.user.course_certificate.detail.replace(":id", index.toString())
+                          routes.user.course_certificate.introduction.replace(
+                            ":id",
+                            index.toString()
+                          )
                         );
                       }}
                     >
@@ -196,7 +206,7 @@ const CourseCertificates = () => {
             </Box>
           </Container>
         </Box>
-        <Divider sx={{ marginTop: "40px" }} />
+        <Divider />
         <Box mt={"40px"}>
           <Container>
             <Box id={classes.couseCertificatesWrapper}>

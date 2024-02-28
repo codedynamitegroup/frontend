@@ -14,6 +14,7 @@ import { LinearProgress } from "@mui/joy";
 import FlagIcon from "@mui/icons-material/Flag";
 import SchoolIcon from "@mui/icons-material/School";
 import CertificateDetails from "./components/Certificate";
+import CourseCertificateLesson from "./components/Lesson";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -159,9 +160,8 @@ const CourseCertificateDetail = () => {
                 <Box>
                   <Routes>
                     <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
+                    <Route path={"lesson"} element={<CourseCertificateLesson />} />
                     <Route path={"certificate"} element={<CertificateDetails />} />
-                    {/* <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-                  <Route path={"languages"} element={<CodeQuestionLanguages />} /> */}
                   </Routes>
                 </Box>
               </Box>
