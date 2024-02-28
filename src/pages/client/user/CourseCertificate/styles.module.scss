@@ -6,13 +6,12 @@
   display: flex;
   flex-direction: column !important;
   padding-bottom: 10px;
-  background-color: var(--gray-3);
+  background-color: var(--blue-1);
 }
 
 #main {
   #banner {
-    background-image: url(https://img.freepik.com/free-vector/minimal-geometric-stripe-shape-background_1409-1014.jpg);
-    height: 200px;
+    height: 300px;
     display: flex;
     align-items: center;
 
@@ -29,62 +28,66 @@
     }
   }
 
-  #courseRecommendsWrapper {
-    background-color: #ffcc99;
-    display: flex;
-    flex-direction: column;
-    border-radius: 16px;
-    padding: 32px 32px 24px;
-    gap: 24px;
-
-    .courseRecommend {
-      background-color: white;
-      border-radius: 8px;
-      height: 155px;
-      padding: 16px;
-      cursor: pointer;
+  #courseRecommendsBody {
+    background-color: white;
+    padding: 40px 0px;
+    #courseRecommendsWrapper {
+      background-color: #ffcc99;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 2px 2px var(--gray-50);
+      border-radius: 16px;
+      padding: 32px 32px 24px;
+      gap: 24px;
 
-      &:hover {
-        box-shadow: 0 2px 10px #0000001a;
-      }
-
-      .titleCourseRecommend {
+      .courseRecommend {
+        background-color: white;
+        border-radius: 8px;
+        height: 155px;
+        padding: 16px;
+        cursor: pointer;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 2px 2px var(--gray-50);
 
-        .imgCourseRecommend {
-          img {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            object-fit: cover;
+        &:hover {
+          box-shadow: 0 2px 10px #0000001a;
+        }
+
+        .titleCourseRecommend {
+          display: flex;
+          align-items: center;
+
+          .imgCourseRecommend {
+            img {
+              width: 60px;
+              height: 60px;
+              border-radius: 10px;
+              object-fit: cover;
+            }
+          }
+
+          .titleCard {
+            .botCard {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+
+              .fileIcon {
+                color: var(--gray-50);
+              }
+
+              p {
+                color: var(--gray-50);
+              }
+            }
           }
         }
 
-        .titleCard {
-          .botCard {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-
-            .fileIcon {
-              color: var(--gray-50);
-            }
-
-            p {
-              color: var(--gray-50);
-            }
-          }
+        .contentCourseRecommend {
+          display: flex;
+          justify-content: flex-end;
         }
-      }
-
-      .contentCourseRecommend {
-        display: flex;
-        justify-content: flex-end;
       }
     }
   }

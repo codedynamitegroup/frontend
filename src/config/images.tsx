@@ -11,17 +11,21 @@ import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
 import changePasswordThumbnail from "assets/img/change_password_thumbnail.svg";
+import courseCertificatesBackground from "assets/img/background/background-course-certificate.jpg";
+import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
+  background: { contestListBackground, courseCertificatesBackground },
   logo: { moodleLogo, microsoftLogo, googleLogo },
   null: { mailboxEmpty },
   login,
   forgotpassword,
   icLevel,
   contestListBackground,
-  changePasswordThumbnail
+  changePasswordThumbnail,
+  icCertificate
 };
 
 export default images;

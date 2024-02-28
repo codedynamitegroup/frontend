@@ -1,11 +1,9 @@
 import { Box, Container, Grid } from "@mui/material";
-import Header from "components/Header";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
-import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";

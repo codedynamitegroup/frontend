@@ -12,6 +12,9 @@ import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
 import FlagIcon from "@mui/icons-material/Flag";
+import SchoolIcon from "@mui/icons-material/School";
+import CertificateDetails from "./components/Certificate";
+import CourseCertificateLesson from "./components/Lesson";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -76,7 +79,7 @@ const CourseCertificateDetail = () => {
                     <Grid
                       item
                       xs={4}
-                      borderRight={"1px solid var(--gray-60)"}
+                      borderRight={"1px solid var(--gray-40)"}
                       className={classes.courseDetailsWrapper}
                     >
                       <Box id={classes.userRating}>
@@ -90,7 +93,7 @@ const CourseCertificateDetail = () => {
                     <Grid
                       item
                       xs={4}
-                      borderRight={"1px solid var(--gray-60)"}
+                      borderRight={"1px solid var(--gray-40)"}
                       className={classes.courseDetailsWrapper}
                     >
                       <Box id={classes.numberLesson}>
@@ -110,9 +113,6 @@ const CourseCertificateDetail = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Box>
-                  <Button btnType={BtnType.Primary}>Bắt đầu học ngay</Button>
-                </Box>
                 <Grid container>
                   <Grid item xs={12} md={6}>
                     <Box id={classes.courseProgress}>
@@ -122,6 +122,15 @@ const CourseCertificateDetail = () => {
                       </Box>
                       <LinearProgress determinate value={38} />
                     </Box>
+                  </Grid>
+                  <Grid md={1}></Grid>
+                  <Grid item xs={12} md={5}>
+                    <Button
+                      startIcon={<SchoolIcon id={classes.icSchool} />}
+                      btnType={BtnType.Primary}
+                    >
+                      Bắt đầu học ngay
+                    </Button>
                   </Grid>
                 </Grid>
                 <Box sx={{ border: 1, borderColor: "divider" }}>
@@ -151,9 +160,8 @@ const CourseCertificateDetail = () => {
                 <Box>
                   <Routes>
                     <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
-                    {/* <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
-                  <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-                  <Route path={"languages"} element={<CodeQuestionLanguages />} /> */}
+                    <Route path={"lesson"} element={<CourseCertificateLesson />} />
+                    <Route path={"certificate"} element={<CertificateDetails />} />
                   </Routes>
                 </Box>
               </Box>
