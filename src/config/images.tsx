@@ -10,6 +10,7 @@ import googleLogo from "assets/img/logo/google_logo.svg";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
+import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
@@ -19,6 +20,7 @@ const images = {
   login,
   forgotpassword,
   icLevel,
+  icCertificate,
   contestListBackground
 };
 

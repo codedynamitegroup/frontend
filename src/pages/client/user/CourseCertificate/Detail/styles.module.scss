@@ -9,7 +9,7 @@
 
 #main {
   padding: 30px 0px;
-  height: 100%;
+  height: fit-content;
   background-color: var(--gray-3);
 
   #container {
@@ -92,6 +92,9 @@
             }
           }
 
+          #icSchool {
+            color: #ffffff;
+          }
           #courseProgress {
             display: flex;
             flex-direction: column;
