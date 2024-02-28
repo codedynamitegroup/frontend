@@ -22,6 +22,9 @@ import { red, grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 
+import classes from "./styles.module.scss";
+import ParagraphBody from "components/text/ParagraphBody";
+
 const rows = [
   {
     id: 1,
@@ -92,7 +95,7 @@ const QuestionListOfCourse = () => {
       field: "qtype",
       headerName: "Phân loại",
       sortable: false,
-      flex: 1,
+      flex: 2,
       headerClassName: "qbm-class"
     },
     {
@@ -142,6 +145,19 @@ const QuestionListOfCourse = () => {
   console.log(urlParams);
   return (
     <div>
+      <Box className={classes.tabWrapper}>
+        <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+          <span onClick={() => navigate(routes.lecturer.course.management)}>
+            Ngân hàng câu hỏi chung
+          </span>{" "}
+          {"> "}
+          <span
+            onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
+          >
+            Học thuật toán
+          </span>
+        </ParagraphBody>
+      </Box>
       <TabPanel value='1'>
         <Container maxWidth='xl'>
           <Stack spacing={2}>

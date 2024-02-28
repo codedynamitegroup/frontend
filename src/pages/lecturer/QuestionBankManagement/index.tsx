@@ -29,25 +29,25 @@ const rows = [
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
   },
   {
-    id: "abc",
+    id: "abc2",
     category: "Java",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
   },
   {
-    id: "abc",
+    id: "abc3",
     category: "Mảng 1 chiều",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
   },
   {
-    id: "abc",
+    id: "abc4",
     category: "Mảng 2 chiều",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
   },
   {
-    id: "abc",
+    id: "abc5",
     category: "Con trỏ",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
@@ -155,8 +155,6 @@ const QuestionBankManagement = () => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
-
-  const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
 
   return (
     <div>

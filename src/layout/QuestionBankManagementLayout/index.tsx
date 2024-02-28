@@ -2,8 +2,10 @@ import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import { Box, Tab, TabProps } from "@mui/material";
+import { Box, Tab, TabProps, Grid, Container } from "@mui/material";
 
+import classes from "./styles.module.scss";
+import Header from "components/Header";
 import { styled } from "@mui/material/styles";
 
 const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) => ({
@@ -19,17 +21,20 @@ const QuestionBankManagementLayout = () => {
     setValue(newValue);
   };
   return (
-    <Box>
-      <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label='lab API tabs'>
-            <CustomTab label='Chung' value='1' />
-            <CustomTab label='Cá nhân' value='2' />
-          </TabList>
-        </Box>
-        <Outlet />
-      </TabContext>
-    </Box>
+    <Grid className={classes.root}>
+      <Header />
+      <Container className={classes.container}>
+        <TabContext value={value}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <TabList onChange={handleChange} aria-label='lab API tabs'>
+              <CustomTab label='Chung' value='1' />
+              <CustomTab label='Cá nhân' value='2' />
+            </TabList>
+          </Box>
+          <Outlet />
+        </TabContext>
+      </Container>
+    </Grid>
   );
 };
 
