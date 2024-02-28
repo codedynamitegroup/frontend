@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Box, Stack, Grid, Container, Button as MButton, Divider } from "@mui/material";
+import { Box, Stack, Grid, Container } from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
 
@@ -16,11 +16,11 @@ import {
   GridActionsCellItem,
   GridEventListener
 } from "@mui/x-data-grid";
-import Button from "@mui/joy/Button";
 import SearchBar from "components/common/search/SearchBar";
 import { red, grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import Button, { BtnType } from "components/common/buttons/Button";
 
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -102,7 +102,7 @@ const QuestionListOfCourse = () => {
       field: "operation",
       headerName: "Tác vụ",
       sortable: false,
-      flex: 1,
+      flex: 2,
       type: "actions",
       cellClassName: "actions",
       getActions: ({ id }) => {
@@ -165,23 +165,13 @@ const QuestionListOfCourse = () => {
 
             <Grid container spacing={1}>
               <Grid item xs={12} md={3}>
-                <Button
-                  size='lg'
-                  variant='outlined'
-                  sx={{ fontSize: "120%", display: "block" }}
-                  fullWidth
-                >
-                  Export câu hỏi ra file
+                <Button btnType={BtnType.Outlined} fullWidth>
+                  <ParagraphBody>Export câu hỏi ra file</ParagraphBody>
                 </Button>
               </Grid>
               <Grid item xs={12} md={2}>
-                <Button
-                  size='lg'
-                  variant='outlined'
-                  sx={{ fontSize: "120%", display: "block" }}
-                  fullWidth
-                >
-                  Thêm câu hỏi
+                <Button btnType={BtnType.Outlined} fullWidth>
+                  <ParagraphBody> Thêm câu hỏi</ParagraphBody>
                 </Button>
               </Grid>
             </Grid>
@@ -203,6 +193,7 @@ const QuestionListOfCourse = () => {
               pageSizeOptions={[5, 10, 30, 50]}
               paginationMode='server'
               disableColumnFilter
+              hideFooterSelectedRowCount
               // onRowClick={handleRowClick}
               // slots={{
               //   toolbar: EditToolbar

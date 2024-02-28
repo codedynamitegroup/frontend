@@ -55,7 +55,7 @@ export default function PickQuestionTypeToAddDialog({
             <BasicRadioGroup
               ariaLabel='question-type'
               value={questionType}
-              handleChangeQuestionType={handleChangeQuestionType}
+              handleChange={handleChangeQuestionType}
               items={[
                 { value: "essay", label: "Tự luận" },
                 { value: "multiple-choice", label: "Trắc nghiệm" },

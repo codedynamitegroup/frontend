@@ -57,11 +57,12 @@ export const routes = {
     },
     assignment: {
       submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
-    }
+    },
+    calendar: "/student/calendar"
   },
   user: {
-    information: "/users/:userId/information",
-    password_change: "/users/:userId/password/change",
+    information: "/user/information",
+    password_change: "/user/password/change",
     problem: {
       solution: {
         share: "/problems/:id/solution/share"

@@ -91,7 +91,7 @@ const ContestList = () => {
         <Grid item xs={12} md={12} xl={12} lg={12}>
           <Box
             sx={{
-              backgroundImage: `url(${images.contestListBackground})`,
+              backgroundImage: `url(${images.background.contestListBackground})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "100% 100%"
             }}

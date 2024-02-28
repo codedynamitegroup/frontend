@@ -1,12 +1,11 @@
-import * as React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Divider, IconButton } from "@mui/material";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { Box, Divider, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import * as React from "react";
 
 interface CustomDialogProps extends DialogProps {
   title?: string;
@@ -44,6 +43,7 @@ export default function CustomDialog({
           minWidth: minWidth || "550px"
         }
       }}
+      PaperProps={{ sx: { borderRadius: "10px" } }}
       {...props}
     >
       <DialogTitle id='id'>
@@ -57,9 +57,7 @@ export default function CustomDialog({
         </Box>
       </DialogTitle>
       <Divider />
-      <DialogContent>
-        <DialogContentText id='alert-dialog-description'>{children}</DialogContentText>
-      </DialogContent>
+      <DialogContent>{children}</DialogContent>
       {actionsDisabled && actionsDisabled === true ? null : (
         <DialogActions>
           <Button

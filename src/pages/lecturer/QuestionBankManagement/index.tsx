@@ -194,6 +194,7 @@ const QuestionBankManagement = () => {
               paginationMode='server'
               disableColumnFilter
               onRowClick={handleRowClick}
+              hideFooterSelectedRowCount
               // slots={{
               //   toolbar: EditToolbar
               // }}
