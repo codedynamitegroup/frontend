@@ -74,6 +74,15 @@ export const routes = {
     },
     homepage: {
       root: "/"
+    },
+    login: {
+      root: "/login"
+    },
+    register: {
+      root: "/register"
+    },
+    forgot_password: {
+      root: "/forgot-password"
     }
   }
 };

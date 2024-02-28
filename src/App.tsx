@@ -28,6 +28,9 @@ import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
 import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
+import Login from "pages/client/user/Login";
+import Register from "pages/client/user/Register";
+import Forgotpassword from "pages/client/user/ForgotPassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,6 +41,9 @@ const router = createBrowserRouter(
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
       <Route path={routes.user.password_change} element={<UserPasswordChange />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
+      <Route path={routes.user.login.root} element={<Login />} />
+      <Route path={routes.user.register.root} element={<Register />} />
+      <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
