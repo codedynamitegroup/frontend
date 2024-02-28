@@ -244,13 +244,15 @@ export default function AssignmentGrading() {
             </Box>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle>Nhận xét</TextTitle>
-              <TextEditor
-                style={{
-                  marginTop: "10px"
-                }}
-                value={assignmentFeedback}
-                onChange={setAssignmentFeedback}
-              />
+              <Box className={classes.textEditor}>
+                <TextEditor
+                  style={{
+                    marginTop: "10px"
+                  }}
+                  value={assignmentFeedback}
+                  onChange={setAssignmentFeedback}
+                />
+              </Box>
             </Box>
             <LoadButton
               btnType={BtnType.Outlined}

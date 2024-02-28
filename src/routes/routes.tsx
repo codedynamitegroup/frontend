@@ -39,7 +39,8 @@ export const routes = {
       }
     },
     question_bank: {
-      path: "lecturer/question-bank-management"
+      path: "lecturer/question-bank-management",
+      questions_list_of_course: { path: ":id" }
     },
     exam: {
       create: "/lecturer/exam-management/create"
@@ -63,15 +64,37 @@ export const routes = {
     information: "/user/information",
     password_change: "/user/password/change",
     problem: {
+      solution: {
+        share: "/problems/:id/solution/share"
+      },
       root: "/problems",
       detail: "/problems/:id"
     },
     course_certificate: {
       root: "/course-certificates",
-      detail: "/course-certificates/:id"
+      detail: "/course-certificates/:id/*",
+      introduction: "/course-certificates/:id/introduction",
+      lesson: "/course-certificates/:id/lesson",
+      certificate: "/course-certificates/:id/certificate"
+    },
+    contest: {
+      root: "/contests",
+      detail: "/contests/:contestId",
+      participant: "/contests/:contestId/participant",
+      leaderboard: "/contests/:contestId/leaderboard",
+      submission: "/contests/:contestId/submission"
     },
     homepage: {
       root: "/"
+    },
+    login: {
+      root: "/login"
+    },
+    register: {
+      root: "/register"
+    },
+    forgot_password: {
+      root: "/forgot-password"
     }
   }
 };

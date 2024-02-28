@@ -479,7 +479,7 @@ export default function ExamCreated() {
                   <Grid item xs={3}>
                     <TextTitle>Mô tả bài kiểm tra</TextTitle>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid item xs={9} className={classes.textEditor}>
                     <TextEditor value={examDescription} onChange={setExamDescription} />
                   </Grid>
                 </Grid>

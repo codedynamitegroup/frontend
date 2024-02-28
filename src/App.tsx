@@ -23,11 +23,18 @@ import {
   createRoutesFromElements
 } from "react-router-dom";
 import { routes } from "routes/routes";
+import ContestList from "pages/client/user/Contest/ContestList";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
 import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
 import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
+import Login from "pages/client/user/Login";
+import Register from "pages/client/user/Register";
+import Forgotpassword from "pages/client/user/ForgotPassword";
+import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
+import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,7 +43,11 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
+      <Route path={routes.user.login.root} element={<Login />} />
+      <Route path={routes.user.register.root} element={<Register />} />
+      <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
@@ -70,12 +81,20 @@ const router = createBrowserRouter(
         path={routes.lecturer.question.true_false.create}
         element={<QuestionCreated qtype={qtype.true_false.code} />}
       />
-      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
+
       <Route path={routes.user.information} element={<UserInformation />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+      <Route path={routes.user.contest.root} element={<ContestList />} />
 
       <Route path={routes.user.course_certificate.detail} element={<CourseCertificateDetail />} />
+      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagementLayout />}>
+        <Route index element={<QuestionBankManagement />} />
+        <Route
+          path={routes.lecturer.question_bank.questions_list_of_course.path}
+          element={<QuestionListOfCourse />}
+        />
+      </Route>
     </Route>
   )
 );

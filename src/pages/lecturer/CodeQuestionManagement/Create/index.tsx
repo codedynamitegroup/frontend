@@ -16,6 +16,7 @@ import { routes } from "routes/routes";
 interface Props {}
 
 const CodeQuestionCreated = memo((props: Props) => {
+  const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
     "Gồm 2 số nguyên a và b cách nhau bởi dấu cách, được nhập từ bàn phím"
@@ -47,22 +48,17 @@ const CodeQuestionCreated = memo((props: Props) => {
             <InputTextField title='Tên câu hỏi' type='text' value={questionName} />
             <Grid container spacing={1} columns={12}>
               <Grid item xs={3}>
-                <TextTitle>Mô tả câu hỏi</TextTitle>
+                <TextTitle>Mô tả bài toán</TextTitle>
               </Grid>
-              <Grid item xs={9}>
-                <Textarea
-                  defaultValue='Mô tả bài toán'
-                  sx={{ backgroundColor: "white" }}
-                  minRows={3}
-                  maxRows={3}
-                />
+              <Grid item xs={9} className={classes.textEditor}>
+                <TextEditor value={problemDescription} onChange={setProblemDescription} />
               </Grid>
             </Grid>
             <Grid container spacing={1} columns={12}>
               <Grid item xs={3}>
                 <TextTitle>Phát biểu bài toán</TextTitle>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={9} className={classes.textEditor}>
                 <TextEditor value={problemStatement} onChange={setProblemStatement} />
               </Grid>
             </Grid>
@@ -70,7 +66,7 @@ const CodeQuestionCreated = memo((props: Props) => {
               <Grid item xs={3}>
                 <TextTitle>Định dạng đầu vào</TextTitle>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={9} className={classes.textEditor}>
                 <TextEditor value={inputFormat} onChange={setInputFormat} />
               </Grid>
             </Grid>
@@ -78,7 +74,7 @@ const CodeQuestionCreated = memo((props: Props) => {
               <Grid item xs={3}>
                 <TextTitle>Ràng buộc</TextTitle>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={9} className={classes.textEditor}>
                 <TextEditor value={contraints} onChange={setContraints} />
               </Grid>
             </Grid>
@@ -86,7 +82,7 @@ const CodeQuestionCreated = memo((props: Props) => {
               <Grid item xs={3}>
                 <TextTitle>Định dạng đầu ra</TextTitle>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={9} className={classes.textEditor}>
                 <TextEditor value={outputFormat} onChange={setOutputFormat} />
               </Grid>
             </Grid>
