@@ -56,11 +56,12 @@ export const routes = {
     },
     assignment: {
       submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
-    }
+    },
+    calendar: "/student/calendar"
   },
   user: {
-    information: "/users/:userId/information",
-    password_change: "/users/:userId/password/change",
+    information: "/user/information",
+    password_change: "/user/password/change",
     problem: {
       root: "/problems",
       detail: "/problems/:id"
@@ -68,7 +69,6 @@ export const routes = {
     course_certificate: {
       root: "/course-certificates",
       detail: "/course-certificates/:id"
-
     },
     homepage: {
       root: "/"

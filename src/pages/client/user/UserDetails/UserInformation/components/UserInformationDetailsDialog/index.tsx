@@ -1,20 +1,19 @@
 import { Avatar, DialogProps, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
+import CustomDatePicker from "components/common/datetime/CustomDatePicker";
+import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
-import BasicSelect from "components/common/select/BasicSelect";
+import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import images from "config/images";
 import dayjs from "dayjs";
-import classes from "./styles.module.scss";
 import { useState } from "react";
-import CustomDatePicker from "components/common/datetime/CustomDatePicker";
-import CustomDialog from "components/common/dialogs/CustomDialog";
-import { useNavigate, useParams } from "react-router-dom";
+import classes from "./styles.module.scss";
 
-interface UserInformationDetailsModalProps extends DialogProps {
+interface UserInformationDetailsDialogProps extends DialogProps {
   initialData: {
     id: string;
     name: string;
@@ -29,9 +28,10 @@ interface UserInformationDetailsModalProps extends DialogProps {
   confirmText?: string;
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
+  onHanldeChangePassword?: () => void;
 }
 
-const UserInformationDetailsModal = ({
+const UserInformationDetailsDialog = ({
   initialData,
   open,
   title,
@@ -41,11 +41,17 @@ const UserInformationDetailsModal = ({
   confirmText,
   onHandleCancel,
   onHanldeConfirm,
+  onHanldeChangePassword,
   ...props
-}: UserInformationDetailsModalProps) => {
-  const navigate = useNavigate();
-  const userId = useParams().userId;
+}: UserInformationDetailsDialogProps) => {
   const [data, setData] = useState(initialData);
+
+  const onHandleChangeGender = (value: string) => {
+    setData((pre) => ({
+      ...pre,
+      gender: value
+    }));
+  };
 
   return (
     <CustomDialog
@@ -90,18 +96,10 @@ const UserInformationDetailsModal = ({
             <TextTitle>Giới tính</TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <BasicSelect
-              labelId='select-assignment-section-label'
+            <BasicRadioGroup
+              ariaLabel='gender'
               value={data.gender}
-              onHandleChange={(e) => {
-                setData((pre) => ({
-                  ...pre,
-                  gender: e
-                }));
-              }}
-              sx={{
-                marginTop: "0px"
-              }}
+              handleChange={onHandleChangeGender}
               items={[
                 {
                   value: "0",
@@ -124,7 +122,7 @@ const UserInformationDetailsModal = ({
             <Button
               btnType={BtnType.Text}
               onClick={() => {
-                navigate(`/users/${userId}/password/change`);
+                onHanldeChangePassword && onHanldeChangePassword();
               }}
             >
               Đổi mật khẩu
@@ -146,8 +144,8 @@ const UserInformationDetailsModal = ({
           >
             {images.logo.moodleLogo && (
               <Avatar
-                alt='Moodle'
-                src={images.logo.moodleLogo}
+                alt='Google'
+                src={images.logo.googleLogo}
                 sx={{
                   width: "40px",
                   height: "40px"
@@ -159,7 +157,7 @@ const UserInformationDetailsModal = ({
                 marginLeft: "5px"
               }}
             >
-              Moodle
+              Google
             </ParagraphBody>
           </Grid>
           <Grid
@@ -258,4 +256,4 @@ const UserInformationDetailsModal = ({
   );
 };
 
-export default UserInformationDetailsModal;
+export default UserInformationDetailsDialog;
