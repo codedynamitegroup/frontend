@@ -1,19 +1,25 @@
 import React from "react";
 import classes from "./styles.module.scss";
-import { Box, Divider, Grid, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import Heading1 from "components/text/Heading1";
-import Heading3 from "components/text/Heading3";
-import Heading6 from "components/text/Heading6";
+import { Box, Divider, Grid, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import TrendingContestCard from "./components/TrendingContestCard";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import SearchBar from "components/common/search/SearchBar";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Header from "components/Header";
 import ContestContentCard from "./components/ContestContentCard";
-import Heading5 from "components/text/Heading5";
-import Heading4 from "components/text/Heading4";
 import ContestFilter from "./components/ContestFilter";
+import images from "config/images";
+
+const filterObject = {
+  difficulty: {
+    root: "Độ khó",
+    object: ["Sơ cấp", "Trung cấp", "Cao cấp"]
+  },
+  language: {
+    root: "Ngôn ngữ lập trình",
+    object: ["C++", "Java", "Python", "C#", "Javascript", "Ruby", "PHP"]
+  }
+};
 
 const responsive = {
   desktop: {
@@ -48,16 +54,15 @@ const ContestList = () => {
     onChange: handleButtonGroupChange,
     exclusive: true
   };
-  const IMG_URL = "https://picsum.photos/1960/400";
 
   return (
     <Box className={classes.container}>
       <Header />
-      <Grid container spacing={1}>
+      <Grid container spacing={10}>
         <Grid item xs={12} md={12} xl={12} lg={12}>
           <Box
             sx={{
-              backgroundImage: `url(${IMG_URL})`,
+              backgroundImage: `url(${images.contestListBackground})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "100% 100%"
             }}
@@ -66,23 +71,63 @@ const ContestList = () => {
             <Grid container spacing={2} justifyContent='center'>
               <Grid item md={10} lg={7}>
                 <Box>
-                  <Heading1>LẬP TRÌNH THI ĐẤU</Heading1>
+                  <Typography
+                    fontSize={"40px"}
+                    fontFamily={"BarlowCondensed,sans-serif"}
+                    fontWeight={600}
+                    letterSpacing={".5px"}
+                    lineHeight={"74px"}
+                    textAlign={"left"}
+                    color={"#2a2a2a"}
+                  >
+                    LẬP TRÌNH THI ĐẤU
+                  </Typography>
                 </Box>
               </Grid>
               <Grid item md={10} lg={7} className={classes.generalDetailsContainer}>
                 <Box>
-                  <Heading3>926</Heading3>
-                  <Heading6>CUỘC THI</Heading6>
+                  <Typography
+                    fontFamily={"BarlowCondensed, sans-serif"}
+                    fontWeight={500}
+                    fontSize={"34px"}
+                    lineHeight={"38px"}
+                    color={"#2a2a2a"}
+                  >
+                    926
+                  </Typography>
+                  <Typography
+                    lineHeight={"18px"}
+                    fontWeight={700}
+                    fontFamily={"Roboto, sans-serif"}
+                    color={"#2a2a2a"}
+                  >
+                    CUỘC THI
+                  </Typography>
                 </Box>
                 <Box>
-                  <Heading3>300.000</Heading3>
-                  <Heading6>THÍ SINH THAM GIA</Heading6>
+                  <Typography
+                    fontFamily={"BarlowCondensed, sans-serif"}
+                    fontWeight={500}
+                    fontSize={"34px"}
+                    lineHeight={"38px"}
+                    color={"#2a2a2a"}
+                  >
+                    300.000
+                  </Typography>
+                  <Typography
+                    lineHeight={"18px"}
+                    fontWeight={700}
+                    fontFamily={"Roboto, sans-serif"}
+                    color={"#2a2a2a"}
+                  >
+                    THÍ SINH THAM GIA
+                  </Typography>
                 </Box>
               </Grid>
               <Grid item md={10} lg={7}>
                 <Box className={classes.carouselContainer}>
-                  {/* <Carousel
-                    autoPlaySpeed={10000}
+                  <Carousel
+                    autoPlaySpeed={5000}
                     responsive={responsive}
                     autoPlay={true}
                     className={classes.carousel}
@@ -90,19 +135,33 @@ const ContestList = () => {
                     showDots={true}
                     partialVisbile={true}
                   >
-                    <TrendingContestCard num={1} />
-                    <TrendingContestCard num={2} />
-                    <TrendingContestCard num={3} />
-                    <TrendingContestCard num={4} />
-                    <TrendingContestCard num={5} />
-                  </Carousel> */}
+                    <TrendingContestCard />
+                    <TrendingContestCard />
+                    <TrendingContestCard />
+                    <TrendingContestCard />
+                    <TrendingContestCard />
+                  </Carousel>
                 </Box>
               </Grid>
             </Grid>
           </Box>
         </Grid>
+
         <Grid item xs={12} md={12} xl={12} lg={12} className={classes.contestListContainer}>
-          <Grid container justifyContent={"center"} spacing={1}>
+          <Grid container justifyContent={"center"} spacing={2}>
+            <Grid item xs={12} md={10} lg={7}>
+              <Typography
+                color={"#2a2a2a"}
+                fontFamily={"BarlowCondensed,sans-serif"}
+                fontSize={"48px"}
+                fontWeight={500}
+                letterSpacing={".3px"}
+                lineHeight={"50px"}
+              >
+                Danh sách cuộc thi
+              </Typography>
+              <Divider />
+            </Grid>
             <Grid item xs={12} md={10} lg={7}>
               <SearchBar onSearchClick={onSearchClick} />
             </Grid>
@@ -148,7 +207,7 @@ const ContestList = () => {
                     <Grid item xs={12} />
 
                     <Grid item xs={12}>
-                      <ContestFilter />
+                      <ContestFilter filterObject={filterObject} />
                     </Grid>
                   </Grid>
                 </Grid>
