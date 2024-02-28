@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { Box, Stack, Grid, Container, Button as MButton, Divider } from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
@@ -6,7 +7,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
+import PreviewIcon from "@mui/icons-material/Preview";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   DataGrid,
@@ -21,52 +22,26 @@ import { red, grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 
+import classes from "./styles.module.scss";
+import ParagraphBody from "components/text/ParagraphBody";
+
 const rows = [
   {
-    id: "abc",
-    category: "Học thuật toán",
+    id: 1,
+    questionName: "Con trỏ là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
+    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
+    qtype: "Nhiều lựa chọn"
   },
   {
-    id: "abc2",
-    category: "Java",
+    id: 2,
+    questionName: "Stack và Queue là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc3",
-    category: "Mảng 1 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc4",
-    category: "Mảng 2 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc5",
-    category: "Con trỏ",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
+    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
+    qtype: "Tự luận"
   }
 ];
-// function EditToolbar() {
-//   return (
-//     <GridToolbarContainer>
-//       <Box>
-//         <MButton color='primary' startIcon={<AddIcon />}>
-//           Thêm mới
-//         </MButton>
-//         <Divider />
-//       </Box>
-//     </GridToolbarContainer>
-//   );
-// }
-
-const QuestionBankManagement = () => {
+const QuestionListOfCourse = () => {
   const [pageState, setPageState] = useState({
     isLoading: false,
     data: rows,
@@ -84,8 +59,8 @@ const QuestionBankManagement = () => {
       headerClassName: "qbm-class"
     },
     {
-      field: "category",
-      headerName: "Tên danh mục",
+      field: "questionName",
+      headerName: "Tên câu hỏi",
       sortable: false,
       flex: 3,
       headerClassName: "qbm-class"
@@ -117,6 +92,13 @@ const QuestionBankManagement = () => {
       headerClassName: "qbm-class"
     },
     {
+      field: "qtype",
+      headerName: "Phân loại",
+      sortable: false,
+      flex: 2,
+      headerClassName: "qbm-class"
+    },
+    {
       field: "operation",
       headerName: "Tác vụ",
       sortable: false,
@@ -125,9 +107,10 @@ const QuestionBankManagement = () => {
       cellClassName: "actions",
       getActions: ({ id }) => {
         return [
+          <GridActionsCellItem icon={<PreviewIcon />} label='Preview' onClick={() => null} />,
           <GridActionsCellItem
             icon={<EditIcon />}
-            label='Save'
+            label='Edit'
             sx={{
               color: "primary.main"
             }}
@@ -135,7 +118,7 @@ const QuestionBankManagement = () => {
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
-            label='Cancel'
+            label='Delete'
             className='textPrimary'
             onClick={() => null}
             sx={{
@@ -153,17 +136,44 @@ const QuestionBankManagement = () => {
   const navigate = useNavigate();
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    navigate(`${params.row.id}`);
+    console.log(params);
+    // navigate(`${params.row.id}`);
   };
 
+  const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
+  const urlParams = useParams();
+  console.log(urlParams);
   return (
     <div>
+      <Box className={classes.tabWrapper}>
+        <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+          <span onClick={() => navigate(routes.lecturer.course.management)}>
+            Ngân hàng câu hỏi chung
+          </span>{" "}
+          {"> "}
+          <span
+            onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
+          >
+            Học thuật toán
+          </span>
+        </ParagraphBody>
+      </Box>
       <TabPanel value='1'>
         <Container maxWidth='xl'>
           <Stack spacing={2}>
-            <Typography level='h1'>Ngân hàng câu hỏi chung</Typography>
+            <Typography level='h1'>Học thuật toán</Typography>
 
             <Grid container spacing={1}>
+              <Grid item xs={12} md={3}>
+                <Button
+                  size='lg'
+                  variant='outlined'
+                  sx={{ fontSize: "120%", display: "block" }}
+                  fullWidth
+                >
+                  Export câu hỏi ra file
+                </Button>
+              </Grid>
               <Grid item xs={12} md={2}>
                 <Button
                   size='lg'
@@ -171,12 +181,12 @@ const QuestionBankManagement = () => {
                   sx={{ fontSize: "120%", display: "block" }}
                   fullWidth
                 >
-                  Thêm mới
+                  Thêm câu hỏi
                 </Button>
               </Grid>
             </Grid>
 
-            <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
+            <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
             <DataGrid
               sx={{
                 "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
@@ -193,7 +203,7 @@ const QuestionBankManagement = () => {
               pageSizeOptions={[5, 10, 30, 50]}
               paginationMode='server'
               disableColumnFilter
-              onRowClick={handleRowClick}
+              // onRowClick={handleRowClick}
               // slots={{
               //   toolbar: EditToolbar
               // }}
@@ -206,4 +216,4 @@ const QuestionBankManagement = () => {
   );
 };
 
-export default QuestionBankManagement;
+export default QuestionListOfCourse;

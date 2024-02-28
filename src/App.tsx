@@ -33,6 +33,8 @@ import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail"
 import Login from "pages/client/user/Login";
 import Register from "pages/client/user/Register";
 import Forgotpassword from "pages/client/user/ForgotPassword";
+import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
+import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +63,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
 
       <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
+
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
@@ -77,13 +80,20 @@ const router = createBrowserRouter(
         path={routes.lecturer.question.true_false.create}
         element={<QuestionCreated qtype={qtype.true_false.code} />}
       />
-      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagement />} />
+
       <Route path={routes.user.information} element={<UserInformation />} />
 
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
       <Route path={routes.user.contest.root} element={<ContestList />} />
 
       <Route path={routes.user.course_certificate.detail} element={<CourseCertificateDetail />} />
+      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagementLayout />}>
+        <Route index element={<QuestionBankManagement />} />
+        <Route
+          path={routes.lecturer.question_bank.questions_list_of_course.path}
+          element={<QuestionListOfCourse />}
+        />
+      </Route>
     </Route>
   )
 );
