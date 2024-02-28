@@ -8,7 +8,6 @@ import CourseCertificates from "pages/client/user/CourseCertificate";
 import ListProblem from "pages/client/user/ListProblem";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
-import UserPasswordChange from "pages/client/user/UserDetails/UserPasswordChange";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/lecturer/AssignmentManagement/GradingAssignment";
 import CodeQuestionManagement from "pages/lecturer/CodeQuestionManagement";
@@ -30,6 +29,7 @@ import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
 import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
+import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
 import Login from "pages/client/user/Login";
 import Register from "pages/client/user/Register";
 import Forgotpassword from "pages/client/user/ForgotPassword";
@@ -44,7 +44,6 @@ const router = createBrowserRouter(
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
-      <Route path={routes.user.password_change} element={<UserPasswordChange />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
       <Route path={routes.user.login.root} element={<Login />} />
       <Route path={routes.user.register.root} element={<Register />} />
@@ -63,6 +62,8 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
 
       <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
+
+      <Route path={routes.student.calendar} element={<StudentEventCalendar />} />
 
       <Route
         path={routes.lecturer.question.essay.create}

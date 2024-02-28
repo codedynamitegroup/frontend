@@ -14,6 +14,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Header, { DrawerHeader } from "components/Header";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import { CalendarIcon } from "@mui/x-date-pickers";
 
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
@@ -21,6 +22,11 @@ const sideBarItemListData: SidebarItem[] = [
     name: "Trang chủ",
     icon: <DashboardIcon className={classes.itemIcon} />,
     link: routes.student.course.management
+  },
+  {
+    name: "Lịch",
+    icon: <CalendarIcon className={classes.itemIcon} />,
+    link: routes.student.calendar
   }
 ];
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{

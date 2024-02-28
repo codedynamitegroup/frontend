@@ -6,18 +6,21 @@ import moodleLogo from "assets/img/logo/moodle_logo.png";
 import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
 import icLevel from "assets/img/icon/skill-level-advanced.svg";
+import googleLogo from "assets/img/logo/google_logo.svg";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
+import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
-  logo: { moodleLogo, microsoftLogo },
+  logo: { moodleLogo, microsoftLogo, googleLogo },
   null: { mailboxEmpty },
   login,
   forgotpassword,
   icLevel,
+  icCertificate,
   contestListBackground
 };
 
