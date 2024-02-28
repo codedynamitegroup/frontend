@@ -1,7 +1,11 @@
-.ql-container {
-  height: calc(100% - 42px) !important;
-}
+.text-editor {
+  height: 100%;
 
-.ql-editor {
-  height: 200px !important;
+  .ql-container {
+    height: calc(100% - 42px) !important;
+
+    .ql-editor {
+      height: 100%;
+    }
+  }
 }

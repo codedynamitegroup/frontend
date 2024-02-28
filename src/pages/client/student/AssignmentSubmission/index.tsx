@@ -225,7 +225,7 @@ export default function AssignmentSubmission() {
                     <Grid item xs={3}>
                       <TextTitle>Tự luận</TextTitle>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={9} className={classes.textEditor}>
                       <TextEditor value={""} onChange={(e) => console.log(e)} />
                     </Grid>
                   </Grid>

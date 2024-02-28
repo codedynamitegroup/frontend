@@ -12,8 +12,7 @@ import Button from "@mui/joy/Button";
 import TextEditor from "../TextEditor";
 import AnswerPoint from "utils/AnswerPoint";
 import qtype from "utils/constant/Qtype";
-import CloseIcon from "@mui/icons-material/Close";
-import { blue, red } from "@mui/material/colors";
+import classes from "./styles.module.scss";
 
 interface AnswerEditorProps {
   answerNumber: number;
@@ -39,7 +38,7 @@ const AnswerEditor = (props: AnswerEditorProps) => {
         {props.qtype === qtype.multiple_choice.code && `Lựa chọn ${props.answerNumber}`}
         {props.qtype === qtype.short_answer.code && `Đáp án ${props.answerNumber}`}
       </Grid>
-      <Grid item xs={12} md={9}>
+      <Grid item xs={12} md={9} className={classes.textEditor}>
         {props.qtype === qtype.multiple_choice.code && (
           <TextEditor placeholder='Nhập nội dung' value={""} />
         )}
@@ -60,7 +59,7 @@ const AnswerEditor = (props: AnswerEditorProps) => {
       <Grid item xs={12} md={3} textAlign={{ xs: "left", md: "right" }}>
         Nhận xét chung
       </Grid>
-      <Grid item xs={12} md={9}>
+      <Grid item xs={12} md={9} className={classes.textEditor}>
         <TextEditor placeholder='Nhập nhận xét ...' value={""} />
       </Grid>
       <Grid item xs={12} container justifyContent={"center"}>

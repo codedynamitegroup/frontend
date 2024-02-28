@@ -181,7 +181,7 @@ export default function AssignmentCreated() {
                 <Grid item xs={3}>
                   <TextTitle>Mô tả bài tập</TextTitle>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
                 </Grid>
               </Grid>
@@ -189,7 +189,7 @@ export default function AssignmentCreated() {
                 <Grid item xs={3}>
                   <TextTitle>Hướng dẫn nộp bài tập</TextTitle>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
                 </Grid>
               </Grid>

@@ -28,7 +28,9 @@ const CourseAnnouncement = () => {
         </AccordionSummary>
         <AccordionDetails>
           <TextField className={classes.announcementSubject} label='Tiêu đề thông báo' />
-          <TextEditor value='' placeholder='Nhập thông báo' onChange={textEditorChangeHandler} />
+          <Box className={classes.announcementContent}>
+            <TextEditor value='' placeholder='Nhập thông báo' onChange={textEditorChangeHandler} />
+          </Box>
         </AccordionDetails>
         <AccordionActions>
           <Button onClick={cancelAnnoucementHandler}>Hủy</Button>

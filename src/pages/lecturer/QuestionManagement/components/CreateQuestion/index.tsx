@@ -90,7 +90,7 @@ const QuestionCreated = (props: Props) => {
             <Grid item xs={12} md={3}>
               <TextTitle>Mô tả câu hỏi *</TextTitle>
             </Grid>
-            <Grid item xs={12} md={9}>
+            <Grid item xs={12} md={9} className={classes.textEditor}>
               <TextEditor placeholder='Nhập mô tả ...' value={""} required />
             </Grid>
           </Grid>
@@ -106,7 +106,7 @@ const QuestionCreated = (props: Props) => {
             <Grid item xs={12} md={3}>
               <TextTitle>Nhận xét chung</TextTitle>
             </Grid>
-            <Grid item xs={12} md={9}>
+            <Grid item xs={12} md={9} className={classes.textEditor}>
               <TextEditor placeholder='Nhập nhận xét chung ...' value={""} />
             </Grid>
           </Grid>
@@ -116,7 +116,7 @@ const QuestionCreated = (props: Props) => {
               <Grid item xs={12} md={3}>
                 <TextTitle>Tiêu chí đánh giá </TextTitle>
               </Grid>
-              <Grid item xs={12} md={9}>
+              <Grid item xs={12} md={9} className={classes.textEditor}>
                 <TextEditor min placeholder='Nhập tiêu chí đánh giá ...' value={""} />
               </Grid>
             </Grid>
@@ -136,13 +136,13 @@ const QuestionCreated = (props: Props) => {
                 <Grid item xs={12} md={3}>
                   <TextTitle>Nhận xét câu trả lời đúng</TextTitle>
                 </Grid>
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12} md={9} className={classes.textEditor}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />
                 </Grid>
                 <Grid item xs={12} md={3}>
                   <TextTitle>Nhận xét câu trả lời sai</TextTitle>
                 </Grid>
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12} md={9} className={classes.textEditor}>
                   <TextEditor placeholder='Nhập nhận xét ...' value={""} />
                 </Grid>
               </Grid>
