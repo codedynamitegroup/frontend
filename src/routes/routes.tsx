@@ -75,6 +75,13 @@ export const routes = {
       lesson: "/course-certificates/:id/lesson",
       certificate: "/course-certificates/:id/certificate"
     },
+    contest: {
+      root: "/contests",
+      detail: "/contests/:contestId",
+      participant: "/contests/:contestId/participant",
+      leaderboard: "/contests/:contestId/leaderboard",
+      submission: "/contests/:contestId/submission"
+    },
     homepage: {
       root: "/"
     },

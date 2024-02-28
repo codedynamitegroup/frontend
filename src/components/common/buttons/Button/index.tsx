@@ -16,10 +16,21 @@ interface ButtonProps extends ButtonPropsMUI {
   width?: string;
   padding?: string;
   nowrap?: boolean;
+  borderRadius?: string;
 }
 
 const Button = memo((props: ButtonProps) => {
-  const { width, padding, className, btnType, children, nowrap, sx = {}, ...rest } = props;
+  const {
+    width,
+    padding,
+    className,
+    btnType,
+    children,
+    nowrap,
+    borderRadius,
+    sx = {},
+    ...rest
+  } = props;
   return (
     <ButtonMUI
       className={clsx(
@@ -34,7 +45,13 @@ const Button = memo((props: ButtonProps) => {
       )}
       type='button'
       {...rest}
-      sx={{ ...sx, width: width, padding: padding, whiteSpace: nowrap ? "nowrap" : "unset" }}
+      sx={{
+        ...sx,
+        width: width,
+        padding: padding,
+        whiteSpace: nowrap ? "nowrap" : "unset",
+        borderRadius: borderRadius
+      }}
     >
       <ParagraphBody>{children}</ParagraphBody>
     </ButtonMUI>

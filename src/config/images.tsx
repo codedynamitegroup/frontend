@@ -8,6 +8,8 @@ import mailboxEmpty from "assets/img/mailbox_empty.svg";
 import icLevel from "assets/img/icon/skill-level-advanced.svg";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
+import contestListBackground from "assets/img/background/contest-list-background.png";
+
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
@@ -15,7 +17,8 @@ const images = {
   null: { mailboxEmpty },
   login,
   forgotpassword,
-  icLevel
+  icLevel,
+  contestListBackground
 };
 
 export default images;
