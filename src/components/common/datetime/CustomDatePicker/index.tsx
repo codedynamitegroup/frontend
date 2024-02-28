@@ -1,4 +1,4 @@
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { Dayjs } from "dayjs";
@@ -10,7 +10,7 @@ interface BasicDateTimePickerProps {
   backgroundColor?: string;
 }
 
-const BasicDateTimePicker = ({
+const CustomDatePicker = ({
   label,
   value,
   onHandleValueChange,
@@ -19,7 +19,7 @@ const BasicDateTimePicker = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-        <DateTimePicker
+        <DatePicker
           label={label}
           value={value}
           onChange={onHandleValueChange}
@@ -38,4 +38,4 @@ const BasicDateTimePicker = ({
   );
 };
 
-export default BasicDateTimePicker;
+export default CustomDatePicker;

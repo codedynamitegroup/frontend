@@ -1,0 +1,121 @@
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 10px;
+  background-color: #eaf1fe !important;
+}
+
+.container {
+  .customListContainer {
+    padding: 90px 0px;
+  }
+  .mainHeading {
+    font-size: 64px;
+    line-height: 110%;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .mainParagraph {
+    font-size: 20px;
+    line-height: 160%;
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+
+  .createAccountBtn {
+    padding: 10px 20px;
+    // font chữ thường không ghi hoa
+    text-transform: none;
+    font-size: 16px;
+  }
+
+  @keyframes moveUpDown {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  .sectionImage {
+    padding: 90px 0px;
+    animation: moveUpDown 2s infinite;
+  }
+
+  .courseContainer {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+    padding: 0 64px;
+
+    .courseHeading {
+      margin-bottom: 15px;
+    }
+
+    .courseCard {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .centerContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .courseRecommendImg {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+    }
+    .viewAllBtn {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin-bottom: 20px;
+    }
+    .iconCourse {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .fileIcon {
+        color: var(--gray-50);
+      }
+
+      .iconLevel {
+        width: 16px;
+        height: 16px;
+      }
+
+      p {
+        color: var(--gray-50);
+      }
+    }
+
+    .courseContent {
+      padding: 40px 0px;
+    }
+    .viewDetailBtn {
+      padding: 10px 20px;
+      text-transform: none;
+      font-size: 16px;
+      margin-top: 16px;
+    }
+  }
+  // .courseRecommendImg {
+  //   margin: 20px 0px;
+  // }
+}

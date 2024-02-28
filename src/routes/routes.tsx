@@ -59,12 +59,21 @@ export const routes = {
     }
   },
   user: {
+    information: "/users/:userId/information",
+    password_change: "/users/:userId/password/change",
     problem: {
+      solution: {
+        share: "/problems/:id/solution/share"
+      },
       root: "/problems",
       detail: "/problems/:id"
     },
     course_certificate: {
-      root: "/course-certificates"
+      root: "/course-certificates",
+      detail: "/course-certificates/:id/*",
+      introduction: "/course-certificates/:id/introduction",
+      lesson: "/course-certificates/:id/lesson",
+      certificate: "/course-certificates/:id/certificate"
     },
     contest: {
       root: "/contests",
@@ -72,6 +81,18 @@ export const routes = {
       participant: "/contests/:contestId/participant",
       leaderboard: "/contests/:contestId/leaderboard",
       submission: "/contests/:contestId/submission"
+    },
+    homepage: {
+      root: "/"
+    },
+    login: {
+      root: "/login"
+    },
+    register: {
+      root: "/register"
+    },
+    forgot_password: {
+      root: "/forgot-password"
     }
   }
 };
