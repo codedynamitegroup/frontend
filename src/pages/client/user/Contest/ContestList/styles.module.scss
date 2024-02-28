@@ -1,5 +1,5 @@
 .container {
-    background-color: var(--blue-50);
+    background-color: #ebf3ff;
     .detailContainer {
         .generalDetailsContainer {
             display: flex;
@@ -7,12 +7,10 @@
                 padding-right: 30px;
             }
         }
-        .carouselContainer {
-            max-width: 1600px;
-            .carousel {
-                padding: 20px 20px 20px 0;
-                margin: 0 0 20px 0;
-            }
+        .trendingStackContainer {
+            padding: 0;
+            margin-top: 20px;
+            margin-bottom: 50px;
         }
         
     }
@@ -28,5 +26,9 @@
             }
             
         }
+    }
+    .react-multi-carousel-list {
+        padding: 0rem 0 2rem 0;
+
     }
 }
