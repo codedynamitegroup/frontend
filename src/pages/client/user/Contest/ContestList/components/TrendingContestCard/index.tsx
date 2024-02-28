@@ -1,10 +1,14 @@
 import classes from "./styles.module.scss";
-import { Button, Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import Heading6 from "components/text/Heading6";
 import Heading4 from "components/text/Heading4";
-interface PropsData {}
-const TrendingContestCard = (prop: PropsData) => {
-  const IMG_URL = "https://picsum.photos/400/300";
+interface PropsData {
+  name: string;
+  startDate: string;
+}
+const TrendingContestCard = (props: PropsData) => {
+  const { name, startDate } = props;
+  const IMG_URL = "https://picsum.photos/300/300";
   return (
     <Paper className={classes.container}>
       <Grid container spacing={1}>
@@ -15,17 +19,15 @@ const TrendingContestCard = (prop: PropsData) => {
               backgroundImage: `url(${IMG_URL})`,
               backgroundRepeat: "no-repeat"
             }}
-          >
-            <Button variant='contained' size='small' sx={{ height: "50px" }}>
-              Tham gia
-            </Button>
-          </Paper>
+          ></Paper>
         </Grid>
         <Grid item className={classes.contestDetail}>
-          <Heading4>Tên cuộc thi</Heading4>
-          <Heading6 colorName={"--gray-80"} fontWeight={100}>
-            Chủ nhật 27/02/2024 9:30 AM GMT+7
-          </Heading6>
+          <Box sx={{ marginLeft: "10px" }}>
+            <Heading4>{name}</Heading4>
+            <Heading6 colorName={"--gray-80"} fontWeight={100}>
+              {startDate}
+            </Heading6>
+          </Box>
         </Grid>
       </Grid>
     </Paper>
