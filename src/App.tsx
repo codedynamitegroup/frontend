@@ -24,6 +24,8 @@ import {
   createRoutesFromElements
 } from "react-router-dom";
 import { routes } from "routes/routes";
+import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
@@ -39,6 +41,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
       <Route path={routes.user.password_change} element={<UserPasswordChange />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
       <Route path={routes.user.login.root} element={<Login />} />

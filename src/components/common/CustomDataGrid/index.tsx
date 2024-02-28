@@ -7,7 +7,9 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
+import { GridSlotsComponentsProps } from "@mui/x-data-grid";
 import classes from "./styles.module.scss";
+import { truncate } from "fs";
 
 interface DataGridProps {
   dataList: Array<any>;
@@ -67,7 +69,6 @@ const CustomDataGrid = (props: DataGridProps) => {
         showCellVerticalBorder={showVerticalCellBorder}
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
-        checkboxSelection
         onRowSelectionModelChange={rowSelectionHandler}
         density='comfortable'
         disableColumnFilter
@@ -105,5 +106,4 @@ const CustomDataGrid = (props: DataGridProps) => {
     </Box>
   );
 };
-
 export default CustomDataGrid;

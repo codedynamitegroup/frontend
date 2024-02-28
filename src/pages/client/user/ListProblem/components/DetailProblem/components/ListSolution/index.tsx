@@ -15,7 +15,11 @@ import Close from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Filter from "@mui/icons-material/Filter";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router";
+import { routes } from "routes/routes";
+
 export default function ListSolution() {
+  const navigate = useNavigate();
   const filter = [
     {
       id: 1,
@@ -253,6 +257,7 @@ export default function ListSolution() {
               variant='contained'
               startIcon={<FontAwesomeIcon icon={faPenToSquare} className={classes.shareIcon} />}
               className={classes.shareButton}
+              onClick={() => navigate(routes.user.problem.solution.share)}
             >
               Chia sẻ bài giải
             </Button>

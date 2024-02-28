@@ -62,6 +62,9 @@ export const routes = {
     information: "/users/:userId/information",
     password_change: "/users/:userId/password/change",
     problem: {
+      solution: {
+        share: "/problems/:id/solution/share"
+      },
       root: "/problems",
       detail: "/problems/:id"
     },
