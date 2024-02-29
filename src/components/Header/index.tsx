@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import Heading4 from "components/text/Heading4";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import images from "config/images";
 
 interface ILinkMenu {
   name: string;
@@ -135,9 +136,9 @@ function Header() {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Heading4 colorName='--white' fontWeight={700}>
-            6Bros
-          </Heading4>
+          <Box className={classes.logo}>
+            <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+          </Box>
           <Box className={classes.navbarItem}>
             {pages.map((page, index) => (
               <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
