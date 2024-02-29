@@ -29,4 +29,10 @@
 .header {
   position: fixed;
   z-index: 1000;
+
+  .logo {
+    .imageLogo {
+      width: 60px;
+    }
+  }
 }
