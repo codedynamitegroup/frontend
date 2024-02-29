@@ -31,7 +31,7 @@ const QuestionBankManagementLayout = () => {
               <CustomTab label='Cá nhân' value='2' />
             </TabList>
           </Box>
-          <Outlet />
+          <Outlet context={[value, setValue]} />
         </TabContext>
       </Container>
     </Grid>

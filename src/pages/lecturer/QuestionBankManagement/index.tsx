@@ -27,12 +27,14 @@ import {
   GridActionsCellItem,
   GridEventListener
 } from "@mui/x-data-grid";
-import Button from "@mui/joy/Button";
 import SearchBar from "components/common/search/SearchBar";
 import InputTextField from "components/common/inputs/InputTextField";
 import { red, grey } from "@mui/material/colors";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { routes } from "routes/routes";
+import Button, { BtnType } from "components/common/buttons/Button";
+
+import ParagraphBody from "components/text/ParagraphBody";
 
 const rows = [
   {
@@ -145,7 +147,10 @@ const QuestionBankManagement = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => null}
+            onClick={() => {
+              //set the edit value
+              setOpenCreateDialog(true);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -169,27 +174,19 @@ const QuestionBankManagement = () => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
+  const [value, setValue]: any[] = useOutletContext();
 
   return (
     <div>
-      <TabPanel value='1'>
-        <Container maxWidth='xl'>
-          <Stack spacing={2}>
+      <TabPanel value='1' sx={{ padding: 0 }}>
+        <Container maxWidth='md'>
+          <Stack spacing={2} marginBottom={3}>
             <Typography level='h1'>Ngân hàng câu hỏi chung</Typography>
-
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={2}>
-                <Button
-                  size='lg'
-                  variant='outlined'
-                  sx={{ fontSize: "120%", display: "block" }}
-                  fullWidth
-                  onClick={() => setOpenCreateDialog(true)}
-                >
-                  Thêm mới
-                </Button>
-              </Grid>
-            </Grid>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Outlined} onClick={() => setOpenCreateDialog(true)}>
+                <ParagraphBody> Thêm mới</ParagraphBody>
+              </Button>
+            </Stack>
 
             <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
             <DataGrid
@@ -197,6 +194,7 @@ const QuestionBankManagement = () => {
                 "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
               }}
               autoHeight
+              getRowHeight={() => "auto"}
               rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
               rowCount={pageState.total}
               loading={pageState.isLoading}
@@ -252,7 +250,9 @@ const QuestionBankManagement = () => {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus>Save changes</Button>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
+            <ParagraphBody> Lưu</ParagraphBody>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

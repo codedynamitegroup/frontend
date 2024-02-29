@@ -17,6 +17,7 @@ interface CustomDialogProps extends DialogProps {
   onHanldeConfirm?: () => void;
   minWidth?: string;
   actionsDisabled?: boolean;
+  confirmDisabled?: boolean;
 }
 
 export default function CustomDialog({
@@ -30,6 +31,7 @@ export default function CustomDialog({
   onHanldeConfirm,
   minWidth,
   actionsDisabled,
+  confirmDisabled,
   ...props
 }: CustomDialogProps) {
   return (
@@ -69,6 +71,7 @@ export default function CustomDialog({
             onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
             btnType={BtnType.Primary}
             autoFocus
+            disabled={confirmDisabled}
           >
             {confirmText || "Xác nhận"}
           </Button>
