@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { useCallback } from "react";
 import classes from "./styles.module.scss";
 import BasicSelect from "components/common/select/BasicSelect";
+import useWindowDimensions from "utils/useWindowDimensions";
 
 interface AddEventDialogProps extends DialogProps {
   data: {
@@ -69,6 +70,7 @@ const AddEventDialog = ({
       eventType: data.eventType
     });
   }, [data, handleChangData]);
+  const { height } = useWindowDimensions();
 
   return (
     <CustomDialog
@@ -80,7 +82,7 @@ const AddEventDialog = ({
       onHandleCancel={onHandleCancel}
       onHanldeConfirm={onHanldeConfirm}
       minWidth='800px'
-      maxHeight='800px'
+      maxHeight={`${0.6 * height}px`}
       {...props}
     >
       <Box component='form' className={classes.formBody} autoComplete='off'>

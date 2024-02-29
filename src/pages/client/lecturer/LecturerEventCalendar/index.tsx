@@ -119,6 +119,12 @@ const LecturerEventCalendar = () => {
         open={data.isAddEventDialogOpen}
         handleClose={() => {
           closeAddEventDialog();
+          setData((pre) => {
+            return {
+              ...pre,
+              isExpanded: false
+            };
+          });
         }}
         data={data}
         handleChangData={(newData) => {
@@ -141,6 +147,12 @@ const LecturerEventCalendar = () => {
         confirmText='Tạo'
         onHandleCancel={() => {
           closeAddEventDialog();
+          setData((pre) => {
+            return {
+              ...pre,
+              isExpanded: false
+            };
+          });
         }}
         onHanldeConfirm={() => {
           onHanldeConfirmAddEvent();

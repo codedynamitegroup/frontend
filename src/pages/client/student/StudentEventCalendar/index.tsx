@@ -117,6 +117,12 @@ const StudentEventCalendar = () => {
         open={data.isAddEventDialogOpen}
         handleClose={() => {
           closeAddEventDialog();
+          setData((pre) => {
+            return {
+              ...pre,
+              isExpanded: false
+            };
+          });
         }}
         data={data}
         handleChangData={(newData) => {
@@ -138,6 +144,12 @@ const StudentEventCalendar = () => {
         confirmText='Tạo'
         onHandleCancel={() => {
           closeAddEventDialog();
+          setData((pre) => {
+            return {
+              ...pre,
+              isExpanded: false
+            };
+          });
         }}
         onHanldeConfirm={() => {
           onHanldeConfirmAddEvent();
