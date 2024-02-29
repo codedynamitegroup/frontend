@@ -1,4 +1,4 @@
-import { Container, Grid } from "@mui/material";
+import { Container, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Header from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -9,13 +9,34 @@ import UserInformationDetailsDialog from "./components/UserInformationDetailsDia
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
 import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
+import Heading2 from "components/text/Heading2";
+import TextTitle from "components/text/TextTitle";
+import { Link } from "react-router-dom";
 
 const UserInformation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
     isUserPasswordChangeModalOpen: false,
-    user_info: {
+    myCourses: [
+      {
+        id: "1",
+        name: "CSC10001 - Nhập môn lập trình",
+        image_url: "https://www.tutorialrepublic.com/lib/images/javascript-illustration.png",
+        description: "Khoá học giúp bạn nắm vững kiến thức cơ bản về lập trình",
+        progress: "50%",
+        route: "/course/1"
+      },
+      {
+        id: "2",
+        name: "CSC10002 - Lập trình web",
+        image_url: "https://www.tutorialrepublic.com/lib/images/javascript-illustration.png",
+        description: "Khoá học giúp bạn nắm vững kiến thức cơ bản về lập trình web",
+        progress: "30%",
+        route: "/course/2"
+      }
+    ],
+    userInfo: {
       id: "0",
       name: "Nguyễn Đinh Quang Khánh",
       gender: "0",
@@ -43,7 +64,7 @@ const UserInformation = () => {
             isUserInformationDetailsModalOpen: false
           }));
         }}
-        initialData={data.user_info}
+        initialData={data.userInfo}
         title='Chỉnh sửa thông tin cá nhân'
         onHanldeChangePassword={() => {
           setData((pre) => ({
@@ -99,7 +120,7 @@ const UserInformation = () => {
                 >
                   Quản lý tài khoản
                 </Heading1>
-                <UserAvatarAndName loading={isLoading} avatarUrl={data.user_info.avatar_url} />
+                <UserAvatarAndName loading={isLoading} avatarUrl={data.userInfo.avatar_url} />
                 <Button
                   btnType={BtnType.Outlined}
                   fullWidth
@@ -112,6 +133,40 @@ const UserInformation = () => {
                 >
                   Chỉnh sửa hồ sơ
                 </Button>
+              </Box>
+              <Box className={classes.userGeneralInfo}>
+                <Heading2>Chi tiết người dùng</Heading2>
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle>Họ tên</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {data.userInfo.name}
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle>Email</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      btnType={BtnType.Text}
+                      padding='0'
+                      width='fit-content'
+                      href={`mailto:${data.userInfo.email}`}
+                    >
+                      {data.userInfo.email}
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle>Ngày sinh</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {data.userInfo.dob}
+                  </Grid>
+                </Grid>
               </Box>
             </Box>
           </Grid>

@@ -9,7 +9,7 @@
 .leftContainer {
   display: flex !important;
   flex-direction: column;
-  // background-color: white;
+  background-color: white;
   border-radius: 5px;
   padding-left: 0px !important;
   padding-right: 0px !important;
@@ -32,6 +32,13 @@
   justify-content: center;
   padding: 20px 40px;
   gap: 15px;
+}
+
+.userGeneralInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px 40px;
 }
 
 .rightBody {
