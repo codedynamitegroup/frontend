@@ -1,7 +1,5 @@
-import { Box, Grid } from "@mui/material";
-import images from "config/images";
+import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
 import LessonAccordion, { Chapter } from "components/common/accordion/LessonAccordion";
 type Props = {};

@@ -15,6 +15,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import SchoolIcon from "@mui/icons-material/School";
 import CertificateDetails from "./components/Certificate";
 import CourseCertificateLesson from "./components/Lesson";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -56,12 +57,15 @@ const CourseCertificateDetail = () => {
           <Grid container id={classes.bodyWrapper}>
             <Grid item xs={12} md={12} id={classes.rightBody}>
               <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall colorName='--gray-50' fontWeight={"600"}>
-                  <span onClick={() => navigate(routes.user.course_certificate.root)}>
-                    Danh sách khóa học
-                  </span>{" "}
-                  {">"} <span>Học C++ cơ bản</span>
+                <ParagraphSmall
+                  colorName='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.user.course_certificate.root)}
+                >
+                  Danh sách khóa học
                 </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall colorName='--blue-500'>Học C++ cơ bản</ParagraphSmall>
               </Box>
               <Divider />
               <Box id={classes.courseInfoWrapper}>
