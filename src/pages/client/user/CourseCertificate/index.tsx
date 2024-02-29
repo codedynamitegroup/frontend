@@ -1,11 +1,10 @@
 import Header from "components/Header";
-import { Box, Container, Divider, Grid } from "@mui/material";
+import { Box, Checkbox, Container, Divider, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import SearchBar from "components/common/search/SearchBar";
 import BasicSelect from "components/common/select/BasicSelect";
 import React from "react";
-import Button, { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +13,7 @@ import images from "config/images";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import Heading1 from "components/text/Heading1";
+import Heading4 from "components/text/Heading4";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -22,6 +22,13 @@ interface CourseCertificate {
   level?: string;
   lesson?: number;
 }
+
+interface FilterByTopic {
+  checked: boolean;
+  title: string;
+  courseNumber: number;
+}
+
 const CourseCertificates = () => {
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
@@ -29,26 +36,36 @@ const CourseCertificates = () => {
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
-  const courseCertificatesRecommend: CourseCertificate[] = [
+  const filterByTopics: FilterByTopic[] = [
     {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-      title: "Học C++ cơ bản",
-      lesson: 10
+      checked: true,
+      title: "Học C++",
+      courseNumber: 10
     },
     {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-      title: "Học Python cơ bản",
-      lesson: 30
+      checked: false,
+      title: "Học Java",
+      courseNumber: 15
     },
     {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go cơ bản",
-      lesson: 35
+      checked: false,
+      title: "Học Python",
+      courseNumber: 20
     },
     {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go nâng cao",
-      lesson: 40
+      checked: false,
+      title: "Học Javascript",
+      courseNumber: 10
+    },
+    {
+      checked: false,
+      title: "Cấu trúc dữ liệu và giải thuật",
+      courseNumber: 3
+    },
+    {
+      checked: false,
+      title: "Kỹ thuật lập trình",
+      courseNumber: 5
     }
   ];
 
@@ -118,7 +135,7 @@ const CourseCertificates = () => {
             backgroundImage: `url(${images.background.courseCertificatesBackground})`
           }}
         >
-          <Container id={classes.bannerContainer}>
+          <Container id={classes.bannerContainer} className={classes.container}>
             <Heading1 colorName={"--white"}>Khóa học chứng chỉ</Heading1>
             <Heading3 colorName={"--white"}>
               Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau
@@ -137,15 +154,11 @@ const CourseCertificates = () => {
                   },
                   {
                     value: "1",
-                    label: "Kiến thức cơ sở"
+                    label: "Đã đăng ký"
                   },
                   {
                     value: "2",
-                    label: "Rèn luyện thuật toán"
-                  },
-                  {
-                    value: "3",
-                    label: "Cấu trúc dữ liệu và giải thuật"
+                    label: "Chưa đăng ký"
                   }
                 ]}
                 backgroundColor='#FFFFFF'
@@ -153,155 +166,124 @@ const CourseCertificates = () => {
             </Box>
           </Container>
         </Box>
-        <Box id={classes.courseRecommendsBody}>
-          <Container>
-            <Box id={classes.courseRecommendsWrapper}>
-              <Heading2>Các khóa học được đề xuất</Heading2>
-              <Grid container spacing={2}>
-                {courseCertificatesRecommend.map((course, index) => (
-                  <Grid item xs={4} key={index}>
-                    <Box
-                      className={classes.courseRecommend}
-                      onClick={() => {
-                        navigate(
-                          routes.user.course_certificate.introduction.replace(
-                            ":id",
-                            index.toString()
-                          )
-                        );
-                      }}
-                    >
-                      <Grid item container className={classes.titleCourseRecommend}>
-                        <Grid item xs={2} className={classes.imgCourseRecommend}>
-                          <img src={course.imgUrl} alt='img course recommend' />
-                        </Grid>
-                        <Grid item xs={1}></Grid>
-                        <Grid
-                          item
-                          xs={9}
-                          container
-                          direction={"column"}
-                          spacing={1.5}
-                          className={classes.titleCard}
-                        >
-                          <Grid item className={classes.topCard}>
-                            <ParagraphBody>{course.title}</ParagraphBody>
-                          </Grid>
-                          <Grid item className={classes.botCard}>
-                            <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                            <ParagraphBody>{`${course.lesson} bài học`}</ParagraphBody>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                      <Box className={classes.contentCourseRecommend}>
-                        <Button btnType={BtnType.Text}>
-                          <ParagraphBody>Xem chi tiết</ParagraphBody>
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          </Container>
-        </Box>
-        <Divider />
         <Box mt={"40px"}>
-          <Container>
-            <Box id={classes.couseCertificatesWrapper}>
-              <Box className={classes.couseCertificatesByTopic}>
-                <Heading2>Kiến thức cơ bản</Heading2>
-                <Grid container spacing={3}>
-                  {courseCertificatesBasic.map((course, index) => (
-                    <Grid item xs={4} key={index}>
-                      <Box
-                        className={classes.courseCerticate}
-                        onClick={() => {
-                          navigate(
-                            routes.user.course_certificate.detail.replace(":id", index.toString())
-                          );
-                        }}
-                      >
-                        <Grid container direction={"column"} margin={0} gap={2}>
-                          <Grid item container xs={5} className={classes.titleCourse}>
-                            <Grid item xs={3} className={classes.imgCourse}>
-                              <img alt='img course' src={course.imgUrl} />
-                            </Grid>
-                            <Grid item xs={9} className={classes.nameCourse}>
-                              <Heading3>{course.title}</Heading3>
-                            </Grid>
-                          </Grid>
-                          <Divider />
-                          <Grid item xs={5}>
-                            <ParagraphBody className={classes.courseDescription}>
-                              {course.description}
-                            </ParagraphBody>
-                          </Grid>
-                          <Divider />
-                          <Grid item xs={2}>
-                            <Box className={classes.iconCourse}>
-                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                              <ParagraphBody>{course.lesson} bài học</ParagraphBody>
-                            </Box>
-                            <Box className={classes.iconCourse}>
-                              <img
-                                src={images.icLevel}
-                                alt='icon level'
-                                className={classes.iconLevel}
-                              />
-                              <ParagraphBody>{course.level}</ParagraphBody>
-                            </Box>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    </Grid>
+          <Container className={classes.container}>
+            <Grid container>
+              <Grid item xs={2.5} id={classes.filter}>
+                <Heading3>Lọc theo</Heading3>
+                <Box className={classes.couseCertificatesByTopic}>
+                  <Heading4>Chủ đề</Heading4>
+                  {filterByTopics.map((topic, index) => (
+                    <Box className={classes.couseCertificatesByTopicItem} key={index}>
+                      <Checkbox checked={topic.checked} className={classes.checkbox} />
+                      <ParagraphBody className={classes.couseCertificatesByTopicTitle}>
+                        {topic.title} <span>({topic.courseNumber})</span>
+                      </ParagraphBody>
+                    </Box>
                   ))}
-                </Grid>
-              </Box>
-              <Box className={classes.couseCertificatesByTopic}>
-                <Heading2>Kiến thức nâng cao</Heading2>
-                <Grid container spacing={3}>
-                  {courseCertificatesAdvanced.map((course, index) => (
-                    <Grid item xs={4} key={index}>
-                      <Box className={classes.courseCerticate}>
-                        <Grid container direction={"column"} margin={0} gap={2}>
-                          <Grid item container xs={5} className={classes.titleCourse}>
-                            <Grid item xs={3} className={classes.imgCourse}>
-                              <img alt='img course' src={course.imgUrl} />
+                </Box>
+                <Box className={classes.couseCertificatesByTopic}></Box>
+              </Grid>
+              <Grid item xs={0.5}></Grid>
+              <Grid item xs={9}>
+                <Box id={classes.couseCertificatesWrapper}>
+                  <Box className={classes.couseCertificatesByTopic}>
+                    <Heading2>Kiến thức cơ bản</Heading2>
+                    <Grid container spacing={3}>
+                      {courseCertificatesBasic.map((course, index) => (
+                        <Grid item xs={4} key={index}>
+                          <Box
+                            className={classes.courseCerticate}
+                            onClick={() => {
+                              navigate(
+                                routes.user.course_certificate.lesson.replace(
+                                  ":id",
+                                  index.toString()
+                                )
+                              );
+                            }}
+                          >
+                            <Grid container direction={"column"} margin={0} gap={2}>
+                              <Grid item container xs={5} className={classes.titleCourse}>
+                                <Grid item xs={3} className={classes.imgCourse}>
+                                  <img alt='img course' src={course.imgUrl} />
+                                </Grid>
+                                <Grid item xs={9} className={classes.nameCourse}>
+                                  <Heading3>{course.title}</Heading3>
+                                </Grid>
+                              </Grid>
+                              <Divider />
+                              <Grid item xs={5}>
+                                <ParagraphBody className={classes.courseDescription}>
+                                  {course.description}
+                                </ParagraphBody>
+                              </Grid>
+                              <Divider />
+                              <Grid item xs={2}>
+                                <Box className={classes.iconCourse}>
+                                  <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                                  <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+                                </Box>
+                                <Box className={classes.iconCourse}>
+                                  <img
+                                    src={images.icLevel}
+                                    alt='icon level'
+                                    className={classes.iconLevel}
+                                  />
+                                  <ParagraphBody>{course.level}</ParagraphBody>
+                                </Box>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={9} className={classes.nameCourse}>
-                              <Heading3>{course.title}</Heading3>
-                            </Grid>
-                          </Grid>
-                          <Divider />
-                          <Grid item xs={5}>
-                            <ParagraphBody className={classes.courseDescription}>
-                              {course.description}
-                            </ParagraphBody>
-                          </Grid>
-                          <Divider />
-                          <Grid item xs={2}>
-                            <Box className={classes.iconCourse}>
-                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                              <ParagraphBody>{course.lesson} bài học</ParagraphBody>
-                            </Box>
-                            <Box className={classes.iconCourse}>
-                              <img
-                                src={images.icLevel}
-                                alt='icon level'
-                                className={classes.iconLevel}
-                              />
-                              <ParagraphBody>{course.level}</ParagraphBody>
-                            </Box>
-                          </Grid>
+                          </Box>
                         </Grid>
-                      </Box>
+                      ))}
                     </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Box>
+                  </Box>
+                  <Box className={classes.couseCertificatesByTopic}>
+                    <Heading2>Kiến thức nâng cao</Heading2>
+                    <Grid container spacing={3}>
+                      {courseCertificatesAdvanced.map((course, index) => (
+                        <Grid item xs={4} key={index}>
+                          <Box className={classes.courseCerticate}>
+                            <Grid container direction={"column"} margin={0} gap={2}>
+                              <Grid item container xs={5} className={classes.titleCourse}>
+                                <Grid item xs={3} className={classes.imgCourse}>
+                                  <img alt='img course' src={course.imgUrl} />
+                                </Grid>
+                                <Grid item xs={9} className={classes.nameCourse}>
+                                  <Heading3>{course.title}</Heading3>
+                                </Grid>
+                              </Grid>
+                              <Divider />
+                              <Grid item xs={5}>
+                                <ParagraphBody className={classes.courseDescription}>
+                                  {course.description}
+                                </ParagraphBody>
+                              </Grid>
+                              <Divider />
+                              <Grid item xs={2}>
+                                <Box className={classes.iconCourse}>
+                                  <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                                  <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+                                </Box>
+                                <Box className={classes.iconCourse}>
+                                  <img
+                                    src={images.icLevel}
+                                    alt='icon level'
+                                    className={classes.iconLevel}
+                                  />
+                                  <ParagraphBody>{course.level}</ParagraphBody>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
           </Container>
         </Box>
       </main>
