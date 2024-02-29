@@ -89,9 +89,19 @@ const ContestTimeInformation = (props: PropsData) => {
       )}
 
       {joinContest ? (
-        <Heading1 fontSize={"25px"} fontWeight={500} color={"var(--green-300) !important"}>
-          Bạn đang tham gia cuộc thi này
-        </Heading1>
+        status === EContestStatus.featured ? (
+          <Heading1 fontSize={"25px"} fontWeight={500} color={"var(--green-300) !important"}>
+            Bạn đã đăng ký tham gia cuộc thi này
+          </Heading1>
+        ) : status === EContestStatus.happening ? (
+          <Heading1 fontSize={"25px"} fontWeight={500} color={"var(--green-300) !important"}>
+            Bạn đang tham gia cuộc thi này
+          </Heading1>
+        ) : (
+          <Heading1 fontSize={"25px"} fontWeight={500} color={"var(--orange-4) !important"}>
+            Bạn đã tham gia cuộc thi này
+          </Heading1>
+        )
       ) : (
         <Button variant='outlined'>Tham gia cuộc thi</Button>
       )}

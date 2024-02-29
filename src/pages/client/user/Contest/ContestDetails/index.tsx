@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Container, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
 import classes from "./stytles.module.scss";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
@@ -8,6 +8,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import ContestProblemItem, { EContestProblemDifficulty } from "./components/ContestProblemItem";
+import ContestLeaderboard from "./components/ContestLeaderboard";
 
 export enum EContestStatus {
   featured,
@@ -115,6 +116,79 @@ const problemData = [
     submission: 1
   }
 ];
+const problemList = [
+  {
+    name: "Số nguyên tố",
+    maxScore: 5,
+    difficulty: EContestProblemDifficulty.easy,
+    maxSubmission: 10,
+    submission: 2
+  },
+  {
+    name: "Mảng đối xứng",
+    maxScore: 3,
+    difficulty: EContestProblemDifficulty.medium,
+    maxSubmission: 5
+  },
+  {
+    name: "Ma trận xoay",
+    maxScore: 10,
+    difficulty: EContestProblemDifficulty.advance,
+    maxSubmission: 10
+  },
+  {
+    name: "Ma trận vuông",
+    maxScore: 2,
+    difficulty: EContestProblemDifficulty.easy,
+    maxSubmission: 5
+  }
+];
+const rankingList = [
+  {
+    rank: 1,
+    name: "Trương Gia Tiến",
+    problemData: [
+      { point: 5, tries: 1 },
+      { point: 2, tries: 5 },
+      { point: 6, tries: 5 },
+      { point: 1, tries: 10 }
+    ],
+    totalScore: 14
+  },
+  {
+    rank: 2,
+    name: "Trương Gia Tiến",
+    problemData: [
+      { point: 5, tries: 1 },
+      { point: 2, tries: 5 },
+      { point: 6, tries: 5 },
+      { point: 1, tries: 10 }
+    ],
+    totalScore: 14
+  },
+  {
+    rank: 3,
+    name: "Trương Gia Tiến",
+    problemData: [
+      { point: 5, tries: 1 },
+      { point: 2, tries: 5 },
+      { point: 6, tries: 5 },
+      { point: 1, tries: 10 }
+    ],
+    totalScore: 14
+  },
+  {
+    rank: 4,
+    name: "Trương Gia Tiến",
+    problemData: [
+      { point: 5, tries: 1 },
+      { point: 2, tries: 5 },
+      { point: 6, tries: 5 },
+      { point: 1, tries: 10 }
+    ],
+    totalScore: 14
+  }
+];
 
 const ContestDetails = () => {
   const [value, setValue] = useState(() => {
@@ -154,7 +228,10 @@ const ContestDetails = () => {
                   </TabList>
                 </Box>
                 <TabPanel value='1'>
-                  <div dangerouslySetInnerHTML={{ __html: ContestData["description"] }}></div>
+                  <div
+                    className={classes.divContainer}
+                    dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
+                  ></div>
                 </TabPanel>
                 <TabPanel value='2'>
                   <Grid container spacing={3}>
@@ -176,7 +253,10 @@ const ContestDetails = () => {
                   <TabPanel value='3'>Item Three</TabPanel>
                 ) : null}
                 {ContestData["status"] === EContestStatus.ended ? (
-                  <TabPanel value='4'>Item Three</TabPanel>
+                  <TabPanel value='4'>
+                    <Heading1>Bảng xếp hạng</Heading1>
+                    <ContestLeaderboard rankingList={rankingList} problemList={problemList} />
+                  </TabPanel>
                 ) : null}
               </TabContext>
             </Paper>

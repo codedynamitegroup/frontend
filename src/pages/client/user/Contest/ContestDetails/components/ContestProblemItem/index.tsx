@@ -13,14 +13,15 @@ export enum EContestProblemDifficulty {
 interface PropsData {
   name: string;
   maxScore: number;
-  point?: number | string;
+  point?: number;
   difficulty: string;
-  submission?: number | string;
+  submission?: number;
   maxSubmission: number;
 }
 
 const ContestProblemItem = (props: PropsData) => {
   const { name, maxScore, point, difficulty, submission, maxSubmission } = props;
+  console.log(point);
   return (
     <Paper className={classes.container}>
       <Grid container alignItems={"center"} justifyContent='space-between'>
@@ -53,7 +54,7 @@ const ContestProblemItem = (props: PropsData) => {
           <Stack direction={"row"}>
             <Box className={clsx(classes.submissionContainer, classes.roundContainer)}>
               <Typography fontSize={"20px"} color={"var(--gray-50)"}>
-                {submission ? `${submission}/` : ""}
+                {submission !== undefined ? `${submission}/` : ""}
                 {maxSubmission}
               </Typography>
               <Typography fontSize={"12px"} color={"var(--gray-50)"}>
@@ -63,7 +64,7 @@ const ContestProblemItem = (props: PropsData) => {
 
             <Box className={clsx(classes.scoreContainer, classes.roundContainer)}>
               <Typography fontSize={"20px"} color={"var(--gray-50)"}>
-                {point ? `${point}/` : ""}
+                {point !== undefined ? `${point}/` : ""}
                 {maxScore}
               </Typography>
               <Typography fontSize={"12px"} color={"var(--gray-50)"}>

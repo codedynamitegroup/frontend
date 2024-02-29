@@ -1,6 +1,11 @@
 .container {
     background-color: var(--blue-1);
+
     .bodyContainer {
         margin-bottom: 10px;
+        .divContainer {
+            padding: 20px;
+            padding-top: 0;
+        }
     }
 }

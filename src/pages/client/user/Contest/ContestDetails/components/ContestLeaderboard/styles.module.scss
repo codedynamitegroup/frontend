@@ -1,0 +1,11 @@
+.tableContainer {
+    .grayTableRow {
+       background-color: var(--gray-3);
+    }
+    .tableCell {
+        border: 1px solid rgba(224, 224, 224, 1)
+    }
+    .tableHeader {
+        background-color: var(--blue-1);
+    }
+}
