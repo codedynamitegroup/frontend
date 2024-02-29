@@ -18,8 +18,8 @@ export enum EContestStatus {
 
 const ContestData = {
   name: "Batch coding",
-  status: EContestStatus.ended,
-  joinedContest: true,
+  status: EContestStatus.happening,
+  joinedContest: false,
   description: `<h3 style="text-align:start"><span style="font-size:24px"><span style="font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;PingFang SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;Microsoft YaHei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;"><span style="color:rgba(0, 0, 0, 0.85)"><span style="background-color:#fafafa">Ch&agrave;o mừng đến với Cuộc thi h&agrave;ng tuần Batch the code lần thứ 387</span></span></span></span></h3>
 
 <p>&nbsp;</p>
@@ -202,15 +202,14 @@ const ContestDetails = () => {
   return (
     <Box className={classes.container}>
       <Header />
+      <ContestTimeInformation
+        status={ContestData["status"]}
+        startDate={"March, 2, 2024"}
+        endDate={"March, 4, 2024"}
+        joinContest={ContestData["joinedContest"]}
+        contestName={ContestData["name"]}
+      />
       <Container maxWidth='lg' className={classes.bodyContainer} sx={{ paddingBottom: "40px" }}>
-        <Heading1>{ContestData["name"]}</Heading1>
-        <ContestTimeInformation
-          status={ContestData["status"]}
-          startDate={"March, 2, 2024"}
-          endDate={"March, 4, 2024"}
-          joinContest={ContestData["joinedContest"]}
-        />
-
         <Grid container spacing={1}>
           <Grid item xs={9}>
             <Paper>

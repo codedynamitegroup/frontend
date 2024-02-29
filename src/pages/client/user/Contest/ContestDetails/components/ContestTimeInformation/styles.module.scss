@@ -1,17 +1,25 @@
 .container {
-    padding: 30px;
+    padding: 20px;
     padding-left: 20px;
     display: flex;
     align-items: center;
     margin-bottom: 10px;
     justify-content: space-between;
-
+    .currentJoinStatus {
+        font-size: 20px;
+        font-weight:bold ;
+        font-family: OpenSans, Arial, Helvetica, sans-serif;
+    }
     .timeDetailContainer {
         display: flex !important;
         justify-content: flex-start;
         flex-direction: column !important;
 
-        & [class~="MuiTypography-root"], .dateIcon {
+        .timeDescriptionText {
+            font-size: 16px;
+            margin-left: 5px;
+        }
+        .dateIcon, .timeInfoText {
             margin-right: 5px;
             font-weight: 300;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
