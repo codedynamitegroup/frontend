@@ -196,8 +196,8 @@ const CourseCertificates = () => {
                             className={classes.courseCerticate}
                             onClick={() => {
                               navigate(
-                                routes.user.course_certificate.lesson.replace(
-                                  ":id",
+                                routes.user.course_certificate.detail.lesson.root.replace(
+                                  ":courseId",
                                   index.toString()
                                 )
                               );

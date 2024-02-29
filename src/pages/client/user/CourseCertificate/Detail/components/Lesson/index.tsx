@@ -11,19 +11,19 @@ const CourseCertificateLesson = (props: Props) => {
       chapterDescription:
         "Learn how to make C++ print whatever you want, and learn to use it as a basic calculator.",
       lessons: [
-        { title: "Introducing printing - cout", url: "", status: true },
-        { title: "Printing on multiple lines", url: "", status: false },
-        { title: "Multiple prints using single cout", url: "", status: false },
-        { title: "Math Operators and overall code structure", url: "", status: false }
+        { title: "Introducing printing - cout", status: true },
+        { title: "Printing on multiple lines", status: false },
+        { title: "Multiple prints using single cout", status: false },
+        { title: "Math Operators and overall code structure", status: false }
       ]
     },
     {
       chapterTitle: "Variables and Data Types",
       chapterDescription: "Learn how to make C++ store data and manipulate them",
       lessons: [
-        { title: "Introduction to Variables and Data Types", url: "", status: false },
-        { title: "Quiz on Variables", url: "", status: false },
-        { title: "More Data Types", url: "", status: false }
+        { title: "Introduction to Variables and Data Types", status: false },
+        { title: "Quiz on Variables", status: false },
+        { title: "More Data Types", status: false }
       ]
     }
   ];

@@ -21,29 +21,41 @@
   }
 }
 
-.lessons {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+#accordionDetails {
+  padding: 0px;
 
-  .lessonTitle {
+  .chapter {
     display: flex;
-    align-items: center;
-  }
+    flex-direction: column;
 
-  .icCodeWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    .lesson {
+      padding: 15px 0px;
 
-    .icCode,
-    .icCheck {
-      width: 25px;
-      height: 25px;
-    }
+      &:hover {
+        cursor: pointer;
+        background-color: var(--blue-50);
+      }
 
-    .icCheck {
-      color: var(--green-500);
+      .lessonTitle {
+        display: flex;
+        align-items: center;
+      }
+
+      .icCodeWrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .icCode,
+        .icCheck {
+          width: 25px;
+          height: 25px;
+        }
+
+        .icCheck {
+          color: var(--green-500);
+        }
+      }
     }
   }
 }

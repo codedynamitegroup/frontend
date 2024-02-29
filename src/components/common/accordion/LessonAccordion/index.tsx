@@ -9,11 +9,12 @@ import * as React from "react";
 import classes from "./styles.module.scss";
 import CodeIcon from "@mui/icons-material/Code";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useNavigate, useParams } from "react-router";
+import { routes } from "routes/routes";
 
 interface Lesson {
   title: string;
   status: boolean;
-  url: string;
 }
 export interface Chapter {
   chapterTitle: string;
@@ -28,6 +29,9 @@ interface Props {
 }
 
 export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: Props) {
+  const navigate = useNavigate();
+  const { courseId } = useParams<{ courseId: string }>();
+
   return (
     <Accordion defaultExpanded={isExpanded}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} id={classes.accordionHeader}>
@@ -42,10 +46,23 @@ export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: 
           </Grid>
         </Grid>
       </AccordionSummary>
-      <AccordionDetails>
-        <Box className={classes.lessons}>
+      <AccordionDetails id={classes.accordionDetails}>
+        <Box className={classes.chapter}>
           {chapter.lessons.map((item, index) => (
-            <Grid container key={index} className={classes.lesson}>
+            <Grid
+              container
+              key={index}
+              className={classes.lesson}
+              onClick={() => {
+                if (courseId) {
+                  navigate(
+                    routes.user.course_certificate.detail.lesson.description
+                      .replace(":courseId", courseId)
+                      .replace(":lessonId", "1")
+                  );
+                }
+              }}
+            >
               <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
                 {item.status === true ? (
                   <CheckCircleIcon className={classes.icCheck} />
@@ -54,7 +71,7 @@ export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: 
                 )}
               </Grid>
               <Grid item xs={11} md={11} className={classes.lessonTitle}>
-                <ParagraphBody>{item.title}</ParagraphBody>
+                <ParagraphBody className={classes.title}>{item.title}</ParagraphBody>
               </Grid>
             </Grid>
           ))}

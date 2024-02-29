@@ -19,18 +19,18 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
-    if (id) navigate(tabs[newTab].replace(":id", id));
+    if (courseId) navigate(tabs[newTab].replace(":courseId", courseId));
   };
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.user.course_certificate.lesson,
-      routes.user.course_certificate.introduction,
-      routes.user.course_certificate.certificate
+      routes.user.course_certificate.detail.lesson.root,
+      routes.user.course_certificate.detail.introduction,
+      routes.user.course_certificate.detail.certificate
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);
@@ -41,8 +41,8 @@ const CourseCertificateDetail = () => {
   };
 
   const activeTab = useMemo(() => {
-    if (id) {
-      const index = tabs.findIndex((it) => activeRoute(it.replace(":id", id)));
+    if (courseId) {
+      const index = tabs.findIndex((it) => activeRoute(it.replace(":courseId", courseId)));
       if (index === -1) return 0;
       return index;
     }

@@ -1,0 +1,59 @@
+.root {
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 20px;
+  background-color: var(--gray-3);
+}
+
+.container {
+  display: flex !important;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  height: 100%;
+}
+.tabWrapper {
+  border-bottom: 1px solid var(--gray-10);
+  display: flex;
+  align-items: center;
+  padding: 15px 40px;
+}
+.titleInput {
+  padding: 10px 20px !important;
+  font-size: 30px !important;
+}
+
+.content {
+  position: relative;
+
+  .actionBtn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    display: flex;
+    gap: 20px;
+
+    .postBtn {
+      background-color: var(--green-600);
+    }
+    .cancelBtn {
+      background-color: var(--gray-30);
+    }
+  }
+}
+.markdownEditor {
+  height: calc(100vh - 240px) !important;
+  .w-md-editor-toolbar button {
+    font-size: 20px; /* Điều chỉnh kích thước font chữ */
+    width: 40px; /* Điều chỉnh chiều rộng của nút */
+    height: 40px; /* Điều chỉnh chiều cao của nút */
+  }
+}
+.breadCump {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

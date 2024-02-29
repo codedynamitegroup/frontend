@@ -72,10 +72,18 @@ export const routes = {
     },
     course_certificate: {
       root: "/course-certificates",
-      detail: "/course-certificates/:id/*",
-      introduction: "/course-certificates/:id/introduction",
-      lesson: "/course-certificates/:id/lesson",
-      certificate: "/course-certificates/:id/certificate"
+      detail: {
+        root: "/course-certificates/:courseId/*",
+        introduction: "/course-certificates/:courseId/introduction",
+        lesson: {
+          root: "/course-certificates/:courseId/lesson",
+          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
+          description: "/course-certificates/:courseId/lesson/:lessonId/description",
+          solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
+          submission: "/course-certificates/:courseId/lesson/:lessonId/submission"
+        },
+        certificate: "/course-certificates/:courseId/certificate"
+      }
     },
     contest: {
       root: "/contests",
