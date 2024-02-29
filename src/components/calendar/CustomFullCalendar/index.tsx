@@ -8,6 +8,7 @@ import TextTitle from "components/text/TextTitle";
 import "./index.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
+import viLocale from "@fullcalendar/core/locales/vi";
 
 interface CustomFullCalendarProps {
   events: any[];
@@ -39,6 +40,7 @@ export default function CustomFullCalendar({
           eventContent={renderEventContent} // custom render function
           eventClick={function () {}}
           events={events}
+          locale={viLocale}
           // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
           /* you can update a remote database when these fire:
             eventAdd={function(){}}
