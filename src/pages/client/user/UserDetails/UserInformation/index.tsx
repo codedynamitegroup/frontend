@@ -1,41 +1,22 @@
-import { Container, Divider, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Header from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
+import Heading2 from "components/text/Heading2";
+import TextTitle from "components/text/TextTitle";
 import { useEffect, useState } from "react";
 import UserAvatarAndName from "./components/UserAvatarAndName";
 import UserInformationDetailsDialog from "./components/UserInformationDetailsDialog";
+import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
-import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
-import Heading2 from "components/text/Heading2";
-import TextTitle from "components/text/TextTitle";
-import { Link } from "react-router-dom";
 
 const UserInformation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
     isUserPasswordChangeModalOpen: false,
-    myCourses: [
-      {
-        id: "1",
-        name: "CSC10001 - Nhập môn lập trình",
-        image_url: "https://www.tutorialrepublic.com/lib/images/javascript-illustration.png",
-        description: "Khoá học giúp bạn nắm vững kiến thức cơ bản về lập trình",
-        progress: "50%",
-        route: "/course/1"
-      },
-      {
-        id: "2",
-        name: "CSC10002 - Lập trình web",
-        image_url: "https://www.tutorialrepublic.com/lib/images/javascript-illustration.png",
-        description: "Khoá học giúp bạn nắm vững kiến thức cơ bản về lập trình web",
-        progress: "30%",
-        route: "/course/2"
-      }
-    ],
     userInfo: {
       id: "0",
       name: "Nguyễn Đinh Quang Khánh",
