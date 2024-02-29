@@ -36,6 +36,7 @@ import Forgotpassword from "pages/client/user/ForgotPassword";
 import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
+import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,7 @@ const router = createBrowserRouter(
       <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
 
       <Route path={routes.student.calendar} element={<StudentEventCalendar />} />
+      <Route path={routes.lecturer.calendar} element={<LecturerEventCalendar />} />
 
       <Route
         path={routes.lecturer.question.essay.create}

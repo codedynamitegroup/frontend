@@ -12,9 +12,14 @@ import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 interface CustomFullCalendarProps {
   events: any[];
   handleDateSelect?: (selectInfo: DateSelectArg) => void;
+  editable?: boolean;
 }
 
-export default function CustomFullCalendar({ events, handleDateSelect }: CustomFullCalendarProps) {
+export default function CustomFullCalendar({
+  events,
+  handleDateSelect,
+  editable
+}: CustomFullCalendarProps) {
   return (
     <div className='demo-app'>
       <div className='demo-app-main'>
@@ -26,7 +31,7 @@ export default function CustomFullCalendar({ events, handleDateSelect }: CustomF
             right: "dayGridMonth,timeGridWeek,timeGridDay"
           }}
           initialView='dayGridMonth'
-          editable={false}
+          editable={editable || false}
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
