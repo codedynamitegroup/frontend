@@ -22,6 +22,7 @@ const LecturerEventCalendar = () => {
     start: string;
     end: string;
     allDay: boolean;
+    eventType: string;
     isAddEventDialogOpen: boolean;
     selectDateInfo: DateSelectArg | null;
     filterCourse: string;
@@ -35,6 +36,7 @@ const LecturerEventCalendar = () => {
     start: "",
     end: "",
     allDay: false,
+    eventType: "0",
     isAddEventDialogOpen: false,
     selectDateInfo: null,
     filterCourse: "0",
@@ -129,7 +131,8 @@ const LecturerEventCalendar = () => {
               eventTitle: newData.eventTitle,
               start: newData.start,
               end: newData.end,
-              allDay: newData.allDay
+              allDay: newData.allDay,
+              eventType: newData.eventType
             };
           });
         }}
