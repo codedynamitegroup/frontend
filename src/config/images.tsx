@@ -13,13 +13,14 @@ import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
 import changePasswordThumbnail from "assets/img/change_password_thumbnail.svg";
 import courseCertificatesBackground from "assets/img/background/background-course-certificate.jpg";
+import homePageBackground from "assets/img/background/background-homepage.png";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 import home from "assets/img/home.png";
 
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
-  background: { contestListBackground, courseCertificatesBackground },
+  background: { contestListBackground, courseCertificatesBackground, homePageBackground },
   logo: { moodleLogo, microsoftLogo, googleLogo, logo },
   null: { mailboxEmpty },
   login,
