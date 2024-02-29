@@ -12,7 +12,7 @@
 
 .container {
   .customListContainer {
-    padding: 90px 0px;
+    padding: 50px 0px;
   }
   .mainHeading {
     font-size: 64px;
@@ -47,8 +47,11 @@
       transform: translateY(0);
     }
   }
+  .sectionContent {
+    margin-top: 50px;
+  }
   .sectionImage {
-    padding: 10px 0px;
+    margin-top: 50px;
     animation: moveUpDown 2s infinite;
 
     .homeImage {
@@ -84,6 +87,36 @@
         height: 60px;
         border-radius: 10px;
         object-fit: cover;
+      }
+
+      .courseDetail {
+        display: flex;
+        justify-content: space-between;
+
+        .userLearning {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+
+          p {
+            color: var(--gray-50);
+          }
+          .icUser {
+            color: var(--gray-50);
+          }
+        }
+
+        .userRating {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+
+          .icStar {
+            color: #fcd12a;
+          }
+        }
       }
     }
     .viewAllBtn {
