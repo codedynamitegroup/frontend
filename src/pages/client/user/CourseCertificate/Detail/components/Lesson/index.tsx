@@ -11,19 +11,19 @@ const CourseCertificateLesson = (props: Props) => {
       chapterDescription:
         "Learn how to make C++ print whatever you want, and learn to use it as a basic calculator.",
       lessons: [
-        { title: "Introducing printing - cout", url: "" },
-        { title: "Printing on multiple lines", url: "" },
-        { title: "Multiple prints using single cout", url: "" },
-        { title: "Math Operators and overall code structure", url: "" }
+        { title: "Introducing printing - cout", url: "", status: true },
+        { title: "Printing on multiple lines", url: "", status: false },
+        { title: "Multiple prints using single cout", url: "", status: false },
+        { title: "Math Operators and overall code structure", url: "", status: false }
       ]
     },
     {
       chapterTitle: "Variables and Data Types",
       chapterDescription: "Learn how to make C++ store data and manipulate them",
       lessons: [
-        { title: "Introduction to Variables and Data Types", url: "" },
-        { title: "Quiz on Variables", url: "" },
-        { title: "More Data Types", url: "" }
+        { title: "Introduction to Variables and Data Types", url: "", status: false },
+        { title: "Quiz on Variables", url: "", status: false },
+        { title: "More Data Types", url: "", status: false }
       ]
     }
   ];
@@ -32,7 +32,12 @@ const CourseCertificateLesson = (props: Props) => {
     <Box id={classes.certificateDetails}>
       <Heading1 colorName='--blue-600'>Các bài học ở khóa học</Heading1>
       {chapters.map((chapter, index) => (
-        <LessonAccordion key={index} chapterNumber={index + 1} chapter={chapter} />
+        <LessonAccordion
+          key={index}
+          chapterNumber={index + 1}
+          chapter={chapter}
+          isExpanded={index === 0 ? true : false}
+        />
       ))}
     </Box>
   );

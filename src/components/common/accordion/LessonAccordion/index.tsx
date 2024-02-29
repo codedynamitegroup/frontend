@@ -8,9 +8,11 @@ import ParagraphBody from "components/text/ParagraphBody";
 import * as React from "react";
 import classes from "./styles.module.scss";
 import CodeIcon from "@mui/icons-material/Code";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface Lesson {
   title: string;
+  status: boolean;
   url: string;
 }
 export interface Chapter {
@@ -22,16 +24,13 @@ export interface Chapter {
 interface Props {
   chapter: Chapter;
   chapterNumber: number;
+  isExpanded?: boolean;
 }
 
-export default function LessonAccordion({ chapter, chapterNumber }: Props) {
+export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: Props) {
   return (
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls='panel1-content'
-        id={classes.accordionHeader}
-      >
+    <Accordion defaultExpanded={isExpanded}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} id={classes.accordionHeader}>
         <Grid container alignItems={"center"}>
           <Grid item xs={1} md={1} id={classes.chapterNumber}>
             <Box id={classes.circle}>{chapterNumber}</Box>
@@ -44,11 +43,15 @@ export default function LessonAccordion({ chapter, chapterNumber }: Props) {
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
-        <Box>
+        <Box className={classes.lessons}>
           {chapter.lessons.map((item, index) => (
             <Grid container key={index} className={classes.lesson}>
               <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
-                <CodeIcon className={classes.icCode} />
+                {item.status === true ? (
+                  <CheckCircleIcon className={classes.icCheck} />
+                ) : (
+                  <CodeIcon className={classes.icCode} />
+                )}
               </Grid>
               <Grid item xs={11} md={11} className={classes.lessonTitle}>
                 <ParagraphBody>{item.title}</ParagraphBody>

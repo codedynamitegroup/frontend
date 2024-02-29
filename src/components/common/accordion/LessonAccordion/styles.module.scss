@@ -21,18 +21,29 @@
   }
 }
 
-.icCodeWrapper {
+.lessons {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 15px;
 
-  .icCode {
-    width: 30px;
-    height: 30px;
+  .lessonTitle {
+    display: flex;
+    align-items: center;
   }
-}
 
-.lessonTitle {
-  display: flex;
-  align-items: center;
+  .icCodeWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .icCode,
+    .icCheck {
+      width: 25px;
+      height: 25px;
+    }
+
+    .icCheck {
+      color: var(--green-500);
+    }
+  }
 }
