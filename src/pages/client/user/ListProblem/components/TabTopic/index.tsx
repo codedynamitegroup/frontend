@@ -19,7 +19,7 @@ export default function LabTabs() {
   const StyledTabList = styled(TabList)({
     "& button": {
       borderRadius: "10px",
-      backgroundColor: "#f2f3f4",
+      backgroundColor: "white",
       marginRight: "10px"
     },
     "& button.Mui-selected": {
@@ -32,7 +32,8 @@ export default function LabTabs() {
     },
 
     "& button:hover": {
-      backgroundColor: "#E5E6E8"
+      backgroundColor: "var(--blue-500)",
+      color: "white"
     }
   });
 

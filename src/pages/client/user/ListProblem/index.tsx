@@ -83,7 +83,7 @@ const ListProblem = () => {
           backgroundImage: `url(${images.background.courseCertificatesBackground})`
         }}
       >
-        <Container id={classes.bannerContainer}>
+        <Container id={classes.bannerContainer} className={classes.container}>
           <Heading1 colorName={"--white"}>Luyện tập</Heading1>
           <Heading3 colorName={"--white"}>
             Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
@@ -139,31 +139,33 @@ const ListProblem = () => {
           </Box>
         </Container>
       </Box>
-      <Container>
-        <Box className={classes.boxContent}>
-          <Heading1>Danh sách bài tập</Heading1>
-          <Grid container spacing={8}>
-            <Grid item xs={4}>
-              <Box className={classes.algorithmContainer}>
-                <Heading3>Các loại giải thuật:</Heading3>
-                <Box className={classes.algorithm}>
-                  {algorithms.map((algorithm, index) => (
-                    <Box className={classes.algorithmItem}>
-                      <ParagraphBody>{algorithm}</ParagraphBody>
-                      <Chip label={index} size='small' className={classes.chip} />
-                    </Box>
-                  ))}
+      <Box>
+        <Container className={classes.container}>
+          <Box className={classes.boxContent}>
+            <Grid container>
+              <Grid item xs={3.5}>
+                <Box className={classes.algorithmContainer}>
+                  <Heading3>Các loại giải thuật:</Heading3>
+                  <Box className={classes.algorithm}>
+                    {algorithms.map((algorithm, index) => (
+                      <Box className={classes.algorithmItem}>
+                        <ParagraphBody>{algorithm}</ParagraphBody>
+                        <Chip label={index} size='small' className={classes.chip} />
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
-              </Box>
+              </Grid>
+              <Grid item xs={0.5}></Grid>
+              <Grid item xs={8}>
+                <Box className={classes.topic}>
+                  <LabTabs />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={8}>
-              <Box className={classes.topic}>
-                <LabTabs />
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
+          </Box>
+        </Container>
+      </Box>
     </Grid>
   );
 };
