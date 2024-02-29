@@ -26,6 +26,8 @@ import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import PickQuestionTypeToAddDialog from "pages/lecturer/ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
 import qtype from "utils/constant/Qtype";
+import Heading1 from "components/text/Heading1";
+import PreviewEssay from "components/dialog/preview/PreviewEssay";
 
 const rows = [
   {
@@ -54,63 +56,87 @@ const QuestionListOfCourse = () => {
   const columns: GridColDef[] = [
     {
       field: "stt",
-      headerName: "STT",
       sortable: false,
       width: 20,
       align: "center",
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.stt}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>STT</ParagraphBody>;
+      }
     },
     {
       field: "questionName",
-      headerName: "Tên câu hỏi",
       sortable: false,
       flex: 3,
-      renderCell: (params) => <span>{params.row.questionName}</span>,
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.questionName}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tên câu hỏi</ParagraphBody>;
+      }
     },
     {
       field: "created",
-      headerName: "Ngày tạo bởi",
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.createdAtBy.name}</div>
+          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
           <div>{params.row.createdAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Ngày tạo bởi</ParagraphBody>;
+      }
     },
     {
       field: "updated",
-      headerName: "Lần chỉnh sửa cuối bởi",
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.updatedAtBy.name}</div>
+          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
           <div>{params.row.updatedAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Lần chỉnh sửa bởi</ParagraphBody>;
+      }
     },
     {
       field: "qtype",
-      headerName: "Phân loại",
       sortable: false,
       flex: 2,
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.qtype}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Phân loại</ParagraphBody>;
+      }
     },
     {
       field: "operation",
-      headerName: "Tác vụ",
       sortable: false,
       flex: 2,
       type: "actions",
       cellClassName: "actions",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tác vụ</ParagraphBody>;
+      },
       getActions: ({ id }) => {
         return [
-          <GridActionsCellItem icon={<PreviewIcon />} label='Preview' onClick={() => null} />,
+          <GridActionsCellItem
+            icon={<PreviewIcon />}
+            label='Preview'
+            onClick={() => setOpenPreviewEssay(true)}
+          />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label='Edit'
@@ -134,7 +160,7 @@ const QuestionListOfCourse = () => {
           />
         ];
       },
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     }
   ];
 
@@ -175,6 +201,7 @@ const QuestionListOfCourse = () => {
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
+  const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
   const matches = useMatches();
   // console.log(matches);
   const [value, setValue]: any[] = useOutletContext();
@@ -194,6 +221,13 @@ const QuestionListOfCourse = () => {
         questionType={typeToCreateNewQuestion}
         handleChangeQuestionType={setTypeToCreateNewQuestion}
       />
+      <PreviewEssay
+        open={openPreviewEssay}
+        setOpen={setOpenPreviewEssay}
+        aria-labelledby={"customized-dialog-title2"}
+        maxWidth='md'
+        fullWidth
+      />
       {isAddingQuestion && <Outlet />}
       {!isAddingQuestion && (
         <TabPanel value='1' sx={{ padding: 0 }}>
@@ -206,16 +240,16 @@ const QuestionListOfCourse = () => {
               <span onClick={() => navigate(".")}>Học thuật toán</span>
             </ParagraphBody>
           </Box>
-          <Container maxWidth='md'>
+          <Container>
             <Stack spacing={2} marginBottom={3}>
-              <Typography level='h1'>Học thuật toán</Typography>
+              <Heading1 fontWeight={500}>Học thuật toán</Heading1>
               <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-                <Button btnType={BtnType.Outlined}>
+                <Button btnType={BtnType.Primary}>
                   <ParagraphBody>Export câu hỏi ra file</ParagraphBody>
                 </Button>
                 <Button
-                  btnType={BtnType.Outlined}
+                  btnType={BtnType.Primary}
                   onClick={() => setIsAddNewQuestionDialogOpen(true)}
                 >
                   <ParagraphBody> Thêm câu hỏi</ParagraphBody>
@@ -225,7 +259,7 @@ const QuestionListOfCourse = () => {
               <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
               <DataGrid
                 sx={{
-                  "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
+                  "& .MuiDataGrid-cell": { padding: "16px" }
                 }}
                 autoHeight
                 getRowHeight={() => "auto"}

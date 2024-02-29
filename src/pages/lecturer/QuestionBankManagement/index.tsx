@@ -29,12 +29,13 @@ import {
 } from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
 import InputTextField from "components/common/inputs/InputTextField";
-import { red, grey } from "@mui/material/colors";
+import { red, grey, blue } from "@mui/material/colors";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { routes } from "routes/routes";
 import Button, { BtnType } from "components/common/buttons/Button";
-
+import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
+import classes from "./styles.module.scss";
 
 const rows = [
   {
@@ -93,48 +94,64 @@ const QuestionBankManagement = () => {
   const columns: GridColDef[] = [
     {
       field: "stt",
-      headerName: "STT",
       sortable: false,
       width: 20,
       align: "center",
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.stt}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>STT</ParagraphBody>;
+      }
     },
     {
       field: "category",
-      headerName: "Tên danh mục",
       sortable: false,
       flex: 3,
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.category}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tên danh mục</ParagraphBody>;
+      }
     },
     {
       field: "created",
-      headerName: "Ngày tạo bởi",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Ngày tạo bởi</ParagraphBody>;
+      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.createdAtBy.name}</div>
+          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
           <div>{params.row.createdAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     },
     {
       field: "updated",
-      headerName: "Lần chỉnh sửa cuối bởi",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Lần chỉnh sửa cuối bởi</ParagraphBody>;
+      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.updatedAtBy.name}</div>
+          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
           <div>{params.row.updatedAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     },
     {
       field: "operation",
-      headerName: "Tác vụ",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tác vụ</ParagraphBody>;
+      },
       sortable: false,
       flex: 1,
       type: "actions",
@@ -163,7 +180,7 @@ const QuestionBankManagement = () => {
           />
         ];
       },
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     }
   ];
   useEffect(() => {
@@ -178,11 +195,11 @@ const QuestionBankManagement = () => {
   return (
     <div>
       <TabPanel value='1' sx={{ padding: 0 }}>
-        <Container maxWidth='md'>
+        <Container>
           <Stack spacing={2} marginBottom={3}>
-            <Typography level='h1'>Ngân hàng câu hỏi chung</Typography>
+            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi chung</Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              <Button btnType={BtnType.Outlined} onClick={() => setOpenCreateDialog(true)}>
+              <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
                 <ParagraphBody> Thêm mới</ParagraphBody>
               </Button>
             </Stack>
@@ -190,9 +207,10 @@ const QuestionBankManagement = () => {
             <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
             <DataGrid
               sx={{
-                "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
+                "& .MuiDataGrid-cell": { padding: "16px" }
               }}
               autoHeight
+              disableColumnMenu
               getRowHeight={() => "auto"}
               rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
               rowCount={pageState.total}
