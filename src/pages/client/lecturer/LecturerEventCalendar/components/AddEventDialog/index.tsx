@@ -9,6 +9,7 @@ import TextTitle from "components/text/TextTitle";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import classes from "./styles.module.scss";
+import BasicSelect from "components/common/select/BasicSelect";
 import useWindowDimensions from "utils/useWindowDimensions";
 
 interface AddEventDialogProps extends DialogProps {
@@ -21,6 +22,7 @@ interface AddEventDialogProps extends DialogProps {
     start: string;
     end: string;
     allDay: boolean;
+    eventType: string;
   };
   handleChangData: (newData: {
     isExpanded: boolean;
@@ -31,6 +33,7 @@ interface AddEventDialogProps extends DialogProps {
     start: string;
     end: string;
     allDay: boolean;
+    eventType: string;
   }) => void;
   title?: string;
   handleClose: () => void;
@@ -63,7 +66,8 @@ const AddEventDialog = ({
       eventDescription: data.eventDescription,
       start: data.start,
       end: data.end,
-      allDay: data.allDay
+      allDay: data.allDay,
+      eventType: data.eventType
     });
   }, [data, handleChangData]);
   const { height } = useWindowDimensions();
@@ -95,7 +99,8 @@ const AddEventDialog = ({
               start: data.start,
               end: data.end,
               allDay: data.allDay,
-              eventDescription: data.eventDescription
+              eventDescription: data.eventDescription,
+              eventType: data.eventType
             });
           }}
         />
@@ -115,7 +120,8 @@ const AddEventDialog = ({
                   start: newValue?.toString() || "",
                   end: data.end,
                   allDay: data.allDay,
-                  eventDescription: data.eventDescription
+                  eventDescription: data.eventDescription,
+                  eventType: data.eventType
                 });
               }}
             />
@@ -126,7 +132,34 @@ const AddEventDialog = ({
             <TextTitle>Loại sự kiện</TextTitle>
           </Grid>
           <Grid item xs={9}>
-            Người dùng
+            <BasicSelect
+              labelId='select-assignment-section-label'
+              value={data.eventType}
+              onHandleChange={(value) => {
+                handleChangData({
+                  isExpanded: data.isExpanded,
+                  durationRadioIndex: data.durationRadioIndex,
+                  durationInMinute: data.durationInMinute,
+                  eventTitle: data.eventTitle,
+                  start: data.start,
+                  end: data.end,
+                  allDay: data.allDay,
+                  eventDescription: data.eventDescription,
+                  eventType: value
+                });
+              }}
+              sx={{ maxWidth: "200px" }}
+              items={[
+                {
+                  value: "0",
+                  label: "Người dùng"
+                },
+                {
+                  value: "1",
+                  label: "Khoá học"
+                }
+              ]}
+            />
           </Grid>
         </Grid>
         <Button btnType={BtnType.Text} onClick={handleToggle} width='fit-content' padding='0px'>
@@ -149,7 +182,8 @@ const AddEventDialog = ({
                     start: data.start,
                     end: data.end,
                     allDay: data.allDay,
-                    eventDescription: newValue
+                    eventDescription: newValue,
+                    eventType: data.eventType
                   });
                 }}
               />
@@ -186,7 +220,8 @@ const AddEventDialog = ({
                     start: data.start,
                     end: data.end,
                     allDay: data.allDay,
-                    eventDescription: data.eventDescription
+                    eventDescription: data.eventDescription,
+                    eventType: data.eventType
                   });
                 }}
               >
@@ -208,7 +243,8 @@ const AddEventDialog = ({
                       start: data.start,
                       end: newValue?.toString() || "",
                       allDay: data.allDay,
-                      eventDescription: data.eventDescription
+                      eventDescription: data.eventDescription,
+                      eventType: data.eventType
                     });
                   }}
                   disabled={data.durationRadioIndex !== "1"}
@@ -234,7 +270,8 @@ const AddEventDialog = ({
                       start: data.start,
                       end: endTime,
                       allDay: data.allDay,
-                      eventDescription: data.eventDescription
+                      eventDescription: data.eventDescription,
+                      eventType: data.eventType
                     });
                   }}
                   disabled={data.durationRadioIndex !== "2"}

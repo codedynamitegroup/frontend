@@ -5,14 +5,14 @@ import CustomFullCalendar from "components/calendar/CustomFullCalendar";
 import { createEventId } from "components/calendar/CustomFullCalendar/event-utils";
 import Button, { BtnType } from "components/common/buttons/Button";
 import BasicSelect from "components/common/select/BasicSelect";
-import SideBarStudent from "components/common/sidebars/SidebarStudent";
+import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 import Heading1 from "components/text/Heading1";
 import dayjs from "dayjs";
 import { useCallback, useState } from "react";
 import AddEventDialog from "./components/AddEventDialog";
 import classes from "./styles.module.scss";
 
-const StudentEventCalendar = () => {
+const LecturerEventCalendar = () => {
   const [data, setData] = useState<{
     isExpanded: boolean;
     durationRadioIndex: string;
@@ -22,6 +22,7 @@ const StudentEventCalendar = () => {
     start: string;
     end: string;
     allDay: boolean;
+    eventType: string;
     isAddEventDialogOpen: boolean;
     selectDateInfo: DateSelectArg | null;
     filterCourse: string;
@@ -35,6 +36,7 @@ const StudentEventCalendar = () => {
     start: "",
     end: "",
     allDay: false,
+    eventType: "0",
     isAddEventDialogOpen: false,
     selectDateInfo: null,
     filterCourse: "0",
@@ -135,7 +137,8 @@ const StudentEventCalendar = () => {
               eventTitle: newData.eventTitle,
               start: newData.start,
               end: newData.end,
-              allDay: newData.allDay
+              allDay: newData.allDay,
+              eventType: newData.eventType
             };
           });
         }}
@@ -156,7 +159,7 @@ const StudentEventCalendar = () => {
         }}
       />
       <Grid className={classes.root}>
-        <SideBarStudent>
+        <SideBarLecturer>
           <Grid container direction='row' justifyContent={"center"} gap={3}>
             <Box className={classes.container}>
               <Box className={classes.body}>
@@ -211,14 +214,15 @@ const StudentEventCalendar = () => {
                 <CustomFullCalendar
                   events={data.currentEvents}
                   handleDateSelect={handleDateSelect}
+                  editable={true}
                 />
               </Box>
             </Box>
           </Grid>
-        </SideBarStudent>
+        </SideBarLecturer>
       </Grid>
     </>
   );
 };
 
-export default StudentEventCalendar;
+export default LecturerEventCalendar;

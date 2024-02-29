@@ -2,6 +2,7 @@ import qtype from "utils/constant/Qtype";
 
 export const routes = {
   lecturer: {
+    calendar: "/lecturer/calendar",
     course: {
       management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",

@@ -15,6 +15,7 @@ import React from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
+import { CalendarIcon } from "@mui/x-date-pickers";
 
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
@@ -22,6 +23,11 @@ const sideBarItemListData: SidebarItem[] = [
     name: "Trang chủ",
     icon: <DashboardIcon className={classes.itemIcon} />,
     link: routes.lecturer.course.management
+  },
+  {
+    name: "Lịch",
+    icon: <CalendarIcon className={classes.itemIcon} />,
+    link: routes.lecturer.calendar
   },
   {
     name: "Quản lý câu hỏi code",
