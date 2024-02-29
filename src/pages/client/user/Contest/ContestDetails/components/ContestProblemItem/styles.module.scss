@@ -1,0 +1,23 @@
+.container {
+    background-color: var(--blue-light-5) !important;
+    .problemDetailContainer {
+        margin-left: 10px;
+    }
+    .roundContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 10px;
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+    }
+    .scoreContainer {
+        border: 5px solid rgb(116, 253, 169);
+       
+    }
+    .submissionContainer {
+        border: 5px solid rgb(253, 205, 116);
+    }
+}
