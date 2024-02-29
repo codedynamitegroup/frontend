@@ -27,8 +27,8 @@ const CourseCertificateDetail = () => {
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.user.course_certificate.introduction,
       routes.user.course_certificate.lesson,
+      routes.user.course_certificate.introduction,
       routes.user.course_certificate.certificate
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,12 +142,12 @@ const CourseCertificateDetail = () => {
                   >
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Giới thiệu</ParagraphBody>}
+                      label={<ParagraphBody>Bài học</ParagraphBody>}
                       value={0}
                     />
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Bài học</ParagraphBody>}
+                      label={<ParagraphBody>Giới thiệu</ParagraphBody>}
                       value={1}
                     />
                     <Tab
@@ -159,8 +159,8 @@ const CourseCertificateDetail = () => {
                 </Box>
                 <Box>
                   <Routes>
-                    <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
                     <Route path={"lesson"} element={<CourseCertificateLesson />} />
+                    <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
                     <Route path={"certificate"} element={<CertificateDetails />} />
                   </Routes>
                 </Box>

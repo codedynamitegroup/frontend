@@ -5,12 +5,12 @@
   overflow: auto;
   display: flex;
   flex-direction: column !important;
+  background-color: var(--blue-1);
 }
 
 #main {
   padding: 30px 0px;
   height: fit-content;
-  background-color: var(--blue-1);
 
   #container {
     height: 100%;

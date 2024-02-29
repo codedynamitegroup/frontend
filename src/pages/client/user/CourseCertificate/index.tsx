@@ -164,10 +164,7 @@ const CourseCertificates = () => {
                       className={classes.courseRecommend}
                       onClick={() => {
                         navigate(
-                          routes.user.course_certificate.introduction.replace(
-                            ":id",
-                            index.toString()
-                          )
+                          routes.user.course_certificate.lesson.replace(":id", index.toString())
                         );
                       }}
                     >
@@ -219,7 +216,7 @@ const CourseCertificates = () => {
                         className={classes.courseCerticate}
                         onClick={() => {
                           navigate(
-                            routes.user.course_certificate.detail.replace(":id", index.toString())
+                            routes.user.course_certificate.lesson.replace(":id", index.toString())
                           );
                         }}
                       >
