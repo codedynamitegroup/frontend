@@ -174,7 +174,6 @@ const QuestionBankManagement = () => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
-  const [value, setValue]: any[] = useOutletContext();
 
   return (
     <div>

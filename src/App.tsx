@@ -115,7 +115,18 @@ const router = createBrowserRouter(
                 />
               );
             }
+            
           )}
+          {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
+            (value) => {
+              return (
+                <Route
+                  path={value.path}
+                  element={<QuestionCreated qtype={value.code} />}
+                  handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
+                />
+              );
+            }
         </Route>
       </Route>
     </Route>

@@ -117,7 +117,11 @@ const QuestionListOfCourse = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => handleCreateQuestion()}
+            onClick={() => {
+              setIsAddingQuestion(true);
+              setIsAddNewQuestionDialogOpen(false);
+              navigate(`update/${typeToCreateNewQuestion}`);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}

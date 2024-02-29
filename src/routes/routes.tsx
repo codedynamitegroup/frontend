@@ -51,6 +51,14 @@ export const routes = {
               path: `create/${code}`,
               code
             }))
+        },
+        update_question: {
+          paths: Object.values(qtype)
+            .map((value) => value.code)
+            .map((code) => ({
+              path: `update/${code}`,
+              code
+            }))
         }
       }
     },
