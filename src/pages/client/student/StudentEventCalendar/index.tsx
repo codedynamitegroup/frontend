@@ -14,32 +14,46 @@ import classes from "./styles.module.scss";
 
 const StudentEventCalendar = () => {
   const [data, setData] = useState<{
-    event_title: string;
+    isExpanded: boolean;
+    durationRadioIndex: string;
+    durationInMinute: number;
+    eventTitle: string;
+    eventDescription: string;
     start: string;
+    end: string;
+    allDay: boolean;
     isAddEventDialogOpen: boolean;
     selectDateInfo: DateSelectArg | null;
     filterCourse: string;
     currentEvents: any[];
   }>({
-    event_title: "",
+    isExpanded: false,
+    durationRadioIndex: "0",
+    durationInMinute: 0,
+    eventTitle: "",
+    eventDescription: "",
     start: "",
+    end: "",
+    allDay: false,
     isAddEventDialogOpen: false,
     selectDateInfo: null,
     filterCourse: "0",
     currentEvents: [
       {
         id: createEventId(),
-        title: "event 1",
+        title: "Sự kiện nộp bài nhập môn lập trình",
         start: "2024-02-28",
         end: "2024-03-02",
-        allDay: true
+        allDay: true,
+        description: "Nộp bài tập lớn"
       },
       {
         id: createEventId(),
-        title: "event 2",
+        title: "Sự kiện thi cuối kì nhập môn lập trình",
         start: "2024-02-20",
         end: "2024-02-22",
-        allDay: true
+        allDay: true,
+        description: "Thi cuối kì"
       }
     ]
   });
@@ -61,8 +75,9 @@ const StudentEventCalendar = () => {
         ...pre,
         isAddEventDialogOpen: true,
         selectDateInfo: null,
-        event_title: "",
-        start: dayjs().toString()
+        eventTitle: "",
+        start: dayjs().toString(),
+        end: dayjs().toString()
       };
     });
   }, []);
@@ -84,10 +99,11 @@ const StudentEventCalendar = () => {
           ...pre.currentEvents,
           {
             id: createEventId(),
-            title: pre.event_title,
+            title: pre.eventTitle,
             start: data.selectDateInfo?.startStr || "",
             end: data.selectDateInfo?.endStr || "",
-            allDay: data.selectDateInfo?.allDay || false
+            allDay: data.selectDateInfo?.allDay || false,
+            description: pre.eventDescription
           }
         ]
       };
@@ -107,8 +123,13 @@ const StudentEventCalendar = () => {
           setData((pre) => {
             return {
               ...pre,
-              event_title: newData.event_title,
-              start: newData.start
+              isExpanded: newData.isExpanded,
+              durationRadioIndex: newData.durationRadioIndex,
+              durationInMinute: newData.durationInMinute,
+              eventTitle: newData.eventTitle,
+              start: newData.start,
+              end: newData.end,
+              allDay: newData.allDay
             };
           });
         }}
@@ -124,15 +145,7 @@ const StudentEventCalendar = () => {
       />
       <Grid className={classes.root}>
         <SideBarStudent>
-          <Grid
-            container
-            direction='row'
-            justifyContent={"center"}
-            gap={3}
-            sx={{
-              height: "100%"
-            }}
-          >
+          <Grid container direction='row' justifyContent={"center"} gap={3}>
             <Box className={classes.container}>
               <Box className={classes.body}>
                 <Heading1>Lịch sự kiện</Heading1>

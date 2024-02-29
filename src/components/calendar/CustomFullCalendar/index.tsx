@@ -3,7 +3,11 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { Box, Tooltip } from "@mui/material";
+import TextTitle from "components/text/TextTitle";
 import "./index.scss";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 
 interface CustomFullCalendarProps {
   events: any[];
@@ -44,9 +48,26 @@ export default function CustomFullCalendar({ events, handleDateSelect }: CustomF
 
 function renderEventContent(eventContent: EventContentArg) {
   return (
-    <>
-      <b>{eventContent.timeText}</b>
-      <i>{eventContent.event.title}</i>
-    </>
+    <Tooltip title={eventContent.event.title} placement='top-start'>
+      <Box
+        sx={{
+          padding: "5px"
+        }}
+      >
+        <ParagraphExtraSmall fontSize={"12px"}>{eventContent.timeText}</ParagraphExtraSmall>
+        <TextTitle
+          color='white'
+          textWrap='nowrap'
+          overflow='hidden'
+          textOverflow='ellipsis'
+          fontSize='13px'
+        >
+          {eventContent.event.title}
+        </TextTitle>
+        <ParagraphBody fontSize={"12px"} colorName='grey'>
+          {eventContent.event.extendedProps.description || "No description"}
+        </ParagraphBody>
+      </Box>
+    </Tooltip>
   );
 }

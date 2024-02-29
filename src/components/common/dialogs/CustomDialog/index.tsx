@@ -16,6 +16,7 @@ interface CustomDialogProps extends DialogProps {
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
   minWidth?: string;
+  maxHeight?: string;
   actionsDisabled?: boolean;
 }
 
@@ -29,6 +30,7 @@ export default function CustomDialog({
   onHandleCancel,
   onHanldeConfirm,
   minWidth,
+  maxHeight,
   actionsDisabled,
   ...props
 }: CustomDialogProps) {
@@ -40,7 +42,8 @@ export default function CustomDialog({
       aria-describedby='alert-dialog-description'
       sx={{
         "& .MuiDialog-paper": {
-          minWidth: minWidth || "550px"
+          minWidth: minWidth || "550px",
+          maxHeight: maxHeight || null
         }
       }}
       PaperProps={{ sx: { borderRadius: "10px" } }}

@@ -21,6 +21,7 @@ interface InputsProps extends OutlinedInputProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   backgroundColor?: string;
   fullWidth?: boolean;
+  maxWith?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -38,7 +39,8 @@ const InputTextField = memo((props: InputsProps) => {
     disabled,
     onChange,
     backgroundColor,
-    fullWidth
+    fullWidth,
+    maxWith
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -68,7 +70,8 @@ const InputTextField = memo((props: InputsProps) => {
                 })
               }}
               style={{
-                backgroundColor: backgroundColor || "white"
+                backgroundColor: backgroundColor || "white",
+                maxWidth: maxWith || "100%"
               }}
               defaultValue={defaultValue}
               value={value}
