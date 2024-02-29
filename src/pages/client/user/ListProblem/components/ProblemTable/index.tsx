@@ -11,32 +11,7 @@ import TablePagination from "@mui/material/TablePagination";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
-
 export default function ProblemTable() {
-  const status = [
-    {
-      id: 1,
-      label: "Chưa giải"
-    },
-    {
-      id: 2,
-      label: "Đã giải"
-    }
-  ];
-  const difficulty = [
-    {
-      id: 1,
-      label: "Dễ"
-    },
-    {
-      id: 2,
-      label: "Trung bình"
-    },
-    {
-      id: 3,
-      label: "Khó"
-    }
-  ];
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
   const customColumns = ["status", "name", "difficulty"];
   const data = [
@@ -117,34 +92,6 @@ export default function ProblemTable() {
 
   return (
     <Box className={classes.container}>
-      <Box className={classes.filterSearch}>
-        <Autocomplete
-          size='small'
-          disablePortal
-          id='combo-box-demo'
-          options={status}
-          fullWidth
-          renderInput={(params) => <TextField {...params} label='Trạng thái' />}
-        />
-        <Autocomplete
-          disablePortal
-          size='small'
-          id='combo-box-demo'
-          options={difficulty}
-          fullWidth
-          renderInput={(params) => <TextField {...params} label='Độ khó' />}
-        />
-        <OutlinedInput
-          size='small'
-          fullWidth
-          placeholder='Tìm kiếm'
-          startAdornment={
-            <InputAdornment position='start'>
-              <SearchIcon className={classes.icon} />
-            </InputAdornment>
-          }
-        />
-      </Box>
       <Box className={classes.table}>
         <TableTemplate
           customHeading={customHeading}
