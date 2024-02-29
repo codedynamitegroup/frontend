@@ -115,7 +115,7 @@ function Header() {
   }, []);
 
   return (
-    <AppBar position='static' open={open}>
+    <AppBar position='static' open={open} className={classes.header}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box

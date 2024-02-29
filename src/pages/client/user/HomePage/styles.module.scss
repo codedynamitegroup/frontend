@@ -48,8 +48,14 @@
     }
   }
   .sectionImage {
-    padding: 90px 0px;
+    padding: 10px 0px;
     animation: moveUpDown 2s infinite;
+
+    .homeImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .courseContainer {

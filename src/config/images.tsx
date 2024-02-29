@@ -13,6 +13,7 @@ import contestListBackground from "assets/img/background/contest-list-background
 import changePasswordThumbnail from "assets/img/change_password_thumbnail.svg";
 import courseCertificatesBackground from "assets/img/background/background-course-certificate.jpg";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
+import home from "assets/img/home.png";
 
 const images = {
   auth: { notFoundError, unAuthorized },
@@ -21,6 +22,7 @@ const images = {
   logo: { moodleLogo, microsoftLogo, googleLogo },
   null: { mailboxEmpty },
   login,
+  home,
   forgotpassword,
   icLevel,
   contestListBackground,

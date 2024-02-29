@@ -29,11 +29,7 @@ export default function HomePage() {
               </Box>
             </Grid>
             <Grid item xs={6} className={classes.sectionImage}>
-              <img
-                className={classes.boyLearningImage}
-                src='https://cdn.codechef.com/images/home/coding_boy.svg'
-                alt='home'
-              />
+              <img className={classes.homeImage} src={images.home} alt='home' />
             </Grid>
           </Grid>
           <Grid container>
