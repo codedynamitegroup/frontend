@@ -5,6 +5,7 @@ import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import * as React from "react";
+import qtype from "utils/constant/Qtype";
 
 interface PickQuestionTypeToAddDialogProps extends DialogProps {
   title?: string;
@@ -31,6 +32,11 @@ export default function PickQuestionTypeToAddDialog({
   onHanldeConfirm,
   ...props
 }: PickQuestionTypeToAddDialogProps) {
+  const [isChoosen, setIsChoosen] = React.useState(
+    Object.values(qtype)
+      .map((value) => value.code)
+      .some((value) => value === questionType)
+  );
   return (
     <CustomDialog
       open={open}
@@ -40,6 +46,7 @@ export default function PickQuestionTypeToAddDialog({
       confirmText={confirmText}
       onHandleCancel={onHandleCancel}
       onHanldeConfirm={onHanldeConfirm}
+      confirmDisabled={!isChoosen}
       {...props}
     >
       <Grid container spacing={1} columns={12} minWidth='450px'>
@@ -55,7 +62,10 @@ export default function PickQuestionTypeToAddDialog({
             <BasicRadioGroup
               ariaLabel='question-type'
               value={questionType}
-              handleChange={handleChangeQuestionType}
+              handleChange={(value) => {
+                setIsChoosen(true);
+                handleChangeQuestionType(value);
+              }}
               items={[
                 { value: "essay", label: "Tự luận" },
                 { value: "multiple-choice", label: "Trắc nghiệm" },

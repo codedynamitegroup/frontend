@@ -1,12 +1,24 @@
-import { Box, Stack, Grid, Container, Button as MButton, Divider } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Grid,
+  Container,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  DialogTitle,
+  Dialog
+} from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
-
+import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   DataGrid,
@@ -15,11 +27,14 @@ import {
   GridActionsCellItem,
   GridEventListener
 } from "@mui/x-data-grid";
-import Button from "@mui/joy/Button";
 import SearchBar from "components/common/search/SearchBar";
+import InputTextField from "components/common/inputs/InputTextField";
 import { red, grey } from "@mui/material/colors";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { routes } from "routes/routes";
+import Button, { BtnType } from "components/common/buttons/Button";
+
+import ParagraphBody from "components/text/ParagraphBody";
 
 const rows = [
   {
@@ -74,6 +89,7 @@ const QuestionBankManagement = () => {
     page: 1,
     pageSize: 5
   });
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const columns: GridColDef[] = [
     {
       field: "stt",
@@ -131,7 +147,10 @@ const QuestionBankManagement = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => null}
+            onClick={() => {
+              //set the edit value
+              setOpenCreateDialog(true);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -158,23 +177,15 @@ const QuestionBankManagement = () => {
 
   return (
     <div>
-      <TabPanel value='1'>
-        <Container maxWidth='xl'>
-          <Stack spacing={2}>
+      <TabPanel value='1' sx={{ padding: 0 }}>
+        <Container maxWidth='md'>
+          <Stack spacing={2} marginBottom={3}>
             <Typography level='h1'>Ngân hàng câu hỏi chung</Typography>
-
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={2}>
-                <Button
-                  size='lg'
-                  variant='outlined'
-                  sx={{ fontSize: "120%", display: "block" }}
-                  fullWidth
-                >
-                  Thêm mới
-                </Button>
-              </Grid>
-            </Grid>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Outlined} onClick={() => setOpenCreateDialog(true)}>
+                <ParagraphBody> Thêm mới</ParagraphBody>
+              </Button>
+            </Stack>
 
             <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
             <DataGrid
@@ -182,6 +193,7 @@ const QuestionBankManagement = () => {
                 "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
               }}
               autoHeight
+              getRowHeight={() => "auto"}
               rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
               rowCount={pageState.total}
               loading={pageState.isLoading}
@@ -203,6 +215,45 @@ const QuestionBankManagement = () => {
         </Container>
       </TabPanel>
       <TabPanel value='2'>Item Two</TabPanel>
+      <Dialog
+        aria-labelledby='customized-dialog-title'
+        open={openCreateDialog}
+        onClose={() => setOpenCreateDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          Tạo danh mục
+        </DialogTitle>
+        <IconButton
+          aria-label='close'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+          onClick={() => setOpenCreateDialog(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Stack spacing={1}>
+            <Textarea name='Outlined' placeholder='Tên danh mục' variant='outlined' minRows={1} />
+            <Textarea
+              name='Outlined'
+              placeholder='Thông tin danh mục'
+              variant='outlined'
+              minRows={4}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
+            <ParagraphBody> Lưu</ParagraphBody>
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

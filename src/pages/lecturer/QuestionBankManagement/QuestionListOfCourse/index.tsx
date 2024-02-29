@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { Box, Stack, Grid, Container } from "@mui/material";
+import { useMatches, useParams } from "react-router-dom";
+import { Box, Stack, Grid, Container, Divider } from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
 
@@ -18,12 +18,14 @@ import {
 } from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
 import { red, grey } from "@mui/material/colors";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { routes } from "routes/routes";
 import Button, { BtnType } from "components/common/buttons/Button";
 
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
+import PickQuestionTypeToAddDialog from "pages/lecturer/ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
+import qtype from "utils/constant/Qtype";
 
 const rows = [
   {
@@ -35,7 +37,7 @@ const rows = [
   },
   {
     id: 2,
-    questionName: "Stack và Queue là gì?",
+    questionName: "Stack và Queue llllllllllllllllllllllllllllllà gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
     qtype: "Tự luận"
@@ -63,6 +65,7 @@ const QuestionListOfCourse = () => {
       headerName: "Tên câu hỏi",
       sortable: false,
       flex: 3,
+      renderCell: (params) => <span>{params.row.questionName}</span>,
       headerClassName: "qbm-class"
     },
     {
@@ -114,7 +117,11 @@ const QuestionListOfCourse = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => null}
+            onClick={() => {
+              setIsAddingQuestion(true);
+              setIsAddNewQuestionDialogOpen(false);
+              navigate(`update/${typeToCreateNewQuestion}`);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -130,79 +137,120 @@ const QuestionListOfCourse = () => {
       headerClassName: "qbm-class"
     }
   ];
+
   useEffect(() => {
     //fetch data
   }, [pageState.page, pageState.pageSize]);
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.reset === true) setIsAddingQuestion(false);
+  }, [location]);
+
+  useEffect(() => {
+    const handlePopstate = () => setIsAddingQuestion(false);
+
+    // Đăng ký sự kiện popstate
+    window.addEventListener("popstate", handlePopstate);
+
+    // Hủy đăng ký sự kiện khi component unmount
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, []);
   const navigate = useNavigate();
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     console.log(params);
     // navigate(`${params.row.id}`);
   };
+  const handleCreateQuestion = () => {
+    setIsAddingQuestion(true);
+    setIsAddNewQuestionDialogOpen(false);
+    navigate(`create/${typeToCreateNewQuestion}`);
+  };
 
   const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
   const urlParams = useParams();
   console.log(urlParams);
+  const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
+  const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
+  const [isAddingQuestion, setIsAddingQuestion] = useState(false);
+  const matches = useMatches();
+  // console.log(matches);
+  const [value, setValue]: any[] = useOutletContext();
+  useEffect(() => {
+    setIsAddingQuestion(false);
+  }, [value]);
   return (
     <div>
-      <Box className={classes.tabWrapper}>
-        <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-          <span onClick={() => navigate(routes.lecturer.course.management)}>
-            Ngân hàng câu hỏi chung
-          </span>{" "}
-          {"> "}
-          <span
-            onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
-          >
-            Học thuật toán
-          </span>
-        </ParagraphBody>
-      </Box>
-      <TabPanel value='1'>
-        <Container maxWidth='xl'>
-          <Stack spacing={2}>
-            <Typography level='h1'>Học thuật toán</Typography>
-
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={3}>
-                <Button btnType={BtnType.Outlined} fullWidth>
+      <PickQuestionTypeToAddDialog
+        open={isAddNewQuestionDialogOpen}
+        handleClose={() => setIsAddNewQuestionDialogOpen(false)}
+        title='Chọn kiểu câu hỏi muốn thêm'
+        cancelText='Hủy bỏ'
+        confirmText='Thêm'
+        onHanldeConfirm={handleCreateQuestion}
+        onHandleCancel={() => setIsAddNewQuestionDialogOpen(false)}
+        questionType={typeToCreateNewQuestion}
+        handleChangeQuestionType={setTypeToCreateNewQuestion}
+      />
+      {isAddingQuestion && <Outlet />}
+      {!isAddingQuestion && (
+        <TabPanel value='1' sx={{ padding: 0 }}>
+          <Box className={classes.tabWrapper}>
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+                Ngân hàng câu hỏi chung
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate(".")}>Học thuật toán</span>
+            </ParagraphBody>
+          </Box>
+          <Container maxWidth='md'>
+            <Stack spacing={2} marginBottom={3}>
+              <Typography level='h1'>Học thuật toán</Typography>
+              <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+                <Button btnType={BtnType.Outlined}>
                   <ParagraphBody>Export câu hỏi ra file</ParagraphBody>
                 </Button>
-              </Grid>
-              <Grid item xs={12} md={2}>
-                <Button btnType={BtnType.Outlined} fullWidth>
+                <Button
+                  btnType={BtnType.Outlined}
+                  onClick={() => setIsAddNewQuestionDialogOpen(true)}
+                >
                   <ParagraphBody> Thêm câu hỏi</ParagraphBody>
                 </Button>
-              </Grid>
-            </Grid>
+              </Stack>
 
-            <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
-            <DataGrid
-              sx={{
-                "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
-              }}
-              autoHeight
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              hideFooterSelectedRowCount
-              // onRowClick={handleRowClick}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
-            />
-          </Stack>
-        </Container>
-      </TabPanel>
-      <TabPanel value='2'>Item Two</TabPanel>
+              <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+              <DataGrid
+                sx={{
+                  "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
+                }}
+                autoHeight
+                getRowHeight={() => "auto"}
+                rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+                rowCount={pageState.total}
+                loading={pageState.isLoading}
+                paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+                onPaginationModelChange={(model, details) => {
+                  setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                }}
+                columns={columns}
+                pageSizeOptions={[5, 10, 30, 50]}
+                paginationMode='server'
+                disableColumnFilter
+                hideFooterSelectedRowCount
+                // onRowClick={handleRowClick}
+                // slots={{
+                //   toolbar: EditToolbar
+                // }}
+              />
+            </Stack>
+          </Container>
+        </TabPanel>
+      )}
+      {!isAddingQuestion && <TabPanel value='2'>Item Two</TabPanel>}
     </div>
   );
 };

@@ -69,18 +69,22 @@ const router = createBrowserRouter(
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
+        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.multiple_choice.create}
         element={<QuestionCreated qtype={qtype.multiple_choice.code} />}
+        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.short_answer.create}
         element={<QuestionCreated qtype={qtype.short_answer.code} />}
+        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.true_false.create}
         element={<QuestionCreated qtype={qtype.true_false.code} />}
+        handle={{ crumbName: "default" }}
       />
 
       <Route path={routes.user.information} element={<UserInformation />} />
@@ -96,12 +100,43 @@ const router = createBrowserRouter(
         path={routes.user.course_certificate.detail.lesson.detail}
         element={<CourseCertificateLessonProblem />}
       />
-      <Route path={routes.lecturer.question_bank.path} element={<QuestionBankManagementLayout />}>
+
+      <Route
+        path={routes.lecturer.question_bank.path}
+        element={<QuestionBankManagementLayout />}
+        handle={{
+          crumbName: "Ngân hàng câu hỏi"
+        }}
+      >
         <Route index element={<QuestionBankManagement />} />
         <Route
-          path={routes.lecturer.question_bank.questions_list_of_course.path}
+          path={routes.lecturer.question_bank.questions_list_of_category.path}
           element={<QuestionListOfCourse />}
-        />
+          handle={{ crumbName: "Học thuật toán", state: { reset: true } }}
+        >
+          {routes.lecturer.question_bank.questions_list_of_category.create_question.paths.map(
+            (value) => {
+              return (
+                <Route
+                  path={value.path}
+                  element={<QuestionCreated qtype={value.code} />}
+                  handle={{ crumbName: "Tạo câu hỏi" }}
+                />
+              );
+            }
+          )}
+          {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
+            (value) => {
+              return (
+                <Route
+                  path={value.path}
+                  element={<QuestionCreated qtype={value.code} />}
+                  handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
+                />
+              );
+            }
+          )}
+        </Route>
       </Route>
     </Route>
   )
