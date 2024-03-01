@@ -22,6 +22,7 @@ import ContestProblemItem, { EContestProblemDifficulty } from "./components/Cont
 import ContestLeaderboard from "./components/ContestLeaderboard";
 import Heading4 from "components/text/Heading4";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { useParams } from "react-router-dom";
 
 export enum EContestStatus {
   featured,
@@ -29,7 +30,7 @@ export enum EContestStatus {
   ended
 }
 
-const ContestData = {
+let ContestData = {
   name: "Batch coding",
   status: EContestStatus.happening,
   joinedContest: true,
@@ -249,6 +250,12 @@ const topUserRank: Array<any> = [
   }
 ];
 const ContestDetails = () => {
+  const { contestId } = useParams<{ contestId: string }>();
+  contestId === "1"
+    ? (ContestData["status"] = EContestStatus.featured)
+    : contestId === "2"
+      ? (ContestData["status"] = EContestStatus.happening)
+      : (ContestData["status"] = EContestStatus.ended);
   const [value, setValue] = useState(() => {
     return ContestData["status"] === EContestStatus.ended ? "3" : "1";
   });
