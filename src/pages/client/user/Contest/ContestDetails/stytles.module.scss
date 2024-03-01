@@ -1,18 +1,25 @@
-.container {
-    background-color: var(--blue-1);
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
 
-    .bodyContainer {
-        margin-bottom: 10px;
-        .divContainer {
-            padding: 20px;
-            padding-top: 0;
-        }
+  .bodyContainer {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    .divContainer {
+      padding: 20px;
+      padding-top: 0;
     }
-    .topUserText {
-        font-size: 18px;
-        color: var(--blue-link);
-    }
-    .topUserText:hover {
-        color: var(--blue-hover);
-    }
+  }
+  .topUserText {
+    font-size: 18px;
+    color: var(--blue-link);
+  }
+  .topUserText:hover {
+    color: var(--blue-hover);
+  }
 }

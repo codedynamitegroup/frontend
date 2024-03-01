@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import classes from "./styles.module.scss";
 import {
   Box,
@@ -19,6 +19,8 @@ import ContestContentCard from "./components/ContestContentCard";
 import ContestFilter from "./components/ContestFilter";
 import images from "config/images";
 import Carousel from "react-material-ui-carousel";
+import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 const filterObject = {
   difficulty: {
@@ -84,10 +86,15 @@ const ContestList = () => {
     exclusive: true
   };
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
-    <Box className={classes.container}>
-      <Header />
-      <Grid container spacing={10}>
+    <Box className={classes.root}>
+      <Header ref={headerRef} />
+      <Grid container style={{ marginTop: `${headerHeight}px`, gap: "40px", marginBottom: "40px" }}>
         <Grid item xs={12} md={12} xl={12} lg={12}>
           <Box
             sx={{
@@ -190,7 +197,6 @@ const ContestList = () => {
               >
                 Danh sách cuộc thi
               </Typography>
-              <Divider />
             </Grid>
             <Grid item xs={12} md={10} lg={8}>
               <SearchBar onSearchClick={onSearchClick} />
@@ -260,6 +266,7 @@ const ContestList = () => {
           </Grid>
         </Grid>
       </Grid>
+      <Footer />
     </Box>
   );
 };

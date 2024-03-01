@@ -1,34 +1,38 @@
-.container {
-    background-color: #ebf3ff;
-    .detailContainer {
-        .generalDetailsContainer {
-            display: flex;
-            & [class~="MuiBox-root"]  {
-                padding-right: 30px;
-            }
-        }
-        .trendingStackContainer {
-            padding: 0;
-            margin-top: 20px;
-            margin-bottom: 50px;
-        }
-        
-    }
-    .contestListContainer {
-        .contestListButtonGroup {
-            padding: 10px;
-            & [class~="MuiToggleButtonGroup-root"] {
-                & [class~="MuiButtonBase-root"] {
-                    border-radius: 20px;
-                    border: 0;
-                    margin-right: 10px;
-                }
-            }
-            
-        }
-    }
-    .react-multi-carousel-list {
-        padding: 0rem 0 2rem 0;
+.root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
 
+  .detailContainer {
+    .generalDetailsContainer {
+      display: flex;
+      & [class~="MuiBox-root"] {
+        padding-right: 30px;
+      }
     }
+    .trendingStackContainer {
+      padding: 0;
+      margin-top: 20px;
+      margin-bottom: 50px;
+    }
+  }
+  .contestListContainer {
+    .contestListButtonGroup {
+      padding: 10px;
+      & [class~="MuiToggleButtonGroup-root"] {
+        & [class~="MuiButtonBase-root"] {
+          border-radius: 20px;
+          border: 0;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  .react-multi-carousel-list {
+    padding: 0rem 0 2rem 0;
+  }
 }
