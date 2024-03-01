@@ -62,11 +62,11 @@ function Header() {
   const auth: ILinkMenu[] = [
     {
       name: "Đăng nhập",
-      path: "/"
+      path: "/login"
     },
     {
       name: "Đăng ký",
-      path: "/"
+      path: "/register"
     }
   ];
 
@@ -116,7 +116,7 @@ function Header() {
   }, []);
 
   return (
-    <AppBar position='static' open={open} className={classes.header}>
+    <AppBar position='fixed' open={open} className={classes.header}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box
@@ -148,12 +148,11 @@ function Header() {
           </Box>
 
           <Box className={classes.navbarAuthItem}>
-            <Button className={classes.item} onClick={() => navigate("/login")}>
-              Đăng nhập
-            </Button>
-            <Button className={classes.item} onClick={() => navigate("/register")}>
-              Đăng ký
-            </Button>
+            {auth.map((page, index) => (
+              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                {page.name}
+              </Button>
+            ))}
           </Box>
         </Toolbar>
         <Drawer
