@@ -2,9 +2,14 @@
     background-color: var(--blue-light-5) !important;
     .problemDetailContainer {
         margin-left: 10px;
-        .problemNameText:hover {
-            color: var(--blue-hover);
+        color: black;
+        .problemNameText {
+            color: inherit;
         }
+    }
+    .problemDetailContainer:hover {
+        color: var(--blue-hover);
+        cursor: pointer;
     }
     .roundContainer {
         display: flex;
