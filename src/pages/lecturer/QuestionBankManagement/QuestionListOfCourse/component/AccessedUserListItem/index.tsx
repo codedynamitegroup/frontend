@@ -1,7 +1,7 @@
 import { Grid, Avatar, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useState } from "react";
+import { useState, memo } from "react";
 import classes from "./styles.module.scss";
 enum AccessLevel {
   OWNER = "OWNER",
@@ -58,6 +58,6 @@ const AccessedUserListItem = (props: AccessedUserListItemProp) => {
   );
 };
 
-export default AccessedUserListItem;
+export default memo(AccessedUserListItem);
 export { AccessLevel };
 export type { AccessedUserListItemProp };

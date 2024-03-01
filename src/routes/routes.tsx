@@ -42,7 +42,7 @@ export const routes = {
       }
     },
     question_bank: {
-      path: "lecturer/question-bank-management",
+      path: "/lecturer/question-bank-management",
       questions_list_of_category: {
         path: ":categoryId",
         create_question: {
@@ -72,7 +72,8 @@ export const routes = {
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",
       information: "/student/courses/:courseId/information",
-      assignment: "/student/courses/:courseId/assignment",
+      assignment: "/student/courses/:courseId/assignments",
+      assignment_detail: "/student/courses/:courseId/assignments/:assignmentId",
       grade: "/student/courses/:courseId/grade",
       participant: "/student/courses/:courseId/participant"
     },

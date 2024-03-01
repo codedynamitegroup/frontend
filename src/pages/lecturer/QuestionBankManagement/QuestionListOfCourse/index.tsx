@@ -30,6 +30,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import PickQuestionTypeToAddDialog from "pages/lecturer/ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
 import qtype from "utils/constant/Qtype";
 import Heading1 from "components/text/Heading1";
+import Heading5 from "components/text/Heading5";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 
@@ -39,7 +40,7 @@ const rows = [
     questionName: "Con trỏ là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
-    qtype: "Nhiều lựa chọn"
+    qtype: "Tự luận"
   },
   {
     id: 2,
@@ -245,7 +246,7 @@ const QuestionListOfCourse = () => {
         <TabPanel value='1' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
               {"> "}
@@ -255,7 +256,9 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học thuật toán</Heading1>
-              <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+                Thông tin danh mục: các bài tập về OOP
+              </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
                 <Button btnType={BtnType.Primary}>
                   <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
@@ -300,7 +303,7 @@ const QuestionListOfCourse = () => {
         <TabPanel value='2' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
               {"> "}
@@ -310,7 +313,9 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học OOP</Heading1>
-              <Typography>Thông tin danh mục: các bài tập về OOP</Typography>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+                Thông tin danh mục: các bài tập về OOP
+              </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
                 <Button btnType={BtnType.Primary}>
                   <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>

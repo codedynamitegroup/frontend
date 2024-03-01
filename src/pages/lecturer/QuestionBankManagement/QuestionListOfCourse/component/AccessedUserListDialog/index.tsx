@@ -17,7 +17,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Textarea } from "@mui/joy";
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, memo } from "react";
 interface AccessedUserListDialogProps extends DialogProps {
   setOpenAccessDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
