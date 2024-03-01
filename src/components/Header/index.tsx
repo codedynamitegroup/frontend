@@ -120,7 +120,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   }, []);
 
   return (
-    <AppBar position='fixed' open={open} className={classes.header}>
+    <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box

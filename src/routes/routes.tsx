@@ -86,10 +86,15 @@ export const routes = {
     password_change: "/user/password/change",
     problem: {
       solution: {
-        share: "/problems/:id/solution/share"
+        share: "/problems/:problemId/solution/share"
       },
       root: "/problems",
-      detail: "/problems/:id"
+      detail: {
+        root: "/problems/:problemId/*",
+        description: "/problems/:problemId/description",
+        solution: "/problems/:problemId/solution",
+        submission: "/problems/:problemId/submission"
+      }
     },
     course_certificate: {
       root: "/course-certificates",

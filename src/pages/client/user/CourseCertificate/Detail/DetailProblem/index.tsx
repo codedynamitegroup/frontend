@@ -282,6 +282,7 @@ int main()
         className={classes.body}
         style={{
           height: `calc(100% - ${headerHeight + marginRef.current * 2}px)`,
+          marginTop: `${headerHeight}px`,
           gap: `${marginRef.current}px`,
           marginBottom: `${marginRef.current}px`
         }}

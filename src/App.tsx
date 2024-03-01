@@ -6,7 +6,6 @@ import StudentCourseManagement from "pages/client/student/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import CourseCertificates from "pages/client/user/CourseCertificate";
 import ListProblem from "pages/client/user/ListProblem";
-import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/lecturer/AssignmentManagement/GradingAssignment";
@@ -24,7 +23,6 @@ import {
 } from "react-router-dom";
 import { routes } from "routes/routes";
 import ContestList from "pages/client/user/Contest/ContestList";
-import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
@@ -37,6 +35,8 @@ import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
+import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
-      <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
       <Route path={routes.user.login.root} element={<Login />} />

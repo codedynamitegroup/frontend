@@ -4,7 +4,7 @@ import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import SearchBar from "components/common/search/SearchBar";
 import BasicSelect from "components/common/select/BasicSelect";
-import React from "react";
+import React, { useRef } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -124,11 +125,15 @@ const CourseCertificates = () => {
   ];
 
   const navigate = useNavigate();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
   return (
     <Grid className={classes.root}>
-      <Header />
-      <main id={classes.main}>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Box
           id={classes.banner}
           sx={{
