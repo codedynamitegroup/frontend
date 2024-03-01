@@ -1,12 +1,12 @@
-import PdfViewer from "components/pdf/PdfViewer";
+import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
 import AssignmentSubmission from "pages/client/student/AssignmentSubmission";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
+import ContestList from "pages/client/user/Contest/ContestList";
 import CourseCertificates from "pages/client/user/CourseCertificate";
 import ListProblem from "pages/client/user/ListProblem";
-import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/lecturer/AssignmentManagement/GradingAssignment";
@@ -23,8 +23,6 @@ import {
   createRoutesFromElements
 } from "react-router-dom";
 import { routes } from "routes/routes";
-import ContestList from "pages/client/user/Contest/ContestList";
-import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import HomePage from "pages/client/user/HomePage";
@@ -37,6 +35,9 @@ import QuestionBankManagementLayout from "pages/lecturer/QuestionBankManagement/
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
+import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
+import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,7 +45,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
-      <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
       <Route path={routes.user.login.root} element={<Login />} />
@@ -52,7 +53,9 @@ const router = createBrowserRouter(
       <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
-      <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
+
+      <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
+
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
       <Route path={routes.student.assignment.submit} element={<AssignmentSubmission />} />
@@ -104,6 +107,10 @@ const router = createBrowserRouter(
       />
 
       <Route
+        path={routes.user.course_certificate.detail.lesson.share_solution}
+        element={<LessonShareSolution />}
+      />
+      <Route
         path={routes.lecturer.question_bank.path}
         element={<QuestionBankManagementLayout />}
         handle={{
@@ -117,23 +124,25 @@ const router = createBrowserRouter(
           handle={{ crumbName: "Học thuật toán", state: { reset: true } }}
         >
           {routes.lecturer.question_bank.questions_list_of_category.create_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Tạo câu hỏi" }}
+                  key={index}
                 />
               );
             }
           )}
           {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
+                  key={index}
                 />
               );
             }

@@ -1,7 +1,7 @@
 import Header from "components/Header";
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
@@ -15,6 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
 import Footer from "components/Footer";
+import useBoxDimensions from "utils/useBoxDimensions";
 const status = [
   {
     id: 1,
@@ -75,10 +76,15 @@ const ListProblem = () => {
     "Tìm kiếm nhị phân trên cây",
     "Tìm kiếm nhị phân trên đồ thị"
   ];
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <main id={classes.main}>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Box
           id={classes.banner}
           sx={{

@@ -3,17 +3,20 @@
   flex-direction: column !important;
   gap: 20px;
   padding-bottom: 20px;
-  background-color: var(--gray-3);
+  background-color: var(--blue-1);
 }
 
-.container {
-  display: flex !important;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 5px;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  height: 100%;
+#main {
+  padding-top: 20px;
+  .container {
+    display: flex !important;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 5px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    height: 100%;
+  }
 }
 
 .tabWrapper {

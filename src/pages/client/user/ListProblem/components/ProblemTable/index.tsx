@@ -124,7 +124,9 @@ export default function ProblemTable() {
           customColumns={customColumns}
           data={data}
           isActionColumn={false}
-          onViewDetailsClick={() => navigate(routes.user.problem.detail.replace(":id", "1"))}
+          onViewDetailsClick={() =>
+            navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
+          }
         />
         <TablePagination
           component='div'

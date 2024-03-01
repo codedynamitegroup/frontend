@@ -1,5 +1,7 @@
-.editor {
-  & [class~="margin"] {
-    background-color: #e5e5e5;
+#codeEditor {
+  height: 100%;
+
+  [class~="cm-editor"] {
+    height: 100%;
   }
 }
