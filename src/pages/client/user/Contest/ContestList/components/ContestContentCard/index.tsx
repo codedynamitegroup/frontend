@@ -8,10 +8,11 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 interface PropsData {
   name: string;
   description: string;
+  avtImage: any;
 }
 const ContestContentCard = (props: PropsData) => {
-  const { name, description } = props;
-  const IMG_URL = "https://picsum.photos/400/300";
+  const { name, description, avtImage } = props;
+
   const chipClickHandle = () => {};
   return (
     <Paper className={classes.container}>
@@ -36,7 +37,7 @@ const ContestContentCard = (props: PropsData) => {
                   fontSize='16px'
                   color='#2a2a2a'
                 >
-                  {props.description}
+                  {description}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -51,7 +52,7 @@ const ContestContentCard = (props: PropsData) => {
           </Box>
         </Grid>
         <Grid item xs={2}>
-          <img src={IMG_URL} alt='Contest' className={classes.contestImage} />
+          <img src={avtImage} alt='Contest' className={classes.contestImage} />
         </Grid>
       </Grid>
     </Paper>
