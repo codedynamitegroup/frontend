@@ -74,7 +74,7 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <Grid container justifyContent='center' padding={4} style={{ backgroundColor: "white" }}>
-        <Typography variant='body1'>© 2021 Copyright: 6BrosT</Typography>
+        <Typography variant='body1'>© 2024 Copyright: 6BrosT</Typography>
       </Grid>
     </Grid>
   );

@@ -37,7 +37,11 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end"
 }));
 
-function Header() {
+interface HeaderProps {
+  forwardedRef?: React.Ref<HTMLDivElement>;
+}
+
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
 
   interface AppBarProps extends MuiAppBarProps {
@@ -116,7 +120,7 @@ function Header() {
   }, []);
 
   return (
-    <AppBar position='fixed' open={open} className={classes.header}>
+    <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box
@@ -198,5 +202,5 @@ function Header() {
       </Container>
     </AppBar>
   );
-}
+});
 export default Header;

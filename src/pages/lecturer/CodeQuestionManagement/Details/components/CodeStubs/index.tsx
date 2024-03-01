@@ -1,5 +1,5 @@
 import { Box, FormControl, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
@@ -7,6 +7,7 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import CodeEditor from "components/editor/CodeEditor";
 import Heading5 from "components/text/Heading5";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 type Props = {};
 
@@ -212,6 +213,16 @@ int sumOfTwoIntegers(int a, int b) {
     }
   };
 
+  const codeStubHead1Ref = useRef<HTMLDivElement>(null);
+  const { height: codeStubHead1Height } = useBoxDimensions({
+    ref: codeStubHead1Ref
+  });
+
+  const codeStubHead2Ref = useRef<HTMLDivElement>(null);
+  const { height: codeStubHead2Height } = useBoxDimensions({
+    ref: codeStubHead2Ref
+  });
+
   return (
     <>
       <Box component='form' autoComplete='off' className={classes.formBody}>
@@ -249,9 +260,9 @@ print(integer,result)`}
       <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
         Xem các đoạn mã nguồn đã được tạo tự động ở bên dươi
       </Heading5>
-      <Box mt={2} gap={4}>
+      <Box mt={2} id={classes.codeStubsContainer}>
         <Box className={classes.codeStubsWrapper}>
-          <Box className={classes.codeStubHead}>
+          <Box className={classes.codeStubHead} ref={codeStubHead1Ref}>
             <ParagraphBody fontWeight={700}>Head</ParagraphBody>
             <FormControl>
               <Select
@@ -265,39 +276,35 @@ print(integer,result)`}
               </Select>
             </FormControl>
           </Box>
-          <Box className={classes.codeStubBody}>
-            <CodeEditor
-              value={selectedCodeStub.codeStubHead}
-              readOnly={true}
-              language={selectedLanguage}
-              showMinimap={false}
-            />
+          <Box
+            className={classes.codeStubBody}
+            style={{ height: `calc(100% - ${codeStubHead1Height}px)` }}
+          >
+            <CodeEditor value={selectedCodeStub.codeStubHead} readOnly={true} />
           </Box>
         </Box>
         <Box className={classes.codeStubsWrapper}>
-          <Box className={classes.codeStubHead}>
+          <Box className={classes.codeStubHead} ref={codeStubHead2Ref}>
             <ParagraphBody fontWeight={700}>Body</ParagraphBody>
           </Box>
-          <Box className={classes.codeStubBody}>
-            <CodeEditor
-              value={selectedCodeStub.codeStubBody}
-              readOnly={true}
-              language={selectedLanguage}
-              showMinimap={false}
-            />
+          <Box
+            className={classes.codeStubBody}
+            style={{ height: `calc(100% - ${codeStubHead2Height}px)` }}
+          >
+            <CodeEditor value={selectedCodeStub.codeStubBody} readOnly={true} />
           </Box>
         </Box>
         <Box className={classes.codeStubsWrapper}>
           <Box className={classes.codeStubHead}>
             <ParagraphBody fontWeight={700}>Tail</ParagraphBody>
           </Box>
-          <Box className={classes.codeStubBody}>
-            <CodeEditor
-              value={selectedCodeStub.codeStubTail}
-              readOnly={true}
-              language={selectedLanguage}
-              showMinimap={false}
-            />
+          <Box
+            className={classes.codeStubBody}
+            style={{
+              height: `calc(100% - ${codeStubHead2Height}px)`
+            }}
+          >
+            <CodeEditor value={selectedCodeStub.codeStubTail} readOnly={true} />
           </Box>
         </Box>
       </Box>

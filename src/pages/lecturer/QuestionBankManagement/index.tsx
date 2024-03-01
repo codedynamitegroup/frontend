@@ -194,10 +194,10 @@ const QuestionBankManagement = () => {
 
   return (
     <div>
-      <TabPanel value='1' sx={{ padding: 0 }}>
+      <TabPanel value='1' className={classes["tab-panel"]}>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi chung</Heading1>
+            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
                 <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
@@ -235,7 +235,47 @@ const QuestionBankManagement = () => {
           </Stack>
         </Container>
       </TabPanel>
-      <TabPanel value='2'>Item Two</TabPanel>
+      <TabPanel value='2' className={classes["tab-panel"]}>
+        <Container>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
+            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
+                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
+              </Button>
+            </Stack>
+
+            <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
+            <DataGrid
+              sx={{
+                "& .MuiDataGrid-cell": { padding: "16px" },
+                "& .MuiDataGrid-row:hover": {
+                  cursor: "pointer"
+                }
+              }}
+              autoHeight
+              disableColumnMenu
+              getRowHeight={() => "auto"}
+              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+              rowCount={pageState.total}
+              loading={pageState.isLoading}
+              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              onPaginationModelChange={(model, details) => {
+                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+              }}
+              columns={columns}
+              pageSizeOptions={[5, 10, 30, 50]}
+              paginationMode='server'
+              disableColumnFilter
+              onRowClick={handleRowClick}
+              hideFooterSelectedRowCount
+              // slots={{
+              //   toolbar: EditToolbar
+              // }}
+            />
+          </Stack>
+        </Container>
+      </TabPanel>
       <Dialog
         aria-labelledby='customized-dialog-title'
         open={openCreateDialog}

@@ -86,10 +86,15 @@ export const routes = {
     password_change: "/user/password/change",
     problem: {
       solution: {
-        share: "/problems/:id/solution/share"
+        share: "/problems/:problemId/solution/share"
       },
       root: "/problems",
-      detail: "/problems/:id"
+      detail: {
+        root: "/problems/:problemId/*",
+        description: "/problems/:problemId/description",
+        solution: "/problems/:problemId/solution",
+        submission: "/problems/:problemId/submission"
+      }
     },
     course_certificate: {
       root: "/course-certificates",
@@ -101,7 +106,8 @@ export const routes = {
           detail: "/course-certificates/:courseId/lesson/:lessonId/*",
           description: "/course-certificates/:courseId/lesson/:lessonId/description",
           solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
-          submission: "/course-certificates/:courseId/lesson/:lessonId/submission"
+          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
+          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
         },
         certificate: "/course-certificates/:courseId/certificate"
       }

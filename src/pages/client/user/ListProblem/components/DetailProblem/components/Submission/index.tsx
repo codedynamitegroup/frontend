@@ -11,7 +11,7 @@ import { GridSlotsComponentsProps } from "@mui/x-data-grid";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 
-export default function Submission() {
+export default function ProblemDetailSubmission() {
   const submission = [
     {
       id: 1,

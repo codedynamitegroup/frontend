@@ -7,7 +7,7 @@ import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "r
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading2 from "components/text/Heading2";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
@@ -16,6 +16,8 @@ import SchoolIcon from "@mui/icons-material/School";
 import CertificateDetails from "./components/Certificate";
 import CourseCertificateLesson from "./components/Lesson";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -49,10 +51,14 @@ const CourseCertificateDetail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
   return (
     <Grid id={classes.root}>
-      <Header />
-      <main id={classes.main}>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Container id={classes.container}>
           <Grid container id={classes.bodyWrapper}>
             <Grid item xs={12} md={12} id={classes.rightBody}>
@@ -173,6 +179,7 @@ const CourseCertificateDetail = () => {
           </Grid>
         </Container>
       </main>
+      <Footer />
     </Grid>
   );
 };

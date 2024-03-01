@@ -1,17 +1,3 @@
-.searchContainer {
-  position: relative;
-  width: 80%;
-}
-.searchInput {
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 10px 30px;
-
-  &:focus {
-    outline: none;
-  }
-}
 .icon {
   position: absolute;
   left: 10px;
@@ -21,25 +7,16 @@
   color: #8c8c8c;
 }
 
-.closeIcon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: transparent;
-  font-size: 18px;
-  color: #8c8c8c;
-}
 .filterContainer {
   display: flex;
   align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
 }
 .filter {
   width: 20%;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
   padding: 6px 0;
 
   &:hover {
@@ -70,7 +47,6 @@
   display: inline;
   white-space: nowrap;
   border: 1px solid #f0f0f0;
-  background-color: var(--gray-10);
   width: fit-content;
   height: fit-content;
   font-size: 12px;
@@ -101,9 +77,7 @@
   width: fit-content;
   height: fit-content;
 }
-.divider {
-  color: var(--gray-10);
-}
+
 .shareSolution {
   display: flex;
   align-items: center;
@@ -133,10 +107,10 @@
   border-radius: 10px !important;
 }
 .stickyFilter {
+  border-bottom: 1.5px solid var(--gray-10);
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: #fafafa;
   padding: 10px 0;
 }
 
@@ -146,6 +120,11 @@
 .solutionInfo {
   display: flex;
   flex-direction: column;
+  border-bottom: 1px solid var(--gray-10);
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 .solutionTitle {
   display: flex;
@@ -194,31 +173,20 @@
     font-size: 14px;
   }
 }
-.stickyBack {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #fafafa;
-  padding: 10px 0;
-}
-.backButton {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #737373;
-  font-size: 14px;
-  padding: 5px;
 
+.expandIcon {
   &:hover {
     cursor: pointer;
-    color: black;
-    .backIcon {
-      font-size: 20px;
-      color: black;
-    }
   }
-  .backIcon {
-    font-size: 20px;
-    color: #737373;
-  }
+}
+.containerListSolution {
+  height: 100%;
+  padding-bottom: 5px;
+}
+
+.listSolution {
+  height: 100%;
+}
+.detailSolution {
+  height: 100%;
 }

@@ -1,14 +1,27 @@
 import { useMatches, useParams } from "react-router-dom";
-import { Box, Stack, Grid, Container, Divider } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Grid,
+  Container,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  DialogTitle,
+  Dialog,
+  Avatar
+} from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
 
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import CircleIcon from "@mui/icons-material/Circle";
 import {
   DataGrid,
   GridColDef,
@@ -16,6 +29,8 @@ import {
   GridActionsCellItem,
   GridEventListener
 } from "@mui/x-data-grid";
+import { Textarea } from "@mui/joy";
+
 import SearchBar from "components/common/search/SearchBar";
 import { red, grey } from "@mui/material/colors";
 import { useNavigate, Outlet, useLocation, useOutletContext } from "react-router-dom";
@@ -28,6 +43,7 @@ import PickQuestionTypeToAddDialog from "pages/lecturer/ExamManagemenent/CreateE
 import qtype from "utils/constant/Qtype";
 import Heading1 from "components/text/Heading1";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
+import AccessedUserListItem, { AccessLevel } from "./component/AccessedUserListItem";
 
 const rows = [
   {
@@ -205,8 +221,16 @@ const QuestionListOfCourse = () => {
   const matches = useMatches();
   // console.log(matches);
   const [value, setValue]: any[] = useOutletContext();
+  const [initialized, setInitialized] = useState(true);
+  const [openAccessDialog, setOpenAccessDialog] = useState(false);
+
   useEffect(() => {
     setIsAddingQuestion(false);
+    if (initialized) {
+      setInitialized(false);
+    } else {
+      navigate("/lecturer/question-bank-management");
+    }
   }, [value]);
   return (
     <div>
@@ -234,7 +258,7 @@ const QuestionListOfCourse = () => {
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
-                Ngân hàng câu hỏi chung
+                Ngân hàng câu hỏi
               </span>{" "}
               {"> "}
               <span onClick={() => navigate(".")}>Học thuật toán</span>
@@ -284,7 +308,124 @@ const QuestionListOfCourse = () => {
           </Container>
         </TabPanel>
       )}
-      {!isAddingQuestion && <TabPanel value='2'>Item Two</TabPanel>}
+      {!isAddingQuestion && (
+        <TabPanel value='2' sx={{ padding: 0 }}>
+          <Box className={classes.tabWrapper}>
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+                Ngân hàng câu hỏi
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate(".")}>Học OOP</span>
+            </ParagraphBody>
+          </Box>
+          <Container>
+            <Stack spacing={2} marginBottom={3} paddingTop={1}>
+              <Heading1 fontWeight={500}>Học OOP</Heading1>
+              <Typography>Thông tin danh mục: các bài tập về OOP</Typography>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+                <Button btnType={BtnType.Primary}>
+                  <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+                </Button>
+                <Button
+                  btnType={BtnType.Primary}
+                  onClick={() => setIsAddNewQuestionDialogOpen(true)}
+                >
+                  <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+                </Button>
+              </Stack>
+
+              <Stack direction='row' justifyContent='space-between'>
+                <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+                <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(true)}>
+                  <ParagraphBody paddingX={3}>Quyền truy cập</ParagraphBody>
+                </Button>
+              </Stack>
+              <DataGrid
+                sx={{
+                  "& .MuiDataGrid-cell": { padding: "16px" }
+                }}
+                autoHeight
+                getRowHeight={() => "auto"}
+                rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+                rowCount={pageState.total}
+                loading={pageState.isLoading}
+                paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+                onPaginationModelChange={(model, details) => {
+                  setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                }}
+                columns={columns}
+                pageSizeOptions={[5, 10, 30, 50]}
+                paginationMode='server'
+                disableColumnFilter
+                hideFooterSelectedRowCount
+                // onRowClick={handleRowClick}
+                // slots={{
+                //   toolbar: EditToolbar
+                // }}
+              />
+            </Stack>
+          </Container>
+          <Dialog
+            aria-labelledby='assess-list-dialog'
+            open={openAccessDialog}
+            onClose={() => setOpenAccessDialog(false)}
+            maxWidth='sm'
+            fullWidth
+          >
+            <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+              Danh sách quyền truy cập
+            </DialogTitle>
+            <IconButton
+              aria-label='close'
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500]
+              }}
+              onClick={() => setOpenAccessDialog(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent dividers>
+              <Stack spacing={2}>
+                <Textarea minRows={1} placeholder='Thêm người' />
+                <ParagraphBody>Những người có quyền truy cập</ParagraphBody>
+                <Stack spacing={1}>
+                  <AccessedUserListItem
+                    email='nguyenquoctuan385@gmail.com'
+                    avatarUrl='https://scontent.fsgn5-12.fna.fbcdn.net/v/t39.30808-6/427838885_3910358709250427_5778115707058543789_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEaQBJmaESxSF-JhRcy_H_-USoIMrk_el9RKggyuT96X4lwFFwY0uqlIqR3h922Kqy7zVWpkIiL9NsvlGVFjHD-&_nc_ohc=lrDJFA7XNvEAX87CHJc&_nc_ht=scontent.fsgn5-12.fna&oh=00_AfAlICWdsi7mYR-2K4wTQd7naZ23M5PLyLv2RbzA2n6T4w&oe=65E1AA90'
+                    name='Nguyễn Quốc Tuấn'
+                    accessLevel={AccessLevel.OWNER}
+                  />
+                  <AccessedUserListItem
+                    email='nguyenquoctuan385@gmail.com'
+                    avatarUrl='https://scontent.fsgn5-12.fna.fbcdn.net/v/t39.30808-6/427838885_3910358709250427_5778115707058543789_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEaQBJmaESxSF-JhRcy_H_-USoIMrk_el9RKggyuT96X4lwFFwY0uqlIqR3h922Kqy7zVWpkIiL9NsvlGVFjHD-&_nc_ohc=lrDJFA7XNvEAX87CHJc&_nc_ht=scontent.fsgn5-12.fna&oh=00_AfAlICWdsi7mYR-2K4wTQd7naZ23M5PLyLv2RbzA2n6T4w&oe=65E1AA90'
+                    name='Nguyễn Quốc Tuấn'
+                    accessLevel={AccessLevel.EDITOR}
+                  />
+                  <AccessedUserListItem
+                    email='nguyenquoctuan385@gmail.com'
+                    avatarUrl='https://scontent.fsgn5-12.fna.fbcdn.net/v/t39.30808-6/427838885_3910358709250427_5778115707058543789_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEaQBJmaESxSF-JhRcy_H_-USoIMrk_el9RKggyuT96X4lwFFwY0uqlIqR3h922Kqy7zVWpkIiL9NsvlGVFjHD-&_nc_ohc=lrDJFA7XNvEAX87CHJc&_nc_ht=scontent.fsgn5-12.fna&oh=00_AfAlICWdsi7mYR-2K4wTQd7naZ23M5PLyLv2RbzA2n6T4w&oe=65E1AA90'
+                    name='Nguyễn Quốc Tuấn'
+                    accessLevel={AccessLevel.EDITOR}
+                  />
+                </Stack>
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                btnType={BtnType.Primary}
+                onClick={() => setOpenAccessDialog(false)}
+                fullWidth
+              >
+                <ParagraphBody> Lưu</ParagraphBody>
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </TabPanel>
+      )}
     </div>
   );
 };

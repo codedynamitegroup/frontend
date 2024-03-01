@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import Container from "@mui/material/Container";
@@ -11,20 +11,34 @@ import { Divider, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import MDEditor from "@uiw/react-md-editor";
 import ArrowBack from "@mui/icons-material/ArrowBack";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 export default function ShareSolution() {
   const navigate = useNavigate();
   const [value, setValue] = React.useState("**Hello world!!!**");
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Container className={classes.container}>
-        <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <ArrowBack />
+      <Header ref={headerRef} />
+      <Container
+        className={classes.container}
+        style={{
+          marginTop: `${headerHeight}px`,
+          height: `calc(100% - ${headerHeight}px)`
+        }}
+      >
+        <Box
+          className={classes.stickyBack}
+          onClick={() => navigate(routes.user.problem.detail.solution.replace(":problemId", "1"))}
+        >
+          <Box className={classes.backButton}>
+            <ArrowBack className={classes.backIcon} />
             <span>Quay lại</span>
-          </ParagraphBody>
+          </Box>
         </Box>
         <Divider />
         <Box className={classes.content}>
@@ -46,9 +60,6 @@ export default function ShareSolution() {
             className={classes.titleInput}
           ></TextField>
           <Box className={classes.actionBtn}>
-            <Button variant='contained' className={classes.cancelBtn}>
-              Hủy
-            </Button>
             <Button variant='contained' className={classes.postBtn}>
               Đăng
             </Button>

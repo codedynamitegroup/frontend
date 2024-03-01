@@ -173,29 +173,20 @@
     font-size: 14px;
   }
 }
-.stickyBack {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 10px 0;
-}
-.backButton {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  padding: 5px;
 
+.expandIcon {
   &:hover {
     cursor: pointer;
-    color: var(--blue-500);
-    .backIcon {
-      font-size: 20px;
-      color: var(--blue-500);
-    }
   }
-  .backIcon {
-    font-size: 20px;
-    color: #737373;
-  }
+}
+.containerListSolution {
+  height: 100%;
+  padding-bottom: 5px;
+}
+
+.listSolution {
+  height: 100%;
+}
+.detailSolution {
+  height: 100%;
 }
