@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Link, Paper, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Grid, Link, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 import classes from "./styles.module.scss";
 import clsx from "clsx";
@@ -31,9 +31,9 @@ const ContestProblemItem = (props: PropsData) => {
   return (
     <Paper className={classes.container}>
       <Grid container alignItems={"center"} justifyContent='space-between'>
-        <Grid item>
-          <Stack direction={"column"} className={classes.problemDetailContainer}>
-            <Link href='#' underline='none'>
+        <Grid item xs={9}>
+          <Link href='#' underline='none'>
+            <Stack direction={"column"} className={classes.problemDetailContainer}>
               <Typography
                 fontWeight={400}
                 lineHeight={1.4}
@@ -44,24 +44,26 @@ const ContestProblemItem = (props: PropsData) => {
               >
                 {name}
               </Typography>
-            </Link>
 
-            <Chip
-              size='small'
-              label={difficulty}
-              color={
-                difficulty === EContestProblemDifficulty.easy
-                  ? "success"
-                  : difficulty === EContestProblemDifficulty.medium
-                    ? "warning"
-                    : "error"
-              }
-              sx={{ width: "fit-content" }}
-            />
-          </Stack>
+              <Chip
+                size='small'
+                label={difficulty}
+                sx={{
+                  width: "fit-content",
+                  backgroundColor:
+                    difficulty === EContestProblemDifficulty.easy
+                      ? "var(--green-600)"
+                      : difficulty === EContestProblemDifficulty.medium
+                        ? "var(--warning)"
+                        : "var(--orange-2)"
+                }}
+              />
+            </Stack>
+          </Link>
         </Grid>
-        <Grid item justifyContent='end'>
+        <Grid item justifyContent='end' xs={3}>
           <Stack direction={"row"}>
+            <Divider orientation='vertical' flexItem />
             <Box
               className={clsx(classes.submissionContainer, classes.roundContainer)}
               onClick={scoreClickHandler}
