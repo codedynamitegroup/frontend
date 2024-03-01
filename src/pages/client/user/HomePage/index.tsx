@@ -10,6 +10,7 @@ import images from "config/images";
 import StarIcon from "@mui/icons-material/Star";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import Footer from "components/Footer";
 
 export default function HomePage() {
   return (
@@ -328,6 +329,7 @@ export default function HomePage() {
           </Grid>
         </Container>
       </main>
+      <Footer />
     </Grid>
   );
 }

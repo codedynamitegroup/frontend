@@ -56,13 +56,15 @@
   }
 }
 #main {
+  margin-top: calc(64px);
+
   .container {
     @media (min-width: 1200px) {
       max-width: 1440px;
     }
   }
   #banner {
-    height: 300px;
+    height: 300px !important;
     display: flex;
     align-items: center;
 

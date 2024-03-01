@@ -18,6 +18,7 @@ import Header from "components/Header";
 import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
 import Submission from "./components/Submission";
+import Footer from "components/Footer";
 
 enum ELanguage {
   JAVA = "java",
@@ -341,6 +342,7 @@ int sumOfTwoIntegers(int a, int b) {
           </Box>
         </Box>
       </Box>
+      <Footer />
     </Box>
   );
 }

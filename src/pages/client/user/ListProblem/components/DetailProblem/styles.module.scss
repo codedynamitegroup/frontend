@@ -5,6 +5,7 @@
 .boxContainer {
   display: flex;
   flex-direction: column;
+  padding-top: 64px;
 }
 .tabWrapper {
   border-bottom: 1px solid var(--gray-10);
