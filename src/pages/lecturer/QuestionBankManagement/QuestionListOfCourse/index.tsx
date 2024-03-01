@@ -30,6 +30,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import PickQuestionTypeToAddDialog from "pages/lecturer/ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
 import qtype from "utils/constant/Qtype";
 import Heading1 from "components/text/Heading1";
+import Heading5 from "components/text/Heading5";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 
@@ -255,7 +256,9 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học thuật toán</Heading1>
-              <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+                Thông tin danh mục: các bài tập về OOP
+              </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
                 <Button btnType={BtnType.Primary}>
                   <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
@@ -310,7 +313,9 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học OOP</Heading1>
-              <Typography>Thông tin danh mục: các bài tập về OOP</Typography>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+                Thông tin danh mục: các bài tập về OOP
+              </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
                 <Button btnType={BtnType.Primary}>
                   <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
