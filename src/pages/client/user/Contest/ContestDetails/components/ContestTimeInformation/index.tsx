@@ -26,7 +26,6 @@ const ContestTimeInformation = (props: PropsData) => {
   const [seconds, setSeconds] = useState(0);
   let inputDate: any;
   const convertedEndDate = new Date(endDate);
-  console.log(convertedEndDate);
 
   startDate < endDate ? (inputDate = endDate) : (inputDate = startDate);
 

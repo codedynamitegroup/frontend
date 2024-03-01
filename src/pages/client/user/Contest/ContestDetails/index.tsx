@@ -148,10 +148,10 @@ const rankingList = [
     rank: 1,
     name: "Trương Gia Tiến",
     problemData: [
-      { point: 5, tries: 1 },
-      { point: 2, tries: 5 },
-      { point: 6, tries: 5 },
-      { point: 1, tries: 10 }
+      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
     ],
     totalScore: 14
   },
@@ -159,10 +159,10 @@ const rankingList = [
     rank: 2,
     name: "Trương Gia Tiến",
     problemData: [
-      { point: 5, tries: 1 },
-      { point: 2, tries: 5 },
-      { point: 6, tries: 5 },
-      { point: 1, tries: 10 }
+      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
     ],
     totalScore: 14
   },
@@ -170,10 +170,10 @@ const rankingList = [
     rank: 3,
     name: "Trương Gia Tiến",
     problemData: [
-      { point: 5, tries: 1 },
-      { point: 2, tries: 5 },
-      { point: 6, tries: 5 },
-      { point: 1, tries: 10 }
+      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
     ],
     totalScore: 14
   },
@@ -181,18 +181,28 @@ const rankingList = [
     rank: 4,
     name: "Trương Gia Tiến",
     problemData: [
-      { point: 5, tries: 1 },
-      { point: 2, tries: 5 },
-      { point: 6, tries: 5 },
-      { point: 1, tries: 10 }
+      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
     ],
     totalScore: 14
   }
 ];
-
+const currentUserRank = {
+  rank: 1234,
+  name: "Dương Chí Thông",
+  problemData: [
+    { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+    { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+    { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+    { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+  ],
+  totalScore: 14
+};
 const ContestDetails = () => {
   const [value, setValue] = useState(() => {
-    return ContestData["status"] === EContestStatus.ended ? "4" : "1";
+    return ContestData["status"] === EContestStatus.ended ? "3" : "1";
   });
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -205,24 +215,23 @@ const ContestDetails = () => {
       <ContestTimeInformation
         status={ContestData["status"]}
         startDate={"March, 2, 2024"}
-        endDate={"March, 4, 2024"}
+        endDate={"2024-3-4 23:59:59"}
         joinContest={ContestData["joinedContest"]}
         contestName={ContestData["name"]}
       />
       <Container maxWidth='lg' className={classes.bodyContainer} sx={{ paddingBottom: "40px" }}>
         <Grid container spacing={1}>
-          <Grid item xs={9}>
+          <Grid item xs={value !== "3" ? 9 : 12}>
             <Paper>
               <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <TabList onChange={handleChange} aria-label='lab API tabs example'>
                     <Tab label='Mô tả chung' value='1' />
                     <Tab label='Đề thi' value='2' />
-                    {ContestData["status"] !== EContestStatus.featured ? (
-                      <Tab label='Bài nộp' value='3' />
-                    ) : null}
-                    {ContestData["status"] === EContestStatus.ended ? (
-                      <Tab label='Bảng xếp hạng' value='4' />
+
+                    {ContestData["status"] === EContestStatus.ended ||
+                    ContestData["status"] === EContestStatus.happening ? (
+                      <Tab label='Bảng xếp hạng' value='3' />
                     ) : null}
                   </TabList>
                 </Box>
@@ -248,21 +257,26 @@ const ContestDetails = () => {
                     ))}
                   </Grid>
                 </TabPanel>
-                {ContestData["status"] !== EContestStatus.featured ? (
-                  <TabPanel value='3'>Item Three</TabPanel>
-                ) : null}
-                {ContestData["status"] === EContestStatus.ended ? (
-                  <TabPanel value='4'>
+
+                {ContestData["status"] === EContestStatus.ended ||
+                ContestData["status"] === EContestStatus.happening ? (
+                  <TabPanel value='3'>
                     <Heading1>Bảng xếp hạng</Heading1>
-                    <ContestLeaderboard rankingList={rankingList} problemList={problemList} />
+                    <ContestLeaderboard
+                      currentUserRank={currentUserRank}
+                      rankingList={rankingList}
+                      problemList={problemList}
+                    />
                   </TabPanel>
                 ) : null}
               </TabContext>
             </Paper>
           </Grid>
-          <Grid item xs={3}>
-            <Paper>Đang suy nghĩ</Paper>
-          </Grid>
+          {value !== "3" ? (
+            <Grid item xs={3}>
+              <Paper>Đang suy nghĩ</Paper>
+            </Grid>
+          ) : null}
         </Grid>
       </Container>
     </Box>
