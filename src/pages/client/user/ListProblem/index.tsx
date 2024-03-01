@@ -1,14 +1,57 @@
 import Header from "components/Header";
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
-
+import images from "config/images";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
+import BasicSelect from "components/common/select/BasicSelect";
+import Footer from "components/Footer";
+import useBoxDimensions from "utils/useBoxDimensions";
+const status = [
+  {
+    id: 1,
+    label: "Chưa giải"
+  },
+  {
+    id: 2,
+    label: "Đã giải"
+  }
+];
+const level = [
+  {
+    id: 1,
+    label: "Dễ"
+  },
+  {
+    id: 2,
+    label: "Trung bình"
+  },
+  {
+    id: 3,
+    label: "Khó"
+  }
+];
+interface Status {
+  id: number;
+  label: string;
+}
+interface Level {
+  id: number;
+  label: string;
+}
 const ListProblem = () => {
+  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
+
   const algorithms = [
     "Mảng",
     "Cây",
@@ -33,67 +76,106 @@ const ListProblem = () => {
     "Tìm kiếm nhị phân trên cây",
     "Tìm kiếm nhị phân trên đồ thị"
   ];
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
-  // Số lượng phần tử hiển thị ban đầu
-  const [visibleItemCount, setVisibleItemCount] = useState(0);
-  const [isShow, setIsShow] = useState(false);
-  const handleResize = () => {
-    if (window.innerWidth <= 600) {
-      setVisibleItemCount(6);
-    } else if (window.innerWidth <= 900) {
-      setVisibleItemCount(10);
-    } else {
-      setVisibleItemCount(15);
-    }
-  };
-  useEffect(() => {
-    // Run the function once to set the initial state
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    // Clean up the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Hàm để hiển thị toàn bộ danh sách
-  const showAllItems = () => {
-    setVisibleItemCount(algorithms.length);
-    setIsShow(true);
-  };
-  const showLessItems = () => {
-    handleResize();
-    setIsShow(false);
-  };
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Container className={classes.boxContent}>
-        <Heading1>Danh sách bài tập</Heading1>
-        <Heading3>Các loại giải thuật:</Heading3>
-        <Box className={classes.algorithm}>
-          {algorithms.slice(0, visibleItemCount).map((algorithm, index) => (
-            <Box display={"flex"} gap={1} key={index}>
-              <ParagraphBody className={classes.algorithmItem}>{algorithm}</ParagraphBody>
-              <Chip label={index} size='small' />
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
+        <Box
+          id={classes.banner}
+          sx={{
+            backgroundImage: `url(${images.background.homePageBackground})`
+          }}
+        >
+          <Container id={classes.bannerContainer} className={classes.container}>
+            <Heading1 colorName={"--white"}>Luyện tập</Heading1>
+            <Heading3 colorName={"--white"}>
+              Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
+            </Heading3>
+            <Box id={classes.bannerSearch}>
+              <Box className={classes.filterSearch}>
+                <OutlinedInput
+                  size='small'
+                  fullWidth
+                  placeholder='Tìm kiếm'
+                  startAdornment={
+                    <InputAdornment position='start'>
+                      <SearchIcon className={classes.icon} />
+                    </InputAdornment>
+                  }
+                  className={classes.searchInput}
+                />
+                <Autocomplete
+                  size='medium'
+                  id='combo-box-demo'
+                  options={status}
+                  value={selectedStatus}
+                  onChange={(event, newValue) => {
+                    setSelectedStatus(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={!selectedStatus ? "Trạng thái" : ""}
+                      InputLabelProps={{ shrink: false }}
+                    />
+                  )}
+                  className={classes.autocomplete}
+                />
+                <Autocomplete
+                  size='medium'
+                  id='combo-box-demo'
+                  options={level}
+                  value={selectedLevel}
+                  onChange={(event, newValue) => {
+                    setSelectedStatus(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={!selectedLevel ? "Độ khó" : ""}
+                      InputLabelProps={{ shrink: false }}
+                    />
+                  )}
+                  className={classes.autocomplete}
+                />
+              </Box>
             </Box>
-          ))}
-          {!isShow ? (
-            <Button className={classes.showMoreButton} onClick={showAllItems}>
-              Xem thêm
-            </Button>
-          ) : (
-            <Button className={classes.showMoreButton} onClick={showLessItems}>
-              Ẩn
-            </Button>
-          )}
+          </Container>
         </Box>
-        <Box className={classes.topic}>
-          <LabTabs />
+        <Box>
+          <Container className={classes.container}>
+            <Box className={classes.boxContent}>
+              <Grid container>
+                <Grid item xs={3.5}>
+                  <Box className={classes.algorithmContainer}>
+                    <Heading3>Các loại giải thuật:</Heading3>
+                    <Box className={classes.algorithm}>
+                      {algorithms.map((algorithm, index) => (
+                        <Box className={classes.algorithmItem}>
+                          <ParagraphBody>{algorithm}</ParagraphBody>
+                          <Chip label={index} size='small' className={classes.chip} />
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={0.5}></Grid>
+                <Grid item xs={8}>
+                  <Box className={classes.topic}>
+                    <LabTabs />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Container>
         </Box>
-      </Container>
+      </main>
+      <Footer />
     </Grid>
   );
 };

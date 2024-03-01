@@ -1,104 +1,105 @@
 import React from "react";
 import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { OutlinedInput } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import InputAdornment from "@mui/material/InputAdornment";
+
 import TableTemplate from "components/common/table/TableTemplate";
 import TablePagination from "@mui/material/TablePagination";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ParagraphBody from "components/text/ParagraphBody";
 export default function ProblemTable() {
-  const status = [
-    {
-      id: 1,
-      label: "Chưa giải"
-    },
-    {
-      id: 2,
-      label: "Đã giải"
-    }
-  ];
-  const difficulty = [
-    {
-      id: 1,
-      label: "Dễ"
-    },
-    {
-      id: 2,
-      label: "Trung bình"
-    },
-    {
-      id: 3,
-      label: "Khó"
-    }
-  ];
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
-  const customColumns = ["status", "name", "difficulty"];
+  const customColumns = ["status", "name", "level"];
+  const renderStatus = (status: number) => {
+    if (status === 1) {
+      return <CheckCircleIcon className={classes.iconCheck} />;
+    }
+    return "";
+  };
+
+  const renderLevel = (level: number) => {
+    if (level === 0) {
+      return (
+        <ParagraphBody fontWeight={700} colorName={"--blue-500"}>
+          Dễ
+        </ParagraphBody>
+      );
+    }
+    if (level === 1) {
+      return (
+        <ParagraphBody fontWeight={700} colorName={"--warning"}>
+          Trung bình
+        </ParagraphBody>
+      );
+    }
+    return (
+      <ParagraphBody fontWeight={700} colorName={"--red-error"}>
+        Khó
+      </ParagraphBody>
+    );
+  };
   const data = [
     {
       id: 1,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Tổng 2 số",
-      difficulty: "Dễ"
+      level: renderLevel(0)
     },
     {
       id: 2,
-      status: "Đã giải",
+      status: renderStatus(1),
       name: "Trung bình cộng",
-      difficulty: "Trung bình"
+      level: renderLevel(1)
     },
     {
       id: 3,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Phân số tối giản",
-      difficulty: "Trung bình"
+      level: renderLevel(1)
     },
     {
       id: 4,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Sắp xếp mảng tăng dần",
-      difficulty: "Trung bình"
+      level: renderLevel(2)
     },
     {
       id: 5,
-      status: "Đã giải",
+      status: renderStatus(1),
       name: "Kiểm tra số nguyên tố",
-      difficulty: "Khó"
+      level: renderLevel(2)
     },
     {
       id: 6,
-      status: "Đã giải",
+      status: renderStatus(1),
       name: "Đảo chuỗi",
-      difficulty: "Dễ"
+      level: renderLevel(2)
     },
     {
       id: 7,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Tìm phần tử lớn nhất trong mảng",
-      difficulty: "Trung bình"
+      level: renderLevel(2)
     },
     {
       id: 8,
-      status: "Đã giải",
+      status: renderStatus(1),
       name: "Số Fibonacci",
-      difficulty: "Khó"
+      level: renderLevel(0)
     },
     {
       id: 9,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Thuật toán tìm kiếm nhị phân",
-      difficulty: "Khó"
+      level: renderLevel(2)
     },
     {
       id: 10,
-      status: "Chưa giải",
+      status: renderStatus(0),
       name: "Đếm số lần xuất hiện của phần tử trong mảng",
-      difficulty: "Trung bình"
+      level: renderLevel(1)
     }
   ];
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -117,41 +118,15 @@ export default function ProblemTable() {
 
   return (
     <Box className={classes.container}>
-      <Box className={classes.filterSearch}>
-        <Autocomplete
-          size='small'
-          disablePortal
-          id='combo-box-demo'
-          options={status}
-          fullWidth
-          renderInput={(params) => <TextField {...params} label='Trạng thái' />}
-        />
-        <Autocomplete
-          disablePortal
-          size='small'
-          id='combo-box-demo'
-          options={difficulty}
-          fullWidth
-          renderInput={(params) => <TextField {...params} label='Độ khó' />}
-        />
-        <OutlinedInput
-          size='small'
-          fullWidth
-          placeholder='Tìm kiếm'
-          startAdornment={
-            <InputAdornment position='start'>
-              <SearchIcon className={classes.icon} />
-            </InputAdornment>
-          }
-        />
-      </Box>
       <Box className={classes.table}>
         <TableTemplate
           customHeading={customHeading}
           customColumns={customColumns}
           data={data}
-          isActionColumn={true}
-          onViewDetailsClick={() => navigate(routes.user.problem.detail.replace(":id", "1"))}
+          isActionColumn={false}
+          onViewDetailsClick={() =>
+            navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
+          }
         />
         <TablePagination
           component='div'
@@ -162,6 +137,7 @@ export default function ProblemTable() {
           rowsPerPage={rowsPerPage}
           labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
           onRowsPerPageChange={handleChangeRowsPerPage}
+          className={classes.pagination}
         />
       </Box>
     </Box>

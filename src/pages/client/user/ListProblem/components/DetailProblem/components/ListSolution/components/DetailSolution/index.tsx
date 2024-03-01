@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -15,15 +15,17 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "react-markdown";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import gfm from "remark-gfm";
 import { TextareaAutosize } from "@mui/base";
 import Button from "@mui/material/Button";
 
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import MDEditor from "@uiw/react-md-editor";
-export default function DetailSolution() {
+import useBoxDimensions from "utils/useBoxDimensions";
+
+interface Props {
+  handleSolutionDetail: () => void;
+}
+export default function DetailSolution({ handleSolutionDetail }: Props) {
   const tags = [
     "Java",
     "C++",
@@ -135,9 +137,29 @@ public:
       upVote: 100
     }
   ];
+
+  const stickyBackRef = useRef<HTMLDivElement>(null);
+  const { height: stickyBackHeight } = useBoxDimensions({
+    ref: stickyBackRef
+  });
+
+  console.log("stickyBackHeight", stickyBackHeight);
   return (
-    <Box className={classes.container}>
-      <Box className={classes.solutionContainer}>
+    <Box className={classes.containerDetailSolution}>
+      <Box className={classes.stickyBack} ref={stickyBackRef}>
+        <Box onClick={handleSolutionDetail} className={classes.backButton}>
+          <ArrowBackIcon className={classes.backIcon} />
+          <span>Quay lại</span>
+        </Box>
+        <Divider />
+      </Box>
+
+      <Box
+        className={classes.solutionContainer}
+        style={{
+          height: `calc(100% - ${stickyBackHeight}px)`
+        }}
+      >
         <Box className={classes.solutionTitle}>
           <Heading4>Cách giải đánh bại 100%</Heading4>
         </Box>
@@ -169,7 +191,11 @@ public:
         </Box>
         <Box className={classes.tagLanguageSolution}>
           {tags.slice(0, 3).map((tag, index) => {
-            return <Box className={classes.item}>{tag}</Box>;
+            return (
+              <Box className={classes.item} key={index}>
+                {tag}
+              </Box>
+            );
           })}
         </Box>
         <Box data-color-mode='light'>
@@ -199,7 +225,7 @@ public:
             <Box className={classes.commentItem}>
               {users.map((user) => {
                 return (
-                  <Box className={classes.commentInfo}>
+                  <Box className={classes.commentInfo} key={user.id}>
                     <Box className={classes.commentInfoUser}>
                       <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
                       <Box className={classes.commentName}>{user.name}</Box>
@@ -232,7 +258,7 @@ public:
           </Box>
         </Box>
       </Box>
-      <Box className={classes.stickyUpvote}>
+      {/* <Box className={classes.stickyUpvote}>
         <Box className={classes.upvoteButton}>
           <FontAwesomeIcon icon={faThumbsUp} className={classes.upvoteIcon} />
           <span>120</span>
@@ -244,7 +270,7 @@ public:
           <FontAwesomeIcon icon={faComment} className={classes.commentIcon} />
           <span>120</span>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

@@ -1,0 +1,224 @@
+.searchContainer {
+  position: relative;
+  width: 80%;
+}
+.searchInput {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 30px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.containerDetailSolution {
+  height: 100%;
+
+  .stickyBack {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 10px 0;
+
+    .backButton {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      padding: 5px;
+
+      &:hover {
+        cursor: pointer;
+        color: var(--blue-500);
+        .backIcon {
+          font-size: 20px;
+          color: var(--blue-500);
+        }
+      }
+      .backIcon {
+        font-size: 20px;
+        color: #737373;
+      }
+    }
+  }
+}
+.solutionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 15px;
+  overflow: auto;
+
+  .userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .imgAvatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .nameInfoContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .solutionButton {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        .solutionIcon {
+          color: #737373;
+        }
+
+        .upVote,
+        .view,
+        .calendar {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          color: #737373;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .tagLanguageSolution {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+
+    .item {
+      border: 1px solid #f0f0f0;
+      background-color: var(--gray-10);
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 50px;
+      box-sizing: border-box;
+      width: fit-content;
+      height: fit-content;
+    }
+  }
+}
+.commentContainer {
+  .commentTitleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .commentTitle {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .commentIcon {
+        font-size: 25px;
+        color: #737373;
+      }
+    }
+  }
+  .commentBox {
+    padding: 15px 0;
+    position: relative;
+    .textArea {
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 50px;
+      padding-left: 30px;
+      padding-right: 30px;
+      resize: none;
+      border: none;
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      &:focus {
+        outline: none;
+      }
+    }
+    .commentButton {
+      background-color: green;
+      text-transform: none !important;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      margin-bottom: 30px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.commentList {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  .commentItem {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    gap: 30px;
+
+    .commentInfoUser {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .imgAvatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .commentContent {
+      display: flex;
+      flex-direction: column;
+
+      .commentName {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .commentText {
+        font-size: 14px;
+      }
+    }
+  }
+}
+.commentAction {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  color: #737373;
+  font-size: 20px;
+
+  .upVote,
+  .reply {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    span {
+      font-size: 16px;
+    }
+  }
+}
+.stickyUpvote {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background-color: #fafafa;
+  padding: 10px 0;
+  display: flex;
+  gap: 10px;
+  margin: 0 5px;
+
+  .upvoteButton,
+  .commentIcon {
+    display: flex;
+    gap: 10px;
+  }
+}

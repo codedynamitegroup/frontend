@@ -5,30 +5,99 @@
   overflow: auto;
   display: flex;
   flex-direction: column !important;
-  gap: 20px;
-  padding-bottom: 10px;
+  background-color: var(--blue-1);
+
+  .container {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    @media (min-width: 1200px) {
+      max-width: 1440px !important;
+    }
+  }
 }
 
 .boxContent {
   display: flex !important;
   flex-direction: column;
-  padding: 0px 20px 20px 20px;
-  background-color: white;
+  padding: 40px 0px;
   border-radius: 15px;
   height: 100%;
   gap: 20px;
 }
-
+.algorithmContainer {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px 20px;
+}
 .algorithm {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   column-gap: 25px;
   row-gap: 20px;
+  margin-top: 10px;
 }
 .algorithmItem {
+  display: flex;
+  gap: 5px;
+  background-color: var(--blue-50);
+  padding: 8px 10px;
+  border-radius: 20px;
   cursor: pointer;
+
   &:hover {
-    color: var(--blue-500) !important;
+    background-color: var(--gray-10);
+  }
+  .chip {
+    background-color: var(--blue-500);
+    color: white;
+  }
+}
+#main {
+  .container {
+    @media (min-width: 1200px) {
+      max-width: 1440px;
+    }
+  }
+  #banner {
+    height: 300px !important;
+    display: flex;
+    align-items: center;
+
+    #bannerContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #bannerSearch {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filterSearch {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      .ant-input-search {
+        width: 300px;
+      }
+      gap: 10px;
+
+      .searchInput {
+        background-color: white;
+      }
+      .autocomplete {
+        background-color: white;
+        width: 300px;
+        border-radius: 5px;
+      }
+    }
+    .icon {
+      margin-right: 10px;
+    }
   }
 }

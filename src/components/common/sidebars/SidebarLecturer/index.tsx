@@ -1,21 +1,28 @@
-import React from "react";
-import SidebarManagement, { SidebarItem } from "../SidebarManagement";
-import classes from "./styles.module.scss";
-import { routes } from "routes/routes";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Header, { DrawerHeader } from "components/Header";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import CodeIcon from "@mui/icons-material/Code";
-
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import MenuIcon from "@mui/icons-material/Menu";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import { styled, useTheme } from "@mui/material/styles";
+import { DrawerHeader } from "components/Header";
+import React from "react";
+import { routes } from "routes/routes";
+import SidebarManagement, { SidebarItem } from "../SidebarManagement";
+import classes from "./styles.module.scss";
+import { CalendarIcon } from "@mui/x-date-pickers";
+import { Button } from "@mui/material";
+import images from "config/images";
+import { useNavigate } from "react-router-dom";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+interface ILinkMenu {
+  name: string;
+  path: string;
+}
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
   {
@@ -24,9 +31,19 @@ const sideBarItemListData: SidebarItem[] = [
     link: routes.lecturer.course.management
   },
   {
+    name: "Lịch",
+    icon: <CalendarIcon className={classes.itemIcon} />,
+    link: routes.lecturer.calendar
+  },
+  {
     name: "Quản lý câu hỏi code",
     icon: <CodeIcon className={classes.itemIcon} />,
     link: routes.lecturer.code_question.management
+  },
+  {
+    name: "Ngân hàng câu hỏi",
+    icon: <AccountBalanceIcon className={classes.itemIcon} />,
+    link: routes.lecturer.question_bank.path
   }
 ];
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -34,8 +51,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  height: "100%",
-  overflow: "auto",
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -54,6 +69,32 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
+const pages: ILinkMenu[] = [
+  {
+    name: "Khám phá",
+    path: routes.user.course_certificate.root
+  },
+  {
+    name: "Luyện tập",
+    path: routes.user.problem.root
+  },
+  {
+    name: "Cuộc thi",
+    path: routes.user.contest.root
+  }
+];
+
+const auth: ILinkMenu[] = [
+  {
+    name: "Đăng nhập",
+    path: routes.user.login.root
+  },
+  {
+    name: "Đăng ký",
+    path: routes.user.register.root
+  }
+];
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open"
 })<AppBarProps>(({ theme, open }) => ({
@@ -62,7 +103,7 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
+    // width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
@@ -74,31 +115,50 @@ const AppBar = styled(MuiAppBar, {
 export default function SideBarLecturer({ children }: any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const navigate = useNavigate();
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
+  const toogleDrawer = () => {
+    setOpen((pre) => !pre);
+  };
+
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
-      <CssBaseline />
       <AppBar position='fixed' open={open}>
         <Toolbar className={classes.toolbar}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex" }}>
             <IconButton
               aria-label='open drawer'
-              onClick={handleDrawerOpen}
+              onClick={toogleDrawer}
               edge='start'
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
+              sx={{
+                mr: 2
+                //...(open && { display: "none" })
+              }}
             >
               <MenuIcon sx={{ color: "white" }} />
             </IconButton>
+            <Box className={classes.logo}>
+              <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+            </Box>
+            <Box className={classes.navbarItem}>
+              {pages.map((page, index) => (
+                <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                  {page.name}
+                </Button>
+              ))}
+            </Box>
           </Box>
-          <Header></Header>
+          <Box className={classes.navbarAuthItem}>
+            {auth.map((page, index) => (
+              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                {page.name}
+              </Button>
+            ))}
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -107,18 +167,18 @@ export default function SideBarLecturer({ children }: any) {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: "border-box"
+            marginTop: "64px"
           }
         }}
         variant='persistent'
         anchor='left'
         open={open}
       >
-        <DrawerHeader>
+        {/* <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-        </DrawerHeader>
+        </DrawerHeader> */}
         <SidebarManagement sideBarItem={sideBarItemListData} />
       </Drawer>
       <Main open={open}>

@@ -1,12 +1,24 @@
-import { Box, Stack, Grid, Container, Button as MButton, Divider } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Grid,
+  Container,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  DialogTitle,
+  Dialog
+} from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
-
+import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   DataGrid,
@@ -15,11 +27,15 @@ import {
   GridActionsCellItem,
   GridEventListener
 } from "@mui/x-data-grid";
-import Button from "@mui/joy/Button";
 import SearchBar from "components/common/search/SearchBar";
-import { red, grey } from "@mui/material/colors";
-import { useNavigate } from "react-router-dom";
+import InputTextField from "components/common/inputs/InputTextField";
+import { red, grey, blue } from "@mui/material/colors";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { routes } from "routes/routes";
+import Button, { BtnType } from "components/common/buttons/Button";
+import Heading1 from "components/text/Heading1";
+import ParagraphBody from "components/text/ParagraphBody";
+import classes from "./styles.module.scss";
 
 const rows = [
   {
@@ -74,51 +90,68 @@ const QuestionBankManagement = () => {
     page: 1,
     pageSize: 5
   });
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const columns: GridColDef[] = [
     {
       field: "stt",
-      headerName: "STT",
       sortable: false,
       width: 20,
       align: "center",
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.stt}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>STT</ParagraphBody>;
+      }
     },
     {
       field: "category",
-      headerName: "Tên danh mục",
       sortable: false,
       flex: 3,
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.category}</ParagraphBody>;
+      },
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tên danh mục</ParagraphBody>;
+      }
     },
     {
       field: "created",
-      headerName: "Ngày tạo bởi",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Ngày tạo bởi</ParagraphBody>;
+      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.createdAtBy.name}</div>
+          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
           <div>{params.row.createdAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     },
     {
       field: "updated",
-      headerName: "Lần chỉnh sửa cuối bởi",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Lần chỉnh sửa cuối bởi</ParagraphBody>;
+      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
         <div>
-          <div>{params.row.updatedAtBy.name}</div>
+          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
           <div>{params.row.updatedAtBy.time}</div>
         </div>
       ),
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     },
     {
       field: "operation",
-      headerName: "Tác vụ",
+      renderHeader: (params) => {
+        return <ParagraphBody fontWeight={700}>Tác vụ</ParagraphBody>;
+      },
       sortable: false,
       flex: 1,
       type: "actions",
@@ -131,7 +164,10 @@ const QuestionBankManagement = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => null}
+            onClick={() => {
+              //set the edit value
+              setOpenCreateDialog(true);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -144,7 +180,7 @@ const QuestionBankManagement = () => {
           />
         ];
       },
-      headerClassName: "qbm-class"
+      headerClassName: classes["table-head"]
     }
   ];
   useEffect(() => {
@@ -158,30 +194,27 @@ const QuestionBankManagement = () => {
 
   return (
     <div>
-      <TabPanel value='1'>
-        <Container maxWidth='xl'>
-          <Stack spacing={2}>
-            <Typography level='h1'>Ngân hàng câu hỏi chung</Typography>
-
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={2}>
-                <Button
-                  size='lg'
-                  variant='outlined'
-                  sx={{ fontSize: "120%", display: "block" }}
-                  fullWidth
-                >
-                  Thêm mới
-                </Button>
-              </Grid>
-            </Grid>
+      <TabPanel value='1' className={classes["tab-panel"]}>
+        <Container>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
+            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
+                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
+              </Button>
+            </Stack>
 
             <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
             <DataGrid
               sx={{
-                "& .MuiDataGrid-columnHeader": { backgroundColor: grey[100] }
+                "& .MuiDataGrid-cell": { padding: "16px" },
+                "& .MuiDataGrid-row:hover": {
+                  cursor: "pointer"
+                }
               }}
               autoHeight
+              disableColumnMenu
+              getRowHeight={() => "auto"}
               rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
               rowCount={pageState.total}
               loading={pageState.isLoading}
@@ -202,7 +235,86 @@ const QuestionBankManagement = () => {
           </Stack>
         </Container>
       </TabPanel>
-      <TabPanel value='2'>Item Two</TabPanel>
+      <TabPanel value='2' className={classes["tab-panel"]}>
+        <Container>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
+            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
+                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
+              </Button>
+            </Stack>
+
+            <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
+            <DataGrid
+              sx={{
+                "& .MuiDataGrid-cell": { padding: "16px" },
+                "& .MuiDataGrid-row:hover": {
+                  cursor: "pointer"
+                }
+              }}
+              autoHeight
+              disableColumnMenu
+              getRowHeight={() => "auto"}
+              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+              rowCount={pageState.total}
+              loading={pageState.isLoading}
+              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              onPaginationModelChange={(model, details) => {
+                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+              }}
+              columns={columns}
+              pageSizeOptions={[5, 10, 30, 50]}
+              paginationMode='server'
+              disableColumnFilter
+              onRowClick={handleRowClick}
+              hideFooterSelectedRowCount
+              // slots={{
+              //   toolbar: EditToolbar
+              // }}
+            />
+          </Stack>
+        </Container>
+      </TabPanel>
+      <Dialog
+        aria-labelledby='customized-dialog-title'
+        open={openCreateDialog}
+        onClose={() => setOpenCreateDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          Tạo danh mục
+        </DialogTitle>
+        <IconButton
+          aria-label='close'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+          onClick={() => setOpenCreateDialog(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Stack spacing={1}>
+            <Textarea name='Outlined' placeholder='Tên danh mục' variant='outlined' minRows={1} />
+            <Textarea
+              name='Outlined'
+              placeholder='Thông tin danh mục'
+              variant='outlined'
+              minRows={4}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
+            <ParagraphBody> Lưu</ParagraphBody>
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

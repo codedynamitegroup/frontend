@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import Heading4 from "components/text/Heading4";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import images from "config/images";
 
 interface ILinkMenu {
   name: string;
@@ -36,7 +37,11 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end"
 }));
 
-function Header() {
+interface HeaderProps {
+  forwardedRef?: React.Ref<HTMLDivElement>;
+}
+
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
 
   interface AppBarProps extends MuiAppBarProps {
@@ -61,11 +66,11 @@ function Header() {
   const auth: ILinkMenu[] = [
     {
       name: "Đăng nhập",
-      path: "/"
+      path: "/login"
     },
     {
       name: "Đăng ký",
-      path: "/"
+      path: "/register"
     }
   ];
 
@@ -115,7 +120,7 @@ function Header() {
   }, []);
 
   return (
-    <AppBar position='static' open={open}>
+    <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box
@@ -135,9 +140,9 @@ function Header() {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Heading4 colorName='--white' fontWeight={700}>
-            6Bros
-          </Heading4>
+          <Box className={classes.logo}>
+            <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+          </Box>
           <Box className={classes.navbarItem}>
             {pages.map((page, index) => (
               <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
@@ -147,8 +152,11 @@ function Header() {
           </Box>
 
           <Box className={classes.navbarAuthItem}>
-            <Button className={classes.item}>Đăng nhập</Button>
-            <Button className={classes.item}>Đăng ký</Button>
+            {auth.map((page, index) => (
+              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                {page.name}
+              </Button>
+            ))}
           </Box>
         </Toolbar>
         <Drawer
@@ -194,5 +202,5 @@ function Header() {
       </Container>
     </AppBar>
   );
-}
+});
 export default Header;

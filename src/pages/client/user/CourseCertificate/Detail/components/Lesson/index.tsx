@@ -1,24 +1,44 @@
-import { Box, Grid } from "@mui/material";
-import images from "config/images";
+import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
+import LessonAccordion, { Chapter } from "components/common/accordion/LessonAccordion";
 type Props = {};
 
 const CourseCertificateLesson = (props: Props) => {
+  const chapters: Chapter[] = [
+    {
+      chapterTitle: "Outputting & Math Operators",
+      chapterDescription:
+        "Learn how to make C++ print whatever you want, and learn to use it as a basic calculator.",
+      lessons: [
+        { title: "Introducing printing - cout", status: true },
+        { title: "Printing on multiple lines", status: false },
+        { title: "Multiple prints using single cout", status: false },
+        { title: "Math Operators and overall code structure", status: false }
+      ]
+    },
+    {
+      chapterTitle: "Variables and Data Types",
+      chapterDescription: "Learn how to make C++ store data and manipulate them",
+      lessons: [
+        { title: "Introduction to Variables and Data Types", status: false },
+        { title: "Quiz on Variables", status: false },
+        { title: "More Data Types", status: false }
+      ]
+    }
+  ];
+
   return (
     <Box id={classes.certificateDetails}>
-      <Grid container direction={"column"} alignItems={"center"}>
-        <Grid item xs={12} md={6} id={classes.title}>
-          <Heading1 colorName='--blue-600'>Chứng chỉ khóa học</Heading1>
-          <ParagraphBody>
-            Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học
-          </ParagraphBody>
-        </Grid>
-        <Grid item xs={12} md={6} id={classes.imgCertificate}>
-          <img src={images.icCertificate} alt='certificate' />
-        </Grid>
-      </Grid>
+      <Heading1 colorName='--blue-600'>Các bài học ở khóa học</Heading1>
+      {chapters.map((chapter, index) => (
+        <LessonAccordion
+          key={index}
+          chapterNumber={index + 1}
+          chapter={chapter}
+          isExpanded={index === 0 ? true : false}
+        />
+      ))}
     </Box>
   );
 };

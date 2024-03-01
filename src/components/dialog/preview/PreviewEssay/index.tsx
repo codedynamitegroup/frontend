@@ -19,6 +19,8 @@ import { Button, Textarea } from "@mui/joy";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState, useRef } from "react";
 import { blue, grey, red, yellow } from "@mui/material/colors";
+import TextEditor from "components/editor/TextEditor";
+
 interface PreviewMultipleChoiceProps extends DialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -56,9 +58,13 @@ const PreviewEssay = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
             </Box>
           </Grid>
           <Grid item xs={12} md={10}>
-            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
+            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
               <Typography gutterBottom>Ai là cha của SE? Nêu những thành tựu nổi bật</Typography>
-              <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={5} />
+              {/* <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={5} /> */}
+              <Box sx={{ background: "white", height: "200px" }}>
+                <TextEditor value='' />
+              </Box>
+
               {submitedValue1 && (
                 <Typography sx={{ backgroundColor: yellow[100] }} gutterBottom>
                   Nhận xét: Cha của SE là ....

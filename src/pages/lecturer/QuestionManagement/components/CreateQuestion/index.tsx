@@ -21,7 +21,7 @@ import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMatches, useNavigate, useOutletContext } from "react-router-dom";
 // import Button from "@mui/joy/Button";
 import Button, { BtnType } from "components/common/buttons/Button";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -43,31 +43,59 @@ const QuestionCreated = (props: Props) => {
     [props.qtype]
   );
   const navigate = useNavigate();
+  const matches = useMatches();
+  const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
+  console.log(matches);
 
   return (
     <Grid className={classes.root}>
-      <Header />
+      {breadcrumbs && <Header />}
       <Container className={classes.container}>
         <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate(routes.lecturer.course.management)}>
-              Quản lý khoá học
-            </span>{" "}
-            {"> "}
-            <span
-              onClick={() => navigate(routes.lecturer.course.information.replace(":courseId", "1"))}
-            >
-              CS202 - Nhập môn lập trình
-            </span>{" "}
-            {"> "}
-            <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-              Xem bài tập
-            </span>{" "}
-            {"> "}
-            <span onClick={() => navigate(routes.lecturer.exam.create)}>Tạo bài kiểm tra</span>{" "}
-            {"> "}
-            <span>Tạo câu hỏi</span>
-          </ParagraphBody>
+          {breadcrumbs ? (
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate(routes.lecturer.course.management)}>
+                Quản lý khoá học
+              </span>{" "}
+              {"> "}
+              <span
+                onClick={() =>
+                  navigate(routes.lecturer.course.information.replace(":courseId", "1"))
+                }
+              >
+                CS202 - Nhập môn lập trình
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                Xem bài tập
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate(routes.lecturer.exam.create)}>
+                Tạo bài kiểm tra
+              </span>{" "}
+              {"> "}
+              <span>Tạo câu hỏi</span>
+            </ParagraphBody>
+          ) : (
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              {matches.map((value: any, i) => {
+                if (value.handle === undefined) return null;
+                return (
+                  <span
+                    onClick={() => {
+                      if (value.handle?.state)
+                        navigate(value.pathname, { state: value.handle?.state });
+                      else navigate(value.pathname);
+                    }}
+                  >
+                    {i !== matches.length - 1
+                      ? `${value.handle?.crumbName} > `
+                      : `${value.handle?.crumbName}`}
+                  </span>
+                );
+              })}
+            </ParagraphBody>
+          )}
         </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
           <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>

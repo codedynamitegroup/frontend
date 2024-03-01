@@ -5,7 +5,7 @@
   height: 100%;
   & [class~="MuiDrawer-paper"] {
     width: 300px;
-    top: 60px !important;
+    top: 64px !important;
     box-sizing: border-box;
   }
 }
@@ -55,7 +55,7 @@
   line-height: 2rem !important;
 }
 
-.TitleContainer{
+.TitleContainer {
   display: flex;
   align-items: center;
 }

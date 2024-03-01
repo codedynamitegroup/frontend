@@ -15,6 +15,7 @@ import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
+import { useMemo } from "react";
 
 interface TableTemplateProps {
   data: Array<{ [key: string]: any }>;
@@ -53,6 +54,20 @@ function TableTemplate({
     }
   };
 
+  const columnWidths = useMemo(() => {
+    const widths: { [key: string]: number } = {};
+
+    if (data && data.length > 0) {
+      customColumns.forEach((column) => {
+        const maxWidth = Math.max(...data.map((row) => String(row[column]).length));
+        // You may want to set a minimum width as well
+        widths[column] = Math.max(10, maxWidth * 8); // Adjust the multiplier based on your needs
+      });
+    }
+
+    return widths;
+  }, [data, customColumns]);
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label='custom table'>
@@ -82,11 +97,12 @@ function TableTemplate({
           {data &&
             data.length > 0 &&
             data.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
+              <TableRow key={rowIndex} onClick={() => handleViewDetailsClick(row.id)}>
                 {customColumns.map((column, colIndex) => (
                   <TableCell
                     key={colIndex}
                     align='left'
+                    style={{ minWidth: columnWidths[column], maxWidth: columnWidths[column] }}
                     className={`${classes["col-table-body"]}                           
 										`}
                   >

@@ -26,3 +26,12 @@
   color: white !important;
   display: block;
 }
+.header {
+  background-color: var(--blue-500) !important;
+
+  .logo {
+    .imageLogo {
+      width: 60px;
+    }
+  }
+}

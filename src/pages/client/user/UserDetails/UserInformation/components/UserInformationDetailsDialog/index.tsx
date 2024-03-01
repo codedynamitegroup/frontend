@@ -112,7 +112,14 @@ const UserInformationDetailsDialog = ({
             />
           </Grid>
         </Grid>
-        <InputTextField type='email' title='Email' value={data.email} onChange={(e) => {}} />
+        <InputTextField
+          type='email'
+          title='Email'
+          value={data.email}
+          onChange={(e) => {
+            setData((pre) => ({ ...pre, email: e.target.value }));
+          }}
+        />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle>Mật khẩu</TextTitle>

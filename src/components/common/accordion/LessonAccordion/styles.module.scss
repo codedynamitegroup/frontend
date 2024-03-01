@@ -1,0 +1,61 @@
+#accordionHeader {
+  display: flex;
+  background-color: #f8fcfd;
+
+  #chapterNumber {
+    display: flex;
+    justify-content: center;
+
+    #circle {
+      background: var(--blue-500);
+      border-radius: 1.5em;
+      -moz-border-radius: 1.5em;
+      -webkit-border-radius: 1.5em;
+      color: white;
+      display: inline-block;
+      font-weight: bold;
+      line-height: 3em;
+      text-align: center;
+      width: 3em;
+    }
+  }
+}
+
+#accordionDetails {
+  padding: 0px;
+
+  .chapter {
+    display: flex;
+    flex-direction: column;
+
+    .lesson {
+      padding: 15px 0px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: var(--blue-50);
+      }
+
+      .lessonTitle {
+        display: flex;
+        align-items: center;
+      }
+
+      .icCodeWrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .icCode,
+        .icCheck {
+          width: 25px;
+          height: 25px;
+        }
+
+        .icCheck {
+          color: var(--green-500);
+        }
+      }
+    }
+  }
+}

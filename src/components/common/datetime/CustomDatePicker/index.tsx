@@ -1,6 +1,5 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { Dayjs } from "dayjs";
 
 interface BasicDateTimePickerProps {
@@ -18,22 +17,20 @@ const CustomDatePicker = ({
 }: BasicDateTimePickerProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-        <DatePicker
-          label={label}
-          value={value}
-          onChange={onHandleValueChange}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              size: "small",
-              style: {
-                backgroundColor: backgroundColor || "white"
-              }
+      <DatePicker
+        label={label}
+        value={value}
+        onChange={onHandleValueChange}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            size: "small",
+            style: {
+              backgroundColor: backgroundColor || "white"
             }
-          }}
-        />
-      </DemoContainer>
+          }
+        }}
+      />
     </LocalizationProvider>
   );
 };

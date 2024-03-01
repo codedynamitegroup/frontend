@@ -1,5 +1,5 @@
 import { Box, Button, CardMedia, Container, Grid } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import classes from "./styles.module.scss";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
@@ -7,14 +7,24 @@ import ParagraphBody from "components/text/ParagraphBody";
 import Heading3 from "components/text/Heading3";
 import { Card, CardContent, Typography } from "@mui/material";
 import images from "config/images";
+import StarIcon from "@mui/icons-material/Star";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import Footer from "components/Footer";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 export default function HomePage() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <main>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Container className={classes.container}>
-          <Grid container columnSpacing={5}>
+          <Grid container columnSpacing={5} className={classes.sectionContentImage}>
             <Grid item xs={6} className={classes.sectionContent}>
               <Box className={classes.customListContainer}>
                 <Heading1 className={classes.mainHeading}>
@@ -29,11 +39,7 @@ export default function HomePage() {
               </Box>
             </Grid>
             <Grid item xs={6} className={classes.sectionImage}>
-              <img
-                className={classes.boyLearningImage}
-                src='https://cdn.codechef.com/images/home/coding_boy.svg'
-                alt='home'
-              />
+              <img className={classes.homeImage} src={images.home} alt='home' />
             </Grid>
           </Grid>
           <Grid container>
@@ -64,6 +70,16 @@ export default function HomePage() {
                             className={classes.iconLevel}
                           />
                           <ParagraphBody>Cơ bản</ParagraphBody>
+                        </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>1.1k</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.4</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
                         </Box>
                         <Button
                           className={classes.viewDetailBtn}
@@ -100,6 +116,16 @@ export default function HomePage() {
                           />
                           <ParagraphBody>Cơ bản</ParagraphBody>
                         </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>2.5k</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.8</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
+                        </Box>
                         <Button
                           className={classes.viewDetailBtn}
                           fullWidth
@@ -134,6 +160,16 @@ export default function HomePage() {
                             className={classes.iconLevel}
                           />
                           <ParagraphBody>Cơ bản</ParagraphBody>
+                        </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>500</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.1</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
                         </Box>
                         <Button
                           className={classes.viewDetailBtn}
@@ -177,6 +213,16 @@ export default function HomePage() {
                           />
                           <ParagraphBody>Trung bình</ParagraphBody>
                         </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>3.2k</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.9</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
+                        </Box>
                         <Button
                           className={classes.viewDetailBtn}
                           fullWidth
@@ -211,6 +257,16 @@ export default function HomePage() {
                             className={classes.iconLevel}
                           />
                           <ParagraphBody>Trung bình</ParagraphBody>
+                        </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>824</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.2</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
                         </Box>
                         <Button
                           className={classes.viewDetailBtn}
@@ -247,6 +303,16 @@ export default function HomePage() {
                           />
                           <ParagraphBody>Trung bình</ParagraphBody>
                         </Box>
+                        <Box className={classes.courseDetail}>
+                          <Box className={classes.userLearning}>
+                            <ParagraphBody>1.5k</ParagraphBody>
+                            <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                          </Box>
+                          <Box className={classes.userRating}>
+                            <ParagraphBody>4.7</ParagraphBody>
+                            <StarIcon className={classes.icStar} />
+                          </Box>
+                        </Box>
                         <Button
                           className={classes.viewDetailBtn}
                           fullWidth
@@ -269,6 +335,7 @@ export default function HomePage() {
           </Grid>
         </Container>
       </main>
+      <Footer />
     </Grid>
   );
 }

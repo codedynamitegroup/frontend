@@ -7,7 +7,7 @@ import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "r
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading2 from "components/text/Heading2";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
@@ -15,21 +15,24 @@ import FlagIcon from "@mui/icons-material/Flag";
 import SchoolIcon from "@mui/icons-material/School";
 import CertificateDetails from "./components/Certificate";
 import CourseCertificateLesson from "./components/Lesson";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
-    if (id) navigate(tabs[newTab].replace(":id", id));
+    if (courseId) navigate(tabs[newTab].replace(":courseId", courseId));
   };
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.user.course_certificate.introduction,
-      routes.user.course_certificate.lesson,
-      routes.user.course_certificate.certificate
+      routes.user.course_certificate.detail.lesson.root,
+      routes.user.course_certificate.detail.introduction,
+      routes.user.course_certificate.detail.certificate
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);
@@ -40,28 +43,35 @@ const CourseCertificateDetail = () => {
   };
 
   const activeTab = useMemo(() => {
-    if (id) {
-      const index = tabs.findIndex((it) => activeRoute(it.replace(":id", id)));
+    if (courseId) {
+      const index = tabs.findIndex((it) => activeRoute(it.replace(":courseId", courseId)));
       if (index === -1) return 0;
       return index;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
   return (
     <Grid id={classes.root}>
-      <Header />
-      <main id={classes.main}>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Container id={classes.container}>
           <Grid container id={classes.bodyWrapper}>
             <Grid item xs={12} md={12} id={classes.rightBody}>
               <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall colorName='--gray-50' fontWeight={"600"}>
-                  <span onClick={() => navigate(routes.user.course_certificate.root)}>
-                    Danh sách khóa học
-                  </span>{" "}
-                  {">"} <span>Học C++ cơ bản</span>
+                <ParagraphSmall
+                  colorName='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.user.course_certificate.root)}
+                >
+                  Danh sách khóa học
                 </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall colorName='--blue-500'>Học C++ cơ bản</ParagraphSmall>
               </Box>
               <Divider />
               <Box id={classes.courseInfoWrapper}>
@@ -142,12 +152,12 @@ const CourseCertificateDetail = () => {
                   >
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Giới thiệu</ParagraphBody>}
+                      label={<ParagraphBody>Bài học</ParagraphBody>}
                       value={0}
                     />
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Bài học</ParagraphBody>}
+                      label={<ParagraphBody>Giới thiệu</ParagraphBody>}
                       value={1}
                     />
                     <Tab
@@ -159,8 +169,8 @@ const CourseCertificateDetail = () => {
                 </Box>
                 <Box>
                   <Routes>
-                    <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
                     <Route path={"lesson"} element={<CourseCertificateLesson />} />
+                    <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
                     <Route path={"certificate"} element={<CertificateDetails />} />
                   </Routes>
                 </Box>
@@ -169,6 +179,7 @@ const CourseCertificateDetail = () => {
           </Grid>
         </Container>
       </main>
+      <Footer />
     </Grid>
   );
 };

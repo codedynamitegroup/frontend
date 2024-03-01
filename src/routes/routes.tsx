@@ -1,5 +1,8 @@
+import qtype from "utils/constant/Qtype";
+
 export const routes = {
   lecturer: {
+    calendar: "/lecturer/calendar",
     course: {
       management: "/lecturer/courses",
       detail: "/lecturer/courses/:courseId/*",
@@ -40,7 +43,25 @@ export const routes = {
     },
     question_bank: {
       path: "lecturer/question-bank-management",
-      questions_list_of_course: { path: ":id" }
+      questions_list_of_category: {
+        path: ":categoryId",
+        create_question: {
+          paths: Object.values(qtype)
+            .map((value) => value.code)
+            .map((code) => ({
+              path: `create/${code}`,
+              code
+            }))
+        },
+        update_question: {
+          paths: Object.values(qtype)
+            .map((value) => value.code)
+            .map((code) => ({
+              path: `update/${code}`,
+              code
+            }))
+        }
+      }
     },
     exam: {
       create: "/lecturer/exam-management/create"
@@ -65,17 +86,31 @@ export const routes = {
     password_change: "/user/password/change",
     problem: {
       solution: {
-        share: "/problems/:id/solution/share"
+        share: "/problems/:problemId/solution/share"
       },
       root: "/problems",
-      detail: "/problems/:id"
+      detail: {
+        root: "/problems/:problemId/*",
+        description: "/problems/:problemId/description",
+        solution: "/problems/:problemId/solution",
+        submission: "/problems/:problemId/submission"
+      }
     },
     course_certificate: {
       root: "/course-certificates",
-      detail: "/course-certificates/:id/*",
-      introduction: "/course-certificates/:id/introduction",
-      lesson: "/course-certificates/:id/lesson",
-      certificate: "/course-certificates/:id/certificate"
+      detail: {
+        root: "/course-certificates/:courseId/*",
+        introduction: "/course-certificates/:courseId/introduction",
+        lesson: {
+          root: "/course-certificates/:courseId/lesson",
+          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
+          description: "/course-certificates/:courseId/lesson/:lessonId/description",
+          solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
+          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
+          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
+        },
+        certificate: "/course-certificates/:courseId/certificate"
+      }
     },
     contest: {
       root: "/contests",
@@ -83,6 +118,9 @@ export const routes = {
     },
     homepage: {
       root: "/"
+    },
+    dashboard: {
+      root: "/dashboard"
     },
     login: {
       root: "/login"

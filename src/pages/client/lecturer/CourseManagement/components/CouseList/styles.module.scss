@@ -1,11 +1,20 @@
 .container {
   width: inherit;
-  padding: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+
+  .courseInfo {
+    border-bottom: 1px solid var(--gray-20);
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+  }
   .teacherItemText {
     margin-left: 0;
   }
 
   .teacherListGridContainer {
+    padding: 10px;
+
     li {
       padding: 2px 0px 0px 0px;
 
