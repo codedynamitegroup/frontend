@@ -56,7 +56,7 @@ const PreviewShortAnswer = ({ setOpen, ...props }: PreviewMultipleChoiceProps) =
             </Box>
           </Grid>
           <Grid item xs={12} md={10}>
-            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
+            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
               <Typography gutterBottom>What is the full form of HTML?</Typography>
               <Textarea
                 sx={{ marginBottom: 1, backgroundColor: "white" }}

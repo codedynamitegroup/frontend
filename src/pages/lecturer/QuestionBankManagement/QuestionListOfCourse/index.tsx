@@ -4,7 +4,7 @@ import { Box, Stack, Grid, Container, Divider } from "@mui/material";
 import Typography from "@mui/joy/Typography";
 
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
@@ -205,8 +205,15 @@ const QuestionListOfCourse = () => {
   const matches = useMatches();
   // console.log(matches);
   const [value, setValue]: any[] = useOutletContext();
+  const [initialized, setInitialized] = useState(true);
+
   useEffect(() => {
     setIsAddingQuestion(false);
+    if (initialized) {
+      setInitialized(false);
+    } else {
+      navigate("/lecturer/question-bank-management");
+    }
   }, [value]);
   return (
     <div>
@@ -234,7 +241,7 @@ const QuestionListOfCourse = () => {
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
-                Ngân hàng câu hỏi chung
+                Ngân hàng câu hỏi
               </span>{" "}
               {"> "}
               <span onClick={() => navigate(".")}>Học thuật toán</span>
@@ -284,7 +291,66 @@ const QuestionListOfCourse = () => {
           </Container>
         </TabPanel>
       )}
-      {!isAddingQuestion && <TabPanel value='2'>Item Two</TabPanel>}
+      {!isAddingQuestion && (
+        <TabPanel value='2' sx={{ padding: 0 }}>
+          <Box className={classes.tabWrapper}>
+            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+                Ngân hàng câu hỏi
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate(".")}>Học OOP</span>
+            </ParagraphBody>
+          </Box>
+          <Container>
+            <Stack spacing={2} marginBottom={3} paddingTop={1}>
+              <Heading1 fontWeight={500}>Học OOP</Heading1>
+              <Typography>Thông tin danh mục: các bài tập về OOP</Typography>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+                <Button btnType={BtnType.Primary}>
+                  <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+                </Button>
+                <Button
+                  btnType={BtnType.Primary}
+                  onClick={() => setIsAddNewQuestionDialogOpen(true)}
+                >
+                  <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+                </Button>
+              </Stack>
+
+              <Stack direction='row' justifyContent='space-between'>
+                <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+                <Button btnType={BtnType.Primary}>
+                  <ParagraphBody paddingX={3}>Quyền truy cập</ParagraphBody>
+                </Button>
+              </Stack>
+              <DataGrid
+                sx={{
+                  "& .MuiDataGrid-cell": { padding: "16px" }
+                }}
+                autoHeight
+                getRowHeight={() => "auto"}
+                rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+                rowCount={pageState.total}
+                loading={pageState.isLoading}
+                paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+                onPaginationModelChange={(model, details) => {
+                  setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                }}
+                columns={columns}
+                pageSizeOptions={[5, 10, 30, 50]}
+                paginationMode='server'
+                disableColumnFilter
+                hideFooterSelectedRowCount
+                // onRowClick={handleRowClick}
+                // slots={{
+                //   toolbar: EditToolbar
+                // }}
+              />
+            </Stack>
+          </Container>
+        </TabPanel>
+      )}
     </div>
   );
 };
