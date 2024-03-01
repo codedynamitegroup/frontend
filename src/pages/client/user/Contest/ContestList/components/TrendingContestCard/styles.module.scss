@@ -2,6 +2,7 @@
     max-width: 320px;
     max-height: 300px;
     margin: 20px 10px 50px ;
+    cursor: pointer;
     .imageContainer {
         height: 100%;
     }
@@ -16,4 +17,7 @@
     .contestDetail {
         padding: 10px;
     }
+}
+.container:hover {
+    color: var(--blue-hover);
 }
