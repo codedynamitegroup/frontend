@@ -1,5 +1,5 @@
 import { Box, Button, CardMedia, Container, Grid } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import classes from "./styles.module.scss";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
@@ -11,12 +11,18 @@ import StarIcon from "@mui/icons-material/Star";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Footer from "components/Footer";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 export default function HomePage() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <main>
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Container className={classes.container}>
           <Grid container columnSpacing={5} className={classes.sectionContentImage}>
             <Grid item xs={6} className={classes.sectionContent}>

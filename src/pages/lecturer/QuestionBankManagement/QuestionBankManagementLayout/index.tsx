@@ -8,6 +8,7 @@ import classes from "./styles.module.scss";
 import Header from "components/Header";
 import { styled } from "@mui/material/styles";
 import useBoxDimensions from "utils/useBoxDimensions";
+import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
 
 const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) => ({
   textTransform: "none",
@@ -22,26 +23,23 @@ const QuestionBankManagementLayout = () => {
     setValue(newValue);
   };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
-      <main style={{ marginTop: `${headerHeight}px` }} id={classes.main}>
-        <Container className={classes.container}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList onChange={handleChange} aria-label='lab API tabs'>
-                <CustomTab label='Chung' value='1' />
-                <CustomTab label='Cá nhân' value='2' />
-              </TabList>
-            </Box>
-            <Outlet context={[value, setValue]} />
-          </TabContext>
-        </Container>
-      </main>
+      <SideBarLecturer>
+        <main id={classes.main}>
+          <Container className={classes.container}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList onChange={handleChange} aria-label='lab API tabs'>
+                  <CustomTab label='Chung' value='1' />
+                  <CustomTab label='Cá nhân' value='2' />
+                </TabList>
+              </Box>
+              <Outlet context={[value, setValue]} />
+            </TabContext>
+          </Container>
+        </main>
+      </SideBarLecturer>
     </Grid>
   );
 };
