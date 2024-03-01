@@ -246,7 +246,7 @@ const QuestionListOfCourse = () => {
         <TabPanel value='1' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
               {"> "}
