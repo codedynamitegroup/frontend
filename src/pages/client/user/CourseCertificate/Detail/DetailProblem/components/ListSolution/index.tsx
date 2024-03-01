@@ -196,6 +196,13 @@ export default function LessonDetailSolution() {
     console.log(searchVal);
   };
 
+  const openShareInNewTab = () => {
+    window.open(
+      routes.user.course_certificate.detail.lesson.share_solution.replace(":lessonId", "1"),
+      "_blank"
+    );
+  };
+
   return (
     <Box className={classes.containerListSolution}>
       {solutionDetail === true ? (
@@ -252,7 +259,7 @@ export default function LessonDetailSolution() {
                 variant='contained'
                 startIcon={<FontAwesomeIcon icon={faPenToSquare} className={classes.shareIcon} />}
                 className={classes.shareButton}
-                onClick={() => navigate(routes.user.problem.solution.share)}
+                onClick={openShareInNewTab}
               >
                 Chia sẻ bài giải
               </Button>

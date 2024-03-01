@@ -37,6 +37,7 @@ import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
 import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
+import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -103,6 +104,10 @@ const router = createBrowserRouter(
         element={<CourseCertificateLessonProblem />}
       />
 
+      <Route
+        path={routes.user.course_certificate.detail.lesson.share_solution}
+        element={<LessonShareSolution />}
+      />
       <Route
         path={routes.lecturer.question_bank.path}
         element={<QuestionBankManagementLayout />}

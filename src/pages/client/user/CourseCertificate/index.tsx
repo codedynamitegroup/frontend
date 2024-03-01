@@ -15,6 +15,7 @@ import { routes } from "routes/routes";
 import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
 import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -292,6 +293,7 @@ const CourseCertificates = () => {
           </Container>
         </Box>
       </main>
+      <Footer />
     </Grid>
   );
 };
