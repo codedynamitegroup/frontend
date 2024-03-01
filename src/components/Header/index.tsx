@@ -148,8 +148,12 @@ function Header() {
           </Box>
 
           <Box className={classes.navbarAuthItem}>
-            <Button className={classes.item}>Đăng nhập</Button>
-            <Button className={classes.item}>Đăng ký</Button>
+            <Button className={classes.item} onClick={() => navigate("/login")}>
+              Đăng nhập
+            </Button>
+            <Button className={classes.item} onClick={() => navigate("/register")}>
+              Đăng ký
+            </Button>
           </Box>
         </Toolbar>
         <Drawer

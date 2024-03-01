@@ -14,6 +14,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
+import Footer from "components/Footer";
 const status = [
   {
     id: 1,
@@ -168,6 +169,7 @@ const ListProblem = () => {
           </Container>
         </Box>
       </main>
+      <Footer />
     </Grid>
   );
 };
