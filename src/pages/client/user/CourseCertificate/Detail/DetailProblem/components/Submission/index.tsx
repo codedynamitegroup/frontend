@@ -2,126 +2,84 @@ import classes from "./styles.module.scss";
 import React from "react";
 import Box from "@mui/material/Box";
 import ParagraphBody from "components/text/ParagraphBody";
-import { GridColDef } from "@mui/x-data-grid/models/colDef";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
-import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
-import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import { GridSlotsComponentsProps } from "@mui/x-data-grid";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MemoryIcon from "@mui/icons-material/Memory";
+import { useState } from "react";
+import DetailSolution from "./components/DetailSubmission";
+import { useNavigate } from "react-router";
+import UserTableTemplate from "components/common/table/UserTableTemplate";
 
-export default function LessonDetailSubmission() {
-  const submission = [
+export default function LessonListSubmission() {
+  const navigate = useNavigate();
+  const customHeading = ["Trạng thái", "Ngôn ngữ", "Thời gian thực thi", "Bộ nhớ"];
+  const customColumns = ["status", "language", "runtime", "memory"];
+  const data = [
     {
       id: 1,
-      status: 1,
+      status: (
+        <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
+          Chấp thuận
+        </ParagraphBody>
+      ),
       language: "C++",
-      runtime: "N/A",
-      memory: "N/A"
+      runtime: 10,
+      memory: 12
     },
     {
       id: 2,
-      status: 2,
+      status: (
+        <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
+          Sai
+        </ParagraphBody>
+      ),
       language: "Java",
-      runtime: 12,
-      memory: 13
-    },
-    {
-      id: 3,
-      status: 1,
-      language: "Javascript",
       runtime: "N/A",
       memory: "N/A"
     },
     {
+      id: 3,
+      status: (
+        <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
+          Chấp thuận
+        </ParagraphBody>
+      ),
+      language: "Javascript",
+      runtime: 12,
+      memory: 12
+    },
+    {
       id: 4,
-      status: 2,
+      status: (
+        <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
+          Sai
+        </ParagraphBody>
+      ),
       language: "C++",
-      runtime: 14,
-      memory: 15
+      runtime: "N/A",
+      memory: "N/A"
     }
   ];
 
-  const visibleColumnList = { status: true, language: true, runtime: true, memory: true };
-  const dataGridToolbar = { enableToolbar: false };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
+  const [submissionDetail, setsubmissionDetail] = useState(true);
+  const handlesubmissionDetail = () => {
+    setsubmissionDetail(!submissionDetail);
   };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
-  };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
-  const tableHeading: GridColDef[] = [
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      width: 200,
-      flex: 0.8,
-      renderCell: (params) => (
-        <span style={{ color: params.row.status === 1 ? "red" : "green" }}>
-          {params.row.status === 1 ? "Sai kết quả" : "Đã được chấp nhận"}
-        </span>
-      )
-    },
-    {
-      field: "language",
-      headerName: "Ngôn ngữ",
-      width: 50,
-      flex: 0.4,
-      renderCell: (params) => <span className={classes.language}>{params.value}</span>
-    },
-    {
-      field: "runtime",
-      headerName: "Thời gian thực thi",
-      width: 200,
-      flex: 0.8,
-      renderCell: (params) => (
-        <Box className={classes.runtime}>
-          <AccessTimeIcon className={classes.icon} />
-          <span>{params.value} ms</span>
-        </Box>
-      )
-    },
-    {
-      field: "memory",
-      headerName: "Bộ nhớ",
-      width: 200,
-      flex: 0.8,
-      renderCell: (params) => (
-        <Box className={classes.memory}>
-          <MemoryIcon className={classes.icon} />
-          <span>{params.value} KB</span>
-        </Box>
-      )
-    }
-  ];
-  function CustomFooterStatusComponent(props: NonNullable<GridSlotsComponentsProps["footer"]>) {
-    return <Box></Box>;
-  }
 
   return (
     <Box className={classes.container}>
-      <Box className={classes.submissionTable}>
-        <CustomDataGrid
-          dataList={submission}
-          tableHeader={tableHeading}
-          onSelectData={rowSelectionHandler}
-          visibleColumn={visibleColumnList}
-          dataGridToolBar={dataGridToolbar}
-          page={page}
-          pageSize={pageSize}
-          totalElement={totalElement}
-          onPaginationModelChange={pageChangeHandler}
-          showVerticalCellBorder={false}
-          customFooter={CustomFooterStatusComponent}
-        />
-      </Box>
+      {submissionDetail === true ? (
+        <Box className={classes.submissionTable}>
+          <UserTableTemplate
+            customHeading={customHeading}
+            customColumns={customColumns}
+            data={data}
+            isActionColumn={false}
+            onViewDetailsClick={handlesubmissionDetail}
+          />
+        </Box>
+      ) : (
+        <Box className={classes.detailSubmission}>
+          <DetailSolution handleSubmissionDetail={handlesubmissionDetail} />
+        </Box>
+      )}
     </Box>
   );
 }

@@ -40,7 +40,7 @@ const rows = [
     questionName: "Con trỏ là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
-    qtype: "Nhiều lựa chọn"
+    qtype: "Tự luận"
   },
   {
     id: 2,
@@ -303,7 +303,7 @@ const QuestionListOfCourse = () => {
         <TabPanel value='2' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(`/${routes.lecturer.question_bank.path}`)}>
+              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
               {"> "}

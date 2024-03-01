@@ -16,7 +16,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import ParagraphSmall from "components/text/ParagraphSmall";
 import LessonDetailDescription from "./components/Description";
 import LessonDetailSolution from "./components/ListSolution";
-import LessonDetailSubmission from "./components/Submission";
+import LessonListSubmission from "./components/Submission";
 import useBoxDimensions from "utils/useBoxDimensions";
 
 enum ELanguage {
@@ -355,7 +355,7 @@ int main()
               <Routes>
                 <Route path={"description"} element={<LessonDetailDescription />} />
                 <Route path={"solution"} element={<LessonDetailSolution />} />
-                <Route path={"submission"} element={<LessonDetailSubmission />} />
+                <Route path={"submission"} element={<LessonListSubmission />} />
               </Routes>
             </Box>
           </Grid>

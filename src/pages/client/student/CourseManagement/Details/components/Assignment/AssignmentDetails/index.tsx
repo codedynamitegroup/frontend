@@ -12,7 +12,7 @@ import { routes } from "routes/routes";
 import AssignmentTable from "./components/AssignmentTable";
 import classes from "./styles.module.scss";
 
-const LecturerCourseAssignmentDetails = () => {
+const StudentCourseAssignmentDetails = () => {
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
@@ -32,7 +32,7 @@ const LecturerCourseAssignmentDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.course.assignment);
+          navigate(routes.student.course.assignment.replace(":courseId", "1"));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -93,58 +93,6 @@ const LecturerCourseAssignmentDetails = () => {
           ></div>
         </Box>
       </Card>
-      <Box
-        sx={{
-          display: "flex",
-          gap: "20px"
-        }}
-      >
-        <Button
-          btnType={BtnType.Outlined}
-          onClick={() => {
-            navigate(
-              routes.lecturer.assignment.submissions
-                .replace(":assignmentId", "1")
-                .replace(":courseId", "1")
-            );
-          }}
-        >
-          <ParagraphBody>Xem danh sách bài nộp</ParagraphBody>
-        </Button>
-        <Button
-          btnType={BtnType.Primary}
-          onClick={() => {
-            navigate(routes.lecturer.assignment.grading);
-          }}
-        >
-          <ParagraphBody>Chấm điểm</ParagraphBody>
-        </Button>
-      </Box>
-      <Heading2>Tổng quan chấm điểm</Heading2>
-      <AssignmentTable
-        rows={[
-          {
-            header: "Ẩn khỏi sinh viên",
-            data: "Có"
-          },
-          {
-            header: "Số lượng sinh viên",
-            data: "1"
-          },
-          {
-            header: "Đã nộp",
-            data: "1"
-          },
-          {
-            header: "Cần chấm điểm",
-            data: "1"
-          },
-          {
-            header: "Thời gian còn lại",
-            data: "1 ngày 2 giờ"
-          }
-        ]}
-      />
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
@@ -158,4 +106,4 @@ const LecturerCourseAssignmentDetails = () => {
   );
 };
 
-export default LecturerCourseAssignmentDetails;
+export default StudentCourseAssignmentDetails;

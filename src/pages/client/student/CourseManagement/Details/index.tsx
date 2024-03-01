@@ -9,6 +9,7 @@ import StudentCourseGrade from "./components/Grade";
 import StudentCourseParticipant from "./components/Participant";
 import StudentCourseAssignment from "./components/Assignment";
 import SideBarStudent from "components/common/sidebars/SidebarStudent";
+import StudentCourseAssignmentDetails from "./components/Assignment/AssignmentDetails";
 
 interface Props {}
 
@@ -80,14 +81,16 @@ const StudentCourseDetail = memo((props: Props) => {
           </Box>
 
           <Box className={classes.body}>
-            <Box mt={2}>
-              <Routes>
-                <Route path={"information"} element={<StudentCourseInformation />} />
-                <Route path={"assignment"} element={<StudentCourseAssignment />} />
-                <Route path={"grade"} element={<StudentCourseGrade />} />
-                <Route path={"participant"} element={<StudentCourseParticipant />} />
-              </Routes>
-            </Box>
+            <Routes>
+              <Route path={"information"} element={<StudentCourseInformation />} />
+              <Route path={"assignments"} element={<StudentCourseAssignment />} />
+              <Route
+                path={"assignments/:assignmentId"}
+                element={<StudentCourseAssignmentDetails />}
+              />
+              <Route path={"grade"} element={<StudentCourseGrade />} />
+              <Route path={"participant"} element={<StudentCourseParticipant />} />
+            </Routes>
           </Box>
         </Container>
       </SideBarStudent>

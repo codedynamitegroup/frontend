@@ -5,10 +5,10 @@ import Heading4 from "components/text/Heading4";
 interface PropsData {
   name: string;
   startDate: string;
+  avtImage: any;
 }
 const TrendingContestCard = (props: PropsData) => {
-  const { name, startDate } = props;
-  const IMG_URL = "https://picsum.photos/300/300";
+  const { name, startDate, avtImage } = props;
   return (
     <Paper className={classes.container}>
       <Grid container spacing={1}>
@@ -16,8 +16,9 @@ const TrendingContestCard = (props: PropsData) => {
           <Paper
             className={classes.imageContainer}
             sx={{
-              backgroundImage: `url(${IMG_URL})`,
-              backgroundRepeat: "no-repeat"
+              backgroundImage: `url(${avtImage})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%"
             }}
           ></Paper>
         </Grid>

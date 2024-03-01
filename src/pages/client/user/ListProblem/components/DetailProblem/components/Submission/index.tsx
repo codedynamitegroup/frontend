@@ -2,19 +2,10 @@ import classes from "./styles.module.scss";
 import React from "react";
 import Box from "@mui/material/Box";
 import ParagraphBody from "components/text/ParagraphBody";
-import { GridColDef } from "@mui/x-data-grid/models/colDef";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
-import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
-import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import { GridSlotsComponentsProps } from "@mui/x-data-grid";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MemoryIcon from "@mui/icons-material/Memory";
 import { useState } from "react";
 import DetailSolution from "./components/DetailSubmission";
 import { useNavigate } from "react-router";
-import { routes } from "routes/routes";
-import TableTemplate from "components/common/table/TableTemplate";
+import UserTableTemplate from "components/common/table/UserTableTemplate";
 
 export default function ProblemDetailSubmission() {
   const navigate = useNavigate();
@@ -76,7 +67,7 @@ export default function ProblemDetailSubmission() {
     <Box className={classes.container}>
       {submissionDetail === true ? (
         <Box className={classes.submissionTable}>
-          <TableTemplate
+          <UserTableTemplate
             customHeading={customHeading}
             customColumns={customColumns}
             data={data}

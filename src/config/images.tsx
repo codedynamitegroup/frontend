@@ -18,6 +18,12 @@ import homePageBackground from "assets/img/background/background-homepage.png";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 import home from "assets/img/home.png";
 
+import tempContest1 from "assets/img/temp/contest/1.png";
+import tempContest2 from "assets/img/temp/contest/2.png";
+import tempContest3 from "assets/img/temp/contest/3.png";
+import tempContest4 from "assets/img/temp/contest/4.png";
+import tempContest5 from "assets/img/temp/contest/5.png";
+
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
@@ -31,7 +37,8 @@ const images = {
   contestListBackground,
   changePasswordThumbnail,
   icCertificate,
-  contestTimeBackground
+  contestTimeBackground,
+  temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } }
 };
 
 export default images;
