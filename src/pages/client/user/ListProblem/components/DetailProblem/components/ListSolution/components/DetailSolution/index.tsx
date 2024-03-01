@@ -143,7 +143,6 @@ public:
     ref: stickyBackRef
   });
 
-  console.log("stickyBackHeight", stickyBackHeight);
   return (
     <Box className={classes.containerDetailSolution}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
