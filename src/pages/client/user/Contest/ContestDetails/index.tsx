@@ -14,7 +14,7 @@ import classes from "./stytles.module.scss";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
 import ContestTimeInformation from "./components/ContestTimeInformation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -23,6 +23,8 @@ import ContestLeaderboard from "./components/ContestLeaderboard";
 import Heading4 from "components/text/Heading4";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useParams } from "react-router-dom";
+import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 export enum EContestStatus {
   featured,
@@ -264,115 +266,125 @@ const ContestDetails = () => {
     setValue(newValue);
   };
 
-  return (
-    <Box className={classes.container}>
-      <Header />
-      <ContestTimeInformation
-        status={ContestData["status"]}
-        startDate={"March, 2, 2024"}
-        endDate={"2024-3-4 23:59:59"}
-        joinContest={ContestData["joinedContest"]}
-        contestName={ContestData["name"]}
-      />
-      <Container maxWidth='lg' className={classes.bodyContainer} sx={{ paddingBottom: "40px" }}>
-        <Grid container spacing={1}>
-          <Grid
-            item
-            xs={value !== "3" && ContestData["status"] !== EContestStatus.featured ? 9 : 12}
-          >
-            <Paper>
-              <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <TabList onChange={handleChange} aria-label='lab API tabs example'>
-                    <Tab label='Mô tả chung' value='1' />
-                    {ContestData["status"] !== EContestStatus.featured &&
-                    ContestData["joinedContest"] ? (
-                      <Tab label='Đề thi' value='2' />
-                    ) : null}
-                    {ContestData["status"] === EContestStatus.ended ||
-                    ContestData["status"] === EContestStatus.happening ? (
-                      <Tab label='Bảng xếp hạng' value='3' />
-                    ) : null}
-                  </TabList>
-                </Box>
-                <TabPanel value='1'>
-                  <div
-                    className={classes.divContainer}
-                    dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
-                  ></div>
-                </TabPanel>
-                {ContestData["status"] !== EContestStatus.featured &&
-                ContestData["joinedContest"] ? (
-                  <TabPanel value='2'>
-                    <Grid container spacing={3}>
-                      {problemData.map((problem) => (
-                        <Grid item xs={12} key={problem.name}>
-                          <ContestProblemItem
-                            name={problem.name}
-                            point={problem.point}
-                            maxScore={problem.maxScore}
-                            difficulty={problem.difficulty}
-                            maxSubmission={problem.maxSubmission}
-                            submission={problem.submission}
-                          />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </TabPanel>
-                ) : null}
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
-                {ContestData["status"] === EContestStatus.ended ||
-                ContestData["status"] === EContestStatus.happening ? (
-                  <TabPanel value='3'>
-                    <Heading1>Bảng xếp hạng</Heading1>
-                    <ContestLeaderboard
-                      currentUserRank={currentUserRank}
-                      rankingList={rankingList}
-                      problemList={problemList}
-                    />
+  return (
+    <Box className={classes.root}>
+      <Header ref={headerRef} />
+      <main style={{ marginTop: `${headerHeight}px` }}>
+        <ContestTimeInformation
+          status={ContestData["status"]}
+          startDate={"March, 2, 2024"}
+          endDate={"2024-3-4 23:59:59"}
+          joinContest={ContestData["joinedContest"]}
+          contestName={ContestData["name"]}
+        />
+        <Container className={classes.bodyContainer}>
+          <Grid container spacing={1}>
+            <Grid
+              item
+              xs={value !== "3" && ContestData["status"] !== EContestStatus.featured ? 9 : 12}
+            >
+              <Paper>
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList onChange={handleChange} aria-label='lab API tabs example'>
+                      <Tab label='Mô tả chung' value='1' />
+                      {ContestData["status"] !== EContestStatus.featured &&
+                      ContestData["joinedContest"] ? (
+                        <Tab label='Đề thi' value='2' />
+                      ) : null}
+                      {ContestData["status"] === EContestStatus.ended ||
+                      ContestData["status"] === EContestStatus.happening ? (
+                        <Tab label='Bảng xếp hạng' value='3' />
+                      ) : null}
+                    </TabList>
+                  </Box>
+                  <TabPanel value='1'>
+                    <div
+                      className={classes.divContainer}
+                      dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
+                    ></div>
                   </TabPanel>
-                ) : null}
-              </TabContext>
-            </Paper>
-          </Grid>
-          {value !== "3" ? (
-            <Grid item xs={3}>
-              {ContestData["status"] !== EContestStatus.featured ? (
-                <Paper>
-                  <Grid container direction='column' alignItems='center' justifyContent='center'>
-                    <Grid item xs={12}>
-                      <Heading4 margin={"10px"}>Top 3 xếp hạng</Heading4>
-                      <Divider orientation='horizontal' />
-                    </Grid>
-                    {topUserRank && topUserRank.length !== 0 ? (
-                      <Stack spacing={1} margin={"10px 0 10px 0"}>
-                        {topUserRank.map((user, index) => (
-                          <Grid item xs={12} key={user.rank}>
-                            <Stack alignItems={"center"} direction={"row"}>
-                              <EmojiEventsIcon
-                                fontSize='small'
-                                sx={{
-                                  color: index === 0 ? "gold" : index === 1 ? "gray" : "brown",
-                                  marginRight: "5px"
-                                }}
-                              />
-                              <Link href='#' underline='none'>
-                                <Typography className={classes.topUserText}>{user.name}</Typography>
-                              </Link>
-                            </Stack>
+                  {ContestData["status"] !== EContestStatus.featured &&
+                  ContestData["joinedContest"] ? (
+                    <TabPanel value='2'>
+                      <Grid container spacing={3}>
+                        {problemData.map((problem) => (
+                          <Grid item xs={12} key={problem.name}>
+                            <ContestProblemItem
+                              name={problem.name}
+                              point={problem.point}
+                              maxScore={problem.maxScore}
+                              difficulty={problem.difficulty}
+                              maxSubmission={problem.maxSubmission}
+                              submission={problem.submission}
+                            />
                           </Grid>
                         ))}
-                      </Stack>
-                    ) : (
-                      <Typography color='var(--gray-30)'>Không có dữ liệu</Typography>
-                    )}
-                  </Grid>
-                </Paper>
-              ) : null}
+                      </Grid>
+                    </TabPanel>
+                  ) : null}
+
+                  {ContestData["status"] === EContestStatus.ended ||
+                  ContestData["status"] === EContestStatus.happening ? (
+                    <TabPanel value='3'>
+                      <Heading1>Bảng xếp hạng</Heading1>
+                      <ContestLeaderboard
+                        currentUserRank={currentUserRank}
+                        rankingList={rankingList}
+                        problemList={problemList}
+                      />
+                    </TabPanel>
+                  ) : null}
+                </TabContext>
+              </Paper>
             </Grid>
-          ) : null}
-        </Grid>
-      </Container>
+            {value !== "3" ? (
+              <Grid item xs={3}>
+                {ContestData["status"] !== EContestStatus.featured ? (
+                  <Paper>
+                    <Grid container direction='column' alignItems='center' justifyContent='center'>
+                      <Grid item xs={12}>
+                        <Heading4 margin={"10px"}>Top 3 xếp hạng</Heading4>
+                        <Divider orientation='horizontal' />
+                      </Grid>
+                      {topUserRank && topUserRank.length !== 0 ? (
+                        <Stack spacing={1} margin={"10px 0 10px 0"}>
+                          {topUserRank.map((user, index) => (
+                            <Grid item xs={12} key={user.rank}>
+                              <Stack alignItems={"center"} direction={"row"}>
+                                <EmojiEventsIcon
+                                  fontSize='small'
+                                  sx={{
+                                    color: index === 0 ? "gold" : index === 1 ? "gray" : "brown",
+                                    marginRight: "5px"
+                                  }}
+                                />
+                                <Link href='#' underline='none'>
+                                  <Typography className={classes.topUserText}>
+                                    {user.name}
+                                  </Typography>
+                                </Link>
+                              </Stack>
+                            </Grid>
+                          ))}
+                        </Stack>
+                      ) : (
+                        <Typography color='var(--gray-30)'>Không có dữ liệu</Typography>
+                      )}
+                    </Grid>
+                  </Paper>
+                ) : null}
+              </Grid>
+            ) : null}
+          </Grid>
+        </Container>
+      </main>
+      <Footer />
     </Box>
   );
 };
