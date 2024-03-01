@@ -37,6 +37,7 @@ import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
+import Dashboard from "pages/client/user/Dashboard";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -50,6 +51,8 @@ const router = createBrowserRouter(
       <Route path={routes.user.login.root} element={<Login />} />
       <Route path={routes.user.register.root} element={<Register />} />
       <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
+
+      <Route path={routes.user.dashboard.root} element={<Dashboard />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={"/grading-pdf"} element={<PdfViewer document={"Document.pdf"} />} />
