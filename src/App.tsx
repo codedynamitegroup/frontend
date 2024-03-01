@@ -1,23 +1,12 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
-import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
-import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
 import AssignmentSubmission from "pages/client/student/AssignmentSubmission";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
-import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
 import ContestList from "pages/client/user/Contest/ContestList";
 import CourseCertificates from "pages/client/user/CourseCertificate";
-import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
-import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
-import Forgotpassword from "pages/client/user/ForgotPassword";
-import HomePage from "pages/client/user/HomePage";
 import ListProblem from "pages/client/user/ListProblem";
-import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
-import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
-import Login from "pages/client/user/Login";
-import Register from "pages/client/user/Register";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/lecturer/AssignmentManagement/GradingAssignment";
@@ -26,7 +15,6 @@ import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/Create";
 import CodeQuestionDetails from "pages/lecturer/CodeQuestionManagement/Details";
 import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
 import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
-import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
 import {
   Route,
@@ -36,6 +24,20 @@ import {
 } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
+import "./App.scss";
+import HomePage from "pages/client/user/HomePage";
+import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
+import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
+import Login from "pages/client/user/Login";
+import Register from "pages/client/user/Register";
+import Forgotpassword from "pages/client/user/ForgotPassword";
+import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
+import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
+import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
+import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
+import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
+import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
+import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -104,6 +106,10 @@ const router = createBrowserRouter(
         element={<CourseCertificateLessonProblem />}
       />
 
+      <Route
+        path={routes.user.course_certificate.detail.lesson.share_solution}
+        element={<LessonShareSolution />}
+      />
       <Route
         path={routes.lecturer.question_bank.path}
         element={<QuestionBankManagementLayout />}

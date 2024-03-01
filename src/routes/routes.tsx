@@ -106,7 +106,8 @@ export const routes = {
           detail: "/course-certificates/:courseId/lesson/:lessonId/*",
           description: "/course-certificates/:courseId/lesson/:lessonId/description",
           solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
-          submission: "/course-certificates/:courseId/lesson/:lessonId/submission"
+          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
+          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
         },
         certificate: "/course-certificates/:courseId/certificate"
       }

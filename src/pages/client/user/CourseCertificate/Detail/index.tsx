@@ -17,6 +17,7 @@ import CertificateDetails from "./components/Certificate";
 import CourseCertificateLesson from "./components/Lesson";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "utils/useBoxDimensions";
+import Footer from "components/Footer";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -178,6 +179,7 @@ const CourseCertificateDetail = () => {
           </Grid>
         </Container>
       </main>
+      <Footer />
     </Grid>
   );
 };
