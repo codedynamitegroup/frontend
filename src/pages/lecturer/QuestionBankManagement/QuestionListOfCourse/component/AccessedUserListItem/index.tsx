@@ -41,7 +41,7 @@ const AccessedUserListItem = (props: AccessedUserListItemProp) => {
         {props.accessLevel !== AccessLevel.EDITOR ? (
           <ParagraphBody fontWeight={100}>Chủ sở hữu</ParagraphBody>
         ) : (
-          <FormControl variant='standard' className={classes.formControl}>
+          <FormControl variant='outlined' className={classes.formControl}>
             <Select
               labelId='access-level-edit-label'
               id='access-level-edit'
@@ -60,3 +60,4 @@ const AccessedUserListItem = (props: AccessedUserListItemProp) => {
 
 export default AccessedUserListItem;
 export { AccessLevel };
+export type { AccessedUserListItemProp };
