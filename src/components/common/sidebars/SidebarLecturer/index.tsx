@@ -18,6 +18,7 @@ import { CalendarIcon } from "@mui/x-date-pickers";
 import { Button } from "@mui/material";
 import images from "config/images";
 import { useNavigate } from "react-router-dom";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 interface ILinkMenu {
   name: string;
   path: string;
@@ -38,6 +39,11 @@ const sideBarItemListData: SidebarItem[] = [
     name: "Quản lý câu hỏi code",
     icon: <CodeIcon className={classes.itemIcon} />,
     link: routes.lecturer.code_question.management
+  },
+  {
+    name: "Ngân hàng câu hỏi",
+    icon: <AccountBalanceIcon className={classes.itemIcon} />,
+    link: routes.lecturer.question_bank.path
   }
 ];
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -74,18 +80,18 @@ const pages: ILinkMenu[] = [
   },
   {
     name: "Cuộc thi",
-    path: "/"
+    path: routes.user.contest.root
   }
 ];
 
 const auth: ILinkMenu[] = [
   {
     name: "Đăng nhập",
-    path: "/login"
+    path: routes.user.login.root
   },
   {
     name: "Đăng ký",
-    path: "/register"
+    path: routes.user.register.root
   }
 ];
 
@@ -168,11 +174,11 @@ export default function SideBarLecturer({ children }: any) {
         anchor='left'
         open={open}
       >
-        <DrawerHeader>
+        {/* <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-        </DrawerHeader>
+        </DrawerHeader> */}
         <SidebarManagement sideBarItem={sideBarItemListData} />
       </Drawer>
       <Main open={open}>

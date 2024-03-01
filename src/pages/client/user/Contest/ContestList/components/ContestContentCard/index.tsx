@@ -1,7 +1,6 @@
 import React from "react";
 import classes from "./styles.module.scss";
 import { Box, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
-import Heading4 from "components/text/Heading4";
 import Heading6 from "components/text/Heading6";
 import Heading3 from "components/text/Heading3";
 import DateRangeIcon from "@mui/icons-material/DateRange";

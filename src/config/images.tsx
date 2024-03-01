@@ -11,6 +11,7 @@ import logo from "assets/img/logo/logo.png";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
+import contestTimeBackground from "assets/img/background/contest-time-background.png";
 import changePasswordThumbnail from "assets/img/change_password_thumbnail.svg";
 import courseCertificatesBackground from "assets/img/background/background-course-certificate.jpg";
 import homePageBackground from "assets/img/background/background-homepage.png";
@@ -29,7 +30,8 @@ const images = {
   icLevel,
   contestListBackground,
   changePasswordThumbnail,
-  icCertificate
+  icCertificate,
+  contestTimeBackground
 };
 
 export default images;
