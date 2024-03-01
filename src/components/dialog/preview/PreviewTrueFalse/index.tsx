@@ -56,7 +56,7 @@ const PreviewTrueFalse = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => 
             </Box>
           </Grid>
           <Grid item xs={12} md={10}>
-            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={1}>
+            <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
               <Typography gutterBottom>HTML stands for Hyper Text Markup Language</Typography>
               <FormControl>
                 <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>

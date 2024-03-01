@@ -1,7 +1,6 @@
 .language {
   background-color: var(--gray-10);
   padding: 5px 10px;
-  border-radius: 10px;
 }
 .runtime,
 .memory {
@@ -13,4 +12,7 @@
     color: #8c8c8c;
     font-size: 22px;
   }
+}
+
+.container {
 }

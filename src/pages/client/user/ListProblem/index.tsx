@@ -1,7 +1,7 @@
 import Header from "components/Header";
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
@@ -14,6 +14,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
+import Footer from "components/Footer";
+import useBoxDimensions from "utils/useBoxDimensions";
 const status = [
   {
     id: 1,
@@ -74,98 +76,106 @@ const ListProblem = () => {
     "Tìm kiếm nhị phân trên cây",
     "Tìm kiếm nhị phân trên đồ thị"
   ];
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box
-        id={classes.banner}
-        sx={{
-          backgroundImage: `url(${images.background.courseCertificatesBackground})`
-        }}
-      >
-        <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorName={"--white"}>Luyện tập</Heading1>
-          <Heading3 colorName={"--white"}>
-            Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
-          </Heading3>
-          <Box id={classes.bannerSearch}>
-            <Box className={classes.filterSearch}>
-              <OutlinedInput
-                size='small'
-                fullWidth
-                placeholder='Tìm kiếm'
-                startAdornment={
-                  <InputAdornment position='start'>
-                    <SearchIcon className={classes.icon} />
-                  </InputAdornment>
-                }
-                className={classes.searchInput}
-              />
-              <Autocomplete
-                size='medium'
-                id='combo-box-demo'
-                options={status}
-                value={selectedStatus}
-                onChange={(event, newValue) => {
-                  setSelectedStatus(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={!selectedStatus ? "Trạng thái" : ""}
-                    InputLabelProps={{ shrink: false }}
-                  />
-                )}
-                className={classes.autocomplete}
-              />
-              <Autocomplete
-                size='medium'
-                id='combo-box-demo'
-                options={level}
-                value={selectedLevel}
-                onChange={(event, newValue) => {
-                  setSelectedStatus(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={!selectedLevel ? "Độ khó" : ""}
-                    InputLabelProps={{ shrink: false }}
-                  />
-                )}
-                className={classes.autocomplete}
-              />
+      <Header ref={headerRef} />
+      <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
+        <Box
+          id={classes.banner}
+          sx={{
+            backgroundImage: `url(${images.background.homePageBackground})`
+          }}
+        >
+          <Container id={classes.bannerContainer} className={classes.container}>
+            <Heading1 colorName={"--white"}>Luyện tập</Heading1>
+            <Heading3 colorName={"--white"}>
+              Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
+            </Heading3>
+            <Box id={classes.bannerSearch}>
+              <Box className={classes.filterSearch}>
+                <OutlinedInput
+                  size='small'
+                  fullWidth
+                  placeholder='Tìm kiếm'
+                  startAdornment={
+                    <InputAdornment position='start'>
+                      <SearchIcon className={classes.icon} />
+                    </InputAdornment>
+                  }
+                  className={classes.searchInput}
+                />
+                <Autocomplete
+                  size='medium'
+                  id='combo-box-demo'
+                  options={status}
+                  value={selectedStatus}
+                  onChange={(event, newValue) => {
+                    setSelectedStatus(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={!selectedStatus ? "Trạng thái" : ""}
+                      InputLabelProps={{ shrink: false }}
+                    />
+                  )}
+                  className={classes.autocomplete}
+                />
+                <Autocomplete
+                  size='medium'
+                  id='combo-box-demo'
+                  options={level}
+                  value={selectedLevel}
+                  onChange={(event, newValue) => {
+                    setSelectedStatus(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={!selectedLevel ? "Độ khó" : ""}
+                      InputLabelProps={{ shrink: false }}
+                    />
+                  )}
+                  className={classes.autocomplete}
+                />
+              </Box>
             </Box>
-          </Box>
-        </Container>
-      </Box>
-      <Box>
-        <Container className={classes.container}>
-          <Box className={classes.boxContent}>
-            <Grid container>
-              <Grid item xs={3.5}>
-                <Box className={classes.algorithmContainer}>
-                  <Heading3>Các loại giải thuật:</Heading3>
-                  <Box className={classes.algorithm}>
-                    {algorithms.map((algorithm, index) => (
-                      <Box className={classes.algorithmItem}>
-                        <ParagraphBody>{algorithm}</ParagraphBody>
-                        <Chip label={index} size='small' className={classes.chip} />
-                      </Box>
-                    ))}
+          </Container>
+        </Box>
+        <Box>
+          <Container className={classes.container}>
+            <Box className={classes.boxContent}>
+              <Grid container>
+                <Grid item xs={3.5}>
+                  <Box className={classes.algorithmContainer}>
+                    <Heading3>Các loại giải thuật:</Heading3>
+                    <Box className={classes.algorithm}>
+                      {algorithms.map((algorithm, index) => (
+                        <Box className={classes.algorithmItem}>
+                          <ParagraphBody>{algorithm}</ParagraphBody>
+                          <Chip label={index} size='small' className={classes.chip} />
+                        </Box>
+                      ))}
+                    </Box>
                   </Box>
-                </Box>
+                </Grid>
+                <Grid item xs={0.5}></Grid>
+                <Grid item xs={8}>
+                  <Box className={classes.topic}>
+                    <LabTabs />
+                  </Box>
+                </Grid>
               </Grid>
-              <Grid item xs={0.5}></Grid>
-              <Grid item xs={8}>
-                <Box className={classes.topic}>
-                  <LabTabs />
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-      </Box>
+            </Box>
+          </Container>
+        </Box>
+      </main>
+      <Footer />
     </Grid>
   );
 };

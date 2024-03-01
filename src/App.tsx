@@ -36,7 +36,6 @@ import {
 } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import "./App.scss";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,7 +43,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.user.problem.root} element={<ListProblem />} />
-      <Route path={routes.user.problem.detail} element={<DetailProblem />} />
+      <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
       <Route path={routes.user.homepage.root} element={<HomePage />} />
       <Route path={routes.user.login.root} element={<Login />} />
@@ -119,23 +118,25 @@ const router = createBrowserRouter(
           handle={{ crumbName: "Học thuật toán", state: { reset: true } }}
         >
           {routes.lecturer.question_bank.questions_list_of_category.create_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Tạo câu hỏi" }}
+                  key={index}
                 />
               );
             }
           )}
           {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
+                  key={index}
                 />
               );
             }

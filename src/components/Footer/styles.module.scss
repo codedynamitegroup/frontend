@@ -27,11 +27,31 @@
   display: block;
 }
 .header {
-  background-color: var(--blue-500) !important;
+  position: fixed;
+  z-index: 1000;
 
   .logo {
     .imageLogo {
       width: 60px;
     }
+  }
+}
+
+.section {
+  background-color: var(--blue-500);
+  color: white;
+
+  a {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.logo {
+  .imageLogo {
+    width: 100px;
   }
 }

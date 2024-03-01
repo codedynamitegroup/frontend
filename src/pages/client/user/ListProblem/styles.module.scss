@@ -55,45 +55,50 @@
     color: white;
   }
 }
-
-#banner {
-  height: 300px;
-  display: flex;
-  align-items: center;
-  padding: 30px 0;
-
-  #bannerContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+#main {
+  .container {
+    @media (min-width: 1200px) {
+      max-width: 1440px;
+    }
   }
-
-  #bannerSearch {
+  #banner {
+    height: 300px !important;
     display: flex;
-    gap: 15px;
     align-items: center;
-  }
 
-  .filterSearch {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-    .ant-input-search {
-      width: 300px;
+    #bannerContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
-    gap: 10px;
 
-    .searchInput {
-      background-color: white;
+    #bannerSearch {
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
-    .autocomplete {
-      background-color: white;
-      width: 300px;
-      border-radius: 5px;
+
+    .filterSearch {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      .ant-input-search {
+        width: 300px;
+      }
+      gap: 10px;
+
+      .searchInput {
+        background-color: white;
+      }
+      .autocomplete {
+        background-color: white;
+        width: 300px;
+        border-radius: 5px;
+      }
     }
-  }
-  .icon {
-    margin-right: 10px;
+    .icon {
+      margin-right: 10px;
+    }
   }
 }

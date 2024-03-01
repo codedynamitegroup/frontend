@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
-import { Divider } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -11,14 +11,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faComment, faEye, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { Button } from "@mui/material";
-import Close from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Filter from "@mui/icons-material/Filter";
-import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
+import ParagraphBody from "components/text/ParagraphBody";
+import SearchBar from "components/common/search/SearchBar";
+import TuneIcon from "@mui/icons-material/Tune";
+import useBoxDimensions from "utils/useBoxDimensions";
 
-export default function ListSolution() {
+export default function ProblemDetailSolution() {
   const navigate = useNavigate();
   const filter = [
     {
@@ -180,146 +181,144 @@ export default function ListSolution() {
     setIsExpanded(!isExpanded);
   };
   const stickyFilterRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(0);
+  const { height: stickyFilterHeight } = useBoxDimensions({
+    ref: stickyFilterRef
+  });
 
-  useEffect(() => {
-    const getHeight = () => {
-      if (stickyFilterRef.current) {
-        const tagItemHeight = stickyFilterRef.current.clientHeight;
-        console.log(tagItemHeight);
-        setHeight(tagItemHeight);
-      } else {
-        console.error("Ref của tagItem không tồn tại");
-      }
-    };
-    const resizeObserver = new ResizeObserver(getHeight);
-    if (stickyFilterRef.current) {
-      resizeObserver.observe(stickyFilterRef.current);
-    }
+  console.log("stickyFilterHeight", stickyFilterHeight);
 
-    getHeight();
-    return () => {
-      if (stickyFilterRef.current) {
-        resizeObserver.unobserve(stickyFilterRef.current);
-      }
-    };
-  }, [stickyFilterRef]);
   const [solutionDetail, setSolutionDetail] = useState(true);
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);
   };
 
+  const searchHandle = (searchVal: string) => {
+    console.log(searchVal);
+  };
+
+  const openShareInNewTab = () => {
+    window.open(routes.user.problem.solution.share.replace(":problemId", "1"), "_blank");
+  };
+
   return (
-    <Box className={classes.container}>
-      <Box style={{ display: !solutionDetail ? "none" : "block" }}>
-        <Box className={classes.stickyFilter} ref={stickyFilterRef}>
-          <Box className={classes.filterContainer}>
-            <Box className={classes.searchContainer}>
-              <input type='text' placeholder='Tìm kiếm' className={classes.searchInput} />
-              <SearchIcon className={classes.icon} />
-              <Close className={classes.closeIcon} />
-            </Box>
-            <Box className={classes.filter}>
-              <Filter className={classes.filterIcon} />
-              <p>Mới nhất</p>
-            </Box>
-          </Box>
-          <Box className={classes.tagItem}>
-            <Box className={classes.tagAll}>Tất cả</Box>
-            <Box className={classes.tag}>
-              <Box className={classes.tagLanguage}>
-                {tags.map((tag, index) => {
-                  return <Box className={classes.item}>{tag}</Box>;
-                })}
-              </Box>
-              <Divider className={classes.divider} />
-              <Box
-                className={classes.tagAlgorithm}
-                style={{ display: isExpanded ? "flex" : "none" }}
-              >
-                {algorithmTag.map((tag, index) => {
-                  return <Box className={classes.item}>{tag}</Box>;
-                })}
-              </Box>
-            </Box>
-            <ExpandMoreIcon
-              style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
-              className={classes.expandIcon}
-              onClick={handleExpandClick}
-            />
-          </Box>
-          <Box className={classes.shareSolution}>
-            <Box className={classes.shareSolutionTitle}>
-              Bài làm của bạn đánh bại 82% bài làm khác về thời gian{" "}
-            </Box>
-            <Button
-              component='label'
-              variant='contained'
-              startIcon={<FontAwesomeIcon icon={faPenToSquare} className={classes.shareIcon} />}
-              className={classes.shareButton}
-              onClick={() => navigate(routes.user.problem.solution.share)}
-            >
-              Chia sẻ bài giải
-            </Button>
-          </Box>
-        </Box>
-        <Box
-          className={classes.solutionContainer}
-          style={{
-            height: `calc(100vh - ${height + 160}px)`
-          }}
-        >
-          <Box className={classes.solutionItem}>
-            {users.map((user) => {
-              return (
-                <Box onClick={handleSolutionDetail} className={classes.solutionInfo}>
-                  <Box className={classes.solutionTitle}>
-                    <Box className={classes.avatar}>
-                      <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
-                    </Box>
-                    <Box className={classes.nameTitleContainer}>
-                      <Box className={classes.name}>{user.name}</Box>
-                      <Box className={classes.title}>{user.title}</Box>
-                    </Box>
-                  </Box>
-                  <Box className={classes.tagLanguageSolution}>
-                    {user.tags.slice(0, 3).map((tag, index) => {
-                      return <Box className={classes.item}>{tag}</Box>;
-                    })}
-                  </Box>
-                  <Box className={classes.solutionButton}>
-                    <Box className={classes.upVote}>
-                      <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
-                      <Box className={classes.upVoteNumber}>{user.upVote}</Box>
-                    </Box>
-                    <Box className={classes.view}>
-                      <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
-                      <Box className={classes.viewNumber}>{user.view}</Box>
-                    </Box>
-                    <Box className={classes.comment}>
-                      <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
-                      <Box className={classes.commentNumber}>{user.comment}</Box>
-                    </Box>
-                  </Box>
+    <Box className={classes.containerListSolution}>
+      {solutionDetail === true ? (
+        <Box className={classes.listSolution}>
+          <Box className={classes.stickyFilter} ref={stickyFilterRef}>
+            <Grid container className={classes.filterContainer}>
+              <Grid item xs={8}>
+                <SearchBar onSearchClick={searchHandle} />
+              </Grid>
+              <Grid item xs={0.5}></Grid>
+              <Grid item xs={2} className={classes.filter}>
+                <TuneIcon />
+                <ParagraphBody>Mới nhất</ParagraphBody>
+              </Grid>
+            </Grid>
+            <Box className={classes.tagItem}>
+              <Box className={classes.tagAll}>Tất cả</Box>
+              <Box className={classes.tag}>
+                <Box className={classes.tagLanguage}>
+                  {tags.map((tag, index) => {
+                    return (
+                      <Box key={index} className={classes.item}>
+                        {tag}
+                      </Box>
+                    );
+                  })}
                 </Box>
-              );
-            })}
+
+                <Box
+                  className={classes.tagAlgorithm}
+                  style={{ display: isExpanded ? "flex" : "none" }}
+                >
+                  {algorithmTag.map((tag, index) => {
+                    return (
+                      <Box key={index} className={classes.item}>
+                        {tag}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Box>
+              <ExpandMoreIcon
+                style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+                className={classes.expandIcon}
+                onClick={handleExpandClick}
+              />
+            </Box>
+            <Box className={classes.shareSolution}>
+              <Box className={classes.shareSolutionTitle}>
+                Bài làm của bạn đánh bại 82% bài làm khác về thời gian{" "}
+              </Box>
+              <Button
+                component='label'
+                variant='contained'
+                startIcon={<FontAwesomeIcon icon={faPenToSquare} className={classes.shareIcon} />}
+                className={classes.shareButton}
+                onClick={openShareInNewTab}
+              >
+                Chia sẻ bài giải
+              </Button>
+            </Box>
+          </Box>
+          <Box
+            className={classes.solutionContainer}
+            style={{
+              height: `calc(100% - ${stickyFilterHeight}px)`
+            }}
+          >
+            <Box className={classes.solutionItem}>
+              {users.map((user) => {
+                return (
+                  <Box
+                    onClick={handleSolutionDetail}
+                    className={classes.solutionInfo}
+                    key={user.id}
+                  >
+                    <Box className={classes.solutionTitle}>
+                      <Box className={classes.avatar}>
+                        <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
+                      </Box>
+                      <Box className={classes.nameTitleContainer}>
+                        <Box className={classes.name}>{user.name}</Box>
+                        <Box className={classes.title}>{user.title}</Box>
+                      </Box>
+                    </Box>
+                    <Box className={classes.tagLanguageSolution}>
+                      {user.tags.slice(0, 3).map((tag, index) => {
+                        return (
+                          <Box key={index} className={classes.item}>
+                            {tag}
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                    <Box className={classes.solutionButton}>
+                      <Box className={classes.upVote}>
+                        <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
+                        <Box className={classes.upVoteNumber}>{user.upVote}</Box>
+                      </Box>
+                      <Box className={classes.view}>
+                        <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
+                        <Box className={classes.viewNumber}>{user.view}</Box>
+                      </Box>
+                      <Box className={classes.comment}>
+                        <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
+                        <Box className={classes.commentNumber}>{user.comment}</Box>
+                      </Box>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box
-        style={{ display: solutionDetail ? "none" : "block" }}
-        className={classes.detailSolution}
-      >
-        <Box className={classes.stickyBack}>
-          <Box onClick={handleSolutionDetail} className={classes.backButton}>
-            <ArrowBackIcon className={classes.backIcon} />
-            <span>Quay lại</span>
-          </Box>
-          <Divider />
+      ) : (
+        <Box className={classes.detailSolution}>
+          <DetailSolution handleSolutionDetail={handleSolutionDetail} />
         </Box>
-        <DetailSolution />
-      </Box>
+      )}
     </Box>
   );
 }

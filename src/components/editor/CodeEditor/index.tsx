@@ -1,43 +1,30 @@
-import Editor from "@monaco-editor/react";
-import editorAPI from "monaco-editor/esm/vs/editor/editor.api";
+import React, { Dispatch } from "react";
+import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import { langs } from "@uiw/codemirror-extensions-langs";
+import { githubLight } from "@uiw/codemirror-theme-github";
 import classes from "./styles.module.scss";
+
 interface CodeEditorProps {
   value: string;
-  language: string;
-  showMinimap: boolean;
-  readOnly: boolean;
+  readOnly?: boolean;
 }
 
-const CodeEditor = ({ value, language, showMinimap, readOnly }: CodeEditorProps) => {
-  const options: editorAPI.editor.IStandaloneEditorConstructionOptions = {
-    autoIndent: "full",
-    contextmenu: true,
-    fontFamily: "monospace",
-    fontSize: 14,
-    lineHeight: 24,
-    hideCursorInOverviewRuler: true,
-    matchBrackets: "always",
-    minimap: {
-      enabled: showMinimap
-    },
-    scrollbar: {
-      horizontalSliderSize: 4,
-      verticalSliderSize: 18
-    },
-    selectOnLineNumbers: true,
-    roundedSelection: false,
-    readOnly: readOnly,
-    cursorStyle: "line",
-    automaticLayout: true
+const CodeEditor = ({ value, readOnly }: CodeEditorProps) => {
+  const onChange = (value: string, viewUpdate: ViewUpdate) => {
+    // setValue(value);
+    // console.log(value);
   };
-
   return (
-    <Editor
-      theme='light'
-      language={language}
+    <CodeMirror
       value={value}
-      options={options}
-      className={classes.editor}
+      id={classes.codeEditor}
+      theme={githubLight}
+      onChange={onChange}
+      readOnly={readOnly}
+      basicSetup={{
+        autocompletion: true
+      }}
+      extensions={[langs.java(), langs.javascript(), langs.cpp()]}
     />
   );
 };

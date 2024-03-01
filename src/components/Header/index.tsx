@@ -37,7 +37,11 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end"
 }));
 
-function Header() {
+interface HeaderProps {
+  forwardedRef?: React.Ref<HTMLDivElement>;
+}
+
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
 
   interface AppBarProps extends MuiAppBarProps {
@@ -62,11 +66,11 @@ function Header() {
   const auth: ILinkMenu[] = [
     {
       name: "Đăng nhập",
-      path: "/"
+      path: "/login"
     },
     {
       name: "Đăng ký",
-      path: "/"
+      path: "/register"
     }
   ];
 
@@ -116,7 +120,7 @@ function Header() {
   }, []);
 
   return (
-    <AppBar position='static' open={open} className={classes.header}>
+    <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box
@@ -148,8 +152,11 @@ function Header() {
           </Box>
 
           <Box className={classes.navbarAuthItem}>
-            <Button className={classes.item}>Đăng nhập</Button>
-            <Button className={classes.item}>Đăng ký</Button>
+            {auth.map((page, index) => (
+              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                {page.name}
+              </Button>
+            ))}
           </Box>
         </Toolbar>
         <Drawer
@@ -195,5 +202,5 @@ function Header() {
       </Container>
     </AppBar>
   );
-}
+});
 export default Header;
