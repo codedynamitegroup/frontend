@@ -196,18 +196,21 @@ const QuestionBankManagement = () => {
     <div>
       <TabPanel value='1' sx={{ padding: 0 }}>
         <Container>
-          <Stack spacing={2} marginBottom={3}>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
             <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi chung</Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
-                <ParagraphBody> Thêm mới</ParagraphBody>
+                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
               </Button>
             </Stack>
 
             <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
             <DataGrid
               sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" }
+                "& .MuiDataGrid-cell": { padding: "16px" },
+                "& .MuiDataGrid-row:hover": {
+                  cursor: "pointer"
+                }
               }}
               autoHeight
               disableColumnMenu

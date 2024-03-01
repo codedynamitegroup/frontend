@@ -241,18 +241,18 @@ const QuestionListOfCourse = () => {
             </ParagraphBody>
           </Box>
           <Container>
-            <Stack spacing={2} marginBottom={3}>
+            <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học thuật toán</Heading1>
               <Typography>Thông tin danh mục: các bài tập về thuật toán</Typography>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
                 <Button btnType={BtnType.Primary}>
-                  <ParagraphBody>Export câu hỏi ra file</ParagraphBody>
+                  <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
                 </Button>
                 <Button
                   btnType={BtnType.Primary}
                   onClick={() => setIsAddNewQuestionDialogOpen(true)}
                 >
-                  <ParagraphBody> Thêm câu hỏi</ParagraphBody>
+                  <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
                 </Button>
               </Stack>
 
