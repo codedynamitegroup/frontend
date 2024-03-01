@@ -1,28 +1,23 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
-import { FormControl, MenuItem, Select, SelectChangeEvent, Tabs } from "@mui/material";
+import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Tabs } from "@mui/material";
 import { Box } from "@mui/system";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import ReactQuill from "react-quill";
 import CodeEditor from "components/editor/CodeEditor";
 import { useState } from "react";
 import CodeIcon from "@mui/icons-material/Code";
-import ListSolution from "./components/ListSolution";
 import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
 import Header from "components/Header";
 import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
-import Submission from "./components/Submission";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import LessonDetailDescription from "./components/Description";
 import LessonDetailSolution from "./components/ListSolution";
 import LessonDetailSubmission from "./components/Submission";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 enum ELanguage {
   JAVA = "java",
@@ -38,24 +33,24 @@ interface QCodeStub {
 
 export default function CourseCertificateLessonProblem() {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState("0");
-
   const codeStubs: QCodeStub[] = [
     {
       language: ELanguage.JAVA,
-      codeStubHead: `	import java.io.*;
-	import java.math.*;
-	import java.security.*;
-	import java.text.*;
-	import java.util.*;
-	import java.util.concurrent.*;
-	import java.util.function.*;
-	import java.util.regex.*;
-	import java.util.stream.*;
-	import static java.util.stream.Collectors.joining;
-	import static java.util.stream.Collectors.toList;
+      codeStubHead: `
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 	`,
-      codeStubBody: `class Result {
+      codeStubBody: `
+class Result {
 	/*
 		* Complete the 'sumOfTwoIntegers' function below.
 		*
@@ -150,7 +145,6 @@ function main() {
       codeStubHead: `#include <bits/stdc++.h>
 
 	using namespace std;
-	
 	string ltrim(const string &);
 	string rtrim(const string &);
 					
@@ -169,27 +163,28 @@ int sumOfTwoIntegers(int a, int b) {
 
 }
 			`,
-      codeStubTail: `int main()
+      codeStubTail: `
+int main()
 	{
-			ofstream fout(getenv("OUTPUT_PATH"));
-	
-			string a_temp;
-			getline(cin, a_temp);
-	
-			int a = stoi(ltrim(rtrim(a_temp)));
-	
-			string b_temp;
-			getline(cin, b_temp);
-	
-			int b = stoi(ltrim(rtrim(b_temp)));
-	
-			int result = sumOfTwoIntegers(a, b);
-	
-			fout << result << "\n";
-	
-			fout.close();
-	
-			return 0;
+		ofstream fout(getenv("OUTPUT_PATH"));
+
+		string a_temp;
+		getline(cin, a_temp);
+
+		int a = stoi(ltrim(rtrim(a_temp)));
+
+		string b_temp;
+		getline(cin, b_temp);
+
+		int b = stoi(ltrim(rtrim(b_temp)));
+
+		int result = sumOfTwoIntegers(a, b);
+
+		fout << result << "\n";
+
+		fout.close();
+
+		return 0;
 	}
 	
 	string ltrim(const string &str) {
@@ -260,11 +255,38 @@ int sumOfTwoIntegers(int a, int b) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const breadcumpRef = useRef<HTMLDivElement>(null);
+  const { height: breadcrumbHeight } = useBoxDimensions({
+    ref: breadcumpRef
+  });
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
+  const tabRef = useRef<HTMLDivElement>(null);
+  const { height: tabHeight } = useBoxDimensions({
+    ref: tabRef
+  });
+  const codeStubHeadRef = useRef<HTMLDivElement>(null);
+  const { height: codeStubHeadHeight } = useBoxDimensions({
+    ref: codeStubHeadRef
+  });
+
+  const marginRef = useRef<number>(10);
   return (
     <Box className={classes.root}>
-      <Header />
-      <Box className={classes.boxContainer}>
-        <Box className={classes.tabWrapper}>
+      <Header ref={headerRef} />
+      <Box
+        className={classes.body}
+        style={{
+          height: `calc(100% - ${headerHeight + marginRef.current * 2}px)`,
+          gap: `${marginRef.current}px`,
+          marginBottom: `${marginRef.current}px`
+        }}
+      >
+        <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
             <ParagraphSmall
               colorName='--blue-500'
@@ -290,45 +312,55 @@ int sumOfTwoIntegers(int a, int b) {
             <ParagraphSmall colorName='--blue-500'>Hello world</ParagraphSmall>
           </Box>
         </Box>
-        <Box className={classes.codeContainer}>
-          <Box className={classes.tabContent}>
-            <TabContext value={value}>
-              <Box id={classes.tabWrapper}>
-                <Tabs
-                  value={activeTab}
-                  onChange={handleChange}
-                  aria-label='basic tabs example'
-                  className={classes.tabs}
-                >
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Mô tả</ParagraphBody>}
-                    value={0}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Thảo luận</ParagraphBody>}
-                    value={1}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Bài nộp</ParagraphBody>}
-                    value={2}
-                  />
-                </Tabs>
-              </Box>
+        <Grid
+          container
+          className={classes.codeContainer}
+          style={{
+            height: `calc(100% - ${breadcrumbHeight}px)`
+          }}
+        >
+          <Grid item xs={12} md={5.95} className={classes.leftBody}>
+            <Box id={classes.tabWrapper} ref={tabRef}>
+              <Tabs
+                value={activeTab}
+                onChange={handleChange}
+                aria-label='basic tabs example'
+                className={classes.tabs}
+              >
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Mô tả</ParagraphBody>}
+                  value={0}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Thảo luận</ParagraphBody>}
+                  value={1}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Bài nộp</ParagraphBody>}
+                  value={2}
+                />
+              </Tabs>
+            </Box>
 
-              <Box>
-                <Routes>
-                  <Route path={"description"} element={<LessonDetailDescription />} />
-                  <Route path={"solution"} element={<LessonDetailSolution />} />
-                  <Route path={"submission"} element={<LessonDetailSubmission />} />
-                </Routes>
-              </Box>
-            </TabContext>
-          </Box>
-          <Box className={classes.codeStubsWrapper}>
-            <Box className={classes.codeStubHead}>
+            <Box
+              id={classes.tabBody}
+              style={{
+                height: `calc(100% - ${tabHeight}px)`
+              }}
+            >
+              <Routes>
+                <Route path={"description"} element={<LessonDetailDescription />} />
+                <Route path={"solution"} element={<LessonDetailSolution />} />
+                <Route path={"submission"} element={<LessonDetailSubmission />} />
+              </Routes>
+            </Box>
+          </Grid>
+          <Grid item xs={0} md={0.1}></Grid>
+          <Grid item xs={12} md={5.95} className={classes.rightBody}>
+            <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
               <CodeIcon />
               <FormControl>
                 <Select
@@ -342,19 +374,21 @@ int sumOfTwoIntegers(int a, int b) {
                 </Select>
               </FormControl>
             </Box>
-            <Box className={classes.codeStubBody}>
+            <Box
+              style={{
+                height: `calc(100% - ${codeStubHeadHeight}px)`,
+                overflow: "auto"
+              }}
+            >
               <CodeEditor
                 value={selectedCodeStub.codeStubHead.concat(
                   selectedCodeStub.codeStubBody,
                   selectedCodeStub.codeStubTail
                 )}
-                readOnly={false}
-                language={selectedLanguage}
-                showMinimap={false}
               />
             </Box>
-          </Box>
-        </Box>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

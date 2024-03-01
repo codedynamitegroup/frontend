@@ -329,7 +329,7 @@ int sumOfTwoIntegers(int a, int b) {
               </FormControl>
             </Box>
             <Box className={classes.codeStubBody}>
-              <CodeEditor
+              {/* <CodeEditor
                 value={selectedCodeStub.codeStubHead.concat(
                   selectedCodeStub.codeStubBody,
                   selectedCodeStub.codeStubTail
@@ -337,7 +337,7 @@ int sumOfTwoIntegers(int a, int b) {
                 readOnly={true}
                 language={selectedLanguage}
                 showMinimap={false}
-              />
+              /> */}
             </Box>
           </Box>
         </Box>

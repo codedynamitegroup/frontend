@@ -117,23 +117,25 @@ const router = createBrowserRouter(
           handle={{ crumbName: "Học thuật toán", state: { reset: true } }}
         >
           {routes.lecturer.question_bank.questions_list_of_category.create_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Tạo câu hỏi" }}
+                  key={index}
                 />
               );
             }
           )}
           {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
-            (value) => {
+            (value, index) => {
               return (
                 <Route
                   path={value.path}
                   element={<QuestionCreated qtype={value.code} />}
                   handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
+                  key={index}
                 />
               );
             }
