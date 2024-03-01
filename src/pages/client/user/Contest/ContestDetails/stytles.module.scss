@@ -8,4 +8,11 @@
             padding-top: 0;
         }
     }
+    .topUserText {
+        font-size: 18px;
+        color: var(--blue-link);
+    }
+    .topUserText:hover {
+        color: var(--blue-hover);
+    }
 }

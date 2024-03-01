@@ -1,4 +1,15 @@
-import { Box, Container, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Link,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
+  Typography
+} from "@mui/material";
 import classes from "./stytles.module.scss";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
@@ -9,6 +20,8 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import ContestProblemItem, { EContestProblemDifficulty } from "./components/ContestProblemItem";
 import ContestLeaderboard from "./components/ContestLeaderboard";
+import Heading4 from "components/text/Heading4";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 export enum EContestStatus {
   featured,
@@ -19,7 +32,7 @@ export enum EContestStatus {
 const ContestData = {
   name: "Batch coding",
   status: EContestStatus.happening,
-  joinedContest: false,
+  joinedContest: true,
   description: `<h3 style="text-align:start"><span style="font-size:24px"><span style="font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;PingFang SC&quot;,&quot;Hiragino Sans GB&quot;,&quot;Microsoft YaHei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;"><span style="color:rgba(0, 0, 0, 0.85)"><span style="background-color:#fafafa">Ch&agrave;o mừng đến với Cuộc thi h&agrave;ng tuần Batch the code lần thứ 387</span></span></span></span></h3>
 
 <p>&nbsp;</p>
@@ -200,6 +213,41 @@ const currentUserRank = {
   ],
   totalScore: 14
 };
+const topUserRank: Array<any> = [
+  {
+    rank: 1,
+    name: "Nguyễn Văn A",
+    problemData: [
+      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+    ],
+    totalScore: 14
+  },
+  {
+    rank: 2,
+    name: "Nguyễn Văn BCDEF",
+    problemData: [
+      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+    ],
+    totalScore: 14
+  },
+  {
+    rank: 3,
+    name: "Nguyễn Văn CEFGHIJ ds",
+    problemData: [
+      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+    ],
+    totalScore: 14
+  }
+];
 const ContestDetails = () => {
   const [value, setValue] = useState(() => {
     return ContestData["status"] === EContestStatus.ended ? "3" : "1";
@@ -221,14 +269,19 @@ const ContestDetails = () => {
       />
       <Container maxWidth='lg' className={classes.bodyContainer} sx={{ paddingBottom: "40px" }}>
         <Grid container spacing={1}>
-          <Grid item xs={value !== "3" ? 9 : 12}>
+          <Grid
+            item
+            xs={value !== "3" && ContestData["status"] !== EContestStatus.featured ? 9 : 12}
+          >
             <Paper>
               <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <TabList onChange={handleChange} aria-label='lab API tabs example'>
                     <Tab label='Mô tả chung' value='1' />
-                    <Tab label='Đề thi' value='2' />
-
+                    {ContestData["status"] !== EContestStatus.featured &&
+                    ContestData["joinedContest"] ? (
+                      <Tab label='Đề thi' value='2' />
+                    ) : null}
                     {ContestData["status"] === EContestStatus.ended ||
                     ContestData["status"] === EContestStatus.happening ? (
                       <Tab label='Bảng xếp hạng' value='3' />
@@ -241,22 +294,25 @@ const ContestDetails = () => {
                     dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
                   ></div>
                 </TabPanel>
-                <TabPanel value='2'>
-                  <Grid container spacing={3}>
-                    {problemData.map((problem) => (
-                      <Grid item xs={12} key={problem.name}>
-                        <ContestProblemItem
-                          name={problem.name}
-                          point={problem.point}
-                          maxScore={problem.maxScore}
-                          difficulty={problem.difficulty}
-                          maxSubmission={problem.maxSubmission}
-                          submission={problem.submission}
-                        />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </TabPanel>
+                {ContestData["status"] !== EContestStatus.featured &&
+                ContestData["joinedContest"] ? (
+                  <TabPanel value='2'>
+                    <Grid container spacing={3}>
+                      {problemData.map((problem) => (
+                        <Grid item xs={12} key={problem.name}>
+                          <ContestProblemItem
+                            name={problem.name}
+                            point={problem.point}
+                            maxScore={problem.maxScore}
+                            difficulty={problem.difficulty}
+                            maxSubmission={problem.maxSubmission}
+                            submission={problem.submission}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </TabPanel>
+                ) : null}
 
                 {ContestData["status"] === EContestStatus.ended ||
                 ContestData["status"] === EContestStatus.happening ? (
@@ -274,7 +330,38 @@ const ContestDetails = () => {
           </Grid>
           {value !== "3" ? (
             <Grid item xs={3}>
-              <Paper>Đang suy nghĩ</Paper>
+              {ContestData["status"] !== EContestStatus.featured ? (
+                <Paper>
+                  <Grid container direction='column' alignItems='center' justifyContent='center'>
+                    <Grid item xs={12}>
+                      <Heading4 margin={"10px"}>Top 3 xếp hạng</Heading4>
+                      <Divider orientation='horizontal' />
+                    </Grid>
+                    {topUserRank && topUserRank.length !== 0 ? (
+                      <Stack spacing={1} margin={"10px 0 10px 0"}>
+                        {topUserRank.map((user, index) => (
+                          <Grid item xs={12} key={user.rank}>
+                            <Stack alignItems={"center"} direction={"row"}>
+                              <EmojiEventsIcon
+                                fontSize='small'
+                                sx={{
+                                  color: index === 0 ? "gold" : index === 1 ? "gray" : "brown",
+                                  marginRight: "5px"
+                                }}
+                              />
+                              <Link href='#' underline='none'>
+                                <Typography className={classes.topUserText}>{user.name}</Typography>
+                              </Link>
+                            </Stack>
+                          </Grid>
+                        ))}
+                      </Stack>
+                    ) : (
+                      <Typography color='var(--gray-30)'>Không có dữ liệu</Typography>
+                    )}
+                  </Grid>
+                </Paper>
+              ) : null}
             </Grid>
           ) : null}
         </Grid>
