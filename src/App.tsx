@@ -35,6 +35,7 @@ import QuestionBankManagementLayout from "pages/lecturer/QuestionBankManagement/
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
+import Dashboard from "pages/client/user/Dashboard";
 import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
@@ -51,6 +52,8 @@ const router = createBrowserRouter(
       <Route path={routes.user.login.root} element={<Login />} />
       <Route path={routes.user.register.root} element={<Register />} />
       <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
+
+      <Route path={routes.user.dashboard.root} element={<Dashboard />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
 

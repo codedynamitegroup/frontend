@@ -122,6 +122,9 @@ export const routes = {
     homepage: {
       root: "/"
     },
+    dashboard: {
+      root: "/dashboard"
+    },
     login: {
       root: "/login"
     },
