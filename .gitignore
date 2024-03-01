@@ -26,3 +26,4 @@ public/cmaps
 public/standard_fonts
 public/pdf.worker.js
 public/pspdfkit-lib
+public/test*

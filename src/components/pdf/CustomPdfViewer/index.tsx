@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { pdfjs, Document, Page } from "react-pdf";
+import { useCallback, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import "./index.css";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import axios from "axios";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
