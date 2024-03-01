@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ParagraphBody from "components/text/ParagraphBody";
+import UserTableTemplate from "components/common/table/UserTableTemplate";
 export default function ProblemTable() {
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
   const customColumns = ["status", "name", "level"];
@@ -119,7 +120,7 @@ export default function ProblemTable() {
   return (
     <Box className={classes.container}>
       <Box className={classes.table}>
-        <TableTemplate
+        <UserTableTemplate
           customHeading={customHeading}
           customColumns={customColumns}
           data={data}
