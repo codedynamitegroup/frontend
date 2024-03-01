@@ -40,7 +40,7 @@ const rows = [
     questionName: "Con trỏ là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
-    qtype: "Nhiều lựa chọn"
+    qtype: "Tự luận"
   },
   {
     id: 2,
