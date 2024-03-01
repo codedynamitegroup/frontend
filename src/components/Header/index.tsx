@@ -59,18 +59,18 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     },
     {
       name: "Cuộc thi",
-      path: "/"
+      path: routes.user.contest.root
     }
   ];
 
   const auth: ILinkMenu[] = [
     {
       name: "Đăng nhập",
-      path: "/login"
+      path: routes.user.login.root
     },
     {
       name: "Đăng ký",
-      path: "/register"
+      path: routes.user.register.root
     }
   ];
 
