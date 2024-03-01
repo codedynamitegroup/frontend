@@ -164,11 +164,11 @@ export default function SideBarLecturer({ children }: any) {
         anchor='left'
         open={open}
       >
-        <DrawerHeader>
+        {/* <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-        </DrawerHeader>
+        </DrawerHeader> */}
         <SidebarManagement sideBarItem={sideBarItemListData} />
       </Drawer>
       <Main open={open}>

@@ -1,8 +1,10 @@
 .root {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
   display: flex;
   flex-direction: column !important;
-  gap: 20px;
-  padding-bottom: 20px;
   background-color: var(--blue-1);
 }
 

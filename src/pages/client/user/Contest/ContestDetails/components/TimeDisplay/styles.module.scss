@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    .timeNumberContainer {
+        width: 35px;
+        padding: 8px;
+        background-size: contain;
+        margin-bottom: 5px;
+    }
+}

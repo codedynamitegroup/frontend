@@ -253,8 +253,8 @@ const LecturerCourseManagement = () => {
                 </Grid>
               </Box>
             ) : (
-              <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-                <Grid container spacing={2}>
+              <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
+                <Grid container spacing={4}>
                   {tempCourse.map((course) => (
                     <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
                       <CourseList
