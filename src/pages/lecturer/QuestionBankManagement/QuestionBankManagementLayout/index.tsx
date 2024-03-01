@@ -22,7 +22,7 @@ const QuestionBankManagementLayout = () => {
   };
   return (
     <Grid className={classes.root}>
-      <Header />
+      {/* <Header /> */}
       <Container className={classes.container}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

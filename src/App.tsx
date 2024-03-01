@@ -33,7 +33,7 @@ import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
 import Login from "pages/client/user/Login";
 import Register from "pages/client/user/Register";
 import Forgotpassword from "pages/client/user/ForgotPassword";
-import QuestionBankManagementLayout from "layout/QuestionBankManagementLayout";
+import QuestionBankManagementLayout from "pages/lecturer/QuestionBankManagement/QuestionBankManagementLayout";
 import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
