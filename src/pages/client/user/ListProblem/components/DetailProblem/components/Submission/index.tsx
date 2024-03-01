@@ -15,6 +15,7 @@ import DetailSolution from "./components/DetailSubmission";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import TableTemplate from "components/common/table/TableTemplate";
+import UserTableTemplate from "components/common/table/UserTableTemplate";
 
 export default function ProblemDetailSubmission() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function ProblemDetailSubmission() {
     <Box className={classes.container}>
       {submissionDetail === true ? (
         <Box className={classes.submissionTable}>
-          <TableTemplate
+          <UserTableTemplate
             customHeading={customHeading}
             customColumns={customColumns}
             data={data}
