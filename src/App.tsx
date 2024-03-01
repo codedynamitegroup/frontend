@@ -39,7 +39,6 @@ import Dashboard from "pages/client/user/Dashboard";
 import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
-import PdfViewer from "components/pdf/PdfViewer";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,8 +56,6 @@ const router = createBrowserRouter(
       <Route path={routes.user.dashboard.root} element={<Dashboard />} />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
-
-      <Route path={"/test-pdf"} element={<PdfViewer document={"test.pptx"} />} />
 
       <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
 
