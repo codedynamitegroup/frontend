@@ -2,5 +2,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1976d2;
+  background-color: var(--blue-500);
+}
+.logo {
+  .imageLogo {
+    width: 60px;
+  }
+}
+.navbarAuthItem {
+  flex-grow: 0;
+  display: none;
+
+  @media (min-width: 900px) {
+    // equivalent to 'md' in Material-UI
+    display: flex;
+  }
+}
+.navbarItem {
+  flex-grow: 1;
+  display: none;
+
+  @media (min-width: 900px) {
+    // equivalent to 'md' in Material-UI
+    display: flex;
+  }
+}
+
+.item {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 1rem !important;
+  margin-right: 1rem !important;
+  color: white !important;
+  display: block;
 }
