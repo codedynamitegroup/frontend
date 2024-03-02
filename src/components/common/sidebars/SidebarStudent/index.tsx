@@ -1,16 +1,13 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import { styled, useTheme } from "@mui/material/styles";
 import { CalendarIcon } from "@mui/x-date-pickers";
-import Header, { DrawerHeader } from "components/Header";
+import { DrawerHeader } from "components/Header";
 import React from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
@@ -70,18 +67,22 @@ const pages: ILinkMenu[] = [
   },
   {
     name: "Cuộc thi",
-    path: "/"
+    path: routes.user.contest.root
+  },
+  {
+    name: "Khóa học",
+    path: routes.student.course.management
   }
 ];
 
 const auth: ILinkMenu[] = [
   {
     name: "Đăng nhập",
-    path: "/login"
+    path: routes.user.login.root
   },
   {
     name: "Đăng ký",
-    path: "/register"
+    path: routes.user.register.root
   }
 ];
 
@@ -103,13 +104,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function SideBarLecturer({ children }: any) {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const toogleDrawer = () => {
     setOpen((pre) => !pre);

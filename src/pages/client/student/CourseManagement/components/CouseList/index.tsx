@@ -26,7 +26,7 @@ const CourseList = (props: ListProps) => {
       <Grid container spacing={1}>
         <Grid item xs={12} container direction='column'>
           <Grid item xs className={classes.courseInfo}>
-            <Box>
+            <Box className={classes.courseInfoWrapper}>
               <Link
                 href={routes.student.course.information.replace(":courseId", "1")}
                 underline='hover'

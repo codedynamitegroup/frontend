@@ -50,6 +50,7 @@ const ContestProblemItem = (props: PropsData) => {
                 label={difficulty}
                 sx={{
                   width: "fit-content",
+                  color: "white",
                   backgroundColor:
                     difficulty === EContestProblemDifficulty.easy
                       ? "var(--green-600)"
