@@ -1,14 +1,6 @@
 import React, { useRef } from "react";
 import classes from "./styles.module.scss";
-import {
-  Box,
-  Divider,
-  Grid,
-  Paper,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from "@mui/material";
+import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import TrendingContestCard from "./components/TrendingContestCard";
 import SearchBar from "components/common/search/SearchBar";
 import Header from "components/Header";
@@ -39,27 +31,32 @@ const trendingItem = [
   {
     name: "FPT Tech day",
     startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest1
+    image: images.temp.contest.tempContest1,
+    contestId: 1
   },
   {
     name: "Sasuke code war",
     startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest2
+    image: images.temp.contest.tempContest2,
+    contestId: 2
   },
   {
     name: "Code challenger 2024",
     startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest3
+    image: images.temp.contest.tempContest3,
+    contestId: 3
   },
   {
     name: "Batch the code",
     startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest4
+    image: images.temp.contest.tempContest4,
+    contestId: 1
   },
   {
     name: "Hesang Biweekly",
     startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest5
+    image: images.temp.contest.tempContest5,
+    contestId: 2
   }
 ];
 
@@ -170,6 +167,7 @@ const ContestList = () => {
                         name={item.name}
                         startDate={item.startDate}
                         avtImage={item.image}
+                        contestId={item.contestId}
                       />
                     </SwiperSlide>
                   ))}
@@ -180,7 +178,7 @@ const ContestList = () => {
         </Grid>
 
         <Grid item xs={12} md={12} xl={12} lg={12} className={classes.contestListContainer}>
-          <Grid container justifyContent={"center"} spacing={4}>
+          <Grid container justifyContent={"center"} spacing={2}>
             <Grid item xs={12} md={10} lg={8}>
               <Typography
                 color={"#2a2a2a"}
@@ -197,32 +195,32 @@ const ContestList = () => {
               <SearchBar onSearchClick={onSearchClick} />
             </Grid>
             <Grid item xs={12} md={10} lg={8}>
+              <Box className={classes.contestListButtonGroup}>
+                <ToggleButtonGroup {...control}>
+                  <ToggleButton
+                    key='happening'
+                    value='happening'
+                    className={classes.listStateButton}
+                  >
+                    Đang diễn ra
+                  </ToggleButton>
+                  <ToggleButton key='ended' value='ended'>
+                    Đã kết thúc
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={10} lg={8}>
               <Grid container spacing={2}>
                 <Grid item sm={12} xs={12} md={12} lg={9}>
-                  <Paper sx={{ padding: "10px" }}>
+                  <Box>
                     <Grid container spacing={2} alignItems={"flex-start"}>
-                      <Grid item sm={12} xs={12} md={12} lg={8}>
-                        <Box className={classes.contestListButtonGroup}>
-                          <ToggleButtonGroup {...control}>
-                            <ToggleButton
-                              key='happening'
-                              value='happening'
-                              className={classes.listStateButton}
-                            >
-                              Đang diễn ra
-                            </ToggleButton>
-                            <ToggleButton key='ended' value='ended'>
-                              Đã kết thúc
-                            </ToggleButton>
-                          </ToggleButtonGroup>
-                        </Box>
-                        <Divider />
-                      </Grid>
                       <Grid item xs={12}>
                         <ContestContentCard
                           name='Sasuke war 11'
                           description='The weekly coding contest for people who love programming on CodeLearn'
                           avtImage={images.temp.contest.tempContest1}
+                          contestId={1}
                         />
                       </Grid>
                       <Grid item xs={12}>
@@ -230,6 +228,7 @@ const ContestList = () => {
                           name='Batch the code'
                           description='Thử thách thi vui thưởng thật dành cho các bạn trẻ đam mê công nghệ, thích khám phá và làm chủ ngôn ngữ số.'
                           avtImage={images.temp.contest.tempContest2}
+                          contestId={2}
                         />
                       </Grid>
                       <Grid item xs={12}>
@@ -238,6 +237,7 @@ const ContestList = () => {
                           description='Bảng thi giành cho mọi đối tượng đam mê lập trình, yêu thích công nghệ
 Đăng ký tham gia vui lòng truy cập: https://techday2021.fpt.com.vn/vi/code-war'
                           avtImage={images.temp.contest.tempContest3}
+                          contestId={3}
                         />
                       </Grid>
                       <Grid item xs={12}>
@@ -245,10 +245,11 @@ const ContestList = () => {
                           name='CSS 11'
                           description='Nurture Your Software DNA_Mini code challenge'
                           avtImage={images.temp.contest.tempContest4}
+                          contestId={1}
                         />
                       </Grid>
                     </Grid>
-                  </Paper>
+                  </Box>
                 </Grid>
 
                 <Grid item sm={12} xs={12} md={12} lg={3}>

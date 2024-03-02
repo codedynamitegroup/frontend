@@ -1,9 +1,10 @@
 .container {
     margin-top: 10px;
-    background-color: var(--gray-2) !important;
+    cursor: pointer;
+    color: #2a2a2a;
+    
     .contestInfo {
         margin-left: 10px;
-
     }
     .contestImage {
         height: 100px; 
@@ -19,4 +20,6 @@
         padding: 10px;
     }
 }
-
+.container:hover {
+    color: var(--blue-hover);
+}
