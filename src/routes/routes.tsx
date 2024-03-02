@@ -72,7 +72,8 @@ export const routes = {
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",
       information: "/student/courses/:courseId/information",
-      assignment: "/student/courses/:courseId/assignment",
+      assignment: "/student/courses/:courseId/assignments",
+      assignment_detail: "/student/courses/:courseId/assignments/:assignmentId",
       grade: "/student/courses/:courseId/grade",
       participant: "/student/courses/:courseId/participant"
     },

@@ -61,6 +61,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     {
       name: "Cuộc thi",
       path: routes.user.contest.root
+    },
+    {
+      name: "Khóa học",
+      path: routes.student.course.management
     }
   ];
 

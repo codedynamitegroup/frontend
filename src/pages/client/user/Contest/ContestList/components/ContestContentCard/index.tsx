@@ -4,17 +4,25 @@ import { Box, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
 import Heading6 from "components/text/Heading6";
 import Heading3 from "components/text/Heading3";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface PropsData {
   name: string;
   description: string;
+  avtImage: any;
+  contestId: number;
 }
 const ContestContentCard = (props: PropsData) => {
-  const { name, description } = props;
-  const IMG_URL = "https://picsum.photos/400/300";
+  const { name, description, avtImage, contestId } = props;
+  const navigate = useNavigate();
+  const clickHandler = () => {
+    navigate(routes.user.contest.detail.replace(":contestId", contestId.toString()));
+  };
+
   const chipClickHandle = () => {};
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} onClick={clickHandler}>
       <Grid container alignItems='center' spacing={2}>
         <Grid item xs={10}>
           <Box className={classes.contestInfo}>
@@ -27,7 +35,7 @@ const ContestContentCard = (props: PropsData) => {
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Heading3 color={"#2a2a2a"}>{name}</Heading3>
+                <Heading3 sx={{ color: "inherit" }}>{name}</Heading3>
               </Grid>
               <Grid item xs={12}>
                 <Typography
@@ -36,12 +44,12 @@ const ContestContentCard = (props: PropsData) => {
                   fontSize='16px'
                   color='#2a2a2a'
                 >
-                  {props.description}
+                  {description}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Stack direction={"row"} alignItems={"center"}>
-                  <DateRangeIcon fontSize='small' />
+                  <DateRangeIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
                   <Heading6 colorName={"--gray-80"} fontWeight={40} margin='10px 0 10px 5px'>
                     Chủ nhật 27/02/2024 9:30 AM GMT+7
                   </Heading6>
@@ -51,7 +59,7 @@ const ContestContentCard = (props: PropsData) => {
           </Box>
         </Grid>
         <Grid item xs={2}>
-          <img src={IMG_URL} alt='Contest' className={classes.contestImage} />
+          <img src={avtImage} alt='Contest' className={classes.contestImage} />
         </Grid>
       </Grid>
     </Paper>

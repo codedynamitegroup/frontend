@@ -1,5 +1,3 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CodeIcon from "@mui/icons-material/Code";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -81,6 +79,10 @@ const pages: ILinkMenu[] = [
   {
     name: "Cuộc thi",
     path: routes.user.contest.root
+  },
+  {
+    name: "Khóa học",
+    path: routes.lecturer.course.management
   }
 ];
 
@@ -113,13 +115,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function SideBarLecturer({ children }: any) {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const toogleDrawer = () => {
     setOpen((pre) => !pre);

@@ -1,0 +1,86 @@
+.root {
+  height: 100%;
+
+  .stickyBack {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 10px 0;
+    background-color: white;
+
+    .backButton {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      padding: 5px;
+
+      &:hover {
+        cursor: pointer;
+        color: var(--blue-500);
+        .backIcon {
+          font-size: 20px;
+          color: var(--blue-500);
+        }
+      }
+      .backIcon {
+        font-size: 20px;
+        color: #737373;
+      }
+    }
+  }
+
+  .submissionContainer {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .submissionInfo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .submissionTitle {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .submissionAuthor {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+
+    .submissionStatistical {
+      .statisticalTime {
+        padding: 10px 0;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        color: white;
+        background-color: var(--blue-500);
+      }
+      .statisticalMemory {
+        padding: 10px 0;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        color: white;
+        background-color: var(--green-600);
+      }
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .data {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+    }
+  }
+}

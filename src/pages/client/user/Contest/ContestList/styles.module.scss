@@ -22,17 +22,18 @@
   }
   .contestListContainer {
     .contestListButtonGroup {
-      padding: 10px;
       & [class~="MuiToggleButtonGroup-root"] {
         & [class~="MuiButtonBase-root"] {
+          background-color: rgb(255, 255, 255);
           border-radius: 20px;
           border: 0;
           margin-right: 10px;
         }
+        & [class~="Mui-selected"] {
+          background-color: var(--blue-500);
+          color: white;
+        }
       }
     }
-  }
-  .react-multi-carousel-list {
-    padding: 0rem 0 2rem 0;
   }
 }
