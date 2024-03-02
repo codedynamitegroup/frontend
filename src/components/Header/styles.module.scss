@@ -28,7 +28,6 @@
 }
 .header {
   background-color: var(--blue-500) !important;
-
   .logo {
     .imageLogo {
       width: 60px;
@@ -42,4 +41,11 @@
   object-fit: cover;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.menuProfile {
+  padding: 10px;
+  & [class~="MuiPaper-root"] {
+    background-color: black !important;
+  }
 }
