@@ -21,3 +21,24 @@
 .pagination {
   background-color: white !important;
 }
+.table-head {
+  background-color: var(--blue-500);
+
+  p {
+    color: #fff;
+  }
+
+  .table-cell {
+    min-width: 180px;
+    color: #fff !important;
+  }
+  .status {
+    width: 150px;
+  }
+}
+.row {
+  cursor: pointer;
+  &:hover {
+    background-color: var(--cultured-gray);
+  }
+}
