@@ -1,6 +1,14 @@
 import React, { useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
-import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Tabs } from "@mui/material";
+import {
+  Divider,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tabs
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import Tab from "@mui/material/Tab";
@@ -20,6 +28,7 @@ import useBoxDimensions from "utils/useBoxDimensions";
 import ProblemDetailDescription from "./components/Description";
 import ProblemDetailSolution from "./components/ListSolution";
 import ProblemDetailSubmission from "./components/Submission";
+import { Resizable } from "re-resizable";
 
 enum ELanguage {
   JAVA = "java",
@@ -273,6 +282,26 @@ int main()
     ref: codeStubHeadRef
   });
 
+  const [width001, setWidth001] = useState("50%");
+  const [width002, setWidth002] = useState("50%");
+
+  const handleResize001 = (e: any, direction: any, ref: any, d: any) => {
+    const newWidth001 = ref.style.width;
+    const newWidth002 = `${100 - parseFloat(newWidth001)}%`;
+
+    setWidth001(newWidth001);
+    setWidth002(newWidth002);
+    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
+  };
+  const handleResize002 = (e: any, direction: any, ref: any, d: any) => {
+    const newWidth002 = ref.style.width;
+    const newWidth001 = `${100 - parseFloat(newWidth002)}%`;
+
+    setWidth002(newWidth002);
+    setWidth001(newWidth001);
+    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
+  };
+
   const marginRef = useRef<number>(10);
   return (
     <Box className={classes.root}>
@@ -306,75 +335,109 @@ int main()
             height: `calc(100% - ${breadcrumbHeight}px)`
           }}
         >
-          <Grid item xs={12} md={5.95} className={classes.leftBody}>
-            <Box id={classes.tabWrapper} ref={tabRef}>
-              <Tabs
-                value={activeTab}
-                onChange={handleChange}
-                aria-label='basic tabs example'
-                className={classes.tabs}
-              >
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Mô tả</ParagraphBody>}
-                  value={0}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Thảo luận</ParagraphBody>}
-                  value={1}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Bài nộp</ParagraphBody>}
-                  value={2}
-                />
-              </Tabs>
-            </Box>
-
-            <Box
-              id={classes.tabBody}
-              style={{
-                height: `calc(100% - ${tabHeight}px)`
-              }}
-            >
-              <Routes>
-                <Route path={"description"} element={<ProblemDetailDescription />} />
-                <Route path={"solution"} element={<ProblemDetailSolution />} />
-                <Route path={"submission"} element={<ProblemDetailSubmission />} />
-              </Routes>
-            </Box>
-          </Grid>
-          <Grid item xs={0} md={0.1}></Grid>
-          <Grid item xs={12} md={5.95} className={classes.rightBody}>
-            <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
-              <CodeIcon />
-              <FormControl>
-                <Select
-                  value={selectedLanguage}
-                  onChange={handleChangeLanguage}
-                  sx={{ bgcolor: "white", width: "150px", height: "40px" }}
+          <Resizable
+            size={{ width: width001, height: "100%" }}
+            minWidth={0}
+            maxWidth={"100%"}
+            enable={{
+              top: false,
+              right: true,
+              bottom: false,
+              left: false,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false
+            }}
+            onResize={handleResize001}
+          >
+            <Box className={classes.leftBody}>
+              <Box id={classes.tabWrapper} ref={tabRef}>
+                <Tabs
+                  value={activeTab}
+                  onChange={handleChange}
+                  aria-label='basic tabs example'
+                  className={classes.tabs}
                 >
-                  <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                  <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                  <MenuItem value={ELanguage.CPP}>C++</MenuItem>
-                </Select>
-              </FormControl>
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Mô tả</ParagraphBody>}
+                    value={0}
+                  />
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Thảo luận</ParagraphBody>}
+                    value={1}
+                  />
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Bài nộp</ParagraphBody>}
+                    value={2}
+                  />
+                </Tabs>
+              </Box>
+
+              <Box
+                id={classes.tabBody}
+                style={{
+                  height: `calc(100% - ${tabHeight}px)`
+                }}
+              >
+                <Routes>
+                  <Route path={"description"} element={<ProblemDetailDescription />} />
+                  <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  <Route path={"submission"} element={<ProblemDetailSubmission />} />
+                </Routes>
+              </Box>
             </Box>
-            <Box
-              style={{
-                height: `calc(100% - ${codeStubHeadHeight}px)`,
-                overflow: "auto"
-              }}
-            >
-              <CodeEditor
-                value={selectedCodeStub.codeStubHead.concat(
-                  selectedCodeStub.codeStubBody,
-                  selectedCodeStub.codeStubTail
-                )}
-              />
+          </Resizable>
+
+          <Resizable
+            size={{ width: width002, height: "100%" }}
+            minWidth={0}
+            maxWidth={"100%"}
+            enable={{
+              top: false,
+              right: true,
+              bottom: false,
+              left: true,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false
+            }}
+            onResize={handleResize002}
+          >
+            <Box className={classes.rightBody}>
+              <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
+                <CodeIcon />
+                <FormControl>
+                  <Select
+                    value={selectedLanguage}
+                    onChange={handleChangeLanguage}
+                    sx={{ bgcolor: "white", width: "150px", height: "40px" }}
+                  >
+                    <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
+                    <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
+                    <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box
+                style={{
+                  height: `calc(100% - ${codeStubHeadHeight}px)`,
+                  overflow: "auto"
+                }}
+              >
+                <CodeEditor
+                  value={selectedCodeStub.codeStubHead.concat(
+                    selectedCodeStub.codeStubBody,
+                    selectedCodeStub.codeStubTail
+                  )}
+                />
+              </Box>
             </Box>
-          </Grid>
+          </Resizable>
         </Grid>
       </Box>
     </Box>
