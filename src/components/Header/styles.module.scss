@@ -32,6 +32,7 @@
     .imageLogo {
       width: 60px;
     }
+    cursor: pointer;
   }
 }
 
@@ -46,6 +47,16 @@
 .menuProfile {
   padding: 10px;
   & [class~="MuiPaper-root"] {
-    background-color: black !important;
+    right: 40px !important;
+    left: auto !important;
+    top: 60px !important;
+  }
+
+  .logout {
+    color: var(--red-error);
+
+    .iconLogout {
+      color: var(--red-error);
+    }
   }
 }

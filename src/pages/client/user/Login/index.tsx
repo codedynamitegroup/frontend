@@ -10,7 +10,15 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { useNavigate } from "react-router-dom";
 export default function Login() {
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    //khi ấn login sẽ lưu biến user thành true trong local storage
+
+    localStorage.setItem("user", "HIEUTHUHAI");
+    navigate("/dashboard");
+  };
   return (
     <Grid className={classes.root}>
       <Header />
@@ -46,6 +54,7 @@ export default function Login() {
                     color='primary'
                     type='submit'
                     variant='contained'
+                    onClick={handleLogin}
                   >
                     Đăng nhập
                   </Button>

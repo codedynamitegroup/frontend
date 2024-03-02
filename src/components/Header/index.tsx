@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
 import { Avatar, Menu, MenuItem, ListItemIcon } from "@mui/material";
+import { PersonAdd, Settings, Logout, Person } from "@mui/icons-material";
+import ParagraphBody from "components/text/ParagraphBody";
 
 interface ILinkMenu {
   name: string;
@@ -132,6 +134,28 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setState(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setState(false);
+    navigate(routes.user.homepage.root);
+  };
+
+  const handleLogo = () => {
+    if (state === true) {
+      navigate(routes.user.dashboard.root);
+    } else {
+      navigate(routes.user.homepage.root);
+    }
+  };
+
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -153,7 +177,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Box className={classes.logo}>
+          <Box className={classes.logo} onClick={handleLogo}>
             <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
           </Box>
           <Box className={classes.navbarItem}>
@@ -163,6 +187,37 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </Button>
             ))}
           </Box>
+          {state === false ? (
+            <Box className={classes.navbarAuthItem}>
+              {auth.map((page, index) => (
+                <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
+                  {page.name}
+                </Button>
+              ))}
+            </Box>
+          ) : (
+            <Box className={classes.profile}>
+              <IconButton
+                onClick={handleClick}
+                size='small'
+                sx={{ ml: 2 }}
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup='true'
+                aria-expanded={open ? "true" : undefined}
+              >
+                <img
+                  className={classes.imageProfile}
+                  src={
+                    "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+                  }
+                  alt='avatar'
+                ></img>
+                <ParagraphBody colorName={"--white"} fontWeight={700}>
+                  HIEUTHUHAI
+                </ParagraphBody>
+              </IconButton>
+            </Box>
+          )}
 
           {/* <Box className={classes.navbarAuthItem}>
             {auth.map((page, index) => (
@@ -171,7 +226,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </Button>
             ))}
           </Box> */}
-          <Box className={classes.profile}>
+          {/* <Box className={classes.profile}>
             <IconButton
               onClick={handleClick}
               size='small'
@@ -187,8 +242,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 }
                 alt='avatar'
               ></img>
+              <ParagraphBody colorName={"--white"} fontWeight={700}>
+                HIEUTHUHAI
+              </ParagraphBody>
             </IconButton>
-          </Box>
+          </Box> */}
         </Toolbar>
         <Menu
           anchorEl={anchorEl}
@@ -226,30 +284,17 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem onClick={handleClose}>
-            <Avatar /> Profile
+          <MenuItem onClick={() => navigate(routes.user.information)}>
+            <ListItemIcon>
+              <Person fontSize='small' />
+            </ListItemIcon>
+            Thông tin tài khoản
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Avatar /> My account
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleClose}>
-            {/* <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon> */}
-            Add another account
-          </MenuItem>
-          <MenuItem onClick={handleClose}>
-            {/* <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon> */}
-            Settings
-          </MenuItem>
-          <MenuItem onClick={handleClose}>
-            {/* <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon> */}
-            Logout
+          <MenuItem className={classes.logout} onClick={handleLogout}>
+            <ListItemIcon>
+              <Logout className={classes.iconLogout} fontSize='small' />
+            </ListItemIcon>
+            Đăng xuất
           </MenuItem>
         </Menu>
         <Drawer
