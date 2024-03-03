@@ -20,7 +20,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
 import TextEditor from "components/editor/TextEditor";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useMatches, useNavigate, useOutletContext } from "react-router-dom";
 // import Button from "@mui/joy/Button";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -30,6 +30,7 @@ import AnswerEditor from "components/editor/AnswerEditor";
 import AddIcon from "@mui/icons-material/Add";
 import qtype from "utils/constant/Qtype";
 import { routes } from "routes/routes";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 interface Props {
   qtype: String;
@@ -46,11 +47,15 @@ const QuestionCreated = (props: Props) => {
   const matches = useMatches();
   const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
   console.log(matches);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
   return (
     <Grid className={classes.root}>
-      {breadcrumbs && <Header />}
-      <Container className={classes.container}>
+      {breadcrumbs && <Header ref={headerRef} />}
+      <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           {breadcrumbs ? (
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
