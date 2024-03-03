@@ -64,7 +64,7 @@ export const routes = {
       }
     },
     exam: {
-      create: "/lecturer/exam-management/create"
+      create: "/lecturer/courses/:courseId/exams/create"
     }
   },
   student: {

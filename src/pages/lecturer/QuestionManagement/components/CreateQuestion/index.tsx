@@ -1,35 +1,33 @@
 import {
   Box,
-  Container,
-  Grid,
-  Stack,
-  Select,
-  MenuItem,
   Checkbox,
   Collapse,
-  createTheme,
+  Container,
+  Divider,
+  Grid,
   ListItemButton,
-  Divider
+  MenuItem,
+  Select,
+  Stack
 } from "@mui/material";
 import Header from "components/Header";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
+import InputTextField from "components/common/inputs/InputTextField";
+import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
-import InputTextField from "components/common/inputs/InputTextField";
+import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { Textarea } from "@mui/joy";
-import TextEditor from "components/editor/TextEditor";
 import { useMemo, useRef, useState } from "react";
-import { useMatches, useNavigate, useOutletContext } from "react-router-dom";
+import { useMatches, useNavigate } from "react-router-dom";
+import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
-import Button, { BtnType } from "components/common/buttons/Button";
+import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Button, { BtnType } from "components/common/buttons/Button";
 import AnswerEditor from "components/editor/AnswerEditor";
-import AddIcon from "@mui/icons-material/Add";
-import qtype from "utils/constant/Qtype";
 import { routes } from "routes/routes";
+import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "utils/useBoxDimensions";
 
 interface Props {
@@ -38,7 +36,6 @@ interface Props {
 
 const QuestionCreated = (props: Props) => {
   const [answerOpen, setAnswerOpen] = useState(true);
-  const theme = createTheme();
   const vi_name = useMemo(
     () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
     [props.qtype]

@@ -19,6 +19,7 @@ import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import useBoxDimensions from "utils/useBoxDimensions";
 import { routes } from "routes/routes";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 const drawerWidth = 450;
 
@@ -118,30 +119,40 @@ export default function AssignmentSubmission() {
           open={false}
         >
           <Toolbar>
-            <Box className={classes.tabWrapper}>
-              <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
-                <span onClick={() => navigate(routes.lecturer.course.management)}>
-                  Quản lý khoá học
-                </span>{" "}
-                {"> "}
-                <span
-                  onClick={() =>
-                    navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                  }
-                >
-                  CS202 - Nhập môn lập trình
-                </span>{" "}
-                {"> "}
-                <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                  Danh sách bài tập
-                </span>{" "}
-                {"> "}
-                <span onClick={() => navigate(routes.lecturer.assignment.detail)}>
-                  Bài tập 1
-                </span>{" "}
-                {"> "}
-                <span onClick={() => navigate(routes.student.assignment.submit)}>Nộp bài làm</span>
-              </ParagraphBody>
+            <Box id={classes.breadcumpWrapper}>
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.management)}
+              >
+                Quản lý khoá học
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.information)}
+              >
+                CS202 - Nhập môn lập trình
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.assignment)}
+              >
+                Danh sách bài tập
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.assignment.detail)}
+              >
+                Bài tập 1
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall colorName='--blue-500'>Nộp bài làm</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'

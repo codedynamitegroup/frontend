@@ -18,12 +18,6 @@
   margin-top: 64px;
 }
 
-.tabWrapper {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-}
-
 .formBody {
   display: flex;
   flex-direction: column;
@@ -35,10 +29,22 @@
   }
 }
 
-.linkLevel {
-  span:hover {
-    cursor: pointer;
-    color: black;
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
 }
 

@@ -18,24 +18,11 @@
   margin-top: -10px;
 }
 
-.tabWrapper {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-}
-
 .formBody {
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
   gap: 15px;
-}
-
-.linkLevel {
-  span:hover {
-    cursor: pointer;
-    color: black;
-  }
 }
 
 .drawerBody {
@@ -48,4 +35,23 @@
 
 .textEditor {
   height: 200px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
 }

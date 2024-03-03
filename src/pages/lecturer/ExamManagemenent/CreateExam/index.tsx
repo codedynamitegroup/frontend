@@ -2,6 +2,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import PreviewIcon from "@mui/icons-material/Preview";
 import {
@@ -14,7 +15,6 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  Link,
   Toolbar
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -39,6 +39,7 @@ import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
@@ -251,7 +252,12 @@ export default function ExamCreated() {
         ]
       }
     ],
-    []
+    [
+      openPreviewEssay,
+      openPreviewMultipleChoiceDialog,
+      openPreviewShortAnswer,
+      openPreviewTrueFalse
+    ]
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
@@ -423,34 +429,34 @@ export default function ExamCreated() {
             open={open}
           >
             <Toolbar>
-              <Box className={classes.tabWrapper}>
-                <ParagraphBody
-                  className={classes.linkLevel}
-                  colorName='--gray-50'
-                  fontWeight={"600"}
+              <Box id={classes.breadcumpWrapper}>
+                <ParagraphSmall
+                  colorName='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.lecturer.course.management)}
                 >
-                  {/* TODO */}
-                  <span onClick={() => navigate(routes.lecturer.course.management)}>
-                    Quản lý khoá học
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                    }
-                  >
-                    CS202 - Nhập môn lập trình
-                  </span>{" "}
-                  {"> "}
-                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                    Danh sách bài tập
-                  </span>{" "}
-                  {"> "}
-                  <span onClick={() => navigate(routes.lecturer.exam.create)}>
-                    Tạo bài kiểm tra
-                  </span>
-                </ParagraphBody>
+                  Quản lý khoá học
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorName='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.lecturer.course.information)}
+                >
+                  CS202 - Nhập môn lập trình
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorName='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.lecturer.course.assignment)}
+                >
+                  Danh sách bài tập
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall colorName='--blue-500'>Tạo bài kiểm tra</ParagraphSmall>
               </Box>
+
               <IconButton
                 color='inherit'
                 aria-label='open drawer'

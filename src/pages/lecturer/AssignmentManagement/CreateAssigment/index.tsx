@@ -1,6 +1,6 @@
-import * as React from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -15,13 +15,14 @@ import BasicSelect from "components/common/select/BasicSelect";
 import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 import useWindowDimensions from "utils/useWindowDimensions";
 import classes from "./styles.module.scss";
-import { routes } from "routes/routes";
 
 const drawerWidth = 450;
 
@@ -140,27 +141,32 @@ export default function AssignmentCreated() {
           open={open}
         >
           <Toolbar>
-            <Box className={classes.tabWrapper}>
-              <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
-                {/* TODO */}
-                <span onClick={() => navigate(routes.lecturer.course.management)}>
-                  Quản lý khoá học
-                </span>{" "}
-                {"> "}
-                <span
-                  onClick={() =>
-                    navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                  }
-                >
-                  CS202 - Nhập môn lập trình
-                </span>{" "}
-                {"> "}
-                <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                  Danh sách bài tập
-                </span>{" "}
-                {"> "}
-                <span onClick={() => navigate(routes.lecturer.course.assignment)}>Tạo bài tập</span>
-              </ParagraphBody>
+            <Box id={classes.breadcumpWrapper}>
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.management)}
+              >
+                Quản lý khoá học
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.information)}
+              >
+                CS202 - Nhập môn lập trình
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorName='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.lecturer.course.assignment)}
+              >
+                Danh sách bài tập
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall colorName='--blue-500'>Tạo bài tập</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
