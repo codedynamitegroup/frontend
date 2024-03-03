@@ -8,8 +8,6 @@
   background-color: var(--blue-1);
 
   .container {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
     @media (min-width: 1200px) {
       max-width: 1440px !important;
     }

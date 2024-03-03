@@ -22,9 +22,6 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import LessonDetailDescription from "./components/Description";
-import LessonDetailSolution from "./components/ListSolution";
-import LessonDetailSubmission from "./components/Submission";
 import useBoxDimensions from "utils/useBoxDimensions";
 import ProblemDetailDescription from "./components/Description";
 import ProblemDetailSolution from "./components/ListSolution";
@@ -439,24 +436,24 @@ int main()
             onResize={handleResize002}
           >
             <Box className={classes.rightBody}>
-              <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
-                <CodeIcon />
-                <FormControl>
-                  <Select
-                    value={selectedLanguage}
-                    onChange={handleChangeLanguage}
-                    sx={{ bgcolor: "white", width: "150px", height: "40px" }}
-                  >
-                    <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                    <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                    <MenuItem value={ELanguage.CPP}>C++</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box className={classes.codeTestcaseContainer}>
+              <Box className={classes.codeStubContainer}>
+                <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
+                  <CodeIcon />
+                  <FormControl>
+                    <Select
+                      value={selectedLanguage}
+                      onChange={handleChangeLanguage}
+                      sx={{ bgcolor: "white", width: "150px", height: "40px" }}
+                    >
+                      <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
+                      <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
+                      <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
                 <Box
                   style={{
-                    height: `calc(50% - ${codeStubHeadHeight}px)`,
+                    height: `calc(100% - ${codeStubHeadHeight}px)`,
                     overflow: "auto"
                   }}
                 >
@@ -467,6 +464,8 @@ int main()
                     )}
                   />
                 </Box>
+              </Box>
+              <Box className={classes.codeTestcaseContainer}>
                 <Box className={classes.testcaseContainer}>
                   <Box className={classes.testcaseBody}>
                     <Box id={classes.tabWrapper} ref={tabRef}>

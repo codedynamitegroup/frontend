@@ -549,6 +549,7 @@ export default function ExamCreated() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
+                height: "calc(100% - 64px)",
                 top: "64px"
               }
             }}

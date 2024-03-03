@@ -44,7 +44,7 @@ const rows = [
   },
   {
     id: 2,
-    questionName: "Stack và Queue llllllllllllllllllllllllllllllà gì?",
+    questionName: "Stack và Queue là gì?",
     createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
     qtype: "Tự luận"

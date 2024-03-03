@@ -225,6 +225,7 @@ export default function AssignmentCreated() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               position: "fixed",
+              height: "calc(100% - 64px)",
               top: "64px"
             }
           }}
