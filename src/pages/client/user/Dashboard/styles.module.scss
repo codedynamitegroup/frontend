@@ -13,26 +13,54 @@
   margin-top: 64px;
   padding: 40px 0px;
 
+  @media (min-width: 900px) {
+    // equivalent to 'md' in Material-UI
+    display: flex;
+  }
+
   .courseLearningList {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     .courseLearningItem {
       display: flex;
-      justify-content: flex-start;
+      max-width: 656px;
       align-items: center;
-      padding: 20px;
-      gap: 20px;
+      padding: 20px 24px;
+      gap: 16px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
       box-sizing: border-box;
       background-color: white;
       border-radius: 8px;
 
-      .courseLearningItemContent {
+      .titleContainer {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+      }
+
+      @media (max-width: 450px) {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+      }
+
+      .courseLearningItemContent {
+        width: 100%;
+      }
+      .learnBtn {
+        text-transform: none;
+        height: fit-content;
+        width: 100px;
+        & [class~="MuiButtonBase-root"] {
+          width: 100px;
+        }
+        @media (max-width: 450px) {
+          width: 100%;
+          & [class~="MuiButtonBase-root"] {
+            width: 100%;
+          }
+        }
       }
     }
   }
@@ -44,12 +72,18 @@
   }
 
   .imageCourse {
-    width: 60px;
-    height: 60px;
+    min-width: 56px;
+    max-height: 56px;
     object-fit: cover;
     border-radius: 8px;
   }
-
+  .courseRecommend {
+    width: 100%;
+  }
+  .courseCerticateContainer {
+    overflow: auto;
+    width: 100%;
+  }
   .courseCerticate {
     background-color: white;
     border-radius: 8px;

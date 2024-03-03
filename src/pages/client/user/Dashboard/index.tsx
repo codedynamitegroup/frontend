@@ -90,29 +90,29 @@ export default function Dashboard() {
       <main>
         <Container className={classes.container}>
           <Grid container className={classes.sectionContentImage}>
-            <Grid item xs={12} sm={6} className={classes.sectionContent}>
+            <Grid item sm={12} md={6} className={classes.sectionContent}>
               <Box className={classes.currentCourse}>
                 <Heading2>Tiếp tục khóa học của bạn</Heading2>
                 <Box className={classes.courseLearningList}>
                   {courses.map((course, index) => (
                     <Grid className={classes.courseLearningItem} key={index}>
-                      <Grid item xs={1.25}>
+                      <Box className={classes.titleContainer}>
                         <img src={course.image} alt='course' className={classes.imageCourse} />
-                      </Grid>
-                      <Grid item xs={7.75}>
                         <Box className={classes.courseLearningItemContent}>
                           <Heading3>{course.name}</Heading3>
-                          <LinearProgress determinate value={course.process} />
+                          <Box className={classes.processBar} style={{ width: "100%" }}>
+                            <LinearProgress determinate value={course.process} />
+                          </Box>
                           <ParagraphExtraSmall>
                             Bài học hiện tại: {course.currentLesson}
                           </ParagraphExtraSmall>
                         </Box>
-                      </Grid>
-                      <Grid item xs={3}>
+                      </Box>
+                      <Box className={classes.learnBtn}>
                         <Button variant='contained' color='primary'>
-                          Tiếp tục học
+                          Tiếp tục
                         </Button>
-                      </Grid>
+                      </Box>
                     </Grid>
                   ))}
                 </Box>
@@ -172,8 +172,8 @@ export default function Dashboard() {
                 </Box>
               </Box>
             </Grid>
-            <Grid item sm={2}></Grid>
-            <Grid item xs={12} sm={4} className={classes.wrapperContest}>
+            <Grid item md={2}></Grid>
+            <Grid item sm={12} md={4} className={classes.wrapperContest}>
               <Heading2>Cuộc thi đang diễn ra</Heading2>
               <Box className={classes.contest}>
                 <Card>

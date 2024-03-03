@@ -25,7 +25,7 @@ export default function HomePage() {
       <main id={classes.main} style={{ marginTop: `${headerHeight}px` }}>
         <Container className={classes.container}>
           <Grid container columnSpacing={5} className={classes.sectionContentImage}>
-            <Grid item xs={6} className={classes.sectionContent}>
+            <Grid item xs={12} sm={12} md={6} className={classes.sectionContent}>
               <Box className={classes.customListContainer}>
                 <Heading1 className={classes.mainHeading}>
                   Hãy học lập trình ngay từ hôm nay
@@ -38,7 +38,7 @@ export default function HomePage() {
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={6} className={classes.sectionImage}>
+            <Grid item xs={0} sm={0} md={6} className={classes.sectionImage}>
               <img className={classes.homeImage} src={images.home} alt='home' />
             </Grid>
           </Grid>
