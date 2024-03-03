@@ -131,7 +131,7 @@ export default function ProblemTable() {
           <Table sx={{ minWidth: 650 }} aria-label='custom table'>
             <TableHead className={classes["table-head"]}>
               <TableRow>
-                <TableCell align='left' className={classes.status}>
+                <TableCell align='center' className={classes.status}>
                   <ParagraphBody fontWeight={700}>Trạng thái</ParagraphBody>
                 </TableCell>
                 <TableCell align='left'>
@@ -153,7 +153,7 @@ export default function ProblemTable() {
                       navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
                     }
                   >
-                    <TableCell>{row.status}</TableCell>
+                    <TableCell align='center'>{row.status}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.level}</TableCell>
                   </TableRow>
