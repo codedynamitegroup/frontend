@@ -1,9 +1,11 @@
 .root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
   display: flex;
   flex-direction: column !important;
-  gap: 20px;
-  padding-bottom: 20px;
-  background-color: var(--gray-3);
+  background-color: var(--blue-1);
 }
 
 .container {

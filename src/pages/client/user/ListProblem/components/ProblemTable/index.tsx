@@ -149,7 +149,9 @@ export default function ProblemTable() {
                   <TableRow
                     className={classes.row}
                     key={rowIndex}
-                    onClick={() => navigate(routes.user.problem.detail.root)}
+                    onClick={() =>
+                      navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
+                    }
                   >
                     <TableCell>{row.status}</TableCell>
                     <TableCell>{row.name}</TableCell>
