@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import useBoxDimensions from "utils/useBoxDimensions";
+import { routes } from "routes/routes";
 
 const drawerWidth = 450;
 
@@ -119,12 +120,27 @@ export default function AssignmentSubmission() {
           <Toolbar>
             <Box className={classes.tabWrapper}>
               <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
-                {/* TODO */}
-                <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                <span onClick={() => navigate("/")}>Bài tập 1</span> {"> "}
-                <span onClick={() => navigate("/assignments/:assignmentId/submission")}>
-                  Nộp bài làm
-                </span>
+                <span onClick={() => navigate(routes.lecturer.course.management)}>
+                  Quản lý khoá học
+                </span>{" "}
+                {"> "}
+                <span
+                  onClick={() =>
+                    navigate(routes.lecturer.course.information.replace(":courseId", "1"))
+                  }
+                >
+                  CS202 - Nhập môn lập trình
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                  Danh sách bài tập
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.assignment.detail)}>
+                  Bài tập 1
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.student.assignment.submit)}>Nộp bài làm</span>
               </ParagraphBody>
             </Box>
             <IconButton

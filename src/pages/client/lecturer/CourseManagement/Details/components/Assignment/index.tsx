@@ -1,16 +1,14 @@
-import React from "react";
-import SearchBar from "components/common/search/SearchBar";
-import classes from "./styles.module.scss";
-import Box from "@mui/material/Box";
-import Button, { BtnType } from "components/common/buttons/Button";
 import { Grid } from "@mui/material";
-import Heading3 from "components/text/Heading3";
-import Heading2 from "components/text/Heading2";
-import Heading1 from "components/text/Heading1";
-import AssignmentResource from "./components/Resource";
+import Box from "@mui/material/Box";
+import { BtnType } from "components/common/buttons/Button";
 import MenuPopup from "components/common/menu/MenuPopup";
-import { routes } from "routes/routes";
+import SearchBar from "components/common/search/SearchBar";
+import Heading1 from "components/text/Heading1";
+import Heading3 from "components/text/Heading3";
 import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
+import AssignmentResource from "./components/Resource";
+import classes from "./styles.module.scss";
 
 const LecturerCourseAssignment = () => {
   const searchHandle = (searchVal: string) => {

@@ -131,10 +131,26 @@ export default function AssignmentGrading() {
           <Toolbar>
             <Box className={classes.tabWrapper}>
               <ParagraphBody className={classes.linkLevel} colorName='--gray-50' fontWeight={"600"}>
-                {/* TODO */}
-                <span onClick={() => navigate("/")}>Quản lý khoá học</span> {"> "}
-                <span onClick={() => navigate("/")}>Xem bài tập</span> {"> "}
-                <span onClick={() => navigate("/")}>Bài tập 1</span> {"> "}
+                <span onClick={() => navigate(routes.lecturer.course.management)}>
+                  Quản lý khoá học
+                </span>{" "}
+                {"> "}
+                <span
+                  onClick={() =>
+                    navigate(routes.lecturer.course.information.replace(":courseId", "1"))
+                  }
+                >
+                  CS202 - Nhập môn lập trình
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.course.assignment)}>
+                  Danh sách bài tập
+                </span>{" "}
+                {"> "}
+                <span onClick={() => navigate(routes.lecturer.assignment.detail)}>
+                  Bài tập 1
+                </span>{" "}
+                {"> "}
                 <span onClick={() => navigate(routes.lecturer.assignment.grading)}>Đánh giá</span>
               </ParagraphBody>
             </Box>

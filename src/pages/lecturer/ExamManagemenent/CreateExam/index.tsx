@@ -443,7 +443,7 @@ export default function ExamCreated() {
                   </span>{" "}
                   {"> "}
                   <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                    Xem bài tập
+                    Danh sách bài tập
                   </span>{" "}
                   {"> "}
                   <span onClick={() => navigate(routes.lecturer.exam.create)}>
