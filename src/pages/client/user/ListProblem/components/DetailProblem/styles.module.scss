@@ -41,7 +41,11 @@
   .codeContainer {
     padding-left: 10px;
     padding-right: 10px;
-
+    display: flex !important;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 2px;
     .rightBody {
       display: flex;
       flex-direction: column;

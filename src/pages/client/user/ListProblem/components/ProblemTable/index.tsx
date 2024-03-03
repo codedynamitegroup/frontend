@@ -9,7 +9,14 @@ import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ParagraphBody from "components/text/ParagraphBody";
-import UserTableTemplate from "components/common/table/UserTableTemplate";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+
 export default function ProblemTable() {
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
   const customColumns = ["status", "name", "level"];
@@ -120,15 +127,47 @@ export default function ProblemTable() {
   return (
     <Box className={classes.container}>
       <Box className={classes.table}>
-        <UserTableTemplate
-          customHeading={customHeading}
-          customColumns={customColumns}
-          data={data}
-          isActionColumn={false}
-          onViewDetailsClick={() =>
-            navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
-          }
-        />
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label='custom table'>
+            <TableHead className={classes["table-head"]}>
+              <TableRow>
+                <TableCell align='left' className={classes.status}>
+                  <ParagraphBody fontWeight={700}>Trạng thái</ParagraphBody>
+                </TableCell>
+                <TableCell align='left'>
+                  <ParagraphBody fontWeight={700}>Tên bài tập</ParagraphBody>
+                </TableCell>
+                <TableCell align='left' className={classes.status}>
+                  <ParagraphBody fontWeight={700}>Cấp độ</ParagraphBody>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                data.length > 0 &&
+                data.map((row, rowIndex) => (
+                  <TableRow
+                    className={classes.row}
+                    key={rowIndex}
+                    onClick={() => navigate(routes.user.problem.detail.root)}
+                  >
+                    <TableCell>{row.status}</TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{row.level}</TableCell>
+                  </TableRow>
+                ))}
+              {(!data || data.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={customHeading.length}>
+                    <ParagraphBody className={classes.noList}>
+                      Không tìm thấy thông tin
+                    </ParagraphBody>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <TablePagination
           component='div'
           rowsPerPageOptions={[5, 10, 25, 100]}
