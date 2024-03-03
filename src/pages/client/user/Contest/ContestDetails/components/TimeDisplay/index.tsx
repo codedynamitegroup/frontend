@@ -1,4 +1,3 @@
-import React from "react";
 import classes from "./styles.module.scss";
 import { Box, Paper, Typography } from "@mui/material";
 import images from "config/images";
@@ -10,6 +9,7 @@ interface PropsData {
 const ContestTimeDisplay = (props: PropsData) => {
   const { time, type } = props;
   const backgroundImage = images.contestTimeBackground;
+
   return (
     <Box className={classes.container}>
       <Paper

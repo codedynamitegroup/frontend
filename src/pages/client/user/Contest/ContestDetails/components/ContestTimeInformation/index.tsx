@@ -1,5 +1,5 @@
 import Paper from "@mui/material/Paper";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { EContestStatus } from "../..";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
@@ -10,6 +10,11 @@ import Heading6 from "components/text/Heading6";
 import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
 import ContestTimeDisplay from "../TimeDisplay";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+
 interface PropsData {
   startDate: string;
   endDate: string;
@@ -19,6 +24,9 @@ interface PropsData {
 }
 
 const ContestTimeInformation = (props: PropsData) => {
+  const breadcumpRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const breadcrumbClickHandle = () => {};
   const { startDate, status, endDate, joinContest, contestName } = props;
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -58,6 +66,25 @@ const ContestTimeInformation = (props: PropsData) => {
   return (
     <Paper className={classes.container}>
       <Box>
+        <Box className={classes.breadcump} ref={breadcumpRef}>
+          <Box id={classes.breadcumpWrapper}>
+            <ParagraphSmall
+              colorName='--blue-500'
+              className={classes.cursorPointer}
+              onClick={() => navigate(routes.user.contest.root)}
+            >
+              Danh sách cuộc thi
+            </ParagraphSmall>
+            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+            <ParagraphSmall
+              colorName='--blue-500'
+              className={classes.cursorPointer}
+              onClick={breadcrumbClickHandle}
+            >
+              Batch coding
+            </ParagraphSmall>
+          </Box>
+        </Box>
         <Typography
           fontWeight={"bolder"}
           fontSize={"26px"}

@@ -9,6 +9,28 @@
     font-weight: bold;
     font-family: OpenSans, Arial, Helvetica, sans-serif;
   }
+  .breadcump {
+    display: flex;
+    align-items: center;
+
+    #breadcumpWrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      #icArrow {
+        color: var(--blue-500);
+        width: 20px;
+        height: 15px;
+      }
+      .cursorPointer {
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
   .timeDetailContainer {
     display: flex !important;
     justify-content: flex-start;
