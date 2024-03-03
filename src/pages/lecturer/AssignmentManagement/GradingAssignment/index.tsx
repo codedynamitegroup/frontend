@@ -166,7 +166,7 @@ export default function AssignmentGrading() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               position: "relative",
-              top: "-20px"
+              top: "64px"
             }
           }}
           variant='persistent'
