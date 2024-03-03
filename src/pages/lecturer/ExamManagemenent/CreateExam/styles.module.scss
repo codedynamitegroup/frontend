@@ -79,6 +79,7 @@
   align-items: center;
   gap: 5px;
   padding: 10px 10px;
+  flex-grow: 1;
 
   #icArrow {
     color: var(--blue-500);
