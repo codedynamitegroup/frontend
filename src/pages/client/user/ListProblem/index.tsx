@@ -132,7 +132,7 @@ const ListProblem = () => {
                   options={level}
                   value={selectedLevel}
                   onChange={(event, newValue) => {
-                    setSelectedStatus(newValue);
+                    setSelectedLevel(newValue);
                   }}
                   renderInput={(params) => (
                     <TextField

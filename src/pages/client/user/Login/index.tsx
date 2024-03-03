@@ -58,9 +58,14 @@ export default function Login() {
                   >
                     Đăng nhập
                   </Button>
-                  <Link href='/register' variant='body2'>
-                    {"Chưa có tài khoản? Đăng ký"}
-                  </Link>
+                  <Box className={classes.option}>
+                    <Link href='/register' variant='body2'>
+                      {"Chưa có tài khoản? Đăng ký"}
+                    </Link>
+                    <Link href='/forgot-password' variant='body2'>
+                      {"Quên mật khẩu?"}
+                    </Link>
+                  </Box>
                   <ParagraphBody>Hoặc đăng nhập với</ParagraphBody>
                   <Box className={classes.social}>
                     <Button className={`${classes.socialIconGoogle} ${classes.socialIcon}`}>

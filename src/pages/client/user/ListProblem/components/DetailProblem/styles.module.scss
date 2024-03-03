@@ -77,11 +77,11 @@
     .rightBody {
       display: flex;
       flex-direction: column;
-      border: 1px solid #dadada;
-      background-color: white;
       height: 100%;
+      gap: 10px;
 
       .codeStubContainer {
+        border: 1px solid #dadada;
         height: 50%;
         #codeStubHead {
           display: flex;
@@ -93,6 +93,9 @@
       }
 
       .codeTestcaseContainer {
+        background-color: white;
+        border: 1px solid #dadada;
+
         display: flex;
         flex-direction: column;
         height: 50%;
