@@ -9,6 +9,30 @@
     width: 60px;
   }
 }
+.imageProfile {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.menuProfile {
+  padding: 10px;
+  & [class~="MuiPaper-root"] {
+    right: 40px !important;
+    left: auto !important;
+    top: 60px !important;
+  }
+
+  .logout {
+    color: var(--red-error);
+
+    .iconLogout {
+      color: var(--red-error);
+    }
+  }
+}
 .navbarAuthItem {
   flex-grow: 0;
   display: none;

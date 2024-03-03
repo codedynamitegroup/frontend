@@ -120,7 +120,7 @@ export default function AssignmentGrading() {
       <Box className={classes.container}>
         <CssBaseline />
         <AppBar
-          position='absolute'
+          position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
             marginTop: "64px",
@@ -165,7 +165,7 @@ export default function AssignmentGrading() {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: drawerWidth,
-              position: "relative",
+              position: "fixed",
               top: "64px"
             }
           }}

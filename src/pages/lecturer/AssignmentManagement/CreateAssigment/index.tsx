@@ -131,7 +131,7 @@ export default function AssignmentCreated() {
       <Box className={classes.container}>
         <CssBaseline />
         <AppBar
-          position='absolute'
+          position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
             marginTop: "64px",
@@ -210,8 +210,8 @@ export default function AssignmentCreated() {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: drawerWidth,
-              position: "relative",
-              top: "-20px"
+              position: "fixed",
+              top: "64px"
             }
           }}
           variant='persistent'

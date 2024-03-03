@@ -5,12 +5,13 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import TextTitle from "components/text/TextTitle";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import UserAvatarAndName from "./components/UserAvatarAndName";
 import UserInformationDetailsDialog from "./components/UserInformationDetailsDialog";
 import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 const UserInformation = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,60 +36,23 @@ const UserInformation = () => {
     }, 1000);
   }, []);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
-    <>
-      <UserInformationDetailsDialog
-        open={data.isUserInformationDetailsModalOpen}
-        handleClose={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserInformationDetailsModalOpen: false
-          }));
-        }}
-        initialData={data.userInfo}
-        title='Chỉnh sửa thông tin cá nhân'
-        onHanldeChangePassword={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserInformationDetailsModalOpen: false,
-            isUserPasswordChangeModalOpen: true
-          }));
-        }}
-      />
-      <UserPasswordChangeDialog
-        open={data.isUserPasswordChangeModalOpen}
-        handleClose={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false
-          }));
-        }}
-        title='Đổi mật khẩu'
-        cancelText='Quay lại'
-        confirmText='Đổi mật khẩu'
-        onHandleCancel={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false,
-            isUserInformationDetailsModalOpen: true
-          }));
-        }}
-        onHanldeConfirm={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false
-          }));
-        }}
-      />
+    <Box>
       <Grid className={classes.root}>
-        <Header />
+        <Header ref={headerRef} />
         <Grid
           container
           direction='row'
           justifyContent={"center"}
           gap={3}
           sx={{
-            height: "100%"
+            height: "100%",
+            marginTop: `${headerHeight + 20}px`
           }}
         >
           <Grid item xs={3}>
@@ -158,7 +122,50 @@ const UserInformation = () => {
           </Grid>
         </Grid>
       </Grid>
-    </>
+      <UserInformationDetailsDialog
+        open={data.isUserInformationDetailsModalOpen}
+        handleClose={() => {
+          setData((pre) => ({
+            ...pre,
+            isUserInformationDetailsModalOpen: false
+          }));
+        }}
+        initialData={data.userInfo}
+        title='Chỉnh sửa thông tin cá nhân'
+        onHanldeChangePassword={() => {
+          setData((pre) => ({
+            ...pre,
+            isUserInformationDetailsModalOpen: false,
+            isUserPasswordChangeModalOpen: true
+          }));
+        }}
+      />
+      <UserPasswordChangeDialog
+        open={data.isUserPasswordChangeModalOpen}
+        handleClose={() => {
+          setData((pre) => ({
+            ...pre,
+            isUserPasswordChangeModalOpen: false
+          }));
+        }}
+        title='Đổi mật khẩu'
+        cancelText='Quay lại'
+        confirmText='Đổi mật khẩu'
+        onHandleCancel={() => {
+          setData((pre) => ({
+            ...pre,
+            isUserPasswordChangeModalOpen: false,
+            isUserInformationDetailsModalOpen: true
+          }));
+        }}
+        onHanldeConfirm={() => {
+          setData((pre) => ({
+            ...pre,
+            isUserPasswordChangeModalOpen: false
+          }));
+        }}
+      />
+    </Box>
   );
 };
 

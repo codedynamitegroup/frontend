@@ -22,8 +22,8 @@ import Heading4 from "components/text/Heading4";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Avatar, Menu, MenuItem, ListItemIcon } from "@mui/material";
-import { PersonAdd, Settings, Logout, Person } from "@mui/icons-material";
+import { Menu, MenuItem, ListItemIcon } from "@mui/material";
+import { Logout, Person } from "@mui/icons-material";
 import ParagraphBody from "components/text/ParagraphBody";
 
 interface ILinkMenu {
@@ -159,26 +159,28 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
-        <Toolbar disableGutters>
-          <Box
-            sx={{
-              display: { xs: "flex", md: "none" },
-              ...(open && { display: "none" })
-            }}
-          >
-            <IconButton
-              size='large'
-              aria-label='account of current user'
-              aria-controls='menu-appbar'
-              aria-haspopup='true'
-              onClick={handleDrawerOpen}
-              color='inherit'
+        <Toolbar disableGutters className={classes.toolbar}>
+          <Box className={classes.wrapper}>
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                ...(open && { display: "none" })
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-          <Box className={classes.logo} onClick={handleLogo}>
-            <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+              <IconButton
+                size='large'
+                aria-label='account of current user'
+                aria-controls='menu-appbar'
+                aria-haspopup='true'
+                onClick={handleDrawerOpen}
+                color='inherit'
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+            <Box className={classes.logo} onClick={handleLogo}>
+              <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+            </Box>
           </Box>
           <Box className={classes.navbarItem}>
             {pages.map((page, index) => (
@@ -218,35 +220,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             </Box>
           )}
-
-          {/* <Box className={classes.navbarAuthItem}>
-            {auth.map((page, index) => (
-              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
-                {page.name}
-              </Button>
-            ))}
-          </Box> */}
-          {/* <Box className={classes.profile}>
-            <IconButton
-              onClick={handleClick}
-              size='small'
-              sx={{ ml: 2 }}
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup='true'
-              aria-expanded={open ? "true" : undefined}
-            >
-              <img
-                className={classes.imageProfile}
-                src={
-                  "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
-                }
-                alt='avatar'
-              ></img>
-              <ParagraphBody colorName={"--white"} fontWeight={700}>
-                HIEUTHUHAI
-              </ParagraphBody>
-            </IconButton>
-          </Box> */}
         </Toolbar>
         <Menu
           anchorEl={anchorEl}

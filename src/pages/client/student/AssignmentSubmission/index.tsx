@@ -17,6 +17,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
+import useBoxDimensions from "utils/useBoxDimensions";
 
 const drawerWidth = 450;
 
@@ -91,13 +92,23 @@ export default function AssignmentSubmission() {
     </div>
     `;
 
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box className={classes.container}>
+      <Header ref={headerRef} />
+      <Box
+        className={classes.container}
+        sx={{
+          marginTop: `${headerHeight + 20}px`
+        }}
+      >
         <CssBaseline />
         <AppBar
-          position='absolute'
+          position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
             marginTop: "64px",
