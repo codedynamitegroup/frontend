@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
 import {
+  Button,
   Divider,
   FormControl,
   Grid,
@@ -29,6 +30,10 @@ import ProblemDetailDescription from "./components/Description";
 import ProblemDetailSolution from "./components/ListSolution";
 import ProblemDetailSubmission from "./components/Submission";
 import { Resizable } from "re-resizable";
+import TestCase from "./components/TestCase";
+import Result from "./components/Result";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PublishIcon from "@mui/icons-material/Publish";
 
 enum ELanguage {
   JAVA = "java",
@@ -263,9 +268,19 @@ int main()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const [testCaseTab, setTestCaseTab] = useState(0);
+  const handleTestCaseChange = (event: any, newValue: any) => {
+    setTestCaseTab(newValue);
+  };
+
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { height: breadcrumbHeight } = useBoxDimensions({
     ref: breadcumpRef
+  });
+
+  const breadcumpWrapperRef = useRef<HTMLDivElement>(null);
+  const { width: breadcumpWrapperWidth } = useBoxDimensions({
+    ref: breadcumpWrapperRef
   });
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -316,7 +331,7 @@ int main()
         }}
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
+          <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
             <ParagraphSmall
               colorName='--blue-500'
               className={classes.cursorPointer}
@@ -327,6 +342,21 @@ int main()
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
             <ParagraphSmall colorName='--blue-500'>Hello world</ParagraphSmall>
           </Box>
+          <Box className={classes.submit}>
+            <Button className={classes.runBtn} variant='contained' color='primary'>
+              <PlayArrowIcon />
+              Thực thi
+            </Button>
+            <Button className={classes.submitBtn} color='primary'>
+              <PublishIcon />
+              Nộp bài
+            </Button>
+          </Box>
+          <Box
+            style={{
+              width: `${breadcumpWrapperWidth}px`
+            }}
+          ></Box>
         </Box>
         <Grid
           container
@@ -423,18 +453,52 @@ int main()
                   </Select>
                 </FormControl>
               </Box>
-              <Box
-                style={{
-                  height: `calc(100% - ${codeStubHeadHeight}px)`,
-                  overflow: "auto"
-                }}
-              >
-                <CodeEditor
-                  value={selectedCodeStub.codeStubHead.concat(
-                    selectedCodeStub.codeStubBody,
-                    selectedCodeStub.codeStubTail
-                  )}
-                />
+              <Box className={classes.codeTestcaseContainer}>
+                <Box
+                  style={{
+                    height: `calc(50% - ${codeStubHeadHeight}px)`,
+                    overflow: "auto"
+                  }}
+                >
+                  <CodeEditor
+                    value={selectedCodeStub.codeStubHead.concat(
+                      selectedCodeStub.codeStubBody,
+                      selectedCodeStub.codeStubTail
+                    )}
+                  />
+                </Box>
+                <Box className={classes.testcaseContainer}>
+                  <Box className={classes.testcaseBody}>
+                    <Box id={classes.tabWrapper} ref={tabRef}>
+                      <Tabs
+                        value={testCaseTab}
+                        onChange={handleTestCaseChange}
+                        aria-label='basic tabs example'
+                        className={classes.tabs}
+                      >
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Testcase</ParagraphBody>}
+                          value={0}
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Kết quả</ParagraphBody>}
+                          value={1}
+                        />
+                      </Tabs>
+                    </Box>
+
+                    <Box
+                      className={classes.tabBody}
+                      style={{
+                        height: `calc(50% - ${tabHeight}px)`
+                      }}
+                    >
+                      {testCaseTab === 0 ? <TestCase /> : <Result />}
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </Resizable>
