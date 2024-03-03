@@ -90,7 +90,7 @@ export default function Dashboard() {
       <main>
         <Container className={classes.container}>
           <Grid container className={classes.sectionContentImage}>
-            <Grid item xs={6} className={classes.sectionContent}>
+            <Grid item xs={12} sm={6} className={classes.sectionContent}>
               <Box className={classes.currentCourse}>
                 <Heading2>Tiếp tục khóa học của bạn</Heading2>
                 <Box className={classes.courseLearningList}>
@@ -172,8 +172,8 @@ export default function Dashboard() {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={4} className={classes.wrapperContest}>
+            <Grid item sm={2}></Grid>
+            <Grid item xs={12} sm={4} className={classes.wrapperContest}>
               <Heading2>Cuộc thi đang diễn ra</Heading2>
               <Box className={classes.contest}>
                 <Card>
