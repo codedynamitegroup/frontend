@@ -1,10 +1,18 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
-import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Tabs } from "@mui/material";
+import {
+  Button,
+  Divider,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tabs
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
 import CodeEditor from "components/editor/CodeEditor";
 import { useState } from "react";
 import CodeIcon from "@mui/icons-material/Code";
@@ -14,10 +22,15 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import useBoxDimensions from "utils/useBoxDimensions";
+import { Resizable } from "re-resizable";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PublishIcon from "@mui/icons-material/Publish";
 import LessonDetailDescription from "./components/Description";
 import LessonDetailSolution from "./components/ListSolution";
 import LessonListSubmission from "./components/Submission";
-import useBoxDimensions from "utils/useBoxDimensions";
+import TestCase from "./components/TestCase";
+import Result from "./components/Result";
 
 enum ELanguage {
   JAVA = "java",
@@ -255,9 +268,19 @@ int main()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const [testCaseTab, setTestCaseTab] = useState(0);
+  const handleTestCaseChange = (event: any, newValue: any) => {
+    setTestCaseTab(newValue);
+  };
+
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { height: breadcrumbHeight } = useBoxDimensions({
     ref: breadcumpRef
+  });
+
+  const breadcumpWrapperRef = useRef<HTMLDivElement>(null);
+  const { width: breadcumpWrapperWidth } = useBoxDimensions({
+    ref: breadcumpWrapperRef
   });
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -274,6 +297,26 @@ int main()
     ref: codeStubHeadRef
   });
 
+  const [width001, setWidth001] = useState("50%");
+  const [width002, setWidth002] = useState("50%");
+
+  const handleResize001 = (e: any, direction: any, ref: any, d: any) => {
+    const newWidth001 = ref.style.width;
+    const newWidth002 = `${100 - parseFloat(newWidth001)}%`;
+
+    setWidth001(newWidth001);
+    setWidth002(newWidth002);
+    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
+  };
+  const handleResize002 = (e: any, direction: any, ref: any, d: any) => {
+    const newWidth002 = ref.style.width;
+    const newWidth001 = `${100 - parseFloat(newWidth002)}%`;
+
+    setWidth002(newWidth002);
+    setWidth001(newWidth001);
+    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
+  };
+
   const marginRef = useRef<number>(10);
   return (
     <Box className={classes.root}>
@@ -288,7 +331,7 @@ int main()
         }}
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
+          <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
             <ParagraphSmall
               colorName='--blue-500'
               className={classes.cursorPointer}
@@ -312,6 +355,21 @@ int main()
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
             <ParagraphSmall colorName='--blue-500'>Hello world</ParagraphSmall>
           </Box>
+          <Box className={classes.submit}>
+            <Button className={classes.runBtn} variant='contained' color='primary'>
+              <PlayArrowIcon />
+              Thực thi
+            </Button>
+            <Button className={classes.submitBtn} color='primary'>
+              <PublishIcon />
+              Nộp bài
+            </Button>
+          </Box>
+          <Box
+            style={{
+              width: `${breadcumpWrapperWidth}px`
+            }}
+          ></Box>
         </Box>
         <Grid
           container
@@ -320,75 +378,145 @@ int main()
             height: `calc(100% - ${breadcrumbHeight}px)`
           }}
         >
-          <Grid item xs={12} md={5.95} className={classes.leftBody}>
-            <Box id={classes.tabWrapper} ref={tabRef}>
-              <Tabs
-                value={activeTab}
-                onChange={handleChange}
-                aria-label='basic tabs example'
-                className={classes.tabs}
-              >
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Mô tả</ParagraphBody>}
-                  value={0}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Thảo luận</ParagraphBody>}
-                  value={1}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Bài nộp</ParagraphBody>}
-                  value={2}
-                />
-              </Tabs>
-            </Box>
-
-            <Box
-              id={classes.tabBody}
-              style={{
-                height: `calc(100% - ${tabHeight}px)`
-              }}
-            >
-              <Routes>
-                <Route path={"description"} element={<LessonDetailDescription />} />
-                <Route path={"solution"} element={<LessonDetailSolution />} />
-                <Route path={"submission"} element={<LessonListSubmission />} />
-              </Routes>
-            </Box>
-          </Grid>
-          <Grid item xs={0} md={0.1}></Grid>
-          <Grid item xs={12} md={5.95} className={classes.rightBody}>
-            <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
-              <CodeIcon />
-              <FormControl>
-                <Select
-                  value={selectedLanguage}
-                  onChange={handleChangeLanguage}
-                  sx={{ bgcolor: "white", width: "150px", height: "40px" }}
+          <Resizable
+            size={{ width: width001, height: "100%" }}
+            minWidth={0}
+            maxWidth={"100%"}
+            enable={{
+              top: false,
+              right: true,
+              bottom: false,
+              left: false,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false
+            }}
+            onResize={handleResize001}
+          >
+            <Box className={classes.leftBody}>
+              <Box id={classes.tabWrapper} ref={tabRef}>
+                <Tabs
+                  value={activeTab}
+                  onChange={handleChange}
+                  aria-label='basic tabs example'
+                  className={classes.tabs}
                 >
-                  <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                  <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                  <MenuItem value={ELanguage.CPP}>C++</MenuItem>
-                </Select>
-              </FormControl>
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Mô tả</ParagraphBody>}
+                    value={0}
+                  />
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Thảo luận</ParagraphBody>}
+                    value={1}
+                  />
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={<ParagraphBody>Bài nộp</ParagraphBody>}
+                    value={2}
+                  />
+                </Tabs>
+              </Box>
+
+              <Box
+                id={classes.tabBody}
+                style={{
+                  height: `calc(100% - ${tabHeight}px)`
+                }}
+              >
+                <Routes>
+                  <Route path={"description"} element={<LessonDetailDescription />} />
+                  <Route path={"solution"} element={<LessonDetailSolution />} />
+                  <Route path={"submission"} element={<LessonListSubmission />} />
+                </Routes>
+              </Box>
             </Box>
-            <Box
-              style={{
-                height: `calc(100% - ${codeStubHeadHeight}px)`,
-                overflow: "auto"
-              }}
-            >
-              <CodeEditor
-                value={selectedCodeStub.codeStubHead.concat(
-                  selectedCodeStub.codeStubBody,
-                  selectedCodeStub.codeStubTail
-                )}
-              />
+          </Resizable>
+
+          <Resizable
+            size={{ width: width002, height: "100%" }}
+            minWidth={0}
+            maxWidth={"100%"}
+            enable={{
+              top: false,
+              right: true,
+              bottom: false,
+              left: true,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false
+            }}
+            onResize={handleResize002}
+          >
+            <Box className={classes.rightBody}>
+              <Box className={classes.codeStubContainer}>
+                <Box id={classes.codeStubHead} ref={codeStubHeadRef}>
+                  <CodeIcon />
+                  <FormControl>
+                    <Select
+                      value={selectedLanguage}
+                      onChange={handleChangeLanguage}
+                      sx={{ bgcolor: "white", width: "150px", height: "40px" }}
+                    >
+                      <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
+                      <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
+                      <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box
+                  style={{
+                    height: `calc(100% - ${codeStubHeadHeight}px)`,
+                    overflow: "auto"
+                  }}
+                >
+                  <CodeEditor
+                    value={selectedCodeStub.codeStubHead.concat(
+                      selectedCodeStub.codeStubBody,
+                      selectedCodeStub.codeStubTail
+                    )}
+                  />
+                </Box>
+              </Box>
+              <Box className={classes.codeTestcaseContainer}>
+                <Box className={classes.testcaseContainer}>
+                  <Box className={classes.testcaseBody}>
+                    <Box id={classes.tabWrapper} ref={tabRef}>
+                      <Tabs
+                        value={testCaseTab}
+                        onChange={handleTestCaseChange}
+                        aria-label='basic tabs example'
+                        className={classes.tabs}
+                      >
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Testcase</ParagraphBody>}
+                          value={0}
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Kết quả</ParagraphBody>}
+                          value={1}
+                        />
+                      </Tabs>
+                    </Box>
+
+                    <Box
+                      className={classes.tabBody}
+                      style={{
+                        height: `calc(50% - ${tabHeight}px)`
+                      }}
+                    >
+                      {testCaseTab === 0 ? <TestCase /> : <Result />}
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
-          </Grid>
+          </Resizable>
         </Grid>
       </Box>
     </Box>
