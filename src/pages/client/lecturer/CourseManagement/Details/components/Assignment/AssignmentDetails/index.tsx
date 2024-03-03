@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import AssignmentTable from "./components/AssignmentTable";
 import classes from "./styles.module.scss";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 
 const LecturerCourseAssignmentDetails = () => {
   const navigate = useNavigate();
@@ -91,6 +92,28 @@ const LecturerCourseAssignmentDetails = () => {
             }}
             dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
           ></div>
+          <CustomFileList
+            files={[
+              {
+                id: "1",
+                name: "test1.jpg",
+                size: 1024,
+                type: "image/jpg",
+                uploadStatus: "success",
+                downloadUrl:
+                  "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
+              },
+              {
+                id: "2",
+                name: "dummy.pdf",
+                size: 1024,
+                type: "application/pdf",
+                uploadStatus: "success",
+                downloadUrl:
+                  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+              }
+            ]}
+          />
         </Box>
       </Card>
       <Box
