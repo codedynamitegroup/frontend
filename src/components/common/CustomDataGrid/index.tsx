@@ -26,6 +26,7 @@ interface DataGridProps {
   customColumnMenu?: any;
   customFooter?: any;
   getRowHeight?: any;
+  checkboxSelection?: boolean;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -34,6 +35,7 @@ const CustomDataGrid = (props: DataGridProps) => {
     tableHeader,
     onSelectData,
     visibleColumn,
+    checkboxSelection,
     dataGridToolBar,
     pageSize,
     page,
@@ -60,6 +62,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         rows={dataList}
         columns={tableHeader}
         columnVisibilityModel={visibleColumn}
+        checkboxSelection={checkboxSelection}
         columnGroupingModel={columnGroupingModel}
         initialState={{
           pagination: {

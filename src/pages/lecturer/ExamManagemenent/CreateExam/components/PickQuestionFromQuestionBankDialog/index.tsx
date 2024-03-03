@@ -89,8 +89,7 @@ export default function PickQuestionFromQuestionBankDialog({
       {
         field: "name",
         headerName: "Tên câu hỏi",
-        minWidth: 250,
-        renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+        minWidth: 250
       },
       {
         field: "description",
@@ -177,6 +176,7 @@ export default function PickQuestionFromQuestionBankDialog({
             totalElement={totalElement}
             onPaginationModelChange={pageChangeHandler}
             showVerticalCellBorder={false}
+            checkboxSelection
           />
         </Grid>
       </Grid>
