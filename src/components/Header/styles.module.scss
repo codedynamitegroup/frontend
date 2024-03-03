@@ -17,7 +17,15 @@
     display: flex;
   }
 }
-
+.wrapper {
+  display: flex;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--blue-500);
+}
 .item {
   margin-top: 1rem;
   margin-bottom: 1rem;
