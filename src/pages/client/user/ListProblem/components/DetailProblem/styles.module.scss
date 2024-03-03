@@ -18,7 +18,35 @@
     background-color: white;
     align-items: center;
     padding: 10px 15px;
+    justify-content: space-between;
 
+    .submit {
+      display: flex;
+      gap: 10px;
+      .runBtn {
+        background-color: var(--green-600);
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: var(--green-500);
+        }
+      }
+      .submitBtn {
+        border: 1px solid var(--blue-500);
+        color: var(--blue-500);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: var(--green-500);
+          color: white;
+        }
+      }
+    }
     #breadcumpWrapper {
       display: flex;
       align-items: center;
@@ -59,6 +87,13 @@
         justify-content: space-between;
         background-color: var(--gray-4);
         padding: 5px 10px;
+      }
+
+      .codeTestcaseContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        gap: 10px;
       }
     }
     .stickyTabList {
