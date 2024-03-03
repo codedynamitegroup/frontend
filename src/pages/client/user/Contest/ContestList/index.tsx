@@ -84,7 +84,11 @@ const ContestList = () => {
   return (
     <Box className={classes.root}>
       <Header ref={headerRef} />
-      <Grid container style={{ marginTop: `${headerHeight}px`, gap: "40px", marginBottom: "40px" }}>
+      <Grid
+        container
+        style={{ marginTop: `${headerHeight}px`, gap: "40px", marginBottom: "40px" }}
+        justifyContent={"center"}
+      >
         <Grid item xs={12} md={12} xl={12} lg={12}>
           <Box
             sx={{
@@ -177,91 +181,87 @@ const ContestList = () => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={12} xl={12} lg={12} className={classes.contestListContainer}>
-          <Grid container justifyContent={"center"} spacing={2}>
-            <Grid item xs={12} md={10} lg={8}>
-              <Typography
-                color={"#2a2a2a"}
-                fontFamily={"BarlowCondensed,sans-serif"}
-                fontSize={"48px"}
-                fontWeight={500}
-                letterSpacing={".3px"}
-                lineHeight={"50px"}
-              >
-                Danh sách cuộc thi
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={10} lg={8}>
-              <SearchBar onSearchClick={onSearchClick} />
-            </Grid>
-            <Grid item xs={12} md={10} lg={8}>
-              <Box className={classes.contestListButtonGroup}>
-                <ToggleButtonGroup {...control}>
-                  <ToggleButton
-                    key='happening'
-                    value='happening'
-                    className={classes.listStateButton}
-                  >
-                    Đang diễn ra
-                  </ToggleButton>
-                  <ToggleButton key='ended' value='ended'>
-                    Đã kết thúc
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={10} lg={8}>
-              <Grid container spacing={2}>
-                <Grid item sm={12} xs={12} md={12} lg={9}>
-                  <Box>
-                    <Grid container spacing={2} alignItems={"flex-start"}>
-                      <Grid item xs={12}>
-                        <ContestContentCard
-                          name='Sasuke war 11'
-                          description='The weekly coding contest for people who love programming on CodeLearn'
-                          avtImage={images.temp.contest.tempContest1}
-                          contestId={1}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ContestContentCard
-                          name='Batch the code'
-                          description='Thử thách thi vui thưởng thật dành cho các bạn trẻ đam mê công nghệ, thích khám phá và làm chủ ngôn ngữ số.'
-                          avtImage={images.temp.contest.tempContest2}
-                          contestId={2}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ContestContentCard
-                          name='FPT Tech day'
-                          description='Bảng thi giành cho mọi đối tượng đam mê lập trình, yêu thích công nghệ
-Đăng ký tham gia vui lòng truy cập: https://techday2021.fpt.com.vn/vi/code-war'
-                          avtImage={images.temp.contest.tempContest3}
-                          contestId={3}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ContestContentCard
-                          name='CSS 11'
-                          description='Nurture Your Software DNA_Mini code challenge'
-                          avtImage={images.temp.contest.tempContest4}
-                          contestId={1}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Grid>
-
-                <Grid item sm={12} xs={12} md={12} lg={3}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} />
-
-                    <Grid item xs={12}>
-                      <ContestFilter filterObject={filterObject} />
-                    </Grid>
-                  </Grid>
+        <Grid item xs={12} md={10} lg={8} className={classes.contestListContainer}>
+          <Grid container spacing={7}>
+            <Grid item sm={12} xs={12} md={12} lg={3}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} />
+                <Grid item xs={12}>
+                  <ContestFilter filterObject={filterObject} />
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item sm={12} xs={12} md={12} lg={9}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={10} lg={8}>
+                  <Typography
+                    color={"#2a2a2a"}
+                    fontFamily={"BarlowCondensed,sans-serif"}
+                    fontSize={"48px"}
+                    fontWeight={500}
+                    letterSpacing={".3px"}
+                    lineHeight={"50px"}
+                  >
+                    Danh sách cuộc thi
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={10} lg={8}>
+                  <SearchBar onSearchClick={onSearchClick} />
+                </Grid>
+                <Grid item xs={12} md={10} lg={8}>
+                  <Box className={classes.contestListButtonGroup}>
+                    <ToggleButtonGroup {...control}>
+                      <ToggleButton
+                        key='happening'
+                        value='happening'
+                        className={classes.listStateButton}
+                      >
+                        Đang diễn ra
+                      </ToggleButton>
+                      <ToggleButton key='ended' value='ended'>
+                        Đã kết thúc
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Box>
+                </Grid>
+              </Grid>
+              <Box marginTop={"15px"}>
+                <Grid container spacing={2} alignItems={"flex-start"}>
+                  <Grid item xs={12}>
+                    <ContestContentCard
+                      name='Sasuke war 11'
+                      description='The weekly coding contest for people who love programming on CodeLearn'
+                      avtImage={images.temp.contest.tempContest1}
+                      contestId={1}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ContestContentCard
+                      name='Batch the code'
+                      description='Thử thách thi vui thưởng thật dành cho các bạn trẻ đam mê công nghệ, thích khám phá và làm chủ ngôn ngữ số.'
+                      avtImage={images.temp.contest.tempContest2}
+                      contestId={2}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ContestContentCard
+                      name='FPT Tech day'
+                      description='Bảng thi giành cho mọi đối tượng đam mê lập trình, yêu thích công nghệ
+Đăng ký tham gia vui lòng truy cập: https://techday2021.fpt.com.vn/vi/code-war'
+                      avtImage={images.temp.contest.tempContest3}
+                      contestId={3}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ContestContentCard
+                      name='CSS 11'
+                      description='Nurture Your Software DNA_Mini code challenge'
+                      avtImage={images.temp.contest.tempContest4}
+                      contestId={1}
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
             </Grid>
           </Grid>
         </Grid>

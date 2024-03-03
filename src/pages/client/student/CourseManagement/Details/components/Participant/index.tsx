@@ -34,7 +34,7 @@ const StudentCourseParticipant = () => {
       renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
     },
     { field: "email", headerName: "Email", width: 200, flex: 0.8 },
-    { field: "roles", headerName: "Vai trò", width: 50, flex: 0.4 }
+    { field: "roles", headerName: "Chức vụ", width: 50, flex: 0.4 }
   ];
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
