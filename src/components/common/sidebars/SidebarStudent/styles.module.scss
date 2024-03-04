@@ -2,12 +2,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--blue-500);
+  background-color: white !important;
+  padding: 0 56px !important;
 }
-.logo {
-  .imageLogo {
-    width: 60px;
+.appBar {
+  background-color: white !important;
+  box-shadow: 0 2px 4px #00000026 !important;
+}
+
+.drawer {
+  & [class~="MuiPaper-root"] {
+    top: 1px;
   }
+}
+
+.logo {
+  height: fit-content;
+  .imageLogo {
+    margin-top: 5px;
+
+    width: 120px;
+  }
+  cursor: pointer;
 }
 .imageProfile {
   width: 40px;
@@ -57,6 +73,11 @@
   margin-bottom: 1rem;
   margin-left: 1rem !important;
   margin-right: 1rem !important;
-  color: white !important;
+  color: black !important;
   display: block;
+
+  &:hover {
+    color: var(--blue-500) !important;
+    background-color: white !important;
+  }
 }

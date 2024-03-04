@@ -158,9 +158,9 @@ export default function SideBarLecturer({ children }: any) {
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
-      <AppBar position='fixed' open={open}>
+      <AppBar position='fixed' open={open} className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               aria-label='open drawer'
               onClick={toogleDrawer}
@@ -170,7 +170,7 @@ export default function SideBarLecturer({ children }: any) {
                 //...(open && { display: "none" })
               }}
             >
-              <MenuIcon sx={{ color: "white" }} />
+              <MenuIcon sx={{ color: "black" }} />
             </IconButton>
             <Box className={classes.logo} onClick={handleLogo}>
               <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
@@ -208,9 +208,7 @@ export default function SideBarLecturer({ children }: any) {
                   }
                   alt='avatar'
                 ></img>
-                <ParagraphBody colorName={"--white"} fontWeight={700}>
-                  HIEUTHUHAI
-                </ParagraphBody>
+                <ParagraphBody fontWeight={700}>HIEUTHUHAI</ParagraphBody>
               </IconButton>
             </Box>
           )}
@@ -266,6 +264,7 @@ export default function SideBarLecturer({ children }: any) {
         </MenuItem>
       </Menu>
       <Drawer
+        className={classes.drawer}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
