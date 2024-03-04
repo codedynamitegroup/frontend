@@ -8,17 +8,11 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import * as React from "react";
 import FeatureBar from "../../FeatureBar";
-import ReusedResourceDialog from "../ResourceDialog";
 import { GridRowParams } from "@mui/x-data-grid";
 
 interface ReusedCourseResourceDialogProps extends DialogProps {
   title?: string;
   handleClose: () => void;
-  children?: React.ReactNode;
-  cancelText?: string;
-  confirmText?: string;
-  onHandleCancel?: () => void;
-  onHanldeConfirm?: () => void;
   onOpenReuseResourceDialog: () => void;
 }
 
@@ -26,11 +20,6 @@ export default function ReusedCourseResourceDialog({
   open,
   title,
   handleClose,
-  children,
-  cancelText,
-  confirmText,
-  onHandleCancel,
-  onHanldeConfirm,
   onOpenReuseResourceDialog,
   ...props
 }: ReusedCourseResourceDialogProps) {
@@ -106,11 +95,8 @@ export default function ReusedCourseResourceDialog({
         open={open}
         handleClose={handleClose}
         title={title}
-        cancelText={cancelText}
-        confirmText={confirmText}
-        onHandleCancel={onHandleCancel}
-        onHanldeConfirm={onHanldeConfirm}
         minWidth='1000px'
+        actionsDisabled
         {...props}
       >
         <Grid container spacing={1}>
