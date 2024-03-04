@@ -20,7 +20,7 @@ import { TextareaAutosize } from "@mui/base";
 import Button from "@mui/material/Button";
 
 import MDEditor from "@uiw/react-md-editor";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 interface Props {
   handleSolutionDetail: () => void;

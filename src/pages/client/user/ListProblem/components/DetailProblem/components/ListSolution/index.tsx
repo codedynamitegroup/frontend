@@ -17,7 +17,7 @@ import { routes } from "routes/routes";
 import ParagraphBody from "components/text/ParagraphBody";
 import SearchBar from "components/common/search/SearchBar";
 import TuneIcon from "@mui/icons-material/Tune";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 export default function ProblemDetailSolution() {
   const navigate = useNavigate();

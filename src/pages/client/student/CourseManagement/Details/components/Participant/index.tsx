@@ -8,6 +8,7 @@ import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDet
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
 import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import { GridRowParams } from "@mui/x-data-grid";
 
 const StudentCourseParticipant = () => {
   const participantList = [
@@ -51,6 +52,10 @@ const StudentCourseParticipant = () => {
   const pageSize = 5;
   const totalElement = 100;
 
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -71,6 +76,7 @@ const StudentCourseParticipant = () => {
           totalElement={totalElement}
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={false}
+          onClickRow={rowClickHandler}
         />
       </Grid>
     </Grid>

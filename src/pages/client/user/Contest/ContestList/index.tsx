@@ -7,7 +7,7 @@ import Header from "components/Header";
 import ContestContentCard from "./components/ContestContentCard";
 import ContestFilter from "./components/ContestFilter";
 import images from "config/images";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";

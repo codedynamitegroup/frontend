@@ -18,7 +18,35 @@
     background-color: white;
     align-items: center;
     padding: 10px 15px;
+    justify-content: space-between;
 
+    .submit {
+      display: flex;
+      gap: 10px;
+      .runBtn {
+        background-color: var(--green-600);
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: var(--green-500);
+        }
+      }
+      .submitBtn {
+        border: 1px solid var(--blue-500);
+        color: var(--blue-500);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: var(--blue-500);
+          color: white;
+        }
+      }
+    }
     #breadcumpWrapper {
       display: flex;
       align-items: center;
@@ -41,7 +69,11 @@
   .codeContainer {
     padding-left: 10px;
     padding-right: 10px;
-
+    display: flex !important;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 2px;
     .rightBody {
       display: flex;
       flex-direction: column;
@@ -49,12 +81,24 @@
       background-color: white;
       height: 100%;
 
-      #codeStubHead {
+      .codeStubContainer {
+        height: 50%;
+        border-bottom: 1px solid var(--gray-30);
+        #codeStubHead {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: var(--gray-4);
+          padding: 5px 10px;
+        }
+      }
+
+      .codeTestcaseContainer {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: var(--gray-4);
-        padding: 5px 10px;
+        flex-direction: column;
+        height: 50%;
+        overflow: auto;
+        gap: 10px;
       }
     }
     .stickyTabList {

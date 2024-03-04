@@ -7,7 +7,7 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridSlotsComponentsProps } from "@mui/x-data-grid";
+import { GridEventListener, GridSlotsComponentsProps } from "@mui/x-data-grid";
 import classes from "./styles.module.scss";
 import { truncate } from "fs";
 
@@ -16,6 +16,7 @@ interface DataGridProps {
   tableHeader: Array<GridColDef>;
   visibleColumn?: any;
   onSelectData: any;
+  onClickRow: any;
   dataGridToolBar?: any;
   pageSize: number;
   page: number;
@@ -44,7 +45,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     columnGroupingModel,
     showVerticalCellBorder,
     customColumnMenu,
-    customFooter
+    customFooter,
+    onClickRow
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -52,8 +54,13 @@ const CustomDataGrid = (props: DataGridProps) => {
   ) => {
     onSelectData(rowSelectionModel, details);
   };
+
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     onPaginationModelChange(model, details);
+  };
+
+  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+    onClickRow(params);
   };
 
   return (
@@ -73,6 +80,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
         onRowSelectionModelChange={rowSelectionHandler}
+        onRowClick={handleRowClick}
         density='comfortable'
         disableColumnFilter
         disableColumnSelector

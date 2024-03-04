@@ -17,7 +17,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 

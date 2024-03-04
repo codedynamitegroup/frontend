@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
 
 interface CourseCertificate {

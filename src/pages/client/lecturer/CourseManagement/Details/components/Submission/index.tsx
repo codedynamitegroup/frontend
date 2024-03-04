@@ -5,6 +5,7 @@ import {
   GridCallbackDetails,
   GridColDef,
   GridPaginationModel,
+  GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
@@ -219,6 +220,10 @@ const LecturerCourseAssignmentSubmission = () => {
     }
   ];
 
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
+  };
+
   return (
     <Box className={classes.assignmentBody}>
       <Button
@@ -274,6 +279,7 @@ const LecturerCourseAssignmentSubmission = () => {
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={true}
           getRowHeight={() => "auto"}
+          onClickRow={rowClickHandler}
         />
       </Grid>
     </Box>

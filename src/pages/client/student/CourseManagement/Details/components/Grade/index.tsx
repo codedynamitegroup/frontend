@@ -10,6 +10,7 @@ import StudentCourseGradeAssignment from "./components/CourseResource";
 import { ECourseResourceType } from "models/courseService/course";
 import GradeSummary from "./components/GradeSummary";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import { GridRowParams } from "@mui/x-data-grid";
 
 const StudentCourseGrade = () => {
   const courseAssignmentList = [
@@ -170,6 +171,10 @@ const StudentCourseGrade = () => {
   const pageSize = 5;
   const totalElement = 100;
 
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
+  };
+
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
@@ -190,6 +195,7 @@ const StudentCourseGrade = () => {
           totalElement={totalElement}
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={true}
+          onClickRow={rowClickHandler}
         />
       </Grid>
     </Grid>

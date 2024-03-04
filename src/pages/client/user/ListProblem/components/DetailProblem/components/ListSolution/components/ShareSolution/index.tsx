@@ -11,7 +11,7 @@ import { Divider, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import MDEditor from "@uiw/react-md-editor";
 import ArrowBack from "@mui/icons-material/ArrowBack";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 export default function ShareSolution() {
   const navigate = useNavigate();

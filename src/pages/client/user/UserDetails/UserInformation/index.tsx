@@ -11,7 +11,7 @@ import UserInformationDetailsDialog from "./components/UserInformationDetailsDia
 import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 const UserInformation = () => {
   const [isLoading, setIsLoading] = useState(true);

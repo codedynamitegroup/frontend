@@ -22,10 +22,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import LessonDetailDescription from "./components/Description";
-import LessonDetailSolution from "./components/ListSolution";
-import LessonDetailSubmission from "./components/Submission";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import ProblemDetailDescription from "./components/Description";
 import ProblemDetailSolution from "./components/ListSolution";
 import ProblemDetailSubmission from "./components/Submission";
@@ -480,7 +477,7 @@ int main()
                       >
                         <Tab
                           sx={{ textTransform: "none" }}
-                          label={<ParagraphBody>Testcase</ParagraphBody>}
+                          label={<ParagraphBody>Test Cases</ParagraphBody>}
                           value={0}
                         />
                         <Tab
