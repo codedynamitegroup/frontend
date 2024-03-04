@@ -15,7 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
 import Footer from "components/Footer";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 const status = [
   {
     id: 1,

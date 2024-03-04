@@ -4,7 +4,7 @@ import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Divider } from "@mui/material";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import { useRef } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";

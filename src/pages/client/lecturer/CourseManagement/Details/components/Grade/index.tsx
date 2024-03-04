@@ -10,7 +10,7 @@ import CustomDataGrid from "../../../../../../../components/common/CustomDataGri
 import { GridColumnGroupingModel } from "@mui/x-data-grid/models/gridColumnGrouping";
 import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuProps";
 import { GridColumnMenuItemProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuItemProps";
-import { GridColumnMenu } from "@mui/x-data-grid";
+import { GridColumnMenu, GridRowParams } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CourseGradeFeatureBar from "./components/FeatureBar";
 
@@ -142,6 +142,10 @@ const LecturerCourseGrade = () => {
   const pageSize = 5;
   const totalElement = 100;
 
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
+  };
+
   return (
     <Box className={classes.gradeBody}>
       <Grid item xs={12}>
@@ -164,6 +168,7 @@ const LecturerCourseGrade = () => {
           columnGroupingModel={columnGroupingModel}
           showVerticalCellBorder={true}
           customColumnMenu={CustomColumnMenu}
+          onClickRow={rowClickHandler}
         />
       </Grid>
     </Box>

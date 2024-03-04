@@ -83,6 +83,7 @@
 
       .codeStubContainer {
         height: 50%;
+        border-bottom: 1px solid var(--gray-30);
         #codeStubHead {
           display: flex;
           align-items: center;

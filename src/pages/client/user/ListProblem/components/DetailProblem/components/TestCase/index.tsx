@@ -13,6 +13,7 @@ export default function TestCase() {
             fullWidth
             id='outlined-basic'
             variant='outlined'
+            value={"[1,2,3]"}
             size='small'
             className={classes.input}
           />
@@ -25,6 +26,7 @@ export default function TestCase() {
             id='outlined-basic'
             variant='outlined'
             size='small'
+            value={"6"}
             className={classes.input}
           />
         </Box>

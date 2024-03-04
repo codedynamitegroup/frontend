@@ -9,7 +9,7 @@ import TextTitle from "components/text/TextTitle";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import classes from "./styles.module.scss";
-import useWindowDimensions from "utils/useWindowDimensions";
+import useWindowDimensions from "hooks/useWindowDimensions";
 
 interface AddEventDialogProps extends DialogProps {
   data: {

@@ -8,14 +8,7 @@ import ContestList from "pages/client/user/Contest/ContestList";
 import CourseCertificates from "pages/client/user/CourseCertificate";
 import ListProblem from "pages/client/user/ListProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
-import AssignmentCreated from "pages/lecturer/AssignmentManagement/CreateAssigment";
-import AssignmentGrading from "pages/lecturer/AssignmentManagement/GradingAssignment";
-import CodeQuestionManagement from "pages/lecturer/CodeQuestionManagement";
-import CodeQuestionCreated from "pages/lecturer/CodeQuestionManagement/Create";
-import CodeQuestionDetails from "pages/lecturer/CodeQuestionManagement/Details";
-import ExamCreated from "pages/lecturer/ExamManagemenent/CreateExam";
-import QuestionBankManagement from "pages/lecturer/QuestionBankManagement";
-import QuestionCreated from "pages/lecturer/QuestionManagement/components/CreateQuestion";
+import QuestionCreated from "pages/client/lecturer/QuestionManagement/components/CreateQuestion";
 import {
   Route,
   RouterProvider,
@@ -31,8 +24,6 @@ import StudentEventCalendar from "pages/client/student/StudentEventCalendar";
 import Login from "pages/client/user/Login";
 import Register from "pages/client/user/Register";
 import Forgotpassword from "pages/client/user/ForgotPassword";
-import QuestionBankManagementLayout from "pages/lecturer/QuestionBankManagement/QuestionBankManagementLayout";
-import QuestionListOfCourse from "pages/lecturer/QuestionBankManagement/QuestionListOfCourse";
 import ContestDetails from "pages/client/user/Contest/ContestDetails";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
 import LecturerEventCalendar from "pages/client/lecturer/LecturerEventCalendar";
@@ -40,6 +31,15 @@ import Dashboard from "pages/client/user/Dashboard";
 import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
+import CodeQuestionManagement from "pages/client/lecturer/CodeQuestionManagement";
+import CodeQuestionCreated from "pages/client/lecturer/CodeQuestionManagement/Create";
+import CodeQuestionDetails from "pages/client/lecturer/CodeQuestionManagement/Details";
+import AssignmentCreated from "pages/client/lecturer/AssignmentManagement/CreateAssigment";
+import AssignmentGrading from "pages/client/lecturer/AssignmentManagement/GradingAssignment";
+import ExamCreated from "pages/client/lecturer/ExamManagemenent/CreateExam";
+import QuestionBankManagementLayout from "pages/client/lecturer/QuestionBankManagement/QuestionBankManagementLayout";
+import QuestionBankManagement from "pages/client/lecturer/QuestionBankManagement";
+import QuestionListOfCourse from "pages/client/lecturer/QuestionBankManagement/QuestionListOfCourse";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

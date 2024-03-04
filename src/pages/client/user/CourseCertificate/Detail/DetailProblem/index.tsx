@@ -22,7 +22,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import { Resizable } from "re-resizable";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
@@ -493,7 +493,7 @@ int main()
                       >
                         <Tab
                           sx={{ textTransform: "none" }}
-                          label={<ParagraphBody>Testcase</ParagraphBody>}
+                          label={<ParagraphBody>Test Cases</ParagraphBody>}
                           value={0}
                         />
                         <Tab

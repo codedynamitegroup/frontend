@@ -23,7 +23,7 @@ import ContestLeaderboard from "./components/ContestLeaderboard";
 import Heading4 from "components/text/Heading4";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useParams } from "react-router-dom";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
 
 export enum EContestStatus {

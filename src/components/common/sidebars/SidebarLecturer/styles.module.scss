@@ -5,6 +5,9 @@
   background-color: var(--blue-500);
 }
 .logo {
+  &:hover {
+    cursor: pointer;
+  }
   .imageLogo {
     width: 60px;
   }

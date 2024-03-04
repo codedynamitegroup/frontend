@@ -11,7 +11,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Footer from "components/Footer";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 export default function HomePage() {
   const headerRef = useRef<HTMLDivElement>(null);

@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { useCallback } from "react";
 import classes from "./styles.module.scss";
 import BasicSelect from "components/common/select/BasicSelect";
-import useWindowDimensions from "utils/useWindowDimensions";
+import useWindowDimensions from "hooks/useWindowDimensions";
 
 interface AddEventDialogProps extends DialogProps {
   data: {

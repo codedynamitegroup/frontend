@@ -16,7 +16,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import CertificateDetails from "./components/Certificate";
 import CourseCertificateLesson from "./components/Lesson";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import useBoxDimensions from "utils/useBoxDimensions";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
 
 const CourseCertificateDetail = () => {
