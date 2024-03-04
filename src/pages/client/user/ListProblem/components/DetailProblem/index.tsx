@@ -305,14 +305,14 @@ int main()
     setWidth002(newWidth002);
     // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
   };
-  const handleResize002 = (e: any, direction: any, ref: any, d: any) => {
-    const newWidth002 = ref.style.width;
-    const newWidth001 = `${100 - parseFloat(newWidth002)}%`;
+  // const handleResize002 = (e: any, direction: any, ref: any, d: any) => {
+  //   const newWidth002 = ref.style.width;
+  //   const newWidth001 = `${100 - parseFloat(newWidth002)}%`;
 
-    setWidth002(newWidth002);
-    setWidth001(newWidth001);
-    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
-  };
+  //   setWidth002(newWidth002);
+  //   setWidth001(newWidth001);
+  //   // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
+  // };
 
   const marginRef = useRef<number>(10);
   return (
@@ -425,15 +425,15 @@ int main()
             maxWidth={"100%"}
             enable={{
               top: false,
-              right: true,
+              right: false,
               bottom: false,
-              left: true,
+              left: false,
               topRight: false,
               bottomRight: false,
               bottomLeft: false,
               topLeft: false
             }}
-            onResize={handleResize002}
+            // onResize={handleResize002}
           >
             <Box className={classes.rightBody}>
               <Box className={classes.codeStubContainer}>

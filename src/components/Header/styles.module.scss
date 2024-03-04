@@ -19,26 +19,36 @@
 }
 .wrapper {
   display: flex;
+  align-items: center;
 }
 .toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--blue-500);
+  background-color: white;
+  margin: 0 auto;
+  padding: 0 56px;
 }
 .item {
   margin-top: 1rem;
   margin-bottom: 1rem;
   margin-left: 1rem !important;
   margin-right: 1rem !important;
-  color: white !important;
+  color: black !important;
   display: block;
+
+  &:hover {
+    color: var(--blue-500) !important;
+    background-color: white !important;
+  }
 }
 .header {
-  background-color: var(--blue-500) !important;
+  background-color: white !important;
+  box-shadow: 0 2px 4px #00000026 !important;
   .logo {
     .imageLogo {
-      width: 60px;
+      margin-top: 5px;
+      width: 120px;
     }
     cursor: pointer;
   }

@@ -14,6 +14,7 @@ export default function Forgotpassword() {
   return (
     <Grid className={classes.root}>
       <Header />
+
       <Box className={classes.container}>
         <Container>
           <Grid container spacing={2} className={classes.loginContainer}>
@@ -47,6 +48,9 @@ export default function Forgotpassword() {
                     Gửi
                   </Button>
                 </form>
+              </Box>
+              <Box className={classes.back}>
+                <Link href='/login'>{`< Quay lại trang đăng nhập`}</Link>
               </Box>
             </Grid>
           </Grid>

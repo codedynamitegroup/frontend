@@ -175,7 +175,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 onClick={handleDrawerOpen}
                 color='inherit'
               >
-                <MenuIcon />
+                <MenuIcon style={{ color: "black" }} />
               </IconButton>
             </Box>
             <Box className={classes.logo} onClick={handleLogo}>
@@ -214,9 +214,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   }
                   alt='avatar'
                 ></img>
-                <ParagraphBody colorName={"--white"} fontWeight={700}>
-                  HIEUTHUHAI
-                </ParagraphBody>
+                <ParagraphBody fontWeight={700}>HIEUTHUHAI</ParagraphBody>
               </IconButton>
             </Box>
           )}

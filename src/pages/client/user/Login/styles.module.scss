@@ -32,6 +32,13 @@
     flex-direction: column;
     width: 80%;
     gap: 10px;
+
+    .option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
   }
   .social {
     display: flex;
