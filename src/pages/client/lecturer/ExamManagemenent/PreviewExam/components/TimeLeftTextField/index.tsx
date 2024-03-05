@@ -20,11 +20,10 @@ interface InputsProps extends OutlinedInputProps {
   disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   backgroundColor?: string;
-  fullWidth?: boolean;
   maxWith?: string;
 }
 
-const InputTextField = memo((props: InputsProps) => {
+const TimeLeftTextField = memo((props: InputsProps) => {
   const {
     title,
     type,
@@ -39,7 +38,6 @@ const InputTextField = memo((props: InputsProps) => {
     disabled,
     onChange,
     backgroundColor,
-    fullWidth,
     maxWith
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
@@ -48,7 +46,7 @@ const InputTextField = memo((props: InputsProps) => {
       <FormControl
         className={classes.inputContainer}
         sx={{
-          width: `${fullWidth ? "100%" : "auto"}`
+          width: "fit-content"
         }}
       >
         <Grid container spacing={1} columns={12}>
@@ -88,4 +86,4 @@ const InputTextField = memo((props: InputsProps) => {
   );
 });
 
-export default InputTextField;
+export default TimeLeftTextField;

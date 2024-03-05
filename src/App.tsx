@@ -36,10 +36,13 @@ import CodeQuestionCreated from "pages/client/lecturer/CodeQuestionManagement/Cr
 import CodeQuestionDetails from "pages/client/lecturer/CodeQuestionManagement/Details";
 import AssignmentCreated from "pages/client/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/client/lecturer/AssignmentManagement/GradingAssignment";
-import ExamCreated from "pages/client/lecturer/ExamManagemenent/CreateExam";
+import CreateExam from "pages/client/lecturer/ExamManagemenent/CreateExam";
 import QuestionBankManagementLayout from "pages/client/lecturer/QuestionBankManagement/QuestionBankManagementLayout";
 import QuestionBankManagement from "pages/client/lecturer/QuestionBankManagement";
 import QuestionListOfCourse from "pages/client/lecturer/QuestionBankManagement/QuestionListOfCourse";
+import PreviewAssignmentSubmission from "pages/client/lecturer/AssignmentManagement/PreviewAssignmentSubmission";
+import PreviewExam from "pages/client/lecturer/ExamManagemenent/PreviewExam";
+import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -62,8 +65,17 @@ const router = createBrowserRouter(
 
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
+      <Route
+        path={routes.lecturer.assignment.preview_submit}
+        element={<PreviewAssignmentSubmission />}
+      />
+
       <Route path={routes.student.assignment.submit} element={<AssignmentSubmission />} />
-      <Route path={routes.lecturer.exam.create} element={<ExamCreated />} />
+
+      <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
+      <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
+      <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
+
       <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
 
       <Route path={routes.student.course.management} element={<StudentCourseManagement />} />

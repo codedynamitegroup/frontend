@@ -25,7 +25,8 @@ export const routes = {
       create: "/lecturer/courses/:courseId/assignments/create",
       grading:
         "/lecturer/courses/:courseId/assignments/:assignmentId/submissions/:submissionId/grading",
-      submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions"
+      submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions",
+      preview_submit: "/lecturer/courses/:courseId/assignments/:assignmentId/preview-submit"
     },
     question: {
       essay: {
@@ -64,7 +65,12 @@ export const routes = {
       }
     },
     exam: {
-      create: "/lecturer/courses/:courseId/exams/create"
+      create: "/lecturer/courses/:courseId/assignments/exams/create",
+      detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
+      grading:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
+      submissions: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions",
+      preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview"
     }
   },
   student: {

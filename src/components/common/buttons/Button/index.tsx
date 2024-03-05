@@ -14,14 +14,18 @@ export enum BtnType {
 interface ButtonProps extends ButtonPropsMUI {
   btnType?: BtnType;
   width?: string;
+  height?: string;
   padding?: string;
   nowrap?: boolean;
   borderRadius?: string;
+  margin?: string;
 }
 
 const Button = memo((props: ButtonProps) => {
   const {
     width,
+    height,
+    margin,
     padding,
     className,
     btnType,
@@ -48,6 +52,8 @@ const Button = memo((props: ButtonProps) => {
       sx={{
         ...sx,
         width: width,
+        height: height,
+        margin: margin,
         padding: padding,
         whiteSpace: nowrap ? "nowrap" : "unset",
         borderRadius: borderRadius

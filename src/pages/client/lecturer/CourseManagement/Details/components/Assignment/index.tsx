@@ -7,7 +7,7 @@ import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import AssignmentResource from "./components/Resource";
+import AssignmentResource, { ResourceType } from "./components/Resource";
 import classes from "./styles.module.scss";
 import { useState } from "react";
 import ReusedCourseResourceDialog from "./components/ReuseResourceDialog/CourseDialog";
@@ -97,8 +97,16 @@ const LecturerCourseAssignment = () => {
           </Box>
           <Box className={classes.topic}>
             <Heading3>Bài kiểm tra</Heading3>
-            <AssignmentResource resourceTitle='Bài kiểm tra 1' resourceEndedDate='12/12/2022' />
-            <AssignmentResource resourceTitle='Bài kiểm tra 2' resourceEndedDate='12/12/2023' />
+            <AssignmentResource
+              resourceTitle='Bài kiểm tra 1'
+              resourceEndedDate='12/12/2022'
+              type={ResourceType.exam}
+            />
+            <AssignmentResource
+              resourceTitle='Bài kiểm tra 2'
+              resourceEndedDate='12/12/2023'
+              type={ResourceType.exam}
+            />
           </Box>
         </Box>
       </Box>

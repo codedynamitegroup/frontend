@@ -5,12 +5,14 @@ import { memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import LecturerCourseAssignment from "./components/Assignment";
-import LecturerCourseAssignmentDetails from "./components/Assignment/AssignmentDetails";
+import LecturerCourseAssignmentDetails from "./components/Assignment/components/AssignmentDetails";
 import LecturerCourseGrade from "./components/Grade";
 import LecturerCourseInformation from "./components/Information";
 import LecturerCourseParticipant from "./components/Participant";
-import LecturerCourseAssignmentSubmission from "./components/Submission";
+import LecturerCourseAssignmentSubmissions from "./components/AssignmentSubmissions";
+import LecturerCourseExamSubmissions from "./components/ExamSubmissions";
 import classes from "./styles.module.scss";
+import LecturerCourseExamDetails from "./components/Assignment/components/ExamDetails";
 
 interface Props {}
 
@@ -92,7 +94,12 @@ const CourseDetail = memo((props: Props) => {
                 />
                 <Route
                   path={"assignments/:assignmentId/submissions"}
-                  element={<LecturerCourseAssignmentSubmission />}
+                  element={<LecturerCourseAssignmentSubmissions />}
+                />
+                <Route path={"assignments/exams/:examId"} element={<LecturerCourseExamDetails />} />
+                <Route
+                  path={"assignments/exams/:examId/submissions"}
+                  element={<LecturerCourseExamSubmissions />}
                 />
                 <Route path={"grade"} element={<LecturerCourseGrade />} />
                 <Route path={"participant"} element={<LecturerCourseParticipant />} />

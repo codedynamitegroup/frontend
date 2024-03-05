@@ -9,7 +9,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import AssignmentTable from "./components/AssignmentTable";
+import AssignmentTable from "./components/GradingAssignmentTable";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 
@@ -171,11 +171,11 @@ const LecturerCourseAssignmentDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.assignment.submit);
+          navigate(routes.lecturer.assignment.preview_submit);
         }}
         width='fit-content'
       >
-        <ParagraphBody>Thêm bài nộp</ParagraphBody>
+        <ParagraphBody>Xem trước phần bài nộp</ParagraphBody>
       </Button>
     </Box>
   );

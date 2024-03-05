@@ -150,7 +150,7 @@ const tableHeading: GridColDef[] = [
   { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 }
 ];
 
-const LecturerCourseAssignmentSubmission = () => {
+const LecturerCourseExamSubmissions = () => {
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -242,7 +242,7 @@ const LecturerCourseAssignmentSubmission = () => {
       >
         <ParagraphBody>Quay lại</ParagraphBody>
       </Button>
-      <Heading1>Bài tập trắc nghiệm 1</Heading1>
+      <Heading1>Bài kiểm tra cuối kỳ</Heading1>
       <ParagraphBody>
         Số sinh viên nộp: {totalSubmissionCount}/{totalStudent}
       </ParagraphBody>
@@ -286,4 +286,4 @@ const LecturerCourseAssignmentSubmission = () => {
   );
 };
 
-export default LecturerCourseAssignmentSubmission;
+export default LecturerCourseExamSubmissions;

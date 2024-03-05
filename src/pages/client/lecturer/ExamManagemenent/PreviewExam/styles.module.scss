@@ -14,6 +14,7 @@
 .mainContent {
   background-color: var(--blue-1);
   margin-top: 64px;
+  height: 100vh;
 }
 
 .formBody {
@@ -29,6 +30,9 @@
 
 .drawerFieldContainer {
   margin-bottom: 20px;
+  .drawerTextTitle {
+    margin-bottom: 10px;
+  }
 }
 
 .textEditor {

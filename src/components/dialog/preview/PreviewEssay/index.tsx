@@ -1,37 +1,30 @@
+import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "@mui/joy";
 import {
   Box,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-  FormControl,
-  RadioGroup,
-  FormLabel,
-  FormControlLabel,
-  Radio,
   DialogProps,
+  DialogTitle,
   Grid,
-  Stack
+  IconButton,
+  Stack,
+  Typography
 } from "@mui/material";
-import { Button, Textarea } from "@mui/joy";
-import CloseIcon from "@mui/icons-material/Close";
-import React, { useState, useRef } from "react";
-import { blue, grey, red, yellow } from "@mui/material/colors";
+import { blue, grey, yellow } from "@mui/material/colors";
 import TextEditor from "components/editor/TextEditor";
+import React, { useState } from "react";
 
 interface PreviewMultipleChoiceProps extends DialogProps {
+  readOnly?: boolean;
+  value?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewEssay = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
-  const [value1, setValue1] = useState<String>();
+const PreviewEssay = ({ setOpen, value, readOnly, ...props }: PreviewMultipleChoiceProps) => {
+  const [value1, setValue1] = useState<string>(value || "");
   const [submitedValue1, setSubmitedValue1] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue1((event.target as HTMLInputElement).value);
-  };
   return (
     <Dialog {...props}>
       <DialogTitle sx={{ m: 0, p: 2 }} id={props["aria-labelledby"]}>
@@ -62,7 +55,7 @@ const PreviewEssay = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
               <Typography gutterBottom>Ai là cha của SE? Nêu những thành tựu nổi bật</Typography>
               {/* <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={5} /> */}
               <Box sx={{ background: "white", height: "200px" }}>
-                <TextEditor value='' />
+                <TextEditor value={value1} onChange={(val) => setValue1(val)} readOnly={readOnly} />
               </Box>
 
               {submitedValue1 && (
@@ -74,19 +67,21 @@ const PreviewEssay = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
           </Grid>
         </Grid>
       </DialogContent>
-      <Grid container justifyContent={"center"} marginY={1}>
-        <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
-          <Button
-            onClick={() => {
-              setSubmitedValue1(false);
-            }}
-          >
-            Bắt đầu lại
-          </Button>
-          <Button onClick={() => setSubmitedValue1(true)}>Kiểm tra kết quả</Button>
-          <Button onClick={() => setOpen(false)}>Đóng preview</Button>
-        </Stack>
-      </Grid>
+      {!readOnly && (
+        <Grid container justifyContent={"center"} marginY={1}>
+          <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
+            <Button
+              onClick={() => {
+                setSubmitedValue1(false);
+              }}
+            >
+              Bắt đầu lại
+            </Button>
+            <Button onClick={() => setSubmitedValue1(true)}>Kiểm tra kết quả</Button>
+            <Button onClick={() => setOpen(false)}>Đóng preview</Button>
+          </Stack>
+        </Grid>
+      )}
     </Dialog>
   );
 };

@@ -1,8 +1,10 @@
 .root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
   display: flex;
   flex-direction: column !important;
-  gap: 20px;
-  padding-bottom: 20px;
   background-color: var(--blue-1);
 }
 
@@ -12,8 +14,8 @@
 }
 
 .mainContent {
-  background-color: var(--blue-1);
-  margin-top: 64px;
+  background-color: var(--gray-3);
+  margin-top: -10px;
 }
 
 .formBody {
@@ -40,7 +42,6 @@
   align-items: center;
   gap: 5px;
   padding: 10px 10px;
-  flex-grow: 1;
 
   #icArrow {
     color: var(--blue-500);

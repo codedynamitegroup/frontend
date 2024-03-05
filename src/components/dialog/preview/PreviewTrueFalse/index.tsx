@@ -1,31 +1,31 @@
+import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "@mui/joy";
 import {
   Box,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-  FormControl,
-  RadioGroup,
-  FormLabel,
-  FormControlLabel,
-  Radio,
   DialogProps,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
   Grid,
-  Stack
+  IconButton,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography
 } from "@mui/material";
-import { Button } from "@mui/joy";
-import CloseIcon from "@mui/icons-material/Close";
-import React, { useState, useRef } from "react";
 import { blue, grey, red, yellow } from "@mui/material/colors";
+import React, { useState } from "react";
 interface PreviewMultipleChoiceProps extends DialogProps {
+  readOnly?: boolean;
+  value?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewTrueFalse = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
-  const [value1, setValue1] = useState<String>();
-  const [submitedValue1, setSubmitedValue1] = useState<String>();
+const PreviewTrueFalse = ({ setOpen, value, readOnly, ...props }: PreviewMultipleChoiceProps) => {
+  const [value1, setValue1] = useState<string>(value || "");
+  const [submitedValue1, setSubmitedValue1] = useState<string>(value || "");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue1((event.target as HTMLInputElement).value);
@@ -59,7 +59,11 @@ const PreviewTrueFalse = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => 
             <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
               <Typography gutterBottom>HTML stands for Hyper Text Markup Language</Typography>
               <FormControl>
-                <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>
+                <RadioGroup
+                  name='radio-buttons-group'
+                  value={value1}
+                  onChange={readOnly ? undefined : handleChange}
+                >
                   <FormControlLabel
                     value='1'
                     control={<Radio />}
@@ -85,20 +89,22 @@ const PreviewTrueFalse = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => 
           </Grid>
         </Grid>
       </DialogContent>
-      <Grid container justifyContent={"center"} marginY={1}>
-        <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
-          <Button
-            onClick={() => {
-              setSubmitedValue1(undefined);
-              setValue1(undefined);
-            }}
-          >
-            Bắt đầu lại
-          </Button>
-          <Button onClick={() => setSubmitedValue1(value1)}>Kiểm tra kết quả</Button>
-          <Button onClick={() => setOpen(false)}>Đóng preview</Button>
-        </Stack>
-      </Grid>
+      {!readOnly && (
+        <Grid container justifyContent={"center"} marginY={1}>
+          <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
+            <Button
+              onClick={() => {
+                setSubmitedValue1("");
+                setValue1("");
+              }}
+            >
+              Bắt đầu lại
+            </Button>
+            <Button onClick={() => setSubmitedValue1(value1)}>Kiểm tra kết quả</Button>
+            <Button onClick={() => setOpen(false)}>Đóng preview</Button>
+          </Stack>
+        </Grid>
+      )}
     </Dialog>
   );
 };

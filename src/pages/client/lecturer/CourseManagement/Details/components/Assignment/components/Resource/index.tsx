@@ -12,19 +12,28 @@ import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 
+export enum ResourceType {
+  assignment = "assignment",
+  exam = "exam"
+}
+
 interface Props {
   resourceTitle: string;
   resourceEndedDate: string;
+  type?: ResourceType;
 }
-const AssignmentResource = ({ resourceTitle, resourceEndedDate }: Props) => {
+
+const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) => {
   const navigate = useNavigate();
+  type = type || ResourceType.assignment;
   const [resourceExpansion, setResourceExpansion] = useState(false);
   const cancelResourceHandler = () => {
     setResourceExpansion(false);
   };
 
   const onDetailClick = () => {
-    navigate(routes.lecturer.assignment.detail);
+    if (type === ResourceType.assignment) navigate(routes.lecturer.assignment.detail);
+    else navigate(routes.lecturer.exam.detail);
   };
 
   return (

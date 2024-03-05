@@ -1,35 +1,28 @@
+import CloseIcon from "@mui/icons-material/Close";
+import { Button, Textarea } from "@mui/joy";
 import {
   Box,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-  FormControl,
-  RadioGroup,
-  FormLabel,
-  FormControlLabel,
-  Radio,
   DialogProps,
+  DialogTitle,
   Grid,
-  Stack
+  IconButton,
+  Stack,
+  Typography
 } from "@mui/material";
-import { Button, Textarea } from "@mui/joy";
-import CloseIcon from "@mui/icons-material/Close";
-import React, { useState, useRef } from "react";
-import { blue, grey, red, yellow } from "@mui/material/colors";
+import { blue, grey, yellow } from "@mui/material/colors";
+import React, { useState } from "react";
 interface PreviewMultipleChoiceProps extends DialogProps {
+  readOnly?: boolean;
+  value?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewShortAnswer = ({ setOpen, ...props }: PreviewMultipleChoiceProps) => {
-  const [value1, setValue1] = useState<String>();
+const PreviewShortAnswer = ({ setOpen, value, readOnly, ...props }: PreviewMultipleChoiceProps) => {
+  const [value1, setValue1] = useState<string>(value || "");
   const [submitedValue1, setSubmitedValue1] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue1((event.target as HTMLInputElement).value);
-  };
   return (
     <Dialog {...props}>
       <DialogTitle sx={{ m: 0, p: 2 }} id={props["aria-labelledby"]}>
@@ -62,6 +55,9 @@ const PreviewShortAnswer = ({ setOpen, ...props }: PreviewMultipleChoiceProps) =
                 sx={{ marginBottom: 1, backgroundColor: "white" }}
                 minRows={1}
                 maxRows={1}
+                value={value1}
+                readOnly={readOnly}
+                onChange={(e) => setValue1(e.target.value)}
               />
               {submitedValue1 && (
                 <Typography sx={{ backgroundColor: yellow[100] }} gutterBottom>
@@ -72,19 +68,21 @@ const PreviewShortAnswer = ({ setOpen, ...props }: PreviewMultipleChoiceProps) =
           </Grid>
         </Grid>
       </DialogContent>
-      <Grid container justifyContent={"center"} marginY={1}>
-        <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
-          <Button
-            onClick={() => {
-              setSubmitedValue1(false);
-            }}
-          >
-            Bắt đầu lại
-          </Button>
-          <Button onClick={() => setSubmitedValue1(true)}>Kiểm tra kết quả</Button>
-          <Button onClick={() => setOpen(false)}>Đóng preview</Button>
-        </Stack>
-      </Grid>
+      {!readOnly && (
+        <Grid container justifyContent={"center"} marginY={1}>
+          <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
+            <Button
+              onClick={() => {
+                setSubmitedValue1(false);
+              }}
+            >
+              Bắt đầu lại
+            </Button>
+            <Button onClick={() => setSubmitedValue1(true)}>Kiểm tra kết quả</Button>
+            <Button onClick={() => setOpen(false)}>Đóng preview</Button>
+          </Stack>
+        </Grid>
+      )}
     </Dialog>
   );
 };

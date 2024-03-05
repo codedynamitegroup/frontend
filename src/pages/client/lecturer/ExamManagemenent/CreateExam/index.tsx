@@ -582,7 +582,7 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Thời gian mở bài kiểm tra</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>Thời gian mở bài kiểm tra</TextTitle>
                 <CustomDateTimePicker
                   value={examOpenTime}
                   onHandleValueChange={(newValue) => {
@@ -592,7 +592,9 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Thời gian đóng bài kiểm tra</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>
+                  Thời gian đóng bài kiểm tra
+                </TextTitle>
                 <CustomDateTimePicker
                   value={examCloseTime}
                   onHandleValueChange={(newValue) => {
@@ -661,7 +663,7 @@ export default function ExamCreated() {
                 </Grid>
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Khi hết thời gian</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>Khi hết thời gian</TextTitle>
                 <BasicSelect
                   labelId='select-assignment-overdue-handling-label'
                   value={overdueHandling}
@@ -685,7 +687,7 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Số lần làm lại tối đa</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>Số lần làm lại tối đa</TextTitle>
                 <BasicSelect
                   labelId='select-assignment-max-attempts-label'
                   value={maxAttempts.toString()}
@@ -704,7 +706,7 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Tính khả dụng</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>Tính khả dụng</TextTitle>
                 <BasicSelect
                   labelId='select-assignment-availability-label'
                   value={assignmentAvailability}
@@ -727,7 +729,7 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Chủ đề</TextTitle>
+                <TextTitle className={classes.drawerTextTitle}>Chủ đề</TextTitle>
                 <BasicSelect
                   labelId='select-assignment-section-label'
                   value={assignmentSection}
