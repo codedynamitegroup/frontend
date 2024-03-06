@@ -2,6 +2,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -9,22 +10,19 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { millisToHoursAndMinutesString } from "utils/time";
+import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import GradingExamTable from "./components/GradingExamTable";
 import classes from "./styles.module.scss";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 
 const LecturerCourseExamDetails = () => {
   const navigate = useNavigate();
-  const assignmentOpenTime = dayjs();
-  const assignmentCloseTime = dayjs();
-  const assignmentDescriptionRawHTML = `
+  const examOpenTime = dayjs();
+  const examCloseTime = dayjs();
+  const examLimitTimeInMillis = 1000000;
+  const examDescriptionRawHTML = `
     <div>
     <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
-  const activityInstructionsRawHTML = `
-    <div>
-    <p>Đây là hướng dẫn bài kiểm tra</p>
     </div>
     `;
 
@@ -60,9 +58,7 @@ const LecturerCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentOpenTime
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {examOpenTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -72,10 +68,16 @@ const LecturerCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentCloseTime
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {examCloseTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
             </ParagraphBody>
+          </Grid>
+        </Grid>
+        <Grid container direction='row' alignItems='center' gap={1}>
+          <Grid item>
+            <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
+          </Grid>
+          <Grid item>
+            <ParagraphBody>{millisToHoursAndMinutesString(examLimitTimeInMillis)}</ParagraphBody>
           </Grid>
         </Grid>
         <Divider
@@ -85,13 +87,10 @@ const LecturerCourseExamDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: assignmentDescriptionRawHTML }}></div>
-          <div
-            style={{
-              marginBottom: "10px"
-            }}
-            dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
-          ></div>
+          <div dangerouslySetInnerHTML={{ __html: examDescriptionRawHTML }}></div>
+          <ParagraphBody>
+            Cách thức tính điểm: <b>Điểm cao nhất</b>
+          </ParagraphBody>
           <CustomFileList
             files={[
               {
@@ -168,6 +167,33 @@ const LecturerCourseExamDetails = () => {
           }
         ]}
       />
+      <Heading2>Tóm tắt những lần làm bài trước</Heading2>
+      <ExamAttemptSummaryTable
+        headers={["Lần thử", "Trạng thái", "Điểm / 20.0", "Xem đánh giá"]}
+        rows={[
+          {
+            no: "Xem trước",
+            state: "Đã nộp",
+            grade: "20.0",
+            submitted_at: dayjs().toString()
+          },
+          {
+            no: "Xem trước",
+            state: "Chưa nộp",
+            grade: "Chưa có điểm",
+            submitted_at: dayjs().toString()
+          },
+          {
+            no: "Xem trước",
+            state: "Chưa nộp",
+            grade: "Chưa có điểm",
+            submitted_at: dayjs().toString()
+          }
+        ]}
+      />
+      <Heading2>
+        Điểm cao nhất: <span style={{ color: "red" }}>20.0</span>
+      </Heading2>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {

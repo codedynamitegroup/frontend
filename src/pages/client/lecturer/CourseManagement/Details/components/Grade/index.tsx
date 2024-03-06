@@ -1,18 +1,18 @@
-import { Box, Grid, IconButton, ListItemIcon, ListItemText, MenuItem, Paper } from "@mui/material";
-import classes from "./styles.module.scss";
-import Heading1 from "components/text/Heading1";
-import { GridColDef } from "@mui/x-data-grid/models/colDef";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
-import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import EditIcon from "@mui/icons-material/Edit";
-import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CustomDataGrid from "../../../../../../../components/common/CustomDataGrid";
-import { GridColumnGroupingModel } from "@mui/x-data-grid/models/gridColumnGrouping";
-import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuProps";
-import { GridColumnMenuItemProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuItemProps";
-import { GridColumnMenu, GridRowParams } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Box, Grid, IconButton, ListItemIcon, ListItemText, MenuItem } from "@mui/material";
+import { GridColumnMenu, GridRowParams } from "@mui/x-data-grid";
+import { GridColumnMenuItemProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuItemProps";
+import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu/GridColumnMenuProps";
+import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
+import { GridColDef } from "@mui/x-data-grid/models/colDef";
+import { GridColumnGroupingModel } from "@mui/x-data-grid/models/gridColumnGrouping";
+import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
+import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
+import Heading1 from "components/text/Heading1";
+import CustomDataGrid from "../../../../../../../components/common/CustomDataGrid";
 import CourseGradeFeatureBar from "./components/FeatureBar";
+import classes from "./styles.module.scss";
 
 function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
   const { customEditHandler, customEditValue } = props;

@@ -12,11 +12,11 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import AssignmentSubmissionFeatureBar from "./components/FeatureBar";
-import classes from "./styles.module.scss";
+import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import SubmissionBarChart from "./components/SubmissionChart";
+import classes from "./styles.module.scss";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -27,128 +27,6 @@ export enum SubmissionStatusGraded {
   GRADED = "Đã chấm",
   NOT_GRADED = "Chưa chấm"
 }
-
-const submissionList = [
-  {
-    id: 1,
-    student_name: "Nguyễn Đinh Quang Khánh",
-    student_email: "khanhndq2002@gmail.com",
-    status: {
-      submission_status_submitted: SubmissionStatusSubmitted.SUBMITTED,
-      grade_status: SubmissionStatusGraded.GRADED,
-      late_submission: {
-        is_late: true,
-        late_duration: "1 ngày 2 giờ"
-      }
-    },
-    last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-    last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-    grade: {
-      grade_status: SubmissionStatusGraded.GRADED,
-      current_grade: 0,
-      max_grade: 10
-    }
-  },
-  {
-    id: 2,
-    student_name: "Nguyễn Đinh Quang Khánh",
-    student_email: "khanhndq2002@gmail.com",
-    status: {
-      submission_status_submitted: SubmissionStatusSubmitted.NOT_SUBMITTED,
-      grade_status: SubmissionStatusGraded.NOT_GRADED,
-      late_submission: {
-        is_late: false,
-        late_duration: "1 ngày 2 giờ"
-      }
-    },
-    last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-    last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-    grade: {
-      grade_status: SubmissionStatusGraded.NOT_GRADED,
-      current_grade: 0,
-      max_grade: 10
-    }
-  }
-];
-
-const tableHeading: GridColDef[] = [
-  { field: "student_name", headerName: "Tên sinh viên", width: 200 },
-  { field: "student_email", headerName: "Email", width: 200 },
-  {
-    field: "status",
-    headerName: "Trạng thái",
-    width: 250,
-    renderCell: (params) => {
-      return (
-        <Box padding='5px' width='100%'>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor:
-                params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                  ? "var(--green-300)"
-                  : "#f5f5f5",
-              fontSize: "17px"
-            }}
-          >
-            {params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-              ? "Đã nộp"
-              : "Chưa nộp"}
-          </Box>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor: "#EFCFCF",
-              fontSize: "17px",
-              display: params.value.late_submission.is_late ? "block" : "none"
-            }}
-          >
-            {"Quá hạn "}
-            {params.value.late_submission.late_duration}
-          </Box>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor:
-                params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                  ? "var(--green-300)"
-                  : "#f5f5f5",
-              fontSize: "17px",
-              display:
-                params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
-            }}
-          >
-            {params.value.grade_status === SubmissionStatusGraded.GRADED ? "Đã chấm" : "Chưa chấm"}
-          </Box>
-        </Box>
-      );
-    }
-  },
-  {
-    field: "grade",
-    headerName: "Điểm",
-    width: 200,
-    renderCell: (params) => {
-      return (
-        <Box>
-          <Link to={routes.lecturer.assignment.grading}>
-            <Button btnType={BtnType.Primary}>Chấm điểm</Button>
-          </Link>
-          <Box
-            sx={{
-              padding: "5px",
-              fontSize: "17px"
-            }}
-          >
-            {params.value.current_grade} / {params.value.max_grade}
-          </Box>
-        </Box>
-      );
-    }
-  },
-  { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
-  { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 }
-];
 
 const LecturerCourseExamSubmissions = () => {
   const navigate = useNavigate();
@@ -168,6 +46,196 @@ const LecturerCourseExamSubmissions = () => {
   const page = 0;
   const pageSize = 5;
   const totalElement = 100;
+
+  const submissionList = [
+    {
+      id: 1,
+      student_name: "Nguyễn Đinh Quang Khánh",
+      student_email: "khanhndq2002@gmail.com",
+      status: {
+        submission_status_submitted: SubmissionStatusSubmitted.SUBMITTED,
+        grade_status: SubmissionStatusGraded.GRADED,
+        late_submission: {
+          is_late: true,
+          late_duration: "1 ngày 2 giờ"
+        }
+      },
+      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
+      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
+      grade: {
+        grade_status: SubmissionStatusGraded.GRADED,
+        current_grade: 0,
+        max_grade: 10,
+        questions: [
+          {
+            id: 1,
+            question: "Câu hỏi 1",
+            answer: "Đáp án 1",
+            grade: 0,
+            max_grade: 10
+          },
+          {
+            id: 2,
+            question: "Câu hỏi 2",
+            answer: "Đáp án 2",
+            grade: 0,
+            max_grade: 10
+          },
+          {
+            id: 3,
+            question: "Câu hỏi 3",
+            answer: "Đáp án 3",
+            grade: 0,
+            max_grade: 10
+          }
+        ]
+      }
+    },
+    {
+      id: 2,
+      student_name: "Nguyễn Quốc Tuấn",
+      student_email: "tuannguyen@gmail.com",
+      status: {
+        submission_status_submitted: SubmissionStatusSubmitted.NOT_SUBMITTED,
+        grade_status: SubmissionStatusGraded.NOT_GRADED,
+        late_submission: {
+          is_late: false,
+          late_duration: "1 ngày 2 giờ"
+        }
+      },
+      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
+      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
+      grade: {
+        grade_status: SubmissionStatusGraded.NOT_GRADED,
+        current_grade: 0,
+        max_grade: 10,
+        questions: [
+          {
+            id: 1,
+            question: "Câu hỏi 1",
+            answer: "Đáp án 1",
+            grade: 0,
+            max_grade: 10
+          },
+          {
+            id: 2,
+            question: "Câu hỏi 2",
+            answer: "Đáp án 2",
+            grade: 0,
+            max_grade: 10
+          },
+          {
+            id: 3,
+            question: "Câu hỏi 3",
+            answer: "Đáp án 3",
+            grade: 0,
+            max_grade: 10
+          }
+        ]
+      }
+    }
+  ];
+
+  const tableHeading: GridColDef[] = [
+    { field: "student_name", headerName: "Tên sinh viên", width: 200 },
+    { field: "student_email", headerName: "Email", width: 200 },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <Box padding='5px' width='100%'>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor:
+                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                    ? "var(--green-300)"
+                    : "#f5f5f5",
+                fontSize: "17px"
+              }}
+            >
+              {params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                ? "Đã nộp"
+                : "Chưa nộp"}
+            </Box>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor: "#EFCFCF",
+                fontSize: "17px",
+                display: params.value.late_submission.is_late ? "block" : "none"
+              }}
+            >
+              {"Quá hạn "}
+              {params.value.late_submission.late_duration}
+            </Box>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor:
+                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                    ? "var(--green-300)"
+                    : "#f5f5f5",
+                fontSize: "17px",
+                display:
+                  params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
+              }}
+            >
+              {params.value.grade_status === SubmissionStatusGraded.GRADED
+                ? "Đã chấm"
+                : "Chưa chấm"}
+            </Box>
+          </Box>
+        );
+      }
+    },
+    { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
+    { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 },
+    {
+      field: "grade",
+      headerName: "Điểm",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <Box>
+            <Button
+              btnType={BtnType.Primary}
+              onClick={() => {
+                navigate(routes.lecturer.exam.grading);
+              }}
+            >
+              Chấm điểm
+            </Button>
+
+            <Box
+              sx={{
+                padding: "5px",
+                fontSize: "17px"
+              }}
+            >
+              {params.value.current_grade} / {params.value.max_grade}
+            </Box>
+          </Box>
+        );
+      }
+    }
+  ];
+
+  submissionList.forEach((submission) => {
+    submission.grade.questions.forEach((question) => {
+      tableHeading.push({
+        field: `question-${question.id}`,
+        headerName: question.question,
+        renderCell: () => (
+          <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+            {question.grade} /{question.max_grade}
+          </Box>
+        )
+      });
+    });
+  });
 
   const submissionDataset = [
     {
@@ -225,11 +293,11 @@ const LecturerCourseExamSubmissions = () => {
   };
 
   return (
-    <Box className={classes.assignmentBody}>
+    <Box className={classes.examBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.assignment.detail);
+          navigate(routes.lecturer.exam.detail);
         }}
         startIcon={
           <ChevronLeftIcon
@@ -260,27 +328,29 @@ const LecturerCourseExamSubmissions = () => {
           height={500}
         />
       </Box>
-      <Grid item xs={12}>
-        <Heading1>Danh sách bài nộp</Heading1>
-      </Grid>
-      <Grid item xs={12}>
-        <AssignmentSubmissionFeatureBar />
-      </Grid>
-      <Grid item xs={12}>
-        <CustomDataGrid
-          dataList={submissionList}
-          tableHeader={tableHeading}
-          onSelectData={rowSelectionHandler}
-          visibleColumn={visibleColumnList}
-          dataGridToolBar={dataGridToolbar}
-          page={page}
-          pageSize={pageSize}
-          totalElement={totalElement}
-          onPaginationModelChange={pageChangeHandler}
-          showVerticalCellBorder={true}
-          getRowHeight={() => "auto"}
-          onClickRow={rowClickHandler}
-        />
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Heading1>Danh sách bài làm</Heading1>
+        </Grid>
+        <Grid item xs={12}>
+          <ExamSubmissionFeatureBar />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomDataGrid
+            dataList={submissionList}
+            tableHeader={tableHeading}
+            onSelectData={rowSelectionHandler}
+            visibleColumn={visibleColumnList}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={pageSize}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            getRowHeight={() => "auto"}
+            onClickRow={rowClickHandler}
+          />
+        </Grid>
       </Grid>
     </Box>
   );

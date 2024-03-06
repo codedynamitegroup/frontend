@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import classes from "./styles.module.scss";
+import { millisToHoursAndMinutesString } from "utils/time";
 
 const drawerWidth = 450;
 
@@ -305,23 +306,6 @@ export default function GradingExam() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  const millisToHoursAndMinutesString = React.useMemo(
-    () => (examLimit: number) => {
-      let result = "";
-      if (examLimit > 0) {
-        const hours = Math.floor((examLimit % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((examLimit % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((examLimit % (1000 * 60)) / 1000);
-        result =
-          (hours > 0 ? hours + " giờ " : "") +
-          (minutes > 0 ? minutes + " phút " : "") +
-          (seconds > 0 ? seconds + " giây" : "");
-      }
-      return result;
-    },
-    []
-  );
 
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {

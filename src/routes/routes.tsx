@@ -70,7 +70,8 @@ export const routes = {
       grading:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions",
-      preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview"
+      preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
+      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review"
     }
   },
   student: {

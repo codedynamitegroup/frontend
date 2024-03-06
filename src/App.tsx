@@ -43,6 +43,7 @@ import QuestionListOfCourse from "pages/client/lecturer/QuestionBankManagement/Q
 import PreviewAssignmentSubmission from "pages/client/lecturer/AssignmentManagement/PreviewAssignmentSubmission";
 import PreviewExam from "pages/client/lecturer/ExamManagemenent/PreviewExam";
 import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
+import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -75,6 +76,7 @@ const router = createBrowserRouter(
       <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
       <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
       <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
+      <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
 
       <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
 
