@@ -1,7 +1,7 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
-import AssignmentSubmission from "pages/client/student/AssignmentSubmission";
+import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
 import StudentCourseManagement from "pages/client/student/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import ContestList from "pages/client/user/Contest/ContestList";
@@ -44,12 +44,14 @@ import PreviewAssignmentSubmission from "pages/client/lecturer/AssignmentManagem
 import PreviewExam from "pages/client/lecturer/ExamManagemenent/PreviewExam";
 import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
 import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
+import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
+import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
-      <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
+      <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
+
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
@@ -57,38 +59,42 @@ const router = createBrowserRouter(
       <Route path={routes.user.login.root} element={<Login />} />
       <Route path={routes.user.register.root} element={<Register />} />
       <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
-
       <Route path={routes.user.dashboard.root} element={<Dashboard />} />
+      <Route path={routes.user.information} element={<UserInformation />} />
+      <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
+      <Route path={routes.user.contest.root} element={<ContestList />} />
+      <Route path={routes.user.contest.detail} element={<ContestDetails />} />
+
+      <Route
+        path={routes.user.course_certificate.detail.root}
+        element={<CourseCertificateDetail />}
+      />
+      <Route
+        path={routes.user.course_certificate.detail.lesson.detail}
+        element={<CourseCertificateLessonProblem />}
+      />
+
+      <Route
+        path={routes.user.course_certificate.detail.lesson.share_solution}
+        element={<LessonShareSolution />}
+      />
 
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
-
-      <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
-
+      <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
+      <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
       <Route
         path={routes.lecturer.assignment.preview_submit}
         element={<PreviewAssignmentSubmission />}
       />
-
-      <Route path={routes.student.assignment.submit} element={<AssignmentSubmission />} />
-
       <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
       <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
       <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
       <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
-
-      <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
-
-      <Route path={routes.student.course.management} element={<StudentCourseManagement />} />
-
-      <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
-
-      <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
-
-      <Route path={routes.student.calendar} element={<StudentEventCalendar />} />
       <Route path={routes.lecturer.calendar} element={<LecturerEventCalendar />} />
-
+      <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
+      <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
@@ -108,26 +114,6 @@ const router = createBrowserRouter(
         path={routes.lecturer.question.true_false.create}
         element={<QuestionCreated qtype={qtype.true_false.code} />}
         handle={{ crumbName: "default" }}
-      />
-
-      <Route path={routes.user.information} element={<UserInformation />} />
-
-      <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
-      <Route path={routes.user.contest.root} element={<ContestList />} />
-      <Route path={routes.user.contest.detail} element={<ContestDetails />} />
-
-      <Route
-        path={routes.user.course_certificate.detail.root}
-        element={<CourseCertificateDetail />}
-      />
-      <Route
-        path={routes.user.course_certificate.detail.lesson.detail}
-        element={<CourseCertificateLessonProblem />}
-      />
-
-      <Route
-        path={routes.user.course_certificate.detail.lesson.share_solution}
-        element={<LessonShareSolution />}
       />
       <Route
         path={routes.lecturer.question_bank.path}
@@ -168,6 +154,13 @@ const router = createBrowserRouter(
           )}
         </Route>
       </Route>
+
+      <Route path={routes.student.course.management} element={<StudentCourseManagement />} />
+      <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
+      <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
+      <Route path={routes.student.exam.take} element={<TakeExam />} />
+      <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
+      <Route path={routes.student.calendar} element={<StudentEventCalendar />} />
     </Route>
   )
 );

@@ -8,6 +8,7 @@ import Heading1 from "components/text/Heading1";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import AssignmentResource from "./Resource";
+import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 
 const StudentCourseAssignment = () => {
   const searchHandle = (searchVal: string) => {
@@ -41,8 +42,16 @@ const StudentCourseAssignment = () => {
         </Box>
         <Box className={classes.topic}>
           <Heading3>Bài kiểm tra</Heading3>
-          <AssignmentResource resourceTitle='Bài kiểm tra 1' resourceEndedDate='12/12/2022' />
-          <AssignmentResource resourceTitle='Bài kiểm tra 2' resourceEndedDate='12/12/2023' />
+          <AssignmentResource
+            resourceTitle='Bài kiểm tra 1'
+            resourceEndedDate='12/12/2022'
+            type={ResourceType.exam}
+          />
+          <AssignmentResource
+            resourceTitle='Bài kiểm tra 2'
+            resourceEndedDate='12/12/2023'
+            type={ResourceType.exam}
+          />
         </Box>
       </Box>
     </Box>

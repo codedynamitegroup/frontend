@@ -11,18 +11,26 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
+import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 
 interface Props {
   resourceTitle: string;
   resourceEndedDate: string;
+  type?: ResourceType;
 }
-const AssignmentResource = ({ resourceTitle, resourceEndedDate }: Props) => {
+const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) => {
   const [resourceExpansion, setResourceExpansion] = useState(false);
+  type = type || ResourceType.assignment;
   const cancelResourceHandler = () => {
     setResourceExpansion(false);
   };
 
   const navigate = useNavigate();
+
+  const onDetailClick = () => {
+    if (type === ResourceType.assignment) navigate(routes.student.assignment.detail);
+    else navigate(routes.student.exam.detail);
+  };
 
   return (
     <Box className={classes.container}>
@@ -46,12 +54,7 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate }: Props) => {
           <Button btnType={BtnType.Text} onClick={cancelResourceHandler}>
             Hủy
           </Button>
-          <Button
-            btnType={BtnType.Primary}
-            onClick={() => {
-              navigate(routes.student.course.assignment_detail.replace(":courseId", "1"));
-            }}
-          >
+          <Button btnType={BtnType.Primary} onClick={onDetailClick}>
             Xem chi tiết
           </Button>
         </AccordionActions>

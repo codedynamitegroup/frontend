@@ -1,0 +1,60 @@
+.root {
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  padding-bottom: 20px;
+  background-color: var(--blue-1);
+}
+
+.container {
+  display: flex;
+  background-color: white;
+}
+
+.mainContent {
+  background-color: var(--blue-1);
+  margin-top: 64px;
+  height: 100vh;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.drawerBody {
+  padding: 20px;
+}
+
+.drawerFieldContainer {
+  margin-bottom: 20px;
+  .drawerTextTitle {
+    margin-bottom: 10px;
+  }
+}
+
+.textEditor {
+  height: 200px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+  flex-grow: 1;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}

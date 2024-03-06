@@ -85,7 +85,13 @@ export const routes = {
       participant: "/student/courses/:courseId/participant"
     },
     assignment: {
+      detail: "/student/courses/:courseId/assignments/:assignmentId",
       submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
+    },
+    exam: {
+      detail: "/student/courses/:courseId/assignments/exams/:examId",
+      take: "/student/courses/:courseId/assignments/exams/:examId/take",
+      review: "/student/courses/:courseId/assignments/exams/:examId/review"
     },
     calendar: "/student/calendar"
   },
