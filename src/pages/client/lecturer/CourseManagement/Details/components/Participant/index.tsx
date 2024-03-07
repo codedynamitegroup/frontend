@@ -1,5 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
 import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -35,7 +36,11 @@ const LecturerCourseParticipant = () => {
       headerName: "Họ và tên",
       width: 200,
       flex: 0.8,
-      renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+      renderCell: (params) => (
+        <Link component={RouterLink} to={`${params.row.id}`}>
+          {params.value}
+        </Link>
+      )
     },
     { field: "email", headerName: "Email", width: 200, flex: 0.8 },
     { field: "roles", headerName: "Chức vụ", width: 50, flex: 0.4 },

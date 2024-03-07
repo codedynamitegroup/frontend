@@ -3,6 +3,7 @@ import React from "react";
 import classes from "./styles.module.scss";
 import clsx from "clsx";
 import { EContestStatus } from "../..";
+import { Link as RouterLink } from "react-router-dom";
 
 export enum EContestProblemDifficulty {
   easy = "Dễ",
@@ -32,7 +33,7 @@ const ContestProblemItem = (props: PropsData) => {
     <Paper className={classes.container}>
       <Grid container alignItems={"center"} justifyContent='space-between'>
         <Grid item xs={9}>
-          <Link href='#' underline='none'>
+          <Link component={RouterLink} to='#' underline='none'>
             <Stack direction={"column"} className={classes.problemDetailContainer}>
               <Typography
                 fontWeight={400}

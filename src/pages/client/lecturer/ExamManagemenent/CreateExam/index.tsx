@@ -195,7 +195,7 @@ export default function ExamCreated() {
         field: "name",
         headerName: "Tên câu hỏi",
         minWidth: 250
-        // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+        // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
         field: "description",

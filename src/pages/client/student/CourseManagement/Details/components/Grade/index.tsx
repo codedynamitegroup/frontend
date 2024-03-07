@@ -11,7 +11,7 @@ import { ECourseResourceType } from "models/courseService/course";
 import GradeSummary from "./components/GradeSummary";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
-
+import { Link as RouterLink } from "react-router-dom";
 const StudentCourseGrade = () => {
   const courseAssignmentList = [
     {
@@ -73,7 +73,7 @@ const StudentCourseGrade = () => {
       flex: 0.2,
       disableColumnMenu: true,
       renderCell: (params) => (
-        <Link href={`${params.row.id}`}>
+        <Link component={RouterLink} to={`${params.row.id}`}>
           <StudentCourseGradeAssignment name={params.value} type={params.row.type} />
         </Link>
       )

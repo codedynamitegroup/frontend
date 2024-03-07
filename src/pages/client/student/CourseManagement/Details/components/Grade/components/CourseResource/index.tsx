@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import images from "config/images";
 import { ECourseResourceType } from "models/courseService/course";
 import { inherits } from "util";
+import { Link as RouterLink } from "react-router-dom";
 
 interface PropsData {
   name: string;
@@ -29,7 +30,7 @@ const StudentCourseGradeAssignment = (props: PropsData) => {
   return (
     <Box className={classes.container}>
       <Grid container>
-        <Link href='#' underline='hover' className={classes.linkContainer}>
+        <Link component={RouterLink} to='#' underline='hover' className={classes.linkContainer}>
           <Grid item>
             <img src={resourceImage} alt='Resource' />
           </Grid>

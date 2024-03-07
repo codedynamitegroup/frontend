@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { Box, Link, TableFooter, Typography } from "@mui/material";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import TablePagination from "@mui/material/TablePagination";
+import { Link as RouterLink } from "react-router-dom";
 
 interface PropsData {
   problemList: any;
@@ -83,7 +84,12 @@ export default function ContestLeaderboard(props: PropsData) {
                     {currentUserRank.rank}
                   </TableCell>
                   <TableCell align='center' className={clsx(classes.tableCell)}>
-                    <Link href='#' underline='none' className={classes.participantInfo}>
+                    <Link
+                      component={RouterLink}
+                      to='#'
+                      underline='none'
+                      className={classes.participantInfo}
+                    >
                       {currentUserRank.name} (Bạn)
                     </Link>
                   </TableCell>
@@ -127,7 +133,12 @@ export default function ContestLeaderboard(props: PropsData) {
                   {row.rank}
                 </TableCell>
                 <TableCell align='center' className={clsx(classes.tableCell)}>
-                  <Link href='#' underline='none' className={classes.participantInfo}>
+                  <Link
+                    component={RouterLink}
+                    to='#'
+                    underline='none'
+                    className={classes.participantInfo}
+                  >
                     {row.name}
                   </Link>
                 </TableCell>

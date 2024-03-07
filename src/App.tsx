@@ -12,7 +12,7 @@ import QuestionCreated from "pages/client/lecturer/QuestionManagement/components
 import {
   Route,
   RouterProvider,
-  createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements
 } from "react-router-dom";
 import { routes } from "routes/routes";
@@ -47,7 +47,7 @@ import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExam
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
