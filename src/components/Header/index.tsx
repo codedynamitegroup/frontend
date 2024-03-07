@@ -198,25 +198,24 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               ))}
             </Box>
           ) : (
-            <Box className={classes.profile}>
-              <IconButton
-                onClick={handleClick}
-                size='small'
-                sx={{ ml: 2 }}
-                aria-controls={open ? "account-menu" : undefined}
-                aria-haspopup='true'
-                aria-expanded={open ? "true" : undefined}
-              >
-                <img
-                  className={classes.imageProfile}
-                  src={
-                    "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
-                  }
-                  alt='avatar'
-                ></img>
-                <ParagraphBody fontWeight={700}>HIEUTHUHAI</ParagraphBody>
-              </IconButton>
-            </Box>
+            <Button
+              onClick={handleClick}
+              className={classes.profile}
+              size='small'
+              sx={{ ml: 2 }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup='true'
+              aria-expanded={open ? "true" : undefined}
+            >
+              <img
+                className={classes.imageProfile}
+                src={
+                  "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+                }
+                alt='avatar'
+              ></img>
+              <ParagraphBody fontWeight={600}>HIEUTHUHAI</ParagraphBody>
+            </Button>
           )}
         </Toolbar>
         <Menu
