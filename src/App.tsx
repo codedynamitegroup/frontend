@@ -49,7 +49,7 @@ import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
+    <Route path='/'>
       <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
 
       <Route path={routes.user.problem.root} element={<ListProblem />} />
