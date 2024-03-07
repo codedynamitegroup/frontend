@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/frontend/static/css/main.7f6a0684.css",
-    "main.js": "/frontend/static/js/main.3d17fc25.js",
+    "main.js": "/frontend/static/js/main.fb71a237.js",
     "static/js/253.5e52b5c3.chunk.js": "/frontend/static/js/253.5e52b5c3.chunk.js",
     "static/js/379.84e96667.chunk.js": "/frontend/static/js/379.84e96667.chunk.js",
     "static/js/921.b4b297e4.chunk.js": "/frontend/static/js/921.b4b297e4.chunk.js",
@@ -38,7 +38,7 @@
     "static/media/skill-level-advanced.svg": "/frontend/static/media/skill-level-advanced.f3730943341aafb5b04da7ab1fc29c2b.svg",
     "static/media/google_logo.svg": "/frontend/static/media/google_logo.d7f092af888a54de79ed9c9303d689d7.svg",
     "main.7f6a0684.css.map": "/frontend/static/css/main.7f6a0684.css.map",
-    "main.3d17fc25.js.map": "/frontend/static/js/main.3d17fc25.js.map",
+    "main.fb71a237.js.map": "/frontend/static/js/main.fb71a237.js.map",
     "253.5e52b5c3.chunk.js.map": "/frontend/static/js/253.5e52b5c3.chunk.js.map",
     "379.84e96667.chunk.js.map": "/frontend/static/js/379.84e96667.chunk.js.map",
     "921.b4b297e4.chunk.js.map": "/frontend/static/js/921.b4b297e4.chunk.js.map",
@@ -52,6 +52,6 @@
   },
   "entrypoints": [
     "static/css/main.7f6a0684.css",
-    "static/js/main.3d17fc25.js"
+    "static/js/main.fb71a237.js"
   ]
 }
