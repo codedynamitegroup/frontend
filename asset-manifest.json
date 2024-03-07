@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.6548e1fa.css",
-    "main.js": "/frontend/static/js/main.2df6a606.js",
+    "main.css": "/frontend/static/css/main.b6dd3f7f.css",
+    "main.js": "/frontend/static/js/main.54040a38.js",
     "static/js/705.61987cbd.chunk.js": "/frontend/static/js/705.61987cbd.chunk.js",
     "static/js/75.42a827b9.chunk.js": "/frontend/static/js/75.42a827b9.chunk.js",
     "static/js/834.ada2e214.chunk.js": "/frontend/static/js/834.ada2e214.chunk.js",
@@ -13,7 +13,7 @@
     "static/js/965.c60dff4c.chunk.js": "/frontend/static/js/965.c60dff4c.chunk.js",
     "static/js/862.efa609cb.chunk.js": "/frontend/static/js/862.efa609cb.chunk.js",
     "static/media/home.png": "/frontend/static/media/home.6450ae71a2f7f0ecefb1.png",
-    "static/media/pdf.worker.min.js": "/frontend/static/media/pdf.worker.min.6c8e7148bfae3a52f979.js",
+    "static/media/pdf.worker.min.js": "/frontend/static/media/pdf.worker.min.597278eeabc3298e958d.js",
     "static/media/5.png": "/frontend/static/media/5.fd9228a398dcdca5936a.png",
     "static/media/2.png": "/frontend/static/media/2.553ede7bcc8e1b4a44c2.png",
     "static/media/3.png": "/frontend/static/media/3.f5a8fc3be85b6c917520.png",
@@ -39,7 +39,7 @@
     "static/media/google_logo.svg": "/frontend/static/media/google_logo.d7f092af888a54de79ed9c9303d689d7.svg"
   },
   "entrypoints": [
-    "static/css/main.6548e1fa.css",
-    "static/js/main.2df6a606.js"
+    "static/css/main.b6dd3f7f.css",
+    "static/js/main.54040a38.js"
   ]
 }
