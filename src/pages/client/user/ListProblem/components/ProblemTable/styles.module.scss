@@ -22,12 +22,9 @@
   background-color: white !important;
 }
 .table-head {
-  background-color: var(--blue-500);
-
   p {
-    color: #fff;
+    color: var(--gray-80);
   }
-
   .table-cell {
     min-width: 180px;
     color: #fff !important;
@@ -38,7 +35,9 @@
 }
 .row {
   cursor: pointer;
-  &:hover {
-    background-color: var(--cultured-gray);
-  }
+}
+
+.row1 {
+  cursor: pointer;
+  background-color: #f7f8fa;
 }

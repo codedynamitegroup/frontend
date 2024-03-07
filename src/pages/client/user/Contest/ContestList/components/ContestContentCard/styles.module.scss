@@ -1,25 +1,25 @@
 .container {
-    margin-top: 10px;
-    cursor: pointer;
-    color: #2a2a2a;
-    
-    .contestInfo {
-        margin-left: 10px;
-    }
-    .contestImage {
-        height: 100px; 
-        max-width:100%;
-        border-radius: 10px;
-        margin: 0 5px 5px -10px;
-    }
-    .contestTypeContainer {
-        margin-bottom: 5px;
-        padding-bottom: 10px;
-    }
-    .contestFilterContainer {
-        padding: 10px;
-    }
+  margin-top: 10px;
+  cursor: pointer;
+  color: #2a2a2a;
+
+  .contestInfo {
+    margin-left: 10px;
+  }
+  .contestImage {
+    height: 100px;
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 0 5px 5px -10px;
+  }
+  .contestTypeContainer {
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+  }
+  .contestFilterContainer {
+    padding: 10px;
+  }
 }
 .container:hover {
-    color: var(--blue-hover);
+  color: var(--blue-hover);
 }

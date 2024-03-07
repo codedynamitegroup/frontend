@@ -48,7 +48,12 @@ export default function HomePage() {
                 <Heading3 className={classes.courseHeading}>Các ngôn ngữ</Heading3>
                 <Grid container spacing={2} className={classes.centerContainer}>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card
+                      sx={{
+                        maxWidth: 345,
+                        boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)"
+                      }}
+                    >
                       <CardMedia
                         component='img'
                         height='140'
@@ -93,7 +98,7 @@ export default function HomePage() {
                     </Card>
                   </Grid>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)" }}>
                       <CardMedia
                         component='img'
                         height='140'
@@ -138,7 +143,7 @@ export default function HomePage() {
                     </Card>
                   </Grid>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)" }}>
                       <CardMedia
                         component='img'
                         height='140'
@@ -190,7 +195,7 @@ export default function HomePage() {
                 </Heading3>
                 <Grid container spacing={2} className={classes.centerContainer}>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)" }}>
                       <CardMedia
                         component='img'
                         height='140'
@@ -235,7 +240,7 @@ export default function HomePage() {
                     </Card>
                   </Grid>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)" }}>
                       <CardMedia
                         component='img'
                         height='140'
@@ -280,7 +285,7 @@ export default function HomePage() {
                     </Card>
                   </Grid>
                   <Grid item sm={12} md={4}>
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)" }}>
                       <CardMedia
                         component='img'
                         height='140'
