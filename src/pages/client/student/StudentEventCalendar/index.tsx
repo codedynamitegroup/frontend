@@ -208,10 +208,12 @@ const StudentEventCalendar = () => {
                     Tạo sự kiện
                   </Button>
                 </Box>
-                <CustomFullCalendar
-                  events={data.currentEvents}
-                  handleDateSelect={handleDateSelect}
-                />
+                <Box>
+                  <CustomFullCalendar
+                    events={data.currentEvents}
+                    handleDateSelect={handleDateSelect}
+                  />
+                </Box>
               </Box>
             </Box>
           </Grid>
