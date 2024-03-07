@@ -17,6 +17,7 @@ import Paper from "@mui/material/Paper";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
+import { Link as RouterLink } from "react-router-dom";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -53,7 +54,8 @@ const CourseCard = (props: CardProps) => {
       </Box>
       <Divider className={classes.cardDivider} />
       <Link
-        href={routes.lecturer.course.information.replace(":courseId", "1")}
+        component={RouterLink}
+        to={routes.lecturer.course.information.replace(":courseId", "1")}
         underline='hover'
         color='inherit'
       >
@@ -67,7 +69,7 @@ const CourseCard = (props: CardProps) => {
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Link href='#' underline='hover'>
+                <Link component={RouterLink} to='#' underline='hover'>
                   {teacher.lastName} {teacher.firstName}
                 </Link>
               }
@@ -89,7 +91,7 @@ const CourseCard = (props: CardProps) => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={
-                      <Link href='#' underline='hover'>
+                      <Link component={RouterLink} to='#' underline='hover'>
                         {teacher.lastName} {teacher.firstName}
                       </Link>
                     }

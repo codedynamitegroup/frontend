@@ -25,6 +25,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useParams } from "react-router-dom";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
+import { Link as RouterLink } from "react-router-dom";
 
 export enum EContestStatus {
   featured,
@@ -364,7 +365,7 @@ const ContestDetails = () => {
                                     marginRight: "5px"
                                   }}
                                 />
-                                <Link href='#' underline='none'>
+                                <Link component={RouterLink} to='#' underline='none'>
                                   <Typography className={classes.topUserText}>
                                     {user.name}
                                   </Typography>

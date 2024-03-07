@@ -10,6 +10,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { Link as RouterLink } from "react-router-dom";
 export default function Register() {
   return (
     <Grid className={classes.root}>
@@ -57,7 +58,7 @@ export default function Register() {
                   >
                     Đăng ký
                   </Button>
-                  <Link href='/login' variant='body2'>
+                  <Link component={RouterLink} to='/login' variant='body2'>
                     {"Đã có tài khoản? Đăng nhập"}
                   </Link>
                   <ParagraphBody>Hoặc đăng nhập với</ParagraphBody>

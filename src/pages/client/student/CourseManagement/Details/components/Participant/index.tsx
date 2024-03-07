@@ -9,6 +9,7 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
+import { Link as RouterLink } from "react-router-dom";
 
 const StudentCourseParticipant = () => {
   const participantList = [
@@ -32,7 +33,11 @@ const StudentCourseParticipant = () => {
       headerName: "Họ và tên",
       width: 200,
       flex: 0.8,
-      renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link>
+      renderCell: (params) => (
+        <Link component={RouterLink} to={`${params.row.id}`}>
+          {params.value}
+        </Link>
+      )
     },
     { field: "email", headerName: "Email", width: 200, flex: 0.8 },
     { field: "roles", headerName: "Chức vụ", width: 50, flex: 0.4 }

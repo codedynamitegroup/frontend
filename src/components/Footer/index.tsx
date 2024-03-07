@@ -12,6 +12,7 @@ import {
   faLinkedin,
   faGithub
 } from "@fortawesome/free-brands-svg-icons";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -38,19 +39,19 @@ export default function Footer() {
             Tài nguyên học tập
           </Typography>
           <Typography paragraph>
-            <a href='#!' className='text-reset'>
+            <Link to='#!' className='text-reset'>
               Khóa học
-            </a>
+            </Link>
           </Typography>
           <Typography paragraph>
-            <a href='#!' className='text-reset'>
+            <Link to='#!' className='text-reset'>
               Luyện tập
-            </a>
+            </Link>
           </Typography>
           <Typography paragraph>
-            <a href='#!' className='text-reset'>
+            <Link to='#!' className='text-reset'>
               Cuộc thi
-            </a>
+            </Link>
           </Typography>
         </Grid>
 
@@ -60,14 +61,14 @@ export default function Footer() {
             Về 6BrosT
           </Typography>
           <Typography paragraph>
-            <a href='#!' className='text-reset'>
+            <Link to='#!' className='text-reset'>
               Về chúng tôi
-            </a>
+            </Link>
           </Typography>
           <Typography paragraph>
-            <a href='#!' className='text-reset'>
+            <Link to='#!' className='text-reset'>
               Liên hệ
-            </a>
+            </Link>
           </Typography>
         </Grid>
       </Grid>

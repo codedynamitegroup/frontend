@@ -12,6 +12,7 @@ import Heading5 from "components/text/Heading5";
 import Heading4 from "components/text/Heading4";
 import { routes } from "routes/routes";
 import { Box } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 interface ListProps {
   courseAvatarUrl: string;
@@ -28,7 +29,8 @@ const CourseList = (props: ListProps) => {
           <Grid item xs className={classes.courseInfo}>
             <Box className={classes.courseInfoWrapper}>
               <Link
-                href={routes.student.course.information.replace(":courseId", "1")}
+                component={RouterLink}
+                to={routes.student.course.information.replace(":courseId", "1")}
                 underline='hover'
                 color='inherit'
               >
@@ -56,7 +58,7 @@ const CourseList = (props: ListProps) => {
                     secondary: classes.secondaryTeacherText
                   }}
                   primary={
-                    <Link href='#' underline='hover'>
+                    <Link component={RouterLink} to='#' underline='hover'>
                       {teacher.lastName} {teacher.firstName}
                     </Link>
                   }
