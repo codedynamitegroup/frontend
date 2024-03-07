@@ -10474,11 +10474,6 @@ psl@^1.1.33:
   resolved "https://registry.npmjs.org/psl/-/psl-1.9.0.tgz"
   integrity sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==
 
-pspdfkit@^2024.1.1:
-  version "2024.1.1"
-  resolved "https://registry.npmjs.org/pspdfkit/-/pspdfkit-2024.1.1.tgz"
-  integrity sha512-Nt4ZuUCBe81gfYa62r7MOPgf8/oEryepM+zDA5vWKHqVU3O51dKridN+NKixc9OGcgngro3i9qoxqJSfP+fJcw==
-
 punycode@^2.1.0, punycode@^2.1.1:
   version "2.3.1"
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
