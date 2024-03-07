@@ -16,7 +16,7 @@ export default function LessonListSubmission() {
       id: 1,
       status: (
         <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
-          Chấp thuận
+          Thành công
         </ParagraphBody>
       ),
       language: "C++",
@@ -27,7 +27,7 @@ export default function LessonListSubmission() {
       id: 2,
       status: (
         <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
-          Sai
+          Thất bại
         </ParagraphBody>
       ),
       language: "Java",
@@ -38,7 +38,7 @@ export default function LessonListSubmission() {
       id: 3,
       status: (
         <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
-          Chấp thuận
+          Thành công
         </ParagraphBody>
       ),
       language: "Javascript",
@@ -49,7 +49,7 @@ export default function LessonListSubmission() {
       id: 4,
       status: (
         <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
-          Sai
+          Thất bại
         </ParagraphBody>
       ),
       language: "C++",
