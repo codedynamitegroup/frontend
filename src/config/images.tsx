@@ -17,6 +17,7 @@ import courseCertificatesBackground from "assets/img/background/background-cours
 import homePageBackground from "assets/img/background/background-homepage.png";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 import home from "assets/img/home.png";
+import logoSVG from "assets/img/logo/logo.svg";
 
 import tempContest1 from "assets/img/temp/contest/1.png";
 import tempContest2 from "assets/img/temp/contest/2.png";
@@ -31,7 +32,7 @@ const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },
-  logo: { moodleLogo, microsoftLogo, googleLogo, logo },
+  logo: { moodleLogo, microsoftLogo, googleLogo, logo, logoSVG },
   null: { mailboxEmpty },
   login,
   home,

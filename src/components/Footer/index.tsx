@@ -24,7 +24,7 @@ export default function Footer() {
         {/* Company Info */}
         <Grid item xs={12} md={5}>
           <Box className={classes.logo}>
-            <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+            <img className={classes.imageLogo} src={images.logo.logoSVG} alt='logo' />
           </Box>
           <Typography paragraph>
             6BrosT là một trang web giúp người dùng có thể học tập, thi đấu và cải thiện kỹ năng lập

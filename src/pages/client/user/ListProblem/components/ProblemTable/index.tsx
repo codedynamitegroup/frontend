@@ -147,14 +147,14 @@ export default function ProblemTable() {
                 data.length > 0 &&
                 data.map((row, rowIndex) => (
                   <TableRow
-                    className={classes.row}
+                    className={rowIndex % 2 === 0 ? classes.row : classes.row1}
                     key={rowIndex}
                     onClick={() =>
                       navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
                     }
                   >
                     <TableCell align='center'>{row.status}</TableCell>
-                    <TableCell>{row.name}</TableCell>
+                    <TableCell className={classes.tableCell}>{row.name}</TableCell>
                     <TableCell>{row.level}</TableCell>
                   </TableRow>
                 ))}

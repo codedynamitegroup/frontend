@@ -181,7 +181,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             </Box>
             <Box className={classes.logo} onClick={handleLogo}>
-              <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
+              <img className={classes.imageLogo} src={images.logo.logoSVG} alt='logo' />
             </Box>
           </Box>
           <Box className={classes.navbarItem}>
