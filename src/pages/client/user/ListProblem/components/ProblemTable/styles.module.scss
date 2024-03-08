@@ -41,3 +41,9 @@
   cursor: pointer;
   background-color: #f7f8fa;
 }
+.tableCell {
+  &:hover {
+    color: var(--blue-500);
+    font-weight: 700;
+  }
+}

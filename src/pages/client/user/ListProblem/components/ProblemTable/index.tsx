@@ -153,10 +153,8 @@ export default function ProblemTable() {
                       navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
                     }
                   >
-                    <TableCell className={classes.tableCell} align='center'>
-                      {row.status}
-                    </TableCell>
-                    <TableCell>{row.name}</TableCell>
+                    <TableCell align='center'>{row.status}</TableCell>
+                    <TableCell className={classes.tableCell}>{row.name}</TableCell>
                     <TableCell>{row.level}</TableCell>
                   </TableRow>
                 ))}

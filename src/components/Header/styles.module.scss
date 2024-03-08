@@ -64,6 +64,8 @@
       height: 100%;
       object-fit: cover;
       margin-top: 5px;
+      filter: brightness(0) saturate(100%) invert(44%) sepia(24%) saturate(1255%) hue-rotate(172deg)
+        brightness(88%) contrast(87%);
     }
     cursor: pointer;
   }

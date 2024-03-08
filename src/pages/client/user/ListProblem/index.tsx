@@ -16,30 +16,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
 import Footer from "components/Footer";
 import useBoxDimensions from "hooks/useBoxDimensions";
-const status = [
-  {
-    id: 1,
-    label: "Chưa giải"
-  },
-  {
-    id: 2,
-    label: "Đã giải"
-  }
-];
-const level = [
-  {
-    id: 1,
-    label: "Dễ"
-  },
-  {
-    id: 2,
-    label: "Trung bình"
-  },
-  {
-    id: 3,
-    label: "Khó"
-  }
-];
 interface Status {
   id: number;
   label: string;
@@ -49,8 +25,8 @@ interface Level {
   label: string;
 }
 const ListProblem = () => {
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
+  const [levelProblem, setlevelProblem] = useState("0");
+  const [statusProblem, setstatusProblem] = useState("0");
 
   const algorithms = [
     "Mảng",
@@ -109,39 +85,51 @@ const ListProblem = () => {
                   }
                   className={classes.searchInput}
                 />
-                <Autocomplete
-                  size='medium'
-                  id='combo-box-demo'
-                  options={status}
-                  value={selectedStatus}
-                  onChange={(event, newValue) => {
-                    setSelectedStatus(newValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={!selectedStatus ? "Trạng thái" : ""}
-                      InputLabelProps={{ shrink: false }}
-                    />
-                  )}
-                  className={classes.autocomplete}
+                <BasicSelect
+                  labelId='select-assignment-section-label'
+                  value={statusProblem}
+                  onHandleChange={(value) => setstatusProblem(value)}
+                  sx={{ maxWidth: "200px" }}
+                  items={[
+                    {
+                      value: "0",
+                      label: "Tất cả"
+                    },
+                    {
+                      value: "1",
+                      label: "Đã giải"
+                    },
+                    {
+                      value: "2",
+                      label: "Chưa giải"
+                    }
+                  ]}
+                  backgroundColor='#FFFFFF'
                 />
-                <Autocomplete
-                  size='medium'
-                  id='combo-box-demo'
-                  options={level}
-                  value={selectedLevel}
-                  onChange={(event, newValue) => {
-                    setSelectedLevel(newValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={!selectedLevel ? "Độ khó" : ""}
-                      InputLabelProps={{ shrink: false }}
-                    />
-                  )}
-                  className={classes.autocomplete}
+                <BasicSelect
+                  labelId='select-assignment-section-label'
+                  value={levelProblem}
+                  onHandleChange={(value) => setlevelProblem(value)}
+                  sx={{ maxWidth: "200px" }}
+                  items={[
+                    {
+                      value: "0",
+                      label: "Tất cả"
+                    },
+                    {
+                      value: "1",
+                      label: "Dễ"
+                    },
+                    {
+                      value: "2",
+                      label: "Trung bình"
+                    },
+                    {
+                      value: "3",
+                      label: "Khó"
+                    }
+                  ]}
+                  backgroundColor='#FFFFFF'
                 />
               </Box>
             </Box>
