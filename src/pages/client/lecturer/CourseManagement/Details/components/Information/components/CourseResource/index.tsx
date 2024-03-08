@@ -1,6 +1,6 @@
 import { Link } from "@mui/material";
 import classes from "./styles.module.scss";
-
+import { Link as RouterLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -29,7 +29,7 @@ const CourseResource = (props: PropsData) => {
   return (
     <Box className={classes.container}>
       <Grid container>
-        <Link href='#' underline='hover' className={classes.linkContainer}>
+        <Link component={RouterLink} to='#' underline='hover' className={classes.linkContainer}>
           <Grid item>
             <img src={resourceImage} alt='Resource' />
           </Grid>

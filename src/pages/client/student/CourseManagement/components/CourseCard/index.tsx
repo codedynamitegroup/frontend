@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import List from "@mui/material/List";
 import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { User } from "models/courseService/user";
@@ -53,7 +54,8 @@ const CourseCard = (props: CardProps) => {
       </Box>
       <Divider className={classes.cardDivider} />
       <Link
-        href={routes.student.course.information.replace(":courseId", "1")}
+        component={RouterLink}
+        to={routes.student.course.information.replace(":courseId", "1")}
         underline='hover'
         color='inherit'
       >
@@ -67,7 +69,7 @@ const CourseCard = (props: CardProps) => {
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Link href='#' underline='hover'>
+                <Link component={RouterLink} to='#' underline='hover'>
                   {teacher.lastName} {teacher.firstName}
                 </Link>
               }
@@ -89,7 +91,7 @@ const CourseCard = (props: CardProps) => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={
-                      <Link href='#' underline='hover'>
+                      <Link component={RouterLink} to='#' underline='hover'>
                         {teacher.lastName} {teacher.firstName}
                       </Link>
                     }

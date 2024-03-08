@@ -10,6 +10,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { Link as RouterLink } from "react-router-dom";
 export default function Forgotpassword() {
   return (
     <Grid className={classes.root}>
@@ -50,7 +51,7 @@ export default function Forgotpassword() {
                 </form>
               </Box>
               <Box className={classes.back}>
-                <Link href='/login'>{`< Quay lại trang đăng nhập`}</Link>
+                <Link component={RouterLink} to='/login'>{`< Quay lại trang đăng nhập`}</Link>
               </Box>
             </Grid>
           </Grid>

@@ -5,6 +5,7 @@ import classes from "./styles.module.scss";
 import { Container, Grid, Icon, IconButton } from "@mui/material";
 import Header from "components/Header";
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,10 +60,10 @@ export default function Login() {
                     Đăng nhập
                   </Button>
                   <Box className={classes.option}>
-                    <Link href='/register' variant='body2'>
+                    <Link component={RouterLink} to='/register' variant='body2'>
                       {"Chưa có tài khoản? Đăng ký"}
                     </Link>
-                    <Link href='/forgot-password' variant='body2'>
+                    <Link component={RouterLink} to='/forgot-password' variant='body2'>
                       {"Quên mật khẩu?"}
                     </Link>
                   </Box>
