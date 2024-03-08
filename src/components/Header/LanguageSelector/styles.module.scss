@@ -1,0 +1,18 @@
+.currentLangContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .imgFile {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    }
+    
+}
+.menuPopover {
+    & [class~="MuiPaper-root"] {
+        width: 160px;
+    }
+}

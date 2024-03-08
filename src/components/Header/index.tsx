@@ -25,6 +25,8 @@ import images from "config/images";
 import { Menu, MenuItem, ListItemIcon } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import ParagraphBody from "components/text/ParagraphBody";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 interface ILinkMenu {
   name: string;
@@ -46,37 +48,37 @@ interface HeaderProps {
 
 const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
-
+  const { t } = useTranslation();
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
 
   const pages: ILinkMenu[] = [
     {
-      name: "Khám phá",
+      name: t("header_explore_course"),
       path: routes.user.course_certificate.root
     },
     {
-      name: "Luyện tập",
+      name: t("header_practice"),
       path: routes.user.problem.root
     },
     {
-      name: "Cuộc thi",
+      name: t("header_contest"),
       path: routes.user.contest.root
     },
     {
-      name: "Khóa học",
+      name: t("header_course"),
       path: routes.student.course.management
     }
   ];
 
   const auth: ILinkMenu[] = [
     {
-      name: "Đăng nhập",
+      name: t("header_login"),
       path: routes.user.login.root
     },
     {
-      name: "Đăng ký",
+      name: t("header_register"),
       path: routes.user.register.root
     }
   ];
@@ -188,6 +190,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 {page.name}
               </Button>
             ))}
+          </Box>
+          <Box>
+            <LanguageSelector />
           </Box>
           {state === false ? (
             <Box className={classes.navbarAuthItem}>

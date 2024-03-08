@@ -24,6 +24,9 @@ import tempContest3 from "assets/img/temp/contest/3.png";
 import tempContest4 from "assets/img/temp/contest/4.png";
 import tempContest5 from "assets/img/temp/contest/5.png";
 
+import flagVietnam from "assets/img/icon/flag/flag-vietnam.svg";
+import flagUs from "assets/img/icon/flag/flag-us.svg";
+
 const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
@@ -38,7 +41,8 @@ const images = {
   changePasswordThumbnail,
   icCertificate,
   contestTimeBackground,
-  temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } }
+  temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } },
+  flagIcon: { flagVietnam, flagUs }
 };
 
 export default images;

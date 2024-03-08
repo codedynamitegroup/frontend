@@ -12,8 +12,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Footer from "components/Footer";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 export default function HomePage() {
+  const { t } = useTranslation();
+
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
@@ -27,12 +30,8 @@ export default function HomePage() {
           <Grid container columnSpacing={5} className={classes.sectionContentImage}>
             <Grid item xs={12} sm={12} md={6} className={classes.sectionContent}>
               <Box className={classes.customListContainer}>
-                <Heading1 className={classes.mainHeading}>
-                  Hãy học lập trình ngay từ hôm nay
-                </Heading1>
-                <ParagraphBody className={classes.mainParagraph}>
-                  6Bros là nơi bạn có thể học lập trình một cách dễ dàng và hiệu quả
-                </ParagraphBody>
+                <Heading1 className={classes.mainHeading}>{t("title")}</Heading1>
+                <ParagraphBody className={classes.mainParagraph}>{t("subtitle")}</ParagraphBody>
                 <Button className={classes.createAccountBtn} variant='contained' color='primary'>
                   Tạo tài khoản
                 </Button>
