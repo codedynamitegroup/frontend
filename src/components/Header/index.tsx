@@ -18,15 +18,14 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
-import Heading4 from "components/text/Heading4";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
 import { Menu, MenuItem, ListItemIcon } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
-import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 interface ILinkMenu {
   name: string;
@@ -43,12 +42,13 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 interface HeaderProps {
-  forwardedRef?: React.Ref<HTMLDivElement>;
+  toggleDrawer?: () => void;
 }
 
 const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
   const { t } = useTranslation();
+  const { toggleDrawer } = props;
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
@@ -105,10 +105,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -163,31 +159,34 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       <Container maxWidth='xl'>
         <Toolbar disableGutters className={classes.toolbar}>
           <Box className={classes.wrapper}>
-            <Box
-              sx={{
-                display: { xs: "flex", md: "none" },
-                ...(open && { display: "none" })
-              }}
-            >
+            {toggleDrawer && (
               <IconButton
-                size='large'
-                aria-label='account of current user'
-                aria-controls='menu-appbar'
-                aria-haspopup='true'
-                onClick={handleDrawerOpen}
-                color='inherit'
+                aria-label='open drawer'
+                onClick={toggleDrawer}
+                edge='start'
+                sx={{
+                  mr: 2
+                }}
               >
-                <MenuIcon style={{ color: "black" }} />
+                <MenuIcon sx={{ color: "white" }} />
               </IconButton>
-            </Box>
+            )}
+
             <Box className={classes.logo} onClick={handleLogo}>
-              <img className={classes.imageLogo} src={images.logo.logoSVG} alt='logo' />
+              <img src={images.logo.logo} alt='logo' />
             </Box>
           </Box>
           <Box className={classes.navbarItem}>
             {pages.map((page, index) => (
-              <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
-                {page.name}
+              <Button
+                key={index}
+                sx={{ textTransform: "none", margin: "1rem" }}
+                className={classes.item}
+                onClick={() => navigate(page.path)}
+              >
+                <ParagraphSmall colorName={"--white"} fontWeight={600}>
+                  {page.name}
+                </ParagraphSmall>
               </Button>
             ))}
           </Box>
@@ -197,8 +196,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           {state === false ? (
             <Box className={classes.navbarAuthItem}>
               {auth.map((page, index) => (
-                <Button key={index} className={classes.item} onClick={() => navigate(page.path)}>
-                  {page.name}
+                <Button
+                  key={index}
+                  sx={{ textTransform: "none", margin: "1rem" }}
+                  className={classes.item}
+                  onClick={() => navigate(page.path)}
+                >
+                  <ParagraphSmall colorName={"--white"} fontWeight={600}>
+                    {page.name}
+                  </ParagraphSmall>
                 </Button>
               ))}
             </Box>
@@ -207,7 +213,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               onClick={handleClick}
               className={classes.profile}
               size='small'
-              sx={{ ml: 2 }}
+              sx={{ ml: 2, textTransform: "none" }}
               aria-controls={open ? "account-menu" : undefined}
               aria-haspopup='true'
               aria-expanded={open ? "true" : undefined}
@@ -219,7 +225,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 }
                 alt='avatar'
               ></img>
-              <ParagraphBody fontWeight={600}>HIEUTHUHAI</ParagraphBody>
+              <ParagraphSmall fontWeight={600} colorName='--white'>
+                HieuThuHai
+              </ParagraphSmall>
             </Button>
           )}
         </Toolbar>

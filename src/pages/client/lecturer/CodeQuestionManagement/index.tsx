@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
 import SearchBar from "components/common/search/SearchBar";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 
 const CodeQuestionManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -66,7 +66,7 @@ const CodeQuestionManagement = () => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SidebarLecturer>
         <Container className={classes.container}>
           <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
           <Box className={classes.btnWrapper}>
@@ -99,7 +99,7 @@ const CodeQuestionManagement = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Container>
-      </SideBarLecturer>
+      </SidebarLecturer>
     </Grid>
   );
 };

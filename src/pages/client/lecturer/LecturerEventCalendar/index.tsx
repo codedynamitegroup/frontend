@@ -5,7 +5,7 @@ import CustomFullCalendar from "components/calendar/CustomFullCalendar";
 import { createEventId } from "components/calendar/CustomFullCalendar/event-utils";
 import Button, { BtnType } from "components/common/buttons/Button";
 import BasicSelect from "components/common/select/BasicSelect";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 import Heading1 from "components/text/Heading1";
 import dayjs from "dayjs";
 import { useCallback, useState } from "react";
@@ -159,7 +159,7 @@ const LecturerEventCalendar = () => {
         }}
       />
       <Grid className={classes.root}>
-        <SideBarLecturer>
+        <SidebarLecturer>
           <Grid container direction='row' justifyContent={"center"} gap={3}>
             <Box className={classes.container}>
               <Box className={classes.body}>
@@ -219,7 +219,7 @@ const LecturerEventCalendar = () => {
               </Box>
             </Box>
           </Grid>
-        </SideBarLecturer>
+        </SidebarLecturer>
       </Grid>
     </>
   );

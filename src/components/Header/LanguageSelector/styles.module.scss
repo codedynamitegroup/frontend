@@ -1,18 +1,22 @@
 .currentLangContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 
-    .imgFile {
+  .imgFile {
     width: 30px;
     height: 30px;
     object-fit: cover;
-    }
-    
+  }
+}
+.btnLang {
+  &:hover {
+    background-color: var(--blue-400);
+  }
 }
 .menuPopover {
-    & [class~="MuiPaper-root"] {
-        width: 160px;
-    }
+  & [class~="MuiPaper-root"] {
+    width: 160px;
+  }
 }

@@ -10,7 +10,7 @@ import CodeQuestionTestCases from "./components/TestCases";
 import CodeQuestionCodeStubs from "./components/CodeStubs";
 import CodeQuestionLanguages from "./components/Languages";
 import { routes } from "routes/routes";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 
 interface Props {}
 
@@ -49,7 +49,7 @@ const CodeQuestionDetails = memo((props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SidebarLecturer>
         <Container className={classes.container}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
@@ -114,7 +114,7 @@ const CodeQuestionDetails = memo((props: Props) => {
             <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
           </Box>
         </Box>
-      </SideBarLecturer>
+      </SidebarLecturer>
     </Grid>
   );
 });
