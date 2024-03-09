@@ -46,6 +46,7 @@ import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
 import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
+import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -84,6 +85,10 @@ const router = createHashRouter(
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection}
+        element={<LecturerSourceCodePlagiarismManagement />}
+      />
       <Route
         path={routes.lecturer.assignment.preview_submit}
         element={<PreviewAssignmentSubmission />}

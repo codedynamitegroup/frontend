@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import {
   GridCallbackDetails,
   GridColDef,
+  GridColumnGroupingModel,
   GridPaginationModel,
   GridRowParams,
   GridRowSelectionModel
@@ -17,6 +18,8 @@ import { routes } from "routes/routes";
 import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
+import qtype from "utils/constant/Qtype";
+import TextTitle from "components/text/TextTitle";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -47,6 +50,41 @@ const LecturerCourseExamSubmissions = () => {
   const pageSize = 5;
   const totalElement = 100;
 
+  const examData = {
+    id: 1,
+    max_grade: 30,
+    questions: [
+      {
+        id: 1,
+        question: "Câu hỏi 1",
+        answer: "Đáp án 1",
+        max_grade: 10,
+        type: qtype.source_code,
+        plagiarism_detection: {
+          is_checked: true,
+          result: {
+            is_plagiarism: true,
+            plagiarism_rate: 0.5
+          }
+        }
+      },
+      {
+        id: 2,
+        question: "Câu hỏi 2",
+        answer: "Đáp án 2",
+        max_grade: 10,
+        type: qtype.true_false
+      },
+      {
+        id: 3,
+        question: "Câu hỏi 3",
+        answer: "Đáp án 3",
+        max_grade: 10,
+        type: qtype.multiple_choice
+      }
+    ]
+  };
+
   const submissionList = [
     {
       id: 1,
@@ -62,34 +100,24 @@ const LecturerCourseExamSubmissions = () => {
       },
       last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
       last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-      grade: {
-        grade_status: SubmissionStatusGraded.GRADED,
-        current_grade: 0,
-        max_grade: 10,
-        questions: [
-          {
-            id: 1,
-            question: "Câu hỏi 1",
-            answer: "Đáp án 1",
-            grade: 0,
-            max_grade: 10
-          },
-          {
-            id: 2,
-            question: "Câu hỏi 2",
-            answer: "Đáp án 2",
-            grade: 0,
-            max_grade: 10
-          },
-          {
-            id: 3,
-            question: "Câu hỏi 3",
-            answer: "Đáp án 3",
-            grade: 0,
-            max_grade: 10
-          }
-        ]
-      }
+      current_final_grade: 0,
+      grades: [
+        {
+          question_id: 1,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 10
+        },
+        {
+          question_id: 2,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 8
+        },
+        {
+          question_id: 3,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 5
+        }
+      ]
     },
     {
       id: 2,
@@ -105,34 +133,24 @@ const LecturerCourseExamSubmissions = () => {
       },
       last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
       last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-      grade: {
-        grade_status: SubmissionStatusGraded.NOT_GRADED,
-        current_grade: 0,
-        max_grade: 10,
-        questions: [
-          {
-            id: 1,
-            question: "Câu hỏi 1",
-            answer: "Đáp án 1",
-            grade: 0,
-            max_grade: 10
-          },
-          {
-            id: 2,
-            question: "Câu hỏi 2",
-            answer: "Đáp án 2",
-            grade: 0,
-            max_grade: 10
-          },
-          {
-            id: 3,
-            question: "Câu hỏi 3",
-            answer: "Đáp án 3",
-            grade: 0,
-            max_grade: 10
-          }
-        ]
-      }
+      current_final_grade: 10,
+      grades: [
+        {
+          question_id: 1,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 8
+        },
+        {
+          question_id: 2,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 10
+        },
+        {
+          question_id: 3,
+          grade_status: SubmissionStatusGraded.GRADED,
+          current_grade: 9
+        }
+      ]
     }
   ];
 
@@ -194,46 +212,79 @@ const LecturerCourseExamSubmissions = () => {
     { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
     { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 },
     {
-      field: "grade",
-      headerName: "Điểm",
+      field: "current_final_grade",
+      headerName: "Điểm tổng kết",
       width: 200,
       renderCell: (params) => {
         return (
-          <Box>
+          <Box
+            sx={{
+              padding: "10px 0"
+            }}
+          >
             <Button
               btnType={BtnType.Primary}
               onClick={() => {
                 navigate(routes.lecturer.exam.grading);
               }}
+              margin='0 0 10px 0'
             >
               Chấm điểm
             </Button>
-
-            <Box
-              sx={{
-                padding: "5px",
-                fontSize: "17px"
-              }}
-            >
-              {params.value.current_grade} / {params.value.max_grade}
-            </Box>
+            <TextTitle>
+              {params.value} / {examData.max_grade}
+            </TextTitle>
           </Box>
         );
       }
     }
   ];
 
-  submissionList.forEach((submission) => {
-    submission.grade.questions.forEach((question) => {
-      tableHeading.push({
-        field: `question-${question.id}`,
-        headerName: question.question,
-        renderCell: () => (
-          <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-            {question.grade} /{question.max_grade}
-          </Box>
-        )
-      });
+  const columnGroupingModel: GridColumnGroupingModel = [];
+
+  examData.questions.forEach((question) => {
+    tableHeading.push({
+      field: `question-${question.id}`,
+      headerName: question.question,
+      width: 180,
+      renderCell: () => {
+        for (let i = 0; i < submissionList.length; i++) {
+          for (let j = 0; j < submissionList[i].grades.length; j++) {
+            if (submissionList[i].grades[j].question_id === question.id) {
+              return (
+                <TextTitle>
+                  {submissionList[i].grades[j].current_grade} / {question.max_grade}
+                </TextTitle>
+              );
+            }
+          }
+        }
+      }
+    });
+
+    columnGroupingModel.push({
+      groupId: `question-${question.id}-plagiarism-detection`,
+      children: [
+        {
+          groupId: `question-${question.id}-type`,
+          children: [{ field: `question-${question.id}` }],
+          headerName: `Câu hỏi ${question.type.vi_name}`
+        }
+      ],
+      renderHeaderGroup() {
+        return question.type.code === qtype.source_code.code ? (
+          <Button
+            btnType={BtnType.Outlined}
+            onClick={() => {
+              navigate(
+                `${routes.lecturer.exam.code_plagiarism_detection}?questionId=${question.id}`
+              );
+            }}
+          >
+            Kiểm tra gian lận
+          </Button>
+        ) : null;
+      }
     });
   });
 
@@ -349,6 +400,7 @@ const LecturerCourseExamSubmissions = () => {
             showVerticalCellBorder={true}
             getRowHeight={() => "auto"}
             onClickRow={rowClickHandler}
+            columnGroupingModel={columnGroupingModel}
           />
         </Grid>
       </Grid>
