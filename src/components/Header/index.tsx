@@ -55,30 +55,30 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const pages: ILinkMenu[] = [
     {
-      name: t("header_explore_course"),
+      name: "header_explore_course",
       path: routes.user.course_certificate.root
     },
     {
-      name: t("header_practice"),
+      name: "header_practice",
       path: routes.user.problem.root
     },
     {
-      name: t("header_contest"),
+      name: "header_contest",
       path: routes.user.contest.root
     },
     {
-      name: t("header_course"),
+      name: "header_course",
       path: routes.student.course.management
     }
   ];
 
   const auth: ILinkMenu[] = [
     {
-      name: t("header_login_button"),
+      name: "header_login_button",
       path: routes.user.login.root
     },
     {
-      name: t("header_register_button"),
+      name: "header_register_button",
       path: routes.user.register.root
     }
   ];
@@ -184,8 +184,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 className={classes.item}
                 onClick={() => navigate(page.path)}
               >
-                <ParagraphSmall colorName={"--white"} fontWeight={600}>
-                  {page.name}
+                <ParagraphSmall colorName={"--white"} fontWeight={600} translation-key={page.name}>
+                  {t(page.name)}
                 </ParagraphSmall>
               </Button>
             ))}
@@ -202,8 +202,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   className={classes.item}
                   onClick={() => navigate(page.path)}
                 >
-                  <ParagraphSmall colorName={"--white"} fontWeight={600}>
-                    {page.name}
+                  <ParagraphSmall
+                    colorName={"--white"}
+                    fontWeight={600}
+                    translation-key={page.name}
+                  >
+                    {t(page.name)}
                   </ParagraphSmall>
                 </Button>
               ))}

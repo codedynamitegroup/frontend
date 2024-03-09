@@ -66,12 +66,12 @@ const LanguageSelector = () => {
             {langList.map((language: string) => (
               <MenuItem onClick={() => changeLanguageHandler(language, popupState)}>
                 {language === "en" ? (
-                  <Box className={classes.currentLangContainer}>
+                  <Box className={classes.currentLangContainer} translation-key='language_us'>
                     <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
                     {i18n.t("language_us")}
                   </Box>
                 ) : (
-                  <Box className={classes.currentLangContainer}>
+                  <Box className={classes.currentLangContainer} translation-key='language_vn'>
                     <img
                       alt='upload'
                       src={images.flagIcon.flagVietnam}

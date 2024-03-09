@@ -30,8 +30,12 @@ export default function HomePage() {
           <Grid container columnSpacing={5} className={classes.sectionContentImage}>
             <Grid item xs={12} sm={12} md={6} className={classes.sectionContent}>
               <Box className={classes.customListContainer}>
-                <Heading1 className={classes.mainHeading}>{t("title")}</Heading1>
-                <ParagraphBody className={classes.mainParagraph}>{t("subtitle")}</ParagraphBody>
+                <Heading1 className={classes.mainHeading} translation-key='title'>
+                  {t("title")}
+                </Heading1>
+                <ParagraphBody className={classes.mainParagraph} translation-key='subtitle'>
+                  {t("subtitle")}
+                </ParagraphBody>
                 <Button className={classes.createAccountBtn} variant='contained' color='primary'>
                   Tạo tài khoản
                 </Button>
