@@ -1,25 +1,15 @@
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Divider, Grid, IconButton, Toolbar } from "@mui/material";
+import { Box, Card, CssBaseline, Grid, IconButton, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
-import { ReactComponent as SubmissionLogoSvg } from "assets/img/paper-upload-svgrepo-com.svg";
 import Header from "components/Header";
-import BasicAccordion from "components/common/accordion/BasicAccordion";
-import Button, { BtnType } from "components/common/buttons/Button";
-import FileUploader from "components/editor/FileUploader";
-import TextEditor from "components/editor/TextEditor";
-import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
-import dayjs from "dayjs";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import classes from "./styles.module.scss";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { routes } from "routes/routes";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import classes from "./styles.module.scss";
 
 const drawerWidth = 450;
 
@@ -193,125 +183,6 @@ export default function LecturerSourceCodePlagiarismManagement() {
                   <Card className={classes.cardWrapper}>Clusters</Card>
                 </Grid>
               </Grid>
-
-              {/* <Grid container direction='row' alignItems='center' gap={2}>
-                <Grid item>
-                  <Card
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      padding: "5px",
-                      backgroundColor: "primary.main",
-                      width: "50px"
-                    }}
-                  >
-                    <SubmissionLogoSvg height='40px' />
-                  </Card>
-                </Grid>
-                <Grid item>
-                  <Heading1 fontWeight={"500"}>Nộp file báo cáo. Deadline: 02/02/2024</Heading1>
-                </Grid>
-              </Grid>
-              <Card
-                className={classes.pageActivityHeader}
-                sx={{
-                  padding: "10px",
-                  backgroundColor: "#F8F9FA"
-                }}
-              >
-                <Grid container direction='row' alignItems='center' gap={1}>
-                  <Grid item>
-                    <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
-                  </Grid>
-                  <Grid item>
-                    <ParagraphBody>
-                      {assignmentOpenTime
-                        ?.toDate()
-                        .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-                    </ParagraphBody>
-                  </Grid>
-                </Grid>
-                <Grid container direction='row' alignItems='center' gap={1}>
-                  <Grid item>
-                    <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
-                  </Grid>
-                  <Grid item>
-                    <ParagraphBody>
-                      {assignmentCloseTime
-                        ?.toDate()
-                        .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-                    </ParagraphBody>
-                  </Grid>
-                </Grid>
-                <Divider
-                  style={{
-                    marginTop: "10px",
-                    marginBottom: "10px"
-                  }}
-                />
-                <Box className={classes.assignmentDescription}>
-                  <div dangerouslySetInnerHTML={{ __html: assignmentDescriptionRawHTML }}></div>
-                  <div
-                    style={{
-                      marginBottom: "10px"
-                    }}
-                    dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
-                  ></div>
-                  <CustomFileList
-                    files={[
-                      {
-                        id: "1",
-                        name: "test1.jpg",
-                        size: 1024,
-                        type: "image/jpg",
-                        uploadStatus: "success",
-                        downloadUrl:
-                          "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
-                      },
-                      {
-                        id: "2",
-                        name: "dummy.pdf",
-                        size: 1024,
-                        type: "application/pdf",
-                        uploadStatus: "success",
-                        downloadUrl:
-                          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                      }
-                    ]}
-                  />
-                </Box>
-              </Card>
-              <BasicAccordion title='Thêm bài nộp'>
-                <Box className={classes.formBody}>
-                  <Grid container spacing={1} columns={12}>
-                    <Grid item xs={3}>
-                      <TextTitle>Tự luận</TextTitle>
-                    </Grid>
-                    <Grid item xs={9} className={classes.textEditor}>
-                      <TextEditor value={""} onChange={(e) => console.log(e)} />
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={1} columns={12}>
-                    <Grid item xs={3}>
-                      <TextTitle>Tệp bài nộp</TextTitle>
-                    </Grid>
-                    <Grid item xs={9}>
-                      <FileUploader />
-                    </Grid>
-                  </Grid>
-                </Box>
-              </BasicAccordion>
-              <Divider />
-              <Grid container direction='row' justifyContent='center' gap={1}>
-                <Grid item>
-                  <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
-                </Grid>
-                <Grid item>
-                  <Button btnType={BtnType.Outlined}>Huỷ bỏ</Button>
-                </Grid>
-              </Grid> */}
             </Box>
           </Card>
         </Main>
