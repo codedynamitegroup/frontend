@@ -27,7 +27,7 @@ export default function Footer() {
         {/* Company Info */}
         <Grid item xs={12} md={5}>
           <Box className={classes.logo}>
-            <img className={classes.imageLogo} src={images.logo.logoSVG} alt='logo' />
+            <img className={classes.imageLogo} src={images.logo.logo} alt='logo' />
           </Box>
           <Typography paragraph translation-key='footer_description'>
             {t("footer_description")}

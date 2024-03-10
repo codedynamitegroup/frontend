@@ -1,0 +1,91 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
+}
+
+.container {
+  display: flex;
+  background-color: white;
+}
+
+.mainContent {
+  background-color: var(--blue-1);
+  margin-top: -10px;
+}
+
+.cardWrapper {
+  height: 100%;
+  padding: 10px;
+
+  .cardTitleHeader {
+    padding: 10px 0;
+  }
+
+  .reportOpenTimeWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .submissionsQuantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .codeLanguage {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .labelTitle {
+    margin-top: 20px;
+  }
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.drawerBody {
+  padding: 20px;
+}
+
+.drawerFieldContainer {
+  margin-bottom: 20px;
+}
+
+.textEditor {
+  height: 200px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}

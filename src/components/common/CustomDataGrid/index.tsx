@@ -28,6 +28,7 @@ interface DataGridProps {
   customFooter?: any;
   getRowHeight?: any;
   checkboxSelection?: boolean;
+  columnHeaderHeight?: number;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -46,7 +47,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     showVerticalCellBorder,
     customColumnMenu,
     customFooter,
-    onClickRow
+    onClickRow,
+    columnHeaderHeight
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -113,6 +115,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         }}
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
+        columnHeaderHeight={columnHeaderHeight || 56}
       />
     </Box>
   );

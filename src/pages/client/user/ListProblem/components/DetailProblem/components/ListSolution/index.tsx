@@ -184,9 +184,6 @@ export default function ProblemDetailSolution() {
   const { height: stickyFilterHeight } = useBoxDimensions({
     ref: stickyFilterRef
   });
-
-  console.log("stickyFilterHeight", stickyFilterHeight);
-
   const [solutionDetail, setSolutionDetail] = useState(true);
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);

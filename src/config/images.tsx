@@ -7,7 +7,7 @@ import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
 import icLevel from "assets/img/icon/skill-level-advanced.svg";
 import googleLogo from "assets/img/logo/google_logo.svg";
-import logo from "assets/img/logo/logo.png";
+import logo from "assets/img/logo/logo.svg";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
@@ -17,7 +17,6 @@ import courseCertificatesBackground from "assets/img/background/background-cours
 import homePageBackground from "assets/img/background/background-homepage.png";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 import home from "assets/img/home.png";
-import logoSVG from "assets/img/logo/logo.svg";
 
 import tempContest1 from "assets/img/temp/contest/1.png";
 import tempContest2 from "assets/img/temp/contest/2.png";
@@ -32,7 +31,7 @@ const images = {
   auth: { notFoundError, unAuthorized },
   course: { courseAssignment, courseFile },
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },
-  logo: { moodleLogo, microsoftLogo, googleLogo, logo, logoSVG },
+  logo: { moodleLogo, microsoftLogo, googleLogo, logo },
   null: { mailboxEmpty },
   login,
   home,

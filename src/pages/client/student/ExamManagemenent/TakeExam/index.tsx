@@ -22,6 +22,7 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 const drawerWidth = 350;
 
@@ -157,10 +158,15 @@ export default function TakeExam() {
     }
   }, [width]);
 
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box className={classes.container}>
+      <Header ref={headerRef} />
+      <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
         <CssBaseline />
         <AppBar
           position='fixed'

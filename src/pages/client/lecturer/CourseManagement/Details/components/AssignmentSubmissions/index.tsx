@@ -28,128 +28,6 @@ export enum SubmissionStatusGraded {
   NOT_GRADED = "Chưa chấm"
 }
 
-const submissionList = [
-  {
-    id: 1,
-    student_name: "Nguyễn Đinh Quang Khánh",
-    student_email: "khanhndq2002@gmail.com",
-    status: {
-      submission_status_submitted: SubmissionStatusSubmitted.SUBMITTED,
-      grade_status: SubmissionStatusGraded.GRADED,
-      late_submission: {
-        is_late: true,
-        late_duration: "1 ngày 2 giờ"
-      }
-    },
-    last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-    last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-    grade: {
-      grade_status: SubmissionStatusGraded.GRADED,
-      current_grade: 0,
-      max_grade: 10
-    }
-  },
-  {
-    id: 2,
-    student_name: "Nguyễn Đinh Quang Khánh",
-    student_email: "khanhndq2002@gmail.com",
-    status: {
-      submission_status_submitted: SubmissionStatusSubmitted.NOT_SUBMITTED,
-      grade_status: SubmissionStatusGraded.NOT_GRADED,
-      late_submission: {
-        is_late: false,
-        late_duration: "1 ngày 2 giờ"
-      }
-    },
-    last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-    last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-    grade: {
-      grade_status: SubmissionStatusGraded.NOT_GRADED,
-      current_grade: 0,
-      max_grade: 10
-    }
-  }
-];
-
-const tableHeading: GridColDef[] = [
-  { field: "student_name", headerName: "Tên sinh viên", width: 200 },
-  { field: "student_email", headerName: "Email", width: 200 },
-  {
-    field: "status",
-    headerName: "Trạng thái",
-    width: 250,
-    renderCell: (params) => {
-      return (
-        <Box padding='5px' width='100%'>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor:
-                params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                  ? "var(--green-300)"
-                  : "#f5f5f5",
-              fontSize: "17px"
-            }}
-          >
-            {params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-              ? "Đã nộp"
-              : "Chưa nộp"}
-          </Box>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor: "#EFCFCF",
-              fontSize: "17px",
-              display: params.value.late_submission.is_late ? "block" : "none"
-            }}
-          >
-            {"Quá hạn "}
-            {params.value.late_submission.late_duration}
-          </Box>
-          <Box
-            sx={{
-              padding: "5px",
-              backgroundColor:
-                params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                  ? "var(--green-300)"
-                  : "#f5f5f5",
-              fontSize: "17px",
-              display:
-                params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
-            }}
-          >
-            {params.value.grade_status === SubmissionStatusGraded.GRADED ? "Đã chấm" : "Chưa chấm"}
-          </Box>
-        </Box>
-      );
-    }
-  },
-  {
-    field: "grade",
-    headerName: "Điểm",
-    width: 200,
-    renderCell: (params) => {
-      return (
-        <Box>
-          <Link to={routes.lecturer.assignment.grading}>
-            <Button btnType={BtnType.Primary}>Chấm điểm</Button>
-          </Link>
-          <Box
-            sx={{
-              padding: "5px",
-              fontSize: "17px"
-            }}
-          >
-            {params.value.current_grade} / {params.value.max_grade}
-          </Box>
-        </Box>
-      );
-    }
-  },
-  { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
-  { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 }
-];
-
 const LecturerCourseAssignmentSubmissions = () => {
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
@@ -168,6 +46,130 @@ const LecturerCourseAssignmentSubmissions = () => {
   const page = 0;
   const pageSize = 5;
   const totalElement = 100;
+
+  const submissionList = [
+    {
+      id: 1,
+      student_name: "Nguyễn Đinh Quang Khánh",
+      student_email: "khanhndq2002@gmail.com",
+      status: {
+        submission_status_submitted: SubmissionStatusSubmitted.SUBMITTED,
+        grade_status: SubmissionStatusGraded.GRADED,
+        late_submission: {
+          is_late: true,
+          late_duration: "1 ngày 2 giờ"
+        }
+      },
+      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
+      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
+      grade: {
+        grade_status: SubmissionStatusGraded.GRADED,
+        current_grade: 0,
+        max_grade: 10
+      }
+    },
+    {
+      id: 2,
+      student_name: "Nguyễn Đinh Quang Khánh",
+      student_email: "khanhndq2002@gmail.com",
+      status: {
+        submission_status_submitted: SubmissionStatusSubmitted.NOT_SUBMITTED,
+        grade_status: SubmissionStatusGraded.NOT_GRADED,
+        late_submission: {
+          is_late: false,
+          late_duration: "1 ngày 2 giờ"
+        }
+      },
+      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
+      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
+      grade: {
+        grade_status: SubmissionStatusGraded.NOT_GRADED,
+        current_grade: 0,
+        max_grade: 10
+      }
+    }
+  ];
+
+  const tableHeading: GridColDef[] = [
+    { field: "student_name", headerName: "Tên sinh viên", width: 200 },
+    { field: "student_email", headerName: "Email", width: 200 },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <Box padding='5px' width='100%'>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor:
+                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                    ? "var(--green-300)"
+                    : "#f5f5f5",
+                fontSize: "17px"
+              }}
+            >
+              {params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                ? "Đã nộp"
+                : "Chưa nộp"}
+            </Box>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor: "#EFCFCF",
+                fontSize: "17px",
+                display: params.value.late_submission.is_late ? "block" : "none"
+              }}
+            >
+              {"Quá hạn "}
+              {params.value.late_submission.late_duration}
+            </Box>
+            <Box
+              sx={{
+                padding: "5px",
+                backgroundColor:
+                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
+                    ? "var(--green-300)"
+                    : "#f5f5f5",
+                fontSize: "17px",
+                display:
+                  params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
+              }}
+            >
+              {params.value.grade_status === SubmissionStatusGraded.GRADED
+                ? "Đã chấm"
+                : "Chưa chấm"}
+            </Box>
+          </Box>
+        );
+      }
+    },
+    {
+      field: "grade",
+      headerName: "Điểm",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <Box>
+            <Link to={routes.lecturer.assignment.grading}>
+              <Button btnType={BtnType.Primary}>Chấm điểm</Button>
+            </Link>
+            <Box
+              sx={{
+                padding: "5px",
+                fontSize: "17px"
+              }}
+            >
+              {params.value.current_grade} / {params.value.max_grade}
+            </Box>
+          </Box>
+        );
+      }
+    },
+    { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
+    { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 }
+  ];
 
   const submissionDataset = [
     {
@@ -260,27 +262,29 @@ const LecturerCourseAssignmentSubmissions = () => {
           height={500}
         />
       </Box>
-      <Grid item xs={12}>
-        <Heading1>Danh sách bài nộp</Heading1>
-      </Grid>
-      <Grid item xs={12}>
-        <AssignmentSubmissionFeatureBar />
-      </Grid>
-      <Grid item xs={12}>
-        <CustomDataGrid
-          dataList={submissionList}
-          tableHeader={tableHeading}
-          onSelectData={rowSelectionHandler}
-          visibleColumn={visibleColumnList}
-          dataGridToolBar={dataGridToolbar}
-          page={page}
-          pageSize={pageSize}
-          totalElement={totalElement}
-          onPaginationModelChange={pageChangeHandler}
-          showVerticalCellBorder={true}
-          getRowHeight={() => "auto"}
-          onClickRow={rowClickHandler}
-        />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Heading1>Danh sách bài nộp</Heading1>
+        </Grid>
+        <Grid item xs={12}>
+          <AssignmentSubmissionFeatureBar />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomDataGrid
+            dataList={submissionList}
+            tableHeader={tableHeading}
+            onSelectData={rowSelectionHandler}
+            visibleColumn={visibleColumnList}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={pageSize}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            getRowHeight={() => "auto"}
+            onClickRow={rowClickHandler}
+          />
+        </Grid>
       </Grid>
     </Box>
   );

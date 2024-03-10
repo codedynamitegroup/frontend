@@ -2,6 +2,7 @@ import qtype from "utils/constant/Qtype";
 
 export const routes = {
   lecturer: {
+    root: "/lecturer/*",
     calendar: "/lecturer/calendar",
     course: {
       management: "/lecturer/courses",
@@ -40,6 +41,9 @@ export const routes = {
       },
       true_false: {
         create: "/lecturer/questions/true-false/create"
+      },
+      ai: {
+        create: "/lecturer/questions/ai/create"
       }
     },
     question_bank: {
@@ -50,7 +54,7 @@ export const routes = {
           paths: Object.values(qtype)
             .map((value) => value.code)
             .map((code) => ({
-              path: `create/${code}`,
+              path: `${code === "ai" ? "ai/create" : `create/${code}`}`,
               code
             }))
         },
@@ -71,10 +75,13 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions",
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
-      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review"
+      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
+      code_plagiarism_detection:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection"
     }
   },
   student: {
+    root: "/student/*",
     course: {
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",

@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
 import SearchBar from "components/common/search/SearchBar";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 
-const CodeQuestionManagement = () => {
+const LecturerCodeQuestionManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -65,43 +65,39 @@ const CodeQuestionManagement = () => {
   const onSearchClickHandler = (val: string) => {};
 
   return (
-    <Grid className={classes.root}>
-      <SideBarLecturer>
-        <Container className={classes.container}>
-          <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
-          <Box className={classes.btnWrapper}>
-            <SearchBar onSearchClick={onSearchClickHandler} />
-            <Button
-              children='Thêm câu hỏi'
-              btnType={BtnType.Primary}
-              width='150px'
-              onClick={() => {
-                navigate(routes.lecturer.code_question.create);
-              }}
-            />
-          </Box>
-          <TableTemplate
-            data={data}
-            customColumns={customColumns}
-            customHeading={customHeading}
-            isActionColumn={true}
-            onEditClick={onEdit}
-            onDeleteClick={onDelete}
-          />
-          <TablePagination
-            component='div'
-            rowsPerPageOptions={[5, 10, 25, 100]}
-            count={data.length}
-            page={Number(page)}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Container>
-      </SideBarLecturer>
-    </Grid>
+    <Box id={classes.codequestionsBody}>
+      <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
+      <Box className={classes.btnWrapper}>
+        <SearchBar onSearchClick={onSearchClickHandler} />
+        <Button
+          children='Thêm câu hỏi'
+          btnType={BtnType.Primary}
+          width='150px'
+          onClick={() => {
+            navigate(routes.lecturer.code_question.create);
+          }}
+        />
+      </Box>
+      <TableTemplate
+        data={data}
+        customColumns={customColumns}
+        customHeading={customHeading}
+        isActionColumn={true}
+        onEditClick={onEdit}
+        onDeleteClick={onDelete}
+      />
+      <TablePagination
+        component='div'
+        rowsPerPageOptions={[5, 10, 25, 100]}
+        count={data.length}
+        page={Number(page)}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Box>
   );
 };
 
-export default CodeQuestionManagement;
+export default LecturerCodeQuestionManagement;

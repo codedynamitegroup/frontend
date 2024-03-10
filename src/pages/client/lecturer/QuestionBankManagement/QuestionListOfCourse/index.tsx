@@ -200,6 +200,11 @@ const QuestionListOfCourse = () => {
     navigate(`create/${typeToCreateNewQuestion}`);
   };
 
+  const handleCreateQuestionAI = () => {
+    setIsAddingQuestion(true);
+    navigate(`ai/create`);
+  };
+
   const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
   const urlParams = useParams();
   console.log(urlParams);
@@ -269,6 +274,9 @@ const QuestionListOfCourse = () => {
                 >
                   <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
                 </Button>
+                <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+                  <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
+                </Button>
               </Stack>
 
               <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
@@ -325,6 +333,9 @@ const QuestionListOfCourse = () => {
                   onClick={() => setIsAddNewQuestionDialogOpen(true)}
                 >
                   <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+                </Button>
+                <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+                  <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
                 </Button>
               </Stack>
 

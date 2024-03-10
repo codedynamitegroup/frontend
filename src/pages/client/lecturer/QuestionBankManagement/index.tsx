@@ -1,7 +1,5 @@
 import {
-  Box,
   Stack,
-  Grid,
   Container,
   DialogContent,
   DialogActions,
@@ -10,28 +8,18 @@ import {
   Dialog
 } from "@mui/material";
 
-import Typography from "@mui/joy/Typography";
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  DataGrid,
-  GridColDef,
-  GridRowModesModel,
-  GridActionsCellItem,
-  GridEventListener
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
-import InputTextField from "components/common/inputs/InputTextField";
-import { red, grey, blue } from "@mui/material/colors";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { routes } from "routes/routes";
+import { red } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -69,18 +57,6 @@ const rows = [
     updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
   }
 ];
-// function EditToolbar() {
-//   return (
-//     <GridToolbarContainer>
-//       <Box>
-//         <MButton color='primary' startIcon={<AddIcon />}>
-//           Thêm mới
-//         </MButton>
-//         <Divider />
-//       </Box>
-//     </GridToolbarContainer>
-//   );
-// }
 
 const QuestionBankManagement = () => {
   const [pageState, setPageState] = useState({

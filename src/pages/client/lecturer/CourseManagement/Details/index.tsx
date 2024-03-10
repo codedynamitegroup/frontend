@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -16,7 +16,7 @@ import LecturerCourseExamDetails from "./components/Assignment/components/ExamDe
 
 interface Props {}
 
-const CourseDetail = memo((props: Props) => {
+const LecturerCourseDetail = memo((props: Props) => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
@@ -50,66 +50,62 @@ const CourseDetail = memo((props: Props) => {
   }, [pathname, tabs]);
 
   return (
-    <Grid className={classes.root}>
-      <SideBarLecturer>
-        <Container className={classes.container}>
-          <Box className={classes.tabWrapper}>
-            <Tabs
-              value={activeTab}
-              onChange={handleChange}
-              aria-label='basic tabs example'
-              className={classes.tabs}
-            >
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Lớp học</ParagraphBody>}
-                value={0}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Bài tập</ParagraphBody>}
-                value={1}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Điểm</ParagraphBody>}
-                value={2}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Thành viên</ParagraphBody>}
-                value={3}
-              />
-            </Tabs>
-          </Box>
+    <>
+      <Box className={classes.tabWrapper}>
+        <Tabs
+          value={activeTab}
+          onChange={handleChange}
+          aria-label='basic tabs example'
+          className={classes.tabs}
+        >
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Lớp học</ParagraphBody>}
+            value={0}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Bài tập</ParagraphBody>}
+            value={1}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Điểm</ParagraphBody>}
+            value={2}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Thành viên</ParagraphBody>}
+            value={3}
+          />
+        </Tabs>
+      </Box>
 
-          <Box className={classes.body}>
-            <Box mt={2}>
-              <Routes>
-                <Route path={"information"} element={<LecturerCourseInformation />} />
-                <Route path={"assignments"} element={<LecturerCourseAssignment />} />
-                <Route
-                  path={"assignments/:assignmentId"}
-                  element={<LecturerCourseAssignmentDetails />}
-                />
-                <Route
-                  path={"assignments/:assignmentId/submissions"}
-                  element={<LecturerCourseAssignmentSubmissions />}
-                />
-                <Route path={"assignments/exams/:examId"} element={<LecturerCourseExamDetails />} />
-                <Route
-                  path={"assignments/exams/:examId/submissions"}
-                  element={<LecturerCourseExamSubmissions />}
-                />
-                <Route path={"grade"} element={<LecturerCourseGrade />} />
-                <Route path={"participant"} element={<LecturerCourseParticipant />} />
-              </Routes>
-            </Box>
-          </Box>
-        </Container>
-      </SideBarLecturer>
-    </Grid>
+      <Box id={classes.courseDetailBody}>
+        <Box mt={2}>
+          <Routes>
+            <Route path={"information"} element={<LecturerCourseInformation />} />
+            <Route path={"assignments"} element={<LecturerCourseAssignment />} />
+            <Route
+              path={"assignments/:assignmentId"}
+              element={<LecturerCourseAssignmentDetails />}
+            />
+            <Route
+              path={"assignments/:assignmentId/submissions"}
+              element={<LecturerCourseAssignmentSubmissions />}
+            />
+            <Route path={"assignments/exams/:examId"} element={<LecturerCourseExamDetails />} />
+            <Route
+              path={"assignments/exams/:examId/submissions"}
+              element={<LecturerCourseExamSubmissions />}
+            />
+            <Route path={"grade"} element={<LecturerCourseGrade />} />
+            <Route path={"participant"} element={<LecturerCourseParticipant />} />
+          </Routes>
+        </Box>
+      </Box>
+    </>
   );
 });
 
-export default CourseDetail;
+export default LecturerCourseDetail;
