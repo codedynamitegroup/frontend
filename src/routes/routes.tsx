@@ -74,7 +74,9 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions",
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
-      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review"
+      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
+      code_plagiarism_detection:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection"
     }
   },
   student: {

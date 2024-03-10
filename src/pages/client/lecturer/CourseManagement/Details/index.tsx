@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -51,7 +51,7 @@ const CourseDetail = memo((props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SidebarLecturer>
         <Container className={classes.container}>
           <Box className={classes.tabWrapper}>
             <Tabs
@@ -107,7 +107,7 @@ const CourseDetail = memo((props: Props) => {
             </Box>
           </Box>
         </Container>
-      </SideBarLecturer>
+      </SidebarLecturer>
     </Grid>
   );
 });

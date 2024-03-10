@@ -8,7 +8,7 @@ import classes from "./styles.module.scss";
 import Header from "components/Header";
 import { styled } from "@mui/material/styles";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 
 const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) => ({
   textTransform: "none",
@@ -25,7 +25,7 @@ const QuestionBankManagementLayout = () => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SidebarLecturer>
         <main id={classes.main}>
           <Container className={classes.container}>
             <TabContext value={value}>
@@ -39,7 +39,7 @@ const QuestionBankManagementLayout = () => {
             </TabContext>
           </Container>
         </main>
-      </SideBarLecturer>
+      </SidebarLecturer>
     </Grid>
   );
 };

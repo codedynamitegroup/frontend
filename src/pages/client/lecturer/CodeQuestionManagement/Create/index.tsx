@@ -8,7 +8,7 @@ import TextEditor from "components/editor/TextEditor";
 import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
-import SideBarLecturer from "components/common/sidebars/SidebarLecturer";
+import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 import { routes } from "routes/routes";
 
 interface Props {}
@@ -28,7 +28,7 @@ const CodeQuestionCreated = memo((props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      <SideBarLecturer>
+      <SidebarLecturer>
         <Container className={classes.container}>
           <Box className={classes.tabWrapper}>
             <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
@@ -92,7 +92,7 @@ const CodeQuestionCreated = memo((props: Props) => {
             <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
           </Box>
         </Box>
-      </SideBarLecturer>
+      </SidebarLecturer>
     </Grid>
   );
 });
