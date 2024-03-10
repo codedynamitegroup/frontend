@@ -207,7 +207,6 @@ const QuestionListOfCourse = () => {
 
   const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
   const urlParams = useParams();
-  console.log(urlParams);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);

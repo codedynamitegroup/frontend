@@ -221,18 +221,11 @@ const AIQuestionCreated = () => {
               <Button onClick={handleGenerate} btnType={BtnType.Primary}>
                 Tạo câu hỏi
               </Button>
-
-              {/* <Box className={classes.stickyFooterContainer}>
-            <Box className={classes.phantom} />
-            <Box className={classes.stickyFooterItem}>
-              <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
-            </Box>
-          </Box> */}
             </Box>
           </Grid>
           <Grid xs={6}>
             <Box className={classes.listQuestion}>
-              {question.length === 0 && loading === false && (
+              {question?.length === 0 && loading === false && (
                 <Box className={classes.snackbar}>
                   <SnackbarAlert
                     open={true}
@@ -242,14 +235,14 @@ const AIQuestionCreated = () => {
                   />
                 </Box>
               )}
-              {question.length !== 0 && (
+              {question?.length !== 0 && (
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
                 </Button>
               )}
-              {question.length === 0 && (
+              {question?.length === 0 && (
                 <CircularProgress className={loading ? classes.loading : classes.none} />
-              )}{" "}
+              )}
               {question &&
                 question.map((value, index) => {
                   return (

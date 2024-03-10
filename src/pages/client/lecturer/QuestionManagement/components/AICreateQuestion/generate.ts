@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const format_question = [
   {
-    id: 10,
+    qtypeId: 10,
     format: `
         {
             "length": 2,
@@ -35,7 +35,7 @@ const format_question = [
     description: "Chỉ có 1 câu trả lời"
   },
   {
-    id: 20,
+    qtypeId: 20,
     format: `
     {
         "length": 5,
@@ -54,7 +54,7 @@ const format_question = [
     description: "Có nhiều sự lựa chọn nhưng chỉ có 1 đáp án đúng"
   },
   {
-    id: 30,
+    qtypeId: 30,
     format: `
     {
         "length": 5,
@@ -71,7 +71,7 @@ const format_question = [
     description: "Chỉ có 1 câu trả lời"
   },
   {
-    id: 40,
+    qtypeId: 40,
     format: `
     {
         "length": 5,
@@ -106,15 +106,15 @@ async function run(
   level: number
 ) {
   // For text-only input, use the gemini-pro model
-  const formatQuestion = format_question.find((item) => item.id === qtype);
+  const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   let question_type = "";
   if (qtype === 10) {
-    question_type = "essay";
+    question_type = "constructed-response";
   } else if (qtype === 20) {
     question_type = "multiple choice";
   } else if (qtype === 30) {
-    question_type = "fill in the blank";
+    question_type = "short answer";
   } else {
     question_type = "true/false";
   }
@@ -128,19 +128,26 @@ async function run(
     levelQuestion = "hard";
   }
 
-  const AI_ROLE =
-    "You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. Answer in Vietnamese. You are a trained expert on programming and coding analysis. Your job is to multiple choice generate code questions according to the assignment prompt.";
+  const AI_ROLE = `You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. 
+		Answer in Vietnamese. You are a trained expert on domain related to software engineering and programming. 
+		Your job are required to generate code questions which has types such as multiple choice, true/false, short answer, constructed-response according to the assignment prompt.`;
 
   const SYSTEM_INSTRUCTIONS = `
-                Give me number questions ${question_type} questions about topic in the language programming language.. The questions should be at a ${levelQuestion} level.
-                Response Format:
+                Give me ${number_question} questions which are ${question_type} questions about topic named ${topic}.
+								The detailed description of this topic is: ${description}.
+								The questions should be at a ${levelQuestion} level.
+                Response Format should be JSON:
                 ${formatQuestion?.format}
-                Chỉ có 2 thuộc tính là length và questions trong đó length là tổng số lượng câu hỏi, questions là mảng chứa các câu hỏi, ${formatQuestion?.description}
-            Hãy dùng tiếng Việt mọi chỗ để viết câu hỏi và đáp án cho sinh viên.
+								This response format has only 3 attributes: qtypeId, format and description.
+								- format: The format of the question have 2 attributes: length and questions, and this follows the structure below:
+									+ length: The total number of questions.
+									+ questions: An array containing the questions.
+								- description: The description of the question (optional, which has value ${formatQuestion?.description}}.
+								- qtypeId: The type of the question which can be 10(constructed-response), 20(multiple choice), 30(short answer), 40(true/false).
+								Please use Vietnamese everywhere to write questions and answers for students.
             `;
 
-  const language = "Vietnamese";
-  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS} Topic: ${topic} Description: ${description} Number question: ${number_question} level: ${level} language: ${language}`;
+  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS}`;
 
   try {
     const result = await model.generateContent(prompt);
