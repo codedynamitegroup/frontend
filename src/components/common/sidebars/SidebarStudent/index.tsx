@@ -54,7 +54,6 @@ export default function SidebarLecturer({ children }: any) {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
-  console.log(headerHeight);
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
