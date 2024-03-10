@@ -1,25 +1,4 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column !important;
-  background-color: var(--blue-1);
-}
-
-.container {
-  display: flex !important;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 5px;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  height: fit-content;
-  width: 100%;
-}
-
-.body {
+#calendarBody {
   display: flex;
   flex-direction: column;
   padding: 20px 40px;

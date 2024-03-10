@@ -80,6 +80,7 @@ export const routes = {
     }
   },
   student: {
+    root: "/student/*",
     course: {
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",

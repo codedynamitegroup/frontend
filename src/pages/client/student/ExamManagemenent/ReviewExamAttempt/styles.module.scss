@@ -3,18 +3,16 @@
   flex-direction: column !important;
   gap: 20px;
   padding-bottom: 20px;
-  background-color: var(--blue-1);
+  background-color: var(--gray-3);
   height: 100vh;
 }
 
 .container {
   display: flex;
-  background-color: white;
 }
 
 .mainContent {
-  background-color: var(--blue-1);
-  margin-top: 64px;
+  background-color: var(--gray-3);
 }
 
 .formBody {
