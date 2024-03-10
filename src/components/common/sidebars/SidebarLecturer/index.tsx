@@ -10,7 +10,6 @@ import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-<<<<<<< HEAD
 import { useEffect } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Menu, MenuItem, ListItemIcon } from "@mui/material";
@@ -19,10 +18,8 @@ interface ILinkMenu {
   name: string;
   path: string;
 }
-=======
 import useBoxDimensions from "hooks/useBoxDimensions";
 
->>>>>>> 6be146ae3ba2903e78f0a312653f56c43c6d517d
 const drawerWidth = 300;
 const sideBarItemListData: SidebarItem[] = [
   {
