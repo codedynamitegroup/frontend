@@ -145,7 +145,7 @@ async function run(topic: string, qtype: number, number_question: number, level:
 
     const cleanText = text.replace(/`/g, "");
     console.log(cleanText);
-    const json = JSON.parse(cleanText);
+    const json = JSON.parse(cleanText.replace(/json/g, ""));
     return json;
   } catch (error) {
     console.error("Error parsing JSON:", error);
