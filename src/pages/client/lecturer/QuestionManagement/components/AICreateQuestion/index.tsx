@@ -1,112 +1,37 @@
-import {
-  Box,
-  Checkbox,
-  Collapse,
-  Container,
-  Divider,
-  Grid,
-  IconButton,
-  ListItemButton,
-  MenuItem,
-  Select,
-  Stack
-} from "@mui/material";
+import { Box, Container, Grid, IconButton, MenuItem, Select } from "@mui/material";
 import Header from "components/Header";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useMatches, useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import Button, { BtnType } from "components/common/buttons/Button";
-import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import { TextareaAutosize } from "@mui/base";
-import TextArea from "@uiw/react-md-editor/lib/components/TextArea/index.nohighlight";
 import { Textarea } from "@mui/joy";
 import Heading6 from "components/text/Heading6";
-import Heading5 from "components/text/Heading5";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
-import Edit from "@mui/icons-material/Edit";
 import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import run from "./generate";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const AIQuestionCreated = () => {
-  const [answerOpen, setAnswerOpen] = useState(true);
   const navigate = useNavigate();
   const matches = useMatches();
   const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
-  console.log(matches);
+
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
 
   const [modeEdit, setModeEdit] = useState(false);
-
-  const multiple_choice = [
-    {
-      id: 1,
-      question: "Ai là người đặt cau hỏi này ?",
-      answers: [
-        { id: 1, content: "Dương Chí Thông" },
-        { id: 2, content: "Nguyễn Quốc Tuấn" },
-        { id: 3, content: "Trương Gia Tiến" }
-      ],
-      correctAnswer: 1
-    },
-    {
-      id: 2,
-      question: "Trương Gia Tiến có dâm không ?",
-      answers: [
-        { id: 1, content: "Có" },
-        { id: 2, content: "Không" },
-        { id: 3, content: "Biến thái" }
-      ],
-      correctAnswer: 2
-    },
-    {
-      id: 3,
-      question: "Ai là nhà lãnh đạo trong team bạn?",
-      answers: [
-        { id: 1, content: "Đặng Ngọc Tiến" },
-        { id: 2, content: "Nguyễn Quốc Tuấn" },
-        { id: 3, content: "Trương Gia Tiến" }
-      ],
-      correctAnswer: 0
-    },
-    {
-      id: 4,
-      question: "Con cặc lodi Tuấn là ai",
-      answers: [
-        { id: 1, content: "Dương Chí Thông" },
-        { id: 2, content: "Nguyễn Quốc Tuấn" },
-        { id: 3, content: "Trương Gia Tiến" }
-      ],
-      correctAnswer: 1
-    },
-    {
-      id: 5,
-      question: "Sơn Tùng M-TP tên thật là gì?",
-      answers: [
-        { id: 1, content: "Nguyễn Thanh Tùng" },
-        { id: 2, content: "Trịnh Trần Phương Tuấn" },
-        { id: 3, content: "Nguyễn Thanh Hoàng" }
-      ],
-      correctAnswer: 0
-    }
-  ];
 
   const [question, setQuestion] = useState([] as any[]);
   const [lengthQuestion, setLengthQuestion] = useState(0);
@@ -141,7 +66,6 @@ const AIQuestionCreated = () => {
       setLengthQuestion(data.length);
     }
   };
-  console.log(level);
 
   const handleButtonClick = () => {
     setModeEdit(!modeEdit);
@@ -289,7 +213,7 @@ const AIQuestionCreated = () => {
           </Grid>
           <Grid xs={6}>
             <Box className={classes.listQuestion}>
-              {question.length != 0 && (
+              {question.length !== 0 && (
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
                 </Button>

@@ -43,7 +43,7 @@ const QuestionCreated = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
   const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
-  console.log(matches);
+
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef

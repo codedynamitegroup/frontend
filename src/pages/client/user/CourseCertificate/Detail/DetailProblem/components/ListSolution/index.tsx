@@ -185,8 +185,6 @@ export default function LessonDetailSolution() {
     ref: stickyFilterRef
   });
 
-  console.log("stickyFilterHeight", stickyFilterHeight);
-
   const [solutionDetail, setSolutionDetail] = useState(true);
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);

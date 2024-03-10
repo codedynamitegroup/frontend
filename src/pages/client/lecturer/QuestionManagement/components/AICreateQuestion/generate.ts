@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI("AIzaSyCzF7o3Z3RTO8Bqo6s18Yj18WyFeqZrvVM");
+const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
 // ...
 // Access your API key as an environment variable (see "Set up your API key" above)
@@ -100,9 +100,7 @@ const format_question = [
 ];
 async function run(topic: string, qtype: number, number_question: number, level: number) {
   // For text-only input, use the gemini-pro model
-  console.log(qtype, number_question, level, topic);
   const formatQuestion = format_question.find((item) => item.id === qtype);
-  console.log(formatQuestion);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   let question_type = "";
   if (qtype === 10) {
@@ -144,8 +142,7 @@ async function run(topic: string, qtype: number, number_question: number, level:
     const text = response.text();
 
     const cleanText = text.replace(/`/g, "");
-    console.log(cleanText);
-    const json = JSON.parse(cleanText);
+    const json = JSON.parse(cleanText.replace(/json/g, ""));
     return json;
   } catch (error) {
     console.error("Error parsing JSON:", error);
