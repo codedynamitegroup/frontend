@@ -13,8 +13,11 @@ import {
   faGithub
 } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <Grid container className={classes.root}>
       {/* Social Media Section */}
@@ -26,48 +29,47 @@ export default function Footer() {
           <Box className={classes.logo}>
             <img className={classes.imageLogo} src={images.logo.logoSVG} alt='logo' />
           </Box>
-          <Typography paragraph>
-            6BrosT là một trang web giúp người dùng có thể học tập, thi đấu và cải thiện kỹ năng lập
-            trình của mình.
+          <Typography paragraph translation-key='footer_description'>
+            {t("footer_description")}
           </Typography>
         </Grid>
         <Grid item xs={12} md={1} />
 
         {/* Products */}
         <Grid item xs={6} md={3}>
-          <Typography variant='h6' gutterBottom>
-            Tài nguyên học tập
+          <Typography variant='h6' gutterBottom translation-key='footer_resource_link_title'>
+            {t("footer_resource_link_title")}
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset'>
-              Khóa học
+            <Link to='#!' className='text-reset' translation-key='footer_link_course'>
+              {t("footer_link_course")}
             </Link>
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset'>
-              Luyện tập
+            <Link to='#!' className='text-reset' translation-key='footer_link_practice'>
+              {t("footer_link_practice")}
             </Link>
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset'>
-              Cuộc thi
+            <Link to='#!' className='text-reset' translation-key='footer_link_contest'>
+              {t("footer_link_contest")}
             </Link>
           </Typography>
         </Grid>
 
         {/* Useful Links */}
         <Grid item xs={6} md={3}>
-          <Typography variant='h6' gutterBottom>
-            Về 6BrosT
+          <Typography variant='h6' gutterBottom translation-key='footer_about_title'>
+            {t("footer_about_title")}
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset'>
-              Về chúng tôi
+            <Link to='#!' className='text-reset' translation-key='footer_link_about_us'>
+              {t("footer_link_about_us")}
             </Link>
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset'>
-              Liên hệ
+            <Link to='#!' className='text-reset' translation-key='footer_link_contact'>
+              {t("footer_link_contact")}
             </Link>
           </Typography>
         </Grid>
@@ -75,7 +77,9 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <Grid container justifyContent='center' padding={4} style={{ backgroundColor: "white" }}>
-        <Typography variant='body1'>© 2024 Copyright: 6BrosT</Typography>
+        <Typography variant='body1' translation-key='footer_copyright'>
+          © 2024 {t("footer_copyright")}: 6BrosT
+        </Typography>
       </Grid>
     </Grid>
   );

@@ -74,11 +74,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const auth: ILinkMenu[] = [
     {
-      name: t("header_login"),
+      name: t("header_login_button"),
       path: routes.user.login.root
     },
     {
-      name: t("header_register"),
+      name: t("header_register_button"),
       path: routes.user.register.root
     }
   ];

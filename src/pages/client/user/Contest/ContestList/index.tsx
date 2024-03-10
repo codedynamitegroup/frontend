@@ -15,17 +15,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/scss/pagination";
 import "swiper/scss/scrollbar";
+import { useTranslation } from "react-i18next";
 
-const filterObject = {
-  difficulty: {
-    root: "Độ khó",
-    object: ["Sơ cấp", "Trung cấp", "Cao cấp"]
-  },
-  language: {
-    root: "Ngôn ngữ lập trình",
-    object: ["C++", "Java", "Python", "C#", "Javascript", "Ruby", "PHP"]
-  }
-};
+const filterObject = ["C++", "Java", "Python", "C#", "Javascript", "Ruby", "PHP"];
 
 const trendingItem = [
   {
@@ -80,6 +72,7 @@ const ContestList = () => {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  const { t } = useTranslation();
 
   return (
     <Box className={classes.root}>
@@ -109,8 +102,9 @@ const ContestList = () => {
                     lineHeight={"74px"}
                     textAlign={"left"}
                     color={"var(--white)"}
+                    translation-key='contest_title'
                   >
-                    LẬP TRÌNH THI ĐẤU
+                    {t("contest_title")}
                   </Typography>
                 </Box>
               </Grid>
@@ -130,8 +124,9 @@ const ContestList = () => {
                     fontWeight={700}
                     fontFamily={"Roboto, sans-serif"}
                     color={"var(--white)"}
+                    translation-key='contest_total_num'
                   >
-                    CUỘC THI
+                    {t("contest_total_num")}
                   </Typography>
                 </Box>
                 <Box>
@@ -149,8 +144,9 @@ const ContestList = () => {
                     fontWeight={700}
                     fontFamily={"Roboto, sans-serif"}
                     color={"var(--white)"}
+                    translation-key='contest_participant_num'
                   >
-                    THÍ SINH THAM GIA
+                    {t("contest_participant_num")}
                   </Typography>
                 </Box>
               </Grid>
@@ -201,8 +197,9 @@ const ContestList = () => {
                     fontWeight={500}
                     letterSpacing={".3px"}
                     lineHeight={"50px"}
+                    translation-key='contest_list_title'
                   >
-                    Danh sách cuộc thi
+                    {t("contest_list_title")}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={10} lg={8}>
@@ -215,11 +212,16 @@ const ContestList = () => {
                         key='happening'
                         value='happening'
                         className={classes.listStateButton}
+                        translation-key='contest_happening_button'
                       >
-                        Đang diễn ra
+                        {t("contest_happening_button")}
                       </ToggleButton>
-                      <ToggleButton key='ended' value='ended'>
-                        Đã kết thúc
+                      <ToggleButton
+                        key='ended'
+                        value='ended'
+                        translation-key='contest_ended_button'
+                      >
+                        {t("contest_ended_button")}
                       </ToggleButton>
                     </ToggleButtonGroup>
                   </Box>

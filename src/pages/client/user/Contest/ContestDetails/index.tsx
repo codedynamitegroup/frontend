@@ -26,6 +26,7 @@ import { useParams } from "react-router-dom";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export enum EContestStatus {
   featured,
@@ -271,6 +272,7 @@ const ContestDetails = () => {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  const { t } = useTranslation();
 
   return (
     <Box className={classes.root}>
@@ -293,14 +295,26 @@ const ContestDetails = () => {
                 <TabContext value={value}>
                   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                     <TabList onChange={handleChange} aria-label='lab API tabs example'>
-                      <Tab label='Mô tả chung' value='1' />
+                      <Tab
+                        label={t("contest_detail_description")}
+                        translation-key='contest_detail_description'
+                        value='1'
+                      />
                       {ContestData["status"] !== EContestStatus.featured &&
                       ContestData["joinedContest"] ? (
-                        <Tab label='Đề thi' value='2' />
+                        <Tab
+                          label={t("contest_detail_problems")}
+                          translation-key='contest_detail_problems'
+                          value='2'
+                        />
                       ) : null}
                       {ContestData["status"] === EContestStatus.ended ||
                       ContestData["status"] === EContestStatus.happening ? (
-                        <Tab label='Bảng xếp hạng' value='3' />
+                        <Tab
+                          label={t("contest_detail_leaderboard")}
+                          translation-key='contest_detail_leaderboard'
+                          value='3'
+                        />
                       ) : null}
                     </TabList>
                   </Box>
@@ -332,8 +346,8 @@ const ContestDetails = () => {
 
                   {ContestData["status"] === EContestStatus.ended ||
                   ContestData["status"] === EContestStatus.happening ? (
-                    <TabPanel value='3'>
-                      <Heading1>Bảng xếp hạng</Heading1>
+                    <TabPanel value='3' translation-key='contest_detail_leaderboard'>
+                      <Heading1>{t("contest_detail_leaderboard")}</Heading1>
                       <ContestLeaderboard
                         currentUserRank={currentUserRank}
                         rankingList={rankingList}
@@ -350,7 +364,9 @@ const ContestDetails = () => {
                   <Paper>
                     <Grid container direction='column' alignItems='center' justifyContent='center'>
                       <Grid item xs={12}>
-                        <Heading4 margin={"10px"}>Top 3 xếp hạng</Heading4>
+                        <Heading4 margin={"10px"} translation-key='contest_detail_leaderboard_rank'>
+                          {t("contest_detail_leaderboard_rank")}
+                        </Heading4>
                         <Divider orientation='horizontal' />
                       </Grid>
                       {topUserRank && topUserRank.length !== 0 ? (
@@ -375,7 +391,12 @@ const ContestDetails = () => {
                           ))}
                         </Stack>
                       ) : (
-                        <Typography color='var(--gray-30)'>Không có dữ liệu</Typography>
+                        <Typography
+                          color='var(--gray-30)'
+                          translation-key='contest_detail_leaderboard_no_data'
+                        >
+                          {t("contest_detail_leaderboard_no_data")}
+                        </Typography>
                       )}
                     </Grid>
                   </Paper>

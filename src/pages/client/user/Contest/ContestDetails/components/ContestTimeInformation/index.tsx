@@ -14,6 +14,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useTranslation } from "react-i18next";
 
 interface PropsData {
   startDate: string;
@@ -56,6 +57,7 @@ const ContestTimeInformation = (props: PropsData) => {
       setSeconds(Math.floor((time / 1000) % 60));
     }
   };
+  const { t } = useTranslation();
 
   useEffect(() => {
     setInterval(() => getTimeUntil(inputDate), 1000);
@@ -72,8 +74,9 @@ const ContestTimeInformation = (props: PropsData) => {
               colorName='--blue-500'
               className={classes.cursorPointer}
               onClick={() => navigate(routes.user.contest.root)}
+              translation-key='contest_list_title'
             >
-              Danh sách cuộc thi
+              {t("contest_list_title")}
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
             <ParagraphSmall
@@ -95,20 +98,34 @@ const ContestTimeInformation = (props: PropsData) => {
         </Typography>
         {joinContest ? (
           status === EContestStatus.featured ? (
-            <Heading1 className={classes.currentJoinStatus} color={"var(--green-300) !important"}>
-              Bạn đã đăng ký tham gia cuộc thi này
+            <Heading1
+              className={classes.currentJoinStatus}
+              color={"var(--green-300) !important"}
+              translation-key='contest_detail_joined_feature_status'
+            >
+              {t("contest_detail_joined_feature_status")}
             </Heading1>
           ) : status === EContestStatus.happening ? (
-            <Heading1 className={classes.currentJoinStatus} color={"var(--green-300) !important"}>
-              Bạn đang tham gia cuộc thi này
+            <Heading1
+              className={classes.currentJoinStatus}
+              color={"var(--green-300) !important"}
+              translation-key='contest_detail_joined_happening_status'
+            >
+              {t("contest_detail_joined_happening_status")}
             </Heading1>
           ) : (
-            <Heading1 className={classes.currentJoinStatus} color={"var(--orange-4) !important"}>
-              Bạn đã tham gia cuộc thi này
+            <Heading1
+              className={classes.currentJoinStatus}
+              color={"var(--orange-4) !important"}
+              translation-key='contest_detail_joined_ended_status'
+            >
+              {t("contest_detail_joined_ended_status")}
             </Heading1>
           )
         ) : (
-          <Button variant='contained'>Tham gia thi</Button>
+          <Button variant='contained' translation-key='contest_detail_join_button'>
+            {t("contest_detail_join_button")}
+          </Button>
         )}
       </Box>
 
@@ -117,8 +134,16 @@ const ContestTimeInformation = (props: PropsData) => {
           <Box className={classes.timeDetailContainer}>
             <Stack direction={"row"} justifyContent={"center"}>
               <CalendarIcon fontSize='small' />
-              <Typography className={classes.timeDescriptionText}>
-                Cuộc thi sẽ {status === EContestStatus.featured ? "bắt đầu" : "kết thúc"} trong
+              <Typography
+                className={classes.timeDescriptionText}
+                translation-key={[
+                  "contest_detail_feature_status",
+                  "contest_detail_happening_status"
+                ]}
+              >
+                {status === EContestStatus.featured
+                  ? t("contest_detail_feature_status")
+                  : t("contest_detail_happening_status")}
               </Typography>
             </Stack>
             <Stack
@@ -127,18 +152,27 @@ const ContestTimeInformation = (props: PropsData) => {
               justifyContent={"center"}
               sx={{ marginTop: "5px" }}
             >
-              <ContestTimeDisplay time={leading0(days)} type='Ngày' />
-              <ContestTimeDisplay time={leading0(hours)} type='Giờ' />
-              <ContestTimeDisplay time={leading0(minutes)} type='Phút' />
-              <ContestTimeDisplay time={leading0(seconds)} type='Giây' />
+              <ContestTimeDisplay time={leading0(days)} type={t("contest_detail_feature_day")} />
+              <ContestTimeDisplay time={leading0(hours)} type={t("contest_detail_feature_hour")} />
+              <ContestTimeDisplay
+                time={leading0(minutes)}
+                type={t("contest_detail_feature_minute")}
+              />
+              <ContestTimeDisplay
+                time={leading0(seconds)}
+                type={t("contest_detail_feature_second")}
+              />
             </Stack>
           </Box>
         ) : (
           <Box className={classes.timeDetailContainer}>
             <Stack direction={"row"} justifyContent={"center"}>
               <NotificationsActiveIcon fontSize='small' />
-              <Typography className={classes.timeDescriptionText}>
-                Cuộc thi đã kết thúc lúc
+              <Typography
+                className={classes.timeDescriptionText}
+                translation-key='contest_detail_ended_status'
+              >
+                {t("contest_detail_ended_status")}
               </Typography>
             </Stack>
             <Stack
@@ -147,9 +181,18 @@ const ContestTimeInformation = (props: PropsData) => {
               justifyContent={"center"}
               sx={{ marginTop: "5px" }}
             >
-              <ContestTimeDisplay time={convertedEndDate.getDate()} type='Ngày' />
-              <ContestTimeDisplay time={convertedEndDate.getMonth() + 1} type='Tháng' />
-              <ContestTimeDisplay time={convertedEndDate.getFullYear() % 100} type='Năm' />
+              <ContestTimeDisplay
+                time={convertedEndDate.getDate()}
+                type={t("contest_detail_feature_day")}
+              />
+              <ContestTimeDisplay
+                time={convertedEndDate.getMonth() + 1}
+                type={t("contest_detail_feature_month")}
+              />
+              <ContestTimeDisplay
+                time={convertedEndDate.getFullYear() % 100}
+                type={t("contest_detail_feature_year")}
+              />
             </Stack>
           </Box>
         )}

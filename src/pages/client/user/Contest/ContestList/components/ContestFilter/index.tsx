@@ -1,5 +1,6 @@
 import { Checkbox, FormControlLabel, FormGroup, Grid, Paper } from "@mui/material";
 import Heading5 from "components/text/Heading5";
+import { useTranslation } from "react-i18next";
 
 export enum EContestDifficultyType {
   beginner,
@@ -12,6 +13,7 @@ interface PropsData {
 
 const ContestFilter = (props: PropsData) => {
   const { filterObject } = props;
+  const { t } = useTranslation();
 
   return (
     <Paper sx={{ padding: "10px", marginTop: "-14px" }}>
@@ -19,13 +21,27 @@ const ContestFilter = (props: PropsData) => {
         <Grid item xs={12}>
           <Grid container>
             <Grid item xs={12}>
-              <Heading5>{filterObject["difficulty"]["root"]}</Heading5>
+              <Heading5 translation-key='contest_difficulty_title'>
+                {t("contest_difficulty_title")}
+              </Heading5>
             </Grid>
             <Grid item xs={12}>
               <FormGroup>
-                {filterObject["difficulty"]["object"].map((difficultyType: any) => (
-                  <FormControlLabel control={<Checkbox defaultChecked />} label={difficultyType} />
-                ))}
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label={t("contest_beginner_difficulty")}
+                  translation-key='contest_beginner_title'
+                />
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label={t("contest_medium_difficulty")}
+                  translation-key='contest_medium_title'
+                />
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label={t("contest_advance_difficulty")}
+                  translation-key='contest_advance_title'
+                />
               </FormGroup>
             </Grid>
           </Grid>
@@ -34,11 +50,13 @@ const ContestFilter = (props: PropsData) => {
         <Grid item xs={12}>
           <Grid container>
             <Grid item xs={12}>
-              <Heading5>{filterObject["language"]["root"]}</Heading5>
+              <Heading5 translation-key='contest_programming_language_title'>
+                {t("contest_programming_language_title")}
+              </Heading5>
             </Grid>
             <Grid item xs={12}>
               <FormGroup>
-                {filterObject["language"]["object"].map((difficultyType: any) => (
+                {filterObject.map((difficultyType: any) => (
                   <FormControlLabel control={<Checkbox defaultChecked />} label={difficultyType} />
                 ))}
               </FormGroup>

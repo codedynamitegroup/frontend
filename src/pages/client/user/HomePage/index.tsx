@@ -30,10 +30,19 @@ export default function HomePage() {
           <Grid container columnSpacing={5} className={classes.sectionContentImage}>
             <Grid item xs={12} sm={12} md={6} className={classes.sectionContent}>
               <Box className={classes.customListContainer}>
-                <Heading1 className={classes.mainHeading}>{t("title")}</Heading1>
-                <ParagraphBody className={classes.mainParagraph}>{t("subtitle")}</ParagraphBody>
-                <Button className={classes.createAccountBtn} variant='contained' color='primary'>
-                  Tạo tài khoản
+                <Heading1 className={classes.mainHeading} translation-key='home_title'>
+                  {t("home_title")}
+                </Heading1>
+                <ParagraphBody className={classes.mainParagraph} translation-key='home_subtitle'>
+                  {t("home_subtitle")}
+                </ParagraphBody>
+                <Button
+                  className={classes.createAccountBtn}
+                  variant='contained'
+                  color='primary'
+                  translation-key='home_create_account_button'
+                >
+                  {t("home_create_account_button")}
                 </Button>
               </Box>
             </Grid>
@@ -333,8 +342,8 @@ export default function HomePage() {
                 </Grid>
               </Grid>
               <Box className={classes.viewAllBtn}>
-                <Button variant='contained' color='primary'>
-                  Xem tất cả
+                <Button variant='contained' color='primary' translation-key={"home_more_button"}>
+                  {t("home_more_button")}
                 </Button>
               </Box>
             </Container>
