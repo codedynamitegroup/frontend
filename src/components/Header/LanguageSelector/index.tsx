@@ -44,7 +44,7 @@ const LanguageSelector = () => {
                 <>
                   <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
                   <ParagraphSmall colorName={"--white"} fontWeight={600}>
-                    {i18n.t("language_vn")}
+                    {i18n.t("language_us")}
                   </ParagraphSmall>
                 </>
               )}
