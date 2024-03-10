@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.f9563b81.css",
-    "main.js": "/frontend/static/js/main.2e52d1ae.js",
+    "main.css": "/frontend/static/css/main.e11c8c43.css",
+    "main.js": "/frontend/static/js/main.99178321.js",
     "static/js/705.61987cbd.chunk.js": "/frontend/static/js/705.61987cbd.chunk.js",
     "static/js/75.42a827b9.chunk.js": "/frontend/static/js/75.42a827b9.chunk.js",
     "static/js/834.ada2e214.chunk.js": "/frontend/static/js/834.ada2e214.chunk.js",
@@ -15,7 +15,7 @@
     "static/js/235.30949bd7.chunk.js": "/frontend/static/js/235.30949bd7.chunk.js",
     "static/js/978.ad633d2d.chunk.js": "/frontend/static/js/978.ad633d2d.chunk.js",
     "static/media/home.png": "/frontend/static/media/home.6450ae71a2f7f0ecefb1.png",
-    "static/media/pdf.worker.min.js": "/frontend/static/media/pdf.worker.min.1680229740dd4a491011.js",
+    "static/media/pdf.worker.min.js": "/frontend/static/media/pdf.worker.min.597278eeabc3298e958d.js",
     "static/media/5.png": "/frontend/static/media/5.fd9228a398dcdca5936a.png",
     "static/media/2.png": "/frontend/static/media/2.553ede7bcc8e1b4a44c2.png",
     "static/media/3.png": "/frontend/static/media/3.f5a8fc3be85b6c917520.png",
@@ -31,19 +31,19 @@
     "static/media/img_unAuthorized.png": "/frontend/static/media/img_unAuthorized.53bfe9371c3f052b0002.png",
     "static/media/logo.svg": "/frontend/static/media/logo.0d85a948348e7c9ecbc94d9f2ae4fee2.svg",
     "static/media/background-homepage.png": "/frontend/static/media/background-homepage.89d22c1b11a42f4c7b8c.png",
-    "static/media/file.svg": "/frontend/static/media/file.e3746045e5f1af69226acbe3c2c8e3ba.svg",
-    "static/media/flag-us.svg": "/frontend/static/media/flag-us.42638e8873355d51cd5b50bd50954e1c.svg",
+    "static/media/file.svg": "/frontend/static/media/file.69620065dfe05cc36ac5c73f2da3d7d2.svg",
+    "static/media/flag-us.svg": "/frontend/static/media/flag-us.6b4e09c0fb43b73a1f6d21b5e269acc4.svg",
     "static/media/paper-upload-svgrepo-com.svg": "/frontend/static/media/paper-upload-svgrepo-com.0b92ff461714af96fb2487d917acc386.svg",
     "static/media/certificate-quality-award-education-medal.svg": "/frontend/static/media/certificate-quality-award-education-medal.3804aae6850bcb6b6094b68cf732727b.svg",
-    "static/media/assignment.svg": "/frontend/static/media/assignment.b732f47036ae1c08d62b69d301e013fe.svg",
+    "static/media/assignment.svg": "/frontend/static/media/assignment.7027ffdfd7ddb66719519ac49bebea90.svg",
     "static/media/mailbox_empty.svg": "/frontend/static/media/mailbox_empty.d0a5b664a76aa3a61afb03865a2c3fec.svg",
     "index.html": "/frontend/index.html",
     "static/media/skill-level-advanced.svg": "/frontend/static/media/skill-level-advanced.f3730943341aafb5b04da7ab1fc29c2b.svg",
     "static/media/google_logo.svg": "/frontend/static/media/google_logo.d7f092af888a54de79ed9c9303d689d7.svg",
-    "static/media/flag-vietnam.svg": "/frontend/static/media/flag-vietnam.f739d757261bd85c67f40051424ee133.svg"
+    "static/media/flag-vietnam.svg": "/frontend/static/media/flag-vietnam.49d1a50294dd3aa90c7eab0989dd9873.svg"
   },
   "entrypoints": [
-    "static/css/main.f9563b81.css",
-    "static/js/main.2e52d1ae.js"
+    "static/css/main.e11c8c43.css",
+    "static/js/main.99178321.js"
   ]
 }
