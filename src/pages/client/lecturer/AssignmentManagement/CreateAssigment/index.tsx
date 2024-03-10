@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 const drawerWidth = 450;
 
@@ -126,18 +127,33 @@ export default function AssignmentCreated() {
     }
   }, [width]);
 
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
+  const header2Ref = React.useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({
+    ref: header2Ref
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box className={classes.container}>
+      <Header ref={headerRef} />
+      <Box
+        className={classes.container}
+        sx={{
+          marginTop: `${headerHeight}px`
+        }}
+      >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            top: `${headerHeight}px`,
             backgroundColor: "white"
           }}
+          ref={header2Ref}
           open={open}
         >
           <Toolbar>
@@ -179,8 +195,14 @@ export default function AssignmentCreated() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Main open={open} className={classes.mainContent}>
-          <DrawerHeader />
+        <Main
+          open={open}
+          className={classes.mainContent}
+          sx={{
+            height: `calc(100% - ${header2Height}px)`,
+            marginTop: `${header2Height}px`
+          }}
+        >
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Heading1 fontWeight={"500"}>Tạo bài tập</Heading1>

@@ -2,6 +2,7 @@ import qtype from "utils/constant/Qtype";
 
 export const routes = {
   lecturer: {
+    root: "/lecturer/*",
     calendar: "/lecturer/calendar",
     course: {
       management: "/lecturer/courses",

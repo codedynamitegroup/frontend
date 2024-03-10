@@ -158,69 +158,61 @@ const LecturerEventCalendar = () => {
           onHanldeConfirmAddEvent();
         }}
       />
-      <Grid className={classes.root}>
-        <SidebarLecturer>
-          <Grid container direction='row' justifyContent={"center"} gap={3}>
-            <Box className={classes.container}>
-              <Box className={classes.body}>
-                <Heading1>Lịch sự kiện</Heading1>
-                <Divider />
-                <Box
-                  sx={{
-                    display: "flex",
-                    direction: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "10px"
-                  }}
-                >
-                  <BasicSelect
-                    labelId='select-assignment-section-label'
-                    value={data.filterCourse}
-                    onHandleChange={(value) => {
-                      setData((pre) => {
-                        return {
-                          ...pre,
-                          filterCourse: value
-                        };
-                      });
-                    }}
-                    sx={{ maxWidth: "200px" }}
-                    items={[
-                      {
-                        value: "0",
-                        label: "Tất cả các môn học"
-                      },
-                      {
-                        value: "1",
-                        label: "Nhập môn lập trình"
-                      },
-                      {
-                        value: "2",
-                        label: "Lập trình hướng đối tượng"
-                      }
-                    ]}
-                  />
-                  <Button
-                    btnType={BtnType.Outlined}
-                    onClick={() => {
-                      openAddEventDialog();
-                    }}
-                    startIcon={<AddIcon />}
-                  >
-                    Tạo sự kiện
-                  </Button>
-                </Box>
-                <CustomFullCalendar
-                  events={data.currentEvents}
-                  handleDateSelect={handleDateSelect}
-                  editable={true}
-                />
-              </Box>
-            </Box>
-          </Grid>
-        </SidebarLecturer>
-      </Grid>
+      <Box id={classes.calendarBody}>
+        <Heading1>Lịch sự kiện</Heading1>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            direction: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "10px"
+          }}
+        >
+          <BasicSelect
+            labelId='select-assignment-section-label'
+            value={data.filterCourse}
+            onHandleChange={(value) => {
+              setData((pre) => {
+                return {
+                  ...pre,
+                  filterCourse: value
+                };
+              });
+            }}
+            sx={{ maxWidth: "200px" }}
+            items={[
+              {
+                value: "0",
+                label: "Tất cả các môn học"
+              },
+              {
+                value: "1",
+                label: "Nhập môn lập trình"
+              },
+              {
+                value: "2",
+                label: "Lập trình hướng đối tượng"
+              }
+            ]}
+          />
+          <Button
+            btnType={BtnType.Outlined}
+            onClick={() => {
+              openAddEventDialog();
+            }}
+            startIcon={<AddIcon />}
+          >
+            Tạo sự kiện
+          </Button>
+        </Box>
+        <CustomFullCalendar
+          events={data.currentEvents}
+          handleDateSelect={handleDateSelect}
+          editable={true}
+        />
+      </Box>
     </>
   );
 };
