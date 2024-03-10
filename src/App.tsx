@@ -46,11 +46,8 @@ import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
 import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
-<<<<<<< HEAD
 import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-=======
 import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
->>>>>>> 6be146ae3ba2903e78f0a312653f56c43c6d517d
 
 const router = createHashRouter(
   createRoutesFromElements(
