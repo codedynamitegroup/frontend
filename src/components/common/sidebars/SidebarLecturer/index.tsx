@@ -20,7 +20,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { useEffect } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Menu, MenuItem, ListItemIcon } from "@mui/material";
-import { Logout, Person } from "@mui/icons-material";
+import { Logout, Person, SmartToySharp } from "@mui/icons-material";
 interface ILinkMenu {
   name: string;
   path: string;

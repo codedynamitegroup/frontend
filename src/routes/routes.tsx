@@ -40,6 +40,9 @@ export const routes = {
       },
       true_false: {
         create: "/lecturer/questions/true-false/create"
+      },
+      ai: {
+        create: "/lecturer/questions/ai/create"
       }
     },
     question_bank: {
@@ -50,7 +53,7 @@ export const routes = {
           paths: Object.values(qtype)
             .map((value) => value.code)
             .map((code) => ({
-              path: `create/${code}`,
+              path: `${code === "ai" ? "ai/create" : `create/${code}`}`,
               code
             }))
         },

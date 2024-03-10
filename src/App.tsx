@@ -46,6 +46,7 @@ import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
 import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
+import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -115,6 +116,14 @@ const router = createHashRouter(
         element={<QuestionCreated qtype={qtype.true_false.code} />}
         handle={{ crumbName: "default" }}
       />
+
+      {"AI Crete question"}
+      <Route
+        path={routes.lecturer.question.ai.create}
+        element={<AIQuestionCreated />}
+        handle={{ crumbName: "default" }}
+      />
+
       <Route
         path={routes.lecturer.question_bank.path}
         element={<QuestionBankManagementLayout />}
@@ -133,7 +142,13 @@ const router = createHashRouter(
               return (
                 <Route
                   path={value.path}
-                  element={<QuestionCreated qtype={value.code} />}
+                  element={
+                    value.code === "ai" ? (
+                      <AIQuestionCreated />
+                    ) : (
+                      <QuestionCreated qtype={value.code} />
+                    )
+                  }
                   handle={{ crumbName: "Tạo câu hỏi" }}
                   key={index}
                 />
