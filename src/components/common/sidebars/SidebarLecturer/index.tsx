@@ -10,14 +10,6 @@ import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import { useEffect } from "react";
-import ParagraphBody from "components/text/ParagraphBody";
-import { Menu, MenuItem, ListItemIcon } from "@mui/material";
-import { Logout, Person, SmartToySharp } from "@mui/icons-material";
-interface ILinkMenu {
-  name: string;
-  path: string;
-}
 import useBoxDimensions from "hooks/useBoxDimensions";
 
 const drawerWidth = 300;
