@@ -183,7 +183,7 @@ export default function AssignmentGrading() {
             <iframe
               title='grading-pdf'
               style={{ width: "100%", height: "100vh" }}
-              src='http://localhost:3000/grading-pdf'
+              src={`${window.location.origin}/#/grading-pdf`}
             />
           </Card>
         </Main>
