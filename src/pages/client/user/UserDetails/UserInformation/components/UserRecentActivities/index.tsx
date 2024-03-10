@@ -17,7 +17,6 @@ import ParagraphBody from "components/text/ParagraphBody";
 const UserRecentActivities = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [submissionViewTypeIndex, setSubmissionViewTypeIndex] = useState(0);
-  const [data, setData] = useState({});
 
   return (
     <Box>

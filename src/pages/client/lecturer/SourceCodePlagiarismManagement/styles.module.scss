@@ -21,6 +21,35 @@
 .cardWrapper {
   height: 100%;
   padding: 10px;
+
+  .cardTitleHeader {
+    padding: 10px 0;
+  }
+
+  .reportOpenTimeWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .submissionsQuantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .codeLanguage {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .labelTitle {
+    margin-top: 20px;
+  }
 }
 
 .formBody {

@@ -1,6 +1,6 @@
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Grid, IconButton, Toolbar } from "@mui/material";
+import { Box, Card, CssBaseline, Grid, IconButton, Toolbar, Tooltip } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import Header from "components/Header";
@@ -10,6 +10,13 @@ import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
+import Heading1 from "components/text/Heading1";
+import ParagraphBody from "components/text/ParagraphBody";
+import Heading2 from "components/text/Heading2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
+import { faCode } from "@fortawesome/free-solid-svg-icons";
+import TextTitle from "components/text/TextTitle";
 
 const drawerWidth = 450;
 
@@ -156,9 +163,32 @@ export default function LecturerSourceCodePlagiarismManagement() {
           <DrawerHeader />
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
+              <Heading1>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading1>
+              <ParagraphBody>Báo cáo phát hiện gian lận mã nguồn</ParagraphBody>
               <Grid container spacing={1}>
                 <Grid item xs={12} md={3}>
-                  <Card className={classes.cardWrapper}>Report info</Card>
+                  <Card className={classes.cardWrapper}>
+                    <Heading2 className={classes.cardTitleHeader}>Thông tin báo cáo</Heading2>
+                    <Box className={classes.reportOpenTimeWrapper}>
+                      <Tooltip title='Thời gian mở bài kiểm tra' placement='top'>
+                        <FontAwesomeIcon icon={faCalendar} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <ParagraphBody>March 9, 2024 at 2:29 PM GMT+7</ParagraphBody>
+                    </Box>
+                    <Box className={classes.submissionsQuantity}>
+                      <Tooltip title='Số lượng bài nộp' placement='top'>
+                        <FontAwesomeIcon icon={faFile} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <ParagraphBody>2 bài nộp</ParagraphBody>
+                    </Box>
+                    <Box className={classes.codeLanguage}>
+                      <Tooltip title='Ngôn ngữ lập trình' placement='top'>
+                        <FontAwesomeIcon icon={faCode} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <ParagraphBody>Java</ParagraphBody>
+                    </Box>
+                    <TextTitle className={classes.labelTitle}>2 nhãn được phát hiện</TextTitle>
+                  </Card>
                 </Grid>
                 <Grid item xs={12} md={3}>
                   <Grid container spacing={1}>

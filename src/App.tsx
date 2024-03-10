@@ -2,7 +2,6 @@ import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import LecturerCourseManagement from "pages/client/lecturer/CourseManagement";
 import CourseDetail from "pages/client/lecturer/CourseManagement/Details";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import StudentCourseManagement from "pages/client/student/CourseManagement";
 import StudentCourseDetail from "pages/client/student/CourseManagement/Details";
 import ContestList from "pages/client/user/Contest/ContestList";
 import CourseCertificates from "pages/client/user/CourseCertificate";
@@ -48,6 +47,7 @@ import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/Revi
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
+import StudentCoursesManagement from "pages/client/student";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -175,12 +175,10 @@ const router = createHashRouter(
         </Route>
       </Route>
 
-      <Route path={routes.student.course.management} element={<StudentCourseManagement />} />
-      <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
+      <Route path={routes.student.root} element={<StudentCoursesManagement />} />
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
       <Route path={routes.student.exam.take} element={<TakeExam />} />
       <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
-      <Route path={routes.student.calendar} element={<StudentEventCalendar />} />
     </Route>
   )
 );
