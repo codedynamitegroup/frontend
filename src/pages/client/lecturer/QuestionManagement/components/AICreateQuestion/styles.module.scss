@@ -136,3 +136,11 @@
 .none {
   display: none !important;
 }
+.snackbar {
+  position: absolute;
+  top: 15%;
+  left: 55%;
+  width: 300px;
+  z-index: 1000;
+  padding: 10px;
+}

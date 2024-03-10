@@ -1,4 +1,4 @@
-import { Box, Container, Grid, IconButton, MenuItem, Select } from "@mui/material";
+import { Box, Container, Grid, IconButton, Input, MenuItem, Select } from "@mui/material";
 import Header from "components/Header";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
@@ -20,7 +20,13 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import run from "./generate";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import SnackbarAlert from "components/common/SnackbarAlert";
+export enum AlertType {
+  Success = "success",
+  INFO = "info",
+  Warning = "warning",
+  Error = "error"
+}
 const AIQuestionCreated = () => {
   const navigate = useNavigate();
   const matches = useMatches();
@@ -37,6 +43,7 @@ const AIQuestionCreated = () => {
   const [lengthQuestion, setLengthQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
   const [topic, setTopic] = useState("");
+  const [desciption, setDesciption] = useState("");
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState(10);
   const [qtype, setQtype] = useState(20);
@@ -59,12 +66,13 @@ const AIQuestionCreated = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestion([]);
-    const data = await run(topic, qtype, number_question, level);
+    const data = await run(topic, desciption, qtype, number_question, level);
     if (data) {
       setLoading(false);
       setQuestion(data.questions);
       setLengthQuestion(data.length);
     }
+    setLoading(false);
   };
 
   const handleButtonClick = () => {
@@ -140,10 +148,21 @@ const AIQuestionCreated = () => {
                   <TextTitle>Chủ đề</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                  <Textarea
+                  <InputTextField
                     onChange={(e: any) => setTopic(e.target.value)}
                     value={topic}
                     placeholder='Nhập chủ đề'
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Mô tả</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <Textarea
+                    onChange={(e: any) => setDesciption(e.target.value)}
+                    value={desciption}
+                    placeholder='Nhập mô tả'
                     minRows={6}
                     maxRows={6}
                     size='lg'
@@ -213,6 +232,16 @@ const AIQuestionCreated = () => {
           </Grid>
           <Grid xs={6}>
             <Box className={classes.listQuestion}>
+              {question.length === 0 && loading === false && (
+                <Box className={classes.snackbar}>
+                  <SnackbarAlert
+                    open={true}
+                    setOpen={() => {}}
+                    content={"Tạo câu hỏi thất bại"}
+                    type={AlertType.Error}
+                  />
+                </Box>
+              )}
               {question.length !== 0 && (
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}

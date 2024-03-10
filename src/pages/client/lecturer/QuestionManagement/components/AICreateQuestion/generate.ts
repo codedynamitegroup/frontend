@@ -98,7 +98,13 @@ const format_question = [
     description: "Đây là loại câu hỏi đúng hoặc sai (True/False) nên chỉ có 2 câu trả lời"
   }
 ];
-async function run(topic: string, qtype: number, number_question: number, level: number) {
+async function run(
+  topic: string,
+  description: string,
+  qtype: number,
+  number_question: number,
+  level: number
+) {
   // For text-only input, use the gemini-pro model
   const formatQuestion = format_question.find((item) => item.id === qtype);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -134,14 +140,14 @@ async function run(topic: string, qtype: number, number_question: number, level:
             `;
 
   const language = "Vietnamese";
-  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS} Topic: ${topic} Number question: ${number_question} level: ${level} language: ${language}`;
+  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS} Topic: ${topic} Description: ${description} Number question: ${number_question} level: ${level} language: ${language}`;
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    const cleanText = text.replace(/`/g, "");
+    const cleanText = text.replace(/```/g, "");
     const json = JSON.parse(cleanText.replace(/json/g, ""));
     return json;
   } catch (error) {
