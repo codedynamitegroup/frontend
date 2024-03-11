@@ -21,11 +21,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Stack, Grid } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface ILinkMenu {
   name: string;
@@ -213,26 +214,35 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               ))}
             </Box>
           ) : (
-            <Button
-              onClick={handleClick}
-              className={classes.profile}
-              size='small'
-              sx={{ ml: 2, textTransform: "none" }}
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup='true'
-              aria-expanded={open ? "true" : undefined}
-            >
-              <img
-                className={classes.imageProfile}
-                src={
-                  "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
-                }
-                alt='avatar'
-              ></img>
-              <ParagraphSmall fontWeight={600} colorname='--white'>
-                HieuThuHai
-              </ParagraphSmall>
-            </Button>
+            <Grid container spacing={1} direction='row' width='fit-content'>
+              <Grid item marginTop='5px'>
+                <IconButton className={classes.notification}>
+                  <NotificationsIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Button
+                  onClick={handleClick}
+                  className={classes.profile}
+                  size='small'
+                  sx={{ ml: 2, textTransform: "none" }}
+                  aria-controls={open ? "account-menu" : undefined}
+                  aria-haspopup='true'
+                  aria-expanded={open ? "true" : undefined}
+                >
+                  <img
+                    className={classes.imageProfile}
+                    src={
+                      "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+                    }
+                    alt='avatar'
+                  ></img>
+                  <ParagraphSmall fontWeight={600} colorname='--white'>
+                    HieuThuHai
+                  </ParagraphSmall>
+                </Button>
+              </Grid>
+            </Grid>
           )}
         </Toolbar>
         <Menu
