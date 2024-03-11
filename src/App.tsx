@@ -14,14 +14,7 @@ import {
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
-import HomePage from "pages/client/user/HomePage";
-import CourseCertificateDetail from "pages/client/user/CourseCertificate/Detail";
-import Login from "pages/client/user/Login";
-import Register from "pages/client/user/Register";
-import Forgotpassword from "pages/client/user/ForgotPassword";
-import ContestDetails from "pages/client/user/Contest/ContestDetails";
 import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
-import Dashboard from "pages/client/user/Dashboard";
 import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
 import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
 import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
@@ -38,29 +31,19 @@ import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/componen
 import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
 import StudentCoursesManagement from "pages/client/student";
 import LecturerCoursesManagement from "pages/client/lecturer";
+import UserHomepage from "pages/client/user";
 
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
-      <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
+      <Route path={routes.grading_pdf} element={<CustomPdfViewer />} />
 
-      <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
-      <Route path={routes.user.homepage.root} element={<HomePage />} />
-      <Route path={routes.user.login.root} element={<Login />} />
-      <Route path={routes.user.register.root} element={<Register />} />
-      <Route path={routes.user.forgot_password.root} element={<Forgotpassword />} />
-      <Route path={routes.user.dashboard.root} element={<Dashboard />} />
+      <Route path={routes.user.homepage.root} element={<UserHomepage />} />
+      <Route path={routes.user.root} element={<UserHomepage />} />
       <Route path={routes.user.information} element={<UserInformation />} />
-      <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
-      <Route path={routes.user.contest.root} element={<ContestList />} />
-      <Route path={routes.user.contest.detail} element={<ContestDetails />} />
 
-      <Route
-        path={routes.user.course_certificate.detail.root}
-        element={<CourseCertificateDetail />}
-      />
       <Route
         path={routes.user.course_certificate.detail.lesson.detail}
         element={<CourseCertificateLessonProblem />}

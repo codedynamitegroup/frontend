@@ -1,17 +1,8 @@
 import React from "react";
-import { Grid, Typography, IconButton } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Grid, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
 import images from "config/images";
 import Box from "@mui/material/Box";
-import {
-  faFacebook,
-  faTwitter,
-  faGoogle,
-  faInstagram,
-  faLinkedin,
-  faGithub
-} from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -20,9 +11,6 @@ export default function Footer() {
 
   return (
     <Grid container className={classes.root}>
-      {/* Social Media Section */}
-
-      {/* Content Section */}
       <Grid container padding={4} className={classes.section}>
         {/* Company Info */}
         <Grid item xs={12} md={5}>

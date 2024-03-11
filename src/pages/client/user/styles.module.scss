@@ -8,15 +8,6 @@
   background-color: var(--blue-1);
 }
 
-.container {
-  display: flex !important;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 5px;
-  width: 100%;
-  min-height: 100%;
-}
-
 .body {
-  height: 100%;
+  margin-bottom: 40px;
 }

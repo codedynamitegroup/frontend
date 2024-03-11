@@ -16,7 +16,7 @@ const ContestFilter = (props: PropsData) => {
   const { t } = useTranslation();
 
   return (
-    <Paper sx={{ padding: "10px", marginTop: "-14px" }}>
+    <Paper sx={{ padding: "10px" }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Grid container>

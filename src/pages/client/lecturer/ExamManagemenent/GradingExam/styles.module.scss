@@ -5,7 +5,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--gray-3);
+  background-color: var(--blue-1);
 }
 
 .container {
@@ -14,7 +14,7 @@
 }
 
 .mainContent {
-  background-color: var(--gray-3);
+  background-color: var(--blue-1);
   overflow: auto;
 
   .pageActivityHeader {
