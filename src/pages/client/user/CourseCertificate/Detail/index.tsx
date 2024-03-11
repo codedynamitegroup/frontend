@@ -68,7 +68,7 @@ const CourseCertificateDetail = () => {
             <Grid item xs={12} md={12} id={classes.rightBody}>
               <Box id={classes.breadcumpWrapper}>
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.user.course_certificate.root)}
                   translation-key='certificate_detail_breadcrump'
@@ -76,7 +76,7 @@ const CourseCertificateDetail = () => {
                   {t("certificate_detail_breadcrump")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorName='--blue-500'>Học C++ cơ bản</ParagraphSmall>
+                <ParagraphSmall colorname='--blue-500'>Học C++ cơ bản</ParagraphSmall>
               </Box>
               <Divider />
               <Box id={classes.courseInfoWrapper}>
@@ -103,7 +103,7 @@ const CourseCertificateDetail = () => {
                       </Box>
                       <Box id={classes.userReviews}>
                         <ParagraphBody
-                          colorName='--gray-60'
+                          colorname='--gray-60'
                           translation-key='certificate_detail_rating'
                         >
                           10 {t("certificate_detail_rating")}
@@ -126,7 +126,7 @@ const CourseCertificateDetail = () => {
                       </Box>
                       <Box id={classes.courseLevel}>
                         <ParagraphBody
-                          colorName='--gray-60'
+                          colorname='--gray-60'
                           translation-key={["common_easy", "commmon_level"]}
                         >
                           {t("commmon_level", { count: 1 })}: {t("common_easy")}
@@ -139,7 +139,7 @@ const CourseCertificateDetail = () => {
                       </Box>
                       <Box>
                         <ParagraphBody
-                          colorName='--gray-60'
+                          colorname='--gray-60'
                           translation-key='certificate_detail_participant'
                         >
                           {t("certificate_detail_participant")}
@@ -152,7 +152,7 @@ const CourseCertificateDetail = () => {
                   <Grid item xs={12} md={6}>
                     <Box id={classes.courseProgress}>
                       <Box id={classes.progressTitle}>
-                        <ParagraphBody colorName='--gray-80' translation-key={"common_progress"}>
+                        <ParagraphBody colorname='--gray-80' translation-key={"common_progress"}>
                           {i18next.format(t("common_progress"), "firstUppercase")}: 38%
                         </ParagraphBody>
                         <FlagIcon id={classes.icFlag} />

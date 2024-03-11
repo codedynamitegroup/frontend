@@ -144,10 +144,10 @@ const CourseCertificates = () => {
           }}
         >
           <Container id={classes.bannerContainer} className={classes.container}>
-            <Heading1 colorName={"--white"} translation-key='certificate_title'>
+            <Heading1 colorname={"--white"} translation-key='certificate_title'>
               {t("certificate_title")}
             </Heading1>
-            <Heading3 colorName={"--white"} translation-key='certificate_description'>
+            <Heading3 colorname={"--white"} translation-key='certificate_description'>
               {t("certificate_description")}
             </Heading3>
             <Box id={classes.bannerSearch}>

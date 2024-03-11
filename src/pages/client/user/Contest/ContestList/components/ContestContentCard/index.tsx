@@ -50,7 +50,7 @@ const ContestContentCard = (props: PropsData) => {
               <Grid item xs={12}>
                 <Stack direction={"row"} alignItems={"center"}>
                   <DateRangeIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
-                  <Heading6 colorName={"--gray-80"} fontWeight={40} margin='10px 0 10px 5px'>
+                  <Heading6 colorname={"--gray-80"} fontWeight={40} margin='10px 0 10px 5px'>
                     Chủ nhật 27/02/2024 9:30 AM GMT+7
                   </Heading6>
                 </Stack>

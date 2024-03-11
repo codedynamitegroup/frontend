@@ -71,7 +71,7 @@ const ContestTimeInformation = (props: PropsData) => {
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
             <ParagraphSmall
-              colorName='--blue-500'
+              colorname='--blue-500'
               className={classes.cursorPointer}
               onClick={() => navigate(routes.user.contest.root)}
               translation-key='contest_list_title'
@@ -80,7 +80,7 @@ const ContestTimeInformation = (props: PropsData) => {
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
             <ParagraphSmall
-              colorName='--blue-500'
+              colorname='--blue-500'
               className={classes.cursorPointer}
               onClick={breadcrumbClickHandle}
             >

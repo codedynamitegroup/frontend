@@ -149,7 +149,7 @@ export default function AssignmentGrading() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -157,7 +157,7 @@ export default function AssignmentGrading() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -165,7 +165,7 @@ export default function AssignmentGrading() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -173,14 +173,14 @@ export default function AssignmentGrading() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.assignment.detail)}
               >
                 Bài tập 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Đánh giá</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Đánh giá</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -256,7 +256,7 @@ export default function AssignmentGrading() {
                     customNode: (
                       <Box>
                         <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                       </Box>
                     )
                   },
@@ -266,7 +266,7 @@ export default function AssignmentGrading() {
                     customNode: (
                       <Box>
                         <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                       </Box>
                     )
                   },
@@ -276,7 +276,7 @@ export default function AssignmentGrading() {
                     customNode: (
                       <Box>
                         <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                        <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                       </Box>
                     )
                   }

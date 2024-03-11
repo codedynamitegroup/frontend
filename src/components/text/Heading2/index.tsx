@@ -1,7 +1,7 @@
 import { Typography, styled } from "@mui/material";
 
 interface Props {
-  colorName?: string;
+  colorname?: string;
   fontSizeMobile?: string | number;
   $lineHeightMobile?: string | number;
   fontStyle?: string;
@@ -14,7 +14,7 @@ const Heading2 = styled(Typography)<Props>`
   font-size: 24px;
   line-height: 32px;
   letter-spacing: -0.03em;
-  color: ${(props) => `var(${props.colorName || "--eerie-black"})`};
+  color: ${(props) => `var(${props.colorname || "--eerie-black"})`};
   @media only screen and (max-width: 767px) {
     font-size: ${(props) => props.fontSizeMobile || "22px"};
     line-height: ${(props) => props.$lineHeightMobile || "32px"};

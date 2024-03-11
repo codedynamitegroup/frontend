@@ -13,7 +13,7 @@ const CertificateDetails = (props: Props) => {
     <Box id={classes.certificateDetails}>
       <Grid container direction={"column"} alignItems={"center"}>
         <Grid item xs={12} md={6} id={classes.title}>
-          <Heading1 colorName='--blue-600' translation-key='certificate_detail_certification_title'>
+          <Heading1 colorname='--blue-600' translation-key='certificate_detail_certification_title'>
             {t("certificate_detail_certification_title")}
           </Heading1>
           <ParagraphBody translation-key='certificate_detail_certification_description'>

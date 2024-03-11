@@ -11,7 +11,7 @@ interface ButtonProps extends ButtonPropsMUI {
   padding?: string;
   nowrap?: boolean;
   loading?: boolean;
-  colorName?: string;
+  colorname?: string;
   fontWeight?: number | string;
 }
 
@@ -39,7 +39,7 @@ const LoadButton = memo((props: ButtonProps) => {
         fontStyle: "normal",
         fontWeight: props.fontWeight || 400,
         fontSize: "16px",
-        color: `var(${props.colorName})`,
+        color: `var(${props.colorname})`,
         lineHeight: "24px"
       }}
       {...rest}

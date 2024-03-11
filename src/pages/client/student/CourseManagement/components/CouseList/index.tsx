@@ -34,7 +34,7 @@ const CourseList = (props: ListProps) => {
                 underline='hover'
                 color='inherit'
               >
-                <Heading4 gutterBottom variant='subtitle1' colorName='--blue-600'>
+                <Heading4 gutterBottom variant='subtitle1' colorname='--blue-600'>
                   {props.courseName}
                 </Heading4>
               </Link>

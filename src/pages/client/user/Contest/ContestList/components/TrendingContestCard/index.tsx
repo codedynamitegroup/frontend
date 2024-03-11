@@ -32,7 +32,7 @@ const TrendingContestCard = (props: PropsData) => {
         <Grid item className={classes.contestDetail}>
           <Box sx={{ marginLeft: "10px" }}>
             <Heading4 sx={{ color: "inherit" }}>{name}</Heading4>
-            <Heading6 colorName={"--gray-80"} fontWeight={100}>
+            <Heading6 colorname={"--gray-80"} fontWeight={100}>
               {startDate}
             </Heading6>
           </Box>

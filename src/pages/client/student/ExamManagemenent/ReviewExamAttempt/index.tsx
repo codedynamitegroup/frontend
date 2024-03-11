@@ -156,7 +156,7 @@ export default function StudentReviewExamAttempt() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.management)}
               >
@@ -164,7 +164,7 @@ export default function StudentReviewExamAttempt() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.information)}
               >
@@ -172,7 +172,7 @@ export default function StudentReviewExamAttempt() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.assignment)}
               >
@@ -180,14 +180,14 @@ export default function StudentReviewExamAttempt() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.exam.detail)}
               >
                 Bài kiểm tra 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Xem trước</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
