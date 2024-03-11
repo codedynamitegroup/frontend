@@ -172,7 +172,7 @@ async function run(
     return json;
   } catch (error) {
     console.error("Error parsing JSON:", error);
-    return null;
+    return error;
   }
 }
 
