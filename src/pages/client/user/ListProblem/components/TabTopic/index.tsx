@@ -7,6 +7,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import ProblemTable from "../ProblemTable";
 import classes from "./styles.module.scss";
 import { styled } from "@mui/material/styles";
+import RecommendedProblem from "../RecommendedProblem";
+import { Stack } from "@mui/material";
 
 export default function LabTabs() {
   const [value, setValue] = React.useState("0");
@@ -36,7 +38,7 @@ export default function LabTabs() {
       color: "white"
     }
   });
-
+  const spacingInTabPanel = "20px";
   return (
     <Box className={classes.container}>
       <TabContext value={value}>
@@ -52,16 +54,28 @@ export default function LabTabs() {
           </StyledTabList>
         </Box>
         <TabPanel value='0' className={classes.tabPanel}>
-          <ProblemTable />
+          <Stack spacing={spacingInTabPanel}>
+            <RecommendedProblem />
+            <ProblemTable />
+          </Stack>
         </TabPanel>
         <TabPanel value='1' className={classes.tabPanel}>
-          <ProblemTable />
+          <Stack spacing={spacingInTabPanel}>
+            <RecommendedProblem />
+            <ProblemTable />
+          </Stack>
         </TabPanel>
         <TabPanel value='2' className={classes.tabPanel}>
-          <ProblemTable />
+          <Stack spacing={spacingInTabPanel}>
+            <RecommendedProblem />
+            <ProblemTable />
+          </Stack>
         </TabPanel>
         <TabPanel value='3' className={classes.tabPanel}>
-          <ProblemTable />
+          <Stack spacing={spacingInTabPanel}>
+            <RecommendedProblem />
+            <ProblemTable />
+          </Stack>
         </TabPanel>
       </TabContext>
     </Box>
