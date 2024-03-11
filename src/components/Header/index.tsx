@@ -214,8 +214,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               ))}
             </Box>
           ) : (
-            <Grid container spacing={1} direction='row' width='fit-content'>
-              <Grid item marginTop='5px'>
+            <Grid container direction='row' width='fit-content'>
+              <Grid item marginTop='4px'>
                 <IconButton className={classes.notification}>
                   <NotificationsIcon sx={{ color: "white" }} />
                 </IconButton>
