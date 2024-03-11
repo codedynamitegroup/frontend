@@ -32,8 +32,8 @@ export default function CustomFileList({ files = [] }: CustomFileListProps) {
         defaultExpandIcon={<ChevronRightIcon />}
       >
         <TreeItem nodeId='root' label='Files'>
-          {files.map((file) => (
-            <div className='thumbnail'>
+          {files.map((file, index) => (
+            <div className='thumbnail' key={index}>
               <a
                 key={file.id}
                 href={file.downloadUrl}

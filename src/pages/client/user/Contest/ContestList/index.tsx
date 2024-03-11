@@ -148,10 +148,10 @@ const ContestList = () => {
                   autoplay={{ delay: 5000 }}
                   pagination={{ el: ".swiper-pagination", type: "bullets", clickable: true }}
                   onSlideChange={() => console.log("slide change")}
-                  onSwiper={(swiper: any) => console.log(swiper)}
+                  onSwiper={(swiper: any) => {}}
                 >
                   {trendingItem.map((item, index) => (
-                    <SwiperSlide>
+                    <SwiperSlide key={index}>
                       <TrendingContestCard
                         key={index.toString()}
                         name={item.name}

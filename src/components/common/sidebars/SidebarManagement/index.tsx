@@ -33,9 +33,9 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
   const [openItems, setOpenItems] = useState<number | null>(null);
 
   useEffect(() => {
-    sideBar.map((item, index) => {
+    sideBar.forEach((item, index) => {
       if (item.children) {
-        item.children.map((child, childIndex) => {
+        item.children.forEach((child, childIndex) => {
           if (child.link.includes(path)) {
             dispatch(selected({ parentIndex: index, childIndex: childIndex }));
             setOpenItems(index);

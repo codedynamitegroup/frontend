@@ -4,11 +4,9 @@ import Box from "@mui/material/Box";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useState } from "react";
 import DetailSolution from "./components/DetailSubmission";
-import { useNavigate } from "react-router";
 import UserTableTemplate from "components/common/table/UserTableTemplate";
 
 export default function LessonListSubmission() {
-  const navigate = useNavigate();
   const customHeading = ["Trạng thái", "Ngôn ngữ", "Thời gian thực thi", "Bộ nhớ"];
   const customColumns = ["status", "language", "runtime", "memory"];
   const data = [

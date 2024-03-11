@@ -124,7 +124,7 @@ const ListProblem = () => {
                   <Heading3>Các loại giải thuật:</Heading3>
                   <Box className={classes.algorithm}>
                     {algorithms.map((algorithm, index) => (
-                      <Box className={classes.algorithmItem}>
+                      <Box className={classes.algorithmItem} key={index}>
                         <ParagraphBody>{algorithm}</ParagraphBody>
                         <Chip label={index} size='small' className={classes.chip} />
                       </Box>
