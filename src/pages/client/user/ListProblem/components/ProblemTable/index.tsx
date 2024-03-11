@@ -30,20 +30,20 @@ export default function ProblemTable() {
   const renderLevel = (level: number) => {
     if (level === 0) {
       return (
-        <ParagraphBody fontWeight={700} colorName={"--blue-500"}>
+        <ParagraphBody fontWeight={700} colorname={"--blue-500"}>
           Dễ
         </ParagraphBody>
       );
     }
     if (level === 1) {
       return (
-        <ParagraphBody fontWeight={700} colorName={"--warning"}>
+        <ParagraphBody fontWeight={700} colorname={"--warning"}>
           Trung bình
         </ParagraphBody>
       );
     }
     return (
-      <ParagraphBody fontWeight={700} colorName={"--red-error"}>
+      <ParagraphBody fontWeight={700} colorname={"--red-error"}>
         Khó
       </ParagraphBody>
     );

@@ -71,7 +71,7 @@ function renderEventContent(eventContent: EventContentArg) {
         >
           {eventContent.event.title}
         </TextTitle>
-        <ParagraphBody fontSize={"12px"} colorName='grey'>
+        <ParagraphBody fontSize={"12px"} colorname='grey'>
           {eventContent.event.extendedProps.description || "No description"}
         </ParagraphBody>
       </Box>

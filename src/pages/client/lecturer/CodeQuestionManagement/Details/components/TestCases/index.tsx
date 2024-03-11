@@ -219,7 +219,7 @@ const CodeQuestionTestCases = memo((props: Props) => {
   return (
     <Box className={classes["body"]}>
       <Box className={classes["head-wrapper"]}>
-        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
           Để đánh giá tính chính xác của mã của người dùng, bạn cần thêm các trường hợp kiểm thử
         </Heading5>
         <Box className={classes["btn-wrapper"]}>

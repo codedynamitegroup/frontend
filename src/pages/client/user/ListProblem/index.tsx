@@ -68,8 +68,8 @@ const ListProblem = () => {
           }}
         >
           <Container id={classes.bannerContainer} className={classes.container}>
-            <Heading1 colorName={"--white"}>Luyện tập</Heading1>
-            <Heading3 colorName={"--white"}>
+            <Heading1 colorname={"--white"}>Luyện tập</Heading1>
+            <Heading3 colorname={"--white"}>
               Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
             </Heading3>
             <Box id={classes.bannerSearch}>

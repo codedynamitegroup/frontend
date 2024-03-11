@@ -74,11 +74,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const auth: ILinkMenu[] = [
     {
-      name: t("header_login_button"),
+      name: "header_login_button",
       path: routes.user.login.root
     },
     {
-      name: t("header_register_button"),
+      name: "header_register_button",
       path: routes.user.register.root
     }
   ];
@@ -184,7 +184,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 className={classes.item}
                 onClick={() => navigate(page.path)}
               >
-                <ParagraphSmall colorName={"--white"} fontWeight={600} translation-key={page.name}>
+                <ParagraphSmall colorname={"--white"} fontWeight={600} translation-key={page.name}>
                   {t(page.name)}
                 </ParagraphSmall>
               </Button>
@@ -203,7 +203,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   onClick={() => navigate(page.path)}
                 >
                   <ParagraphSmall
-                    colorName={"--white"}
+                    colorname={"--white"}
                     fontWeight={600}
                     translation-key={page.name}
                   >
@@ -229,7 +229,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 }
                 alt='avatar'
               ></img>
-              <ParagraphSmall fontWeight={600} colorName='--white'>
+              <ParagraphSmall fontWeight={600} colorname='--white'>
                 HieuThuHai
               </ParagraphSmall>
             </Button>

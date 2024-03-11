@@ -453,7 +453,7 @@ export default function ExamCreated() {
             <Toolbar>
               <Box id={classes.breadcumpWrapper}>
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.management)}
                 >
@@ -461,7 +461,7 @@ export default function ExamCreated() {
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.information)}
                 >
@@ -469,14 +469,14 @@ export default function ExamCreated() {
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.assignment)}
                 >
                   Danh sách bài tập
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorName='--blue-500'>Tạo bài kiểm tra</ParagraphSmall>
+                <ParagraphSmall colorname='--blue-500'>Tạo bài kiểm tra</ParagraphSmall>
               </Box>
 
               <IconButton

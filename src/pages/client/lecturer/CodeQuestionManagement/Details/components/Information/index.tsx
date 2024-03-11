@@ -32,7 +32,7 @@ const CodeQuestionInformation = memo((props: Props) => {
 
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
-      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
         Dưới đây là một số thông tin cần thiết về câu hỏi code của bạn
       </Heading5>
       <InputTextField title='Tên câu hỏi' type='text' value={questionName} />

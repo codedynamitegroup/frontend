@@ -10,8 +10,8 @@ export default function Result() {
     <Box id={classes.root}>
       <Container className={classes.container}>
         <Box className={classes.title}>
-          <Heading3 colorName='--green-600'>Thành công</Heading3>
-          <ParagraphSmall colorName='--gray-500'>Thời gian: 12ms</ParagraphSmall>
+          <Heading3 colorname='--green-600'>Thành công</Heading3>
+          <ParagraphSmall colorname='--gray-500'>Thời gian: 12ms</ParagraphSmall>
         </Box>
         <Box className={classes.result}>
           <ParagraphExtraSmall>Đầu vào: </ParagraphExtraSmall>

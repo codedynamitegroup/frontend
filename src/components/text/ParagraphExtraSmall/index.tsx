@@ -1,7 +1,7 @@
 import { Typography, styled } from "@mui/material";
 
 interface Props {
-  colorName?: string;
+  colorname?: string;
   fontWeight?: string | number;
 }
 
@@ -12,7 +12,7 @@ const ParagraphExtraSmall = styled(Typography)<Props>`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.015em;
-  color: ${(props) => `var(${props.colorName || "--eerie-black-00"})`};
+  color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
 `;
 
 export default ParagraphExtraSmall;

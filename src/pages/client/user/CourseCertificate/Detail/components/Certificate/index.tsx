@@ -10,7 +10,7 @@ const CertificateDetails = (props: Props) => {
     <Box id={classes.certificateDetails}>
       <Grid container direction={"column"} alignItems={"center"}>
         <Grid item xs={12} md={6} id={classes.title}>
-          <Heading1 colorName='--blue-600'>Chứng chỉ khóa học</Heading1>
+          <Heading1 colorname='--blue-600'>Chứng chỉ khóa học</Heading1>
           <ParagraphBody>
             Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học
           </ParagraphBody>

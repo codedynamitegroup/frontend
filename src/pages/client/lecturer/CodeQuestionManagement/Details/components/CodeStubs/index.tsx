@@ -226,7 +226,7 @@ int sumOfTwoIntegers(int a, int b) {
   return (
     <>
       <Box component='form' autoComplete='off' className={classes.formBody}>
-        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
           Để đọc dữ liệu test case đầu vào một cách tiêu chuẩn, bạn có thể sử dụng ngôn ngữ DSL của
           chúng tôi như một cách tiếp cận hiệu quả và dễ sử dụng
         </Heading5>
@@ -257,7 +257,7 @@ print(integer,result)`}
           </Button>
         </Box>
       </Box>
-      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
         Xem các đoạn mã nguồn đã được tạo tự động ở bên dươi
       </Heading5>
       <Box mt={2} id={classes.codeStubsContainer}>

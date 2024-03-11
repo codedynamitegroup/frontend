@@ -51,7 +51,7 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
     <>
       <Box>
         <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
             <span onClick={() => navigate(routes.lecturer.code_question.management)}>
               Quản lý câu hỏi code
             </span>{" "}

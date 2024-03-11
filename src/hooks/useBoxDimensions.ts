@@ -14,8 +14,6 @@ export default function useBoxDimensions({ ref }: BoxDimensionsProps) {
         const widthTemp = ref.current.clientWidth;
         setHeight(heightTemp);
         setWidth(widthTemp);
-      } else {
-        console.error("Ref không tồn tại");
       }
     };
     const resizeObserver = new ResizeObserver(getHeight);

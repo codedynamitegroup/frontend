@@ -55,7 +55,7 @@ const QuestionCreated = (props: Props) => {
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           {breadcrumbs ? (
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(routes.lecturer.course.management)}>
                 Quản lý khoá học
               </span>{" "}
@@ -79,7 +79,7 @@ const QuestionCreated = (props: Props) => {
               <span>Tạo câu hỏi</span>
             </ParagraphBody>
           ) : (
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               {matches.map((value: any, i) => {
                 if (value.handle === undefined) return null;
                 return (
