@@ -147,7 +147,7 @@ const CourseCertificateDetail = () => {
                   <LinearProgress determinate value={38} />
                 </Box>
               </Grid>
-              <Grid md={1}></Grid>
+              <Grid item md={1}></Grid>
               <Grid item xs={12} md={5}>
                 <Button
                   startIcon={<SchoolIcon id={classes.icSchool} />}

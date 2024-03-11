@@ -150,9 +150,10 @@ const StudentCourseInformation = () => {
                   sx={{ width: "100%", bgcolor: "background.paper" }}
                   className={classes.eventList}
                 >
-                  {eventList.map((event) => (
+                  {eventList.map((event, index) => (
                     <StudentCourseEvent
                       id={event.id}
+                      key={index}
                       name={event.name}
                       endDate={event.endDate}
                       startDate={event.startDate}

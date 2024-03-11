@@ -21,12 +21,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Stack, Grid } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import HeaderNotification from "./HeaderNotification";
 
 interface ILinkMenu {
   name: string;
@@ -216,9 +216,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           ) : (
             <Grid container direction='row' width='fit-content'>
               <Grid item marginTop='4px'>
-                <IconButton className={classes.notification}>
-                  <NotificationsIcon sx={{ color: "white" }} />
-                </IconButton>
+                <HeaderNotification />
               </Grid>
               <Grid item>
                 <Button

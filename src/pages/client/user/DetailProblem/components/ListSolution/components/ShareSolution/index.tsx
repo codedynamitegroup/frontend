@@ -5,8 +5,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Header from "components/Header";
 import { routes } from "routes/routes";
-import { useNavigate } from "react-router-dom";
-import ParagraphBody from "components/text/ParagraphBody";
+import { useNavigate, useParams } from "react-router-dom";
 import { Divider, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import MDEditor from "@uiw/react-md-editor";
@@ -21,6 +20,21 @@ export default function ShareSolution() {
     ref: headerRef
   });
 
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
+
+  const handleBackButton = () => {
+    if (problemId) navigate(routes.user.problem.detail.solution.replace(":problemId", problemId));
+    else if (courseId && lessonId)
+      navigate(
+        routes.user.course_certificate.detail.lesson.solution
+          .replace(":courseId", courseId)
+          .replace(":lessonId", lessonId)
+      );
+  };
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
@@ -31,10 +45,7 @@ export default function ShareSolution() {
           height: `calc(100% - ${headerHeight}px)`
         }}
       >
-        <Box
-          className={classes.stickyBack}
-          onClick={() => navigate(routes.user.problem.detail.solution.replace(":problemId", "1"))}
-        >
+        <Box className={classes.stickyBack} onClick={handleBackButton}>
           <Box className={classes.backButton}>
             <ArrowBack className={classes.backIcon} />
             <span>Quay lại</span>

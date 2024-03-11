@@ -15,7 +15,7 @@ export default function Login() {
   const navigate = useNavigate();
   const handleLogin = () => {
     localStorage.setItem("user", "HIEUTHUHAI");
-    navigate("/dashboard");
+    navigate(routes.user.dashboard.root);
   };
   return (
     <Box className={classes.container}>

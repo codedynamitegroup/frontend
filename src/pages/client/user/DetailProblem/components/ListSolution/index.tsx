@@ -1,36 +1,25 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
-import { Divider, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useState } from "react";
 import { useRef } from "react";
-import { useEffect } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DetailSolution from "./components/DetailSolution";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faComment, faEye, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { Button } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { routes } from "routes/routes";
 import ParagraphBody from "components/text/ParagraphBody";
 import SearchBar from "components/common/search/SearchBar";
 import TuneIcon from "@mui/icons-material/Tune";
 import useBoxDimensions from "hooks/useBoxDimensions";
 
-export default function LessonDetailSolution() {
+export default function ProblemDetailSolution() {
   const navigate = useNavigate();
-  const filter = [
-    {
-      id: 1,
-      label: "Mới nhất"
-    },
-    {
-      id: 2,
-      label: "Nhiều vote nhất"
-    }
-  ];
+
   const tags = [
     "Java",
     "C++",
@@ -184,7 +173,6 @@ export default function LessonDetailSolution() {
   const { height: stickyFilterHeight } = useBoxDimensions({
     ref: stickyFilterRef
   });
-
   const [solutionDetail, setSolutionDetail] = useState(true);
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);
@@ -194,11 +182,20 @@ export default function LessonDetailSolution() {
     console.log(searchVal);
   };
 
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
+
   const openShareInNewTab = () => {
-    window.open(
-      routes.user.course_certificate.detail.lesson.share_solution.replace(":lessonId", "1"),
-      "_blank"
-    );
+    if (problemId) navigate(routes.user.problem.solution.share.replace(":problemId", problemId));
+    else if (courseId && lessonId)
+      navigate(
+        routes.user.course_certificate.detail.lesson.share_solution
+          .replace(":courseId", courseId)
+          .replace(":lessonId", lessonId)
+      );
   };
 
   return (
