@@ -24,11 +24,19 @@ export default function SnackbarAlert({ open, setOpen, content, type }: Snackbar
 
     setOpen(false);
   };
+  const vertical = "bottom";
+  const horizontal = "right";
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={type} sx={{ width: "100%" }}>
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical, horizontal }}
+        key={vertical + horizontal}
+      >
+        <Alert onClose={handleClose} severity={type}>
           {content}
         </Alert>
       </Snackbar>

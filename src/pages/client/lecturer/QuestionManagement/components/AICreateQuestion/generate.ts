@@ -7,9 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY 
 
 export interface IFormatQuestion {
   qtypeId: EQType;
-  length: number;
   questions: IQuestion[];
-  description: string;
 }
 
 export interface IQuestion {
@@ -27,7 +25,6 @@ export interface IAnswer {
 const format_question: IFormatQuestion[] = [
   {
     qtypeId: 1,
-    length: 2,
     questions: [
       {
         id: 0,
@@ -45,12 +42,10 @@ const format_question: IFormatQuestion[] = [
           }
         ]
       }
-    ],
-    description: "Chỉ có 1 câu trả lời"
+    ]
   },
   {
     qtypeId: 2,
-    length: 5,
     questions: [
       {
         id: 0,
@@ -62,12 +57,10 @@ const format_question: IFormatQuestion[] = [
         ],
         correctAnswer: 1
       }
-    ],
-    description: "Có nhiều sự lựa chọn nhưng chỉ có 1 đáp án đúng"
+    ]
   },
   {
     qtypeId: 3,
-    length: 5,
     questions: [
       {
         id: 0,
@@ -75,12 +68,10 @@ const format_question: IFormatQuestion[] = [
           "Elon Musk stated that Tesla will not accept payments in ________ because of environmental concerns.",
         answers: [{ id: 0, content: "Bitcoin" }]
       }
-    ],
-    description: "Chỉ có 1 câu trả lời"
+    ]
   },
   {
     qtypeId: 4,
-    length: 5,
     questions: [
       {
         id: 0,
@@ -101,8 +92,7 @@ const format_question: IFormatQuestion[] = [
         ],
         correctAnswer: 1
       }
-    ],
-    description: "Đây là loại câu hỏi đúng hoặc sai (True/False) nên chỉ có 2 câu trả lời"
+    ]
   }
 ];
 
@@ -151,20 +141,18 @@ async function run(
 									+ 2: Multiple choice
 									+ 3: Short answer
 									+ 4: True/False
-								- length: A number indicating the number of questions in the group.
 								- questions: An array of questions (IQuestion).
 									+ IQuestion: The data structure for a question:
 										* id: A number, the unique identifier for the question.
-										* question: A string, the content of the question.
+										* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
 										* answers: An array of answers (IAnswer[]) representing the answer
 											** Note:
 												*** For essay and short answer questions, there should only be 1 answer element, and the content attribute of the answer should not be empty. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
 											** IAnswer: The data structure for an answer:
 												*** id: A number, the unique identifier for the answer.
-												*** content: A string, the content of the answer.
+												*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
 										* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
-								- description: A string describing the question type.
-
+										
                 This is a sample response format:
                 ${JSON.stringify(formatQuestion)}
 								Please use Vietnamese everywhere to write questions and answers for students.
@@ -177,11 +165,10 @@ async function run(
     const response = await result.response;
     const text = response.text();
 
-    console.log("SYSTEM_INSTRUCTIONS", SYSTEM_INSTRUCTIONS);
     const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+    console.log("cleanText", cleanText);
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
-    console.log("json", json);
     return json;
   } catch (error) {
     console.error("Error parsing JSON:", error);

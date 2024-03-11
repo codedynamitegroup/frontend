@@ -58,6 +58,9 @@ const AIQuestionCreated = () => {
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("Tạo câu hỏi thành công");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     setQuestions((prevQuestions) => {
       return prevQuestions.map((q) => {
@@ -77,13 +80,25 @@ const AIQuestionCreated = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    const data: IFormatQuestion = await run(topic, desciption, qtype, number_question, level);
-    if (data) {
-      setLoading(false);
-      setQuestions(data.questions);
-      setLengthQuestion(data.length);
-    }
-    setLoading(false);
+    await run(topic, desciption, qtype, number_question, level)
+      .then((data: IFormatQuestion) => {
+        if (data) {
+          setLoading(false);
+          setQuestions(data.questions);
+          setLengthQuestion(data.questions.length);
+          setOpenSnackbarAlert(true);
+          setAlertContent("Tạo câu hỏi thành công");
+          setAlertType(AlertType.Success);
+        }
+      })
+      .catch((err) => {
+        setOpenSnackbarAlert(true);
+        setAlertContent("Tạo câu hỏi thất bại, hãy thử lại lần nữa");
+        setAlertType(AlertType.Error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleButtonClick = () => {
@@ -236,16 +251,6 @@ const AIQuestionCreated = () => {
           </Grid>
           <Grid item xs={6}>
             <Box className={classes.listQuestion}>
-              {questions?.length === 0 && loading === false && (
-                <Box className={classes.snackbar}>
-                  <SnackbarAlert
-                    open={true}
-                    setOpen={() => {}}
-                    content={"Tạo câu hỏi thất bại"}
-                    type={AlertType.Error}
-                  />
-                </Box>
-              )}
               {questions?.length !== 0 && (
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
@@ -280,24 +285,41 @@ const AIQuestionCreated = () => {
                             value.answers.map((answer, index) => {
                               return (
                                 <Box className={classes.answerItem} key={index}>
-                                  <FormControlLabel
-                                    value={index}
-                                    control={modeEdit ? <Radio /> : <></>}
-                                    label={String.fromCharCode(65 + index)}
-                                    labelPlacement='start'
-                                    className={classes.radio}
-                                  />
-
-                                  {value.correctAnswer === index + 1 ? (
-                                    <ParagraphBody
-                                      className={
-                                        modeEdit ? classes.answerContentEdit : classes.answerContent
-                                      }
-                                      contentEditable={modeEdit}
-                                      colorname='--green-500'
-                                    >
-                                      {answer.content}
-                                    </ParagraphBody>
+                                  {value.correctAnswer ? (
+                                    <>
+                                      <FormControlLabel
+                                        value={index}
+                                        control={modeEdit ? <Radio /> : <></>}
+                                        label={String.fromCharCode(65 + index)}
+                                        labelPlacement='start'
+                                        className={classes.radio}
+                                      />
+                                      {value.correctAnswer === index + 1 && (
+                                        <ParagraphBody
+                                          className={
+                                            modeEdit
+                                              ? classes.answerContentEdit
+                                              : classes.answerContent
+                                          }
+                                          contentEditable={modeEdit}
+                                          colorname='--green-500'
+                                        >
+                                          {answer.content}
+                                        </ParagraphBody>
+                                      )}
+                                      {value.correctAnswer !== index + 1 && (
+                                        <ParagraphBody
+                                          className={
+                                            modeEdit
+                                              ? classes.answerContentEdit
+                                              : classes.answerContent
+                                          }
+                                          contentEditable={modeEdit}
+                                        >
+                                          {answer.content}
+                                        </ParagraphBody>
+                                      )}
+                                    </>
                                   ) : (
                                     <ParagraphBody
                                       className={
@@ -326,6 +348,12 @@ const AIQuestionCreated = () => {
                 })}
             </Box>
           </Grid>
+          <SnackbarAlert
+            open={openSnackbarAlert}
+            setOpen={setOpenSnackbarAlert}
+            type={alertType}
+            content={alertContent}
+          />
         </Grid>
       </Container>
     </Grid>
