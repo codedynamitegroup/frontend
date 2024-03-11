@@ -6,6 +6,7 @@ import TextTitle from "components/text/TextTitle";
 import { useState } from "react";
 import classes from "./styles.module.scss";
 import images from "config/images";
+import { useTranslation } from "react-i18next";
 
 interface UserPasswordChangeDialogProps extends DialogProps {
   title?: string;
@@ -28,6 +29,7 @@ const UserPasswordChangeDialog = ({
   onHanldeConfirm,
   ...props
 }: UserPasswordChangeDialogProps) => {
+  const { t } = useTranslation();
   const [data, setData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -67,7 +69,9 @@ const UserPasswordChangeDialog = ({
           }}
         >
           <Grid item xs={3}>
-            <TextTitle>Mật khẩu cũ</TextTitle>
+            <TextTitle translation-key='user_detail_old_password'>
+              {t("user_detail_old_password")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9}>
             <InputTextField
@@ -94,7 +98,9 @@ const UserPasswordChangeDialog = ({
           }}
         >
           <Grid item xs={3}>
-            <TextTitle>Mật khẩu mới</TextTitle>
+            <TextTitle translation-key='user_detail_new_password'>
+              {t("user_detail_new_password")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9}>
             <InputTextField
@@ -121,7 +127,9 @@ const UserPasswordChangeDialog = ({
           }}
         >
           <Grid item xs={3}>
-            <TextTitle>Nhập lại mật khẩu mới</TextTitle>
+            <TextTitle translation-key='user_detail_re_enter_new_password'>
+              {t("user_detail_re_enter_new_password")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9}>
             <InputTextField
