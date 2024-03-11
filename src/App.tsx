@@ -1,8 +1,5 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import ContestList from "pages/client/user/Contest/ContestList";
-import CourseCertificates from "pages/client/user/CourseCertificate";
-import ListProblem from "pages/client/user/ListProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import QuestionCreated from "pages/client/lecturer/QuestionManagement/components/CreateQuestion";
 import {
@@ -14,10 +11,6 @@ import {
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
-import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
-import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
-import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
-import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
 import AssignmentCreated from "pages/client/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/client/lecturer/AssignmentManagement/GradingAssignment";
 import CreateExam from "pages/client/lecturer/ExamManagemenent/CreateExam";
@@ -32,6 +25,8 @@ import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/Source
 import StudentCoursesManagement from "pages/client/student";
 import LecturerCoursesManagement from "pages/client/lecturer";
 import UserHomepage from "pages/client/user";
+import DetailProblem from "pages/client/user/DetailProblem";
+import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -46,12 +41,12 @@ const router = createHashRouter(
 
       <Route
         path={routes.user.course_certificate.detail.lesson.detail}
-        element={<CourseCertificateLessonProblem />}
+        element={<DetailProblem />}
       />
 
       <Route
         path={routes.user.course_certificate.detail.lesson.share_solution}
-        element={<LessonShareSolution />}
+        element={<ShareSolution />}
       />
 
       <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
@@ -90,7 +85,6 @@ const router = createHashRouter(
         handle={{ crumbName: "default" }}
       />
 
-      {"AI Crete question"}
       <Route
         path={routes.lecturer.question.ai.create}
         element={<AIQuestionCreated />}
