@@ -5,6 +5,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
+import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import useBoxDimensions from "hooks/useBoxDimensions";
@@ -12,8 +13,6 @@ import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
-import Heading2 from "components/text/Heading2";
-import Heading3 from "components/text/Heading3";
 
 const drawerWidth = 450;
 
@@ -105,7 +104,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -113,7 +112,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -121,7 +120,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -129,7 +128,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.detail)}
               >
@@ -137,7 +136,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.submissions)}
               >
@@ -145,7 +144,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() =>
                   navigate(
@@ -156,7 +155,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
                 Kiểm tra gian lận
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Danh sách bài lập trình</ParagraphSmall>{" "}
+              <ParagraphSmall colorname='--blue-500'>Danh sách bài lập trình</ParagraphSmall>{" "}
             </Box>
             <IconButton
               color='inherit'

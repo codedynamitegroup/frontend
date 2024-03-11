@@ -32,8 +32,8 @@ const MenuPopup = ({
               {triggerButtonText}
             </Button>
             <Menu {...bindMenu(popupState)}>
-              {menuItems.map((item) => (
-                <MenuItem key={item.label} onClick={() => item.onClick?.(popupState)}>
+              {menuItems.map((item, index) => (
+                <MenuItem key={index} onClick={() => item.onClick?.(popupState)}>
                   {item.label}
                 </MenuItem>
               ))}

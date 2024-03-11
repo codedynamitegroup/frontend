@@ -1,152 +1,178 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { jsonrepair } from "jsonrepair";
+import { EQType, EQuestionLevel } from ".";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
-// ...
-// Access your API key as an environment variable (see "Set up your API key" above)
-const format_question = [
+export interface IFormatQuestion {
+  qtypeId: EQType;
+  questions: IQuestion[];
+}
+
+export interface IQuestion {
+  id: number;
+  question: string;
+  answers: IAnswer[];
+  correctAnswer?: number;
+}
+
+export interface IAnswer {
+  id: number;
+  content: string;
+}
+
+const format_question: IFormatQuestion[] = [
   {
-    id: 10,
-    format: `
-        {
-            "length": 2,
-            "questions": [
-              {
-                "id": 0,
-                "question": "Ai là người đặt câu hỏi này ?",
-                "answers": [
-                  { "id": 1, "content": "Dương Chí Thông" }
-                ],
-                "correctAnswer": 0
-              },
-              {
-                "id": 1,
-                "question": "Google là công ty nào ?",
-                "answers": [
-                  { "id": 1, "content": "Google là một công ty đa quốc gia của Mỹ chuyên về công nghệ, tập trung vào các dịch vụ và sản phẩm liên quan đến Internet, bao gồm:
-                  Công cụ tìm kiếm:" }
-                ],
-                "correctAnswer": 0
-              }
-            ]
+    qtypeId: 1,
+    questions: [
+      {
+        id: 0,
+        question: "Ai là người đặt câu hỏi này ?",
+        answers: [{ id: 1, content: "Không ai cả" }]
+      },
+      {
+        id: 1,
+        question: "Google là công ty nào ?",
+        answers: [
+          {
+            id: 1,
+            content: `Google là một công ty đa quốc gia của Mỹ chuyên về công nghệ, tập trung vào các dịch vụ và sản phẩm liên quan đến Internet, bao gồm:
+					Công cụ tìm kiếm:`
           }
-        `,
-    description: "Chỉ có 1 câu trả lời"
+        ]
+      }
+    ]
   },
   {
-    id: 20,
-    format: `
-    {
-        "length": 5,
-        "questions": [
-        {
-            "id": 0,
-            "question": "Ai là người đặt câu hỏi này ?",
-            "answers": [
-            { "id": 0, "content": "Dương Chí Thông" },
-            { "id": 1, "content": "Nguyễn Quốc Tuấn" },
-            { "id": 2, "content": "Trương Gia Tiến" }
-            ],
-            "correctAnswer": 1
-        },
-    }`,
-    description: "Có nhiều sự lựa chọn nhưng chỉ có 1 đáp án đúng"
+    qtypeId: 2,
+    questions: [
+      {
+        id: 0,
+        question: "Ai là người đặt câu hỏi này ?",
+        answers: [
+          { id: 1, content: "Dương Chí Thông" },
+          { id: 2, content: "Nguyễn Quốc Tuấn" },
+          { id: 3, content: "Trương Gia Tiến" }
+        ],
+        correctAnswer: 1
+      }
+    ]
   },
   {
-    id: 30,
-    format: `
-    {
-        "length": 5,
-        "questions": [
-        {
-            "id": 0,
-            "question": "Elon Musk stated that Tesla will not accept payments in ________ because of environmental concerns.",
-            "answers": [
-            { "id": 0, "content": "Bitcoin" }
-            ],
-            "correctAnswer": 0
-        },
-    }`,
-    description: "Chỉ có 1 câu trả lời"
+    qtypeId: 3,
+    questions: [
+      {
+        id: 0,
+        question:
+          "Elon Musk stated that Tesla will not accept payments in ________ because of environmental concerns.",
+        answers: [{ id: 0, content: "Bitcoin" }]
+      }
+    ]
   },
   {
-    id: 40,
-    format: `
-    {
-        "length": 5,
-        "questions": [
-        {
-            "id": 0,
-            "question": "Elon Musk stated that Tesla will not accept payments in Bitcoin because of environmental concerns.",
-            "answers": [
-            { "id": 0, "content": "True" },
-            { "id": 1, "content": "False" }
-            ],
-            "correctAnswer": 0
-        },
-        {
-            "id": 1,
-            "question": "Con trai thường mạnh hơn con gái ?",
-            "answers": [
-            { "id": 0, "content": "True" },
-            { "id": 1, "content": "False" }
-            ],
-            "correctAnswer": 0
-        },
-    }`,
-    description: "Đây là loại câu hỏi đúng hoặc sai (True/False) nên chỉ có 2 câu trả lời"
+    qtypeId: 4,
+    questions: [
+      {
+        id: 0,
+        question:
+          "Elon Musk stated that Tesla will not accept payments in Bitcoin because of environmental concerns.",
+        answers: [
+          { id: 1, content: "True" },
+          { id: 2, content: "False" }
+        ],
+        correctAnswer: 1
+      },
+      {
+        id: 1,
+        question: "Con trai thường cá tính hơn con gái ?",
+        answers: [
+          { id: 1, content: "Đúng" },
+          { id: 2, content: "Sai" }
+        ],
+        correctAnswer: 1
+      }
+    ]
   }
 ];
-async function run(topic: string, qtype: number, number_question: number, level: number) {
+
+async function run(
+  topic: string,
+  description: string,
+  qtype: EQType,
+  number_question: number,
+  level: EQuestionLevel
+) {
   // For text-only input, use the gemini-pro model
-  const formatQuestion = format_question.find((item) => item.id === qtype);
+  const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   let question_type = "";
-  if (qtype === 10) {
+  if (qtype === EQType.Essay) {
     question_type = "essay";
-  } else if (qtype === 20) {
+  } else if (qtype === EQType.MultipleChoice) {
     question_type = "multiple choice";
-  } else if (qtype === 30) {
-    question_type = "fill in the blank";
+  } else if (qtype === EQType.ShortAnswer) {
+    question_type = "short answer";
   } else {
     question_type = "true/false";
   }
 
   let levelQuestion = "";
-  if (level === 10) {
+  if (level === EQuestionLevel.Easy) {
     levelQuestion = "easy";
-  } else if (level === 20) {
+  } else if (level === EQuestionLevel.Medium) {
     levelQuestion = "medium";
   } else {
     levelQuestion = "hard";
   }
 
-  const AI_ROLE =
-    "You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. Answer in Vietnamese. You are a trained expert on programming and coding analysis. Your job is to multiple choice generate code questions according to the assignment prompt.";
+  const AI_ROLE = `You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. 
+		Answer in Vietnamese. You are a trained expert on domain related to software engineering and programming. 
+		Your job are required to generate code questions which has types such as multiple choice, true/false, short answer, essay according to the assignment prompt.`;
 
   const SYSTEM_INSTRUCTIONS = `
-                Give me number questions ${question_type} questions about topic in the language programming language.. The questions should be at a ${levelQuestion} level.
-                Response Format:
-                ${formatQuestion?.format}
-                Chỉ có 2 thuộc tính là length và questions trong đó length là tổng số lượng câu hỏi, questions là mảng chứa các câu hỏi, ${formatQuestion?.description}
-            Hãy dùng tiếng Việt mọi chỗ để viết câu hỏi và đáp án cho sinh viên.
+                Give me ${number_question} questions which are ${question_type} questions about topic named ${topic}.
+								${description && `The detailed description of this topic is: " + ${description}.`}
+								The questions should be at a ${levelQuestion} level.
+
+								The structure of the response must be JSON which follows the following structure:
+								- qtypeId: The type of question contains the following values.
+									+ 1: Essay
+									+ 2: Multiple choice
+									+ 3: Short answer
+									+ 4: True/False
+								- questions: An array of questions (IQuestion).
+									+ IQuestion: The data structure for a question:
+										* id: A number, the unique identifier for the question.
+										* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
+										* answers: An array of answers (IAnswer[]) representing the answer
+											** Note:
+												*** For essay and short answer questions, there should only be 1 answer element, and the content attribute of the answer should not be empty. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
+											** IAnswer: The data structure for an answer:
+												*** id: A number, the unique identifier for the answer.
+												*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
+										* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
+										
+                This is a sample response format:
+                ${JSON.stringify(formatQuestion)}
+								Please use Vietnamese everywhere to write questions and answers for students.
             `;
 
-  const language = "Vietnamese";
-  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS} Topic: ${topic} Number question: ${number_question} level: ${level} language: ${language}`;
+  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS}`;
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    const cleanText = text.replace(/`/g, "");
-    const json = JSON.parse(cleanText.replace(/json/g, ""));
+    const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+    console.log("cleanText", cleanText);
+    const repaired = jsonrepair(cleanText);
+    const json = JSON.parse(repaired);
     return json;
   } catch (error) {
     console.error("Error parsing JSON:", error);
-    return null;
+    return error;
   }
 }
 

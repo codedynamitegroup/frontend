@@ -14,7 +14,7 @@ import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 
 interface Props {}
 
-const CodeQuestionDetails = memo((props: Props) => {
+const LecturerCodeQuestionDetails = memo((props: Props) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { pathname } = useLocation();
@@ -48,75 +48,73 @@ const CodeQuestionDetails = memo((props: Props) => {
   }, [pathname, tabs]);
 
   return (
-    <Grid className={classes.root}>
-      <SidebarLecturer>
-        <Container className={classes.container}>
-          <Box className={classes.tabWrapper}>
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(routes.lecturer.code_question.management)}>
-                Quản lý câu hỏi code
-              </span>{" "}
-              {">"}{" "}
-              <span
-                onClick={() => {
-                  if (id) navigate(pathname);
-                }}
-              >
-                Tổng 2 số
-              </span>
-            </ParagraphBody>
-          </Box>
+    <>
+      <Box>
+        <Box className={classes.tabWrapper}>
+          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
+            <span onClick={() => navigate(routes.lecturer.code_question.management)}>
+              Quản lý câu hỏi code
+            </span>{" "}
+            {">"}{" "}
+            <span
+              onClick={() => {
+                if (id) navigate(pathname);
+              }}
+            >
+              Tổng 2 số
+            </span>
+          </ParagraphBody>
+        </Box>
 
-          <Box className={classes.body}>
-            <Heading1 fontWeight={"500"}>Tổng 2 số</Heading1>
-            <Box sx={{ border: 1, borderColor: "divider" }}>
-              <Tabs
-                value={activeTab}
-                onChange={handleChange}
-                aria-label='basic tabs example'
-                className={classes.tabs}
-              >
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Thông tin</ParagraphBody>}
-                  value={0}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Test cases</ParagraphBody>}
-                  value={1}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Code mẫu</ParagraphBody>}
-                  value={2}
-                />
-                <Tab
-                  sx={{ textTransform: "none" }}
-                  label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
-                  value={3}
-                />
-              </Tabs>
-            </Box>
-            <Box mt={2}>
-              <Routes>
-                <Route path={"information"} element={<CodeQuestionInformation />} />
-                <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
-                <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-                <Route path={"languages"} element={<CodeQuestionLanguages />} />
-              </Routes>
-            </Box>
+        <Box className={classes.body}>
+          <Heading1 fontWeight={"500"}>Tổng 2 số</Heading1>
+          <Box sx={{ border: 1, borderColor: "divider" }}>
+            <Tabs
+              value={activeTab}
+              onChange={handleChange}
+              aria-label='basic tabs example'
+              className={classes.tabs}
+            >
+              <Tab
+                sx={{ textTransform: "none" }}
+                label={<ParagraphBody>Thông tin</ParagraphBody>}
+                value={0}
+              />
+              <Tab
+                sx={{ textTransform: "none" }}
+                label={<ParagraphBody>Test cases</ParagraphBody>}
+                value={1}
+              />
+              <Tab
+                sx={{ textTransform: "none" }}
+                label={<ParagraphBody>Code mẫu</ParagraphBody>}
+                value={2}
+              />
+              <Tab
+                sx={{ textTransform: "none" }}
+                label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
+                value={3}
+              />
+            </Tabs>
           </Box>
-        </Container>
-        <Box className={classes.stickyFooterContainer}>
-          <Box className={classes.phantom} />
-          <Box className={classes.stickyFooterItem}>
-            <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
+          <Box id={classes.codeQuestionDetailBody}>
+            <Routes>
+              <Route path={"information"} element={<CodeQuestionInformation />} />
+              <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
+              <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
+              <Route path={"languages"} element={<CodeQuestionLanguages />} />
+            </Routes>
           </Box>
         </Box>
-      </SidebarLecturer>
-    </Grid>
+      </Box>
+      <Box className={classes.stickyFooterContainer}>
+        <Box className={classes.phantom} />
+        <Box className={classes.stickyFooterItem}>
+          <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
+        </Box>
+      </Box>
+    </>
   );
 });
 
-export default CodeQuestionDetails;
+export default LecturerCodeQuestionDetails;

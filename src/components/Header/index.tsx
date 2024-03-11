@@ -21,11 +21,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import HeaderNotification from "./HeaderNotification";
 
 interface ILinkMenu {
   name: string;
@@ -184,7 +185,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 className={classes.item}
                 onClick={() => navigate(page.path)}
               >
-                <ParagraphSmall colorName={"--white"} fontWeight={600} translation-key={page.name}>
+                <ParagraphSmall colorname={"--white"} fontWeight={600} translation-key={page.name}>
                   {t(page.name)}
                 </ParagraphSmall>
               </Button>
@@ -203,7 +204,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   onClick={() => navigate(page.path)}
                 >
                   <ParagraphSmall
-                    colorName={"--white"}
+                    colorname={"--white"}
                     fontWeight={600}
                     translation-key={page.name}
                   >
@@ -213,26 +214,33 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               ))}
             </Box>
           ) : (
-            <Button
-              onClick={handleClick}
-              className={classes.profile}
-              size='small'
-              sx={{ ml: 2, textTransform: "none" }}
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup='true'
-              aria-expanded={open ? "true" : undefined}
-            >
-              <img
-                className={classes.imageProfile}
-                src={
-                  "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
-                }
-                alt='avatar'
-              ></img>
-              <ParagraphSmall fontWeight={600} colorName='--white'>
-                HieuThuHai
-              </ParagraphSmall>
-            </Button>
+            <Grid container direction='row' width='fit-content'>
+              <Grid item marginTop='4px'>
+                <HeaderNotification />
+              </Grid>
+              <Grid item>
+                <Button
+                  onClick={handleClick}
+                  className={classes.profile}
+                  size='small'
+                  sx={{ ml: 2, textTransform: "none" }}
+                  aria-controls={open ? "account-menu" : undefined}
+                  aria-haspopup='true'
+                  aria-expanded={open ? "true" : undefined}
+                >
+                  <img
+                    className={classes.imageProfile}
+                    src={
+                      "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+                    }
+                    alt='avatar'
+                  ></img>
+                  <ParagraphSmall fontWeight={600} colorname='--white'>
+                    HieuThuHai
+                  </ParagraphSmall>
+                </Button>
+              </Grid>
+            </Grid>
           )}
         </Toolbar>
         <Menu

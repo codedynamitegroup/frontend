@@ -1,38 +1,39 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column !important;
-  background-color: var(--blue-1);
+.container {
+  @media (min-width: 1200px) {
+    max-width: 1440px !important;
+  }
 
-  .detailContainer {
-    .generalDetailsContainer {
-      display: flex;
-      & [class~="MuiBox-root"] {
-        padding-right: 30px;
-      }
-    }
-    .trendingStackContainer {
-      padding: 0;
-      margin-top: 20px;
-      margin-bottom: 50px;
+  .bannerWrapper {
+    margin: 0px;
+  }
+}
+
+.detailContainer {
+  .generalDetailsContainer {
+    display: flex;
+    & [class~="MuiBox-root"] {
+      padding-right: 30px;
     }
   }
-  .contestListContainer {
-    .contestListButtonGroup {
-      & [class~="MuiToggleButtonGroup-root"] {
-        & [class~="MuiButtonBase-root"] {
-          background-color: rgb(255, 255, 255);
-          border-radius: 20px;
-          border: 0;
-          margin-right: 10px;
-        }
-        & [class~="Mui-selected"] {
-          background-color: var(--blue-500);
-          color: white;
-        }
+  .trendingStackContainer {
+    padding: 0;
+    margin-top: 20px;
+    margin-bottom: 50px;
+  }
+}
+.contestListContainer {
+  padding-top: 40px;
+  .contestListButtonGroup {
+    & [class~="MuiToggleButtonGroup-root"] {
+      & [class~="MuiButtonBase-root"] {
+        background-color: rgb(255, 255, 255);
+        border-radius: 20px;
+        border: 0;
+        margin-right: 10px;
+      }
+      & [class~="Mui-selected"] {
+        background-color: var(--blue-500);
+        color: white;
       }
     }
   }

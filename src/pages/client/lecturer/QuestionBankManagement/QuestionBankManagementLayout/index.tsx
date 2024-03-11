@@ -24,23 +24,17 @@ const QuestionBankManagementLayout = () => {
   };
 
   return (
-    <Grid className={classes.root}>
-      <SidebarLecturer>
-        <main id={classes.main}>
-          <Container className={classes.container}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList onChange={handleChange} aria-label='lab API tabs'>
-                  <CustomTab label='Chung' value='1' />
-                  <CustomTab label='Cá nhân' value='2' />
-                </TabList>
-              </Box>
-              <Outlet context={[value, setValue]} />
-            </TabContext>
-          </Container>
-        </main>
-      </SidebarLecturer>
-    </Grid>
+    <Box id={classes.questionBanksManagementBody}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <TabList onChange={handleChange} aria-label='lab API tabs'>
+            <CustomTab label='Chung' value='1' />
+            <CustomTab label='Cá nhân' value='2' />
+          </TabList>
+        </Box>
+        <Outlet context={[value, setValue]} />
+      </TabContext>
+    </Box>
   );
 };
 

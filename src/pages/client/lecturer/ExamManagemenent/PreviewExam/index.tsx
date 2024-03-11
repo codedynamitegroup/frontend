@@ -22,6 +22,7 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 const drawerWidth = 350;
 
@@ -157,24 +158,39 @@ export default function PreviewExam() {
     }
   }, [width]);
 
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
+  const header2Ref = React.useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({
+    ref: header2Ref
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box className={classes.container}>
+      <Header ref={headerRef} />
+      <Box
+        className={classes.container}
+        sx={{
+          marginTop: `${headerHeight}px`
+        }}
+      >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            top: `${headerHeight}px`,
             backgroundColor: "white"
           }}
+          ref={header2Ref}
           open={open}
         >
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -182,7 +198,7 @@ export default function PreviewExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -190,7 +206,7 @@ export default function PreviewExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -198,14 +214,14 @@ export default function PreviewExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.detail)}
               >
                 Bài kiểm tra 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Xem trước</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -218,8 +234,14 @@ export default function PreviewExam() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Main open={open} className={classes.mainContent}>
-          <DrawerHeader />
+        <Main
+          open={open}
+          className={classes.mainContent}
+          sx={{
+            height: `calc(100% - ${header2Height}px)`,
+            marginTop: `${header2Height}px`
+          }}
+        >
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>

@@ -11,6 +11,8 @@ import { Box, Link, TableFooter, Typography } from "@mui/material";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import TablePagination from "@mui/material/TablePagination";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface PropsData {
   problemList: any;
@@ -24,6 +26,7 @@ export default function ContestLeaderboard(props: PropsData) {
     (user: any) => JSON.stringify(user) === JSON.stringify(currentUserRank)
   ).length;
   const onPageChange = () => {};
+  const { t } = useTranslation();
   return (
     <Box>
       <TableContainer component={Paper} className={classes.tableContainer}>
@@ -35,43 +38,50 @@ export default function ContestLeaderboard(props: PropsData) {
                 rowSpan={2}
                 color='var(--blue-100)'
                 className={clsx(classes.tableHeader, classes.tableCell)}
+                translation-key='contest_detail_leaderboard_rank'
               >
-                Hạng
+                {t("contest_detail_leaderboard_rank")}
               </TableCell>
               <TableCell
                 align='center'
                 rowSpan={2}
                 className={clsx(classes.tableHeader, classes.tableCell)}
+                translation-key='common_participant'
               >
-                Người tham gia
+                {i18next.format(t("common_participant"), "firstUppercase")}
               </TableCell>
               <TableCell
                 align='center'
                 rowSpan={2}
                 className={clsx(classes.tableHeader, classes.tableCell)}
+                translation-key='contest_detail_leaderboard_total_time'
               >
-                Tổng thời gian làm
+                {t("contest_detail_leaderboard_total_time")}
               </TableCell>
               <TableCell
                 align='center'
                 rowSpan={2}
                 className={clsx(classes.tableHeader, classes.tableCell)}
+                translation-key='common_score'
               >
-                Tổng điểm
+                {t("common_score")}
               </TableCell>
               <TableCell
                 align='center'
                 colSpan={4}
                 className={clsx(classes.tableHeader, classes.tableCell)}
+                translation-key='common_problem'
               >
-                Bài tập
+                {t("common_problem")}
               </TableCell>
             </TableRow>
             <TableRow>
               {problemList.map((problem: any, index: any) => (
                 <TableCell key={problem.name} align='center' className={clsx(classes.tableCell)}>
                   <Typography fontSize={"15px"}>{problem.name}</Typography>
-                  <Typography fontSize={"13px"}>({problem.maxScore} Điểm) </Typography>
+                  <Typography fontSize={"13px"} translation-key='common_score'>
+                    ({problem.maxScore} {t("common_score")})
+                  </Typography>
                 </TableCell>
               ))}
             </TableRow>
@@ -89,8 +99,9 @@ export default function ContestLeaderboard(props: PropsData) {
                       to='#'
                       underline='none'
                       className={classes.participantInfo}
+                      translation-key='common_you'
                     >
-                      {currentUserRank.name} (Bạn)
+                      {currentUserRank.name} ({t("common_you")})
                     </Link>
                   </TableCell>
                   <TableCell align='center' className={clsx(classes.tableCell)}>
@@ -106,8 +117,11 @@ export default function ContestLeaderboard(props: PropsData) {
                           <Typography fontSize={"18px"} fontWeight={600}>
                             {problem.point}
                           </Typography>
-                          <Typography className={classes.tableSecondaryData}>
-                            {problem.tries} lần nộp
+                          <Typography
+                            className={classes.tableSecondaryData}
+                            translation-key='common_submit'
+                          >
+                            {problem.tries} {t("common_submit")}
                           </Typography>
                           <Typography className={classes.tableSecondaryData}>
                             {"00:02:12"}
@@ -161,8 +175,11 @@ export default function ContestLeaderboard(props: PropsData) {
                         <Typography fontSize={"18px"} fontWeight={600}>
                           {problem.point}
                         </Typography>
-                        <Typography className={classes.tableSecondaryData}>
-                          {problem.tries} lần nộp
+                        <Typography
+                          className={classes.tableSecondaryData}
+                          translation-key='common_submit'
+                        >
+                          {problem.tries} {t("common_submit")}
                         </Typography>
                         <Typography className={classes.tableSecondaryData}>{"00:02:12"}</Typography>
                       </Box>
@@ -180,10 +197,22 @@ export default function ContestLeaderboard(props: PropsData) {
                 page={0}
                 rowsPerPage={5}
                 rowsPerPageOptions={[5, 10, 20]}
-                labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
+                labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
                 colSpan={10000}
                 className={classes.tableCell}
                 onPageChange={onPageChange}
+                labelDisplayedRows={({ from, to, count }) => {
+                  return t("common_table_from_to", {
+                    from: `${from}`,
+                    to: `${to}`,
+                    countText: count !== -1 ? count : `${t("common_more_than")} ${to}`
+                  });
+                }}
+                translation-key={[
+                  "common_table_row_per_page",
+                  "common_table_from_to",
+                  "common_more_than"
+                ]}
               />
             </TableRow>
           </TableBody>

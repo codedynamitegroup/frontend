@@ -36,14 +36,14 @@ const LanguageSelector = () => {
               {currentLang === "vi" ? (
                 <>
                   <img alt='upload' src={images.flagIcon.flagVietnam} className={classes.imgFile} />
-                  <ParagraphSmall colorName={"--white"} fontWeight={600}>
+                  <ParagraphSmall colorname={"--white"} fontWeight={600}>
                     {i18n.t("language_vn")}
                   </ParagraphSmall>
                 </>
               ) : (
                 <>
                   <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
-                  <ParagraphSmall colorName={"--white"} fontWeight={600}>
+                  <ParagraphSmall colorname={"--white"} fontWeight={600}>
                     {i18n.t("language_us")}
                   </ParagraphSmall>
                 </>
@@ -63,8 +63,8 @@ const LanguageSelector = () => {
             sx={{ width: "inherit" }}
             className={classes.menuPopover}
           >
-            {langList.map((language: string) => (
-              <MenuItem onClick={() => changeLanguageHandler(language, popupState)}>
+            {langList.map((language: string, index: number) => (
+              <MenuItem onClick={() => changeLanguageHandler(language, popupState)} key={index}>
                 {language === "en" ? (
                   <Box className={classes.currentLangContainer} translation-key='language_us'>
                     <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />

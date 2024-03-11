@@ -1,0 +1,13 @@
+.root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
+}
+
+.body {
+  margin-bottom: 40px;
+}

@@ -48,55 +48,48 @@ const StudentCourseDetail = memo((props: Props) => {
   }, [pathname, tabs]);
 
   return (
-    <Grid className={classes.root}>
-      <SideBarStudent>
-        <Container className={classes.container}>
-          <Box className={classes.tabWrapper}>
-            <Tabs
-              value={activeTab}
-              onChange={handleChange}
-              aria-label='basic tabs example'
-              className={classes.tabs}
-            >
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Lớp học</ParagraphBody>}
-                value={0}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Bài tập</ParagraphBody>}
-                value={1}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Điểm</ParagraphBody>}
-                value={2}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Thành viên</ParagraphBody>}
-                value={3}
-              />
-            </Tabs>
-          </Box>
+    <>
+      <Box className={classes.tabWrapper}>
+        <Tabs
+          value={activeTab}
+          onChange={handleChange}
+          aria-label='basic tabs example'
+          className={classes.tabs}
+        >
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Lớp học</ParagraphBody>}
+            value={0}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Bài tập</ParagraphBody>}
+            value={1}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Điểm</ParagraphBody>}
+            value={2}
+          />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={<ParagraphBody>Thành viên</ParagraphBody>}
+            value={3}
+          />
+        </Tabs>
+      </Box>
 
-          <Box className={classes.body}>
-            <Routes>
-              <Route path={"information"} element={<StudentCourseInformation />} />
-              <Route path={"assignments"} element={<StudentCourseAssignment />} />
-              <Route
-                path={"assignments/:assignmentId"}
-                element={<StudentCourseAssignmentDetails />}
-              />
-              <Route path={"assignments/exams/:examId"} element={<StudentCourseExamDetails />} />
-              <Route path={"grade"} element={<StudentCourseGrade />} />
-              <Route path={"participant"} element={<StudentCourseParticipant />} />
-            </Routes>
-          </Box>
-        </Container>
-      </SideBarStudent>
-    </Grid>
+      <Box id={classes.courseDetailBody}>
+        <Routes>
+          <Route path={"information"} element={<StudentCourseInformation />} />
+          <Route path={"assignments"} element={<StudentCourseAssignment />} />
+          <Route path={"assignments/:assignmentId"} element={<StudentCourseAssignmentDetails />} />
+          <Route path={"assignments/exams/:examId"} element={<StudentCourseExamDetails />} />
+          <Route path={"grade"} element={<StudentCourseGrade />} />
+          <Route path={"participant"} element={<StudentCourseParticipant />} />
+        </Routes>
+      </Box>
+    </>
   );
 });
 

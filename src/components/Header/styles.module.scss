@@ -36,6 +36,11 @@
     background-color: var(--blue-400) !important;
   }
 }
+.notification {
+  &:hover {
+    background-color: var(--blue-400) !important;
+  }
+}
 
 .profile {
   &:hover {

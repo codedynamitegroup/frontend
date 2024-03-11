@@ -18,9 +18,26 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
-import run from "./generate";
+import run, { IFormatQuestion, IQuestion } from "./generate";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import SnackbarAlert from "components/common/SnackbarAlert";
+export enum AlertType {
+  Success = "success",
+  INFO = "info",
+  Warning = "warning",
+  Error = "error"
+}
+export enum EQType {
+  Essay = 1,
+  MultipleChoice = 2,
+  ShortAnswer = 3,
+  TrueFalse = 4
+}
+export enum EQuestionLevel {
+  Easy = 1,
+  Medium = 2,
+  Hard = 3
+}
 const AIQuestionCreated = () => {
   const navigate = useNavigate();
   const matches = useMatches();
@@ -33,15 +50,19 @@ const AIQuestionCreated = () => {
 
   const [modeEdit, setModeEdit] = useState(false);
 
-  const [question, setQuestion] = useState([] as any[]);
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [lengthQuestion, setLengthQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
   const [topic, setTopic] = useState("");
+  const [desciption, setDesciption] = useState("");
   const [number_question, setNumberQuestion] = useState(5);
-  const [level, setLevel] = useState(10);
-  const [qtype, setQtype] = useState(20);
+  const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
+  const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("Tạo câu hỏi thành công");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    setQuestion((prevQuestions) => {
+    setQuestions((prevQuestions) => {
       return prevQuestions.map((q) => {
         if (q.id === index) {
           return { ...q, correctAnswer: parseInt(event.target.value) };
@@ -52,19 +73,32 @@ const AIQuestionCreated = () => {
     });
   };
   const handleDelete = (index: number) => {
-    setQuestion((prevQuestions) => {
+    setQuestions((prevQuestions) => {
       return prevQuestions.filter((q) => q.id !== index);
     });
   };
   const handleGenerate = async () => {
     setLoading(true);
-    setQuestion([]);
-    const data = await run(topic, qtype, number_question, level);
-    if (data) {
-      setLoading(false);
-      setQuestion(data.questions);
-      setLengthQuestion(data.length);
-    }
+    setQuestions([]);
+    await run(topic, desciption, qtype, number_question, level)
+      .then((data: IFormatQuestion) => {
+        if (data) {
+          setLoading(false);
+          setQuestions(data.questions);
+          setLengthQuestion(data.questions.length);
+          setOpenSnackbarAlert(true);
+          setAlertContent("Tạo câu hỏi thành công");
+          setAlertType(AlertType.Success);
+        }
+      })
+      .catch((err) => {
+        setOpenSnackbarAlert(true);
+        setAlertContent("Tạo câu hỏi thất bại, hãy thử lại lần nữa");
+        setAlertType(AlertType.Error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleButtonClick = () => {
@@ -77,7 +111,7 @@ const AIQuestionCreated = () => {
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           {breadcrumbs ? (
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(routes.lecturer.course.management)}>
                 Quản lý khoá học
               </span>{" "}
@@ -101,7 +135,7 @@ const AIQuestionCreated = () => {
               <span>Tạo câu hỏi</span>
             </ParagraphBody>
           ) : (
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               {matches.map((value: any, i) => {
                 if (value.handle === undefined) return null;
                 return (
@@ -122,7 +156,7 @@ const AIQuestionCreated = () => {
           )}
         </Box>
         <Grid container spacing={1} columns={12}>
-          <Grid xs={6}>
+          <Grid item xs={6}>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Heading1 fontWeight={"500"}>Thêm câu hỏi </Heading1>
               <Grid container spacing={1} columns={12}>
@@ -130,20 +164,31 @@ const AIQuestionCreated = () => {
                   <TextTitle>Danh mục</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                  <Select defaultValue={10} fullWidth={true} size='small' required>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                  <Select value={1} fullWidth={true} size='small' required>
+                    <MenuItem value={1}>Ten</MenuItem>
+                    <MenuItem value={2}>Twenty</MenuItem>
+                    <MenuItem value={3}>Thirty</MenuItem>
                   </Select>
                 </Grid>
                 <Grid item xs={12} md={3}>
                   <TextTitle>Chủ đề</TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
-                  <Textarea
+                  <InputTextField
                     onChange={(e: any) => setTopic(e.target.value)}
                     value={topic}
                     placeholder='Nhập chủ đề'
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Mô tả</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <Textarea
+                    onChange={(e: any) => setDesciption(e.target.value)}
+                    value={desciption}
+                    placeholder='Nhập mô tả'
                     minRows={6}
                     maxRows={6}
                     size='lg'
@@ -160,10 +205,10 @@ const AIQuestionCreated = () => {
                     size='small'
                     required
                   >
-                    <MenuItem value={10}>Tự luận</MenuItem>
-                    <MenuItem value={20}>Trắc nghiệm</MenuItem>
-                    <MenuItem value={30}>Trả lời ngắn</MenuItem>
-                    <MenuItem value={40}>Đúng sai</MenuItem>
+                    <MenuItem value={EQType.Essay}>Tự luận</MenuItem>
+                    <MenuItem value={EQType.MultipleChoice}>Trắc nghiệm</MenuItem>
+                    <MenuItem value={EQType.ShortAnswer}>Trả lời ngắn</MenuItem>
+                    <MenuItem value={EQType.TrueFalse}>Đúng sai</MenuItem>
                   </Select>
                 </Grid>
                 <Grid item xs={12} md={3}>
@@ -193,38 +238,31 @@ const AIQuestionCreated = () => {
                     size='small'
                     required
                   >
-                    <MenuItem value={10}>Dễ</MenuItem>
-                    <MenuItem value={20}>Trung bình</MenuItem>
-                    <MenuItem value={30}>Khó</MenuItem>
+                    <MenuItem value={EQuestionLevel.Easy}>Dễ</MenuItem>
+                    <MenuItem value={EQuestionLevel.Medium}>Trung bình</MenuItem>
+                    <MenuItem value={EQuestionLevel.Hard}>Khó</MenuItem>
                   </Select>
                 </Grid>
               </Grid>
               <Button onClick={handleGenerate} btnType={BtnType.Primary}>
                 Tạo câu hỏi
               </Button>
-
-              {/* <Box className={classes.stickyFooterContainer}>
-            <Box className={classes.phantom} />
-            <Box className={classes.stickyFooterItem}>
-              <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
-            </Box>
-          </Box> */}
             </Box>
           </Grid>
-          <Grid xs={6}>
+          <Grid item xs={6}>
             <Box className={classes.listQuestion}>
-              {question.length !== 0 && (
+              {questions?.length !== 0 && (
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
                 </Button>
               )}
-              {question.length === 0 && (
+              {questions?.length === 0 && (
                 <CircularProgress className={loading ? classes.loading : classes.none} />
-              )}{" "}
-              {question &&
-                question.map((value, index) => {
+              )}
+              {questions &&
+                questions.map((value: IQuestion, index) => {
                   return (
-                    <Box className={classes.questionCard}>
+                    <Box className={classes.questionCard} key={index}>
                       <Heading6 fontWeight={"500"}>
                         {index + 1}/{lengthQuestion}
                       </Heading6>
@@ -244,27 +282,44 @@ const AIQuestionCreated = () => {
                           onChange={(event) => handleChange(event, value.id)}
                         >
                           {value.answers &&
-                            value.answers.map((answer: any, index: any) => {
+                            value.answers.map((answer, index) => {
                               return (
-                                <Box className={classes.answerItem}>
-                                  <FormControlLabel
-                                    value={index}
-                                    control={modeEdit ? <Radio /> : <></>}
-                                    label={String.fromCharCode(65 + index)}
-                                    labelPlacement='start'
-                                    className={classes.radio}
-                                  />
-
-                                  {value.correctAnswer === index ? (
-                                    <ParagraphBody
-                                      className={
-                                        modeEdit ? classes.answerContentEdit : classes.answerContent
-                                      }
-                                      contentEditable={modeEdit}
-                                      colorName='--green-500'
-                                    >
-                                      {answer.content}
-                                    </ParagraphBody>
+                                <Box className={classes.answerItem} key={index}>
+                                  {value.correctAnswer ? (
+                                    <>
+                                      <FormControlLabel
+                                        value={index}
+                                        control={modeEdit ? <Radio /> : <></>}
+                                        label={String.fromCharCode(65 + index)}
+                                        labelPlacement='start'
+                                        className={classes.radio}
+                                      />
+                                      {value.correctAnswer === index + 1 && (
+                                        <ParagraphBody
+                                          className={
+                                            modeEdit
+                                              ? classes.answerContentEdit
+                                              : classes.answerContent
+                                          }
+                                          contentEditable={modeEdit}
+                                          colorname='--green-500'
+                                        >
+                                          {answer.content}
+                                        </ParagraphBody>
+                                      )}
+                                      {value.correctAnswer !== index + 1 && (
+                                        <ParagraphBody
+                                          className={
+                                            modeEdit
+                                              ? classes.answerContentEdit
+                                              : classes.answerContent
+                                          }
+                                          contentEditable={modeEdit}
+                                        >
+                                          {answer.content}
+                                        </ParagraphBody>
+                                      )}
+                                    </>
                                   ) : (
                                     <ParagraphBody
                                       className={
@@ -293,6 +348,12 @@ const AIQuestionCreated = () => {
                 })}
             </Box>
           </Grid>
+          <SnackbarAlert
+            open={openSnackbarAlert}
+            setOpen={setOpenSnackbarAlert}
+            type={alertType}
+            content={alertContent}
+          />
         </Grid>
       </Container>
     </Grid>

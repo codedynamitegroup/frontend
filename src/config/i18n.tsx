@@ -11,3 +11,16 @@ i18n
     fallbackLng: "vi",
     debug: true
   });
+
+i18n.services.formatter?.add("firstUppercase", (value, lng, options) => {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+});
+i18n.services.formatter?.add("lowercase", (value, lng, options) => {
+  return value.toLowerCase();
+});
+i18n.services.formatter?.add("uppercase", (value, lng, options) => {
+  return value.toUpperCase();
+});
+i18n.services.formatter?.add("underscore", (value, lng, options) => {
+  return value.replace(/\s+/g, "_");
+});

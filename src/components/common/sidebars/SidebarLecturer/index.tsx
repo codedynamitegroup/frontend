@@ -40,6 +40,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }>(({ theme, open }) => ({
   flexGrow: 1,
   width: `calc(100% - ${drawerWidth}px)`,
+  overflow: "auto",
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
@@ -68,7 +69,7 @@ export default function SidebarLecturer({ children }: any) {
   });
 
   return (
-    <Box sx={{ display: "flex", width: "100%" }}>
+    <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
       <Header toggleDrawer={toggleDrawer} ref={headerRef} />
       <Drawer
         className={classes.drawer}
@@ -86,8 +87,10 @@ export default function SidebarLecturer({ children }: any) {
       >
         <SidebarManagement sideBarItem={sideBarItemListData} />
       </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
+      <Main
+        open={open}
+        sx={{ marginTop: `${headerHeight}px`, height: `calc(100% - ${headerHeight}px)` }}
+      >
         {children}
       </Main>
     </Box>

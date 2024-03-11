@@ -2,6 +2,7 @@ import qtype from "utils/constant/Qtype";
 
 export const routes = {
   lecturer: {
+    root: "/lecturer/*",
     calendar: "/lecturer/calendar",
     course: {
       management: "/lecturer/courses",
@@ -84,6 +85,7 @@ export const routes = {
     }
   },
   student: {
+    root: "/student/*",
     course: {
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",
@@ -105,6 +107,7 @@ export const routes = {
     calendar: "/student/calendar"
   },
   user: {
+    root: "/*",
     information: "/user/information",
     password_change: "/user/password/change",
     problem: {
@@ -143,7 +146,7 @@ export const routes = {
       root: "/"
     },
     dashboard: {
-      root: "/dashboard"
+      root: "/home"
     },
     login: {
       root: "/login"
@@ -154,5 +157,6 @@ export const routes = {
     forgot_password: {
       root: "/forgot-password"
     }
-  }
+  },
+  grading_pdf: "/grading-pdf"
 };

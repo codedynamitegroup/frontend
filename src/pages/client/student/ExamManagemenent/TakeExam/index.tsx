@@ -22,6 +22,7 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 const drawerWidth = 350;
 
@@ -157,10 +158,15 @@ export default function TakeExam() {
     }
   }, [width]);
 
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
   return (
     <Grid className={classes.root}>
-      <Header />
-      <Box className={classes.container}>
+      <Header ref={headerRef} />
+      <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
         <CssBaseline />
         <AppBar
           position='fixed'
@@ -174,7 +180,7 @@ export default function TakeExam() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.management)}
               >
@@ -182,7 +188,7 @@ export default function TakeExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.information)}
               >
@@ -190,7 +196,7 @@ export default function TakeExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.course.assignment)}
               >
@@ -198,14 +204,14 @@ export default function TakeExam() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.student.exam.detail)}
               >
                 Bài kiểm tra 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Xem trước</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'

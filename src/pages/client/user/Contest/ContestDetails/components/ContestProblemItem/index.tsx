@@ -4,11 +4,17 @@ import classes from "./styles.module.scss";
 import clsx from "clsx";
 import { EContestStatus } from "../..";
 import { Link as RouterLink } from "react-router-dom";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
+const problemEasyStatus = String(i18next.t("contest_detail_problem_easy"));
+const problemMediumStatus = String(i18next.t("contest_detail_problem_medium"));
+const problemAdvanceStatus = String(i18next.t("contest_detail_problem_easy"));
 
 export enum EContestProblemDifficulty {
-  easy = "Dễ",
-  medium = "Trung bình",
-  advance = "Khó"
+  easy = "easy",
+  medium = "medium",
+  advance = "advance"
 }
 
 interface PropsData {
@@ -28,6 +34,7 @@ const ContestProblemItem = (props: PropsData) => {
   const submissionTryClickHandler = () => {
     console.log("submit click");
   };
+  const { t } = useTranslation();
 
   return (
     <Paper className={classes.container}>
@@ -48,7 +55,13 @@ const ContestProblemItem = (props: PropsData) => {
 
               <Chip
                 size='small'
-                label={difficulty}
+                label={
+                  difficulty === EContestProblemDifficulty.easy
+                    ? t("common_easy")
+                    : difficulty === EContestProblemDifficulty.medium
+                      ? t("common_medium")
+                      : t("common_hard")
+                }
                 sx={{
                   width: "fit-content",
                   color: "white",
@@ -59,6 +72,7 @@ const ContestProblemItem = (props: PropsData) => {
                         ? "var(--warning)"
                         : "var(--orange-2)"
                 }}
+                translation-key={["common_easy", "common_medium", "common_hard"]}
               />
             </Stack>
           </Link>
@@ -74,8 +88,12 @@ const ContestProblemItem = (props: PropsData) => {
                 {submission !== undefined ? `${submission}/` : ""}
                 {maxSubmission}
               </Typography>
-              <Typography fontSize={"12px"} className={classes.roundedInfoText}>
-                lần nộp
+              <Typography
+                fontSize={"12px"}
+                className={classes.roundedInfoText}
+                translation-key='common_submit'
+              >
+                {t("common_submit")}
               </Typography>
             </Box>
 
@@ -87,8 +105,12 @@ const ContestProblemItem = (props: PropsData) => {
                 {point !== undefined ? `${point}/` : ""}
                 {maxScore}
               </Typography>
-              <Typography fontSize={"12px"} className={classes.roundedInfoText}>
-                Điểm
+              <Typography
+                fontSize={"12px"}
+                className={classes.roundedInfoText}
+                translation-key='common_score'
+              >
+                {t("common_score")}
               </Typography>
             </Box>
           </Stack>

@@ -120,7 +120,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -128,7 +128,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -136,7 +136,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -144,7 +144,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.detail)}
               >
@@ -152,14 +152,14 @@ export default function LecturerSourceCodePlagiarismManagement() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.submissions)}
               >
                 Danh sách bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -236,7 +236,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             <ParagraphBody
                               fontSize={"30px"}
                               fontWeight={600}
-                              colorName='--red-error-01'
+                              colorname='--red-error-01'
                             >
                               97%
                             </ParagraphBody>
@@ -253,7 +253,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               <ParagraphBody
                                 fontSize={"60px"}
                                 fontWeight={600}
-                                colorName={"--blue-500"}
+                                colorname={"--blue-500"}
                               >
                                 &asymp;
                               </ParagraphBody>
@@ -272,7 +272,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             <ParagraphBody
                               fontSize={"30px"}
                               fontWeight={600}
-                              colorName='--orange-400'
+                              colorname='--orange-400'
                             >
                               54%
                             </ParagraphBody>
@@ -302,7 +302,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             <ParagraphBody
                               fontSize={"30px"}
                               fontWeight={600}
-                              colorName='--eerie-black'
+                              colorname='--eerie-black'
                             >
                               0
                             </ParagraphBody>

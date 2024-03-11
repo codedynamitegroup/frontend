@@ -30,7 +30,7 @@ const CourseCertificateLesson = (props: Props) => {
 
   return (
     <Box id={classes.certificateDetails}>
-      <Heading1 colorName='--blue-600'>Các bài học ở khóa học</Heading1>
+      <Heading1 colorname='--blue-600'>Các bài học ở khóa học</Heading1>
       {chapters.map((chapter, index) => (
         <LessonAccordion
           key={index}

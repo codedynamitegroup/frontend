@@ -165,7 +165,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
 
   return (
     <Box className={classes["body"]}>
-      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
         Dưới đây là danh sách các ngôn ngữ lập trình có sẵn
       </Heading5>
       <DataGrid

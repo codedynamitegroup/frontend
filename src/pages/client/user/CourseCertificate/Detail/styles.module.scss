@@ -1,122 +1,108 @@
-#root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column !important;
-  background-color: var(--blue-1);
-}
+#container {
+  min-height: 100%;
+  padding-top: 40px;
+  @media (min-width: 1200px) {
+    max-width: 1340px;
+  }
 
-#main {
-  padding: 40px 0px;
-  height: fit-content;
-
-  #container {
+  #bodyWrapper {
     height: 100%;
-    @media (min-width: 1200px) {
-      max-width: 1340px;
+
+    #leftBody {
+      background-color: white;
+      border-radius: 10px;
     }
 
-    #bodyWrapper {
-      height: 100%;
+    #rightBody {
+      background-color: white;
+      border-radius: 10px;
 
-      #leftBody {
-        background-color: white;
-        border-radius: 10px;
+      #breadcumpWrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 10px 30px;
+
+        #icArrow {
+          color: var(--blue-500);
+          width: 20px;
+          height: 15px;
+        }
+        .cursorPointer {
+          &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+          }
+        }
       }
 
-      #rightBody {
-        background-color: white;
-        border-radius: 10px;
+      #courseInfoWrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px 30px;
 
-        #breadcumpWrapper {
+        #courseTitle {
           display: flex;
           align-items: center;
-          gap: 5px;
-          padding: 10px 30px;
+          gap: 10px;
 
-          #icArrow {
-            color: var(--blue-500);
-            width: 20px;
-            height: 15px;
-          }
-          .cursorPointer {
-            &:hover {
-              cursor: pointer;
-              text-decoration: underline;
+          #imgCourseRecommend {
+            width: 70px;
+            height: 70px;
+            border-radius: 5px;
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
             }
           }
         }
 
-        #courseInfoWrapper {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          padding: 15px 30px;
-
-          #courseTitle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            #imgCourseRecommend {
-              width: 70px;
-              height: 70px;
-              border-radius: 5px;
-              img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-              }
+        .tabs {
+          & [class~="Mui-selected"] {
+            & [class~="MuiTypography-root"] {
+              font-weight: 700;
+              color: var(--blue-500);
             }
           }
 
-          .tabs {
-            & [class~="Mui-selected"] {
-              & [class~="MuiTypography-root"] {
-                font-weight: 700;
-                color: var(--blue-500);
-              }
-            }
-
-            & [class~="MuiTabs-indicator"] {
-              background-color: var(--blue-500);
-            }
+          & [class~="MuiTabs-indicator"] {
+            background-color: var(--blue-500);
           }
+        }
 
-          #courseDetails {
-            .courseDetailsWrapper {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-
-              #userRating {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-
-                #icStar {
-                  color: #fcd12a;
-                }
-              }
-            }
-          }
-
-          #icSchool {
-            color: #ffffff;
-          }
-          #courseProgress {
+        #courseDetails {
+          .courseDetailsWrapper {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            #progressTitle {
-              display: flex;
-              gap: 10px;
+            align-items: center;
 
-              #icFlag {
-                color: var(--gray-60);
+            #userRating {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+
+              #icStar {
+                color: #fcd12a;
               }
+            }
+          }
+        }
+
+        #icSchool {
+          color: #ffffff;
+        }
+        #courseProgress {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          #progressTitle {
+            display: flex;
+            gap: 10px;
+
+            #icFlag {
+              color: var(--gray-60);
             }
           }
         }

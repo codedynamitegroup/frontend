@@ -99,29 +99,34 @@ export default function PreviewAssignmentSubmission() {
     ref: headerRef
   });
 
+  const header2Ref = React.useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({
+    ref: header2Ref
+  });
+
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight + 20}px`
+          marginTop: `${headerHeight}px`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            top: `${headerHeight}px`,
             backgroundColor: "white"
           }}
+          ref={header2Ref}
           open={false}
         >
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -129,7 +134,7 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -137,7 +142,7 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -145,14 +150,14 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.assignment.detail)}
               >
                 Bài tập 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Nộp bài làm</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Nộp bài làm</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -164,8 +169,14 @@ export default function PreviewAssignmentSubmission() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Main open={true} className={classes.mainContent}>
-          <DrawerHeader />
+        <Main
+          open={true}
+          className={classes.mainContent}
+          sx={{
+            height: `calc(100% - ${header2Height}px)`,
+            marginTop: `${header2Height}px`
+          }}
+        >
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Grid container direction='row' alignItems='center' gap={2}>

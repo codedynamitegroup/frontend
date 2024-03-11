@@ -1,19 +1,21 @@
 .root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  gap: 20px;
-  padding-bottom: 20px;
   background-color: var(--blue-1);
 }
 
 .container {
   display: flex;
-  background-color: white;
+  overflow: hidden;
 }
 
 .mainContent {
   background-color: var(--blue-1);
-  margin-top: 64px;
+  overflow: auto;
 }
 
 .formBody {
@@ -25,6 +27,7 @@
 
 .drawerBody {
   padding: 20px;
+  overflow: auto;
 }
 
 .drawerFieldContainer {
