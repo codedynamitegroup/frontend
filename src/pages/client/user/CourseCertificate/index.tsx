@@ -1,24 +1,18 @@
-import Header from "components/Header";
-import { Box, Checkbox, Container, Divider, Grid } from "@mui/material";
+import { Box, Checkbox, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import SearchBar from "components/common/search/SearchBar";
 import BasicSelect from "components/common/select/BasicSelect";
-import React, { useRef } from "react";
+import React from "react";
 import ParagraphBody from "components/text/ParagraphBody";
-import { faFile } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
-import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
 import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import Footer from "components/Footer";
 import { useTranslation } from "react-i18next";
+import CourseCertificateCard from "./components/CourseCertifcateCard";
 
-interface CourseCertificate {
+export interface CourseCertificate {
   imgUrl: string;
   title: string;
   description?: string;
@@ -126,8 +120,6 @@ const CourseCertificates = () => {
     }
   ];
 
-  const navigate = useNavigate();
-
   const { t } = useTranslation();
 
   return (
@@ -200,49 +192,7 @@ const CourseCertificates = () => {
                   <Grid container spacing={3}>
                     {courseCertificatesBasic.map((course, index) => (
                       <Grid item xs={4} key={index}>
-                        <Box
-                          className={classes.courseCerticate}
-                          onClick={() => {
-                            navigate(
-                              routes.user.course_certificate.detail.lesson.root.replace(
-                                ":courseId",
-                                index.toString()
-                              )
-                            );
-                          }}
-                        >
-                          <Grid container direction={"column"} margin={0} gap={2}>
-                            <Grid item container xs={5} className={classes.titleCourse}>
-                              <Grid item xs={3} className={classes.imgCourse}>
-                                <img alt='img course' src={course.imgUrl} />
-                              </Grid>
-                              <Grid item xs={9} className={classes.nameCourse}>
-                                <Heading3>{course.title}</Heading3>
-                              </Grid>
-                            </Grid>
-                            <Divider />
-                            <Grid item xs={5}>
-                              <ParagraphBody className={classes.courseDescription}>
-                                {course.description}
-                              </ParagraphBody>
-                            </Grid>
-                            <Divider />
-                            <Grid item xs={2}>
-                              <Box className={classes.iconCourse}>
-                                <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                                <ParagraphBody>{course.lesson} bài học</ParagraphBody>
-                              </Box>
-                              <Box className={classes.iconCourse}>
-                                <img
-                                  src={images.icLevel}
-                                  alt='icon level'
-                                  className={classes.iconLevel}
-                                />
-                                <ParagraphBody>{course.level}</ParagraphBody>
-                              </Box>
-                            </Grid>
-                          </Grid>
-                        </Box>
+                        <CourseCertificateCard course={course} />
                       </Grid>
                     ))}
                   </Grid>
@@ -254,39 +204,7 @@ const CourseCertificates = () => {
                   <Grid container spacing={3}>
                     {courseCertificatesAdvanced.map((course, index) => (
                       <Grid item xs={4} key={index}>
-                        <Box className={classes.courseCerticate}>
-                          <Grid container direction={"column"} margin={0} gap={2}>
-                            <Grid item container xs={5} className={classes.titleCourse}>
-                              <Grid item xs={3} className={classes.imgCourse}>
-                                <img alt='img course' src={course.imgUrl} />
-                              </Grid>
-                              <Grid item xs={9} className={classes.nameCourse}>
-                                <Heading3>{course.title}</Heading3>
-                              </Grid>
-                            </Grid>
-                            <Divider />
-                            <Grid item xs={5}>
-                              <ParagraphBody className={classes.courseDescription}>
-                                {course.description}
-                              </ParagraphBody>
-                            </Grid>
-                            <Divider />
-                            <Grid item xs={2}>
-                              <Box className={classes.iconCourse}>
-                                <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                                <ParagraphBody>{course.lesson} bài học</ParagraphBody>
-                              </Box>
-                              <Box className={classes.iconCourse}>
-                                <img
-                                  src={images.icLevel}
-                                  alt='icon level'
-                                  className={classes.iconLevel}
-                                />
-                                <ParagraphBody>{course.level}</ParagraphBody>
-                              </Box>
-                            </Grid>
-                          </Grid>
-                        </Box>
+                        <CourseCertificateCard course={course} />
                       </Grid>
                     ))}
                   </Grid>

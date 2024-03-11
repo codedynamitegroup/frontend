@@ -1,0 +1,42 @@
+.recommendProblemCardWrapper {
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid var(--gray-30);
+  padding: 16px;
+
+  &:hover {
+    box-shadow: 0 2px 10px #0000001a;
+  }
+
+  .courseDescription {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .iconRecommendProblem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .iconPeople {
+      color: var(--gray-50);
+    }
+
+    .iconLevel,
+    .iconPeople {
+      width: 16px;
+      height: 16px;
+    }
+
+    p {
+      color: var(--gray-50);
+    }
+  }
+  .level {
+    display: flex;
+    gap: 5px;
+  }
+}

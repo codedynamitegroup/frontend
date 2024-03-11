@@ -2,7 +2,6 @@ import React from "react";
 import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
 
-import TableTemplate from "components/common/table/TableTemplate";
 import TablePagination from "@mui/material/TablePagination";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -16,10 +15,10 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
+import Heading2 from "components/text/Heading2";
 
 export default function ProblemTable() {
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
-  const customColumns = ["status", "name", "level"];
   const renderStatus = (status: number) => {
     if (status === 1) {
       return <CheckCircleIcon className={classes.iconCheck} />;
@@ -126,6 +125,7 @@ export default function ProblemTable() {
 
   return (
     <Box className={classes.container}>
+      <Heading2>Danh sách bài tập</Heading2>
       <Box className={classes.table}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label='custom table'>

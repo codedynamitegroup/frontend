@@ -12,6 +12,7 @@ import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { Box } from "@mui/material";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ParagraphBody from "components/text/ParagraphBody";
+import { useTranslation } from "react-i18next";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -34,6 +35,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function UserRecentSolutionsTable() {
+  const { t } = useTranslation();
   const rows: {
     id: string;
     question_name: string;
@@ -44,13 +46,13 @@ export default function UserRecentSolutionsTable() {
       id: "0",
       question_name: "Remove Duplicates from Sorted List II",
       solution_name: "✅3 Method's || C++ || JAVA || PYTHON || Beginner Friendly🔥🔥🔥",
-      diff_time: "10 tháng trước"
+      diff_time: t("common_month_ago", { month: 10, count: 2 })
     },
     {
       id: "1",
       question_name: "Two Sum",
       solution_name: "✅ Beginner Friendly🔥🔥🔥",
-      diff_time: "10 tháng trước"
+      diff_time: t("common_month_ago", { month: 10, count: 2 })
     }
   ];
 
