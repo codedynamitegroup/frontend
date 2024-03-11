@@ -64,14 +64,14 @@ const CourseCertificateDetail = () => {
             <Grid item xs={12} md={12} id={classes.rightBody}>
               <Box id={classes.breadcumpWrapper}>
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.user.course_certificate.root)}
                 >
                   Danh sách khóa học
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorName='--blue-500'>Học C++ cơ bản</ParagraphSmall>
+                <ParagraphSmall colorname='--blue-500'>Học C++ cơ bản</ParagraphSmall>
               </Box>
               <Divider />
               <Box id={classes.courseInfoWrapper}>
@@ -97,7 +97,7 @@ const CourseCertificateDetail = () => {
                         <StarIcon id={classes.icStar} />
                       </Box>
                       <Box id={classes.userReviews}>
-                        <ParagraphBody colorName='--gray-60'>10 Đánh giá</ParagraphBody>
+                        <ParagraphBody colorname='--gray-60'>10 Đánh giá</ParagraphBody>
                       </Box>
                     </Grid>
                     <Grid
@@ -110,7 +110,7 @@ const CourseCertificateDetail = () => {
                         <ParagraphBody fontWeight={"600"}>20 Bài học</ParagraphBody>
                       </Box>
                       <Box id={classes.courseLevel}>
-                        <ParagraphBody colorName='--gray-60'>Cấp độ: Dễ</ParagraphBody>
+                        <ParagraphBody colorname='--gray-60'>Cấp độ: Dễ</ParagraphBody>
                       </Box>
                     </Grid>
                     <Grid item xs={4} className={classes.courseDetailsWrapper}>
@@ -118,7 +118,7 @@ const CourseCertificateDetail = () => {
                         <ParagraphBody fontWeight={"600"}>100</ParagraphBody>
                       </Box>
                       <Box>
-                        <ParagraphBody colorName='--gray-60'>Số người học</ParagraphBody>
+                        <ParagraphBody colorname='--gray-60'>Số người học</ParagraphBody>
                       </Box>
                     </Grid>
                   </Grid>
@@ -127,7 +127,7 @@ const CourseCertificateDetail = () => {
                   <Grid item xs={12} md={6}>
                     <Box id={classes.courseProgress}>
                       <Box id={classes.progressTitle}>
-                        <ParagraphBody colorName='--gray-80'>Tiến độ: 38%</ParagraphBody>
+                        <ParagraphBody colorname='--gray-80'>Tiến độ: 38%</ParagraphBody>
                         <FlagIcon id={classes.icFlag} />
                       </Box>
                       <LinearProgress determinate value={38} />

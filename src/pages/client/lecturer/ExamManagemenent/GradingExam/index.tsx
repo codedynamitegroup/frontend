@@ -387,7 +387,7 @@ export default function GradingExam() {
             <Toolbar>
               <Box id={classes.breadcumpWrapper}>
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.management)}
                 >
@@ -395,7 +395,7 @@ export default function GradingExam() {
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.information)}
                 >
@@ -403,7 +403,7 @@ export default function GradingExam() {
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.assignment)}
                 >
@@ -411,14 +411,14 @@ export default function GradingExam() {
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
-                  colorName='--blue-500'
+                  colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.exam.detail)}
                 >
                   Bài kiểm tra cuối kỳ
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorName='--blue-500'>Đánh giá</ParagraphSmall>
+                <ParagraphSmall colorname='--blue-500'>Đánh giá</ParagraphSmall>
               </Box>
               <IconButton
                 color='inherit'
@@ -544,7 +544,7 @@ export default function GradingExam() {
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                          <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                         </Box>
                       )
                     },
@@ -554,7 +554,7 @@ export default function GradingExam() {
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                          <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                         </Box>
                       )
                     },
@@ -564,7 +564,7 @@ export default function GradingExam() {
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                          <ParagraphBody colorName='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
                         </Box>
                       )
                     }

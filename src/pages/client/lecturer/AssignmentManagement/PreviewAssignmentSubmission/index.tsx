@@ -126,7 +126,7 @@ export default function PreviewAssignmentSubmission() {
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
               >
@@ -134,7 +134,7 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.information)}
               >
@@ -142,7 +142,7 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
               >
@@ -150,14 +150,14 @@ export default function PreviewAssignmentSubmission() {
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
-                colorName='--blue-500'
+                colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.assignment.detail)}
               >
                 Bài tập 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorName='--blue-500'>Nộp bài làm</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Nộp bài làm</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'

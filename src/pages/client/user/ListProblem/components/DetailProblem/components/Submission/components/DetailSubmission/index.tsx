@@ -63,7 +63,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       >
         <Box className={classes.submissionInfo}>
           <Box className={classes.submissionTitle}>
-            <ParagraphBody colorName='--green-500' fontWeight={"700"}>
+            <ParagraphBody colorname='--green-500' fontWeight={"700"}>
               Đã chấp nhận
             </ParagraphBody>
             <Box className={classes.submissionAuthor}>
@@ -84,10 +84,10 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           <Grid item xs={5.75} className={classes.statisticalTime}>
             <Container className={classes.title}>
               <AccessTimeIcon />
-              <ParagraphSmall colorName={"--white"}>Thời gian chạy</ParagraphSmall>
+              <ParagraphSmall colorname={"--white"}>Thời gian chạy</ParagraphSmall>
             </Container>
             <Container className={classes.data}>
-              <ParagraphBody colorName={"--white"} fontSize={"20px"} fontWeight={"700"}>
+              <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
                 12ms
               </ParagraphBody>
             </Container>
@@ -96,10 +96,10 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           <Grid item xs={5.75} className={classes.statisticalMemory}>
             <Container className={classes.title}>
               <MemoryIcon />
-              <ParagraphSmall colorName={"--white"}>Bộ nhớ</ParagraphSmall>
+              <ParagraphSmall colorname={"--white"}>Bộ nhớ</ParagraphSmall>
             </Container>
             <Container className={classes.data}>
-              <ParagraphBody colorName={"--white"} fontSize={"20px"} fontWeight={"700"}>
+              <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
                 13MB
               </ParagraphBody>
             </Container>

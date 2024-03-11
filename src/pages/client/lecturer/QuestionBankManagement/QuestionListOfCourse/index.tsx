@@ -249,7 +249,7 @@ const QuestionListOfCourse = () => {
       {!isAddingQuestion && (
         <TabPanel value='1' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
@@ -260,7 +260,7 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học thuật toán</Heading1>
-              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
                 Thông tin danh mục: các bài tập về OOP
               </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
@@ -309,7 +309,7 @@ const QuestionListOfCourse = () => {
       {!isAddingQuestion && (
         <TabPanel value='2' sx={{ padding: 0 }}>
           <Box className={classes.tabWrapper}>
-            <ParagraphBody className={classes.breadCump} colorName='--gray-50' fontWeight={"600"}>
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
                 Ngân hàng câu hỏi
               </span>{" "}
@@ -320,7 +320,7 @@ const QuestionListOfCourse = () => {
           <Container>
             <Stack spacing={2} marginBottom={3} paddingTop={1}>
               <Heading1 fontWeight={500}>Học OOP</Heading1>
-              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorName='--gray-50'>
+              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
                 Thông tin danh mục: các bài tập về OOP
               </Heading5>
               <Stack direction={{ xs: "column", md: "row" }} spacing={1}>

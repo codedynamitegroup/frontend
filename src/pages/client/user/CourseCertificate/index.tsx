@@ -142,8 +142,8 @@ const CourseCertificates = () => {
           }}
         >
           <Container id={classes.bannerContainer} className={classes.container}>
-            <Heading1 colorName={"--white"}>Khóa học chứng chỉ</Heading1>
-            <Heading3 colorName={"--white"}>
+            <Heading1 colorname={"--white"}>Khóa học chứng chỉ</Heading1>
+            <Heading3 colorname={"--white"}>
               Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau
             </Heading3>
             <Box id={classes.bannerSearch}>

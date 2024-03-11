@@ -66,7 +66,7 @@ const CourseCertificateIntroduction = (props: Props) => {
   return (
     <Box id={classes.introduction}>
       <Box id={classes.courseDescription}>
-        <Heading1 colorName='--blue-600'>Sơ lược về khóa học</Heading1>
+        <Heading1 colorname='--blue-600'>Sơ lược về khóa học</Heading1>
         <TextEditor value={description} onChange={setDescription} readOnly={true} />
       </Box>
     </Box>

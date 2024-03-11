@@ -15,7 +15,7 @@ export default function ProblemDetailSubmission() {
     {
       id: 1,
       status: (
-        <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
+        <ParagraphBody fontWeight={"700"} colorname={"--green-600"}>
           Thành công
         </ParagraphBody>
       ),
@@ -26,7 +26,7 @@ export default function ProblemDetailSubmission() {
     {
       id: 2,
       status: (
-        <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
+        <ParagraphBody fontWeight={"700"} colorname={"--red-error"}>
           Thất bại
         </ParagraphBody>
       ),
@@ -37,7 +37,7 @@ export default function ProblemDetailSubmission() {
     {
       id: 3,
       status: (
-        <ParagraphBody fontWeight={"700"} colorName={"--green-600"}>
+        <ParagraphBody fontWeight={"700"} colorname={"--green-600"}>
           Thành công
         </ParagraphBody>
       ),
@@ -48,7 +48,7 @@ export default function ProblemDetailSubmission() {
     {
       id: 4,
       status: (
-        <ParagraphBody fontWeight={"700"} colorName={"--red-error"}>
+        <ParagraphBody fontWeight={"700"} colorname={"--red-error"}>
           Thất bại
         </ParagraphBody>
       ),

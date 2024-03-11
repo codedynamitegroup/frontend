@@ -333,7 +333,7 @@ int main()
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
             <ParagraphSmall
-              colorName='--blue-500'
+              colorname='--blue-500'
               className={classes.cursorPointer}
               onClick={() => navigate(routes.user.course_certificate.root)}
             >
@@ -341,7 +341,7 @@ int main()
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
             <ParagraphSmall
-              colorName='--blue-500'
+              colorname='--blue-500'
               className={classes.cursorPointer}
               onClick={() => {
                 if (courseId)
@@ -353,7 +353,7 @@ int main()
               Học C++ cơ bản
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorName='--blue-500'>Hello world</ParagraphSmall>
+            <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
           </Box>
           <Box className={classes.submit}>
             <Button className={classes.runBtn} variant='contained' color='primary'>
