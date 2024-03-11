@@ -103,6 +103,7 @@ export const routes = {
     calendar: "/student/calendar"
   },
   user: {
+    root: "/*",
     information: "/user/information",
     password_change: "/user/password/change",
     problem: {
@@ -141,7 +142,7 @@ export const routes = {
       root: "/"
     },
     dashboard: {
-      root: "/dashboard"
+      root: "/home"
     },
     login: {
       root: "/login"
@@ -152,5 +153,6 @@ export const routes = {
     forgot_password: {
       root: "/forgot-password"
     }
-  }
+  },
+  grading_pdf: "/grading-pdf"
 };

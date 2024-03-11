@@ -2,7 +2,6 @@ import React, { useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
 import {
   Button,
-  Divider,
   FormControl,
   Grid,
   MenuItem,
@@ -235,19 +234,33 @@ int main()
     }
   };
 
-  const { problemId } = useParams<{ problemId: string }>();
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
   const { pathname } = useLocation();
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
     if (problemId) navigate(tabs[newTab].replace(":problemId", problemId));
+    else if (courseId && lessonId)
+      navigate(tabs[newTab].replace(":courseId", courseId).replace(":lessonId", lessonId));
   };
 
   const tabs: string[] = useMemo(() => {
-    return [
-      routes.user.problem.detail.description,
-      routes.user.problem.detail.solution,
-      routes.user.problem.detail.submission
-    ];
+    if (problemId)
+      return [
+        routes.user.problem.detail.description,
+        routes.user.problem.detail.solution,
+        routes.user.problem.detail.submission
+      ];
+    else {
+      return [
+        routes.user.course_certificate.detail.lesson.description,
+        routes.user.course_certificate.detail.lesson.solution,
+        routes.user.course_certificate.detail.lesson.submission
+      ];
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);
 
@@ -259,6 +272,12 @@ int main()
   const activeTab = useMemo(() => {
     if (problemId) {
       const index = tabs.findIndex((it) => activeRoute(it.replace(":problemId", problemId)));
+      if (index === -1) return 0;
+      return index;
+    } else if (courseId && lessonId) {
+      const index = tabs.findIndex((it) =>
+        activeRoute(it.replace(":courseId", courseId).replace(":lessonId", lessonId))
+      );
       if (index === -1) return 0;
       return index;
     }
@@ -303,16 +322,7 @@ int main()
 
     setWidth001(newWidth001);
     setWidth002(newWidth002);
-    // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
   };
-  // const handleResize002 = (e: any, direction: any, ref: any, d: any) => {
-  //   const newWidth002 = ref.style.width;
-  //   const newWidth001 = `${100 - parseFloat(newWidth002)}%`;
-
-  //   setWidth002(newWidth002);
-  //   setWidth001(newWidth001);
-  //   // Không cần cập nhật left của 002 ở đây để giữ nguyên vị trí bên phải
-  // };
 
   const marginRef = useRef<number>(10);
   return (
@@ -328,17 +338,48 @@ int main()
         }}
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.user.problem.root)}
-            >
-              Danh sách các bài tập
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
-          </Box>
+          {problemId && (
+            <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
+              <ParagraphSmall
+                colorname='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.user.problem.root)}
+              >
+                Danh sách các bài tập
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
+            </Box>
+          )}
+          {courseId && lessonId && (
+            <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
+              <ParagraphSmall
+                colorname='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => navigate(routes.user.course_certificate.root)}
+              >
+                Danh sách khóa học
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall
+                colorname='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() => {
+                  if (courseId)
+                    navigate(
+                      routes.user.course_certificate.detail.lesson.root.replace(
+                        ":courseId",
+                        courseId
+                      )
+                    );
+                }}
+              >
+                Học C++ cơ bản
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
+            </Box>
+          )}
           <Box className={classes.submit}>
             <Button className={classes.runBtn} variant='contained' color='primary'>
               <PlayArrowIcon />

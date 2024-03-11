@@ -1,25 +1,15 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column !important;
-  background-color: var(--blue-1);
-
-  .bodyContainer {
-    margin-top: 20px;
-    margin-bottom: 40px;
-    .divContainer {
-      padding: 20px;
-      padding-top: 0;
-    }
+.bodyContainer {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  .divContainer {
+    padding: 20px;
+    padding-top: 0;
   }
-  .topUserText {
-    font-size: 18px;
-    color: var(--blue-link);
-  }
-  .topUserText:hover {
-    color: var(--blue-hover);
-  }
+}
+.topUserText {
+  font-size: 18px;
+  color: var(--blue-link);
+}
+.topUserText:hover {
+  color: var(--blue-hover);
 }

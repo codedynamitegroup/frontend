@@ -1,17 +1,8 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column !important;
-  padding-bottom: 10px;
-  background-color: var(--blue-1);
-}
-
 .container {
-  margin-top: 64px;
   padding: 40px 0px;
+  @media (min-width: 1200px) {
+    max-width: 1440px !important;
+  }
 
   @media (min-width: 900px) {
     // equivalent to 'md' in Material-UI
@@ -25,7 +16,6 @@
     gap: 16px;
     .courseLearningItem {
       display: flex;
-      max-width: 656px;
       align-items: center;
       padding: 20px 24px;
       gap: 16px;

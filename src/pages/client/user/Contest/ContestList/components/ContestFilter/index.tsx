@@ -16,7 +16,7 @@ const ContestFilter = (props: PropsData) => {
   const { t } = useTranslation();
 
   return (
-    <Paper sx={{ padding: "10px", marginTop: "-14px" }}>
+    <Paper sx={{ padding: "10px" }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Grid container>
@@ -56,8 +56,12 @@ const ContestFilter = (props: PropsData) => {
             </Grid>
             <Grid item xs={12}>
               <FormGroup>
-                {filterObject.map((difficultyType: any) => (
-                  <FormControlLabel control={<Checkbox defaultChecked />} label={difficultyType} />
+                {filterObject.map((difficultyType: any, index: number) => (
+                  <FormControlLabel
+                    key={index}
+                    control={<Checkbox defaultChecked />}
+                    label={difficultyType}
+                  />
                 ))}
               </FormGroup>
             </Grid>

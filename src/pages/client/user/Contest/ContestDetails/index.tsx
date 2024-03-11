@@ -268,146 +268,136 @@ const ContestDetails = () => {
     setValue(newValue);
   };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
   const { t } = useTranslation();
 
   return (
-    <Box className={classes.root}>
-      <Header ref={headerRef} />
-      <main style={{ marginTop: `${headerHeight}px` }}>
-        <ContestTimeInformation
-          status={ContestData["status"]}
-          startDate={"March, 2, 2024"}
-          endDate={"2024-3-4 23:59:59"}
-          joinContest={ContestData["joinedContest"]}
-          contestName={ContestData["name"]}
-        />
-        <Container className={classes.bodyContainer}>
-          <Grid container spacing={1}>
-            <Grid
-              item
-              xs={value !== "3" && ContestData["status"] !== EContestStatus.featured ? 9 : 12}
-            >
-              <Paper>
-                <TabContext value={value}>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <TabList onChange={handleChange} aria-label='lab API tabs example'>
+    <>
+      <ContestTimeInformation
+        status={ContestData["status"]}
+        startDate={"March, 2, 2024"}
+        endDate={"2024-3-4 23:59:59"}
+        joinContest={ContestData["joinedContest"]}
+        contestName={ContestData["name"]}
+      />
+      <Container className={classes.bodyContainer}>
+        <Grid container spacing={1}>
+          <Grid
+            item
+            xs={value !== "3" && ContestData["status"] !== EContestStatus.featured ? 9 : 12}
+          >
+            <Paper>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <TabList onChange={handleChange} aria-label='lab API tabs example'>
+                    <Tab
+                      label={t("contest_detail_description")}
+                      translation-key='contest_detail_description'
+                      value='1'
+                    />
+                    {ContestData["status"] !== EContestStatus.featured &&
+                    ContestData["joinedContest"] ? (
                       <Tab
-                        label={t("contest_detail_description")}
-                        translation-key='contest_detail_description'
-                        value='1'
+                        label={t("contest_detail_problems")}
+                        translation-key='contest_detail_problems'
+                        value='2'
                       />
-                      {ContestData["status"] !== EContestStatus.featured &&
-                      ContestData["joinedContest"] ? (
-                        <Tab
-                          label={t("contest_detail_problems")}
-                          translation-key='contest_detail_problems'
-                          value='2'
-                        />
-                      ) : null}
-                      {ContestData["status"] === EContestStatus.ended ||
-                      ContestData["status"] === EContestStatus.happening ? (
-                        <Tab
-                          label={t("contest_detail_leaderboard")}
-                          translation-key='contest_detail_leaderboard'
-                          value='3'
-                        />
-                      ) : null}
-                    </TabList>
-                  </Box>
-                  <TabPanel value='1'>
-                    <div
-                      className={classes.divContainer}
-                      dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
-                    ></div>
+                    ) : null}
+                    {ContestData["status"] === EContestStatus.ended ||
+                    ContestData["status"] === EContestStatus.happening ? (
+                      <Tab
+                        label={t("contest_detail_leaderboard")}
+                        translation-key='contest_detail_leaderboard'
+                        value='3'
+                      />
+                    ) : null}
+                  </TabList>
+                </Box>
+                <TabPanel value='1'>
+                  <div
+                    className={classes.divContainer}
+                    dangerouslySetInnerHTML={{ __html: ContestData["description"] }}
+                  ></div>
+                </TabPanel>
+                {ContestData["status"] !== EContestStatus.featured &&
+                ContestData["joinedContest"] ? (
+                  <TabPanel value='2'>
+                    <Grid container spacing={3}>
+                      {problemData.map((problem) => (
+                        <Grid item xs={12} key={problem.name}>
+                          <ContestProblemItem
+                            name={problem.name}
+                            point={problem.point}
+                            maxScore={problem.maxScore}
+                            difficulty={problem.difficulty}
+                            maxSubmission={problem.maxSubmission}
+                            submission={problem.submission}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
                   </TabPanel>
-                  {ContestData["status"] !== EContestStatus.featured &&
-                  ContestData["joinedContest"] ? (
-                    <TabPanel value='2'>
-                      <Grid container spacing={3}>
-                        {problemData.map((problem) => (
-                          <Grid item xs={12} key={problem.name}>
-                            <ContestProblemItem
-                              name={problem.name}
-                              point={problem.point}
-                              maxScore={problem.maxScore}
-                              difficulty={problem.difficulty}
-                              maxSubmission={problem.maxSubmission}
-                              submission={problem.submission}
-                            />
+                ) : null}
+
+                {ContestData["status"] === EContestStatus.ended ||
+                ContestData["status"] === EContestStatus.happening ? (
+                  <TabPanel value='3' translation-key='contest_detail_leaderboard'>
+                    <Heading1>{t("contest_detail_leaderboard")}</Heading1>
+                    <ContestLeaderboard
+                      currentUserRank={currentUserRank}
+                      rankingList={rankingList}
+                      problemList={problemList}
+                    />
+                  </TabPanel>
+                ) : null}
+              </TabContext>
+            </Paper>
+          </Grid>
+          {value !== "3" ? (
+            <Grid item xs={3}>
+              {ContestData["status"] !== EContestStatus.featured ? (
+                <Paper>
+                  <Grid container direction='column' alignItems='center' justifyContent='center'>
+                    <Grid item xs={12}>
+                      <Heading4 margin={"10px"} translation-key='contest_detail_leaderboard_rank'>
+                        {t("contest_detail_leaderboard_rank")}
+                      </Heading4>
+                      <Divider orientation='horizontal' />
+                    </Grid>
+                    {topUserRank && topUserRank.length !== 0 ? (
+                      <Stack spacing={1} margin={"10px 0 10px 0"}>
+                        {topUserRank.map((user, index) => (
+                          <Grid item xs={12} key={user.rank}>
+                            <Stack alignItems={"center"} direction={"row"}>
+                              <EmojiEventsIcon
+                                fontSize='small'
+                                sx={{
+                                  color: index === 0 ? "gold" : index === 1 ? "gray" : "brown",
+                                  marginRight: "5px"
+                                }}
+                              />
+                              <Link component={RouterLink} to='#' underline='none'>
+                                <Typography className={classes.topUserText}>{user.name}</Typography>
+                              </Link>
+                            </Stack>
                           </Grid>
                         ))}
-                      </Grid>
-                    </TabPanel>
-                  ) : null}
-
-                  {ContestData["status"] === EContestStatus.ended ||
-                  ContestData["status"] === EContestStatus.happening ? (
-                    <TabPanel value='3' translation-key='contest_detail_leaderboard'>
-                      <Heading1>{t("contest_detail_leaderboard")}</Heading1>
-                      <ContestLeaderboard
-                        currentUserRank={currentUserRank}
-                        rankingList={rankingList}
-                        problemList={problemList}
-                      />
-                    </TabPanel>
-                  ) : null}
-                </TabContext>
-              </Paper>
+                      </Stack>
+                    ) : (
+                      <Typography
+                        color='var(--gray-30)'
+                        translation-key='contest_detail_leaderboard_no_data'
+                      >
+                        {t("contest_detail_leaderboard_no_data")}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Paper>
+              ) : null}
             </Grid>
-            {value !== "3" ? (
-              <Grid item xs={3}>
-                {ContestData["status"] !== EContestStatus.featured ? (
-                  <Paper>
-                    <Grid container direction='column' alignItems='center' justifyContent='center'>
-                      <Grid item xs={12}>
-                        <Heading4 margin={"10px"} translation-key='contest_detail_leaderboard_rank'>
-                          {t("contest_detail_leaderboard_rank")}
-                        </Heading4>
-                        <Divider orientation='horizontal' />
-                      </Grid>
-                      {topUserRank && topUserRank.length !== 0 ? (
-                        <Stack spacing={1} margin={"10px 0 10px 0"}>
-                          {topUserRank.map((user, index) => (
-                            <Grid item xs={12} key={user.rank}>
-                              <Stack alignItems={"center"} direction={"row"}>
-                                <EmojiEventsIcon
-                                  fontSize='small'
-                                  sx={{
-                                    color: index === 0 ? "gold" : index === 1 ? "gray" : "brown",
-                                    marginRight: "5px"
-                                  }}
-                                />
-                                <Link component={RouterLink} to='#' underline='none'>
-                                  <Typography className={classes.topUserText}>
-                                    {user.name}
-                                  </Typography>
-                                </Link>
-                              </Stack>
-                            </Grid>
-                          ))}
-                        </Stack>
-                      ) : (
-                        <Typography
-                          color='var(--gray-30)'
-                          translation-key='contest_detail_leaderboard_no_data'
-                        >
-                          {t("contest_detail_leaderboard_no_data")}
-                        </Typography>
-                      )}
-                    </Grid>
-                  </Paper>
-                ) : null}
-              </Grid>
-            ) : null}
-          </Grid>
-        </Container>
-      </main>
-      <Footer />
-    </Box>
+          ) : null}
+        </Grid>
+      </Container>
+    </>
   );
 };
 
