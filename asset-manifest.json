@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.c16299df.css",
-    "main.js": "/frontend/static/js/main.7ccc3953.js",
+    "main.css": "/frontend/static/css/main.22a9fe93.css",
+    "main.js": "/frontend/static/js/main.1e0998f4.js",
     "static/js/705.61987cbd.chunk.js": "/frontend/static/js/705.61987cbd.chunk.js",
     "static/js/75.42a827b9.chunk.js": "/frontend/static/js/75.42a827b9.chunk.js",
     "static/js/834.ada2e214.chunk.js": "/frontend/static/js/834.ada2e214.chunk.js",
@@ -43,7 +43,7 @@
     "static/media/flag-vietnam.svg": "/frontend/static/media/flag-vietnam.f739d757261bd85c67f40051424ee133.svg"
   },
   "entrypoints": [
-    "static/css/main.c16299df.css",
-    "static/js/main.7ccc3953.js"
+    "static/css/main.22a9fe93.css",
+    "static/js/main.1e0998f4.js"
   ]
 }
