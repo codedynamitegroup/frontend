@@ -12,6 +12,7 @@ import MoreIcon from "@mui/icons-material/MoreHoriz";
 import TablePagination from "@mui/material/TablePagination";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface PropsData {
   problemList: any;
@@ -45,9 +46,9 @@ export default function ContestLeaderboard(props: PropsData) {
                 align='center'
                 rowSpan={2}
                 className={clsx(classes.tableHeader, classes.tableCell)}
-                translation-key='contest_detail_leaderboard_participant'
+                translation-key='common_participant'
               >
-                {t("contest_detail_leaderboard_participant")}
+                {i18next.format(t("common_participant"), "firstUppercase")}
               </TableCell>
               <TableCell
                 align='center'
@@ -201,7 +202,6 @@ export default function ContestLeaderboard(props: PropsData) {
                 className={classes.tableCell}
                 onPageChange={onPageChange}
                 labelDisplayedRows={({ from, to, count }) => {
-                  // return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
                   return t("common_table_from_to", {
                     from: `${from}`,
                     to: `${to}`,

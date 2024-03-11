@@ -18,6 +18,8 @@ import CourseCertificateLesson from "./components/Lesson";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
@@ -55,6 +57,8 @@ const CourseCertificateDetail = () => {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  const { t } = useTranslation();
+
   return (
     <Grid id={classes.root}>
       <Header ref={headerRef} />
@@ -67,8 +71,9 @@ const CourseCertificateDetail = () => {
                   colorName='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.user.course_certificate.root)}
+                  translation-key='certificate_detail_breadcrump'
                 >
-                  Danh sách khóa học
+                  {t("certificate_detail_breadcrump")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall colorName='--blue-500'>Học C++ cơ bản</ParagraphSmall>
@@ -97,7 +102,12 @@ const CourseCertificateDetail = () => {
                         <StarIcon id={classes.icStar} />
                       </Box>
                       <Box id={classes.userReviews}>
-                        <ParagraphBody colorName='--gray-60'>10 Đánh giá</ParagraphBody>
+                        <ParagraphBody
+                          colorName='--gray-60'
+                          translation-key='certificate_detail_rating'
+                        >
+                          10 {t("certificate_detail_rating")}
+                        </ParagraphBody>
                       </Box>
                     </Grid>
                     <Grid
@@ -107,10 +117,20 @@ const CourseCertificateDetail = () => {
                       className={classes.courseDetailsWrapper}
                     >
                       <Box id={classes.numberLesson}>
-                        <ParagraphBody fontWeight={"600"}>20 Bài học</ParagraphBody>
+                        <ParagraphBody
+                          fontWeight={"600"}
+                          translation-key='certificate_detail_lesson'
+                        >
+                          20 {t("certificate_detail_lesson", { count: 2 })}
+                        </ParagraphBody>
                       </Box>
                       <Box id={classes.courseLevel}>
-                        <ParagraphBody colorName='--gray-60'>Cấp độ: Dễ</ParagraphBody>
+                        <ParagraphBody
+                          colorName='--gray-60'
+                          translation-key={["common_easy", "commmon_level"]}
+                        >
+                          {t("commmon_level", { count: 1 })}: {t("common_easy")}
+                        </ParagraphBody>
                       </Box>
                     </Grid>
                     <Grid item xs={4} className={classes.courseDetailsWrapper}>
@@ -118,7 +138,12 @@ const CourseCertificateDetail = () => {
                         <ParagraphBody fontWeight={"600"}>100</ParagraphBody>
                       </Box>
                       <Box>
-                        <ParagraphBody colorName='--gray-60'>Số người học</ParagraphBody>
+                        <ParagraphBody
+                          colorName='--gray-60'
+                          translation-key='certificate_detail_participant'
+                        >
+                          {t("certificate_detail_participant")}
+                        </ParagraphBody>
                       </Box>
                     </Grid>
                   </Grid>
@@ -127,7 +152,9 @@ const CourseCertificateDetail = () => {
                   <Grid item xs={12} md={6}>
                     <Box id={classes.courseProgress}>
                       <Box id={classes.progressTitle}>
-                        <ParagraphBody colorName='--gray-80'>Tiến độ: 38%</ParagraphBody>
+                        <ParagraphBody colorName='--gray-80' translation-key={"common_progress"}>
+                          {i18next.format(t("common_progress"), "firstUppercase")}: 38%
+                        </ParagraphBody>
                         <FlagIcon id={classes.icFlag} />
                       </Box>
                       <LinearProgress determinate value={38} />
@@ -138,8 +165,9 @@ const CourseCertificateDetail = () => {
                     <Button
                       startIcon={<SchoolIcon id={classes.icSchool} />}
                       btnType={BtnType.Primary}
+                      translation-key='certificate_detail_start_button'
                     >
-                      Bắt đầu học ngay
+                      {t("certificate_detail_start_button")}
                     </Button>
                   </Grid>
                 </Grid>
@@ -152,17 +180,29 @@ const CourseCertificateDetail = () => {
                   >
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Bài học</ParagraphBody>}
+                      label={
+                        <ParagraphBody translation-key='certificate_detail_lesson'>
+                          {t("certificate_detail_lesson")}
+                        </ParagraphBody>
+                      }
                       value={0}
                     />
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Giới thiệu</ParagraphBody>}
+                      label={
+                        <ParagraphBody translation-key='commmon_introduction'>
+                          {t("commmon_introduction")}
+                        </ParagraphBody>
+                      }
                       value={1}
                     />
                     <Tab
                       sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Chứng chỉ</ParagraphBody>}
+                      label={
+                        <ParagraphBody translation-key='commmon_certificate'>
+                          {t("commmon_certificate")}
+                        </ParagraphBody>
+                      }
                       value={2}
                     />
                   </Tabs>

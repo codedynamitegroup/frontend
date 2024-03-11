@@ -16,6 +16,7 @@ import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import Footer from "components/Footer";
+import { useTranslation } from "react-i18next";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -130,6 +131,7 @@ const CourseCertificates = () => {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  const { t } = useTranslation();
 
   return (
     <Grid className={classes.root}>
@@ -142,9 +144,11 @@ const CourseCertificates = () => {
           }}
         >
           <Container id={classes.bannerContainer} className={classes.container}>
-            <Heading1 colorName={"--white"}>Khóa học chứng chỉ</Heading1>
-            <Heading3 colorName={"--white"}>
-              Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau
+            <Heading1 colorName={"--white"} translation-key='certificate_title'>
+              {t("certificate_title")}
+            </Heading1>
+            <Heading3 colorName={"--white"} translation-key='certificate_description'>
+              {t("certificate_description")}
             </Heading3>
             <Box id={classes.bannerSearch}>
               <SearchBar onSearchClick={searchHandle} />
@@ -156,18 +160,19 @@ const CourseCertificates = () => {
                 items={[
                   {
                     value: "0",
-                    label: "Tất cả"
+                    label: t("common_all")
                   },
                   {
                     value: "1",
-                    label: "Đã đăng ký"
+                    label: t("common_registered")
                   },
                   {
                     value: "2",
-                    label: "Chưa đăng ký"
+                    label: t("common_not_registered")
                   }
                 ]}
                 backgroundColor='#FFFFFF'
+                translation-key={["common_all", "common_registered", "common_not_registered"]}
               />
             </Box>
           </Container>
@@ -176,9 +181,11 @@ const CourseCertificates = () => {
           <Container className={classes.container}>
             <Grid container>
               <Grid item xs={2.5} id={classes.filter}>
-                <Heading3>Lọc theo</Heading3>
+                <Heading3 translation-key='common_filter_by'>{t("common_filter_by")}</Heading3>
                 <Box className={classes.couseCertificatesByTopic}>
-                  <Heading4>Chủ đề</Heading4>
+                  <Heading4 translation-key='common_filter_topic'>
+                    {t("common_filter_topic")}
+                  </Heading4>
                   {filterByTopics.map((topic, index) => (
                     <Box className={classes.couseCertificatesByTopicItem} key={index}>
                       <Checkbox checked={topic.checked} className={classes.checkbox} />
@@ -194,7 +201,9 @@ const CourseCertificates = () => {
               <Grid item xs={9}>
                 <Box id={classes.couseCertificatesWrapper}>
                   <Box className={classes.couseCertificatesByTopic}>
-                    <Heading2>Kiến thức cơ bản</Heading2>
+                    <Heading2 translation-key='certificate_basic'>
+                      {t("certificate_basic")}
+                    </Heading2>
                     <Grid container spacing={3}>
                       {courseCertificatesBasic.map((course, index) => (
                         <Grid item xs={4} key={index}>
@@ -246,7 +255,9 @@ const CourseCertificates = () => {
                     </Grid>
                   </Box>
                   <Box className={classes.couseCertificatesByTopic}>
-                    <Heading2>Kiến thức nâng cao</Heading2>
+                    <Heading2 translation-key='certificate_advance'>
+                      {t("certificate_advance")}
+                    </Heading2>
                     <Grid container spacing={3}>
                       {courseCertificatesAdvanced.map((course, index) => (
                         <Grid item xs={4} key={index}>

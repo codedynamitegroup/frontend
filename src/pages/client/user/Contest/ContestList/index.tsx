@@ -16,6 +16,7 @@ import "swiper/css/navigation";
 import "swiper/scss/pagination";
 import "swiper/scss/scrollbar";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const filterObject = ["C++", "Java", "Python", "C#", "Javascript", "Ruby", "PHP"];
 
@@ -144,9 +145,9 @@ const ContestList = () => {
                     fontWeight={700}
                     fontFamily={"Roboto, sans-serif"}
                     color={"var(--white)"}
-                    translation-key='contest_participant_num'
+                    translation-key='common_participant'
                   >
-                    {t("contest_participant_num")}
+                    {i18next.format(t("common_participant", { count: 2 }), "uppercase")}
                   </Typography>
                 </Box>
               </Grid>

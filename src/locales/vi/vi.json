@@ -10,6 +10,17 @@
     "common_table_row_per_page": "Số dòng trên mỗi trang",
     "common_table_from_to": "{{from}}-{{to}} của {{countText}}",
     "common_more_than": "nhiều hơn",
+    "common_filter_by": "Lọc theo",
+    "common_filter_topic": "Chủ đề",
+    "common_all": "Tất cả",
+    "common_registered": "Đã đăng ký",
+    "common_not_registered": "Chưa đăng ký",
+    "common_progress": "Tiến độ",
+    "commmon_introduction": "Giới thiệu",
+    "commmon_certificate": "Chứng chỉ",
+    "commmon_level": "Cấp độ",
+    "common_participant": "Người tham gia",
+    "common_continue": "Tiếp tục",
 
     "language_us": "Tiếng Anh",
     "language_vn": "Tiếng Việt",
@@ -64,9 +75,29 @@
     "contest_detail_problems": "Đề thi",
     "contest_detail_leaderboard": "Bảng xếp hạng",
     "contest_detail_leaderboard_no_data": "Không có dữ liệu",
-    "contest_detail_join_button": "Tham gia thi",
+    "contest_detail_join_button": "Tham gia",
     "contest_detail_leaderboard_rank": "Hạng",
-    "contest_detail_leaderboard_participant": "Người tham gia",
-    "contest_detail_leaderboard_total_time": "Tổng thời gian làm"
+    "contest_detail_leaderboard_total_time": "Tổng thời gian làm",
+
+    "certificate_title": "Khóa học chứng chỉ",
+    "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
+    "certificate_basic": "Kiến thức cơ bản",
+    "certificate_advance": "Kiến thức nâng cao",
     
+    "certificate_detail_rating": "Đánh giá",
+    "certificate_detail_lesson": "Bài học",
+    "certificate_detail_participant": "Số người học",
+    "certificate_detail_start_button": "Bắt đầu học ngay",
+    "certificate_detail_lesson_title": "Các bài học ở khóa học",
+    "certificate_detail_certification_title": "Chứng chỉ khóa học",
+    "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
+    "certificate_detail_breadcrump": "Danh sách khóa học",
+    
+    "dashboard_continue_title": "Tiếp tục khóa học của bạn",
+    "dashboard_happening_contest": "Cuộc thi đang diễn ra",
+    "dashboard_other_course": "Các khóa học khác",
+    "dashboard_current_lesson": "Bài học hiện tại",
+    "dashboard_participant_num": "Đang có {{participantNum}} người tham gia",
+    "dashboard_contest_end": "Cuộc thi sẽ kết thúc vào ngày"
+
 }

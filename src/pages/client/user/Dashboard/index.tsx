@@ -21,6 +21,8 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -57,6 +59,7 @@ export default function Dashboard() {
       currentLesson: "Đọc ghi file"
     }
   ];
+  const { t } = useTranslation();
 
   const courseCertificatesBasic: CourseCertificate[] = [
     {
@@ -65,7 +68,7 @@ export default function Dashboard() {
       description:
         "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
       lesson: 10,
-      level: "Dễ"
+      level: t("common_easy")
     },
     {
       imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
@@ -73,7 +76,7 @@ export default function Dashboard() {
       description:
         "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
       lesson: 30,
-      level: "Dễ"
+      level: t("common_easy")
     },
     {
       imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
@@ -81,7 +84,7 @@ export default function Dashboard() {
       description:
         "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
       lesson: 35,
-      level: "Dễ"
+      level: t("common_easy")
     }
   ];
   return (
@@ -91,8 +94,8 @@ export default function Dashboard() {
         <Container className={classes.container}>
           <Grid container className={classes.sectionContentImage}>
             <Grid item sm={12} md={6} className={classes.sectionContent}>
-              <Box className={classes.currentCourse}>
-                <Heading2>Tiếp tục khóa học của bạn</Heading2>
+              <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
+                <Heading2>{t("dashboard_continue_title")}</Heading2>
                 <Box className={classes.courseLearningList}>
                   {courses.map((course, index) => (
                     <Grid className={classes.courseLearningItem} key={index}>
@@ -103,14 +106,18 @@ export default function Dashboard() {
                           <Box className={classes.processBar} style={{ width: "100%" }}>
                             <LinearProgress determinate value={course.process} />
                           </Box>
-                          <ParagraphExtraSmall>
-                            Bài học hiện tại: {course.currentLesson}
+                          <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                            {t("dashboard_current_lesson")}: {course.currentLesson}
                           </ParagraphExtraSmall>
                         </Box>
                       </Box>
                       <Box className={classes.learnBtn}>
-                        <Button variant='contained' color='primary'>
-                          Tiếp tục
+                        <Button
+                          variant='contained'
+                          color='primary'
+                          translation-key='common_continue'
+                        >
+                          {i18next.format(t("common_continue"), "firstUppercase")}
                         </Button>
                       </Box>
                     </Grid>
@@ -119,9 +126,11 @@ export default function Dashboard() {
               </Box>
               <Box className={classes.courseRecommend}>
                 <Box className={classes.wrapperCourseRecommend}>
-                  <Heading2>Các khóa học khác</Heading2>
-                  <Button variant='outlined' color='primary'>
-                    Xem tất cả
+                  <Heading2 translation-key='dashboard_other_course'>
+                    {t("dashboard_other_course")}
+                  </Heading2>
+                  <Button variant='outlined' color='primary' translation-key='home_more_button'>
+                    {t("home_more_button")}
                   </Button>
                 </Box>
                 <Box className={classes.couseCertificatesByTopic}>
@@ -153,7 +162,13 @@ export default function Dashboard() {
                             <Grid item xs={2}>
                               <Box className={classes.iconCourse}>
                                 <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                                <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+                                <ParagraphBody translation-key='certificate_detail_lesson'>
+                                  {course.lesson}{" "}
+                                  {i18next.format(
+                                    t("certificate_detail_lesson", { count: 2 }),
+                                    "lowercase"
+                                  )}
+                                </ParagraphBody>
                               </Box>
                               <Box className={classes.iconCourse}>
                                 <img
@@ -174,7 +189,9 @@ export default function Dashboard() {
             </Grid>
             <Grid item md={2}></Grid>
             <Grid item sm={12} md={4} className={classes.wrapperContest}>
-              <Heading2>Cuộc thi đang diễn ra</Heading2>
+              <Heading2 translation-key='dashboard_happening_contest'>
+                {t("dashboard_happening_contest")}
+              </Heading2>
               <Box className={classes.contest}>
                 <Card>
                   <CardMedia
@@ -187,16 +204,28 @@ export default function Dashboard() {
                     <Typography gutterBottom variant='h5' component='div'>
                       Cuộc thi lập trình đa vũ trụ
                     </Typography>
-                    <Typography variant='body2' color='text.secondary'>
-                      Đang có 1000 người tham gia
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'
+                      translation-key='dashboard_participant_num'
+                    >
+                      {t("dashboard_participant_num", { participantNum: 1000 })}
                     </Typography>
-                    <Typography variant='body2' color='text.primary'>
-                      Cuộc thi sẽ kết thúc vào ngày 20/04/2024
+                    <Typography
+                      variant='body2'
+                      color='text.primary'
+                      translation-key='dashboard_contest_end'
+                    >
+                      {t("dashboard_contest_end")} 20/04/2024
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size='large' variant='contained'>
-                      Tham gia
+                    <Button
+                      size='large'
+                      variant='contained'
+                      translation-key='contest_detail_join_button'
+                    >
+                      {t("contest_detail_join_button")}
                     </Button>
                   </CardActions>
                 </Card>

@@ -10,6 +10,19 @@
     "common_table_row_per_page": "Rows per page",
     "common_table_from_to": "{{from}}-{{to}} of {{countText}}",
     "common_more_than": "more than",
+    "common_filter_by": "Filter by",
+    "common_filter_topic": "Topic",
+    "common_all": "All",
+    "common_registered": "Registered",
+    "common_not_registered": "Not registered",
+    "common_progress": "progress",
+    "commmon_introduction": "Introduction",
+    "commmon_certificate": "Certification",
+    "commmon_level": "Level",
+    "commmon_level_other": "Levels",
+    "common_participant": "participant",
+    "common_participant_other": "participants",
+    "common_continue": "continue",
 
     "language_us": "English",
     "language_vn": "Vietnamese",
@@ -38,7 +51,6 @@
 
     "contest_title": "COMPETITIVE PROGRAMMING",
     "contest_total_num": "CONTESTS",
-    "contest_participant_num": "PARTICIPANTS",
     "contest_list_title": "Contest list",
     "contest_happening_button": "Happening",
     "contest_ended_button": "Ended",
@@ -68,7 +80,28 @@
     "contest_detail_join_button": "Join contest",
     "contest_detail_leaderboard_rank": "Rank", 
     "contest_detail_leaderboard_participant": "Participant",
-    "contest_detail_leaderboard_total_time": "Total time"
+    "contest_detail_leaderboard_total_time": "Total time",
 
+    "certificate_title": "Certificate course",
+    "certificate_description": "Do you want to practice your coding skills? Try the following courses",
+    "certificate_basic": "Basic knowledge",
+    "certificate_advance": "Advance knowledge",
+   
+    "certificate_detail_rating": "Ratings",
+    "certificate_detail_lesson": "Lesson",
+    "certificate_detail_lesson_other": "Lessons",
+    "certificate_detail_participant": "Participants",
+    "certificate_detail_start_button": "Start now",
+    "certificate_detail_lesson_title": "Lessons in this course",
+    "certificate_detail_certification_title": "Course certification",
+    "certificate_detail_certification_description": "You will receive a course certificate when you complete at least 85% of the course content",
+    "certificate_detail_breadcrump": "Course list",
+
+    "dashboard_continue_title": "Continue your course",
+    "dashboard_happening_contest": "Happening contests",
+    "dashboard_other_course": "Other courses",
+    "dashboard_current_lesson": "Current lesson",
+    "dashboard_participant_num": "There are {{participantNum}} have joined",
+    "dashboard_contest_end": "Contest will end on"
 
 }
