@@ -47,13 +47,13 @@ import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExam
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
+import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview";
+import LecturerSourceCodePlagiarismSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismSubmissions";
 
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route path={"/grading-pdf"} element={<CustomPdfViewer />} />
-
       <Route path={routes.user.problem.root} element={<ListProblem />} />
       <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
       <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
@@ -66,7 +66,6 @@ const router = createHashRouter(
       <Route path={routes.user.course_certificate.root} element={<CourseCertificates />} />
       <Route path={routes.user.contest.root} element={<ContestList />} />
       <Route path={routes.user.contest.detail} element={<ContestDetails />} />
-
       <Route
         path={routes.user.course_certificate.detail.root}
         element={<CourseCertificateDetail />}
@@ -75,21 +74,15 @@ const router = createHashRouter(
         path={routes.user.course_certificate.detail.lesson.detail}
         element={<CourseCertificateLessonProblem />}
       />
-
       <Route
         path={routes.user.course_certificate.detail.lesson.share_solution}
         element={<LessonShareSolution />}
       />
-
       <Route path={routes.lecturer.code_question.detail} Component={CodeQuestionDetails} />
       <Route path={routes.lecturer.code_question.management} element={<CodeQuestionManagement />} />
       <Route path={routes.lecturer.code_question.create} element={<CodeQuestionCreated />} />
       <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
       <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection}
-        element={<LecturerSourceCodePlagiarismManagement />}
-      />
       <Route
         path={routes.lecturer.assignment.preview_submit}
         element={<PreviewAssignmentSubmission />}
@@ -97,7 +90,15 @@ const router = createHashRouter(
       <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
       <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
       <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
-      <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+      <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />{" "}
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection}
+        element={<LecturerSourceCodePlagiarismManagement />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_submissions}
+        element={<LecturerSourceCodePlagiarismSubmissions />}
+      />
       <Route path={routes.lecturer.calendar} element={<LecturerEventCalendar />} />
       <Route path={routes.lecturer.course.management} element={<LecturerCourseManagement />} />
       <Route path={routes.lecturer.course.detail} Component={CourseDetail} />
@@ -121,14 +122,12 @@ const router = createHashRouter(
         element={<QuestionCreated qtype={qtype.true_false.code} />}
         handle={{ crumbName: "default" }}
       />
-
       {"AI Crete question"}
       <Route
         path={routes.lecturer.question.ai.create}
         element={<AIQuestionCreated />}
         handle={{ crumbName: "default" }}
       />
-
       <Route
         path={routes.lecturer.question_bank.path}
         element={<QuestionBankManagementLayout />}
@@ -174,7 +173,6 @@ const router = createHashRouter(
           )}
         </Route>
       </Route>
-
       <Route path={routes.student.course.management} element={<StudentCourseManagement />} />
       <Route path={routes.student.course.detail} element={<StudentCourseDetail />} />
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />

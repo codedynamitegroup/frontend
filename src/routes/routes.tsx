@@ -76,7 +76,11 @@ export const routes = {
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
       review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
       code_plagiarism_detection:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
+      code_submissions:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions",
+      code_submission_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions/:codeSubmissionId"
     }
   },
   student: {

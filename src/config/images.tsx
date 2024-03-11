@@ -26,6 +26,7 @@ import tempContest5 from "assets/img/temp/contest/5.png";
 
 import flagVietnam from "assets/img/icon/flag/flag-vietnam.svg";
 import flagUs from "assets/img/icon/flag/flag-us.svg";
+import icAlmostEqualTo from "assets/img/icon/almost_equal_to_icon.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
@@ -42,7 +43,8 @@ const images = {
   icCertificate,
   contestTimeBackground,
   temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } },
-  flagIcon: { flagVietnam, flagUs }
+  flagIcon: { flagVietnam, flagUs },
+  icAlmostEqualTo
 };
 
 export default images;
