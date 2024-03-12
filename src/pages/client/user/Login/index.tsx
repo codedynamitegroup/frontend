@@ -9,7 +9,9 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 export default function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const handleLogin = () => {
     localStorage.setItem("user", "HIEUTHUHAI");
@@ -24,18 +26,23 @@ export default function Login() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.form}>
-              <Typography variant='h4' className={classes.title}>
-                Đăng nhập
+              <Typography
+                variant='h4'
+                className={classes.title}
+                translation-key='header_login_button'
+              >
+                {t("header_login_button")}
               </Typography>
               <form className={classes.formControl}>
                 <TextField label='Email' margin='normal' name='email' required variant='outlined' />
                 <TextField
-                  label='Mật khẩu'
+                  label={t("common_password")}
                   margin='normal'
                   name='password'
                   required
                   type='password'
                   variant='outlined'
+                  translation-key='common_password'
                 />
                 <Button
                   className={classes.submit}
@@ -43,22 +50,31 @@ export default function Login() {
                   type='submit'
                   variant='contained'
                   onClick={handleLogin}
+                  translation-key='header_login_button'
                 >
-                  Đăng nhập
+                  {t("header_login_button")}
                 </Button>
                 <Box className={classes.option}>
-                  <Link component={RouterLink} to={routes.user.register.root} variant='body2'>
-                    {"Chưa có tài khoản? Đăng ký"}
+                  <Link
+                    component={RouterLink}
+                    to={routes.user.register.root}
+                    variant='body2'
+                    translation-key='login_register_account'
+                  >
+                    {t("login_register_account")}
                   </Link>
                   <Link
                     component={RouterLink}
                     to={routes.user.forgot_password.root}
                     variant='body2'
+                    translation-key='common_forget_password'
                   >
-                    {"Quên mật khẩu?"}
+                    {t("common_forget_password")}
                   </Link>
                 </Box>
-                <ParagraphBody>Hoặc đăng nhập với</ParagraphBody>
+                <ParagraphBody translation-key='register_login_alternative'>
+                  {t("register_login_alternative")}
+                </ParagraphBody>
                 <Box className={classes.social}>
                   <Button className={`${classes.socialIconGoogle} ${classes.socialIcon}`}>
                     <FontAwesomeIcon icon={faGoogle} />

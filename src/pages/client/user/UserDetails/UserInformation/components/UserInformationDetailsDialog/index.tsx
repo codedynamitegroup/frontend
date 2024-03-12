@@ -12,6 +12,7 @@ import images from "config/images";
 import dayjs from "dayjs";
 import { useState } from "react";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 interface UserInformationDetailsDialogProps extends DialogProps {
   initialData: {
@@ -44,6 +45,7 @@ const UserInformationDetailsDialog = ({
   onHanldeChangePassword,
   ...props
 }: UserInformationDetailsDialogProps) => {
+  const { t } = useTranslation();
   const [data, setData] = useState(initialData);
 
   const onHandleChangeGender = (value: string) => {
@@ -68,15 +70,16 @@ const UserInformationDetailsDialog = ({
       <Box component='form' className={classes.formBody} autoComplete='off'>
         <InputTextField
           type='text'
-          title='Họ và tên'
+          title={t("common_fullname")}
           value={data.name}
           onChange={(e) => {
             setData((pre) => ({ ...pre, name: e.target.value }));
           }}
+          translation-key='common_fullname'
         />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Ngày sinh</TextTitle>
+            <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <CustomDatePicker
@@ -92,7 +95,7 @@ const UserInformationDetailsDialog = ({
         </Grid>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Giới tính</TextTitle>
+            <TextTitle translation-key='commmon_sex'>{t("commmon_sex")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <BasicRadioGroup
@@ -102,13 +105,14 @@ const UserInformationDetailsDialog = ({
               items={[
                 {
                   value: "0",
-                  label: "Nam"
+                  label: t("commmon_male")
                 },
                 {
                   value: "1",
-                  label: "Nữ"
+                  label: t("common_female")
                 }
               ]}
+              translation-key={["common_female", "commmon_male"]}
             />
           </Grid>
         </Grid>
@@ -122,7 +126,7 @@ const UserInformationDetailsDialog = ({
         />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Mật khẩu</TextTitle>
+            <TextTitle translation-key='common_password'>{t("common_password")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <Button
@@ -130,13 +134,16 @@ const UserInformationDetailsDialog = ({
               onClick={() => {
                 onHanldeChangePassword && onHanldeChangePassword();
               }}
+              translation-key='user_detail_change_password'
             >
-              Đổi mật khẩu
+              {t("user_detail_change_password")}
             </Button>
           </Grid>
         </Grid>
 
-        <Heading1 fontWeight={"500"}>Tài khoản liên kết</Heading1>
+        <Heading1 fontWeight={"500"} translation-key='user_detail_dialog_account_linked_title'>
+          {t("user_detail_dialog_account_linked_title")}
+        </Heading1>
         <Divider />
 
         <Grid container spacing={1} columns={12}>
@@ -174,7 +181,9 @@ const UserInformationDetailsDialog = ({
               alignItems: "center"
             }}
           >
-            <ParagraphBody>Đã liên kết</ParagraphBody>
+            <ParagraphBody translation-key='user_detail_dialog_linked'>
+              {t("user_detail_dialog_linked")}
+            </ParagraphBody>
           </Grid>
           <Grid
             item
@@ -184,8 +193,12 @@ const UserInformationDetailsDialog = ({
               alignItems: "center"
             }}
           >
-            <Button btnType={BtnType.Text} onClick={() => {}}>
-              Huỷ liên kết
+            <Button
+              btnType={BtnType.Text}
+              onClick={() => {}}
+              translation-key='user_detail_dialog_remove_link'
+            >
+              {t("user_detail_dialog_remove_link")}
             </Button>
           </Grid>
         </Grid>
@@ -226,7 +239,9 @@ const UserInformationDetailsDialog = ({
               alignItems: "center"
             }}
           >
-            <ParagraphBody>Chưa liên kết</ParagraphBody>
+            <ParagraphBody translation-key='user_detail_dialog_not_linked'>
+              {t("user_detail_dialog_not_linked")}
+            </ParagraphBody>
           </Grid>
           <Grid
             item
@@ -236,8 +251,12 @@ const UserInformationDetailsDialog = ({
               alignItems: "center"
             }}
           >
-            <Button btnType={BtnType.Text} onClick={() => {}}>
-              Liên kết
+            <Button
+              btnType={BtnType.Text}
+              onClick={() => {}}
+              translation-key='user_detail_dialog_link'
+            >
+              {t("user_detail_dialog_link")}
             </Button>
           </Grid>
         </Grid>

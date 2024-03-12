@@ -88,12 +88,12 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "copy": "yarn copy-cmaps && yarn copy-standard-fonts && yarn copy-worker",
+    "copy": "npm run copy-cmaps && npm run copy-standard-fonts && npm run copy-worker",
     "copy-cmaps": "node --loader ts-node/esm ./scripts/copy-cmaps.ts",
     "copy-standard-fonts": "node --loader ts-node/esm ./scripts/copy-standard-fonts.ts",
     "copy-worker": "node --loader ts-node/esm ./scripts/copy-worker.ts",
-    "start": "yarn copy && react-scripts start",
-    "build": "yarn copy && react-scripts build",
+    "start": "npm run copy && react-scripts start",
+    "build": "npm run copy && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext ts,tsx src/",

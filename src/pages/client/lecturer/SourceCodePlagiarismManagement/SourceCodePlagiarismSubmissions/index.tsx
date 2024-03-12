@@ -1,22 +1,18 @@
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Grid, IconButton, Toolbar, Tooltip } from "@mui/material";
+import { Box, Card, CssBaseline, Grid, IconButton, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import Header from "components/Header";
+import Heading1 from "components/text/Heading1";
+import Heading3 from "components/text/Heading3";
+import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
-import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
-import Heading2 from "components/text/Heading2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faCode } from "@fortawesome/free-solid-svg-icons";
-import TextTitle from "components/text/TextTitle";
 
 const drawerWidth = 450;
 
@@ -76,7 +72,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function LecturerSourceCodePlagiarismManagement() {
+export default function LecturerSourceCodePlagiarismSubmissions() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
@@ -147,7 +143,19 @@ export default function LecturerSourceCodePlagiarismManagement() {
                 Danh sách bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
+              <ParagraphSmall
+                colorname='--blue-500'
+                className={classes.cursorPointer}
+                onClick={() =>
+                  navigate(
+                    routes.lecturer.exam.code_plagiarism_detection + `?questionId=${questionId}`
+                  )
+                }
+              >
+                Kiểm tra gian lận
+              </ParagraphSmall>
+              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+              <ParagraphSmall colorname='--blue-500'>Danh sách bài lập trình</ParagraphSmall>{" "}
             </Box>
             <IconButton
               color='inherit'
@@ -163,56 +171,12 @@ export default function LecturerSourceCodePlagiarismManagement() {
           <DrawerHeader />
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading1>
-              <ParagraphBody>Báo cáo phát hiện gian lận mã nguồn</ParagraphBody>
-              <Grid container spacing={1}>
-                <Grid item xs={12} md={3}>
-                  <Card className={classes.cardWrapper}>
-                    <Heading2 className={classes.cardTitleHeader}>Thông tin báo cáo</Heading2>
-                    <Box className={classes.reportOpenTimeWrapper}>
-                      <Tooltip title='Thời gian mở bài kiểm tra' placement='top'>
-                        <FontAwesomeIcon icon={faCalendar} color='#737373' size={"lg"} />
-                      </Tooltip>
-                      <ParagraphBody>March 9, 2024 at 2:29 PM GMT+7</ParagraphBody>
-                    </Box>
-                    <Box className={classes.submissionsQuantity}>
-                      <Tooltip title='Số lượng bài nộp' placement='top'>
-                        <FontAwesomeIcon icon={faFile} color='#737373' size={"lg"} />
-                      </Tooltip>
-                      <ParagraphBody>2 bài nộp</ParagraphBody>
-                    </Box>
-                    <Box className={classes.codeLanguage}>
-                      <Tooltip title='Ngôn ngữ lập trình' placement='top'>
-                        <FontAwesomeIcon icon={faCode} color='#737373' size={"lg"} />
-                      </Tooltip>
-                      <ParagraphBody>Java</ParagraphBody>
-                    </Box>
-                    <TextTitle className={classes.labelTitle}>2 nhãn được phát hiện</TextTitle>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                      <Card className={classes.cardWrapper}>Highest similarity</Card>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Card className={classes.cardWrapper}>Average similarity</Card>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Card className={classes.cardWrapper}>Clusters</Card>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card className={classes.cardWrapper}>Similarity distribution</Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card className={classes.cardWrapper}>Submissions</Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card className={classes.cardWrapper}>Clusters</Card>
-                </Grid>
-              </Grid>
+              <Heading1>Danh sách bài nộp lập trình</Heading1>
+              <Heading3>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading3>
+              <ParagraphBody>
+                Tất cả các bài nộp đã phân tích với độ tương đồng cao nhất.
+              </ParagraphBody>
+              <Grid container spacing={1}></Grid>
             </Box>
           </Card>
         </Main>

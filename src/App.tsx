@@ -21,12 +21,13 @@ import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExam
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
+import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview";
 import StudentCoursesManagement from "pages/client/student";
 import LecturerCoursesManagement from "pages/client/lecturer";
 import UserHomepage from "pages/client/user";
 import DetailProblem from "pages/client/user/DetailProblem";
 import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
+import LecturerSourceCodePlagiarismSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismSubmissions";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -64,6 +65,14 @@ const router = createHashRouter(
       <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
       <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
       <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection}
+        element={<LecturerSourceCodePlagiarismManagement />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_submissions}
+        element={<LecturerSourceCodePlagiarismSubmissions />}
+      />
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
