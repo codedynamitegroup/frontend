@@ -20,7 +20,7 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
       }}
     >
       <ParagraphBody
-        colorName={textColor}
+        colorname={textColor}
         zIndex={1}
       >{`${Math.round(Number(props.value!))}%`}</ParagraphBody>
     </LinearProgress>

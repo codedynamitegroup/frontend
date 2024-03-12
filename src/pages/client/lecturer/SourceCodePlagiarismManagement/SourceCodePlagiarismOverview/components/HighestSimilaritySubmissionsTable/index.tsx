@@ -74,7 +74,7 @@ export default function HighestSimilaritySubmissionsTable({
                   <ParagraphBody
                     display={"flex"}
                     justifyContent={"center"}
-                    colorName='--primary'
+                    colorname='--primary'
                     margin={"0 10px"}
                     onClick={() =>
                       navigate(routes.lecturer.exam.code_submissions + `?questionId=${questionId}`)
