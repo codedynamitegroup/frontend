@@ -18,7 +18,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
-import run, { IFormatQuestion, IQuestion } from "./generate";
+import { IFormatQuestion, IQuestion } from "./generate";
+import { createQuestionByAI } from "./generate";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 export enum AlertType {
@@ -80,7 +81,7 @@ const AIQuestionCreated = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    await run(topic, desciption, qtype, number_question, level)
+    await createQuestionByAI(topic, desciption, qtype, number_question, level)
       .then((data: IFormatQuestion) => {
         if (data) {
           setLoading(false);
