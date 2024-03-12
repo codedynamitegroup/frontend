@@ -18,6 +18,11 @@ import homePageBackground from "assets/img/background/background-homepage.png";
 import icCertificate from "assets/img/icon/certificate-quality-award-education-medal.svg";
 import home from "assets/img/home.png";
 
+import deadlineIcon from "assets/img/icon/notification/deadline-svgrepo-com.svg";
+import contestIcon from "assets/img/icon/notification/trophy-on-daily-calendar-page-interface-symbol-of-the-contest-day-svgrepo-com.svg";
+import examIcon from "assets/img/icon/notification/exam-svgrepo-com.svg";
+import homeworkIcon from "assets/img/icon/notification/homework-svgrepo-com.svg";
+
 import tempContest1 from "assets/img/temp/contest/1.png";
 import tempContest2 from "assets/img/temp/contest/2.png";
 import tempContest3 from "assets/img/temp/contest/3.png";
@@ -46,5 +51,6 @@ const images = {
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo
 };
-
+const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon };
+export { notificaionIcon };
 export default images;

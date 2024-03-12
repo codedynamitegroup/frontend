@@ -7,7 +7,7 @@ import classes from "./styles.module.scss";
 import { useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import NotificationItem from "./component/NotificationItem";
+import NotificationItem, { NotificationType } from "./component/NotificationItem";
 const HeaderNotification = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -52,59 +52,29 @@ const HeaderNotification = () => {
             <TextTitle>Thông báo</TextTitle>
           </Box>
 
-          <Divider className={classes["noti-divider"]} />
+          <Divider sx={{ marginTop: "16px" }} />
           <NotificationItem
             className={classes["notification-item"]}
-            type='Deadline khóa học'
+            type={NotificationType.DEADLINE}
             content='Bạn còn 1 ngày để hoàn thành bài tập 1'
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
+            type={NotificationType.CONTEST}
+            content='Cuộc thi ai là siêu dev sẽ mở sau 1 ngày.'
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
+            type={NotificationType.EXAM}
+            content='Bài kiểm tra của môn nmlt sẽ bắt đầu sau 4 tiếng.'
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
-            time='12/03/2024 11:00:00'
-          />
-          <NotificationItem
-            className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
-            time='12/03/2024 11:00:00'
-          />
-          <NotificationItem
-            className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
-            time='12/03/2024 11:00:00'
-          />
-          <NotificationItem
-            className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
-            time='12/03/2024 11:00:00'
-          />
-          <NotificationItem
-            className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
-            time='12/03/2024 11:00:00'
-          />
-          <NotificationItem
-            className={classes["notification-item"]}
-            type='Deadline khóa học'
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
+            type={NotificationType.HOMEWORK}
+            content='Có bài tập mới trong khóa học nmlt'
             time='12/03/2024 11:00:00'
           />
         </Stack>
