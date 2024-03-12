@@ -1,0 +1,9 @@
+sample.js:{0,0 -> 54,70} matches with copy_of_sample.js:{0,0 -> 54,70}
+sample.js:{11,4 -> 11,46} matches with another_copied_function.js:{0,0 -> 0,42}
+sample.js:{28,9 -> 28,66} matches with another_copied_function.js:{5,13 -> 5,72}
+sample.js:{51,14 -> 54,70} matches with another_copied_function.js:{2,21 -> 5,72}
+copy_of_sample.js:{11,4 -> 11,46} matches with another_copied_function.js:{0,0 -> 0,42}
+copy_of_sample.js:{28,9 -> 28,66} matches with another_copied_function.js:{5,13 -> 5,72}
+copy_of_sample.js:{51,14 -> 54,70} matches with another_copied_function.js:{2,21 -> 5,72}
+sample.js:{14,7 -> 17,51} matches with copied_function.js:{3,14 -> 6,49}
+copy_of_sample.js:{14,7 -> 17,51} matches with copied_function.js:{3,14 -> 6,49}

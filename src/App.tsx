@@ -1,8 +1,5 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import ContestList from "pages/client/user/Contest/ContestList";
-import CourseCertificates from "pages/client/user/CourseCertificate";
-import ListProblem from "pages/client/user/ListProblem";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import QuestionCreated from "pages/client/lecturer/QuestionManagement/components/CreateQuestion";
 import {
@@ -14,10 +11,6 @@ import {
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
-import CourseCertificateLessonProblem from "pages/client/user/CourseCertificate/Detail/DetailProblem";
-import ShareSolution from "pages/client/user/ListProblem/components/DetailProblem/components/ListSolution/components/ShareSolution";
-import DetailProblem from "pages/client/user/ListProblem/components/DetailProblem";
-import LessonShareSolution from "pages/client/user/CourseCertificate/Detail/DetailProblem/components/ListSolution/components/ShareSolution";
 import AssignmentCreated from "pages/client/lecturer/AssignmentManagement/CreateAssigment";
 import AssignmentGrading from "pages/client/lecturer/AssignmentManagement/GradingAssignment";
 import CreateExam from "pages/client/lecturer/ExamManagemenent/CreateExam";
@@ -28,12 +21,15 @@ import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExam
 import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
 import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
 import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement";
+import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview";
 import StudentCoursesManagement from "pages/client/student";
 import LecturerCoursesManagement from "pages/client/lecturer";
 import UserHomepage from "pages/client/user";
 import AIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring";
 import DetailAIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring";
+import DetailProblem from "pages/client/user/DetailProblem";
+import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
+import LecturerSourceCodePlagiarismSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismSubmissions";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -48,12 +44,12 @@ const router = createHashRouter(
 
       <Route
         path={routes.user.course_certificate.detail.lesson.detail}
-        element={<CourseCertificateLessonProblem />}
+        element={<DetailProblem />}
       />
 
       <Route
         path={routes.user.course_certificate.detail.lesson.share_solution}
-        element={<LessonShareSolution />}
+        element={<ShareSolution />}
       />
 
       <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
@@ -73,6 +69,14 @@ const router = createHashRouter(
       <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
       <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
       <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection}
+        element={<LecturerSourceCodePlagiarismManagement />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_submissions}
+        element={<LecturerSourceCodePlagiarismSubmissions />}
+      />
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
@@ -94,7 +98,6 @@ const router = createHashRouter(
         handle={{ crumbName: "default" }}
       />
 
-      {"AI Crete question"}
       <Route
         path={routes.lecturer.question.ai.create}
         element={<AIQuestionCreated />}

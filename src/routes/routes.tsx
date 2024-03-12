@@ -80,7 +80,11 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId",
+      code_submissions:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions",
+      code_submission_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions/:codeSubmissionId"
     }
   },
   student: {

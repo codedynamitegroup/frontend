@@ -13,8 +13,10 @@ import UserRecentSubmissionsTable from "./components/UserRecentSubmissionsTable"
 import classes from "./styles.module.scss";
 import CustomHeatMap from "components/heatmap/CustomHeatMap";
 import ParagraphBody from "components/text/ParagraphBody";
+import { useTranslation } from "react-i18next";
 
 const UserRecentActivities = () => {
+  const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
   const [submissionViewTypeIndex, setSubmissionViewTypeIndex] = useState(0);
 
@@ -28,7 +30,9 @@ const UserRecentActivities = () => {
         }}
       >
         <Box className={classes.formBody}>
-          <Heading1 fontWeight={"500"}>Chứng chỉ của tôi</Heading1>
+          <Heading1 fontWeight={"500"} translation-key='user_detail_certification'>
+            {t("user_detail_certification")}
+          </Heading1>
           <Divider />
           <Box
             sx={{
@@ -37,9 +41,16 @@ const UserRecentActivities = () => {
               alignItems: "center"
             }}
           >
-            <ParagraphBody>Chưa có chứng chỉ nào</ParagraphBody>
-            <Button btnType={BtnType.Text} onClick={() => {}} endIcon={<ChevronRightIcon />}>
-              Lấy chứng chỉ ngay
+            <ParagraphBody translation-key='user_detail_non_certification'>
+              {t("user_detail_non_certification")}
+            </ParagraphBody>
+            <Button
+              btnType={BtnType.Text}
+              onClick={() => {}}
+              endIcon={<ChevronRightIcon />}
+              translation-key='user_detail_get_certification'
+            >
+              {t("user_detail_get_certification")}
             </Button>
           </Box>
         </Box>
@@ -53,7 +64,9 @@ const UserRecentActivities = () => {
         }}
       >
         <Box className={classes.formBody}>
-          <Heading1 fontWeight={"500"}>Thống kê hoạt động</Heading1>
+          <Heading1 fontWeight={"500"} translation-key='user_detail_activity_stats'>
+            {t("user_detail_activity_stats")}
+          </Heading1>
           <Divider />
           <CustomHeatMap
             value={[
@@ -77,7 +90,9 @@ const UserRecentActivities = () => {
         }}
       >
         <Box component='form' className={classes.formBody} autoComplete='off'>
-          <Heading1 fontWeight={"500"}>Hoạt động gần đây</Heading1>
+          <Heading1 fontWeight={"500"} translation-key='user_detail_recent_activity'>
+            {t("user_detail_recent_activity")}
+          </Heading1>
           <Divider />
           <Box
             sx={{
@@ -91,12 +106,27 @@ const UserRecentActivities = () => {
                 setTabIndex(newValue);
               }}
             >
-              <Tab label='Bài làm' icon={<NoteAltIcon />} iconPosition='start' />
-              <Tab label='Bài giải' icon={<AssignmentTurnedInIcon />} iconPosition='start' />
+              <Tab
+                label={t("user_detail_problem")}
+                icon={<NoteAltIcon />}
+                iconPosition='start'
+                translation-key='user_detail_problem'
+              />
+              <Tab
+                label={t("user_detail_submission")}
+                icon={<AssignmentTurnedInIcon />}
+                iconPosition='start'
+                translation-key='user_detail_submission'
+              />
             </Tabs>
             {tabIndex === 0 ? (
-              <Button btnType={BtnType.Text} onClick={() => {}} endIcon={<ChevronRightIcon />}>
-                Xem tất cả bài làm
+              <Button
+                btnType={BtnType.Text}
+                onClick={() => {}}
+                endIcon={<ChevronRightIcon />}
+                translation-key='user_detail_see_all_submission'
+              >
+                {t("user_detail_see_all_submission")}
               </Button>
             ) : (
               <Tabs
@@ -106,12 +136,13 @@ const UserRecentActivities = () => {
                 }}
               >
                 <Tab
-                  label=' Gần đây nhất'
+                  label={t("user_detail_recent")}
                   icon={<AccessTimeIcon fontSize='small' />}
                   iconPosition='start'
                   sx={{
                     fontSize: "12px"
                   }}
+                  translation-key='user_detail_recent'
                 />
                 <Divider
                   orientation='vertical'
@@ -122,12 +153,13 @@ const UserRecentActivities = () => {
                   }}
                 />
                 <Tab
-                  label='Nhiều bình chọn nhất'
+                  label={t("user_detail_most_comment")}
                   icon={<WhatshotIcon fontSize='small' />}
                   iconPosition='start'
                   sx={{
                     fontSize: "12px"
                   }}
+                  translation-key='user_detail_most_comment'
                 />
               </Tabs>
             )}

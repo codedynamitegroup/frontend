@@ -5,8 +5,10 @@ import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import images from "config/images";
 import { Link as RouterLink } from "react-router-dom";
 import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   return (
     <Box className={classes.container}>
       <Container>
@@ -16,12 +18,19 @@ export default function ForgotPassword() {
           </Grid>
           <Grid item xs={12} md={6} className={classes.centerForm}>
             <Box className={classes.form}>
-              <Typography variant='h4' className={classes.title}>
-                Quên mật khẩu
+              <Typography
+                variant='h4'
+                className={classes.title}
+                translation-key='common_forget_password'
+              >
+                {t("common_forget_password")}
               </Typography>
               <Box className={classes.formContent}>
-                <Box className={classes.formContentTitle}>
-                  Nhập địa chỉ email chúng tôi sẽ gửi cho bạn mã OTP để đặt lại mật khẩu
+                <Box
+                  className={classes.formContentTitle}
+                  translation-key='forget_password_description'
+                >
+                  {t("forget_password_description")}
                 </Box>
               </Box>
               <form className={classes.formControl}>
@@ -31,8 +40,9 @@ export default function ForgotPassword() {
                   color='primary'
                   type='submit'
                   variant='contained'
+                  translation-key='common_send'
                 >
-                  Gửi
+                  {t("common_send")}
                 </Button>
               </form>
             </Box>
@@ -40,7 +50,8 @@ export default function ForgotPassword() {
               <Link
                 component={RouterLink}
                 to={routes.user.login.root}
-              >{`< Quay lại trang đăng nhập`}</Link>
+                translation-key='forget_password_back_link'
+              >{`< ${t("forget_password_back_link")}`}</Link>
             </Box>
           </Grid>
         </Grid>

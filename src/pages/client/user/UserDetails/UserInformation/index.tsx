@@ -12,8 +12,10 @@ import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 const UserInformation = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
@@ -62,8 +64,9 @@ const UserInformation = () => {
                   sx={{
                     textAlign: "center"
                   }}
+                  translation-key='user_detail_account_management'
                 >
-                  Quản lý tài khoản
+                  {t("user_detail_account_management")}
                 </Heading1>
                 <UserAvatarAndName loading={isLoading} avatarUrl={data.userInfo.avatar_url} />
                 <Button
@@ -75,15 +78,16 @@ const UserInformation = () => {
                       isUserInformationDetailsModalOpen: true
                     }));
                   }}
+                  translation-key='user_detail_edit_account'
                 >
-                  Chỉnh sửa hồ sơ
+                  {t("user_detail_edit_account")}
                 </Button>
               </Box>
               <Box className={classes.userGeneralInfo}>
-                <Heading2>Chi tiết người dùng</Heading2>
+                <Heading2 translation-key='user_detail'>{t("user_detail")}</Heading2>
                 <Grid container spacing={1} columns={12}>
                   <Grid item xs={12}>
-                    <TextTitle>Họ tên</TextTitle>
+                    <TextTitle translation-key='common_fullname'>{t("common_fullname")}</TextTitle>
                   </Grid>
                   <Grid item xs={12}>
                     {data.userInfo.name}
@@ -106,7 +110,7 @@ const UserInformation = () => {
                 </Grid>
                 <Grid container spacing={1} columns={12}>
                   <Grid item xs={12}>
-                    <TextTitle>Ngày sinh</TextTitle>
+                    <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
                   </Grid>
                   <Grid item xs={12}>
                     {data.userInfo.dob}
@@ -131,7 +135,7 @@ const UserInformation = () => {
           }));
         }}
         initialData={data.userInfo}
-        title='Chỉnh sửa thông tin cá nhân'
+        title={t("user_detail_dialog_title")}
         onHanldeChangePassword={() => {
           setData((pre) => ({
             ...pre,
@@ -139,6 +143,7 @@ const UserInformation = () => {
             isUserPasswordChangeModalOpen: true
           }));
         }}
+        translation-key='user_detail_dialog_title'
       />
       <UserPasswordChangeDialog
         open={data.isUserPasswordChangeModalOpen}
@@ -148,9 +153,9 @@ const UserInformation = () => {
             isUserPasswordChangeModalOpen: false
           }));
         }}
-        title='Đổi mật khẩu'
-        cancelText='Quay lại'
-        confirmText='Đổi mật khẩu'
+        title={t("user_detail_change_password")}
+        cancelText={t("common_back")}
+        confirmText={t("user_detail_change_password")}
         onHandleCancel={() => {
           setData((pre) => ({
             ...pre,
@@ -164,6 +169,11 @@ const UserInformation = () => {
             isUserPasswordChangeModalOpen: false
           }));
         }}
+        translation-key={[
+          "user_detail_change_password",
+          "common_back",
+          "user_detail_change_password"
+        ]}
       />
     </Box>
   );

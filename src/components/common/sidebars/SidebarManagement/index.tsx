@@ -109,7 +109,7 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
               {list.children && (
                 <Collapse in={openItems === index} timeout='auto' unmountOnExit>
                   <List component='div' disablePadding>
-                    {list.children.map((item, childIndex) => (
+                    {list.children.map((item: any, childIndex) => (
                       <ListItemButton
                         key={childIndex}
                         onClick={() => handleClickChild(index, childIndex)}
