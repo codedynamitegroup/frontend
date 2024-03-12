@@ -138,6 +138,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     const user = localStorage.getItem("user");
     if (user) {
       setState(true);
+      console.log("user", state);
     }
   }, []);
 

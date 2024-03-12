@@ -77,7 +77,10 @@ export const routes = {
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
       review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
       code_plagiarism_detection:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
+      ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
+      ai_scroring_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
     }
   },
   student: {

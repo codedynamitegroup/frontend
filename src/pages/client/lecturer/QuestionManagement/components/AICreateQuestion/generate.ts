@@ -96,7 +96,7 @@ const format_question: IFormatQuestion[] = [
   }
 ];
 
-async function run(
+async function createQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
@@ -176,4 +176,46 @@ async function run(
   }
 }
 
-export default run;
+async function scoringByAI(data: any) {
+  const AI_ROLE =
+    "You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. Answer in Vietnamese. You are a trained expert on evaluate and analysis essay. Your job is to evaluate essays and provide feedback to students.";
+
+  const SYSTEM_INSTRUCTIONS = `Please give me feedback and suggestions about essay's student. There will be three attributes "id","feedback" and "score". "Id" is used to distinguish essays between students,"feedback" is an array containing a string of characters, which will describe the feedback and comments about the essay. And "score" will be the score of the essay evaluated out of 10
+  This is the format of the response:
+  [
+    {
+      "id": 1,
+      "feedback": ["- Cần chú ý hơn đến lỗi chính tả và ngữ pháp.\n",
+      "- Có thể bổ sung thêm những ví dụ về những thách thức trong việc phát huy sức mạnh của tình yêu thương, như sự ích kỷ, lòng đố kỵ.\n",
+      "- Cần đưa ra những giải pháp cụ thể hơn để xây dựng một xã hội tràn ngập tình yêu thương, như giáo dục, truyền thông, chính sách.\n"]
+      "score": 8.5
+    },
+    {
+      "id": 2,
+      "feedback": ["- Cần chú ý hơn đến lỗi chính tả và ngữ pháp.\n",
+      "- Có thể bổ sung thêm những ví dụ về những thách thức trong việc phát huy sức mạnh của tình yêu thương, như sự ích kỷ, lòng đố kỵ.\n",
+      "- Cần đưa ra những giải pháp cụ thể hơn để xây dựng một xã hội tràn ngập tình yêu thương, như giáo dục, truyền thông, chính sách.\n"]
+      "score": 5.2
+    }
+  ]
+  **Note:
+  must be in the correct JSON format!!!
+ 
+  `;
+  const language = "Vietnamese";
+  const prompt = `${AI_ROLE} Question: "Con trỏ là gì" Essay's students: ${data} ${SYSTEM_INSTRUCTIONS}  language: ${language}`;
+  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+    let cleanText = text.replace(/```/g, "");
+    const json = JSON.parse(cleanText);
+    return json;
+  } catch (error) {
+    console.error("Error generating content:", error);
+  }
+}
+
+export { createQuestionByAI, scoringByAI };

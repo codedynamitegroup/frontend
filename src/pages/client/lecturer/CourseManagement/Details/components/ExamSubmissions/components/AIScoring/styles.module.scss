@@ -1,0 +1,62 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
+}
+.container {
+  display: flex;
+  background-color: white;
+}
+.examBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: white;
+
+  .backButton {
+    margin: 10px 0;
+  }
+}
+
+.topic {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+.textLimit {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}

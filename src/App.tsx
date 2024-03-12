@@ -32,6 +32,8 @@ import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/Source
 import StudentCoursesManagement from "pages/client/student";
 import LecturerCoursesManagement from "pages/client/lecturer";
 import UserHomepage from "pages/client/user";
+import AIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring";
+import DetailAIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -61,6 +63,8 @@ const router = createHashRouter(
         path={routes.lecturer.exam.code_plagiarism_detection}
         element={<LecturerSourceCodePlagiarismManagement />}
       />
+      <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
+      <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
       <Route
         path={routes.lecturer.assignment.preview_submit}
         element={<PreviewAssignmentSubmission />}
