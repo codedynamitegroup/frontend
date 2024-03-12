@@ -11,6 +11,8 @@ import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 export interface CourseCertificate {
   imgUrl: string;
@@ -121,6 +123,7 @@ const CourseCertificates = () => {
   ];
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -191,7 +194,12 @@ const CourseCertificates = () => {
                   <Heading2 translation-key='certificate_basic'>{t("certificate_basic")}</Heading2>
                   <Grid container spacing={3}>
                     {courseCertificatesBasic.map((course, index) => (
-                      <Grid item xs={4} key={index}>
+                      <Grid
+                        item
+                        xs={4}
+                        key={index}
+                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                      >
                         <CourseCertificateCard course={course} />
                       </Grid>
                     ))}
@@ -203,7 +211,12 @@ const CourseCertificates = () => {
                   </Heading2>
                   <Grid container spacing={3}>
                     {courseCertificatesAdvanced.map((course, index) => (
-                      <Grid item xs={4} key={index}>
+                      <Grid
+                        item
+                        xs={4}
+                        key={index}
+                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                      >
                         <CourseCertificateCard course={course} />
                       </Grid>
                     ))}
