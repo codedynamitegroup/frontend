@@ -260,5 +260,14 @@
   "list_problem_problem_name": "Problem name",
   "list_problem_difficult_level": "Difficult level",
   "list_problem_not_found_data": "Not found data",
-  "list_problem_data_grid_pagination": "Row per page"
+  "list_problem_data_grid_pagination": "Row per page",
+
+  "detail_problem_description": "Description",
+  "detail_problem_discussion": "Discussion",
+  "detail_problem_submission": "Submissions",
+  "detail_problem_result": "Result",
+  "detail_problem_execute": "Execute",
+  "detail_problem_submit": "Submit",
+  "detail_problem_test_case_success": "Success",
+  "detail_problem_test_case_runtime": "Runtime: {{runtime}}ms"
 }

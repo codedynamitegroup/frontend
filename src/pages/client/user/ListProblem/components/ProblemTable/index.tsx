@@ -127,20 +127,24 @@ export default function ProblemTable() {
 
   return (
     <Box className={classes.container}>
-      <Heading2>{t("list_problem")}</Heading2>
+      <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2>
       <Box className={classes.table}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label='custom table'>
             <TableHead className={classes["table-head"]}>
               <TableRow>
                 <TableCell align='center' className={classes.status}>
-                  <ParagraphBody fontWeight={700}>{t("list_problem_problem_status")}</ParagraphBody>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_status'>
+                    {t("list_problem_problem_status")}
+                  </ParagraphBody>
                 </TableCell>
                 <TableCell align='left'>
-                  <ParagraphBody fontWeight={700}>{t("list_problem_problem_name")}</ParagraphBody>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_name'>
+                    {t("list_problem_problem_name")}
+                  </ParagraphBody>
                 </TableCell>
                 <TableCell align='left' className={classes.status}>
-                  <ParagraphBody fontWeight={700}>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_difficult_level'>
                     {t("list_problem_difficult_level")}
                   </ParagraphBody>
                 </TableCell>
@@ -165,7 +169,10 @@ export default function ProblemTable() {
               {(!data || data.length === 0) && (
                 <TableRow>
                   <TableCell colSpan={customHeading.length}>
-                    <ParagraphBody className={classes.noList}>
+                    <ParagraphBody
+                      className={classes.noList}
+                      translation-key='list_problem_not_found_data'
+                    >
                       {t("list_problem_not_found_data")}
                     </ParagraphBody>
                   </TableCell>
@@ -181,6 +188,7 @@ export default function ProblemTable() {
           page={Number(page)}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
+          translation-key='list_problem_data_grid_pagination'
           labelRowsPerPage={t("list_problem_data_grid_pagination")} // Thay đổi text ở đây
           onRowsPerPageChange={handleChangeRowsPerPage}
           className={classes.pagination}

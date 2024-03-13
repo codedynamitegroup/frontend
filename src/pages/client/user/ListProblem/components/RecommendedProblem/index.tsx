@@ -41,7 +41,9 @@ const RecommendedProblem = () => {
   ];
   return (
     <Box className={classes.recommendedProblemsWrapper}>
-      <Heading2>{t("list_problem_hot_problem")}</Heading2>
+      <Heading2 translation-key='list_problem_hot_problem'>
+        {t("list_problem_hot_problem")}
+      </Heading2>
       <Grid container spacing={3}>
         {recommendedProblems.map((recommendedProblem, index) => (
           <Grid item xs={4} key={index}>

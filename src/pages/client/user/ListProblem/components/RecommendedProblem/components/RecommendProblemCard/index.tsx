@@ -41,7 +41,15 @@ const RecommendProblemCard = ({ recommendProblem }: Props) => {
           </Box>
           <Box className={classes.iconRecommendProblem}>
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-            <ParagraphBody>{renderTextLevel(recommendProblem.level)}</ParagraphBody>
+            <ParagraphBody
+              translation-key={[
+                "list_problem_difficult_level_easy",
+                "list_problem_difficult_level_medium",
+                "list_problem_difficult_level_hard"
+              ]}
+            >
+              {renderTextLevel(recommendProblem.level)}
+            </ParagraphBody>
           </Box>
         </Grid>
       </Grid>

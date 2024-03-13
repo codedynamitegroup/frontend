@@ -49,6 +49,7 @@ export default function LabTabs() {
             onChange={handleChange}
             aria-label='lab API tabs example'
             TabIndicatorProps={{ hidden: true }}
+            translation-key='list_problem_topic_all'
           >
             {topics.map((topic, index) => (
               <Tab sx={{ fontSize: "12px" }} key={index} label={topic} value={index.toString()} />

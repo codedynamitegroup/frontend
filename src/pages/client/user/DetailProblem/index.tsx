@@ -30,7 +30,7 @@ import TestCase from "./components/TestCase";
 import Result from "./components/Result";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
-
+import { useTranslation } from "react-i18next";
 enum ELanguage {
   JAVA = "java",
   CPP = "cpp",
@@ -325,6 +325,7 @@ int main()
   };
 
   const marginRef = useRef<number>(10);
+  const { t } = useTranslation();
   return (
     <Box className={classes.root}>
       <Header ref={headerRef} />
@@ -345,7 +346,7 @@ int main()
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.user.problem.root)}
               >
-                Danh sách các bài tập
+                {t("list_problem")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
@@ -383,11 +384,11 @@ int main()
           <Box className={classes.submit}>
             <Button className={classes.runBtn} variant='contained' color='primary'>
               <PlayArrowIcon />
-              Thực thi
+              {t("detail_problem_execute")}
             </Button>
             <Button className={classes.submitBtn} color='primary'>
               <PublishIcon />
-              Nộp bài
+              {t("detail_problem_submit")}
             </Button>
           </Box>
           <Box
@@ -429,17 +430,17 @@ int main()
                 >
                   <Tab
                     sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Mô tả</ParagraphBody>}
+                    label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
                   <Tab
                     sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Thảo luận</ParagraphBody>}
+                    label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
                     value={1}
                   />
                   <Tab
                     sx={{ textTransform: "none" }}
-                    label={<ParagraphBody>Bài nộp</ParagraphBody>}
+                    label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
                     value={2}
                   />
                 </Tabs>
@@ -523,7 +524,7 @@ int main()
                         />
                         <Tab
                           sx={{ textTransform: "none" }}
-                          label={<ParagraphBody>Kết quả</ParagraphBody>}
+                          label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
                           value={1}
                         />
                       </Tabs>

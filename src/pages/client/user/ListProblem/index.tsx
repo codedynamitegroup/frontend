@@ -27,13 +27,18 @@ const ListProblem = () => {
         }}
       >
         <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorname={"--white"}>{t("list_problem_practice")}</Heading1>
-          <Heading3 colorname={"--white"}>{t("list_problem_call_to_action")}</Heading3>
+          <Heading1 colorname={"--white"} translation-key='list_problem_practice'>
+            {t("list_problem_practice")}
+          </Heading1>
+          <Heading3 colorname={"--white"} translation-key='list_problem_call_to_action'>
+            {t("list_problem_call_to_action")}
+          </Heading3>
           <Box id={classes.bannerSearch}>
             <Box className={classes.filterSearch}>
               <OutlinedInput
                 size='small'
                 fullWidth
+                translation-key='list_problem_search'
                 placeholder={t("list_problem_search")}
                 startAdornment={
                   <InputAdornment position='start'>
@@ -47,6 +52,11 @@ const ListProblem = () => {
                 value={statusProblem}
                 onHandleChange={(value) => setstatusProblem(value)}
                 sx={{ maxWidth: "200px" }}
+                translation-key={[
+                  "list_problem_solved_all",
+                  "list_problem_solved_done",
+                  "list_problem_solved_not_done"
+                ]}
                 items={[
                   {
                     value: "0",
@@ -68,6 +78,12 @@ const ListProblem = () => {
                 value={levelProblem}
                 onHandleChange={(value) => setlevelProblem(value)}
                 sx={{ maxWidth: "200px" }}
+                translation-key={[
+                  "list_problem_difficult_level_all",
+                  "list_problem_difficult_level_easy",
+                  "list_problem_difficult_level_medium",
+                  "list_problem_difficult_level_hard"
+                ]}
                 items={[
                   {
                     value: "0",
@@ -98,8 +114,10 @@ const ListProblem = () => {
             <Grid container>
               <Grid item xs={2.5}>
                 <Box className={classes.algorithmContainer}>
-                  <Heading3>{t("list_problem_type_of_algorithm")}</Heading3>
-                  <Box className={classes.algorithm}>
+                  <Heading3 translation-key='list_problem_type_of_algorithm'>
+                    {t("list_problem_type_of_algorithm")}
+                  </Heading3>
+                  <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
                     {algorithms.map((algorithm, index) => (
                       <Box className={classes.algorithmItem} key={index}>
                         <ParagraphBody>{algorithm}</ParagraphBody>

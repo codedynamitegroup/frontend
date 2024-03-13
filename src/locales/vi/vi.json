@@ -249,5 +249,14 @@
   "list_problem_problem_name": "Tên bài tập",
   "list_problem_difficult_level": "Độ khó",
   "list_problem_not_found_data": "Không tìm thấy thông tin",
-  "list_problem_data_grid_pagination": "Số dòng trên mỗi trang"
+  "list_problem_data_grid_pagination": "Số dòng trên mỗi trang",
+
+  "detail_problem_description": "Mô tả",
+  "detail_problem_discussion": "Thảo luận",
+  "detail_problem_submission": "Bài nộp",
+  "detail_problem_result": "Kết quả",
+  "detail_problem_execute": "Thực thi",
+  "detail_problem_submit": "Nộp bài",
+  "detail_problem_test_case_success": "Thành công",
+  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms"
 }
