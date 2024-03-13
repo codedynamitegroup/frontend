@@ -18,8 +18,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
-import { IFormatQuestion, IQuestion } from "./generate";
-import { createQuestionByAI } from "./generate";
+import { IFormatQuestion, IQuestion } from "../../../../../../service/CreateQuestionByAI";
+import createQuestionByAI from "../../../../../../service/CreateQuestionByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 export enum AlertType {
