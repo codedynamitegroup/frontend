@@ -110,58 +110,77 @@ async function createQuestionByAI(
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   let question_type = "";
   if (qtype === EQType.Essay) {
-    question_type = "essay";
+    question_type = "Essay";
   } else if (qtype === EQType.MultipleChoice) {
-    question_type = "multiple choice";
+    question_type = "Multiple choice";
   } else if (qtype === EQType.ShortAnswer) {
-    question_type = "short answer";
+    question_type = "Short answer";
   } else {
-    question_type = "true/false";
+    question_type = "True/false";
   }
 
   let levelQuestion = "";
   if (level === EQuestionLevel.Easy) {
-    levelQuestion = "easy";
+    levelQuestion = "Beginner";
   } else if (level === EQuestionLevel.Medium) {
-    levelQuestion = "medium";
+    levelQuestion = "Intermediate";
   } else {
-    levelQuestion = "hard";
+    levelQuestion = "Advanced";
   }
+  const language = "Vietnamese";
 
-  const AI_ROLE = `You are Code Question Generator AI, a replacement for teachers in a High School, located in Viet Nam. 
-		Answer in Vietnamese. You are a trained expert on domain related to software engineering and programming. 
-		Your job are required to generate code questions which has types such as multiple choice, true/false, short answer, essay according to the assignment prompt.`;
+  const AI_ROLE = `
+	A. You are Generator Question AI, a large language model trained on a massive dataset of text and code.
+  	Your expertise encompasses various domains, including software engineering and programming.
+  	You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
   const SYSTEM_INSTRUCTIONS = `
-                Give me ${number_question} questions which are ${question_type} questions about topic named ${topic}.
-								${description && `The detailed description of this topic is: " + ${description}.`}
-								The questions should be at a ${levelQuestion} level.
+	A. Goal: Generate a well-structured JSON response containing questions aligned with the specified criteria.
 
-								The structure of the response must be JSON which follows the following structure:
-								- qtypeId: The type of question contains the following values.
-									+ 1: Essay
-									+ 2: Multiple choice
-									+ 3: Short answer
-									+ 4: True/False
-								- questions: An array of questions (IQuestion).
-									+ IQuestion: The data structure for a question:
-										* id: A number, the unique identifier for the question.
-										* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
-										* answers: An array of answers (IAnswer[]) representing the answer
-											** Note:
-												*** For essay and short answer questions, there should only be 1 answer element, and the content attribute of the answer should not be empty. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
-											** IAnswer: The data structure for an answer:
-												*** id: A number, the unique identifier for the answer.
-												*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
-										* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
-										
-                This is a sample response format:
-                ${JSON.stringify(formatQuestion)}
-								Please use Vietnamese everywhere to write questions and answers for students.
-            `;
+	B. Provided Information Details:
+		Give me ${number_question} questions which are ${question_type} questions about topic named ${topic}.
+		${description && `The detailed description of this topic is: ${description}.`}
+		The questions should be at a ${levelQuestion} level.
 
-  const prompt = `${AI_ROLE} ${SYSTEM_INSTRUCTIONS}`;
+	C. Expected Response Format:
+		The structure of the response must be JSON which follows the following structure:
+		- qtypeId: The type of question contains the following values.
+			+ 1: Essay
+			+ 2: Multiple choice
+			+ 3: Short answer
+			+ 4: True/False
+		- questions: An array of questions (IQuestion).
+			+ IQuestion: The data structure for a question:
+				* id: A number, the unique identifier for the question.
+				* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
+				* answers: An array of answers (IAnswer[]) representing the answer
+					** Note:
+						*** For essay and short answer questions, there should only be 1 answer element, and the content attribute of the answer should not be empty or null. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
+					** IAnswer: The data structure for an answer:
+						*** id: A number, the unique identifier for the answer.
+						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
+				* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
 
+		Example Response Format:
+			${JSON.stringify(formatQuestion)}
+
+		Note: Ensure the response is in valid JSON format !!!
+
+	D. Additional Considerations:
+		- Clarity: Questions should be clear, concise, and directly address the learning objectives.
+		- Comprehensiveness: Cover various aspects of the topic, ensuring a balanced assessment of understanding.
+		- Difficulty: Tailor the question difficulty level to the specified ${levelQuestion}.
+
+	E. Please use ${language} everywhere to write questions and answers for students.`;
+
+  const prompt = `
+I. YOUR ROLE:
+	${AI_ROLE}
+
+II. SYSTEM_INSTRUCTIONS:
+	${SYSTEM_INSTRUCTIONS}`;
+
+  console.log(prompt);
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -173,7 +192,6 @@ async function createQuestionByAI(
     const json = JSON.parse(repaired);
     return json;
   } catch (error) {
-    console.error("Error parsing JSON:", error);
     return error;
   }
 }

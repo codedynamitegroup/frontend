@@ -18,10 +18,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
-import { IFormatQuestion, IQuestion } from "../../../../../../service/CreateQuestionByAI";
-import createQuestionByAI from "../../../../../../service/CreateQuestionByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
+import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
 export enum AlertType {
   Success = "success",
   INFO = "info",
@@ -60,7 +59,7 @@ const AIQuestionCreated = () => {
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("Tạo câu hỏi thành công");
+  const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     setQuestions((prevQuestions) => {
@@ -84,15 +83,15 @@ const AIQuestionCreated = () => {
     await createQuestionByAI(topic, desciption, qtype, number_question, level)
       .then((data: IFormatQuestion) => {
         if (data) {
-          setLoading(false);
-          setQuestions(data.questions);
-          setLengthQuestion(data.questions.length);
+          setQuestions(data?.questions);
+          setLengthQuestion(data?.questions?.length);
           setOpenSnackbarAlert(true);
           setAlertContent("Tạo câu hỏi thành công");
           setAlertType(AlertType.Success);
         }
       })
       .catch((err) => {
+        console.error("Error generating content:", err);
         setOpenSnackbarAlert(true);
         setAlertContent("Tạo câu hỏi thất bại, hãy thử lại lần nữa");
         setAlertType(AlertType.Error);

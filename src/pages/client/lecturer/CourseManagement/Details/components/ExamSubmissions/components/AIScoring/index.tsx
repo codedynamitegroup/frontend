@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import {
   GridCallbackDetails,
   GridColDef,
-  GridColumnGroupingModel,
   GridPaginationModel,
   GridRowParams,
   GridRowSelectionModel
@@ -25,18 +24,13 @@ import { CssBaseline, IconButton, Toolbar } from "@mui/material";
 import Header from "components/Header";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import * as React from "react";
-import Heading2 from "components/text/Heading2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faCode } from "@fortawesome/free-solid-svg-icons";
 import TextTitle from "components/text/TextTitle";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
-import { useTheme } from "@mui/material/styles";
 import { AssignmentStudent, QuestionEssay, scoringByAI } from "service/ScoringByAI";
 import CircularProgress from "@mui/material/CircularProgress";
-import SnackbarAlert from "components/common/SnackbarAlert";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { useEffect, useMemo, useRef, useState } from "react";
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
   NOT_SUBMITTED = "Chưa nộp"
@@ -54,32 +48,6 @@ interface Feedback {
 }
 const AIScoring = () => {
   const drawerWidth = 450;
-
-  const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-    open?: boolean;
-  }>(({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginRight: -drawerWidth,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginRight: 0
-    }),
-    /**
-     * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-     * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-     * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-     * proper interaction with the underlying content.
-     */
-    position: "relative"
-  }));
 
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -102,15 +70,6 @@ const AIScoring = () => {
     })
   }));
 
-  const DrawerHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-start"
-  }));
-
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -126,7 +85,7 @@ const AIScoring = () => {
     console.log(model);
   };
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
@@ -135,7 +94,7 @@ const AIScoring = () => {
   const pageSize = 5;
   const totalElement = 100;
 
-  const [feedback, setFeedback] = React.useState<Feedback[]>([]);
+  const [feedback, setFeedback] = useState<Feedback[]>([]);
 
   const examData = {
     id: 1,
@@ -170,9 +129,9 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback.length != 0 ? feedback[0].score : 0,
+      current_final_grade: feedback?.length !== 0 ? feedback[0]?.score : 0,
 
-      feedback: feedback.length != 0 ? feedback[0].feedback : ""
+      feedback: feedback?.length !== 0 ? feedback[0]?.feedback : ""
     },
     {
       id: 2,
@@ -185,8 +144,8 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback.length != 0 ? feedback[1].score : 0,
-      feedback: feedback.length != 0 ? feedback[1].feedback : ""
+      current_final_grade: feedback?.length !== 0 ? feedback[1]?.score : 0,
+      feedback: feedback?.length !== 0 ? feedback[1]?.feedback : ""
     }
   ];
 
@@ -342,37 +301,74 @@ const AIScoring = () => {
     });
   };
 
-  const [loading, setLoading] = React.useState(false);
-  const handleScoringByAI = async () => {
-    setLoading(true);
-    const data: AssignmentStudent[] = [
+  const [loading, setLoading] = useState(false);
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+
+  const question: QuestionEssay = useMemo(
+    () => ({
+      content:
+        "Trình bày cách thực hiện một thuật toán để tìm phần tử lớn nhất trong danh sách liên kết đơn?",
+      answer:
+        "**Thuật toán:** 1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max.",
+      criteria:
+        "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm, thiếu mất 1 tiêu chí bị trừ 3 điểm",
+      maxScore: 10
+    }),
+    []
+  );
+
+  const data: AssignmentStudent[] = useMemo(
+    () => [
       {
         id: 1,
-        essay: "Con trỏ là mảng 1 chiều"
+        studentAnswer:
+          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max."
       },
       {
         id: 2,
-        essay: "Con trỏ là mảng 2 chiều"
+        studentAnswer:
+          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại."
       }
-    ];
-    const question: QuestionEssay = {
-      content: "Con trỏ là gì ?",
-      answer: "Con trỏ là mảng 1 chiều",
-      criteria: "Chỉ cần trả lời đúng câu hỏi là được điểm tối đa"
-    };
-    const result = await scoringByAI(data, question);
-    if (result) {
-      setFeedback(result);
-    }
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
+    ],
+    []
+  );
 
-  React.useEffect(() => {
-    handleScoringByAI();
-  }, []);
-  console.log(feedback);
+  const effectRan = useRef(false);
+
+  useEffect(() => {
+    if (effectRan.current === false) {
+      const handleScoringByAI = async () => {
+        setLoading(true);
+
+        await scoringByAI(data, question)
+          .then((results: any) => {
+            if (results) {
+              setFeedback(results);
+              setOpenSnackbarAlert(true);
+              setAlertContent("Chấm điểm thành công");
+              setAlertType(AlertType.Success);
+            }
+          })
+          .catch((err) => {
+            console.error("Error generating content:", err);
+            setOpenSnackbarAlert(true);
+            setAlertContent("Chấm điểm thất bại, hãy thử lại lần nữa");
+            setAlertType(AlertType.Error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      };
+
+      handleScoringByAI();
+      return () => {
+        effectRan.current = true;
+      };
+    }
+  }, [data, question]);
+
   return (
     <>
       {loading === true ? (
@@ -514,6 +510,12 @@ const AIScoring = () => {
               </Grid>
             </Grid>
           </Container>
+          <SnackbarAlert
+            open={openSnackbarAlert}
+            setOpen={setOpenSnackbarAlert}
+            type={alertType}
+            content={alertContent}
+          />
         </Grid>
       )}
     </>
