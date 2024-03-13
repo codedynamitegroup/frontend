@@ -10,35 +10,14 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
+import { useTranslation } from "react-i18next";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
+  const { t } = useTranslation();
 
-  const algorithms = [
-    "Mảng",
-    "Cây",
-    "Đồ thị",
-    "Vét cạn",
-    "Quay lui",
-    "Đệ quy",
-    "Sắp xếp",
-    "Tìm kiếm",
-    "Chia để trị",
-    "Nhánh cận",
-    "Lập lịch",
-    "Quy hoạch động",
-    "Tham lam",
-    "Bitmask",
-    "Ngăn xếp",
-    "Hàng đợi ưu tiên",
-    "Hàng đợi",
-    "Cấu trúc dữ liệu khác",
-    "Tìm kiếm nhị phân",
-    "Tìm kiếm nội suy",
-    "Tìm kiếm nhị phân trên cây",
-    "Tìm kiếm nhị phân trên đồ thị"
-  ];
+  const algorithms = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
     <>
       <Box
@@ -48,7 +27,7 @@ const ListProblem = () => {
         }}
       >
         <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorname={"--white"}>Luyện tập</Heading1>
+          <Heading1 colorname={"--white"}>{t("list_problem_practice")}</Heading1>
           <Heading3 colorname={"--white"}>
             Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
           </Heading3>
