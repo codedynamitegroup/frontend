@@ -10,13 +10,20 @@ import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
+import { em } from "@fullcalendar/core/internal-common";
+import { useState } from "react";
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleLogin = () => {
     localStorage.setItem("user", "HIEUTHUHAI");
-    navigate(routes.user.dashboard.root);
+    if (email === "student@gmail.com") {
+      navigate(routes.user.dashboard.root);
+    } else if (email === "lecturer@gmail.com") {
+      navigate(routes.lecturer.course.management);
+    }
   };
+  const [email, setEmail] = useState("");
   return (
     <Box className={classes.container}>
       <Container>
@@ -34,7 +41,15 @@ export default function Login() {
                 {t("header_login_button")}
               </Typography>
               <form className={classes.formControl}>
-                <TextField label='Email' margin='normal' name='email' required variant='outlined' />
+                <TextField
+                  label='Email'
+                  margin='normal'
+                  name='email'
+                  required
+                  variant='outlined'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
                 <TextField
                   label={t("common_password")}
                   margin='normal'
