@@ -34,7 +34,7 @@ import TextTitle from "components/text/TextTitle";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
-import { scoringByAI } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion/generate";
+import { AssignmentStudent, QuestionEssay, scoringByAI } from "service/ScoringByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 export enum SubmissionStatusSubmitted {
@@ -345,7 +345,7 @@ const AIScoring = () => {
   const [loading, setLoading] = React.useState(false);
   const handleScoringByAI = async () => {
     setLoading(true);
-    const data = [
+    const data: AssignmentStudent[] = [
       {
         id: 1,
         essay: "Con trỏ là mảng 1 chiều"
@@ -355,7 +355,12 @@ const AIScoring = () => {
         essay: "Con trỏ là mảng 2 chiều"
       }
     ];
-    const result = await scoringByAI(data);
+    const question: QuestionEssay = {
+      content: "Con trỏ là gì ?",
+      answer: "Con trỏ là mảng 1 chiều",
+      criteria: "Chỉ cần trả lời đúng câu hỏi là được điểm tối đa"
+    };
+    const result = await scoringByAI(data, question);
     if (result) {
       setFeedback(result);
     }
