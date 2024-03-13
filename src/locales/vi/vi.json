@@ -36,6 +36,33 @@
     "common_day_ago": "{{day}} ngày trước",
     "common_month_ago": "{{month}} tháng trước",
     "common_year_ago": "{{year}} năm trước",
+    "common_type_assignment": "Bài tập",
+    "common_deadline": "Thời hạn",
+    "common_cancel": "Hủy",
+    "common_data_export": "Xuất dữ liệu",
+    "common_percentage": "Phần trăm",
+    "common_grade": "Điểm",
+    "common_role": "Vai trò",
+    "common_name": "Tên",
+    "common_post": "Đăng",
+    "common_find_by_col": "Tìm kiếm theo cột",
+    "common_classify_category": "Phân loại",
+    "common_title": "Tiêu đề",
+    "common_confirm": "Xác nhận",
+    "common_edit": "Chỉnh sửa",
+    "common_search": "Tìm kiếm",
+    "common_action": "Hành động",
+
+    "search_bar_click":"Nhấn để tìm",
+
+    "data_grid_selected_row": "{{selected}} dòng đã được chọn",
+    "data_grid_row_width": "Độ rộng của hàng",
+    "data_grid_row_width_compact": "Gọn nhẹ",
+    "data_grid_row_width_standard": "Tiêu chuẩn",
+    "data_grid_row_width_comfortable": "Thoải mái",
+    "data_grid_row_descending": "Xếp giảm dần",
+    "data_grid_row_ascending": "Xếp tăng dần",
+    "data_grid_row_unsort": "Không sắp xếp",
 
     "language_us": "Tiếng Anh",
     "language_vn": "Tiếng Việt",
@@ -146,5 +173,49 @@
     "user_detail_new_password": "Mật khẩu mới",
     "user_detail_re_enter_new_password": "Nhập lại mật khẩu mới",
     "user_detail_see_all_submission": "Xem tất cả bài làm",
-    "user_detail_no_submission": "Chưa có bài làm nào"
+    "user_detail_no_submission": "Chưa có bài làm nào",
+
+    "course_list_title": "Danh sách khóa học",
+    "course_filter": "Lọc theo loại",
+    "course_see_all_teacher": "Xem tất cả giảng viên",
+    "course_detail_classroom": "Lớp học",
+    "course_detail_assignment": "Bài tập",
+    "course_detail_participant":" Thành viên",
+    "course_detail_need_to_do_title": "Công việc cần làm",
+    "course_detail_assignment_list": "Danh sách bài tập",
+    "course_detail_exam": "Bài kiểm tra",
+    "course_assignment_deadline": "Hết hạn lúc",
+    "course_assignment_detail": "Xem chi tiết",
+    "course_assignment_detail_open_time": "Thời gian mở",
+    "course_assignment_detail_close_time": "Thời gian đóng",
+    "course_assignment_detail_submit": "Thêm bài nộp",
+
+    "course_grade_title": "Báo cáo điểm",
+    "course_grade_average": "Điểm trung bình",
+    "course_grade_submitted": "Số mục đã nộp",
+    "course_grade_grid_topic": "Mục được đánh giá",
+    "course_grade_topic_type": "Loại mục",
+    "course_grade_weight": "Trọng số",
+    "course_grade_range": "Thang điểm",
+    "course_grade_response": "Phản hồi",
+
+    "course_participant_title": "Danh sách thành viên",
+
+    "course_lecturer_add_announcement": "Đăng thông báo mới",
+    "course_lecturer_announcement_title": "Tiêu đề thông báo",
+    "course_lecturer_enter_announcement": "Nhập thông báo",
+
+    "course_lecturer_assignment_add_new": "Thêm mới",
+    "course_lecturer_assignment_create_new_assignment": "Tạo bài tập mới",
+    "course_lecturer_assignment_create_exam": "Tạo bài kiểm tra",
+    "course_lecturer_assignment_reuse_resource": "Sử dụng lại tài nguyên",
+    "course_lecturer_resource_list": "Danh sách tài nguyên khóa học",
+
+    "course_lecturer_reuse_course_resource_dialog_grid_class": "Tên lớp học",
+    "course_lecturer_reuse_course_resource_dialog_grid_program": "Chương trình học",
+    "course_lecturer_reuse_course_resource_dialog_grid_teacher": "Giảng viên",
+
+    "course_lecturer_grade_description": "Điểm thành phần của khóa học"
+
+
 }

@@ -12,7 +12,9 @@ import GradeSummary from "./components/GradeSummary";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 const StudentCourseGrade = () => {
+  const { t } = useTranslation();
   const courseAssignmentList = [
     {
       id: 1,
@@ -68,7 +70,7 @@ const StudentCourseGrade = () => {
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "item",
-      headerName: "Mục được đánh giá",
+      headerName: t("course_grade_grid_topic"),
       width: 200,
       flex: 0.2,
       disableColumnMenu: true,
@@ -80,7 +82,7 @@ const StudentCourseGrade = () => {
     },
     {
       field: "type",
-      headerName: "Loại mục",
+      headerName: t("course_grade_topic_type"),
       minWidth: 1,
       flex: 0.2,
       renderCell: (params) => (
@@ -96,14 +98,14 @@ const StudentCourseGrade = () => {
 
     {
       field: "weight",
-      headerName: "Trọng số",
+      headerName: t("course_grade_weight"),
       minWidth: 50,
       disableColumnMenu: true,
       flex: 0.2
     },
     {
       field: "grade",
-      headerName: "Điểm",
+      headerName: t("common_grade"),
       minWidth: 50,
       disableColumnMenu: true,
       flex: 0.2,
@@ -120,7 +122,7 @@ const StudentCourseGrade = () => {
     },
     {
       field: "range",
-      headerName: "Thang điểm",
+      headerName: t("course_grade_range"),
       minWidth: 50,
       disableColumnMenu: true,
       flex: 0.2,
@@ -132,7 +134,7 @@ const StudentCourseGrade = () => {
     },
     {
       field: "percentage",
-      headerName: "Phần trăm",
+      headerName: t("common_percentage"),
       minWidth: 50,
       disableColumnMenu: true,
       flex: 0.2,
@@ -144,7 +146,7 @@ const StudentCourseGrade = () => {
     },
     {
       field: "feedback",
-      headerName: "Phản hồi",
+      headerName: t("course_grade_response"),
       minWidth: 200,
       disableColumnMenu: true,
       flex: 0.2,
@@ -178,7 +180,7 @@ const StudentCourseGrade = () => {
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
-        <Heading1>Báo cáo điểm</Heading1>
+        <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
       <Grid item xs={12}>
         <GradeSummary />

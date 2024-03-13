@@ -9,6 +9,7 @@ import CustomDialog from "components/common/dialogs/CustomDialog";
 import * as React from "react";
 import FeatureBar from "../../FeatureBar";
 import { GridRowParams } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 interface ReusedCourseResourceDialogProps extends DialogProps {
   title?: string;
@@ -23,6 +24,7 @@ export default function ReusedCourseResourceDialog({
   onOpenReuseResourceDialog,
   ...props
 }: ReusedCourseResourceDialogProps) {
+  const { t } = useTranslation();
   const questionList = [
     {
       id: 1,
@@ -54,17 +56,17 @@ export default function ReusedCourseResourceDialog({
       { field: "id", headerName: "STT", minWidth: 1 },
       {
         field: "name",
-        headerName: "Tên lớp học",
+        headerName: t("course_lecturer_reuse_course_resource_dialog_grid_class"),
         minWidth: 400
       },
       {
         field: "program",
-        headerName: "Chương trình học",
+        headerName: t("course_lecturer_reuse_course_resource_dialog_grid_program"),
         minWidth: 200
       },
       {
         field: "teacher",
-        headerName: "Giảng viên",
+        headerName: t("course_lecturer_reuse_course_resource_dialog_grid_teacher"),
         minWidth: 400
       }
     ],
@@ -102,10 +104,21 @@ export default function ReusedCourseResourceDialog({
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <FeatureBar
-              colSearchLabel='Tìm kiếm theo cột'
+              colSearchLabel={t("common_find_by_col")}
               colItems={[
-                { label: "Tên lớp học", value: "name" },
-                { label: "Chương trình học", value: "program" }
+                {
+                  label: t("course_lecturer_reuse_course_resource_dialog_grid_class"),
+                  value: "name"
+                },
+                {
+                  label: t("course_lecturer_reuse_course_resource_dialog_grid_program"),
+                  value: "program"
+                }
+              ]}
+              translation-key={[
+                "course_lecturer_reuse_course_resource_dialog_grid_class",
+                "course_lecturer_reuse_course_resource_dialog_grid_program",
+                "common_find_by_col"
               ]}
             />
           </Grid>

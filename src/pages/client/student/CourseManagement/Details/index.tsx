@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useMemo } from "react";
@@ -8,13 +8,14 @@ import StudentCourseInformation from "./components/Information";
 import StudentCourseGrade from "./components/Grade";
 import StudentCourseParticipant from "./components/Participant";
 import StudentCourseAssignment from "./components/Assignment";
-import SideBarStudent from "components/common/sidebars/SidebarStudent";
 import StudentCourseAssignmentDetails from "./components/Assignment/AssignmentDetails";
 import StudentCourseExamDetails from "./components/Assignment/ExamDetails";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const StudentCourseDetail = memo((props: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
@@ -58,22 +59,36 @@ const StudentCourseDetail = memo((props: Props) => {
         >
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Lớp học</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_classroom'>
+                {t("course_detail_classroom")}
+              </ParagraphBody>
+            }
             value={0}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Bài tập</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_assignment'>
+                {t("course_detail_assignment")}
+              </ParagraphBody>
+            }
             value={1}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Điểm</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='common_score'>{t("common_score")}</ParagraphBody>
+            }
             value={2}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Thành viên</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_participant'>
+                {t("course_detail_participant")}
+              </ParagraphBody>
+            }
             value={3}
           />
         </Tabs>
