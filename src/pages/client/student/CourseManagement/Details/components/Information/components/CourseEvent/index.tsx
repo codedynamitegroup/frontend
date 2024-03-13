@@ -1,11 +1,10 @@
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import classes from "./styles.module.scss";
 import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar/ListItemAvatar";
-import Avatar from "@mui/material/Avatar/Avatar";
 import ListItemText from "@mui/material/ListItemText/ListItemText";
 import Typography from "@mui/material/Typography/Typography";
 import { Box, ListItemButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface PropData {
   id: number;
@@ -18,12 +17,13 @@ interface PropData {
 
 const StudentCourseEvent = (props: PropData) => {
   const { id, name, type, startDate, endDate, status } = props;
+  const { t } = useTranslation();
   let courseTypeString = "";
   const backgroundColor = status === ECourseEventStatus.submitted ? "var(--gray-40)" : "white";
   const textDecorLine = status === ECourseEventStatus.submitted ? "line-through" : "none";
   switch (type) {
     case ECourseResourceType.assignment:
-      courseTypeString = "Bài tập";
+      courseTypeString = t("common_type_assignment");
       break;
     default:
       break;
@@ -47,7 +47,12 @@ const StudentCourseEvent = (props: PropData) => {
           }
           secondary={
             <>
-              <Typography component='span' variant='body2' color='text.primary'>
+              <Typography
+                translation-key='common_type_assignment'
+                component='span'
+                variant='body2'
+                color='text.primary'
+              >
                 {courseTypeString}
               </Typography>
               <Box>
@@ -56,8 +61,9 @@ const StudentCourseEvent = (props: PropData) => {
                   component='span'
                   variant='body2'
                   color='text.primary'
+                  translation-key='common_deadline'
                 >
-                  Thời hạn:
+                  {t("common_deadline")}:
                 </Typography>
                 {` ${endDate} `}
               </Box>

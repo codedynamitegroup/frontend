@@ -9,6 +9,7 @@ import CustomDialog from "components/common/dialogs/CustomDialog";
 import * as React from "react";
 import FeatureBar from "../../FeatureBar";
 import { GridRowParams } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 interface ReusedResourceDialogProps extends DialogProps {
   title?: string;
@@ -31,6 +32,7 @@ export default function ReusedResourceDialog({
   onHanldeConfirm,
   ...props
 }: ReusedResourceDialogProps) {
+  const { t } = useTranslation();
   const questionList = [
     {
       id: 1,
@@ -62,17 +64,17 @@ export default function ReusedResourceDialog({
       { field: "id", headerName: "STT", minWidth: 1 },
       {
         field: "name",
-        headerName: "Tiêu đề",
+        headerName: t("common_title"),
         minWidth: 400
       },
       {
         field: "type",
-        headerName: "Phân Loại",
+        headerName: t("common_classify_category"),
         minWidth: 300
       },
       {
         field: "topic",
-        headerName: "Chủ đề",
+        headerName: t("common_filter_topic"),
         minWidth: 150
       }
     ],
@@ -113,11 +115,17 @@ export default function ReusedResourceDialog({
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <FeatureBar
-            colSearchLabel='Tìm kiếm theo cột'
+            colSearchLabel={t("common_find_by_col")}
             colItems={[
-              { label: "Tiêu đề", value: "name" },
-              { label: "Phân loại", value: "type" },
-              { label: "Chủ đề", value: "topic" }
+              { label: t("common_title"), value: "name" },
+              { label: t("common_classify_category"), value: "type" },
+              { label: t("common_filter_topic"), value: "topic" }
+            ]}
+            translation-key={[
+              "common_find_by_col",
+              "common_title",
+              "common_filter_topic",
+              "common_classify_category"
             ]}
           />
         </Grid>

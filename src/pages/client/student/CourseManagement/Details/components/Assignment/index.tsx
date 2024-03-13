@@ -9,8 +9,10 @@ import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import AssignmentResource from "./Resource";
 import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
+import { useTranslation } from "react-i18next";
 
 const StudentCourseAssignment = () => {
+  const { t } = useTranslation();
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
   };
@@ -28,7 +30,9 @@ const StudentCourseAssignment = () => {
 
   return (
     <Box className={classes.assignmentBody}>
-      <Heading1>Danh sách bài tập</Heading1>
+      <Heading1 translation-key='course_detail_assignment_list'>
+        {t("course_detail_assignment_list")}
+      </Heading1>
       <Grid container>
         <Grid item xs={12}>
           <SearchBar onSearchClick={searchHandle} />
@@ -36,12 +40,14 @@ const StudentCourseAssignment = () => {
       </Grid>
       <Box className={classes.assignmentsWrapper}>
         <Box className={classes.topic}>
-          <Heading3>Bài tập</Heading3>
+          <Heading3 translation-key='course_detail_assignment'>
+            {t("course_detail_assignment")}
+          </Heading3>
           <AssignmentResource resourceTitle='Bài tập 1' resourceEndedDate='12/12/2022' />
           <AssignmentResource resourceTitle='Bài tập 2' resourceEndedDate='12/12/2023' />
         </Box>
         <Box className={classes.topic}>
-          <Heading3>Bài kiểm tra</Heading3>
+          <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
           <AssignmentResource
             resourceTitle='Bài kiểm tra 1'
             resourceEndedDate='12/12/2022'

@@ -12,6 +12,7 @@ import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useState } from "react";
 import SearchBar from "components/common/search/SearchBar";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { useTranslation } from "react-i18next";
 
 const CourseParticipantFeatureBar = () => {
   const searchBarHandler = (val: string) => {
@@ -21,6 +22,7 @@ const CourseParticipantFeatureBar = () => {
   const colSearchChangeHandler = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     setColSearchVal(event.target.value);
   };
+  const { t } = useTranslation();
 
   return (
     <Paper className={classes.container}>
@@ -28,17 +30,24 @@ const CourseParticipantFeatureBar = () => {
         <SearchBar onSearchClick={searchBarHandler} />
 
         <FormControl className={classes.colSearchContainer}>
-          <InputLabel id='colSearch'>Tìm kiếm theo cột</InputLabel>
+          <InputLabel id='colSearch' translation-key='common_find_by_col'>
+            {t("common_find_by_col")}
+          </InputLabel>
           <Select
             labelId='colSearch'
             id='colSearchSelect'
             value={colSearchVal}
             onChange={colSearchChangeHandler}
-            label='Tìm kiếm theo cột'
+            label={t("common_find_by_col")}
+            translation-key='common_find_by_col'
           >
-            <MenuItem value={"name"}>Tên</MenuItem>
+            <MenuItem value={"name"} translation-key='common_name'>
+              {t("common_name")}
+            </MenuItem>
             <MenuItem value={"emai"}>Email</MenuItem>
-            <MenuItem value={"role"}>Chức vụ</MenuItem>
+            <MenuItem value={"role"} translation-key='commmon_role'>
+              {t("common_role")}
+            </MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -47,8 +56,9 @@ const CourseParticipantFeatureBar = () => {
         btnType={BtnType.Primary}
         startIcon={<ExportIcon sx={{ color: "white" }} />}
         sx={{ marginLeft: "15px", marginBottom: "10px" }}
+        translation-key='common_data_export'
       >
-        Xuất dữ liệu
+        {t("common_data_export")}
       </Button>
     </Paper>
   );

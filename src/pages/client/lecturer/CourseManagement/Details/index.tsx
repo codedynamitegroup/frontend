@@ -1,5 +1,4 @@
-import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
-import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
+import { Box, Tab, Tabs } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -13,10 +12,12 @@ import LecturerCourseAssignmentSubmissions from "./components/AssignmentSubmissi
 import LecturerCourseExamSubmissions from "./components/ExamSubmissions";
 import classes from "./styles.module.scss";
 import LecturerCourseExamDetails from "./components/Assignment/components/ExamDetails";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const LecturerCourseDetail = memo((props: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
@@ -60,22 +61,36 @@ const LecturerCourseDetail = memo((props: Props) => {
         >
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Lớp học</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_classroom'>
+                {t("course_detail_classroom")}
+              </ParagraphBody>
+            }
             value={0}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Bài tập</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_assignment'>
+                {t("course_detail_assignment")}
+              </ParagraphBody>
+            }
             value={1}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Điểm</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='common_grade'>{t("common_grade")}</ParagraphBody>
+            }
             value={2}
           />
           <Tab
             sx={{ textTransform: "none" }}
-            label={<ParagraphBody>Thành viên</ParagraphBody>}
+            label={
+              <ParagraphBody translation-key='course_detail_participant'>
+                {t("course_detail_participant")}
+              </ParagraphBody>
+            }
             value={3}
           />
         </Tabs>

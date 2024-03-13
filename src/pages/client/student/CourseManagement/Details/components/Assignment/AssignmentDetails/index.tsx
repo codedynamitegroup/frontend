@@ -11,8 +11,10 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import AssignmentTable from "./components/AssignmentTable";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 const StudentCourseAssignmentDetails = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
@@ -43,7 +45,7 @@ const StudentCourseAssignmentDetails = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody>Quay lại</ParagraphBody>
+        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>Bài tập 1</Heading1>
       <Card
@@ -55,7 +57,9 @@ const StudentCourseAssignmentDetails = () => {
       >
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
+            <ParagraphSmall fontWeight={"600"} translation-key='course_assignment_detail_open_time'>
+              {t("course_assignment_detail_open_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -67,7 +71,12 @@ const StudentCourseAssignmentDetails = () => {
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
+            <ParagraphSmall
+              fontWeight={"600"}
+              translation-key='course_assignment_detail_close_time'
+            >
+              {t("course_assignment_detail_close_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -100,7 +109,9 @@ const StudentCourseAssignmentDetails = () => {
         }}
         width='fit-content'
       >
-        <ParagraphBody>Thêm bài nộp</ParagraphBody>
+        <ParagraphBody translation-key='course_assignment_detail_submit'>
+          {t("course_assignment_detail_submit")}
+        </ParagraphBody>
       </Button>
     </Box>
   );

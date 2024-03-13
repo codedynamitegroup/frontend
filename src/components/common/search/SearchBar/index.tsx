@@ -10,6 +10,7 @@ import Icon from "@mui/material/Icon";
 
 import classes from "./styles.module.scss";
 import { Divider, Grid, InputAdornment } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface PropsData {
   onSearchClick: any;
@@ -18,6 +19,7 @@ interface PropsData {
 }
 
 const SearchBar = (props: PropsData) => {
+  const { t } = useTranslation();
   const { onSearchClick, placeHolder } = props;
   const [iconButtonVisibility, setIconButtonVisibility] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -55,12 +57,12 @@ const SearchBar = (props: PropsData) => {
           >
             <InputBase
               className={classes.inputField}
-              placeholder={placeHolder ? placeHolder : "Tìm kiếm"}
+              placeholder={placeHolder ? placeHolder : t("common_search")}
               onChange={handleOnChange}
               value={searchText}
               startAdornment={
                 <InputAdornment position='start'>
-                  <Tooltip title='Nhấn để tìm' arrow disableInteractive>
+                  <Tooltip title={t("search_bar_click")} arrow disableInteractive>
                     <IconButton onClick={handleClickSearchButton}>
                       <SearchIcon />
                     </IconButton>

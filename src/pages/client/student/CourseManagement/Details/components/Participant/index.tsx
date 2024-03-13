@@ -10,8 +10,10 @@ import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const StudentCourseParticipant = () => {
+  const { t } = useTranslation();
   const participantList = [
     {
       id: 4,
@@ -30,7 +32,7 @@ const StudentCourseParticipant = () => {
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "name",
-      headerName: "Họ và tên",
+      headerName: t("common_fullname"),
       width: 200,
       flex: 0.8,
       renderCell: (params) => (
@@ -40,7 +42,7 @@ const StudentCourseParticipant = () => {
       )
     },
     { field: "email", headerName: "Email", width: 200, flex: 0.8 },
-    { field: "roles", headerName: "Chức vụ", width: 50, flex: 0.4 }
+    { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 }
   ];
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
@@ -64,7 +66,9 @@ const StudentCourseParticipant = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Heading1>Danh sách thành viên</Heading1>
+        <Heading1 translation-key='course_participant_title'>
+          {t("course_participant_title")}
+        </Heading1>
       </Grid>
       <Grid item xs={12}>
         <CourseParticipantFeatureBar />
