@@ -6,6 +6,7 @@ interface TextTitleProps {
   textWrap?: string;
   overflow?: string;
   textOverflow?: string;
+  fontWeight?: string;
 }
 
 const TextTitle = styled(Typography)<TextTitleProps>`
@@ -14,7 +15,7 @@ const TextTitle = styled(Typography)<TextTitleProps>`
   overflow: ${(props) => props.overflow || "visible"};
   text-overflow: ${(props) => props.textOverflow || "clip"};
   font-size: ${(props) => props.fontSize || "16px"};
-  font-weight: 600;
+  font-weight: ${(props) => props.fontWeight || "600"};
   font-family: "Inter";
   letter-spacing: 0.015em;
   line-height: normal;

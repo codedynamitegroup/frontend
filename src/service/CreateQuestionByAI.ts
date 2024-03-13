@@ -1,6 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
-import { EQType, EQuestionLevel } from ".";
+import {
+  EQType,
+  EQuestionLevel
+} from "../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
@@ -95,8 +98,7 @@ const format_question: IFormatQuestion[] = [
     ]
   }
 ];
-
-async function run(
+async function createQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
@@ -176,4 +178,4 @@ async function run(
   }
 }
 
-export default run;
+export default createQuestionByAI;

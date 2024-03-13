@@ -13,13 +13,13 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
+import TextTitle from "components/text/TextTitle";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import qtype from "utils/constant/Qtype";
 import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
-import qtype from "utils/constant/Qtype";
-import TextTitle from "components/text/TextTitle";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -50,6 +50,85 @@ const LecturerCourseExamSubmissions = () => {
   const pageSize = 5;
   const totalElement = 100;
 
+  const saveCodeStringToUniqueFile = ({
+    codeString,
+    fileName,
+    fileExtension,
+    submissionTime,
+    studentId,
+    questionId
+  }: {
+    codeString: string;
+    fileName: string;
+    fileExtension: string;
+    submissionTime: string;
+    studentId: number;
+    questionId: number;
+  }) => {
+    return;
+  };
+
+  // const checkSourceCodePlagiarism = useCallback(
+  //   async () =>
+  //     async ({ questionId, studentId }: { questionId: number; studentId: number }) => {
+  //       const result = {
+  //         allPairs: [] as Pair[],
+  //         report: [] as {
+  //           left: {
+  //             path: string;
+  //             startRow: number;
+  //             startCol: number;
+  //             endRow: number;
+  //             endCol: number;
+  //           };
+  //           right: {
+  //             path: string;
+  //             startRow: number;
+  //             startCol: number;
+  //             endRow: number;
+  //             endCol: number;
+  //           };
+  //         }[]
+  //       };
+
+  //       const files = [
+  //         "./Dolos/sample.js",
+  //         "./Dolos/copied_function.js",
+  //         "./Dolos/another_copied_function.js",
+  //         "./Dolos/copy_of_sample.js"
+  //       ];
+
+  //       const dolos = new Dolos();
+  //       const report = await dolos.analyzePaths(files);
+
+  //       for (const pair of report.allPairs()) {
+  //         result.allPairs.push(pair);
+  //         for (const fragment of pair.buildFragments()) {
+  //           const left = fragment.leftSelection;
+  //           const right = fragment.rightSelection;
+  //           result.report.push({
+  //             left: {
+  //               path: pair.leftFile.path,
+  //               startRow: left.startRow,
+  //               startCol: left.startCol,
+  //               endRow: left.endRow,
+  //               endCol: left.endCol
+  //             },
+  //             right: {
+  //               path: pair.rightFile.path,
+  //               startRow: right.startRow,
+  //               startCol: right.startCol,
+  //               endRow: right.endRow,
+  //               endCol: right.endCol
+  //             }
+  //           });
+  //         }
+  //       }
+  //       return result;
+  //     },
+  //   []
+  // );
+
   const examData = {
     id: 1,
     max_grade: 30,
@@ -73,7 +152,7 @@ const LecturerCourseExamSubmissions = () => {
         question: "Câu hỏi 2",
         answer: "Đáp án 2",
         max_grade: 10,
-        type: qtype.true_false
+        type: qtype.essay
       },
       {
         id: 3,
@@ -272,18 +351,33 @@ const LecturerCourseExamSubmissions = () => {
         }
       ],
       renderHeaderGroup() {
-        return question.type.code === qtype.source_code.code ? (
-          <Button
-            btnType={BtnType.Outlined}
-            onClick={() => {
-              navigate(
-                `${routes.lecturer.exam.code_plagiarism_detection}?questionId=${question.id}`
-              );
-            }}
-          >
-            Kiểm tra gian lận
-          </Button>
-        ) : null;
+        if (question.type.code === "source-code") {
+          return (
+            <Button
+              btnType={BtnType.Outlined}
+              onClick={() => {
+                navigate(
+                  `${routes.lecturer.exam.code_plagiarism_detection}?questionId=${question.id}`
+                );
+              }}
+            >
+              Kiểm tra gian lận
+            </Button>
+          );
+        } else if (question.type.code === "essay") {
+          return (
+            <Button
+              btnType={BtnType.Outlined}
+              onClick={() => {
+                navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
+              }}
+            >
+              Chấm điểm AI
+            </Button>
+          );
+        } else {
+          return null;
+        }
       }
     });
   });
