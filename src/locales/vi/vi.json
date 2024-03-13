@@ -231,5 +231,23 @@
     "Tìm kiếm nhị phân",
     "Tìm kiếm nội suy"
   ],
-  "list_problem_practice": "Luyện tập"
+  "list_problem_practice": "Luyện tập",
+  "list_problem_call_to_action": "Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay",
+  "list_problem_type_of_algorithm": "Các loại giải thuật:",
+  "list_problem_search": "Tìm kiếm",
+  "list_problem_solved_all": "Tất cả",
+  "list_problem_solved_done": "Đã giải",
+  "list_problem_solved_not_done": "Chưa giải",
+  "list_problem_difficult_level_all": "Tất cả",
+  "list_problem_difficult_level_easy": "Đễ",
+  "list_problem_difficult_level_medium": "Trung bình",
+  "list_problem_difficult_level_hard": "Khó",
+  "list_problem_topic_all": "Tất cả",
+  "list_problem_hot_problem": "Bài tập mọi người đang luyện tập",
+  "list_problem": "Danh sách bài tập",
+  "list_problem_problem_status": "Trạng thái",
+  "list_problem_problem_name": "Tên bài tập",
+  "list_problem_difficult_level": "Độ khó",
+  "list_problem_not_found_data": "Không tìm thấy thông tin",
+  "list_problem_data_grid_pagination": "Số dòng trên mỗi trang"
 }

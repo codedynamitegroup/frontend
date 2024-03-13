@@ -28,15 +28,13 @@ const ListProblem = () => {
       >
         <Container id={classes.bannerContainer} className={classes.container}>
           <Heading1 colorname={"--white"}>{t("list_problem_practice")}</Heading1>
-          <Heading3 colorname={"--white"}>
-            Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
-          </Heading3>
+          <Heading3 colorname={"--white"}>{t("list_problem_call_to_action")}</Heading3>
           <Box id={classes.bannerSearch}>
             <Box className={classes.filterSearch}>
               <OutlinedInput
                 size='small'
                 fullWidth
-                placeholder='Tìm kiếm'
+                placeholder={t("list_problem_search")}
                 startAdornment={
                   <InputAdornment position='start'>
                     <SearchIcon className={classes.icon} />
@@ -52,15 +50,15 @@ const ListProblem = () => {
                 items={[
                   {
                     value: "0",
-                    label: "Tất cả"
+                    label: t("list_problem_solved_all")
                   },
                   {
                     value: "1",
-                    label: "Đã giải"
+                    label: t("list_problem_solved_done")
                   },
                   {
                     value: "2",
-                    label: "Chưa giải"
+                    label: t("list_problem_solved_not_done")
                   }
                 ]}
                 backgroundColor='#FFFFFF'
@@ -73,19 +71,19 @@ const ListProblem = () => {
                 items={[
                   {
                     value: "0",
-                    label: "Tất cả"
+                    label: t("list_problem_difficult_level_all")
                   },
                   {
                     value: "1",
-                    label: "Dễ"
+                    label: t("list_problem_difficult_level_easy")
                   },
                   {
                     value: "2",
-                    label: "Trung bình"
+                    label: t("list_problem_difficult_level_medium")
                   },
                   {
                     value: "3",
-                    label: "Khó"
+                    label: t("list_problem_difficult_level_hard")
                   }
                 ]}
                 backgroundColor='#FFFFFF'
@@ -100,7 +98,7 @@ const ListProblem = () => {
             <Grid container>
               <Grid item xs={2.5}>
                 <Box className={classes.algorithmContainer}>
-                  <Heading3>Các loại giải thuật:</Heading3>
+                  <Heading3>{t("list_problem_type_of_algorithm")}</Heading3>
                   <Box className={classes.algorithm}>
                     {algorithms.map((algorithm, index) => (
                       <Box className={classes.algorithmItem} key={index}>

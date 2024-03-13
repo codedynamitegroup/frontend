@@ -2,6 +2,7 @@ import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import RecommendProblemCard from "./components/RecommendProblemCard";
+import { useTranslation } from "react-i18next";
 
 export enum ELevelProblem {
   Easy = 1,
@@ -15,6 +16,7 @@ export interface IRecommendedProblem {
 }
 
 const RecommendedProblem = () => {
+  const { t } = useTranslation();
   const recommendedProblems: IRecommendedProblem[] = [
     {
       title: "Sắp xếp mảng tăng dần",
@@ -39,7 +41,7 @@ const RecommendedProblem = () => {
   ];
   return (
     <Box className={classes.recommendedProblemsWrapper}>
-      <Heading2>Bài tập mọi người đang luyện tập</Heading2>
+      <Heading2>{t("list_problem_hot_problem")}</Heading2>
       <Grid container spacing={3}>
         {recommendedProblems.map((recommendedProblem, index) => (
           <Grid item xs={4} key={index}>

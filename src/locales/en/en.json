@@ -242,5 +242,23 @@
     "Binary search",
     "Interpolation search"
   ],
-  "list_problem_practice": "Practice"
+  "list_problem_practice": "Practice",
+  "list_problem_call_to_action": "Do you want to improve your programming skills? Try practicing now",
+  "list_problem_type_of_algorithm": "Types of algorithms:",
+  "list_problem_search": "Search",
+  "list_problem_solved_all": "All",
+  "list_problem_solved_done": "Solved",
+  "list_problem_solved_not_done": "Not Solved",
+  "list_problem_difficult_level_all": "All",
+  "list_problem_difficult_level_easy": "Easy",
+  "list_problem_difficult_level_medium": "Medium",
+  "list_problem_difficult_level_hard": "Hard",
+  "list_problem_topic_all": "All",
+  "list_problem_hot_problem": "The exercise everyone is practicing",
+  "list_problem": "List problems",
+  "list_problem_problem_status": "Status",
+  "list_problem_problem_name": "Problem name",
+  "list_problem_difficult_level": "Difficult level",
+  "list_problem_not_found_data": "Not found data",
+  "list_problem_data_grid_pagination": "Row per page"
 }

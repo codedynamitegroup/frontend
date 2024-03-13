@@ -8,19 +8,21 @@ import { ELevelProblem, IRecommendedProblem } from "../..";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import images from "config/images";
 import Heading4 from "components/text/Heading4";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   recommendProblem: IRecommendedProblem;
 };
 
 const RecommendProblemCard = ({ recommendProblem }: Props) => {
+  const { t } = useTranslation();
   const renderTextLevel = (level: number) => {
     if (level === ELevelProblem.Easy) {
-      return "Dễ";
+      return t("list_problem_difficult_level_easy");
     } else if (level === ELevelProblem.Medium) {
-      return "Trung bình";
+      return t("list_problem_difficult_level_medium");
     }
-    return "Khó";
+    return t("list_problem_difficult_level_hard");
   };
 
   return (
