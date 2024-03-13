@@ -17,9 +17,9 @@ export default function Login() {
   const navigate = useNavigate();
   const handleLogin = () => {
     localStorage.setItem("user", "HIEUTHUHAI");
-    if (email === "guest") {
+    if (email === "student@gmail.com") {
       navigate(routes.user.dashboard.root);
-    } else if (email === "lecturer") {
+    } else if (email === "lecturer@gmail.com") {
       navigate(routes.lecturer.course.management);
     }
   };
