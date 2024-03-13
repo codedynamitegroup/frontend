@@ -32,6 +32,10 @@ mapTypeToContent.set(NotificationType.CONTEST, {
   iconPath: notificaionIcon.contestIcon,
   generalTitle: "Cuộc thi mà bạn đăng kí"
 });
+mapTypeToContent.set(NotificationType.SYNC, {
+  iconPath: notificaionIcon.syncIcon,
+  generalTitle: "Đồng bộ hệ thống"
+});
 
 interface NotificationItemProps extends BoxProps {
   type: NotificationType;
