@@ -11,11 +11,20 @@ import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { feedbackCodeByByAI } from "service/FeedbackCodeByAI";
+import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
+import CircularProgress from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 interface Props {
   handleSubmissionDetail: () => void;
+}
+interface IFeedbackCodeByAI {
+  id: number;
+  feedback: string[];
+  suggestCode: string;
 }
 export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const cpp = `\`\`\`cpp
@@ -46,6 +55,17 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
+  const [loading, setLoading] = useState(false);
+  const [feedbackCodeByAI, setFeedbackCodeByAI] = useState<IFeedbackCodeByAI | null>(null);
+  const handleFeedbackCodeByAI = async () => {
+    setLoading(true);
+    const result = await feedbackCodeByByAI(cpp, "divideArray");
+    if (result) {
+      setFeedbackCodeByAI(result);
+    }
+    setLoading(false);
+  };
+
   return (
     <Grid className={classes.root}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
@@ -106,9 +126,34 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           </Grid>
         </Grid>
         <Box className={classes.submissionText}>
-          <ParagraphBody fontWeight={700}>Bài làm của bạn</ParagraphBody>
+          <Box className={classes.submissionTitle}>
+            <ParagraphBody fontWeight={700}>Bài làm của bạn</ParagraphBody>
+            <LoadingButton
+              loading={loading}
+              variant='contained'
+              color='primary'
+              onClick={handleFeedbackCodeByAI}
+            >
+              Đánh giá bởi AI
+            </LoadingButton>
+          </Box>
           <MDEditor.Markdown source={cpp} />
         </Box>
+
+        {feedbackCodeByAI && (
+          <Box className={classes.submissionText}>
+            <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
+
+            <Box className={classes.evaluateText}>
+              <ParagraphBody>{feedbackCodeByAI && feedbackCodeByAI.feedback}</ParagraphBody>
+            </Box>
+            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
+
+            <MDEditor.Markdown
+              source={feedbackCodeByAI ? "```" + feedbackCodeByAI.suggestCode + "```" : ""}
+            />
+          </Box>
+        )}
       </Box>
     </Grid>
   );
