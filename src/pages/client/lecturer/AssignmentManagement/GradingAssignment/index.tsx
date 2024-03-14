@@ -21,6 +21,7 @@ import { routes } from "routes/routes";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -82,6 +83,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function AssignmentGrading() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -233,7 +235,9 @@ export default function AssignmentGrading() {
           <Divider />
           <Box className={classes.drawerBody}>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Dạng bài tập</TextTitle>
+              <TextTitle translation-key='course_lecturer_grading_assignment_type'>
+                {t("course_lecturer_grading_assignment_type")}
+              </TextTitle>
               <ChipMultipleFilter
                 label=''
                 defaultChipList={["Tự luận", "Nộp tệp"]}
@@ -244,7 +248,7 @@ export default function AssignmentGrading() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Sinh viên</TextTitle>
+              <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
               <BasicSelect
                 labelId='select-assignment-submission-student-label'
                 value={assignmentSubmissionStudent}
@@ -285,7 +289,9 @@ export default function AssignmentGrading() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm trên thang điểm 100</TextTitle>
+              <TextTitle translation-key='course_lecturer_score_on_range'>
+                {t("course_lecturer_score_on_range", { range: 100 })}
+              </TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}
@@ -295,7 +301,9 @@ export default function AssignmentGrading() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Nhận xét</TextTitle>
+              <TextTitle translation-key='course_lecturer_grade_comment'>
+                {t("course_lecturer_grade_comment")}
+              </TextTitle>
               <Box className={classes.textEditor}>
                 <TextEditor
                   style={{
@@ -313,8 +321,9 @@ export default function AssignmentGrading() {
               padding='10px'
               loading={loading}
               onClick={handleClick}
+              translation-key='course_lecturer_evaluate'
             >
-              Đánh giá
+              {t("course_lecturer_evaluate")}{" "}
             </LoadButton>
           </Box>
         </Drawer>

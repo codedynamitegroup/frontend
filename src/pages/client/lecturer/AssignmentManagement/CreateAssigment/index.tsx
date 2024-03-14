@@ -24,6 +24,7 @@ import { routes } from "routes/routes";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -85,6 +86,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function AssignmentCreated() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -162,8 +164,9 @@ export default function AssignmentCreated() {
                 colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
+                translation-key='common_course_management'
               >
-                Quản lý khoá học
+                {t("common_course_management")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
@@ -178,11 +181,17 @@ export default function AssignmentCreated() {
                 colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
+                translation-key='course_detail_assignment_list'
               >
-                Danh sách bài tập
+                {t("course_detail_assignment_list")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Tạo bài tập</ParagraphSmall>
+              <ParagraphSmall
+                colorname='--blue-500'
+                translation-key='assignment_management_create_assignment'
+              >
+                {t("assignment_management_create_assignment")}
+              </ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -205,17 +214,25 @@ export default function AssignmentCreated() {
         >
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"}>Tạo bài tập</Heading1>
+              <Heading1
+                fontWeight={"500"}
+                translation-key='assignment_management_create_assignment'
+              >
+                {t("assignment_management_create_assignment")}
+              </Heading1>
               <InputTextField
                 type='text'
-                title='Tên bài tập'
+                title={t("common_assignment_name")}
                 value={assignmentName}
                 onChange={(e) => setAssignmentName(e.target.value)}
-                placeholder='Nhập tên bài tập'
+                placeholder={t("common_assignment_enter_name")}
+                translation-key={["common_assignment_name", "common_assignment_enter_name"]}
               />
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={3}>
-                  <TextTitle>Mô tả bài tập</TextTitle>
+                  <TextTitle translation-key='common_assignment_description'>
+                    {t("common_assignment_description")}
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
@@ -223,7 +240,9 @@ export default function AssignmentCreated() {
               </Grid>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={3}>
-                  <TextTitle>Hướng dẫn nộp bài tập</TextTitle>
+                  <TextTitle translation-key='common_assignment_guide'>
+                    {t("common_assignment_guide")}
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={9} className={classes.textEditor}>
                   <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
@@ -231,7 +250,9 @@ export default function AssignmentCreated() {
               </Grid>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={3}>
-                  <TextTitle>Tệp đính kèm (nếu có)</TextTitle>
+                  <TextTitle translation-key='asingment_management_attach_file'>
+                    {t("asingment_management_attach_file")}
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={9}>
                   <FileUploader />
@@ -263,7 +284,9 @@ export default function AssignmentCreated() {
           <Divider />
           <Box className={classes.drawerBody}>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Dạng bài tập</TextTitle>
+              <TextTitle translation-key='course_lecturer_grading_assignment_type'>
+                {t("course_lecturer_grading_assignment_type")}
+              </TextTitle>
               <ChipMultipleFilter
                 label=''
                 defaultChipList={["Tự luận", "Nộp tệp"]}
@@ -273,7 +296,9 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm tối đa</TextTitle>
+              <TextTitle translation-key='assignment_management_max_score'>
+                {t("assignment_management_max_score")}
+              </TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}
@@ -283,7 +308,9 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Cho phép nộp bài kể từ</TextTitle>
+              <TextTitle translation-key='asingment_management_allow_time'>
+                {t("asingment_management_allow_time")}
+              </TextTitle>
               <CustomDateTimePicker
                 value={assignmentAllowSubmissionFromDate}
                 onHandleValueChange={(newValue) => {
@@ -293,7 +320,9 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Hạn nộp bài</TextTitle>
+              <TextTitle translation-key='asingment_management_deadline'>
+                {t("asingment_management_deadline")}
+              </TextTitle>
               <CustomDateTimePicker
                 value={assignmentSubmissionDueDate}
                 onHandleValueChange={(newValue) => {
@@ -303,7 +332,9 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Chủ đề</TextTitle>
+              <TextTitle translation-key='common_filter_topic'>
+                {t("common_filter_topic")}
+              </TextTitle>
               <BasicSelect
                 labelId='select-assignment-section-label'
                 value={assignmentSection}
@@ -326,7 +357,9 @@ export default function AssignmentCreated() {
               />
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Tính khả dụng</TextTitle>
+              <TextTitle translation-key='asingment_management_possibility'>
+                {t("asingment_management_possibility")}
+              </TextTitle>
               <BasicSelect
                 labelId='select-assignment-availability-label'
                 value={assignmentAvailability}
@@ -334,18 +367,23 @@ export default function AssignmentCreated() {
                 items={[
                   {
                     value: "0",
-                    label: "Hiện và có thể truy cập trên trang khoá học"
+                    label: t("asingment_management_possibility_show")
                   },
                   {
                     value: "1",
-                    label: "Ẩn và không thể truy cập trên trang khoá học"
+                    label: t("asingment_management_possibility_hind_can_not_access")
                   },
                   {
                     value: "2",
-                    label: "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn"
+                    label: t("asingment_management_possibility_hide_can_access")
                   }
                 ]}
                 backgroundColor='#D9E2ED'
+                translation-key={[
+                  "asingment_management_possibility_show",
+                  "asingment_management_possibility_hind_can_not_access",
+                  "asingment_management_possibility_hide_can_access"
+                ]}
               />
             </Box>
             <LoadButton
@@ -355,8 +393,9 @@ export default function AssignmentCreated() {
               padding='10px'
               loading={loading}
               onClick={handleClick}
+              translation-key='assignment_management_create_assignment'
             >
-              Tạo bài tập
+              {t("assignment_management_create_assignment")}
             </LoadButton>
           </Box>
         </Drawer>

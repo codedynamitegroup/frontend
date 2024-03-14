@@ -185,9 +185,7 @@ II. SYSTEM_INSTRUCTIONS:
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-
     const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-    console.log("cleanText", cleanText);
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
     return json;

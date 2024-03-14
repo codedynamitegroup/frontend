@@ -88,6 +88,8 @@ const AIQuestionCreated = () => {
           setOpenSnackbarAlert(true);
           setAlertContent("Tạo câu hỏi thành công");
           setAlertType(AlertType.Success);
+        } else {
+          throw new Error("Internal server error");
         }
       })
       .catch((err) => {

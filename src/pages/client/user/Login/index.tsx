@@ -10,7 +10,6 @@ import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
-import { em } from "@fullcalendar/core/internal-common";
 import { useState } from "react";
 export default function Login() {
   const { t } = useTranslation();

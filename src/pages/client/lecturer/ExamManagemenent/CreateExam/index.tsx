@@ -53,6 +53,8 @@ import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialo
 import classes from "./styles.module.scss";
 import { GridRowParams } from "@mui/x-data-grid";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const drawerWidth = 400;
 
@@ -120,6 +122,7 @@ export const OVERDUE_HANDLING = {
 };
 
 export default function ExamCreated() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -194,38 +197,39 @@ export default function ExamCreated() {
       { field: "id", headerName: "STT", minWidth: 1 },
       {
         field: "name",
-        headerName: "Tên câu hỏi",
+        headerName: t("exam_management_create_question_name"),
         minWidth: 250
         // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
         field: "description",
-        headerName: "Mô tả câu hỏi",
+        headerName: t("exam_management_create_question_description"),
         minWidth: 500
       },
       {
         field: "max_grade",
-        headerName: "Điểm tối đa",
+        headerName: t("assignment_management_max_score"),
         minWidth: 50,
         renderCell: (params) => (
           <InputTextField
             type='number'
             value={params.value}
             onChange={(e) => console.log(e.target.value)}
-            placeholder='Nhập điểm tối đa'
+            placeholder={t("exam_management_create_enter_score")}
+            translation-key='exam_management_create_enter_score'
             backgroundColor='white'
           />
         )
       },
       {
         field: "type",
-        headerName: "Kiểu",
+        headerName: t("exam_management_create_question_type"),
         minWidth: 150,
         renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
       {
         field: "action",
-        headerName: "Hành động",
+        headerName: t("common_action"),
         type: "actions",
         minWidth: 200,
         getActions: (params) => [
@@ -371,13 +375,14 @@ export default function ExamCreated() {
       <PickQuestionTypeToAddDialog
         open={isAddNewQuestionDialogOpen}
         handleClose={handleCloseAddNewQuestionDialog}
-        title='Chọn kiểu câu hỏi muốn thêm'
-        cancelText='Hủy bỏ'
-        confirmText='Thêm'
+        title={t("exam_management_create_new_question")}
+        cancelText={t("common_cancel")}
+        confirmText={t("common_add")}
         onHanldeConfirm={onClickConfirmAddNewQuestion}
         onHandleCancel={handleCloseAddNewQuestionDialog}
         questionType={questionType}
         handleChangeQuestionType={handleChangeQuestionType}
+        translation-key={["exam_management_create_new_question", "common_cancel", "common_add"]}
       />
       <PreviewMultipleChoice
         open={openPreviewMultipleChoiceDialog}
@@ -411,12 +416,12 @@ export default function ExamCreated() {
       <PickQuestionFromQuestionBankDialog
         open={isAddQuestionFromBankDialogOpen}
         handleClose={handleCloseAddQuestionFromBankDialog}
-        title='Thêm từ ngân hàng câu hỏi'
-        cancelText='Hủy bỏ'
-        confirmText='Thêm'
+        title={t("exam_management_create_from_bank")}
+        cancelText={t("common_cancel")}
+        confirmText={t("common_add")}
         onHanldeConfirm={handleCloseAddQuestionFromBankDialog}
         onHandleCancel={handleCloseAddQuestionFromBankDialog}
-        categoryPickTitle='Chọn danh mục'
+        categoryPickTitle={t("exam_management_create_from_bank_choose_topic")}
         categoryList={[
           {
             value: "0",
@@ -430,6 +435,12 @@ export default function ExamCreated() {
             value: "2",
             label: "Danh mục 3"
           }
+        ]}
+        translation-key={[
+          "exam_management_create_from_bank",
+          "common_cancel",
+          "common_add",
+          "exam_management_create_from_bank_choose_topic"
         ]}
       />
       <Grid className={classes.root}>
@@ -456,8 +467,9 @@ export default function ExamCreated() {
                   colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.management)}
+                  translation-key='common_course_management'
                 >
-                  Quản lý khoá học
+                  {t("common_course_management")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
@@ -472,11 +484,17 @@ export default function ExamCreated() {
                   colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.assignment)}
+                  translation-key='course_detail_assignment_list'
                 >
-                  Danh sách bài tập
+                  {t("course_detail_assignment_list")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorname='--blue-500'>Tạo bài kiểm tra</ParagraphSmall>
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  translation-key='course_lecturer_assignment_create_exam'
+                >
+                  {t("course_lecturer_assignment_create_exam")}
+                </ParagraphSmall>
               </Box>
 
               <IconButton
@@ -500,18 +518,26 @@ export default function ExamCreated() {
           >
             <Card>
               <Box component='form' className={classes.formBody} autoComplete='off'>
-                <Heading1 fontWeight={"500"}>Tạo bài kiểm tra</Heading1>
+                <Heading1
+                  fontWeight={"500"}
+                  translation-key='course_lecturer_assignment_create_exam'
+                >
+                  {t("course_lecturer_assignment_create_exam")}
+                </Heading1>
                 <InputTextField
                   type='text'
-                  title='Tên bài kiểm tra'
+                  title={t("common_exam_name")}
                   value={examName}
                   onChange={(e) => setExamName(e.target.value)}
-                  placeholder='Nhập tên bài kiểm tra'
+                  placeholder={t("exam_management_create_enter_exam_name")}
                   backgroundColor='white'
+                  translation-key={["common_exam_name", "exam_management_create_enter_exam_name"]}
                 />
                 <Grid container spacing={1} columns={12}>
                   <Grid item xs={3}>
-                    <TextTitle>Mô tả bài kiểm tra</TextTitle>
+                    <TextTitle translation-key='common_exam_description'>
+                      {t("common_exam_description")}
+                    </TextTitle>
                   </Grid>
                   <Grid item xs={9} className={classes.textEditor}>
                     <TextEditor value={examDescription} onChange={setExamDescription} />
@@ -522,30 +548,40 @@ export default function ExamCreated() {
                     marginTop: "20px"
                   }}
                   popupId='add-question-popup'
-                  triggerButtonText='Thêm câu hỏi'
+                  triggerButtonText={t("exam_management_create_add_question")}
                   triggerButtonProps={{
                     width: "150px"
                   }}
                   btnType={BtnType.Outlined}
                   menuItems={[
                     {
-                      label: "Tạo câu hỏi mới",
+                      label: t("exam_management_create_new_question"),
                       onClick: onCreateNewQuestion
                     },
                     {
-                      label: "Từ ngân hàng câu hỏi",
+                      label: t("exam_management_create_from_bank"),
                       onClick: onAddQuestionFromBank
                     }
+                  ]}
+                  translation-key={[
+                    "exam_management_create_add_question",
+                    "exam_management_create_new_question",
+                    "exam_management_create_from_bank"
                   ]}
                 />
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Heading1 fontWeight={"500"}>Danh sách câu hỏi</Heading1>
+                    <Heading1
+                      fontWeight={"500"}
+                      translation-key='exam_management_create_question_list'
+                    >
+                      {t("exam_management_create_question_list")}
+                    </Heading1>
                   </Grid>
                   <Grid item xs={12}>
                     <QuestionsFeatureBar
                       colSearchLabel='Tìm kiếm theo cột'
-                      shuffleQuestionsLabel='Xáo trộn câu hỏi'
+                      shuffleQuestionsLabel={t("exam_management_create_question_scramble")}
                       colItems={[
                         { label: "Tên câu hỏi", value: "name" },
                         { label: "Kiểu", value: "type" }
@@ -594,17 +630,25 @@ export default function ExamCreated() {
             <Divider />
             <Box className={classes.drawerBody}>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Điểm tối đa</TextTitle>
+                <TextTitle translation-key='assignment_management_max_score'>
+                  {t("assignment_management_max_score")}
+                </TextTitle>
                 <InputTextField
                   type='number'
                   value={examMaximumGrade}
                   onChange={(e) => setExamMaximumGrade(parseInt(e.target.value))}
-                  placeholder='Nhập điểm tối đa'
+                  placeholder={t("exam_management_create_enter_score")}
                   backgroundColor='#D9E2ED'
+                  translation-key='exam_management_create_enter_score'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>Thời gian mở bài kiểm tra</TextTitle>
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key={["course_assignment_detail_open_time", "course_detail_exam"]}
+                >
+                  {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_open_time"), "lowercase")}`}
+                </TextTitle>
                 <CustomDateTimePicker
                   value={examOpenTime}
                   onHandleValueChange={(newValue) => {
@@ -614,8 +658,11 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>
-                  Thời gian đóng bài kiểm tra
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key={["course_assignment_detail_close_time", "course_detail_exam"]}
+                >
+                  {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_close_time"), "lowercase")}`}
                 </TextTitle>
                 <CustomDateTimePicker
                   value={examCloseTime}
@@ -626,16 +673,17 @@ export default function ExamCreated() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Thời gian làm bài</TextTitle>
+                <TextTitle translation-key='common_do_time'>{t("common_do_time")}</TextTitle>
                 <Grid container spacing={1} gap={1} columns={12}>
                   <Grid item xs={4}>
                     <InputTextField
                       type='number'
                       value={examTimeLimitNumber}
                       onChange={(e) => setExamTimeLimitNumber(parseInt(e.target.value))}
-                      placeholder='Nhập số lượng'
+                      placeholder={t("common_enter_quan")}
                       disabled={!examTimeLimitEnabled}
                       backgroundColor='#D9E2ED'
+                      translation-key='common_enter_quan'
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -647,27 +695,34 @@ export default function ExamCreated() {
                       items={[
                         {
                           value: "weeks",
-                          label: "Tuần"
+                          label: t("contest_detail_feature_week")
                         },
                         {
                           value: "days",
-                          label: "Ngày"
+                          label: t("contest_detail_feature_day")
                         },
                         {
                           value: "hours",
-                          label: "Giờ"
+                          label: t("contest_detail_feature_hour")
                         },
                         {
                           value: "minutes",
-                          label: "Phút"
+                          label: t("contest_detail_feature_minute")
                         },
                         {
                           value: "seconds",
-                          label: "Giây"
+                          label: t("contest_detail_feature_second")
                         }
                       ]}
                       disabled={!examTimeLimitEnabled}
                       backgroundColor='#D9E2ED'
+                      translation-key={[
+                        "contest_detail_feature_week",
+                        "contest_detail_feature_day",
+                        "contest_detail_feature_hour",
+                        "contest_detail_feature_minute",
+                        "contest_detail_feature_second"
+                      ]}
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -679,13 +734,19 @@ export default function ExamCreated() {
                           onChange={(e) => setExamTimeLimitEnabled(e.target.checked)}
                         />
                       }
-                      label='Bật'
+                      label={t("common_turn_on")}
+                      translation-key='common_turn_on'
                     />
                   </Grid>
                 </Grid>
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>Khi hết thời gian</TextTitle>
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key='exam_management_create_when_time_end'
+                >
+                  {t("exam_management_create_when_time_end")}
+                </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-overdue-handling-label'
                   value={overdueHandling}
@@ -693,23 +754,32 @@ export default function ExamCreated() {
                   items={[
                     {
                       value: OVERDUE_HANDLING.AUTOSUBMIT,
-                      label: "Nộp bài tự động khi hết thời gian"
+                      label: t("exam_management_create_when_time_end_auto")
                     },
                     {
                       value: OVERDUE_HANDLING.GRACEPERIOD,
-                      label:
-                        "Có khoảng thời gian ngắn để nộp bài khi hết thời gian, nhưng không thể thay đổi bài làm"
+                      label: t("exam_management_create_when_time_end_spare")
                     },
                     {
                       value: OVERDUE_HANDLING.AUTOABANDON,
-                      label: "Tự động hủy bài làm khi hết thời gian"
+                      label: t("exam_management_create_when_time_end_delete")
                     }
                   ]}
                   backgroundColor='#D9E2ED'
+                  translation-key={[
+                    "exam_management_create_when_time_end",
+                    "exam_management_create_when_time_end_delete",
+                    "exam_management_create_when_time_end_spare"
+                  ]}
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>Số lần làm lại tối đa</TextTitle>
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key='exam_management_create_retry_num'
+                >
+                  {t("exam_management_create_retry_num")}
+                </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-max-attempts-label'
                   value={maxAttempts.toString()}
@@ -717,7 +787,7 @@ export default function ExamCreated() {
                   items={[
                     {
                       value: "0",
-                      label: "Không giới hạn số lần làm lại"
+                      label: t("exam_management_create_retry_num_infinite")
                     },
                     ...Array.from(Array(10).keys()).map((i) => ({
                       value: (i + 1).toString(),
@@ -725,10 +795,16 @@ export default function ExamCreated() {
                     }))
                   ]}
                   backgroundColor='#D9E2ED'
+                  translation-key='exam_management_create_retry_num_infinite'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>Tính khả dụng</TextTitle>
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key='asingment_management_possibility'
+                >
+                  {t("asingment_management_possibility")}
+                </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-availability-label'
                   value={assignmentAvailability}
@@ -736,22 +812,32 @@ export default function ExamCreated() {
                   items={[
                     {
                       value: "0",
-                      label: "Hiện và có thể truy cập trên trang khoá học"
+                      label: t("asingment_management_possibility_show")
                     },
                     {
                       value: "1",
-                      label: "Ẩn và không thể truy cập trên trang khoá học"
+                      label: t("asingment_management_possibility_hind_can_not_access")
                     },
                     {
                       value: "2",
-                      label: "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn"
+                      label: t("asingment_management_possibility_hide_can_access")
                     }
                   ]}
                   backgroundColor='#D9E2ED'
+                  translation-key={[
+                    "asingment_management_possibility_hind_can_not_access",
+                    "asingment_management_possibility_show",
+                    "asingment_management_possibility_hide_can_access"
+                  ]}
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle className={classes.drawerTextTitle}>Chủ đề</TextTitle>
+                <TextTitle
+                  className={classes.drawerTextTitle}
+                  translation-key='common_filter_topic'
+                >
+                  {t("common_filter_topic")}
+                </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-section-label'
                   value={assignmentSection}
@@ -780,8 +866,9 @@ export default function ExamCreated() {
                 padding='10px'
                 loading={loading}
                 onClick={handleClick}
+                translation-key='course_lecturer_assignment_create_exam'
               >
-                Tạo bài kiểm tra
+                {t("course_lecturer_assignment_create_exam")}
               </LoadButton>
             </Box>
           </Drawer>

@@ -1,7 +1,6 @@
 import { Box, Button, CardMedia, Container, Grid } from "@mui/material";
 import React, { useRef } from "react";
 import classes from "./styles.module.scss";
-import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading3 from "components/text/Heading3";
@@ -10,7 +9,6 @@ import images from "config/images";
 import StarIcon from "@mui/icons-material/Star";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 
 export default function HomePage() {

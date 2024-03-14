@@ -108,7 +108,6 @@ II. SYSTEM_INSTRUCTIONS:
     const response = await result.response;
     let text = response.text();
     let cleanText = text.replace(/```/g, "");
-    console.log("cleanText", cleanText);
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
     return json;

@@ -21,6 +21,7 @@ import Button from "@mui/material/Button";
 
 import MDEditor from "@uiw/react-md-editor";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   handleSolutionDetail: () => void;
@@ -142,13 +143,15 @@ public:
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
-
+  const { t } = useTranslation();
   return (
     <Box className={classes.containerDetailSolution}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
         <Box onClick={handleSolutionDetail} className={classes.backButton}>
           <ArrowBackIcon className={classes.backIcon} />
-          <span>Quay lại</span>
+          <span translation-key='detail_problem_submission_detail_back'>
+            {t("detail_problem_submission_detail_back")}
+          </span>
         </Box>
         <Divider />
       </Box>
@@ -205,19 +208,29 @@ public:
           <Box className={classes.commentTitleContainer}>
             <Box className={classes.commentTitle}>
               <FontAwesomeIcon icon={faComments} className={classes.commentIcon} />
-              <Box className={classes.commentNumber}>Bình luận (10)</Box>
+              <Box
+                className={classes.commentNumber}
+                translation-key='detail_problem_discussion_detail_comment_count'
+              >
+                {t("detail_problem_discussion_detail_comment_count", { commentNumber: 10 })}
+              </Box>
             </Box>
             <Box className={classes.filterComment}>Lọc theo: Mới nhất</Box>
           </Box>
           <Box className={classes.commentBox}>
             <TextareaAutosize
               aria-label='empty textarea'
-              placeholder='Bình luận của bạn'
+              translation-key='detail_problem_discussion_your_comment'
+              placeholder={t("detail_problem_discussion_your_comment")}
               className={classes.textArea}
               minRows={5}
             />
-            <Button variant='contained' className={classes.commentButton}>
-              Bình luận
+            <Button
+              variant='contained'
+              className={classes.commentButton}
+              translation-key='detail_problem_discussion_detail_comment'
+            >
+              {t("detail_problem_discussion_detail_comment")}
             </Button>
           </Box>
           <Box className={classes.commentList}>
@@ -247,7 +260,9 @@ public:
 
                       <Box className={classes.reply}>
                         <FontAwesomeIcon icon={faReply} className={classes.commentIcon} />
-                        <span>Trả lời</span>
+                        <span translation-key='detail_problem_discussion_detail_reply'>
+                          {t("detail_problem_discussion_detail_reply")}
+                        </span>
                       </Box>
                     </Box>
                   </Box>
