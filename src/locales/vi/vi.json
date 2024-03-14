@@ -275,5 +275,15 @@
   "detail_problem_submission_detail_memory": "Bộ nhớ",
   "detail_problem_submission_detail_user_submission_time": "đã nộp vào {{time}}",
   "detail_problem_submission_detail_share_solution": "Chia sẻ bài giải",
-  "detail_problem_submission_detail_your_solution": "Bài làm của bạn"
+  "detail_problem_submission_detail_your_solution": "Bài làm của bạn",
+  "detail_problem_discussion_filter_all": "Tất cả",
+  "detail_problem_discussion_your_solution_rank": "Bài làm của bạn đánh bại {{percent}}% bài làm khác về thời gian",
+  "detail_problem_discussion_share_your_solution": "Chia sẻ bài giải",
+  "detail_problem_discussion_filter_newest": "Mới nhất",
+  "detail_problem_discussion_share_solution_title": "Tiêu đề",
+  "detail_problem_discussion_share_solution_post": "Đăng",
+  "detail_problem_discussion_detail_comment_count": "Bình luận ({{commentNumber}})",
+  "detail_problem_discussion_your_comment": "Bình luận của bạn",
+  "detail_problem_discussion_detail_comment": "Bình luận",
+  "detail_problem_discussion_detail_reply": "Trả lời"
 }

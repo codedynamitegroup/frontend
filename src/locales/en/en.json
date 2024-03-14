@@ -281,5 +281,15 @@
   "detail_problem_submission_detail_memory": "Memory",
   "detail_problem_submission_detail_user_submission_time": "submited at {{time}}",
   "detail_problem_submission_detail_share_solution": "Share solution",
-  "detail_problem_submission_detail_your_solution": "Your solution"
+  "detail_problem_submission_detail_your_solution": "Your solution",
+  "detail_problem_discussion_filter_all": "All",
+  "detail_problem_discussion_your_solution_rank": "Your solution beats {{percent}}% other people's solution in term of runtime",
+  "detail_problem_discussion_share_your_solution": "Share solution",
+  "detail_problem_discussion_filter_newest": "Newest",
+  "detail_problem_discussion_share_solution_title": "Title",
+  "detail_problem_discussion_share_solution_post": "Post",
+  "detail_problem_discussion_detail_comment_count": "Comment ({{commentNumber}})",
+  "detail_problem_discussion_detail_comment": "Comment",
+  "detail_problem_discussion_your_comment": "Your comment",
+  "detail_problem_discussion_detail_reply": "Reply"
 }
