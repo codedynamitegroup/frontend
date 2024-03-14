@@ -11,6 +11,7 @@ import {
 } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
+import LoadButton from "components/common/buttons/LoadingButton";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
@@ -20,6 +21,8 @@ import qtype from "utils/constant/Qtype";
 import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
+import axios from "axios";
+import { useState } from "react";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -49,92 +52,74 @@ const LecturerCourseExamSubmissions = () => {
   const page = 0;
   const pageSize = 5;
   const totalElement = 100;
+  const [isPlagiarismDetectionLoading, setIsPlagiarismDetectionLoading] = useState(false);
 
-  const saveCodeStringToUniqueFile = ({
-    codeString,
-    fileName,
-    fileExtension,
-    submissionTime,
-    studentId,
-    questionId
-  }: {
-    codeString: string;
-    fileName: string;
-    fileExtension: string;
-    submissionTime: string;
-    studentId: number;
-    questionId: number;
-  }) => {
-    return;
+  const fetchPlagiarismDetectionForCodeQuestion = async (questionId: string) => {
+    setIsPlagiarismDetectionLoading(true);
+    // Maybe fetch data from server
+    const codeSubmissionsData = {
+      code_submissions: [
+        {
+          code_content: 'console.log("Hello Wolrd")',
+          extension: ".js",
+          language: "javascript",
+          student_id: "1",
+          question_id: "1",
+          created_at: "2023-07-23 17:12:33 +0200"
+        },
+        {
+          code_content: 'console.log("Hello Hell")',
+          extension: ".js",
+          language: "javascript",
+          student_id: "2",
+          question_id: "1",
+          created_at: "2023-07-23 17:12:33 +0200"
+        },
+        {
+          code_content: 'console.log("Hello sadfadsfasfasf\n\n\n\n\n")',
+          extension: ".js",
+          language: "javascript",
+          student_id: "3",
+          question_id: "1",
+          created_at: "2023-07-23 17:12:33 +0200"
+        }
+      ]
+    };
+
+    try {
+      const response = await axios.post("http://localhost:4000/api/reports", codeSubmissionsData);
+      setIsPlagiarismDetectionLoading(false);
+      return response.data;
+    } catch (error) {
+      setIsPlagiarismDetectionLoading(false);
+      throw error;
+    }
   };
 
-  // const checkSourceCodePlagiarism = useCallback(
-  //   async () =>
-  //     async ({ questionId, studentId }: { questionId: number; studentId: number }) => {
-  //       const result = {
-  //         allPairs: [] as Pair[],
-  //         report: [] as {
-  //           left: {
-  //             path: string;
-  //             startRow: number;
-  //             startCol: number;
-  //             endRow: number;
-  //             endCol: number;
-  //           };
-  //           right: {
-  //             path: string;
-  //             startRow: number;
-  //             startCol: number;
-  //             endRow: number;
-  //             endCol: number;
-  //           };
-  //         }[]
-  //       };
-
-  //       const files = [
-  //         "./Dolos/sample.js",
-  //         "./Dolos/copied_function.js",
-  //         "./Dolos/another_copied_function.js",
-  //         "./Dolos/copy_of_sample.js"
-  //       ];
-
-  //       const dolos = new Dolos();
-  //       const report = await dolos.analyzePaths(files);
-
-  //       for (const pair of report.allPairs()) {
-  //         result.allPairs.push(pair);
-  //         for (const fragment of pair.buildFragments()) {
-  //           const left = fragment.leftSelection;
-  //           const right = fragment.rightSelection;
-  //           result.report.push({
-  //             left: {
-  //               path: pair.leftFile.path,
-  //               startRow: left.startRow,
-  //               startCol: left.startCol,
-  //               endRow: left.endRow,
-  //               endCol: left.endCol
-  //             },
-  //             right: {
-  //               path: pair.rightFile.path,
-  //               startRow: right.startRow,
-  //               startCol: right.startCol,
-  //               endRow: right.endRow,
-  //               endCol: right.endCol
-  //             }
-  //           });
-  //         }
-  //       }
-  //       return result;
-  //     },
-  //   []
-  // );
+  const onHandlePlagiarismDetection = async (questionId: string) => {
+    try {
+      const result = await fetchPlagiarismDetectionForCodeQuestion(questionId);
+      if (result.status === "success") {
+        navigate(`${routes.lecturer.exam.code_plagiarism_detection}?questionId=${questionId}`, {
+          state: {
+            report: result.report,
+            pairs: result.pairs
+          }
+        });
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const examData = {
     id: 1,
     max_grade: 30,
     questions: [
       {
-        id: 1,
+        id: "1",
         question: "Câu hỏi 1",
         answer: "Đáp án 1",
         max_grade: 10,
@@ -148,14 +133,14 @@ const LecturerCourseExamSubmissions = () => {
         }
       },
       {
-        id: 2,
+        id: "2",
         question: "Câu hỏi 2",
         answer: "Đáp án 2",
         max_grade: 10,
         type: qtype.true_false
       },
       {
-        id: 3,
+        id: "3",
         question: "Câu hỏi 3",
         answer: "Đáp án 3",
         max_grade: 10,
@@ -182,17 +167,17 @@ const LecturerCourseExamSubmissions = () => {
       current_final_grade: 0,
       grades: [
         {
-          question_id: 1,
+          question_id: "1",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 10
         },
         {
-          question_id: 2,
+          question_id: "2",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 8
         },
         {
-          question_id: 3,
+          question_id: "3",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 5
         }
@@ -215,17 +200,17 @@ const LecturerCourseExamSubmissions = () => {
       current_final_grade: 10,
       grades: [
         {
-          question_id: 1,
+          question_id: "1",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 8
         },
         {
-          question_id: 2,
+          question_id: "2",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 10
         },
         {
-          question_id: 3,
+          question_id: "3",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 9
         }
@@ -352,16 +337,13 @@ const LecturerCourseExamSubmissions = () => {
       ],
       renderHeaderGroup() {
         return question.type.code === qtype.source_code.code ? (
-          <Button
+          <LoadButton
+            loading={isPlagiarismDetectionLoading}
             btnType={BtnType.Outlined}
-            onClick={async () => {
-              navigate(
-                `${routes.lecturer.exam.code_plagiarism_detection}?questionId=${question.id}`
-              );
-            }}
+            onClick={() => onHandlePlagiarismDetection(question.id.toString())}
           >
             Kiểm tra gian lận
-          </Button>
+          </LoadButton>
         ) : null;
       }
     });

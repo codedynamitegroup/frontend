@@ -8,13 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgressWithLabel from "./components/CircularProgressWithLabel";
 import { routes } from "routes/routes";
 
-export default function HighestSimilaritySubmissionsTable({
-  rows,
-  headers
-}: {
-  rows: any[];
-  headers: string[];
-}) {
+export default function FilePairsTable({ rows, headers }: { rows: any[]; headers: string[] }) {
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
   const [searchParams] = useSearchParams();
@@ -39,19 +33,25 @@ export default function HighestSimilaritySubmissionsTable({
               }}
               onClick={() => {
                 navigate(
-                  routes.lecturer.exam.code_submissions +
-                    `?questionId=${questionId}&submissionId=${row.submissionId}`
+                  routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
+                    `?questionId=${questionId}`
                 );
               }}
             >
               <td>
-                <ParagraphBody>{row.submissionFilename}</ParagraphBody>
+                <ParagraphBody>{row.left_file}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.submissionLabel}</ParagraphBody>
+                <ParagraphBody>{row.right_file}</ParagraphBody>
               </td>
               <td>
-                <CircularProgressWithLabel value={row.submissionHighestSimilarity || 0} />
+                <CircularProgressWithLabel value={Number(row.highest_similarity) || 0} />
+              </td>
+              <td>
+                <ParagraphBody>{row.longest_fragment}</ParagraphBody>
+              </td>
+              <td>
+                <ParagraphBody>{row.total_overlap}</ParagraphBody>
               </td>
             </tr>
           ))}
@@ -65,22 +65,24 @@ export default function HighestSimilaritySubmissionsTable({
           {size < rows.length && (
             <tr>
               <td
-                colSpan={3}
+                colSpan={5}
                 style={{
                   cursor: "pointer"
                 }}
+                onClick={() => {
+                  console.log("rows", rows);
+                  navigate(
+                    routes.lecturer.exam.code_plagiarism_detection_file_pairs +
+                      `?questionId=${questionId}`,
+                    {
+                      state: { filePairList: rows }
+                    }
+                  );
+                }}
               >
                 <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                  <ParagraphBody
-                    display={"flex"}
-                    justifyContent={"center"}
-                    colorname='--primary'
-                    margin={"0 10px"}
-                    onClick={() =>
-                      navigate(routes.lecturer.exam.code_submissions + `?questionId=${questionId}`)
-                    }
-                  >
-                    Xem tất cả ({rows.length}) bài nộp
+                  <ParagraphBody colorname='--primary' margin={"0 10px"}>
+                    Xem tất cả ({rows.length}) cặp tệp bài nộp
                   </ParagraphBody>
                   <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
                 </Box>

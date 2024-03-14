@@ -27,7 +27,8 @@ import LecturerCoursesManagement from "pages/client/lecturer";
 import UserHomepage from "pages/client/user";
 import DetailProblem from "pages/client/user/DetailProblem";
 import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
-import LecturerSourceCodePlagiarismSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismSubmissions";
+import LecturerSourceCodePlagiarismFilePairs from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFilePairs";
+import LecturerSourceCodePlagiarismFilePairDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFilePairDetails";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -70,8 +71,12 @@ const router = createHashRouter(
         element={<LecturerSourceCodePlagiarismManagement />}
       />
       <Route
-        path={routes.lecturer.exam.code_submissions}
-        element={<LecturerSourceCodePlagiarismSubmissions />}
+        path={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
+        element={<LecturerSourceCodePlagiarismFilePairs />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail}
+        element={<LecturerSourceCodePlagiarismFilePairDetails />}
       />
       <Route
         path={routes.lecturer.question.essay.create}
