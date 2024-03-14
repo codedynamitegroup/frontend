@@ -9,10 +9,12 @@ import classes from "./styles.module.scss";
 import { styled } from "@mui/material/styles";
 import RecommendedProblem from "../RecommendedProblem";
 import { Stack } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function LabTabs() {
+  const { t } = useTranslation();
   const [value, setValue] = React.useState("0");
-  const topics = ["Tất cả", "Thuật toán", "Cơ sở dữ liệu", "Javascript"];
+  const topics = [t("list_problem_topic_all"), "Thuật toán", "Cơ sở dữ liệu", "Javascript"];
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -47,6 +49,7 @@ export default function LabTabs() {
             onChange={handleChange}
             aria-label='lab API tabs example'
             TabIndicatorProps={{ hidden: true }}
+            translation-key='list_problem_topic_all'
           >
             {topics.map((topic, index) => (
               <Tab sx={{ fontSize: "12px" }} key={index} label={topic} value={index.toString()} />

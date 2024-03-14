@@ -78,13 +78,13 @@ export const routes = {
       review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
       code_plagiarism_detection:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
+      code_plagiarism_detection_file_pairs:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs",
+      code_plagiarism_detection_file_pairs_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs/:filePairId",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId",
-      code_submissions:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions",
-      code_submission_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/code-submissions/:codeSubmissionId"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
     }
   },
   student: {

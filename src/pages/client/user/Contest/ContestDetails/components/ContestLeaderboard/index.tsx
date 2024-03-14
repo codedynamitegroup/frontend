@@ -7,7 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import classes from "./styles.module.scss";
 import clsx from "clsx";
-import { Box, Link, TableFooter, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import TablePagination from "@mui/material/TablePagination";
 import { Link as RouterLink } from "react-router-dom";

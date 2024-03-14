@@ -23,7 +23,7 @@ const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
       props.style.x.animation.to + props.style.width.animation.to > xOfThreshold;
     const color = isGreaterThanThreshold ? "var(--blue-500)" : "var(--blue-1)";
 
-    const valueFromPositionOfBar = Math.floor(((props.style.x.animation.to - left) / width) * 100);
+    // const valueFromPositionOfBar = Math.floor(((props.style.x.animation.to - left) / width) * 100);
 
     // work around export of BarElement
     return (
@@ -33,13 +33,13 @@ const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
         width={props.style.width.animation.to}
         x={props.style.x.animation.to}
         y={props.style.y.animation.to}
-        onClick={() => {
-          navigate(
-            routes.lecturer.exam.code_submissions +
-              `?questionId=${questionId}?startSimilarity=${valueFromPositionOfBar}&endSimilarity=${valueFromPositionOfBar + 5}`
-          );
-        }}
-        cursor='pointer'
+        // onClick={() => {
+        //   navigate(
+        //     routes.lecturer.exam.code_submissions +
+        //       `?questionId=${questionId}?startSimilarity=${valueFromPositionOfBar}&endSimilarity=${valueFromPositionOfBar + 5}`
+        //   );
+        // }}
+        // cursor='pointer'
       />
     );
   };

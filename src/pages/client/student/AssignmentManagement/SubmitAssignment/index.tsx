@@ -79,7 +79,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function AssignmentSubmission() {
+export default function SubmitAssignment() {
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();

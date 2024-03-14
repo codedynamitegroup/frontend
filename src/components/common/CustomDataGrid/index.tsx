@@ -119,6 +119,11 @@ const CustomDataGrid = (props: DataGridProps) => {
           columnMenu: customColumnMenu,
           footer: customFooter
         }}
+        sx={{
+          "& .MuiDataGrid-row:hover": {
+            cursor: onClickRow ? "pointer" : "default"
+          }
+        }}
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
         columnHeaderHeight={columnHeaderHeight || 56}

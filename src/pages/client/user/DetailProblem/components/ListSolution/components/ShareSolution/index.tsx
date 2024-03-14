@@ -11,8 +11,10 @@ import Button from "@mui/material/Button";
 import MDEditor from "@uiw/react-md-editor";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 export default function ShareSolution() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [value, setValue] = React.useState("**Hello world!!!**");
   const headerRef = useRef<HTMLDivElement>(null);
@@ -48,7 +50,9 @@ export default function ShareSolution() {
         <Box className={classes.stickyBack} onClick={handleBackButton}>
           <Box className={classes.backButton}>
             <ArrowBack className={classes.backIcon} />
-            <span>Quay lại</span>
+            <span translation-key='detail_problem_submission_detail_back'>
+              {t("detail_problem_submission_detail_back")}
+            </span>
           </Box>
         </Box>
         <Divider />
@@ -63,7 +67,8 @@ export default function ShareSolution() {
               disableUnderline: true,
               style: { fontSize: "20px" } // Thêm dòng này
             }}
-            placeholder='Tiêu đề'
+            placeholder={t("detail_problem_discussion_share_solution_title")}
+            translation-key='detail_problem_discussion_share_solution_title'
             fullWidth
             InputLabelProps={{
               shrink: false
@@ -71,8 +76,12 @@ export default function ShareSolution() {
             className={classes.titleInput}
           ></TextField>
           <Box className={classes.actionBtn}>
-            <Button variant='contained' className={classes.postBtn}>
-              Đăng
+            <Button
+              variant='contained'
+              className={classes.postBtn}
+              translation-key='detail_problem_discussion_share_solution_post'
+            >
+              {t("detail_problem_discussion_share_solution_post")}
             </Button>
           </Box>
           <Box data-color-mode='light'>
