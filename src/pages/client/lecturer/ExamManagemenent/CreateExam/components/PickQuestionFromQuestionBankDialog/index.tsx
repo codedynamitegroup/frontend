@@ -1,4 +1,4 @@
-import { Grid, Link } from "@mui/material";
+import { Grid } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -12,6 +12,7 @@ import TextTitle from "components/text/TextTitle";
 import * as React from "react";
 import QuestionsFeatureBar from "../FeatureBar";
 import { GridRowParams } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
   title?: string;
@@ -41,6 +42,7 @@ export default function PickQuestionFromQuestionBankDialog({
   categoryList,
   ...props
 }: PickQuestionFromQuestionBankDialogProps) {
+  const { t } = useTranslation();
   const [category, setCategory] = React.useState("0");
   const questionList = [
     {
@@ -89,17 +91,17 @@ export default function PickQuestionFromQuestionBankDialog({
       { field: "id", headerName: "STT", minWidth: 1 },
       {
         field: "name",
-        headerName: "Tên câu hỏi",
+        headerName: t("exam_management_create_question_name"),
         minWidth: 250
       },
       {
-        field: "description",
+        field: t("exam_management_create_question_description"),
         headerName: "Mô tả câu hỏi",
         minWidth: 400
       },
       {
         field: "type",
-        headerName: "Kiểu",
+        headerName: t("exam_management_create_question_type"),
         minWidth: 150,
         renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       }

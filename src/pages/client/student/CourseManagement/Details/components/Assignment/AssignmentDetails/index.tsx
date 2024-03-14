@@ -3,13 +3,11 @@ import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import AssignmentTable from "./components/AssignmentTable";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 
