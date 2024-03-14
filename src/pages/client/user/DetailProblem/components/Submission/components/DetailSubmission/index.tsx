@@ -16,56 +16,105 @@ import { feedbackCodeByByAI } from "service/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
-import CircularProgress from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface Props {
   handleSubmissionDetail: () => void;
 }
-interface IFeedbackCodeByAI {
+export interface IFeedbackCodeByAI {
   id: number;
   feedback: string[];
   suggestCode: string;
 }
+
+export interface ICodeQuestion {
+  title: string;
+  description: string;
+}
+
+export interface ISourceCodeSubmission {
+  source_code: string;
+  language: string;
+}
 export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { t } = useTranslation();
-  const cpp = `\`\`\`cpp
-    class Solution {
-    public:
-        vector<vector<int>> divideArray(vector<int>& nums, int ki) {
-           vector<vector<int>> ans;
-            sort(nums.begin(),nums.end());
-            int i=0;
-            int j=1;
-            int k=2;
-            while(k<nums.size()){
-                if(nums[j]-nums[i]<=ki&&nums[k]-nums[i]<=ki&&nums[k]-nums[j]<=ki){
-                    ans.push_back({nums[i],nums[j],nums[k]});
-                    i=i+3;
-                    j=j+3;
-                    k=k+3;
-                }
-                else{
-                    return {};
-                }
-            }
-            return ans;
-        }
-    };
-    \`\`\``;
+  const sourceCodeSubmission: ISourceCodeSubmission = {
+    source_code: `
+	class Solution {
+		public int lengthOfLongestSubstring(String s) {
+			int left = 0, right = 0, max = 0;
+			Set<Character> set = new HashSet();
+
+			while(right < s.length()) {
+				if (!set.contains(s.charAt(right))) {
+					set.add(s.charAt(right));
+					right++;
+					max = Math.max(max, set.size());
+				} else {
+					set.remove(s.charAt(left));
+					left++;
+				}
+			}
+			return max;
+		}
+	}`,
+    language: "java"
+  };
+  const codeQuestion: ICodeQuestion = {
+    title: "Longest Substring Without Repeating Characters",
+    description: `
+		Given a string s, find the length of the longest substring without repeating characters.
+
+		Example 1:
+		Input: s = "abcabcbb"
+		Output: 3
+		Explanation: The answer is "abc", with the length of 3.
+
+		Example 2:
+		Input: s = "bbbbb"
+		Output: 1
+		Explanation: The answer is "b", with the length of 1.
+
+		Example 3:
+		Input: s = "pwwkew"
+		Output: 3
+		Explanation: The answer is "wke", with the length of 3.
+		Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+		`
+  };
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
   const [loading, setLoading] = useState(false);
   const [feedbackCodeByAI, setFeedbackCodeByAI] = useState<IFeedbackCodeByAI | null>(null);
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+
   const handleFeedbackCodeByAI = async () => {
     setLoading(true);
-    const result = await feedbackCodeByByAI(cpp, "divideArray");
-    if (result) {
-      setFeedbackCodeByAI(result);
-    }
-    setLoading(false);
+    await feedbackCodeByByAI(sourceCodeSubmission, codeQuestion)
+      .then((result) => {
+        if (result) {
+          setFeedbackCodeByAI(result);
+          setOpenSnackbarAlert(true);
+          setAlertContent("Đánh giá thành công");
+          setAlertType(AlertType.Success);
+        } else {
+          throw new Error("Internal server error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error generating content:", err);
+        setOpenSnackbarAlert(true);
+        setAlertContent("Đánh giá thất bại, hãy thử lại lần nữa");
+        setAlertType(AlertType.Error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -169,7 +218,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
               Đánh giá bởi AI
             </LoadingButton>
           </Box>
-          <MDEditor.Markdown source={cpp} />
+          <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
         </Box>
 
         {feedbackCodeByAI && (
@@ -177,16 +226,26 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
             <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
 
             <Box className={classes.evaluateText}>
-              <ParagraphBody>{feedbackCodeByAI && feedbackCodeByAI.feedback}</ParagraphBody>
+              {feedbackCodeByAI.feedback &&
+                feedbackCodeByAI.feedback?.length > 0 &&
+                feedbackCodeByAI.feedback.map((feedback, index) => (
+                  <ParagraphBody key={index}>- {feedback}</ParagraphBody>
+                ))}
             </Box>
             <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
-            <MDEditor.Markdown
-              source={feedbackCodeByAI ? "```" + feedbackCodeByAI.suggestCode + "```" : ""}
-            />
+            {feedbackCodeByAI.suggestCode && (
+              <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
+            )}
           </Box>
         )}
       </Box>
+      <SnackbarAlert
+        open={openSnackbarAlert}
+        setOpen={setOpenSnackbarAlert}
+        type={alertType}
+        content={alertContent}
+      />
     </Grid>
   );
 }

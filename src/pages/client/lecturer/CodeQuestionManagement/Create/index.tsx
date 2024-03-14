@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
@@ -8,7 +8,6 @@ import TextEditor from "components/editor/TextEditor";
 import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
-import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
 import { routes } from "routes/routes";
 
 interface Props {}
