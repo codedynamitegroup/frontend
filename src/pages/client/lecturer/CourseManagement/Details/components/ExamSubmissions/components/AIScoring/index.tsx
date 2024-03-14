@@ -41,7 +41,7 @@ export enum SubmissionStatusGraded {
   NOT_GRADED = "Chưa chấm"
 }
 
-interface Feedback {
+interface IFeedbackGradedAI {
   id: number;
   feedback: string[];
   score: number;
@@ -78,12 +78,8 @@ const AIScoring = () => {
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
-  };
+  ) => {};
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {};
 
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -94,7 +90,7 @@ const AIScoring = () => {
   const pageSize = 5;
   const totalElement = 100;
 
-  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [feedback, setFeedback] = useState<IFeedbackGradedAI[]>([]);
 
   const examData = {
     id: 1,
@@ -337,18 +333,28 @@ const AIScoring = () => {
 
   const effectRan = useRef(false);
 
+  function isResponseFeedbackGradedAI(obj: any): obj is IFeedbackGradedAI {
+    return (
+      typeof obj.id === "number" &&
+      typeof obj.feedback === "object" &&
+      typeof obj.score === "number"
+    );
+  }
+
   useEffect(() => {
     if (effectRan.current === false) {
       const handleScoringByAI = async () => {
         setLoading(true);
 
         await scoringByAI(data, question)
-          .then((results: any) => {
-            if (results) {
+          .then((results) => {
+            if (results && isResponseFeedbackGradedAI(results[0])) {
               setFeedback(results);
               setOpenSnackbarAlert(true);
               setAlertContent("Chấm điểm thành công");
               setAlertType(AlertType.Success);
+            } else {
+              throw new Error("Internal server error");
             }
           })
           .catch((err) => {

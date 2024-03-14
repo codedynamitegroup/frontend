@@ -93,11 +93,19 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
 
+  function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
+    return (
+      typeof obj.id === "number" &&
+      typeof obj.feedback === "object" &&
+      typeof obj.suggestCode === "string"
+    );
+  }
+
   const handleFeedbackCodeByAI = async () => {
     setLoading(true);
     await feedbackCodeByByAI(sourceCodeSubmission, codeQuestion)
       .then((result) => {
-        if (result) {
+        if (result && isFeedbackCodeByAI(result)) {
           setFeedbackCodeByAI(result);
           setOpenSnackbarAlert(true);
           setAlertContent("Đánh giá thành công");

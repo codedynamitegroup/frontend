@@ -24,7 +24,7 @@ const format_scoring: IFormatScoring[] = [
       "- Giải thích rõ ràng về độ phức tạp thời gian và không gian",
       "- So sánh Bubble Sort với các thuật toán sắp xếp khác"
     ],
-    score: 8
+    score: 9
   },
   {
     id: 2,
@@ -82,7 +82,9 @@ async function scoringByAI(data: AssignmentStudent[], question: QuestionEssay) {
 				+ feedback:
 					* Data type: string[] (array of strings)
 					* Description: Array containing specific, actionable feedback messages and comments about the essay, tailored to the student's writing and directly addressing the grading criteria. Avoid generic statements. 
-					* Note: Use single quotes ('') for special characters.)
+					* Note:
+						** Use single quotes ('') for special characters.)
+						** The content attribute of the feedback should not be empty or null. It should be filled with complete information.
 				+ score:
 					* Data type: number
 					* Description: The score assigned to the essay (between 0 and ${question.maxScore}), taking into account the severity of identified issues and the overall quality of the writing in relation to the grading criteria.)

@@ -77,12 +77,17 @@ const AIQuestionCreated = () => {
       return prevQuestions.filter((q) => q.id !== index);
     });
   };
+
+  function isResponseFormatQuestion(obj: any): obj is IFormatQuestion {
+    return typeof obj.qtypeId === "number" && typeof obj.questions === "object";
+  }
+
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
     await createQuestionByAI(topic, desciption, qtype, number_question, level)
-      .then((data: IFormatQuestion) => {
-        if (data) {
+      .then((data) => {
+        if (data && isResponseFormatQuestion(data)) {
           setQuestions(data?.questions);
           setLengthQuestion(data?.questions?.length);
           setOpenSnackbarAlert(true);

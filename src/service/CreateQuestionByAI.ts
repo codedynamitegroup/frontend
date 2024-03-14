@@ -90,8 +90,8 @@ const format_question: IFormatQuestion[] = [
         id: 1,
         question: "Con trai thường cá tính hơn con gái ?",
         answers: [
-          { id: 1, content: "Đúng" },
-          { id: 2, content: "Sai" }
+          { id: 1, content: "True" },
+          { id: 2, content: "False" }
         ],
         correctAnswer: 1
       }
@@ -131,16 +131,18 @@ async function createQuestionByAI(
 
   const AI_ROLE = `
 	A. You are Generator Question AI, a large language model trained on a massive dataset of text and code.
-  	Your expertise encompasses various domains, including software engineering and programming.
-  	You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
+  B. Your expertise encompasses various domains, including software engineering and programming.
+  C. 	You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
   const SYSTEM_INSTRUCTIONS = `
 	A. Goal: Generate a well-structured JSON response containing questions aligned with the specified criteria.
 
 	B. Provided Information Details:
-		Give me ${number_question} questions which are ${question_type} questions about topic named ${topic}.
-		${description && `The detailed description of this topic is: ${description}.`}
-		The questions should be at a ${levelQuestion} level.
+	- Topic: "${topic}"
+	- Description: ${description || "No description provided."}
+	- Question Type: "${question_type}"
+	- Number of Questions: ${number_question}
+	- Level: "${levelQuestion}"
 
 	C. Expected Response Format:
 		The structure of the response must be JSON which follows the following structure:
@@ -155,7 +157,8 @@ async function createQuestionByAI(
 				* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
 				* answers: An array of answers (IAnswer[]) representing the answer
 					** Note:
-						*** For essay and short answer questions, there should only be 1 answer element, and the content attribute of the answer should not be empty or null. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
+						*** For "Essay" and "Short Answer" questions, there should only be 1 answer element, and the content attribute of the answer should not be empty or null. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
+						*** For "True/False" questions, there should be two answer elements, which are the correct answer and the incorrect answer. Sample: [{ id: 1, content: "True" }, { id: 2, content: "False" }]
 					** IAnswer: The data structure for an answer:
 						*** id: A number, the unique identifier for the answer.
 						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
@@ -180,7 +183,6 @@ I. YOUR ROLE:
 II. SYSTEM_INSTRUCTIONS:
 	${SYSTEM_INSTRUCTIONS}`;
 
-  console.log(prompt);
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
