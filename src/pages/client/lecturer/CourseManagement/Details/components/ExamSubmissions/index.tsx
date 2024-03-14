@@ -137,7 +137,7 @@ const LecturerCourseExamSubmissions = () => {
         question: "Câu hỏi 2",
         answer: "Đáp án 2",
         max_grade: 10,
-        type: qtype.true_false
+        type: qtype.essay
       },
       {
         id: "3",
@@ -336,15 +336,30 @@ const LecturerCourseExamSubmissions = () => {
         }
       ],
       renderHeaderGroup() {
-        return question.type.code === qtype.source_code.code ? (
-          <LoadButton
-            loading={isPlagiarismDetectionLoading}
-            btnType={BtnType.Outlined}
-            onClick={() => onHandlePlagiarismDetection(question.id.toString())}
-          >
-            Kiểm tra gian lận
-          </LoadButton>
-        ) : null;
+        if (question.type.code === qtype.source_code.code) {
+          return (
+            <LoadButton
+              loading={isPlagiarismDetectionLoading}
+              btnType={BtnType.Outlined}
+              onClick={() => onHandlePlagiarismDetection(question.id.toString())}
+            >
+              Kiểm tra gian lận
+            </LoadButton>
+          );
+        } else if (question.type.code === "essay") {
+          return (
+            <Button
+              btnType={BtnType.Outlined}
+              onClick={() => {
+                navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
+              }}
+            >
+              Chấm điểm AI
+            </Button>
+          );
+        } else {
+          return null;
+        }
       }
     });
   });

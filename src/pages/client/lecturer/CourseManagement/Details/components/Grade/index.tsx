@@ -13,6 +13,7 @@ import Heading1 from "components/text/Heading1";
 import CustomDataGrid from "../../../../../../../components/common/CustomDataGrid";
 import CourseGradeFeatureBar from "./components/FeatureBar";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
   const { customEditHandler, customEditValue } = props;
@@ -27,6 +28,7 @@ function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
 }
 
 function CustomColumnMenu(props: GridColumnMenuProps) {
+  const { t } = useTranslation();
   const currentColField = props.colDef.field;
   const canHaveCustomColMenu =
     currentColField !== "name" && currentColField !== "id" && currentColField !== "email";
@@ -39,10 +41,11 @@ function CustomColumnMenu(props: GridColumnMenuProps) {
       slotProps={{
         columnMenuUserItem: {
           displayOrder: 0,
-          customEditValue: "Chỉnh sửa",
+          customEditValue: t("common_edit"),
           customEditHandler: () => alert("Custom handler fired")
         }
       }}
+      translation-key='common_edit'
     />
   ) : (
     <GridColumnMenu
@@ -52,14 +55,16 @@ function CustomColumnMenu(props: GridColumnMenuProps) {
       }}
       slotProps={{
         columnMenuSortItem: {
-          value: "Tăng dần"
+          value: t("data_grid_row_ascending")
         }
       }}
+      translation-key='data_grid_row_ascending'
     />
   );
 }
 
 const LecturerCourseGrade = () => {
+  const { t } = useTranslation();
   const courseAssignmentList = [
     { id: 1, name: "Bài tập 1", range: 100 },
     { id: 2, name: "Bài tập 2", range: 10 },
@@ -74,7 +79,7 @@ const LecturerCourseGrade = () => {
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "name",
-      headerName: "Họ và tên",
+      headerName: t("common_fullname"),
       width: 100,
       flex: 0.2,
       disableColumnMenu: true
@@ -105,8 +110,8 @@ const LecturerCourseGrade = () => {
   const columnGroupingModel: GridColumnGroupingModel = [
     {
       groupId: "score",
-      headerName: "Điểm",
-      description: "Điểm thành phần của từng khóa học",
+      headerName: t("common_grade"),
+      description: t("course_lecturer_grade_description"),
       freeReordering: true,
       children: groupChildren
     }
@@ -149,7 +154,7 @@ const LecturerCourseGrade = () => {
   return (
     <Box className={classes.gradeBody}>
       <Grid item xs={12}>
-        <Heading1>Báo cáo điểm</Heading1>
+        <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
       <Grid item xs={12}>
         <CourseGradeFeatureBar />

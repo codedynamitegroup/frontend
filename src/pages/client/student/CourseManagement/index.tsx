@@ -13,6 +13,7 @@ import ViewCardIcon from "@mui/icons-material/ViewModule";
 import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import Heading1 from "components/text/Heading1";
+import { useTranslation } from "react-i18next";
 
 enum EView {
   cardView = 1,
@@ -192,19 +193,23 @@ const StudentCourses = () => {
   const handleCategoryFilterChange = (selectedCategoryList: Array<string>) => {
     console.log(selectedCategoryList);
   };
+  const { t } = useTranslation();
 
   return (
     <Box id={classes.coursesBody}>
-      <Heading1 className={classes.pageTitle}>Danh sách khóa học</Heading1>
+      <Heading1 className={classes.pageTitle} translation-key='course_list_title'>
+        {t("course_list_title")}
+      </Heading1>
       <SearchBar onSearchClick={searchHandle} />
 
       <Box className={classes.featureGroup}>
         <Box className={classes.filterContainer}>
           <ChipMultipleFilter
-            label='Lọc theo loại'
+            label={t("course_filter")}
             defaultChipList={[]}
             filterList={tempCategories}
             onFilterListChangeHandler={handleCategoryFilterChange}
+            translation-key='course_filter'
           />
         </Box>
 

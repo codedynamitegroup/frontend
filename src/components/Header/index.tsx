@@ -124,7 +124,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  const [state, setState] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -134,12 +133,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     setAnchorEl(null);
   };
 
+  const [state, setState] = React.useState(() => {
+    const user = localStorage.getItem("user");
+    return !!user; // Convert user to boolean value
+  });
+
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) {
-      setState(true);
-    }
-  }, []);
+    setState(!!user);
+  }, [localStorage.getItem("user")]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");

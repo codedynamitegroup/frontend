@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button, { BtnType } from "components/common/buttons/Button";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 interface CustomDialogProps extends DialogProps {
   title?: string;
@@ -36,6 +37,7 @@ export default function CustomDialog({
   confirmDisabled,
   ...props
 }: CustomDialogProps) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -68,16 +70,18 @@ export default function CustomDialog({
           <Button
             onClick={onHandleCancel ? onHandleCancel : handleClose}
             btnType={BtnType.Outlined}
+            translation-key='common_cancel'
           >
-            {cancelText || "Hủy bỏ"}
+            {cancelText || t("common_cancel")}
           </Button>
           <Button
             onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
             btnType={BtnType.Primary}
             autoFocus
             disabled={confirmDisabled}
+            translation-key='common_confirm'
           >
-            {confirmText || "Xác nhận"}
+            {confirmText || t("common_confirm")}
           </Button>
         </DialogActions>
       )}

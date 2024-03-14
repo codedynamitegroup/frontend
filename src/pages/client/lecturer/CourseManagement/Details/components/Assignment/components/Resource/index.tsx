@@ -11,6 +11,7 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   type = type || ResourceType.assignment;
   const [resourceExpansion, setResourceExpansion] = useState(false);
@@ -46,7 +48,9 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) =
           }}
         >
           <ParagraphBody>{resourceTitle}</ParagraphBody>
-          <ParagraphBody>Hết hạn lúc: {resourceEndedDate}</ParagraphBody>
+          <ParagraphBody translation-key='course_assignment_deadline'>
+            {t("course_assignment_deadline")}: {resourceEndedDate}
+          </ParagraphBody>
         </AccordionSummary>
         <AccordionDetails>
           <TextEditor
@@ -55,11 +59,19 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) =
           />
         </AccordionDetails>
         <AccordionActions>
-          <Button btnType={BtnType.Text} onClick={cancelResourceHandler}>
-            Hủy
+          <Button
+            btnType={BtnType.Text}
+            onClick={cancelResourceHandler}
+            translation-key='common_cancel'
+          >
+            {t("common_cancel")}
           </Button>
-          <Button btnType={BtnType.Primary} onClick={onDetailClick}>
-            Xem chi tiết
+          <Button
+            btnType={BtnType.Primary}
+            onClick={onDetailClick}
+            translation-key='course_assignment_detail'
+          >
+            {t("course_assignment_detail")}
           </Button>
         </AccordionActions>
       </Accordion>

@@ -10,6 +10,7 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import { GridEventListener, GridSlotsComponentsProps } from "@mui/x-data-grid";
 import classes from "./styles.module.scss";
 import { truncate } from "fs";
+import { useTranslation } from "react-i18next";
 
 interface DataGridProps {
   dataList: Array<any>;
@@ -64,6 +65,7 @@ const CustomDataGrid = (props: DataGridProps) => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     onClickRow(params);
   };
+  const { t } = useTranslation();
 
   return (
     <Box className={classes.container}>
@@ -96,17 +98,21 @@ const CustomDataGrid = (props: DataGridProps) => {
         }}
         localeText={{
           MuiTablePagination: {
-            labelDisplayedRows: ({ from, to, count, page }) =>
-              `${from}–${to} của ${count !== -1 ? count : `lớn hơn ${to}`}`,
-            labelRowsPerPage: `Số dòng mỗi trang`
+            labelDisplayedRows: ({ from, to, count, page }) => {
+              return t("common_table_from_to", { from: from, to: to, countText: count });
+            },
+            labelRowsPerPage: t("common_table_row_per_page")
           },
-          footerRowSelected: (count) => `${count} dòng đã được chọn`,
-          toolbarDensity: "Độ rộng của hàng",
-          toolbarDensityCompact: "Gọn nhẹ",
-          toolbarDensityStandard: "Tiêu chuẩn",
-          toolbarDensityComfortable: "Thoải mái",
-          columnMenuSortAsc: "Xếp tăng dần",
-          columnMenuSortDesc: "Xếp giảm dần"
+          footerRowSelected: (count) => {
+            return t("data_grid_selected_row", { selected: count });
+          },
+          toolbarDensity: t("data_grid_row_width"),
+          toolbarDensityCompact: t("data_grid_row_width_compact"),
+          toolbarDensityStandard: t("data_grid_row_width_standard"),
+          toolbarDensityComfortable: t("data_grid_row_width_comfortable"),
+          columnMenuSortAsc: t("data_grid_row_ascending"),
+          columnMenuSortDesc: t("data_grid_row_descending"),
+          columnMenuUnsort: t("data_grid_row_unsort")
         }}
         slots={{
           toolbar: dataGridToolBar && dataGridToolBar.enableToolbar ? GridToolbar : null,
@@ -121,6 +127,17 @@ const CustomDataGrid = (props: DataGridProps) => {
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
         columnHeaderHeight={columnHeaderHeight || 56}
+        translation-key={[
+          "common_table_from_to",
+          "data_grid_row_width_compact",
+          "common_table_from_to",
+          "data_grid_row_width",
+          "data_grid_row_width_standard",
+          "data_grid_row_width_comfortable",
+          "data_grid_row_ascending",
+          "data_grid_row_descending",
+          "data_grid_selected_row"
+        ]}
       />
     </Box>
   );

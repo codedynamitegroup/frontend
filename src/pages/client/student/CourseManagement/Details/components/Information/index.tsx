@@ -14,8 +14,10 @@ import { ECourseEventStatus, ECourseResourceType } from "models/courseService/co
 import { useState } from "react";
 import CourseResource from "./components/CourseResource";
 import StudentCourseEvent from "./components/CourseEvent";
+import { useTranslation } from "react-i18next";
 
 const StudentCourseInformation = () => {
+  const { t } = useTranslation();
   const topicList = [
     {
       title: "Topic 1",
@@ -144,7 +146,12 @@ const StudentCourseInformation = () => {
             <Grid item xs={0.5}></Grid>
             <Grid item xs={3.5}>
               <Paper className={classes.eventContainer}>
-                <Typography className={classes.eventTitle}>Công việc cần làm</Typography>
+                <Typography
+                  className={classes.eventTitle}
+                  translation-key='course_detail_need_to_do_title'
+                >
+                  {t("course_detail_need_to_do_title")}
+                </Typography>
                 <Divider />
                 <List
                   sx={{ width: "100%", bgcolor: "background.paper" }}

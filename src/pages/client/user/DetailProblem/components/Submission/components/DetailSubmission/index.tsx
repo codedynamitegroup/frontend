@@ -11,13 +11,24 @@ import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { useTranslation } from "react-i18next";
+import { feedbackCodeByByAI } from "service/FeedbackCodeByAI";
+import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
+import CircularProgress from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 interface Props {
   handleSubmissionDetail: () => void;
 }
+interface IFeedbackCodeByAI {
+  id: number;
+  feedback: string[];
+  suggestCode: string;
+}
 export default function DetailSolution({ handleSubmissionDetail }: Props) {
+  const { t } = useTranslation();
   const cpp = `\`\`\`cpp
     class Solution {
     public:
@@ -46,12 +57,25 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
+  const [loading, setLoading] = useState(false);
+  const [feedbackCodeByAI, setFeedbackCodeByAI] = useState<IFeedbackCodeByAI | null>(null);
+  const handleFeedbackCodeByAI = async () => {
+    setLoading(true);
+    const result = await feedbackCodeByByAI(cpp, "divideArray");
+    if (result) {
+      setFeedbackCodeByAI(result);
+    }
+    setLoading(false);
+  };
+
   return (
     <Grid className={classes.root}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
         <Box onClick={handleSubmissionDetail} className={classes.backButton}>
           <ArrowBackIcon className={classes.backIcon} />
-          <span>Quay lại</span>
+          <span translation-key='detail_problem_submission_detail_back'>
+            {t("detail_problem_submission_detail_back")}
+          </span>
         </Box>
         <Divider />
       </Box>
@@ -63,8 +87,12 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       >
         <Box className={classes.submissionInfo}>
           <Box className={classes.submissionTitle}>
-            <ParagraphBody colorname='--green-500' fontWeight={"700"}>
-              Đã chấp nhận
+            <ParagraphBody
+              colorname='--green-500'
+              fontWeight={"700"}
+              translation-key='detail_problem_submission_accepted'
+            >
+              {t("detail_problem_submission_accepted")}
             </ParagraphBody>
             <Box className={classes.submissionAuthor}>
               <img
@@ -73,18 +101,32 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
                 className={classes.avatar}
               />
               <ParagraphExtraSmall fontWeight={"700"}>Nguyễn Văn A</ParagraphExtraSmall>
-              <ParagraphExtraSmall>đã nộp vào 05/03/2024 14:00</ParagraphExtraSmall>
+              <ParagraphExtraSmall translation-key='detail_problem_submission_detail_user_submission_time'>
+                {t("detail_problem_submission_detail_user_submission_time", {
+                  time: `05/03/2024 14:00`,
+                  interpolation: { escapeValue: false }
+                })}
+              </ParagraphExtraSmall>
             </Box>
           </Box>
-          <Button variant='contained' color='primary'>
-            Chia sẻ bài giải
+          <Button
+            variant='contained'
+            color='primary'
+            translation-key='detail_problem_submission_detail_share_solution'
+          >
+            {t("detail_problem_submission_detail_share_solution")}
           </Button>
         </Box>
         <Grid container className={classes.submissionStatistical}>
           <Grid item xs={5.75} className={classes.statisticalTime}>
             <Container className={classes.title}>
               <AccessTimeIcon />
-              <ParagraphSmall colorname={"--white"}>Thời gian chạy</ParagraphSmall>
+              <ParagraphSmall
+                colorname={"--white"}
+                translation-key='detail_problem_submission_detail_runtime'
+              >
+                {t("detail_problem_submission_detail_runtime")}
+              </ParagraphSmall>
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
@@ -96,7 +138,12 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           <Grid item xs={5.75} className={classes.statisticalMemory}>
             <Container className={classes.title}>
               <MemoryIcon />
-              <ParagraphSmall colorname={"--white"}>Bộ nhớ</ParagraphSmall>
+              <ParagraphSmall
+                colorname={"--white"}
+                translation-key='detail_problem_submission_detail_memory'
+              >
+                {t("detail_problem_submission_detail_memory")}
+              </ParagraphSmall>
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
@@ -106,9 +153,39 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           </Grid>
         </Grid>
         <Box className={classes.submissionText}>
-          <ParagraphBody fontWeight={700}>Bài làm của bạn</ParagraphBody>
+          <Box className={classes.submissionTitle}>
+            <ParagraphBody
+              fontWeight={700}
+              translation-key='detail_problem_submission_detail_your_solution'
+            >
+              {t("detail_problem_submission_detail_your_solution")}
+            </ParagraphBody>
+            <LoadingButton
+              loading={loading}
+              variant='contained'
+              color='primary'
+              onClick={handleFeedbackCodeByAI}
+            >
+              Đánh giá bởi AI
+            </LoadingButton>
+          </Box>
           <MDEditor.Markdown source={cpp} />
         </Box>
+
+        {feedbackCodeByAI && (
+          <Box className={classes.submissionText}>
+            <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
+
+            <Box className={classes.evaluateText}>
+              <ParagraphBody>{feedbackCodeByAI && feedbackCodeByAI.feedback}</ParagraphBody>
+            </Box>
+            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
+
+            <MDEditor.Markdown
+              source={feedbackCodeByAI ? "```" + feedbackCodeByAI.suggestCode + "```" : ""}
+            />
+          </Box>
+        )}
       </Box>
     </Grid>
   );

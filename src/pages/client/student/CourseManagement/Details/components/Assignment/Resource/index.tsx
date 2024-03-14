@@ -12,6 +12,7 @@ import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   resourceTitle: string;
@@ -19,6 +20,7 @@ interface Props {
   type?: ResourceType;
 }
 const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) => {
+  const { t } = useTranslation();
   const [resourceExpansion, setResourceExpansion] = useState(false);
   type = type || ResourceType.assignment;
   const cancelResourceHandler = () => {
@@ -42,7 +44,9 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) =
           }}
         >
           <ParagraphBody>{resourceTitle}</ParagraphBody>
-          <ParagraphBody>Hết hạn lúc: {resourceEndedDate}</ParagraphBody>
+          <ParagraphBody translation-key='course_assignment_deadline'>
+            {t("course_assignment_deadline")}: {resourceEndedDate}
+          </ParagraphBody>
         </AccordionSummary>
         <AccordionDetails>
           <TextEditor
@@ -51,11 +55,19 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) =
           />
         </AccordionDetails>
         <AccordionActions>
-          <Button btnType={BtnType.Text} onClick={cancelResourceHandler}>
-            Hủy
+          <Button
+            btnType={BtnType.Text}
+            onClick={cancelResourceHandler}
+            translation-key='common_cancel'
+          >
+            {t("common_cancel")}
           </Button>
-          <Button btnType={BtnType.Primary} onClick={onDetailClick}>
-            Xem chi tiết
+          <Button
+            btnType={BtnType.Primary}
+            onClick={onDetailClick}
+            translation-key='course_assignment_detail'
+          >
+            {t("course_assignment_detail")}
           </Button>
         </AccordionActions>
       </Accordion>

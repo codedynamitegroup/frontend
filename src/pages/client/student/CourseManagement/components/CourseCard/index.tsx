@@ -18,6 +18,7 @@ import Paper from "@mui/material/Paper";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -39,6 +40,7 @@ interface CardProps {
 }
 
 const CourseCard = (props: CardProps) => {
+  const { t } = useTranslation();
   return (
     <Paper className={classes.cardContainer}>
       <Box className={classes.topGroup}>
@@ -114,7 +116,9 @@ const CourseCard = (props: CardProps) => {
             }
           }}
         >
-          <Button className={classes.moreButton}>Xem toàn bộ giảng viên</Button>
+          <Button className={classes.moreButton} translation-key='course_see_all_teacher'>
+            {t("course_see_all_teacher")}
+          </Button>
         </CustomTooltip>
       ) : null}
     </Paper>

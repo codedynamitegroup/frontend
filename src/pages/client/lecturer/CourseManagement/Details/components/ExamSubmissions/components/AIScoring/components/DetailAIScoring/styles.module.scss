@@ -1,0 +1,77 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
+}
+
+.container {
+  display: flex;
+  overflow: hidden;
+}
+
+.mainContent {
+  background-color: var(--blue-1);
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.drawerBody {
+  padding: 20px;
+  overflow: auto;
+}
+
+.drawerFieldContainer {
+  margin-bottom: 20px;
+}
+
+.textEditor {
+  height: 200px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+  flex-grow: 1;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+.assignmentDetail {
+  height: 100vh;
+}
+.chip {
+  margin: 10px 0;
+  width: fit-content;
+  height: fit-content;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+.name {
+  border: 1px solid gray;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+.card {
+  height: 100vh;
+}

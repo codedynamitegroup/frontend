@@ -13,8 +13,10 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 const LecturerCourseParticipant = () => {
+  const { t } = useTranslation();
   const participantList = [
     {
       id: 4,
@@ -33,7 +35,7 @@ const LecturerCourseParticipant = () => {
     { field: "id", headerName: "STT", minWidth: 1 },
     {
       field: "name",
-      headerName: "Họ và tên",
+      headerName: t("common_fullname"),
       width: 200,
       flex: 0.8,
       renderCell: (params) => (
@@ -43,10 +45,10 @@ const LecturerCourseParticipant = () => {
       )
     },
     { field: "email", headerName: "Email", width: 200, flex: 0.8 },
-    { field: "roles", headerName: "Chức vụ", width: 50, flex: 0.4 },
+    { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 },
     {
       field: "action",
-      headerName: "Hành động",
+      headerName: t("common_action"),
       type: "actions",
       width: 200,
       flex: 0.5,

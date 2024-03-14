@@ -81,7 +81,10 @@ export const routes = {
       code_plagiarism_detection_file_pairs:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs",
       code_plagiarism_detection_file_pairs_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs/:filePairId"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs/:filePairId",
+      ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
+      ai_scroring_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
     }
   },
   student: {
