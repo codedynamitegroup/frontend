@@ -7,12 +7,46 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgressWithLabel from "./components/CircularProgressWithLabel";
 import { routes } from "routes/routes";
+import { DolosCustomFile } from "../..";
 
-export default function FilePairsTable({ rows, headers }: { rows: any[]; headers: string[] }) {
+export default function FilePairsTable({
+  rows,
+  headers
+}: {
+  rows: {
+    id: string;
+    leftFile: DolosCustomFile;
+    rightFile: DolosCustomFile;
+    leftCovered: number;
+    rightCovered: number;
+    leftTotal: number;
+    rightTotal: number;
+    longestFragment: number;
+    highestSimilarity: number;
+    totalOverlap: number;
+    buildFragments: {
+      left: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+      right: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+    }[];
+  }[];
+  headers: string[];
+}) {
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
+
+  console.log("rows", rows);
 
   return (
     <Sheet variant='outlined'>
@@ -34,24 +68,27 @@ export default function FilePairsTable({ rows, headers }: { rows: any[]; headers
               onClick={() => {
                 navigate(
                   routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
-                    `?questionId=${questionId}`
+                    `?questionId=${questionId}`,
+                  {
+                    state: { data: row }
+                  }
                 );
               }}
             >
               <td>
-                <ParagraphBody>{row.left_file}</ParagraphBody>
+                <ParagraphBody>{row.leftFile.extra.filename}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.right_file}</ParagraphBody>
+                <ParagraphBody>{row.rightFile.extra.filename}</ParagraphBody>
               </td>
               <td>
-                <CircularProgressWithLabel value={Number(row.highest_similarity) || 0} />
+                <CircularProgressWithLabel value={Number(row.highestSimilarity * 100) || 0} />
               </td>
               <td>
-                <ParagraphBody>{row.longest_fragment}</ParagraphBody>
+                <ParagraphBody>{row.longestFragment}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.total_overlap}</ParagraphBody>
+                <ParagraphBody>{row.totalOverlap}</ParagraphBody>
               </td>
             </tr>
           ))}
@@ -70,12 +107,11 @@ export default function FilePairsTable({ rows, headers }: { rows: any[]; headers
                   cursor: "pointer"
                 }}
                 onClick={() => {
-                  console.log("rows", rows);
                   navigate(
                     routes.lecturer.exam.code_plagiarism_detection_file_pairs +
                       `?questionId=${questionId}`,
                     {
-                      state: { filePairList: rows }
+                      state: { pairs: rows }
                     }
                   );
                 }}

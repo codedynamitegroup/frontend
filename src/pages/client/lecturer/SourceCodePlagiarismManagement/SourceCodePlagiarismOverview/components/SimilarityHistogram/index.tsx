@@ -8,13 +8,18 @@ import { DrawingThresholdLine } from "./components/DrawingThresholdLine";
 import DrawingXAxis from "./components/DrawingXAxis";
 import { routes } from "routes/routes";
 
-const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
+const SimilarityHistogram = ({
+  xAxisData,
+  y,
+  threshold
+}: {
+  xAxisData: number[];
+  y: number[];
+  threshold: number;
+}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
-  const xAxisData = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
-
-  const y = [0, 5, 10, 10, 15, 20, 50, 30, 35, 70, 45, 50, 55, 60, 65, 70, 75, 5, 0, 95];
 
   const SlotBarElement = (props: any) => {
     const { left, width } = useDrawingArea();

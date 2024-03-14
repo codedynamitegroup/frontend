@@ -102,8 +102,7 @@ const LecturerCourseExamSubmissions = () => {
       if (result.status === "success") {
         navigate(`${routes.lecturer.exam.code_plagiarism_detection}?questionId=${questionId}`, {
           state: {
-            report: result.report,
-            pairs: result.pairs
+            report: result.data
           }
         });
       } else {

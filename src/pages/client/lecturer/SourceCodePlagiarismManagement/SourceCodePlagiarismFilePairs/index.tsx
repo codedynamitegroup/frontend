@@ -23,6 +23,7 @@ import {
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import CircularProgressWithLabel from "../SourceCodePlagiarismOverview/components/FilePairsTable/components/CircularProgressWithLabel";
+import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 
 const drawerWidth = 450;
 
@@ -102,27 +103,76 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
   const totalElement = 100;
 
   const location = useLocation();
-  const [data, setData] = React.useState({
-    filePairList: location.state?.filePairList || []
-  });
+  const [data, setData] = React.useState<{
+    pairs: {
+      id: string;
+      leftFile: DolosCustomFile;
+      rightFile: DolosCustomFile;
+      leftCovered: number;
+      rightCovered: number;
+      leftTotal: number;
+      rightTotal: number;
+      longestFragment: number;
+      highestSimilarity: number;
+      totalOverlap: number;
+      buildFragments: {
+        left: {
+          startRow: number;
+          startCol: number;
+          endRow: number;
+          endCol: number;
+        };
+        right: {
+          startRow: number;
+          startCol: number;
+          endRow: number;
+          endCol: number;
+        };
+      }[];
+    }[];
+  }>({ pairs: location.state?.pairs || [] });
 
   const tableHeading: GridColDef[] = [
-    { field: "left_file", headerName: "Tệp trái", flex: 1 },
-    { field: "right_file", headerName: "Tệp phải", flex: 1 },
     {
-      field: "highest_similarity",
+      field: "leftFile",
+      headerName: "Tệp trái",
+      flex: 1,
+      renderCell: (params) => {
+        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+      }
+    },
+    {
+      field: "rightFile",
+      headerName: "Tệp phải",
+      flex: 1,
+
+      renderCell: (params) => {
+        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+      }
+    },
+    {
+      field: "highestSimilarity",
       headerName: "Độ tương đồng cao nhất",
       flex: 1,
       renderCell: (params) => {
-        return <CircularProgressWithLabel value={Number(params.row.highest_similarity) || 0} />;
+        console.log("highestSimilarity", params);
+        return <CircularProgressWithLabel value={Number(params.value) * 100 || 0} />;
       }
     },
-    { field: "longest_fragment", headerName: "Đoạn trùng dài nhất", flex: 1 },
-    { field: "total_overlap", headerName: "Trùng lặp tổng cộng", flex: 1 }
+    { field: "longestFragment", headerName: "Đoạn trùng dài nhất", flex: 1 },
+    { field: "totalOverlap", headerName: "Trùng lặp tổng cộng", flex: 1 }
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log("rowClickHandler", params);
+    navigate(
+      routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
+        `?questionId=${questionId}`,
+      {
+        state: {
+          data: params.row
+        }
+      }
+    );
   };
 
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -231,7 +281,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
                 </Grid>
                 <Grid item xs={12}>
                   <CustomDataGrid
-                    dataList={data.filePairList || []}
+                    dataList={data.pairs || []}
                     tableHeader={tableHeading}
                     onSelectData={rowSelectionHandler}
                     dataGridToolBar={dataGridToolbar}

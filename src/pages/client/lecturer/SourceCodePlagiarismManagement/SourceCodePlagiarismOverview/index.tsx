@@ -80,75 +80,156 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
+export interface DolosCustomFile {
+  id: string;
+  path: string;
+  charCount: number;
+  lines: string[];
+  lineCount: number;
+  extra: {
+    id: string;
+    filename: string;
+    createdAt: string;
+    labels: string;
+  };
+  highestSimilarity: number | null;
+}
+
 export default function LecturerSourceCodePlagiarismManagement() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
   const [threshold, setThreshold] = React.useState(70);
   const location = useLocation();
-  const [data, setData] = React.useState({
-    report: location.state?.report,
-    pairs: location.state?.pairs
+
+  const [data, setData] = React.useState<{
+    report: {
+      labels: {
+        label: string;
+        submissions: number;
+      }[];
+      maxHighSimilarity: number;
+      averageHighSimilarity: number;
+      medianHighSimilarity: number;
+      name: string;
+      createdAt: string;
+      files: DolosCustomFile[];
+      language: { name: string; extensions: string[] };
+      pairs: {
+        id: string;
+        leftFile: DolosCustomFile;
+        rightFile: DolosCustomFile;
+        leftCovered: number;
+        rightCovered: number;
+        leftTotal: number;
+        rightTotal: number;
+        longestFragment: number;
+        highestSimilarity: number;
+        totalOverlap: number;
+        buildFragments: {
+          left: {
+            startRow: number;
+            startCol: number;
+            endRow: number;
+            endCol: number;
+          };
+          right: {
+            startRow: number;
+            startCol: number;
+            endRow: number;
+            endCol: number;
+          };
+        }[];
+      }[];
+    } | null;
+  }>({
+    report: location.state?.report
   });
 
-  const filePairList = [
-    {
-      id: "1",
-      left_file: "20127111.java",
-      right_file: "20127112.java",
-      highest_similarity: "74",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "2",
-      left_file: "20127112.java",
-      right_file: "20127113.java",
-      highest_similarity: "54",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "3",
-      left_file: "20127113.java",
-      right_file: "20127114.java",
-      highest_similarity: "78",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "4",
-      left_file: "20127114.java",
-      right_file: "20127115.java",
-      highest_similarity: "90",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "5",
-      left_file: "20127115.java",
-      right_file: "20127116.java",
-      highest_similarity: "10",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "6",
-      left_file: "20127116.java",
-      right_file: "20127117.java",
-      highest_similarity: "54",
-      longest_fragment: "10",
-      total_overlap: "10"
-    },
-    {
-      id: "7",
-      left_file: "20127117.java",
-      right_file: "20127118.java",
-      highest_similarity: "80",
-      longest_fragment: "10",
-      total_overlap: "10"
+  const xAxisData = React.useMemo(() => {
+    return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
+  }, []);
+
+  const yAxisData = React.useMemo(() => {
+    const zeroArray = Array(xAxisData.length).fill(0);
+    if (data.report?.files) {
+      data.report.files.forEach((file) => {
+        for (let i = 0; i < xAxisData.length; i++) {
+          if (file.highestSimilarity === null) continue;
+          if (
+            file.highestSimilarity * 100 >= xAxisData[i] &&
+            file.highestSimilarity * 100 < xAxisData[i] + 5
+          ) {
+            zeroArray[i] += 1;
+          }
+          if (xAxisData[i] === 95 && file.highestSimilarity * 100 === 100) {
+            zeroArray[i] += 1;
+          }
+        }
+      });
     }
-  ];
+
+    return zeroArray;
+  }, [xAxisData, data.report?.files]);
+
+  // const filePairList = [
+  //   {
+  //     id: "1",
+  //     left_file: "20127111.java",
+  //     right_file: "20127112.java",
+  //     highest_similarity: "74",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "2",
+  //     left_file: "20127112.java",
+  //     right_file: "20127113.java",
+  //     highest_similarity: "54",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "3",
+  //     left_file: "20127113.java",
+  //     right_file: "20127114.java",
+  //     highest_similarity: "78",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "4",
+  //     left_file: "20127114.java",
+  //     right_file: "20127115.java",
+  //     highest_similarity: "90",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "5",
+  //     left_file: "20127115.java",
+  //     right_file: "20127116.java",
+  //     highest_similarity: "10",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "6",
+  //     left_file: "20127116.java",
+  //     right_file: "20127117.java",
+  //     highest_similarity: "54",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "7",
+  //     left_file: "20127117.java",
+  //     right_file: "20127118.java",
+  //     highest_similarity: "80",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   }
+  // ];
 
   const handleThresholdChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue !== "number") {
@@ -271,13 +352,17 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         {data.report?.language ? data.report.language?.name : "Chưa cập nhật"}
                       </ParagraphBody>
                     </Box>
-                    <TextTitle className={classes.labelTitle}>2 nhãn được phát hiện</TextTitle>
+                    <TextTitle className={classes.labelTitle}>
+                      {`${data.report?.labels.length || 0} nhãn được phát hiện`}
+                    </TextTitle>
                     <LabelSubmissionsTable
                       headers={["Nhãn", "Bài nộp"]}
-                      rows={[
-                        { label: "Gian lận", submissions: 2 },
-                        { label: "Trong sạch", submissions: 2 }
-                      ]}
+                      rows={
+                        data.report?.labels.map((label) => ({
+                          label: label.label,
+                          submissions: label.submissions
+                        })) || []
+                      }
                     />
                   </Card>
                 </Grid>
@@ -299,7 +384,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             <Heading4>
                               Độ tương đồng cao nhất{" "}
                               <Tooltip
-                                title={`Phần trăm tương đồng cao nhất giữa 2 bài nộp là 97%.`}
+                                title={`Phần trăm tương đồng cao nhất giữa 2 bài nộp là ${Math.round((data.report?.maxHighSimilarity || 0) * 100)}%`}
                                 placement='top'
                               >
                                 <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
@@ -310,9 +395,14 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--red-error-01'
                             >
-                              97%
+                              {Math.round((data.report?.maxHighSimilarity || 0) * 100)}%
                             </ParagraphBody>
-                            <Link to={routes.lecturer.exam.submissions}>Xem tất cả bài nộp</Link>
+                            <Link
+                              to={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
+                              state={{ pairs: data.report?.pairs }}
+                            >
+                              Xem tất cả cặp bài nộp
+                            </Link>
                           </Grid>
                         </Grid>
                       </Card>
@@ -346,9 +436,12 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--orange-400'
                             >
-                              54%
+                              {Math.round((data.report?.averageHighSimilarity || 0) * 100)}%
                             </ParagraphBody>
-                            <ParagraphSmall>Trung vị độ tương đồng: 52%</ParagraphSmall>
+                            <ParagraphSmall>
+                              Trung vị độ tương đồng:{" "}
+                              {Math.round((data.report?.medianHighSimilarity || 0) * 100)}%
+                            </ParagraphSmall>
                           </Grid>
                         </Grid>
                       </Card>
@@ -415,7 +508,11 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           aria-labelledby='input-series-number'
                         />
                       </Grid>
-                      <SimilarityHistogram threshold={threshold} />
+                      <SimilarityHistogram
+                        threshold={threshold}
+                        xAxisData={xAxisData}
+                        y={yAxisData}
+                      />
                     </Grid>
                   </Card>
                 </Grid>
@@ -439,7 +536,8 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             "Đoạn trùng dài nhất",
                             "Trùng lập tổng cộng"
                           ]}
-                          rows={filePairList}
+                          // rows={data.report?.pairs}
+                          rows={data.report?.pairs || []}
                         />
                       </Grid>
                     </Grid>

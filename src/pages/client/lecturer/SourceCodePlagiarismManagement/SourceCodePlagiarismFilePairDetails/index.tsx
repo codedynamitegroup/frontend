@@ -5,12 +5,13 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import JoinInnerIcon from "@mui/icons-material/JoinInner";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
-import { TabPanelProps } from "@mui/joy";
 import {
   Box,
   Card,
   CssBaseline,
+  Divider,
   Grid,
   IconButton,
   Tab,
@@ -19,7 +20,7 @@ import {
   Tooltip
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import Header from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -31,6 +32,7 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
+import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 import classes from "./styles.module.scss";
 
 const drawerWidth = 450;
@@ -82,59 +84,80 @@ const AppBar = styled(MuiAppBar, {
   })
 }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-start"
-}));
-
-interface CustomTabPanelProps extends TabPanelProps {
-  children?: React.ReactNode;
-  dir?: string;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: CustomTabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role='tabpanel'
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-}
-
 export default function LecturerSourceCodePlagiarismFilePairDetails() {
   const navigate = useNavigate();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
   const location = useLocation();
-  const [data, setData] = React.useState({
-    leftPart: {
-      fileName: "sample.js",
-      content: 'console.log("Hellow Wolrd")\n\nconsole.log(10 + 2)',
-      createAt: "7/23/2019, 10:12 PM"
-    },
-    rightPart: {
-      fileName: "Copy_of_sample.js",
-      content: 'console.log("Hellow Wolrd")',
-      createAt: "7/23/2019, 10:12 PM"
-    },
-    highestSimilarity: 100,
-    longestFragment: 97,
-    totalOverlap: 194
+  const codeHeadRef = React.useRef<HTMLDivElement>(null);
+  const { height: codeHeadHeight } = useBoxDimensions({
+    ref: codeHeadRef
   });
+
+  const [data, setData] = React.useState<{
+    id: string;
+    leftFile: DolosCustomFile;
+    rightFile: DolosCustomFile;
+    leftCovered: number;
+    rightCovered: number;
+    leftTotal: number;
+    rightTotal: number;
+    longestFragment: number;
+    highestSimilarity: number;
+    totalOverlap: number;
+    buildFragments: {
+      left: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+      right: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+    }[];
+  }>(
+    location.state?.data || {
+      id: "1",
+      leftFile: {
+        id: "1",
+        path: "",
+        charCount: 0,
+        lines: [],
+        lineCount: 0,
+        extra: {
+          id: "",
+          filename: "",
+          createdAt: "",
+          labels: ""
+        }
+      },
+      rightFile: {
+        id: "2",
+        path: "",
+        charCount: 0,
+        lines: [],
+        lineCount: 0,
+        extra: {
+          id: "",
+          filename: "",
+          createdAt: "",
+          labels: ""
+        }
+      },
+      leftCovered: 0,
+      rightCovered: 0,
+      leftTotal: 0,
+      rightTotal: 0,
+      longestFragment: 0,
+      highestSimilarity: 0,
+      totalOverlap: 0,
+      buildFragments: []
+    }
+  );
 
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeIndex = (index: number) => {
@@ -150,13 +173,28 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
     ref: headerRef
   });
 
+  const breadcrumbRef = React.useRef<HTMLDivElement>(null);
+  const { height: breadcrumbHeight } = useBoxDimensions({
+    ref: breadcrumbRef
+  });
+
+  const cardHeaderRef = React.useRef<HTMLDivElement>(null);
+  const { height: cardHeaderbHeight } = useBoxDimensions({
+    ref: cardHeaderRef
+  });
+
+  const toolbarCodeRef = React.useRef<HTMLDivElement>(null);
+  const { height: toolbarCodeHeight } = useBoxDimensions({
+    ref: toolbarCodeRef
+  });
+
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight + 20}px`
+          marginTop: `${headerHeight}px`
         }}
       >
         <CssBaseline />
@@ -164,10 +202,11 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
           position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            top: `${headerHeight}px`,
             backgroundColor: "white"
           }}
           open={false}
+          ref={breadcrumbRef}
         >
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
@@ -223,19 +262,39 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Main open={true} className={classes.mainContent}>
-          <DrawerHeader />
+        <Main
+          open={true}
+          className={classes.mainContent}
+          sx={{
+            marginTop: `${breadcrumbHeight}px`,
+            height: `calc(100% - ${headerHeight + breadcrumbHeight}px)`
+          }}
+        >
           <Card className={classes.formBody}>
-            <Heading1>
-              So sánh {data.leftPart.fileName} với {data.rightPart.fileName}
-            </Heading1>
-            <ParagraphBody>
-              So sánh giữa 2 tệp code. Bạn có thể xem các đoạn code trùng lặp và khác biệt giữa 2
-              tệp code.
-            </ParagraphBody>
-            <Card className={classes.cardWrapper}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
+            <Box className={classes.cardHeader} ref={cardHeaderRef}>
+              <Heading1>
+                So sánh {data?.leftFile?.extra?.filename || ""} với{" "}
+                {data?.rightFile?.extra?.filename || ""}
+              </Heading1>
+              <ParagraphBody>
+                So sánh giữa 2 tệp code. Bạn có thể xem các đoạn code trùng lặp và khác biệt giữa 2
+                tệp code.
+              </ParagraphBody>
+            </Box>
+            <Card
+              className={classes.cardWrapper}
+              sx={{
+                height: `calc(100% - ${cardHeaderbHeight}px)`
+              }}
+            >
+              <Grid
+                container
+                spacing={1}
+                sx={{
+                  height: "100%"
+                }}
+              >
+                <Grid item xs={12} ref={toolbarCodeRef}>
                   <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Tabs value={tabIndex} onChange={handleChangeTabIndex} aria-label='tabIndex'>
@@ -250,21 +309,11 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                             btnType={BtnType.Primary}
                             onClick={() => {
                               // Swap data.leftPart and data.rightPart
-                              setData((pre) => {
-                                return {
-                                  ...pre,
-                                  leftPart: {
-                                    fileName: pre.rightPart.fileName,
-                                    content: pre.rightPart.content,
-                                    createAt: pre.rightPart.createAt
-                                  },
-                                  rightPart: {
-                                    fileName: pre.leftPart.fileName,
-                                    content: pre.leftPart.content,
-                                    createAt: pre.leftPart.createAt
-                                  }
-                                };
-                              });
+                              setData((prev) => ({
+                                ...prev,
+                                leftFile: prev.rightFile,
+                                rightFile: prev.leftFile
+                              }));
                             }}
                           >
                             <CompareArrowsIcon />
@@ -275,144 +324,145 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                             <ParagraphBody fontSize={"30px"} fontWeight={600}>
                               &asymp;
                             </ParagraphBody>
-                            <ParagraphBody>Độ tương đồng: {data.highestSimilarity}%</ParagraphBody>
+                            <ParagraphBody>
+                              Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
+                            </ParagraphBody>
                           </Box>
                         </Grid>
                         <Grid item xs={3}>
                           <Box className={classes.flexBoxWrapper}>
                             <FileCopyIcon />
                             <ParagraphBody>
-                              Đoạn trùng dài nhất: {data.longestFragment}
+                              Đoạn trùng dài nhất: {data?.longestFragment || 0}
                             </ParagraphBody>
                           </Box>
                         </Grid>
                         <Grid item xs={3}>
                           <Box className={classes.flexBoxWrapper}>
                             <FileCopyOutlinedIcon />
-                            <ParagraphBody>Trùng lặp tổng cộng: {data.totalOverlap}</ParagraphBody>
+                            <ParagraphBody>
+                              Trùng lặp tổng cộng: {data?.totalOverlap || 0}
+                            </ParagraphBody>
                           </Box>
                         </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <TabPanel value={tabIndex} index={0} dir={theme.direction}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={6}>
-                        <Box className={classes.codeWrapper}>
-                          <Box className={classes.codeHead}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    height: `calc(100% - ${toolbarCodeHeight}px)`
+                  }}
+                >
+                  <Grid
+                    container
+                    sx={{
+                      height: "100%"
+                    }}
+                  >
+                    <Grid
+                      item
+                      xs={5.9}
+                      sx={{
+                        height: "100%"
+                      }}
+                    >
+                      <Card className={classes.codeWrapper}>
+                        <Box className={classes.codeHead} ref={codeHeadRef}>
+                          <Box className={classes.fileNameWrapper}>
+                            <InsertDriveFileOutlinedIcon
+                              className={classes.insertDriveFileOutlinedIcon}
+                            />
+                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                              {data.leftFile.extra.filename}
+                            </ParagraphBody>
+                          </Box>
+                          {data.leftFile.extra.labels && data.leftFile.extra.labels.length > 0 && (
                             <Box className={classes.fileNameWrapper}>
-                              <InsertDriveFileOutlinedIcon
+                              <LocalOfferOutlinedIcon
                                 className={classes.insertDriveFileOutlinedIcon}
                               />
                               <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.leftPart.fileName}
+                                {data.leftFile.extra.labels}
                               </ParagraphBody>
                             </Box>
-                            <Tooltip title={data.leftPart.createAt} placement='top'>
-                              <Box className={classes.fileNameWrapper}>
-                                <CalendarIcon />
-                                <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
-                              </Box>
-                            </Tooltip>
-                          </Box>
-                          <Box className={classes.codeContent}>
-                            <CodeEditor
-                              value={data.leftPart.content}
-                              readOnly={true}
-                              highlightActiveLine={false}
-                            />
-                          </Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box className={classes.codeWrapper}>
-                          <Box className={classes.codeHead}>
+                          )}
+                          <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
                             <Box className={classes.fileNameWrapper}>
-                              <InsertDriveFileOutlinedIcon
-                                className={classes.insertDriveFileOutlinedIcon}
-                              />
-                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.rightPart.fileName}
-                              </ParagraphBody>
+                              <CalendarIcon />
+                              <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
                             </Box>
-                            <Tooltip title={data.rightPart.createAt} placement='top'>
-                              <Box className={classes.fileNameWrapper}>
-                                <CalendarIcon />
-                                <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
-                              </Box>
-                            </Tooltip>
-                          </Box>
-                          <Box className={classes.codeContent}>
-                            <CodeEditor
-                              value={data.rightPart.content}
-                              readOnly={true}
-                              highlightActiveLine={false}
-                            />
-                          </Box>
+                          </Tooltip>
                         </Box>
-                      </Grid>
+                        <Divider />
+                        <Box
+                          className={classes.codeContent}
+                          sx={{
+                            height: `calc(100% - ${codeHeadHeight}px)`
+                          }}
+                        >
+                          <CodeEditor
+                            value={data.leftFile.lines.join("\n")}
+                            readOnly={true}
+                            highlightActiveLine={false}
+                          />
+                        </Box>
+                      </Card>
                     </Grid>
-                  </TabPanel>
-                  <TabPanel value={tabIndex} index={1} dir={theme.direction}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={6}>
-                        <Box className={classes.codeWrapper}>
-                          <Box className={classes.codeHead}>
-                            <Box className={classes.fileNameWrapper}>
-                              <InsertDriveFileOutlinedIcon
-                                className={classes.insertDriveFileOutlinedIcon}
-                              />
-                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.leftPart.fileName}
-                              </ParagraphBody>
-                            </Box>
-                            <Tooltip title={data.leftPart.createAt} placement='top'>
-                              <Box className={classes.fileNameWrapper}>
-                                <CalendarIcon />
-                                <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
-                              </Box>
-                            </Tooltip>
-                          </Box>
-                          <Box className={classes.codeContent}>
-                            <CodeEditor
-                              value={data.leftPart.content}
-                              readOnly={true}
-                              highlightActiveLine={false}
+                    <Grid item xs={0.2}></Grid>
+                    <Grid
+                      item
+                      xs={5.9}
+                      sx={{
+                        height: "100%"
+                      }}
+                    >
+                      <Card className={classes.codeWrapper}>
+                        <Box className={classes.codeHead}>
+                          <Box className={classes.fileNameWrapper}>
+                            <InsertDriveFileOutlinedIcon
+                              className={classes.insertDriveFileOutlinedIcon}
                             />
+                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                              {data.rightFile.extra.filename}
+                            </ParagraphBody>
                           </Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box className={classes.codeWrapper}>
-                          <Box className={classes.codeHead}>
-                            <Box className={classes.fileNameWrapper}>
-                              <InsertDriveFileOutlinedIcon
-                                className={classes.insertDriveFileOutlinedIcon}
-                              />
-                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.rightPart.fileName}
-                              </ParagraphBody>
-                            </Box>
-                            <Tooltip title={data.rightPart.createAt} placement='top'>
+                          {data.rightFile.extra.labels &&
+                            data.rightFile.extra.labels.length > 0 && (
                               <Box className={classes.fileNameWrapper}>
-                                <CalendarIcon />
-                                <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
+                                <LocalOfferOutlinedIcon
+                                  className={classes.insertDriveFileOutlinedIcon}
+                                />
+                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                  {data.rightFile.extra.labels}
+                                </ParagraphBody>
                               </Box>
-                            </Tooltip>
-                          </Box>
-                          <Box className={classes.codeContent}>
-                            <CodeEditor
-                              value={data.rightPart.content}
-                              readOnly={true}
-                              highlightActiveLine={false}
-                            />
-                          </Box>
+                            )}
+                          <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
+                            <Box className={classes.fileNameWrapper}>
+                              <CalendarIcon />
+                              <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Box>
-                      </Grid>
+                        <Divider />
+                        <Box
+                          className={classes.codeContent}
+                          sx={{
+                            height: `calc(100% - ${codeHeadHeight}px)`
+                          }}
+                        >
+                          <CodeEditor
+                            value={data.rightFile.lines.join("\n")}
+                            readOnly={true}
+                            highlightActiveLine={false}
+                          />
+                        </Box>
+                      </Card>
                     </Grid>
-                  </TabPanel>
+                  </Grid>
                 </Grid>
               </Grid>
             </Card>
