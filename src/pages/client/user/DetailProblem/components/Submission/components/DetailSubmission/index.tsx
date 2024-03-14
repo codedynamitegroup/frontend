@@ -27,7 +27,7 @@ interface IFeedbackCodeByAI {
   suggestCode: string;
 }
 export default function DetailSolution({ handleSubmissionDetail }: Props) {
-  const cpp = `\`\`\`cpp
+  const cpp = `\`\`\`java
     class Solution {
     public:
         vector<vector<int>> divideArray(vector<int>& nums, int ki) {
@@ -126,7 +126,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           </Grid>
         </Grid>
         <Box className={classes.submissionText}>
-          <Box className={classes.submissionTitle}>
+          <Box className={classes.feedbackTitle}>
             <ParagraphBody fontWeight={700}>Bài làm của bạn</ParagraphBody>
             <LoadingButton
               loading={loading}
