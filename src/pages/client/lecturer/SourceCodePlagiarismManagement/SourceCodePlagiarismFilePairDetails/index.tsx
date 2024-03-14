@@ -30,7 +30,6 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import SwipeableViews from "react-swipeable-views";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
 
@@ -298,128 +297,122 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <SwipeableViews
-                    axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                    index={tabIndex}
-                    onChangeIndex={handleChangeIndex}
-                  >
-                    <TabPanel value={tabIndex} index={0} dir={theme.direction}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Box className={classes.codeWrapper}>
-                            <Box className={classes.codeHead}>
-                              <Box className={classes.fileNameWrapper}>
-                                <InsertDriveFileOutlinedIcon
-                                  className={classes.insertDriveFileOutlinedIcon}
-                                />
-                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.leftPart.fileName}
-                                </ParagraphBody>
-                              </Box>
-                              <Tooltip title={data.leftPart.createAt} placement='top'>
-                                <Box className={classes.fileNameWrapper}>
-                                  <CalendarIcon />
-                                  <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
-                                </Box>
-                              </Tooltip>
-                            </Box>
-                            <Box className={classes.codeContent}>
-                              <CodeEditor
-                                value={data.leftPart.content}
-                                readOnly={true}
-                                highlightActiveLine={false}
+                  <TabPanel value={tabIndex} index={0} dir={theme.direction}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={6}>
+                        <Box className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
+                            <Box className={classes.fileNameWrapper}>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
                               />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.leftPart.fileName}
+                              </ParagraphBody>
                             </Box>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box className={classes.codeWrapper}>
-                            <Box className={classes.codeHead}>
+                            <Tooltip title={data.leftPart.createAt} placement='top'>
                               <Box className={classes.fileNameWrapper}>
-                                <InsertDriveFileOutlinedIcon
-                                  className={classes.insertDriveFileOutlinedIcon}
-                                />
-                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.rightPart.fileName}
-                                </ParagraphBody>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
                               </Box>
-                              <Tooltip title={data.rightPart.createAt} placement='top'>
-                                <Box className={classes.fileNameWrapper}>
-                                  <CalendarIcon />
-                                  <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
-                                </Box>
-                              </Tooltip>
-                            </Box>
-                            <Box className={classes.codeContent}>
-                              <CodeEditor
-                                value={data.rightPart.content}
-                                readOnly={true}
-                                highlightActiveLine={false}
-                              />
-                            </Box>
+                            </Tooltip>
                           </Box>
-                        </Grid>
+                          <Box className={classes.codeContent}>
+                            <CodeEditor
+                              value={data.leftPart.content}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                            />
+                          </Box>
+                        </Box>
                       </Grid>
-                    </TabPanel>
-                    <TabPanel value={tabIndex} index={1} dir={theme.direction}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Box className={classes.codeWrapper}>
-                            <Box className={classes.codeHead}>
-                              <Box className={classes.fileNameWrapper}>
-                                <InsertDriveFileOutlinedIcon
-                                  className={classes.insertDriveFileOutlinedIcon}
-                                />
-                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.leftPart.fileName}
-                                </ParagraphBody>
-                              </Box>
-                              <Tooltip title={data.leftPart.createAt} placement='top'>
-                                <Box className={classes.fileNameWrapper}>
-                                  <CalendarIcon />
-                                  <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
-                                </Box>
-                              </Tooltip>
-                            </Box>
-                            <Box className={classes.codeContent}>
-                              <CodeEditor
-                                value={data.leftPart.content}
-                                readOnly={true}
-                                highlightActiveLine={false}
+                      <Grid item xs={6}>
+                        <Box className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
+                            <Box className={classes.fileNameWrapper}>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
                               />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.rightPart.fileName}
+                              </ParagraphBody>
                             </Box>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box className={classes.codeWrapper}>
-                            <Box className={classes.codeHead}>
+                            <Tooltip title={data.rightPart.createAt} placement='top'>
                               <Box className={classes.fileNameWrapper}>
-                                <InsertDriveFileOutlinedIcon
-                                  className={classes.insertDriveFileOutlinedIcon}
-                                />
-                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.rightPart.fileName}
-                                </ParagraphBody>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
                               </Box>
-                              <Tooltip title={data.rightPart.createAt} placement='top'>
-                                <Box className={classes.fileNameWrapper}>
-                                  <CalendarIcon />
-                                  <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
-                                </Box>
-                              </Tooltip>
-                            </Box>
-                            <Box className={classes.codeContent}>
-                              <CodeEditor
-                                value={data.rightPart.content}
-                                readOnly={true}
-                                highlightActiveLine={false}
-                              />
-                            </Box>
+                            </Tooltip>
                           </Box>
-                        </Grid>
+                          <Box className={classes.codeContent}>
+                            <CodeEditor
+                              value={data.rightPart.content}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                            />
+                          </Box>
+                        </Box>
                       </Grid>
-                    </TabPanel>
-                  </SwipeableViews>
+                    </Grid>
+                  </TabPanel>
+                  <TabPanel value={tabIndex} index={1} dir={theme.direction}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={6}>
+                        <Box className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
+                            <Box className={classes.fileNameWrapper}>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
+                              />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.leftPart.fileName}
+                              </ParagraphBody>
+                            </Box>
+                            <Tooltip title={data.leftPart.createAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.leftPart.createAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Box className={classes.codeContent}>
+                            <CodeEditor
+                              value={data.leftPart.content}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Box className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
+                            <Box className={classes.fileNameWrapper}>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
+                              />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.rightPart.fileName}
+                              </ParagraphBody>
+                            </Box>
+                            <Tooltip title={data.rightPart.createAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.rightPart.createAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Box className={classes.codeContent}>
+                            <CodeEditor
+                              value={data.rightPart.content}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
                 </Grid>
               </Grid>
             </Card>
