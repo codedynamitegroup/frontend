@@ -10,7 +10,7 @@
 
 .container {
   display: flex;
-  background-color: white;
+  background-color: var(--blue-1);
 }
 
 .mainContent {
@@ -18,9 +18,16 @@
   margin-top: -10px;
 }
 
+.flexBoxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .cardWrapper {
-  height: 100%;
+  width: 100%;
   padding: 20px;
+  height: 100%;
 
   .cardTitleHeader {
     padding: 10px 0;
@@ -67,6 +74,7 @@
   flex-direction: column;
   padding: 20px 40px;
   gap: 15px;
+  height: 100%;
 }
 
 .drawerBody {
@@ -97,5 +105,35 @@
       cursor: pointer;
       text-decoration: underline;
     }
+  }
+}
+
+.codeWrapper {
+  // padding: 10px;
+  height: 100%;
+  width: 100%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+
+  .codeHead {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 10px;
+
+    .insertDriveFileOutlinedIcon {
+      margin: 5px;
+      color: var(--blue-500);
+    }
+
+    .fileNameWrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+
+  .codeContent {
+    overflow: auto;
   }
 }

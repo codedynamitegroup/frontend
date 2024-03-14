@@ -12,8 +12,10 @@ import { routes } from "routes/routes";
 import AssignmentTable from "./components/GradingAssignmentTable";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
+import { useTranslation } from "react-i18next";
 
 const LecturerCourseAssignmentDetails = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
@@ -44,7 +46,7 @@ const LecturerCourseAssignmentDetails = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody>Quay lại</ParagraphBody>
+        <ParagraphBody translation-key='common_backk'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>Bài tập 1</Heading1>
       <Card
@@ -56,7 +58,9 @@ const LecturerCourseAssignmentDetails = () => {
       >
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
+            <ParagraphSmall fontWeight={"600"} translation-key='course_assignment_detail_open_time'>
+              {t("course_assignment_detail_open_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -68,7 +72,12 @@ const LecturerCourseAssignmentDetails = () => {
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
+            <ParagraphSmall
+              fontWeight={"600"}
+              translation-key='course_assignment_detail_close_time'
+            >
+              {t("course_assignment_detail_close_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -132,7 +141,9 @@ const LecturerCourseAssignmentDetails = () => {
             );
           }}
         >
-          <ParagraphBody>Xem danh sách bài nộp</ParagraphBody>
+          <ParagraphBody translation-key='course_lecturer_assignment_see_submit'>
+            {t("course_lecturer_assignment_see_submit")}
+          </ParagraphBody>
         </Button>
         <Button
           btnType={BtnType.Primary}
@@ -140,32 +151,42 @@ const LecturerCourseAssignmentDetails = () => {
             navigate(routes.lecturer.assignment.grading);
           }}
         >
-          <ParagraphBody>Chấm điểm</ParagraphBody>
+          <ParagraphBody translation-key='course_lecturer_assignment_grading'>
+            {t("course_lecturer_assignment_grading")}
+          </ParagraphBody>
         </Button>
       </Box>
-      <Heading2>Tổng quan chấm điểm</Heading2>
+      <Heading2 translation-key={["course_lecturer_assignment_grading", "common_over"]}>
+        {t("common_over")} {t("course_lecturer_assignment_grading")}
+      </Heading2>
       <AssignmentTable
         rows={[
           {
-            header: "Ẩn khỏi sinh viên",
+            header: t("course_lecturer_assignment_hide"),
             data: "Có"
           },
           {
-            header: "Số lượng sinh viên",
+            header: t("course_lecturer_assignment_student_num"),
             data: "1"
           },
           {
-            header: "Đã nộp",
+            header: t("course_lecturer_assignment_submitted"),
             data: "1"
           },
           {
-            header: "Cần chấm điểm",
+            header: t("course_lecturer_assignment_need_grading"),
             data: "1"
           },
           {
-            header: "Thời gian còn lại",
+            header: t("common_time_left"),
             data: "1 ngày 2 giờ"
           }
+        ]}
+        translation-key={[
+          "course_lecturer_assignment_hide",
+          "common_time_left",
+          "course_lecturer_assignment_student_num",
+          "course_lecturer_assignment_need_grading"
         ]}
       />
       <Button
@@ -175,7 +196,9 @@ const LecturerCourseAssignmentDetails = () => {
         }}
         width='fit-content'
       >
-        <ParagraphBody>Xem trước phần bài nộp</ParagraphBody>
+        <ParagraphBody translation-key='course_lecturer_assignment_preview_submit'>
+          {t("course_lecturer_assignment_preview_submit")}
+        </ParagraphBody>
       </Button>
     </Box>
   );

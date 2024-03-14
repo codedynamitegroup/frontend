@@ -8,13 +8,18 @@ import { DrawingThresholdLine } from "./components/DrawingThresholdLine";
 import DrawingXAxis from "./components/DrawingXAxis";
 import { routes } from "routes/routes";
 
-const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
+const SimilarityHistogram = ({
+  xAxisData,
+  y,
+  threshold
+}: {
+  xAxisData: number[];
+  y: number[];
+  threshold: number;
+}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
-  const xAxisData = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
-
-  const y = [0, 5, 10, 10, 15, 20, 50, 30, 35, 70, 45, 50, 55, 60, 65, 70, 75, 5, 0, 95];
 
   const SlotBarElement = (props: any) => {
     const { left, width } = useDrawingArea();
@@ -23,7 +28,7 @@ const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
       props.style.x.animation.to + props.style.width.animation.to > xOfThreshold;
     const color = isGreaterThanThreshold ? "var(--blue-500)" : "var(--blue-1)";
 
-    const valueFromPositionOfBar = Math.floor(((props.style.x.animation.to - left) / width) * 100);
+    // const valueFromPositionOfBar = Math.floor(((props.style.x.animation.to - left) / width) * 100);
 
     // work around export of BarElement
     return (
@@ -33,13 +38,13 @@ const SimilarityHistogram = ({ threshold }: { threshold: number }) => {
         width={props.style.width.animation.to}
         x={props.style.x.animation.to}
         y={props.style.y.animation.to}
-        onClick={() => {
-          navigate(
-            routes.lecturer.exam.code_submissions +
-              `?questionId=${questionId}?startSimilarity=${valueFromPositionOfBar}&endSimilarity=${valueFromPositionOfBar + 5}`
-          );
-        }}
-        cursor='pointer'
+        // onClick={() => {
+        //   navigate(
+        //     routes.lecturer.exam.code_submissions +
+        //       `?questionId=${questionId}?startSimilarity=${valueFromPositionOfBar}&endSimilarity=${valueFromPositionOfBar + 5}`
+        //   );
+        // }}
+        // cursor='pointer'
       />
     );
   };

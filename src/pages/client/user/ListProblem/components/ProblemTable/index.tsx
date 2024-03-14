@@ -16,8 +16,10 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Heading2 from "components/text/Heading2";
+import { useTranslation } from "react-i18next";
 
 export default function ProblemTable() {
+  const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
   const renderStatus = (status: number) => {
     if (status === 1) {
@@ -125,20 +127,26 @@ export default function ProblemTable() {
 
   return (
     <Box className={classes.container}>
-      <Heading2>Danh sách bài tập</Heading2>
+      <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2>
       <Box className={classes.table}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label='custom table'>
             <TableHead className={classes["table-head"]}>
               <TableRow>
                 <TableCell align='center' className={classes.status}>
-                  <ParagraphBody fontWeight={700}>Trạng thái</ParagraphBody>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_status'>
+                    {t("list_problem_problem_status")}
+                  </ParagraphBody>
                 </TableCell>
                 <TableCell align='left'>
-                  <ParagraphBody fontWeight={700}>Tên bài tập</ParagraphBody>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_name'>
+                    {t("list_problem_problem_name")}
+                  </ParagraphBody>
                 </TableCell>
                 <TableCell align='left' className={classes.status}>
-                  <ParagraphBody fontWeight={700}>Cấp độ</ParagraphBody>
+                  <ParagraphBody fontWeight={700} translation-key='list_problem_difficult_level'>
+                    {t("list_problem_difficult_level")}
+                  </ParagraphBody>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -161,8 +169,11 @@ export default function ProblemTable() {
               {(!data || data.length === 0) && (
                 <TableRow>
                   <TableCell colSpan={customHeading.length}>
-                    <ParagraphBody className={classes.noList}>
-                      Không tìm thấy thông tin
+                    <ParagraphBody
+                      className={classes.noList}
+                      translation-key='list_problem_not_found_data'
+                    >
+                      {t("list_problem_not_found_data")}
                     </ParagraphBody>
                   </TableCell>
                 </TableRow>
@@ -177,7 +188,8 @@ export default function ProblemTable() {
           page={Number(page)}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
-          labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
+          translation-key='list_problem_data_grid_pagination'
+          labelRowsPerPage={t("list_problem_data_grid_pagination")} // Thay đổi text ở đây
           onRowsPerPageChange={handleChangeRowsPerPage}
           className={classes.pagination}
         />

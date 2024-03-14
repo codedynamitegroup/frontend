@@ -15,9 +15,9 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import HighestSimilaritySubmissionsTable from "./components/HighestSimilaritySubmissionsTable";
+import FilePairsTable from "./components/FilePairsTable";
 import LabelSubmissionsTable from "./components/LabelSubmissionsTable";
 import SimilarityHistogram from "./components/SimilarityHistogram";
 import classes from "./styles.module.scss";
@@ -80,11 +80,156 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
+export interface DolosCustomFile {
+  id: string;
+  path: string;
+  charCount: number;
+  lines: string[];
+  lineCount: number;
+  extra: {
+    id: string;
+    filename: string;
+    createdAt: string;
+    labels: string;
+  };
+  highestSimilarity: number | null;
+}
+
 export default function LecturerSourceCodePlagiarismManagement() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
   const [threshold, setThreshold] = React.useState(70);
+  const location = useLocation();
+
+  const [data, setData] = React.useState<{
+    report: {
+      labels: {
+        label: string;
+        submissions: number;
+      }[];
+      maxHighSimilarity: number;
+      averageHighSimilarity: number;
+      medianHighSimilarity: number;
+      name: string;
+      createdAt: string;
+      files: DolosCustomFile[];
+      language: { name: string; extensions: string[] };
+      pairs: {
+        id: string;
+        leftFile: DolosCustomFile;
+        rightFile: DolosCustomFile;
+        leftCovered: number;
+        rightCovered: number;
+        leftTotal: number;
+        rightTotal: number;
+        longestFragment: number;
+        highestSimilarity: number;
+        totalOverlap: number;
+        buildFragments: {
+          left: {
+            startRow: number;
+            startCol: number;
+            endRow: number;
+            endCol: number;
+          };
+          right: {
+            startRow: number;
+            startCol: number;
+            endRow: number;
+            endCol: number;
+          };
+        }[];
+      }[];
+    } | null;
+  }>({
+    report: location.state?.report
+  });
+
+  const xAxisData = React.useMemo(() => {
+    return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
+  }, []);
+
+  const yAxisData = React.useMemo(() => {
+    const zeroArray = Array(xAxisData.length).fill(0);
+    if (data.report?.files) {
+      data.report.files.forEach((file) => {
+        for (let i = 0; i < xAxisData.length; i++) {
+          if (file.highestSimilarity === null) continue;
+          if (
+            file.highestSimilarity * 100 >= xAxisData[i] &&
+            file.highestSimilarity * 100 < xAxisData[i] + 5
+          ) {
+            zeroArray[i] += 1;
+          }
+          if (xAxisData[i] === 95 && file.highestSimilarity * 100 === 100) {
+            zeroArray[i] += 1;
+          }
+        }
+      });
+    }
+
+    return zeroArray;
+  }, [xAxisData, data.report?.files]);
+
+  // const filePairList = [
+  //   {
+  //     id: "1",
+  //     left_file: "20127111.java",
+  //     right_file: "20127112.java",
+  //     highest_similarity: "74",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "2",
+  //     left_file: "20127112.java",
+  //     right_file: "20127113.java",
+  //     highest_similarity: "54",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "3",
+  //     left_file: "20127113.java",
+  //     right_file: "20127114.java",
+  //     highest_similarity: "78",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "4",
+  //     left_file: "20127114.java",
+  //     right_file: "20127115.java",
+  //     highest_similarity: "90",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "5",
+  //     left_file: "20127115.java",
+  //     right_file: "20127116.java",
+  //     highest_similarity: "10",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "6",
+  //     left_file: "20127116.java",
+  //     right_file: "20127117.java",
+  //     highest_similarity: "54",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   },
+  //   {
+  //     id: "7",
+  //     left_file: "20127117.java",
+  //     right_file: "20127118.java",
+  //     highest_similarity: "80",
+  //     longest_fragment: "10",
+  //     total_overlap: "10"
+  //   }
+  // ];
 
   const handleThresholdChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue !== "number") {
@@ -185,27 +330,39 @@ export default function LecturerSourceCodePlagiarismManagement() {
                       <Tooltip title='Thời gian mở bài kiểm tra' placement='top'>
                         <FontAwesomeIcon icon={faCalendar} color='#737373' size={"lg"} />
                       </Tooltip>
-                      <ParagraphBody>March 9, 2024 at 2:29 PM GMT+7</ParagraphBody>
+                      <ParagraphBody>
+                        {data.report?.createdAt
+                          ? new Date(data.report.createdAt).toLocaleString()
+                          : "Chưa cập nhật"}
+                      </ParagraphBody>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
                       <Tooltip title='Số lượng bài nộp' placement='top'>
                         <FontAwesomeIcon icon={faFile} color='#737373' size={"lg"} />
                       </Tooltip>
-                      <ParagraphBody>2 bài nộp</ParagraphBody>
+                      <ParagraphBody>
+                        {data.report?.files ? data.report.files.length : "Chưa cập nhật"} bài nộp
+                      </ParagraphBody>
                     </Box>
                     <Box className={classes.codeLanguage}>
                       <Tooltip title='Ngôn ngữ lập trình' placement='top'>
                         <FontAwesomeIcon icon={faCode} color='#737373' size={"lg"} />
                       </Tooltip>
-                      <ParagraphBody>Java</ParagraphBody>
+                      <ParagraphBody>
+                        {data.report?.language ? data.report.language?.name : "Chưa cập nhật"}
+                      </ParagraphBody>
                     </Box>
-                    <TextTitle className={classes.labelTitle}>2 nhãn được phát hiện</TextTitle>
+                    <TextTitle className={classes.labelTitle}>
+                      {`${data.report?.labels.length || 0} nhãn được phát hiện`}
+                    </TextTitle>
                     <LabelSubmissionsTable
                       headers={["Nhãn", "Bài nộp"]}
-                      rows={[
-                        { label: "Gian lận", submissions: 2 },
-                        { label: "Trong sạch", submissions: 2 }
-                      ]}
+                      rows={
+                        data.report?.labels.map((label) => ({
+                          label: label.label,
+                          submissions: label.submissions
+                        })) || []
+                      }
                     />
                   </Card>
                 </Grid>
@@ -213,7 +370,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
                       <Card className={classes.cardWrapper}>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={2}>
                           <Grid item xs={6}>
                             <Card className={classes.similarityWrapper}>
                               <FontAwesomeIcon
@@ -225,9 +382,9 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           </Grid>
                           <Grid item xs={6}>
                             <Heading4>
-                              Tương đồng cao nhất{" "}
+                              Độ tương đồng cao nhất{" "}
                               <Tooltip
-                                title={`Phần trăm tương đồng cao nhất giữa 2 bài nộp là 97%.`}
+                                title={`Phần trăm tương đồng cao nhất giữa 2 bài nộp là ${Math.round((data.report?.maxHighSimilarity || 0) * 100)}%`}
                                 placement='top'
                               >
                                 <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
@@ -238,16 +395,21 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--red-error-01'
                             >
-                              97%
+                              {Math.round((data.report?.maxHighSimilarity || 0) * 100)}%
                             </ParagraphBody>
-                            <Link to={routes.lecturer.exam.submissions}>Xem tất cả bài nộp</Link>
+                            <Link
+                              to={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
+                              state={{ pairs: data.report?.pairs }}
+                            >
+                              Xem tất cả cặp bài nộp
+                            </Link>
                           </Grid>
                         </Grid>
                       </Card>
                     </Grid>
                     <Grid item xs={12}>
                       <Card className={classes.cardWrapper}>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={2}>
                           <Grid item xs={6}>
                             <Card className={classes.similarityWrapper}>
                               <ParagraphBody
@@ -261,7 +423,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           </Grid>
                           <Grid item xs={6}>
                             <Heading4>
-                              Tương đồng trung bình{" "}
+                              Độ tương đồng trung bình{" "}
                               <Tooltip
                                 title={`Trung bình phần trăm tương đồng giữa các bài nộp`}
                                 placement='top'
@@ -274,9 +436,12 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--orange-400'
                             >
-                              54%
+                              {Math.round((data.report?.averageHighSimilarity || 0) * 100)}%
                             </ParagraphBody>
-                            <ParagraphSmall>Trung vị độ tương đồng: 52%</ParagraphSmall>
+                            <ParagraphSmall>
+                              Trung vị độ tương đồng:{" "}
+                              {Math.round((data.report?.medianHighSimilarity || 0) * 100)}%
+                            </ParagraphSmall>
                           </Grid>
                         </Grid>
                       </Card>
@@ -343,7 +508,11 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           aria-labelledby='input-series-number'
                         />
                       </Grid>
-                      <SimilarityHistogram threshold={threshold} />
+                      <SimilarityHistogram
+                        threshold={threshold}
+                        xAxisData={xAxisData}
+                        y={yAxisData}
+                      />
                     </Grid>
                   </Card>
                 </Grid>
@@ -351,54 +520,24 @@ export default function LecturerSourceCodePlagiarismManagement() {
                   <Card className={classes.cardWrapper}>
                     <Grid container spacing={1}>
                       <Grid item xs={12}>
-                        <Heading4>Danh sách bài nộp</Heading4>
+                        <Heading4>Danh sách cặp tệp bài nộp</Heading4>
                       </Grid>
                       <Grid item xs={12}>
                         <ParagraphBody>
-                          Bạn có thể xem chi tiết từng bài nộp để kiểm tra thông tin và đánh giá độ
-                          tương đồng.
+                          Danh sách các cặp tệp bài nộp có độ tương đồng cao nhất với nhau.
                         </ParagraphBody>
                       </Grid>
                       <Grid item xs={12}>
-                        <HighestSimilaritySubmissionsTable
-                          headers={["Tên bài nộp", "Nhãn", "Độ tương đồng cao nhất"]}
-                          rows={[
-                            {
-                              submissionFilename: "20127111.java",
-                              submissionLabel: "Gian lận",
-                              submissionHighestSimilarity: "97"
-                            },
-                            {
-                              submissionFilename: "20127112.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "75"
-                            },
-                            {
-                              submissionFilename: "20127113.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "54"
-                            },
-                            {
-                              submissionFilename: "20127114.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "10"
-                            },
-                            {
-                              submissionFilename: "20127115.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "10"
-                            },
-                            {
-                              submissionFilename: "20127116.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "10"
-                            },
-                            {
-                              submissionFilename: "20127117.java",
-                              submissionLabel: "Trong sạch",
-                              submissionHighestSimilarity: "10"
-                            }
+                        <FilePairsTable
+                          headers={[
+                            "Tệp trái",
+                            "Tệp phải",
+                            "Độ tương đồng cao nhất",
+                            "Đoạn trùng dài nhất",
+                            "Trùng lập tổng cộng"
                           ]}
+                          // rows={data.report?.pairs}
+                          rows={data.report?.pairs || []}
                         />
                       </Grid>
                     </Grid>

@@ -31,6 +31,13 @@ export default function LabelSubmissionsTable({
               </td>
             </tr>
           ))}
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={headers.length}>
+                <ParagraphBody align='center'>Không có nhãn</ParagraphBody>
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
     </Sheet>

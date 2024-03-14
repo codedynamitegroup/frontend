@@ -101,7 +101,9 @@ const LecturerCourseAssignment = () => {
         </Grid>
         <Box className={classes.assignmentsWrapper}>
           <Box className={classes.topic}>
-            <Heading3 translation-key>{t("course_detail_assignment")}</Heading3>
+            <Heading3 translation-key='course_detail_assignment'>
+              {t("course_detail_assignment")}
+            </Heading3>
             <AssignmentResource resourceTitle='Bài tập 1' resourceEndedDate='12/12/2022' />
             <AssignmentResource resourceTitle='Bài tập 2' resourceEndedDate='12/12/2023' />
           </Box>

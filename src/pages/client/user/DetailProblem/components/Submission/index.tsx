@@ -6,17 +6,25 @@ import { useState } from "react";
 import DetailSolution from "./components/DetailSubmission";
 import { useNavigate } from "react-router";
 import UserTableTemplate from "components/common/table/UserTableTemplate";
+import { useTranslation } from "react-i18next";
 
 export default function ProblemDetailSubmission() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const customHeading = ["Trạng thái", "Ngôn ngữ", "Thời gian thực thi", "Bộ nhớ"];
+  const customHeading = t("detail_problem_submission_customHeading", {
+    returnObjects: true
+  }) as Array<string>;
   const customColumns = ["status", "language", "runtime", "memory"];
   const data = [
     {
       id: 1,
       status: (
-        <ParagraphBody fontWeight={"700"} colorname={"--green-600"}>
-          Thành công
+        <ParagraphBody
+          fontWeight={"700"}
+          colorname={"--green-600"}
+          translation-key='detail_problem_submission_accepted'
+        >
+          {t("detail_problem_submission_accepted")}
         </ParagraphBody>
       ),
       language: "C++",
@@ -26,8 +34,12 @@ export default function ProblemDetailSubmission() {
     {
       id: 2,
       status: (
-        <ParagraphBody fontWeight={"700"} colorname={"--red-error"}>
-          Thất bại
+        <ParagraphBody
+          fontWeight={"700"}
+          colorname={"--red-error"}
+          translation-key='detail_problem_submission_wrong_answer'
+        >
+          {t("detail_problem_submission_wrong_answer")}
         </ParagraphBody>
       ),
       language: "Java",
@@ -37,8 +49,12 @@ export default function ProblemDetailSubmission() {
     {
       id: 3,
       status: (
-        <ParagraphBody fontWeight={"700"} colorname={"--green-600"}>
-          Thành công
+        <ParagraphBody
+          fontWeight={"700"}
+          colorname={"--green-600"}
+          translation-key='detail_problem_submission_accepted'
+        >
+          {t("detail_problem_submission_accepted")}
         </ParagraphBody>
       ),
       language: "Javascript",
@@ -48,8 +64,12 @@ export default function ProblemDetailSubmission() {
     {
       id: 4,
       status: (
-        <ParagraphBody fontWeight={"700"} colorname={"--red-error"}>
-          Thất bại
+        <ParagraphBody
+          fontWeight={"700"}
+          colorname={"--red-error"}
+          translation-key='detail_problem_submission_wrong_answer'
+        >
+          {t("detail_problem_submission_wrong_answer")}
         </ParagraphBody>
       ),
       language: "C++",
@@ -68,6 +88,7 @@ export default function ProblemDetailSubmission() {
       {submissionDetail === true ? (
         <Box className={classes.submissionTable}>
           <UserTableTemplate
+            translation-key='detail_problem_submission_customHeading'
             customHeading={customHeading}
             customColumns={customColumns}
             data={data}

@@ -17,6 +17,7 @@ import { routes } from "routes/routes";
 import AssignmentSubmissionFeatureBar from "./components/FeatureBar";
 import classes from "./styles.module.scss";
 import SubmissionBarChart from "./components/SubmissionChart";
+import { useTranslation } from "react-i18next";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -29,6 +30,7 @@ export enum SubmissionStatusGraded {
 }
 
 const LecturerCourseAssignmentSubmissions = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -91,11 +93,11 @@ const LecturerCourseAssignmentSubmissions = () => {
   ];
 
   const tableHeading: GridColDef[] = [
-    { field: "student_name", headerName: "Tên sinh viên", width: 200 },
+    { field: "student_name", headerName: t("common_fullname"), width: 200 },
     { field: "student_email", headerName: "Email", width: 200 },
     {
       field: "status",
-      headerName: "Trạng thái",
+      headerName: t("common_status"),
       width: 250,
       renderCell: (params) => {
         return (
@@ -147,7 +149,7 @@ const LecturerCourseAssignmentSubmissions = () => {
     },
     {
       field: "grade",
-      headerName: "Điểm",
+      headerName: t("common_grade"),
       width: 200,
       renderCell: (params) => {
         return (
@@ -167,8 +169,12 @@ const LecturerCourseAssignmentSubmissions = () => {
         );
       }
     },
-    { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
-    { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 }
+    {
+      field: "last_submission_time",
+      headerName: t("course_lecturer_sub_last_submission_time"),
+      width: 200
+    },
+    { field: "last_grade_time", headerName: t("course_lecturer_sub_last_grading_time"), width: 200 }
   ];
 
   const submissionDataset = [
@@ -242,11 +248,11 @@ const LecturerCourseAssignmentSubmissions = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody>Quay lại</ParagraphBody>
+        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>Bài tập trắc nghiệm 1</Heading1>
-      <ParagraphBody>
-        Số sinh viên nộp: {totalSubmissionCount}/{totalStudent}
+      <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
+        {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
       </ParagraphBody>
       <Box
         sx={{
@@ -264,7 +270,9 @@ const LecturerCourseAssignmentSubmissions = () => {
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Heading1>Danh sách bài nộp</Heading1>
+          <Heading1 translation-key='course_lecturer_submission_list'>
+            {t("course_lecturer_submission_list")}
+          </Heading1>
         </Grid>
         <Grid item xs={12}>
           <AssignmentSubmissionFeatureBar />

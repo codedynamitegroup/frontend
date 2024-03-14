@@ -17,9 +17,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
-import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
-import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
@@ -97,27 +95,14 @@ export default function DetailAIScoring() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
+  const location = useLocation();
+  const feedback = location?.state.feedback;
+  const essay = location?.state.essay;
   const [open, setOpen] = React.useState(true);
-  const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận"]);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const [assignmentStudent, setAssignmentStudent] =
-    React.useState(`Đầu tiên và trước hết, hãy nhìn xem thế giới xã hội ngày nay, chúng ta đang sống trong một thời đại với những tiến bộ công nghệ vô cùng đột phá. Tuy nhiên, giữa những máy tính thông minh, robot tự động, và các ứng dụng di động, một yếu tố quan trọng không thể thiếu đó chính là sức mạnh của Tình người.
-
-  Tình người không chỉ là khía cạnh chủ độn t45ng mối quan hệ cá nhân mà còn thể hiện sự tương tác tích cực trong cộng đồng và xã hội. Điều này làm nổi bật bản chất của con người, tạo nên những kết nối mạnh mẽ giữa các thành viên trong xã hội, từng cá nhân trở thành một phần không thể tách rời của cộng đồng.
-  
-  Một trong những điều quan trọng nhất mà sức mạnh của Tình người mang lại là khả năng tạo ra sự hiểu biết và đồng cảm. Trong khi công nghệ có thể kết nối chúng ta với nhau qua mạng, tình người là yếu tố tạo nên sự gắn kết và sự hiểu biết sâu sắc. Có khả năng cảm nhận và chia sẻ niềm vui, nỗi buồn, khó khăn và thành công với người khác giúp tạo nên một môi trường xã hội tích cực và hỗ trợ.
-  
-  Mặc dù công nghệ có thể tạo ra sự kết nối ảo, nhưng sức mạnh của Tình người xuất phát từ những hành động thực tế. Việc hiện diện và hỗ trợ nhau trong cuộc sống hàng ngày tạo ra sự chắc chắn và ổn định cho cộng đồng. Đây không chỉ là một biểu hiện của lòng nhân ái mà còn là cơ sở của sự phát triển bền vững.
-  
-  Tình người còn là yếu tố động viên mạnh mẽ, thúc đẩy con người vượt qua những thách thức và khó khăn. Trong một xã hội hiện đại nơi áp lực và stress ngày càng gia tăng, sự hỗ trợ và đồng lòng từ cộng đồng có thể giúp mỗi cá nhân vượt qua khó khăn và phát triển tốt hơn.
-  
-  Cuối cùng, để tận dụng đầy đủ sức mạnh của Tình người, chúng ta cần xây dựng và duy trì một môi trường xã hội tích cực, nơi mà mọi người cảm thấy được chấp nhận, đánh giá, và được hỗ trợ. Sự tương tác tích cực giữa con người không chỉ là yếu tố tạo ra hạnh phúc mà còn là chìa khóa cho sự phát triển toàn diện của mỗi thành viên trong xã hội.
-  
-  Tóm lại, sức mạnh của Tình người không chỉ là vẻ đẹp ẩn sau các mối quan hệ cá nhân, mà còn là nguồn động viên và sức mạnh tạo nên cộng đồng mạnh mẽ và phồn thịnh trong xã hội hiện đại. Để xây dựng một thế giới tốt đẹp hơn, chúng ta cần hiểu và tôn trọng sức mạnh này, tạo điều kiện cho nó phát triển và lan tỏa trong mọi khía cạnh của cuộc sống.`);
-  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState("0");
-
+  const [assignmentStudent, setAssignmentStudent] = React.useState(essay);
   function handleClick() {
     setLoading(true);
 
@@ -152,9 +137,6 @@ export default function DetailAIScoring() {
   const { height: header2Height } = useBoxDimensions({
     ref: header2Ref
   });
-
-  const location = useLocation();
-  const feedback = location?.state.feedback;
 
   React.useEffect(() => {
     if (feedback) {

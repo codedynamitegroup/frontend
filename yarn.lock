@@ -1460,6 +1460,17 @@
     "@codemirror/view" "^6.0.0"
     crelt "^1.0.5"
 
+"@codemirror/merge@^6.1.2":
+  version "6.6.1"
+  resolved "https://registry.npmjs.org/@codemirror/merge/-/merge-6.6.1.tgz"
+  integrity sha512-7wuc0R8+CSMlGZzEpxphQVkoBYb4D+M/MeB7/8g1ZrmLuP1wxhyOy7xWftmCzjKlVuRAUaKgBoA3LHS42H8eKA==
+  dependencies:
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.17.0"
+    "@lezer/highlight" "^1.0.0"
+    style-mod "^4.1.0"
+
 "@codemirror/search@^6.0.0":
   version "6.5.5"
   resolved "https://registry.npmjs.org/@codemirror/search/-/search-6.5.5.tgz"
@@ -3713,6 +3724,11 @@
     "@codemirror/state" "^6.0.0"
     "@codemirror/view" "^6.0.0"
 
+"@uiw/codemirror-extensions-classname@^4.21.24":
+  version "4.21.24"
+  resolved "https://registry.npmjs.org/@uiw/codemirror-extensions-classname/-/codemirror-extensions-classname-4.21.24.tgz"
+  integrity sha512-ltqsID7dLbGThXmI+2T3CSL6XTmO2fxpbvN5CY0uJ5s0txg9shrLjDYbDadKZaJN42UT7L4ZxusSEc6Lifh9+Q==
+
 "@uiw/codemirror-extensions-langs@^4.21.24":
   version "4.21.24"
   resolved "https://registry.npmjs.org/@uiw/codemirror-extensions-langs/-/codemirror-extensions-langs-4.21.24.tgz"
@@ -3767,7 +3783,7 @@
   resolved "https://registry.npmjs.org/@uiw/copy-to-clipboard/-/copy-to-clipboard-1.0.16.tgz"
   integrity sha512-IXR+N363nLTR3ilklmM+B0nk774jVE/muOrBYt4Rdww/Pf3uP9XHyv2x6YZrbDh29F7w9BkzQyB8QF6WDShmJA==
 
-"@uiw/react-codemirror@^4.21.24":
+"@uiw/react-codemirror@4.21.24", "@uiw/react-codemirror@^4.21.24":
   version "4.21.24"
   resolved "https://registry.npmjs.org/@uiw/react-codemirror/-/react-codemirror-4.21.24.tgz"
   integrity sha512-8zs5OuxbhikHocHBsVBMuW1vqlv4ccZAkt4rFwr7ebLP2Q6RwHsjpsR9GeGyAigAqonKRoeHugqF78UMrkaTgg==
@@ -10751,6 +10767,15 @@ react-app-polyfill@^3.0.0:
     raf "^3.4.1"
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
+
+react-codemirror-merge@^4.21.24:
+  version "4.21.24"
+  resolved "https://registry.npmjs.org/react-codemirror-merge/-/react-codemirror-merge-4.21.24.tgz"
+  integrity sha512-apdevGJqzFik2Rb0bDihYKM7K3jw844/lcVD2a5NGxFD/F0azF0+2KbEpYU1L9DuVOoRHpI3ioE22QhzCgYQNw==
+  dependencies:
+    "@babel/runtime" "^7.18.6"
+    "@codemirror/merge" "^6.1.2"
+    "@uiw/react-codemirror" "4.21.24"
 
 react-dev-utils@^12.0.1:
   version "12.0.1"

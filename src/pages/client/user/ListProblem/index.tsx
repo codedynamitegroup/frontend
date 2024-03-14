@@ -10,35 +10,14 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
+import { useTranslation } from "react-i18next";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
+  const { t } = useTranslation();
 
-  const algorithms = [
-    "Mảng",
-    "Cây",
-    "Đồ thị",
-    "Vét cạn",
-    "Quay lui",
-    "Đệ quy",
-    "Sắp xếp",
-    "Tìm kiếm",
-    "Chia để trị",
-    "Nhánh cận",
-    "Lập lịch",
-    "Quy hoạch động",
-    "Tham lam",
-    "Bitmask",
-    "Ngăn xếp",
-    "Hàng đợi ưu tiên",
-    "Hàng đợi",
-    "Cấu trúc dữ liệu khác",
-    "Tìm kiếm nhị phân",
-    "Tìm kiếm nội suy",
-    "Tìm kiếm nhị phân trên cây",
-    "Tìm kiếm nhị phân trên đồ thị"
-  ];
+  const algorithms = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
     <>
       <Box
@@ -48,16 +27,19 @@ const ListProblem = () => {
         }}
       >
         <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorname={"--white"}>Luyện tập</Heading1>
-          <Heading3 colorname={"--white"}>
-            Bạn muốn rèn luyện khả năng lập trình của bạn ? Hãy thử luyện tập ngay
+          <Heading1 colorname={"--white"} translation-key='list_problem_practice'>
+            {t("list_problem_practice")}
+          </Heading1>
+          <Heading3 colorname={"--white"} translation-key='list_problem_call_to_action'>
+            {t("list_problem_call_to_action")}
           </Heading3>
           <Box id={classes.bannerSearch}>
             <Box className={classes.filterSearch}>
               <OutlinedInput
                 size='small'
                 fullWidth
-                placeholder='Tìm kiếm'
+                translation-key='list_problem_search'
+                placeholder={t("list_problem_search")}
                 startAdornment={
                   <InputAdornment position='start'>
                     <SearchIcon className={classes.icon} />
@@ -70,18 +52,23 @@ const ListProblem = () => {
                 value={statusProblem}
                 onHandleChange={(value) => setstatusProblem(value)}
                 sx={{ maxWidth: "200px" }}
+                translation-key={[
+                  "list_problem_solved_all",
+                  "list_problem_solved_done",
+                  "list_problem_solved_not_done"
+                ]}
                 items={[
                   {
                     value: "0",
-                    label: "Tất cả"
+                    label: t("list_problem_solved_all")
                   },
                   {
                     value: "1",
-                    label: "Đã giải"
+                    label: t("list_problem_solved_done")
                   },
                   {
                     value: "2",
-                    label: "Chưa giải"
+                    label: t("list_problem_solved_not_done")
                   }
                 ]}
                 backgroundColor='#FFFFFF'
@@ -91,22 +78,28 @@ const ListProblem = () => {
                 value={levelProblem}
                 onHandleChange={(value) => setlevelProblem(value)}
                 sx={{ maxWidth: "200px" }}
+                translation-key={[
+                  "list_problem_difficult_level_all",
+                  "list_problem_difficult_level_easy",
+                  "list_problem_difficult_level_medium",
+                  "list_problem_difficult_level_hard"
+                ]}
                 items={[
                   {
                     value: "0",
-                    label: "Tất cả"
+                    label: t("list_problem_difficult_level_all")
                   },
                   {
                     value: "1",
-                    label: "Dễ"
+                    label: t("list_problem_difficult_level_easy")
                   },
                   {
                     value: "2",
-                    label: "Trung bình"
+                    label: t("list_problem_difficult_level_medium")
                   },
                   {
                     value: "3",
-                    label: "Khó"
+                    label: t("list_problem_difficult_level_hard")
                   }
                 ]}
                 backgroundColor='#FFFFFF'
@@ -121,8 +114,10 @@ const ListProblem = () => {
             <Grid container>
               <Grid item xs={2.5}>
                 <Box className={classes.algorithmContainer}>
-                  <Heading3>Các loại giải thuật:</Heading3>
-                  <Box className={classes.algorithm}>
+                  <Heading3 translation-key='list_problem_type_of_algorithm'>
+                    {t("list_problem_type_of_algorithm")}
+                  </Heading3>
+                  <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
                     {algorithms.map((algorithm, index) => (
                       <Box className={classes.algorithmItem} key={index}>
                         <ParagraphBody>{algorithm}</ParagraphBody>

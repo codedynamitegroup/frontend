@@ -9,9 +9,11 @@ import {
 } from "@files-ui/react";
 import { saveAs } from "file-saver";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { uploadToCloudinary } from "utils/uploadToCloudinary";
 
 export default function AdvancedDropzoneDemo() {
+  const { t } = useTranslation();
   const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
   const [imageSrc, setImageSrc] = React.useState<File | string | undefined>(undefined);
   const [videoSrc, setVideoSrc] = React.useState<File | string | undefined>(undefined);
@@ -102,6 +104,8 @@ export default function AdvancedDropzoneDemo() {
       console.error("File not found");
     }
   };
+  const customFooter = { customMessage: "sds" };
+
   return (
     <>
       <Dropzone
@@ -109,7 +113,7 @@ export default function AdvancedDropzoneDemo() {
         value={extFiles}
         // maxFiles={3}
         maxFileSize={2998000 * 20}
-        label='Kéo và thả file hoặc click để upload file'
+        label={t("drag_drop_file_placeholder")}
         // accept=".png,image/*, video/*"
         // uploadConfig={{
         //   autoUpload: true,
@@ -121,6 +125,8 @@ export default function AdvancedDropzoneDemo() {
         onUploadFinish={handleFinish}
         onChange={updateFiles}
         onClean={() => setExtFiles([])}
+        translation-key={["drag_drop_file_placeholder"]}
+        // footerConfig={customFooter}
       >
         {extFiles.map((file) => (
           <FileCard

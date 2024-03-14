@@ -7,18 +7,46 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgressWithLabel from "./components/CircularProgressWithLabel";
 import { routes } from "routes/routes";
+import { DolosCustomFile } from "../..";
 
-export default function HighestSimilaritySubmissionsTable({
+export default function FilePairsTable({
   rows,
   headers
 }: {
-  rows: any[];
+  rows: {
+    id: string;
+    leftFile: DolosCustomFile;
+    rightFile: DolosCustomFile;
+    leftCovered: number;
+    rightCovered: number;
+    leftTotal: number;
+    rightTotal: number;
+    longestFragment: number;
+    highestSimilarity: number;
+    totalOverlap: number;
+    buildFragments: {
+      left: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+      right: {
+        startRow: number;
+        startCol: number;
+        endRow: number;
+        endCol: number;
+      };
+    }[];
+  }[];
   headers: string[];
 }) {
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
+
+  console.log("rows", rows);
 
   return (
     <Sheet variant='outlined'>
@@ -39,19 +67,28 @@ export default function HighestSimilaritySubmissionsTable({
               }}
               onClick={() => {
                 navigate(
-                  routes.lecturer.exam.code_submissions +
-                    `?questionId=${questionId}&submissionId=${row.submissionId}`
+                  routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
+                    `?questionId=${questionId}`,
+                  {
+                    state: { data: row }
+                  }
                 );
               }}
             >
               <td>
-                <ParagraphBody>{row.submissionFilename}</ParagraphBody>
+                <ParagraphBody>{row.leftFile.extra.filename}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.submissionLabel}</ParagraphBody>
+                <ParagraphBody>{row.rightFile.extra.filename}</ParagraphBody>
               </td>
               <td>
-                <CircularProgressWithLabel value={row.submissionHighestSimilarity || 0} />
+                <CircularProgressWithLabel value={Number(row.highestSimilarity * 100) || 0} />
+              </td>
+              <td>
+                <ParagraphBody>{row.longestFragment}</ParagraphBody>
+              </td>
+              <td>
+                <ParagraphBody>{row.totalOverlap}</ParagraphBody>
               </td>
             </tr>
           ))}
@@ -65,22 +102,23 @@ export default function HighestSimilaritySubmissionsTable({
           {size < rows.length && (
             <tr>
               <td
-                colSpan={3}
+                colSpan={5}
                 style={{
                   cursor: "pointer"
                 }}
+                onClick={() => {
+                  navigate(
+                    routes.lecturer.exam.code_plagiarism_detection_file_pairs +
+                      `?questionId=${questionId}`,
+                    {
+                      state: { pairs: rows }
+                    }
+                  );
+                }}
               >
                 <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                  <ParagraphBody
-                    display={"flex"}
-                    justifyContent={"center"}
-                    colorname='--primary'
-                    margin={"0 10px"}
-                    onClick={() =>
-                      navigate(routes.lecturer.exam.code_submissions + `?questionId=${questionId}`)
-                    }
-                  >
-                    Xem tất cả ({rows.length}) bài nộp
+                  <ParagraphBody colorname='--primary' margin={"0 10px"}>
+                    Xem tất cả ({rows.length}) cặp tệp bài nộp
                   </ParagraphBody>
                   <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
                 </Box>

@@ -16,6 +16,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import SearchBar from "components/common/search/SearchBar";
 import TuneIcon from "@mui/icons-material/Tune";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 export default function ProblemDetailSolution() {
   const navigate = useNavigate();
@@ -165,6 +166,7 @@ export default function ProblemDetailSolution() {
   ];
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useTranslation();
 
   const handleExpandClick = () => {
     setIsExpanded(!isExpanded);
@@ -210,11 +212,18 @@ export default function ProblemDetailSolution() {
               <Grid item xs={0.5}></Grid>
               <Grid item xs={2} className={classes.filter}>
                 <TuneIcon />
-                <ParagraphBody>Mới nhất</ParagraphBody>
+                <ParagraphBody translation-key='detail_problem_discussion_filter_newest'>
+                  {t("detail_problem_discussion_filter_newest")}
+                </ParagraphBody>
               </Grid>
             </Grid>
             <Box className={classes.tagItem}>
-              <Box className={classes.tagAll}>Tất cả</Box>
+              <Box
+                className={classes.tagAll}
+                translation-key='detail_problem_discussion_filter_all'
+              >
+                {t("detail_problem_discussion_filter_all")}
+              </Box>
               <Box className={classes.tag}>
                 <Box className={classes.tagLanguage}>
                   {tags.map((tag, index) => {
@@ -246,8 +255,11 @@ export default function ProblemDetailSolution() {
               />
             </Box>
             <Box className={classes.shareSolution}>
-              <Box className={classes.shareSolutionTitle}>
-                Bài làm của bạn đánh bại 82% bài làm khác về thời gian{" "}
+              <Box
+                className={classes.shareSolutionTitle}
+                translation-key='detail_problem_discussion_your_solution_rank'
+              >
+                {t("detail_problem_discussion_your_solution_rank", { percent: 82 })}
               </Box>
               <Button
                 component='label'
@@ -255,8 +267,9 @@ export default function ProblemDetailSolution() {
                 startIcon={<FontAwesomeIcon icon={faPenToSquare} className={classes.shareIcon} />}
                 className={classes.shareButton}
                 onClick={openShareInNewTab}
+                translation-key='detail_problem_discussion_share_your_solution'
               >
-                Chia sẻ bài giải
+                {t("detail_problem_discussion_share_your_solution")}
               </Button>
             </Box>
           </Box>

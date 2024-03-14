@@ -10,9 +10,20 @@ import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import FilePairsFeatureBar from "./components/FeatureBar";
+import {
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridRowParams,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
+import CircularProgressWithLabel from "../SourceCodePlagiarismOverview/components/FilePairsTable/components/CircularProgressWithLabel";
+import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 
 const drawerWidth = 450;
 
@@ -76,6 +87,93 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
+
+  const dataGridToolbar = { enableToolbar: true };
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    console.log(selectedRowId);
+  };
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    console.log(model);
+  };
+  const page = 0;
+  const pageSize = 5;
+  const totalElement = 100;
+
+  const location = useLocation();
+  const [data, setData] = React.useState<{
+    pairs: {
+      id: string;
+      leftFile: DolosCustomFile;
+      rightFile: DolosCustomFile;
+      leftCovered: number;
+      rightCovered: number;
+      leftTotal: number;
+      rightTotal: number;
+      longestFragment: number;
+      highestSimilarity: number;
+      totalOverlap: number;
+      buildFragments: {
+        left: {
+          startRow: number;
+          startCol: number;
+          endRow: number;
+          endCol: number;
+        };
+        right: {
+          startRow: number;
+          startCol: number;
+          endRow: number;
+          endCol: number;
+        };
+      }[];
+    }[];
+  }>({ pairs: location.state?.pairs || [] });
+
+  const tableHeading: GridColDef[] = [
+    {
+      field: "leftFile",
+      headerName: "Tệp trái",
+      flex: 1,
+      renderCell: (params) => {
+        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+      }
+    },
+    {
+      field: "rightFile",
+      headerName: "Tệp phải",
+      flex: 1,
+
+      renderCell: (params) => {
+        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+      }
+    },
+    {
+      field: "highestSimilarity",
+      headerName: "Độ tương đồng cao nhất",
+      flex: 1,
+      renderCell: (params) => {
+        console.log("highestSimilarity", params);
+        return <CircularProgressWithLabel value={Number(params.value) * 100 || 0} />;
+      }
+    },
+    { field: "longestFragment", headerName: "Đoạn trùng dài nhất", flex: 1 },
+    { field: "totalOverlap", headerName: "Trùng lặp tổng cộng", flex: 1 }
+  ];
+
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    navigate(
+      routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
+        `?questionId=${questionId}`,
+      {
+        state: {
+          data: params.row
+        }
+      }
+    );
+  };
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -171,12 +269,32 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
           <DrawerHeader />
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1>Danh sách bài nộp lập trình</Heading1>
+              <Heading1>Danh sách cặp tệp bài nộp lập trình</Heading1>
               <Heading3>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading3>
               <ParagraphBody>
-                Tất cả các bài nộp đã phân tích với độ tương đồng cao nhất.
+                Một cặp là một tập hợp 2 tệp tin được so sánh với nhau để tìm ra sự tương đồng và
+                các đoạn mã khớp nhau.
               </ParagraphBody>
-              <Grid container spacing={1}></Grid>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <FilePairsFeatureBar />
+                </Grid>
+                <Grid item xs={12}>
+                  <CustomDataGrid
+                    dataList={data.pairs || []}
+                    tableHeader={tableHeading}
+                    onSelectData={rowSelectionHandler}
+                    dataGridToolBar={dataGridToolbar}
+                    page={page}
+                    pageSize={pageSize}
+                    totalElement={totalElement}
+                    onPaginationModelChange={pageChangeHandler}
+                    showVerticalCellBorder={true}
+                    getRowHeight={() => "auto"}
+                    onClickRow={rowClickHandler}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           </Card>
         </Main>
