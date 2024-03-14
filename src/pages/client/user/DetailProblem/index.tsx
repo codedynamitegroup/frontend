@@ -382,11 +382,20 @@ int main()
             </Box>
           )}
           <Box className={classes.submit}>
-            <Button className={classes.runBtn} variant='contained' color='primary'>
+            <Button
+              className={classes.runBtn}
+              variant='contained'
+              color='primary'
+              translation-key='detail_problem_execute'
+            >
               <PlayArrowIcon />
               {t("detail_problem_execute")}
             </Button>
-            <Button className={classes.submitBtn} color='primary'>
+            <Button
+              className={classes.submitBtn}
+              color='primary'
+              translation-key='detail_problem_submit'
+            >
               <PublishIcon />
               {t("detail_problem_submit")}
             </Button>
@@ -430,16 +439,19 @@ int main()
                 >
                   <Tab
                     sx={{ textTransform: "none" }}
+                    translation-key='detail_problem_description'
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
                   <Tab
                     sx={{ textTransform: "none" }}
+                    translation-key='detail_problem_discussion'
                     label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
                     value={1}
                   />
                   <Tab
                     sx={{ textTransform: "none" }}
+                    translation-key='detail_problem_submission'
                     label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
                     value={2}
                   />
@@ -524,6 +536,7 @@ int main()
                         />
                         <Tab
                           sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_result'
                           label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
                           value={1}
                         />

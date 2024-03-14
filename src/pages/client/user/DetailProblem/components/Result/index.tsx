@@ -20,7 +20,9 @@ export default function Result() {
           </ParagraphSmall>
         </Box>
         <Box className={classes.result}>
-          <ParagraphExtraSmall>Đầu vào: </ParagraphExtraSmall>
+          <ParagraphExtraSmall translation-key='detail_problem_input'>
+            {t("detail_problem_input")}{" "}
+          </ParagraphExtraSmall>
           <TextField
             fullWidth
             id='outlined-basic'
@@ -40,7 +42,9 @@ export default function Result() {
         </Box>
 
         <Box className={classes.result}>
-          <ParagraphExtraSmall>Đầu ra: </ParagraphExtraSmall>
+          <ParagraphExtraSmall translation-key='detail_problem_output'>
+            {t("detail_problem_output")}{" "}
+          </ParagraphExtraSmall>
           <TextField
             fullWidth
             id='outlined-basic'
@@ -52,7 +56,9 @@ export default function Result() {
         </Box>
 
         <Box className={classes.result}>
-          <ParagraphExtraSmall>Kết quả: </ParagraphExtraSmall>
+          <ParagraphExtraSmall translation-key='detail_problem_actual_result'>
+            {t("detail_problem_actual_result")}
+          </ParagraphExtraSmall>
           <TextField
             fullWidth
             id='outlined-basic'

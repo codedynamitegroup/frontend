@@ -258,5 +258,22 @@
   "detail_problem_execute": "Thực thi",
   "detail_problem_submit": "Nộp bài",
   "detail_problem_test_case_success": "Thành công",
-  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms"
+  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms",
+  "detail_problem_input": "Đầu vào: ",
+  "detail_problem_output": "Đầu ra: ",
+  "detail_problem_actual_result": "Kết quả: ",
+  "detail_problem_submission_accepted": "Chấp nhận",
+  "detail_problem_submission_wrong_answer": "Trả lời sai",
+  "detail_problem_submission_customHeading": [
+    "Trạng thái",
+    "Ngôn ngữ",
+    "Thời gian thực thi",
+    "Bộ nhớ"
+  ],
+  "detail_problem_submission_detail_back": "Quay lại",
+  "detail_problem_submission_detail_runtime": "Thời gian chạy",
+  "detail_problem_submission_detail_memory": "Bộ nhớ",
+  "detail_problem_submission_detail_user_submission_time": "đã nộp vào {{time}}",
+  "detail_problem_submission_detail_share_solution": "Chia sẻ bài giải",
+  "detail_problem_submission_detail_your_solution": "Bài làm của bạn"
 }

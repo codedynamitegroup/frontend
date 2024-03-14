@@ -269,5 +269,17 @@
   "detail_problem_execute": "Execute",
   "detail_problem_submit": "Submit",
   "detail_problem_test_case_success": "Success",
-  "detail_problem_test_case_runtime": "Runtime: {{runtime}}ms"
+  "detail_problem_test_case_runtime": "Runtime: {{runtime}}ms",
+  "detail_problem_input": "Input: ",
+  "detail_problem_output": "Output: ",
+  "detail_problem_actual_result": "Result: ",
+  "detail_problem_submission_accepted": "Accepted",
+  "detail_problem_submission_wrong_answer": "Wrong answer",
+  "detail_problem_submission_customHeading": ["Status", "Language", "Runtime", "Memory"],
+  "detail_problem_submission_detail_back": "Back",
+  "detail_problem_submission_detail_runtime": "Runtime",
+  "detail_problem_submission_detail_memory": "Memory",
+  "detail_problem_submission_detail_user_submission_time": "submited at {{time}}",
+  "detail_problem_submission_detail_share_solution": "Share solution",
+  "detail_problem_submission_detail_your_solution": "Your solution"
 }
