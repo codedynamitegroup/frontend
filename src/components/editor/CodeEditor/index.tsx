@@ -22,6 +22,7 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine }: CodeEditorProps) =
   return (
     <CodeMirror
       id={classes.codeEditor}
+      minHeight={"150px"}
       value={value}
       theme={githubLight}
       onChange={onChange}
