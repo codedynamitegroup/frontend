@@ -321,9 +321,9 @@
   "detail_problem_submit": "Nộp bài",
   "detail_problem_test_case_success": "Thành công",
   "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms",
-  "detail_problem_input": "Đầu vào: ",
-  "detail_problem_output": "Đầu ra: ",
-  "detail_problem_actual_result": "Kết quả: ",
+  "detail_problem_input": "Đầu vào",
+  "detail_problem_output": "Đầu ra",
+  "detail_problem_actual_result": "Kết quả",
   "detail_problem_submission_accepted": "Chấp nhận",
   "detail_problem_submission_wrong_answer": "Trả lời sai",
   "detail_problem_submission_customHeading": [
