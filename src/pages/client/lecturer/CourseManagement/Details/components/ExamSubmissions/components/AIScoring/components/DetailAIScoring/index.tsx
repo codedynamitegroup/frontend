@@ -30,7 +30,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import ReactQuill from "react-quill";
-import Heading2 from "components/text/Heading2";
+import { Textarea } from "@mui/joy";
 
 const drawerWidth = 450;
 
@@ -97,12 +97,12 @@ export default function DetailAIScoring() {
   const theme = useTheme();
   const location = useLocation();
   const feedback = location?.state.feedback;
-  const essay = location?.state.essay;
+  const answer = location?.state.answer;
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const [assignmentStudent, setAssignmentStudent] = React.useState(essay);
+  const [assignmentStudent, setAssignmentStudent] = React.useState(answer);
   function handleClick() {
     setLoading(true);
 
@@ -141,7 +141,7 @@ export default function DetailAIScoring() {
   React.useEffect(() => {
     if (feedback) {
       console.log(feedback);
-      setAssignmentFeedback(feedback?.feedback.join("\n"));
+      setAssignmentFeedback(feedback?.feedback.join("<br/>"));
       setAssignmentMaximumGrade(feedback?.current_final_grade);
     }
   }, [feedback]);
@@ -236,7 +236,7 @@ export default function DetailAIScoring() {
             marginTop: `${header2Height}px`
           }}
         >
-          <Heading2>Câu hỏi 2: Con trỏ là gì?</Heading2>
+          <Textarea value={"Câu hỏi 2: Con trỏ là gì?"} readOnly={true} />
           <Card className={classes.card}>
             <ReactQuill
               style={{ height: `calc(100vh - ${250}px` }}

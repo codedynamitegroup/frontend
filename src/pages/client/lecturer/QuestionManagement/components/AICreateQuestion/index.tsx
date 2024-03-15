@@ -38,6 +38,15 @@ export enum EQuestionLevel {
   Medium = 2,
   Hard = 3
 }
+export enum ELanguage {
+  Vietnamese = 1,
+  English = 2
+}
+export enum EAmountAnswer {
+  Three = 3,
+  Four = 4,
+  Five = 5
+}
 const AIQuestionCreated = () => {
   const navigate = useNavigate();
   const matches = useMatches();
@@ -58,6 +67,8 @@ const AIQuestionCreated = () => {
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
+  const [language, setLanguage] = useState<ELanguage>(ELanguage.Vietnamese);
+  const [qamountAnswer, setQamountAnswer] = useState<EAmountAnswer>(EAmountAnswer.Three);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
@@ -85,7 +96,15 @@ const AIQuestionCreated = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    await createQuestionByAI(topic, desciption, qtype, number_question, level)
+    await createQuestionByAI(
+      topic,
+      desciption,
+      qtype,
+      qamountAnswer,
+      number_question,
+      level,
+      language
+    )
       .then((data) => {
         if (data && isResponseFormatQuestion(data)) {
           setQuestions(data?.questions);
@@ -218,6 +237,26 @@ const AIQuestionCreated = () => {
                     <MenuItem value={EQType.TrueFalse}>Đúng sai</MenuItem>
                   </Select>
                 </Grid>
+                {qtype === EQType.MultipleChoice && (
+                  <>
+                    <Grid item xs={12} md={3}>
+                      <TextTitle>Số lượng đáp án</TextTitle>
+                    </Grid>
+                    <Grid item xs={12} md={9}>
+                      <Select
+                        value={qamountAnswer}
+                        onChange={(e: any) => setQamountAnswer(e.target.value)}
+                        fullWidth={true}
+                        size='small'
+                        required
+                      >
+                        <MenuItem value={EAmountAnswer.Three}>3</MenuItem>
+                        <MenuItem value={EAmountAnswer.Four}>4</MenuItem>
+                        <MenuItem value={EAmountAnswer.Five}>5</MenuItem>
+                      </Select>
+                    </Grid>
+                  </>
+                )}
                 <Grid item xs={12} md={3}>
                   <TextTitle>Số lượng câu hỏi</TextTitle>
                 </Grid>
@@ -248,6 +287,22 @@ const AIQuestionCreated = () => {
                     <MenuItem value={EQuestionLevel.Easy}>Dễ</MenuItem>
                     <MenuItem value={EQuestionLevel.Medium}>Trung bình</MenuItem>
                     <MenuItem value={EQuestionLevel.Hard}>Khó</MenuItem>
+                  </Select>
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+                  <TextTitle>Ngôn ngữ</TextTitle>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <Select
+                    value={language}
+                    onChange={(e: any) => setLanguage(e.target.value)}
+                    fullWidth={true}
+                    size='small'
+                    required
+                  >
+                    <MenuItem value={ELanguage.Vietnamese}>Tiếng Việt</MenuItem>
+                    <MenuItem value={ELanguage.English}>Tiếng Anh</MenuItem>
                   </Select>
                 </Grid>
               </Grid>

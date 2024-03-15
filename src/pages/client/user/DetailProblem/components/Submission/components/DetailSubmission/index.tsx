@@ -125,6 +125,51 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       });
   };
 
+  const markdownContent = `1. Khai báo biến:
+
+  - \`left\`: Biến lưu trữ vị trí bắt đầu của chuỗi con hiện tại.
+  - \`right\`: Biến lưu trữ vị trí kết thúc của chuỗi con hiện tại.
+  - \`max\`: Biến lưu trữ độ dài chuỗi con dài nhất được tìm thấy.
+  - \`set\`: Biến kiểu \`Set\` lưu trữ các ký tự đã xuất hiện trong chuỗi con hiện tại.
+ 2. Vòng lặp while:
+ 
+  - Vòng lặp này sẽ chạy cho đến khi \`right\` bằng với độ dài của chuỗi \`s\`.
+ 3. Kiểm tra ký tự:
+ 
+  - Kiểm tra xem ký tự tại vị trí \`right\` có trong \`set\` hay không.
+  - Nếu không có:
+    - Thêm ký tự vào \`set\`.
+    - Tăng \`right\` lên 1 để di chuyển đến ký tự tiếp theo.
+    - Cập nhật \`max\` nếu độ dài của \`set\` lớn hơn \`max\`.
+  - Nếu có:
+    - Xóa ký tự tại vị trí \`left\` khỏi \`set\`.
+    - Tăng \`left\` lên 1 để di chuyển đến ký tự tiếp theo.
+ 4. Trả về kết quả:
+ 
+  - Sau khi vòng lặp while kết thúc, \`max\` sẽ lưu trữ độ dài chuỗi con dài nhất không có ký tự lặp lại.
+  - Trả về \`max\`.
+ 
+ Cách thức hoạt động:
+ 
+ - Thuật toán sử dụng một "cửa sổ trượt" để di chuyển qua chuỗi. Cửa sổ này bắt đầu từ vị trí 0 và mở rộng cho đến khi gặp một ký tự lặp lại.
+ - Khi gặp một ký tự lặp lại, cửa sổ sẽ thu hẹp lại từ đầu cho đến khi ký tự lặp lại bị loại bỏ.
+ - Độ dài của cửa sổ được cập nhật liên tục và giá trị lớn nhất sẽ được lưu trữ.
+ - Sau khi cửa sổ trượt đến cuối chuỗi, độ dài chuỗi con dài nhất không có ký tự lặp lại sẽ được trả về.
+ 
+ Ví dụ:
+ 
+ - Cho chuỗi \`s = "abcabcbb"\`.
+ - Ban đầu, \`left = 0\` và \`right = 0\`.
+ - Cửa sổ trượt qua chuỗi:
+   - \`right = 1\`: Ký tự \`a\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
+   - \`right = 2\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
+   - \`right = 3\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
+   - \`right = 4\`: Ký tự \`a\` đã có trong \`set\`, xóa \`a\` khỏi \`set\` và tăng \`left\` lên 1.
+   - \`right = 5\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
+   - \`right = 6\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
+ -   Sau khi vòng lặp while kết thúc, \`max = 3\`.
+ -   Chuỗi con dài nhất không có ký tự lặp lại là \`"abc"\`.`;
+
   return (
     <Grid className={classes.root}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
@@ -210,7 +255,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           </Grid>
         </Grid>
         <Box className={classes.submissionText}>
-          <Box className={classes.submissionTitle}>
+          <Box className={classes.feedbackTitle}>
             <ParagraphBody
               fontWeight={700}
               translation-key='detail_problem_submission_detail_your_solution'
@@ -226,7 +271,9 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
               Đánh giá bởi AI
             </LoadingButton>
           </Box>
-          <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
+          <Box data-color-mode='light'>
+            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
+          </Box>
         </Box>
 
         {feedbackCodeByAI && (
@@ -243,8 +290,14 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
             <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
             {feedbackCodeByAI.suggestCode && (
-              <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
+              </Box>
             )}
+            <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
+            <Box data-color-mode='light'>
+              <MDEditor.Markdown source={markdownContent} className={classes.markdown} />
+            </Box>
           </Box>
         )}
       </Box>

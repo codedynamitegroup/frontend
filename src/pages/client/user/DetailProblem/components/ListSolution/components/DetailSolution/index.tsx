@@ -201,7 +201,7 @@ public:
           })}
         </Box>
         <Box data-color-mode='light'>
-          <MDEditor.Markdown source={markdownContent} />
+          <MDEditor.Markdown source={markdownContent} className={classes.markdown} />
         </Box>
 
         <Box className={classes.commentContainer}>

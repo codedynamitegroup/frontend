@@ -2,7 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
 import {
   EQType,
-  EQuestionLevel
+  EQuestionLevel,
+  EAmountAnswer,
+  ELanguage
 } from "../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
@@ -102,8 +104,10 @@ async function createQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
+  qamount_answer: EAmountAnswer,
   number_question: number,
-  level: EQuestionLevel
+  level: EQuestionLevel,
+  language: ELanguage
 ) {
   // For text-only input, use the gemini-pro model
   const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
@@ -127,7 +131,6 @@ async function createQuestionByAI(
   } else {
     levelQuestion = "Advanced";
   }
-  const language = "Vietnamese";
 
   const AI_ROLE = `
 	A. You are Generator Question AI, a large language model trained on a massive dataset of text and code.
@@ -141,7 +144,8 @@ async function createQuestionByAI(
 	- Topic: "${topic}"
 	- Description: ${description || "No description provided."}
 	- Question Type: "${question_type}"
-	- Number of Questions: ${number_question}
+  ${question_type === "Multiple choice" ? `- Amount of Answer: ${qamount_answer}` : ""}
+  - Number of Questions: ${number_question}
 	- Level: "${levelQuestion}"
 
 	C. Expected Response Format:
@@ -174,7 +178,7 @@ async function createQuestionByAI(
 		- Comprehensiveness: Cover various aspects of the topic, ensuring a balanced assessment of understanding.
 		- Difficulty: Tailor the question difficulty level to the specified ${levelQuestion}.
 
-	E. Please use ${language} everywhere to write questions and answers for students.`;
+	E. Please use ${language === 1 ? "Vietnamese" : "English"} everywhere to write questions and answers for students.`;
 
   const prompt = `
 I. YOUR ROLE:

@@ -292,7 +292,8 @@ const AIScoring = () => {
   const rowClickHandler = (params: GridRowParams<any>) => {
     navigate(routes.lecturer.exam.ai_scroring_detail, {
       state: {
-        feedback: params.row
+        feedback: params.row,
+        answer: data[params.row.id].studentAnswer
       }
     });
   };
