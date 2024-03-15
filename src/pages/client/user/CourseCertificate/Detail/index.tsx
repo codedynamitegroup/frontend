@@ -114,9 +114,9 @@ const CourseCertificateDetail = () => {
                   <Box id={classes.courseLevel}>
                     <ParagraphBody
                       colorname='--gray-60'
-                      translation-key={["common_easy", "commmon_level"]}
+                      translation-key={["common_easy", "common_level"]}
                     >
-                      {t("commmon_level", { count: 1 })}: {t("common_easy")}
+                      {t("common_level", { count: 1 })}: {t("common_easy")}
                     </ParagraphBody>
                   </Box>
                 </Grid>
@@ -177,8 +177,8 @@ const CourseCertificateDetail = () => {
                 <Tab
                   sx={{ textTransform: "none" }}
                   label={
-                    <ParagraphBody translation-key='commmon_introduction'>
-                      {t("commmon_introduction")}
+                    <ParagraphBody translation-key='common_introduction'>
+                      {t("common_introduction")}
                     </ParagraphBody>
                   }
                   value={1}
@@ -186,8 +186,8 @@ const CourseCertificateDetail = () => {
                 <Tab
                   sx={{ textTransform: "none" }}
                   label={
-                    <ParagraphBody translation-key='commmon_certificate'>
-                      {t("commmon_certificate")}
+                    <ParagraphBody translation-key='common_certificate'>
+                      {t("common_certificate")}
                     </ParagraphBody>
                   }
                   value={2}

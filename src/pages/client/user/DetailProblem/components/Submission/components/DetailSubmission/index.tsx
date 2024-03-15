@@ -175,9 +175,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       <Box className={classes.stickyBack} ref={stickyBackRef}>
         <Box onClick={handleSubmissionDetail} className={classes.backButton}>
           <ArrowBackIcon className={classes.backIcon} />
-          <span translation-key='detail_problem_submission_detail_back'>
-            {t("detail_problem_submission_detail_back")}
-          </span>
+          <span translation-key='common_back'>{t("common_back")}</span>
         </Box>
         <Divider />
       </Box>

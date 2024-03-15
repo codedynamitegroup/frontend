@@ -50,9 +50,7 @@ export default function ShareSolution() {
         <Box className={classes.stickyBack} onClick={handleBackButton}>
           <Box className={classes.backButton}>
             <ArrowBack className={classes.backIcon} />
-            <span translation-key='detail_problem_submission_detail_back'>
-              {t("detail_problem_submission_detail_back")}
-            </span>
+            <span translation-key='common_back'>{t("common_back")}</span>
           </Box>
         </Box>
         <Divider />
@@ -67,8 +65,8 @@ export default function ShareSolution() {
               disableUnderline: true,
               style: { fontSize: "20px" } // Thêm dòng này
             }}
-            placeholder={t("detail_problem_discussion_share_solution_title")}
-            translation-key='detail_problem_discussion_share_solution_title'
+            placeholder={t("common_title")}
+            translation-key='common_title'
             fullWidth
             InputLabelProps={{
               shrink: false
@@ -76,12 +74,8 @@ export default function ShareSolution() {
             className={classes.titleInput}
           ></TextField>
           <Box className={classes.actionBtn}>
-            <Button
-              variant='contained'
-              className={classes.postBtn}
-              translation-key='detail_problem_discussion_share_solution_post'
-            >
-              {t("detail_problem_discussion_share_solution_post")}
+            <Button variant='contained' className={classes.postBtn} translation-key='common_post'>
+              {t("common_post")}
             </Button>
           </Box>
           <Box data-color-mode='light'>
