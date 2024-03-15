@@ -296,30 +296,44 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                           </Button>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <ParagraphBody fontSize={"30px"} fontWeight={600}>
-                              &asymp;
-                            </ParagraphBody>
-                            <ParagraphBody>
-                              Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip
+                            title={"Tỷ lệ các dấu vân tay chung giữa hai tệp"}
+                            placement='top'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <ParagraphBody fontSize={"30px"} fontWeight={600}>
+                                &asymp;
+                              </ParagraphBody>
+                              <ParagraphBody>
+                                Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <FileCopyIcon />
-                            <ParagraphBody>
-                              Đoạn trùng dài nhất: {data?.longestFragment || 0}
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip title={"Số dấu vân tay chung giữa hai tệp"} placement='top'>
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyIcon />
+                              <ParagraphBody>
+                                Đoạn trùng dài nhất: {data?.longestFragment || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <FileCopyOutlinedIcon />
-                            <ParagraphBody>
-                              Trùng lặp tổng cộng: {data?.totalOverlap || 0}
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip
+                            title={
+                              "Độ dài (tính bằng dấu vân tay) của chuỗi con dấu vân tay dài nhất giữa hai tệp, hữu ích khi không phải toàn bộ mã nguồn được sao chép"
+                            }
+                            placement='top'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyOutlinedIcon />
+                              <ParagraphBody>
+                                Trùng lặp tổng cộng: {data?.totalOverlap || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                       </Grid>
                     </Grid>
