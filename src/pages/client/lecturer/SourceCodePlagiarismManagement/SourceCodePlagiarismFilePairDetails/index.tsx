@@ -159,6 +159,8 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
     }
   );
 
+  console.log("data", data);
+
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeIndex = (index: number) => {
     setTabIndex(index);
@@ -213,44 +215,20 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
               >
-                Quản lý khoá học
+                Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection_file_pairs)}
               >
-                CS202 - Nhập môn lập trình
+                Danh sách cặp bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
-              >
-                Bài kiểm tra cuối kỳ
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.submissions)}
-              >
-                Danh sách bài nộp
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Chi tiết cặp bài nộp</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
