@@ -155,7 +155,6 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
       headerName: "Độ tương đồng cao nhất",
       flex: 1,
       renderCell: (params) => {
-        console.log("highestSimilarity", params);
         return <CircularProgressWithLabel value={Number(params.value) * 100 || 0} />;
       }
     },
@@ -204,38 +203,6 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
-              >
-                Bài kiểm tra cuối kỳ
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.submissions)}
               >
                 Danh sách bài nộp
@@ -244,16 +211,12 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() =>
-                  navigate(
-                    routes.lecturer.exam.code_plagiarism_detection + `?questionId=${questionId}`
-                  )
-                }
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
               >
-                Kiểm tra gian lận
+                Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Danh sách bài lập trình</ParagraphSmall>{" "}
+              <ParagraphSmall colorname='--blue-500'>Danh sách cặp bài nộp</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'

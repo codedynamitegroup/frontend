@@ -213,44 +213,20 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
               >
-                Quản lý khoá học
+                Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection_file_pairs)}
               >
-                CS202 - Nhập môn lập trình
+                Danh sách cặp bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
-              >
-                Bài kiểm tra cuối kỳ
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.submissions)}
-              >
-                Danh sách bài nộp
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Chi tiết cặp bài nộp</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -320,30 +296,44 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                           </Button>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <ParagraphBody fontSize={"30px"} fontWeight={600}>
-                              &asymp;
-                            </ParagraphBody>
-                            <ParagraphBody>
-                              Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip
+                            title={"Tỷ lệ các dấu vân tay chung giữa hai tệp"}
+                            placement='top'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <ParagraphBody fontSize={"30px"} fontWeight={600}>
+                                &asymp;
+                              </ParagraphBody>
+                              <ParagraphBody>
+                                Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <FileCopyIcon />
-                            <ParagraphBody>
-                              Đoạn trùng dài nhất: {data?.longestFragment || 0}
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip title={"Số dấu vân tay chung giữa hai tệp"} placement='top'>
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyIcon />
+                              <ParagraphBody>
+                                Đoạn trùng dài nhất: {data?.longestFragment || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-                          <Box className={classes.flexBoxWrapper}>
-                            <FileCopyOutlinedIcon />
-                            <ParagraphBody>
-                              Trùng lặp tổng cộng: {data?.totalOverlap || 0}
-                            </ParagraphBody>
-                          </Box>
+                          <Tooltip
+                            title={
+                              "Độ dài (tính bằng dấu vân tay) của chuỗi con dấu vân tay dài nhất giữa hai tệp, hữu ích khi không phải toàn bộ mã nguồn được sao chép"
+                            }
+                            placement='top'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyOutlinedIcon />
+                              <ParagraphBody>
+                                Trùng lặp tổng cộng: {data?.totalOverlap || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
                         </Grid>
                       </Grid>
                     </Grid>

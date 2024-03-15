@@ -387,7 +387,7 @@ export default function ReviewExamAttempt() {
                     padding='10px 0'
                   >
                     <ParagraphBody>
-                      {isShowAllQuesionsInOnePage
+                      {!isShowAllQuesionsInOnePage
                         ? "Hiện 1 câu hỏi 1 trang"
                         : "Xem tất cả câu hỏi trong 1 trang"}
                     </ParagraphBody>

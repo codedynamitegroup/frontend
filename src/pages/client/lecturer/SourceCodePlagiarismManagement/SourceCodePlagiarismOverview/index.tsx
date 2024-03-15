@@ -172,65 +172,6 @@ export default function LecturerSourceCodePlagiarismManagement() {
     return zeroArray;
   }, [xAxisData, data.report?.files]);
 
-  // const filePairList = [
-  //   {
-  //     id: "1",
-  //     left_file: "20127111.java",
-  //     right_file: "20127112.java",
-  //     highest_similarity: "74",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "2",
-  //     left_file: "20127112.java",
-  //     right_file: "20127113.java",
-  //     highest_similarity: "54",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "3",
-  //     left_file: "20127113.java",
-  //     right_file: "20127114.java",
-  //     highest_similarity: "78",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "4",
-  //     left_file: "20127114.java",
-  //     right_file: "20127115.java",
-  //     highest_similarity: "90",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "5",
-  //     left_file: "20127115.java",
-  //     right_file: "20127116.java",
-  //     highest_similarity: "10",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "6",
-  //     left_file: "20127116.java",
-  //     right_file: "20127117.java",
-  //     highest_similarity: "54",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   },
-  //   {
-  //     id: "7",
-  //     left_file: "20127117.java",
-  //     right_file: "20127118.java",
-  //     highest_similarity: "80",
-  //     longest_fragment: "10",
-  //     total_overlap: "10"
-  //   }
-  // ];
-
   const handleThresholdChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue !== "number") {
       return;
@@ -267,30 +208,6 @@ export default function LecturerSourceCodePlagiarismManagement() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.exam.detail)}
               >
                 Bài kiểm tra cuối kỳ
@@ -304,7 +221,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                 Danh sách bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Kiểm tra gian lận</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Tổng quan Kiểm tra gian lận</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
