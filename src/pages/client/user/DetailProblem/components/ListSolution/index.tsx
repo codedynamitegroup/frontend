@@ -218,11 +218,8 @@ export default function ProblemDetailSolution() {
               </Grid>
             </Grid>
             <Box className={classes.tagItem}>
-              <Box
-                className={classes.tagAll}
-                translation-key='detail_problem_discussion_filter_all'
-              >
-                {t("detail_problem_discussion_filter_all")}
+              <Box className={classes.tagAll} translation-key='common_all'>
+                {t("common_all")}
               </Box>
               <Box className={classes.tag}>
                 <Box className={classes.tagLanguage}>

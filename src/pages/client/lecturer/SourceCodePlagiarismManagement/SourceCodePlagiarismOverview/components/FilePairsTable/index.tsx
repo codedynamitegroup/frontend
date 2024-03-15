@@ -46,8 +46,6 @@ export default function FilePairsTable({
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
 
-  console.log("rows", rows);
-
   return (
     <Sheet variant='outlined'>
       <Table variant='soft' borderAxis='bothBetween' hoverRow>
@@ -99,32 +97,30 @@ export default function FilePairsTable({
               </td>
             </tr>
           )}
-          {size < rows.length && (
-            <tr>
-              <td
-                colSpan={5}
-                style={{
-                  cursor: "pointer"
-                }}
-                onClick={() => {
-                  navigate(
-                    routes.lecturer.exam.code_plagiarism_detection_file_pairs +
-                      `?questionId=${questionId}`,
-                    {
-                      state: { pairs: rows }
-                    }
-                  );
-                }}
-              >
-                <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                  <ParagraphBody colorname='--primary' margin={"0 10px"}>
-                    Xem tất cả ({rows.length}) cặp tệp bài nộp
-                  </ParagraphBody>
-                  <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
-                </Box>
-              </td>
-            </tr>
-          )}
+          <tr>
+            <td
+              colSpan={5}
+              style={{
+                cursor: "pointer"
+              }}
+              onClick={() => {
+                navigate(
+                  routes.lecturer.exam.code_plagiarism_detection_file_pairs +
+                    `?questionId=${questionId}`,
+                  {
+                    state: { pairs: rows }
+                  }
+                );
+              }}
+            >
+              <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                <ParagraphBody colorname='--primary' margin={"0 10px"}>
+                  Xem tất cả ({rows.length}) cặp tệp bài nộp
+                </ParagraphBody>
+                <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
+              </Box>
+            </td>
+          </tr>
         </tbody>
       </Table>
     </Sheet>

@@ -95,7 +95,7 @@ const UserInformationDetailsDialog = ({
         </Grid>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle translation-key='commmon_sex'>{t("commmon_sex")}</TextTitle>
+            <TextTitle translation-key='common_sex'>{t("common_sex")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <BasicRadioGroup
@@ -105,14 +105,14 @@ const UserInformationDetailsDialog = ({
               items={[
                 {
                   value: "0",
-                  label: t("commmon_male")
+                  label: t("common_male")
                 },
                 {
                   value: "1",
-                  label: t("common_female")
+                  label: t("comon_female")
                 }
               ]}
-              translation-key={["common_female", "commmon_male"]}
+              translation-key={["common_female", "common_male"]}
             />
           </Grid>
         </Grid>

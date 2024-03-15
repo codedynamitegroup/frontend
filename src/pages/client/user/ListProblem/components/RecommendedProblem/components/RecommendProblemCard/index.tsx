@@ -18,11 +18,11 @@ const RecommendProblemCard = ({ recommendProblem }: Props) => {
   const { t } = useTranslation();
   const renderTextLevel = (level: number) => {
     if (level === ELevelProblem.Easy) {
-      return t("list_problem_difficult_level_easy");
+      return t("common_easy");
     } else if (level === ELevelProblem.Medium) {
-      return t("list_problem_difficult_level_medium");
+      return t("common_medium");
     }
-    return t("list_problem_difficult_level_hard");
+    return t("common_hard");
   };
 
   return (
@@ -41,13 +41,7 @@ const RecommendProblemCard = ({ recommendProblem }: Props) => {
           </Box>
           <Box className={classes.iconRecommendProblem}>
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-            <ParagraphBody
-              translation-key={[
-                "list_problem_difficult_level_easy",
-                "list_problem_difficult_level_medium",
-                "list_problem_difficult_level_hard"
-              ]}
-            >
+            <ParagraphBody translation-key={["common_easy", "common_medium", "common_hard"]}>
               {renderTextLevel(recommendProblem.level)}
             </ParagraphBody>
           </Box>

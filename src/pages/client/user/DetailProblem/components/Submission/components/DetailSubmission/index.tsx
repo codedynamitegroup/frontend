@@ -24,8 +24,9 @@ interface Props {
 }
 export interface IFeedbackCodeByAI {
   id: number;
-  feedback: string[];
+  feedback: string;
   suggestCode: string;
+  explainCode: string;
 }
 
 export interface ICodeQuestion {
@@ -41,47 +42,38 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { t } = useTranslation();
   const sourceCodeSubmission: ISourceCodeSubmission = {
     source_code: `
-	class Solution {
-		public int lengthOfLongestSubstring(String s) {
-			int left = 0, right = 0, max = 0;
-			Set<Character> set = new HashSet();
-
-			while(right < s.length()) {
-				if (!set.contains(s.charAt(right))) {
-					set.add(s.charAt(right));
-					right++;
-					max = Math.max(max, set.size());
-				} else {
-					set.remove(s.charAt(left));
-					left++;
-				}
-			}
-			return max;
+class Solution {
+	public int reverse(int x) {
+		long result = 0;
+		while (x != 0) {
+			result = result*10 + x%10;
+			x /= 10;
+				if( result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
+					return 0;
 		}
-	}`,
+		return (int)result;
+	}
+}`,
     language: "java"
   };
   const codeQuestion: ICodeQuestion = {
-    title: "Longest Substring Without Repeating Characters",
+    title: "Reverse Integer",
     description: `
-		Given a string s, find the length of the longest substring without repeating characters.
+	Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0.
 
-		Example 1:
-		Input: s = "abcabcbb"
-		Output: 3
-		Explanation: The answer is "abc", with the length of 3.
+	Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
 
-		Example 2:
-		Input: s = "bbbbb"
-		Output: 1
-		Explanation: The answer is "b", with the length of 1.
+	Example 1:
+		Input: x = 123
+		Output: 321
 
-		Example 3:
-		Input: s = "pwwkew"
-		Output: 3
-		Explanation: The answer is "wke", with the length of 3.
-		Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
-		`
+	Example 2:
+		Input: x = -123
+		Output: -321
+
+	Example 3:
+		Input: x = 120
+		Output: 21`
   };
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
@@ -96,7 +88,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
     return (
       typeof obj.id === "number" &&
-      typeof obj.feedback === "object" &&
+      typeof obj.feedback === "string" &&
       typeof obj.suggestCode === "string"
     );
   }
@@ -175,9 +167,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       <Box className={classes.stickyBack} ref={stickyBackRef}>
         <Box onClick={handleSubmissionDetail} className={classes.backButton}>
           <ArrowBackIcon className={classes.backIcon} />
-          <span translation-key='detail_problem_submission_detail_back'>
-            {t("detail_problem_submission_detail_back")}
-          </span>
+          <span translation-key='common_back'>{t("common_back")}</span>
         </Box>
         <Divider />
       </Box>
@@ -272,7 +262,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
+            <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
 
@@ -280,13 +270,14 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           <Box className={classes.submissionText}>
             <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
 
-            <Box className={classes.evaluateText}>
-              {feedbackCodeByAI.feedback &&
-                feedbackCodeByAI.feedback?.length > 0 &&
-                feedbackCodeByAI.feedback.map((feedback, index) => (
-                  <ParagraphBody key={index}>- {feedback}</ParagraphBody>
-                ))}
-            </Box>
+            {feedbackCodeByAI.feedback && (
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown
+                  source={feedbackCodeByAI.feedback}
+                  className={classes.markdown}
+                />
+              </Box>
+            )}
             <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
             {feedbackCodeByAI.suggestCode && (
@@ -294,10 +285,17 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
                 <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
               </Box>
             )}
-            <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
-            <Box data-color-mode='light'>
-              <MDEditor.Markdown source={markdownContent} className={classes.markdown} />
-            </Box>
+            {feedbackCodeByAI.explainCode && (
+              <>
+                <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
+                <Box data-color-mode='light'>
+                  <MDEditor.Markdown
+                    source={feedbackCodeByAI.explainCode}
+                    className={classes.markdown}
+                  />
+                </Box>
+              </>
+            )}
           </Box>
         )}
       </Box>

@@ -21,6 +21,7 @@ import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
+import MDEditor from "@uiw/react-md-editor";
 export enum AlertType {
   Success = "success",
   INFO = "info",
@@ -383,14 +384,18 @@ const AIQuestionCreated = () => {
                                       )}
                                     </>
                                   ) : (
-                                    <ParagraphBody
+                                    <Box
+                                      data-color-mode='light'
                                       className={
                                         modeEdit ? classes.answerContentEdit : classes.answerContent
                                       }
                                       contentEditable={modeEdit}
                                     >
-                                      {answer.content}
-                                    </ParagraphBody>
+                                      <MDEditor.Markdown
+                                        source={answer.content}
+                                        className={classes.markdown}
+                                      />
+                                    </Box>
                                   )}
                                 </Box>
                               );

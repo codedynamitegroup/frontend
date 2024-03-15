@@ -65,10 +65,10 @@ async function scoringByAI(data: AssignmentStudent[], question: QuestionEssay) {
 			- Each submission has two attributes:
 				+ id:
 					* Data type: number
-					* Description: A unique identifier for the student's essay..
+					* Description: A unique identifier for the student's essay.
 				+ studentAnswer: 
 					* Data type: string
-					* Description: The content of the student's essay..
+					* Description: The content of the student's essay.
 
 		This is the list of students' submissions: ${JSON.stringify(data)}.
 		The structure of the list of students' submissions is JSON format !!!
@@ -83,7 +83,7 @@ async function scoringByAI(data: AssignmentStudent[], question: QuestionEssay) {
 					* Data type: string[] (array of strings)
 					* Description: Array containing specific, actionable feedback messages and comments about the essay, tailored to the student's writing and directly addressing the grading criteria. Avoid generic statements. 
 					* Note:
-						** Use single quotes ('') for special characters.)
+						** Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to highlight text,... For example, replace it with \\"Personal Name\\" 
 						** The content attribute of the feedback should not be empty or null. It should be filled with complete information.
 				+ score:
 					* Data type: number
