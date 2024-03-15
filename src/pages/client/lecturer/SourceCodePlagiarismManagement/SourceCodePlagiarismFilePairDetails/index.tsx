@@ -159,8 +159,6 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
     }
   );
 
-  console.log("data", data);
-
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeIndex = (index: number) => {
     setTabIndex(index);
