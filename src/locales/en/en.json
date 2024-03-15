@@ -79,6 +79,18 @@
   "common_question_type_yes_no": "Yes / No",
   "common_add": "Add",
   "common_question": "Question",
+  "common_enter_grade": "Enter grade",
+  "common_see_evaluating": "Check Evaluating",
+  "common_hide": "Hide",
+  "common_show": "Show",
+  "common_remaining": "Remaining",
+  "common_preview": "Preview",
+  "common_final_grade": "Final grade",
+  "common_question_type_with_question_programming": "Programming question",
+  "common_question_type_with_question_multichoice": "Multiple choice question",
+  "common_question_type_with_question_essay": "Essay question",
+  "common_check_cheating": "Checking cheat",
+  "common_AI_grading": "AI grading",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -293,6 +305,19 @@
   "exam_management_create_new_question": "Create new question",
   "exam_management_create_from_bank": "Get question from question bank",
   "exam_management_create_from_bank_choose_topic": "Choose topic",
+
+  "course_management_exam_prev": "Summary of previous exams",
+  "course_management_exam_try_time": "Tries",
+  "course_management_exam_preview": "Preview exam",
+  "course_management_exam_max_score": "Highest score",
+  "course_management_exam_submmit_on": "Submitted on",
+
+  "course_management_exam_preview_available": "Achievable score",
+  "course_management_exam_preview_next_page": "Next page",
+  "course_management_exam_preview_prev_page": "Previous page",
+  "course_management_exam_preview_end": "End current exam",
+  "course_management_exam_preview_navigate": "Navigate to other questions",
+  "course_management_exam_preview_multichoice": "Choose one of the following answers",
 
   "list_problem_algorithms": [
     "Array",

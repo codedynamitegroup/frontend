@@ -23,6 +23,7 @@ import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuesti
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 350;
 
@@ -84,6 +85,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function PreviewExam() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -193,8 +195,9 @@ export default function PreviewExam() {
                 colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.management)}
+                translation-key='common_course_management'
               >
-                Quản lý khoá học
+                {t("common_course_management")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
@@ -209,8 +212,9 @@ export default function PreviewExam() {
                 colorname='--blue-500'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.lecturer.course.assignment)}
+                translation-key='course_detail_assignment_list'
               >
-                Danh sách bài tập
+                {t("course_detail_assignment_list")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
@@ -221,7 +225,9 @@ export default function PreviewExam() {
                 Bài kiểm tra 1
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500' translation-key='common_preview'>
+                {t("common_preview")}
+              </ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'
@@ -259,7 +265,7 @@ export default function PreviewExam() {
                 }
                 width='fit-content'
               >
-                <ParagraphBody>Quay lại</ParagraphBody>
+                <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
               </Button>
               <Grid container spacing={1}>
                 <Grid item xs={6}></Grid>
@@ -273,12 +279,13 @@ export default function PreviewExam() {
                   }}
                 >
                   <TimeLeftTextField
+                    translation-key={["common_time_left", "common_remaining"]}
                     value={`${
                       isShowTimeLeft
-                        ? `Còn lại: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
+                        ? `${t("common_remaining")}: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
                             seconds < 10 ? `0${seconds}` : seconds
                           }`
-                        : `Thời gian còn lại`
+                        : t("common_time_left")
                     }`}
                     readOnly
                   />
@@ -291,7 +298,9 @@ export default function PreviewExam() {
                     height='fit-content'
                     margin='8px 0 0 3px'
                   >
-                    <ParagraphBody>{isShowTimeLeft ? "Ẩn" : "Hiện"}</ParagraphBody>
+                    <ParagraphBody translation-key={["common_show", "common_hide"]}>
+                      {isShowTimeLeft ? t("common_hide") : t("common_show")}
+                    </ParagraphBody>
                   </Button>
                 </Grid>
               </Grid>
@@ -312,8 +321,9 @@ export default function PreviewExam() {
                         pathname: routes.lecturer.exam.preview,
                         search: `?page=${questionPageIndex - 1}`
                       }}
+                      translation-key='course_management_exam_preview_prev_page'
                     >
-                      Trang trước
+                      {t("course_management_exam_preview_prev_page")}
                     </Link>
                   )}
                 </Grid>
@@ -331,12 +341,15 @@ export default function PreviewExam() {
                         pathname: routes.lecturer.exam.preview,
                         search: `?page=${questionPageIndex + 1}`
                       }}
+                      translation-key='course_management_exam_preview_next_page'
                     >
-                      Trang sau
+                      {t("course_management_exam_preview_next_page")}
                     </Link>
                   ) : (
                     <Button btnType={BtnType.Text} onClick={() => {}} padding='0'>
-                      <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
+                      <ParagraphBody translation-key='course_management_exam_preview_end'>
+                        {t("course_management_exam_preview_end")}...
+                      </ParagraphBody>
                     </Button>
                   )}
                 </Grid>
@@ -366,7 +379,12 @@ export default function PreviewExam() {
           <Divider />
           <Box className={classes.drawerBody}>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
+              <TextTitle
+                className={classes.drawerTextTitle}
+                translation-key='course_management_exam_preview_navigate'
+              >
+                {t("course_management_exam_preview_navigate")}
+              </TextTitle>
               <Grid container spacing={1}>
                 {questions.map((question, index) => (
                   <Grid item key={index}>
@@ -384,7 +402,9 @@ export default function PreviewExam() {
                 ))}
               </Grid>
               <Button btnType={BtnType.Text} onClick={() => {}} padding='10px 0'>
-                <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
+                <ParagraphBody translation-key='course_management_exam_preview_end'>
+                  {t("course_management_exam_preview_end")}...
+                </ParagraphBody>
               </Button>
             </Box>
           </Box>

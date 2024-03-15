@@ -74,6 +74,18 @@
   "common_question_type_yes_no": "Đúng / sai",
   "common_add": "Thêm",
   "common_question": "Câu hỏi",
+  "common_enter_grade": "Nhập điểm",
+  "common_see_evaluating": "Xem đánh giá",
+  "common_hide": "Ẩn",
+  "common_show": "Hiện",
+  "common_remaining": "Còn lại",
+  "common_preview": "Xem trước",
+  "common_final_grade": "Điểm tổng kết",
+  "common_question_type_with_question_programming": "Câu hỏi lập trình",
+  "common_question_type_with_question_multichoice": "Câu hỏi nhiều lựa chọn",
+  "common_question_type_with_question_essay": "Câu hỏi tự luận",
+  "common_check_cheating": "Kiểm tra gian lận",
+  "common_AI_grading": "Chấm điểm AI",
 
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
@@ -283,6 +295,19 @@
   "exam_management_create_new_question": "Tạo câu hỏi mới",
   "exam_management_create_from_bank": "Thêm câu hỏi từ ngân hàng câu hỏi",
   "exam_management_create_from_bank_choose_topic": "Chọn danh mục",
+
+  "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
+  "course_management_exam_try_time": "Lần thử",
+  "course_management_exam_preview": "Xem trước bài kiểm tra",
+  "course_management_exam_max_score": "Điểm cao nhất",
+  "course_management_exam_submmit_on": "Nộp vào lúc",
+
+  "course_management_exam_preview_available": "Điểm có thể đạt được",
+  "course_management_exam_preview_next_page": "Trang sau",
+  "course_management_exam_preview_prev_page": "Trang trước",
+  "course_management_exam_preview_end": "Kết thúc bài làm",
+  "course_management_exam_preview_navigate": "Chuyển hướng đến câu hỏi khác",
+  "course_management_exam_preview_multichoice": "Chọn một trong các đáp án sau",
 
   "list_problem_algorithms": [
     "Mảng",

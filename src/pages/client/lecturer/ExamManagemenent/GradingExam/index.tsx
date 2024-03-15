@@ -39,6 +39,7 @@ import qtype from "utils/constant/Qtype";
 import classes from "./styles.module.scss";
 import { millisToHoursAndMinutesString } from "utils/time";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -100,6 +101,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function GradingExam() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -173,12 +175,12 @@ export default function GradingExam() {
       { field: "id", headerName: "STT", minWidth: 1 },
       {
         field: "name",
-        headerName: "Tên câu hỏi",
+        headerName: t("exam_management_create_question_name"),
         minWidth: 250
       },
       {
         field: "grade",
-        headerName: "Điểm",
+        headerName: t("common_grade"),
         minWidth: 50,
         renderCell: (params) => (
           <InputTextField
@@ -198,14 +200,15 @@ export default function GradingExam() {
                 return newList;
               });
             }}
-            placeholder='Nhập điểm'
+            placeholder={t("common_enter_grade")}
             backgroundColor='white'
+            translation-key='common_enter_grade'
           />
         )
       },
       {
         field: "max_grade",
-        headerName: "Điểm tối đa",
+        headerName: t("assignment_management_max_score"),
         minWidth: 50,
         renderCell: (params) => (
           <InputTextField
@@ -225,20 +228,21 @@ export default function GradingExam() {
                 return newList;
               });
             }}
-            placeholder='Nhập điểm tối đa'
+            placeholder={t("exam_management_create_enter_score")}
             backgroundColor='white'
+            translation-key='exam_management_create_enter_score'
           />
         )
       },
       {
         field: "type",
-        headerName: "Kiểu",
+        headerName: t("exam_management_create_question_type"),
         minWidth: 150,
         renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
       {
         field: "action",
-        headerName: "Hành động",
+        headerName: t("common_action"),
         type: "actions",
         minWidth: 200,
         getActions: (params) => [
@@ -390,8 +394,9 @@ export default function GradingExam() {
                   colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.management)}
+                  translation-key='common_course_management'
                 >
-                  Quản lý khoá học
+                  {t("common_course_management")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
@@ -406,8 +411,9 @@ export default function GradingExam() {
                   colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.assignment)}
+                  translation-key='course_detail_assignment_list'
                 >
-                  Danh sách bài tập
+                  {t("course_detail_assignment_list")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
@@ -445,7 +451,12 @@ export default function GradingExam() {
                 <Card className={classes.pageActivityHeader}>
                   <Grid container direction='row' alignItems='center' gap={1}>
                     <Grid item>
-                      <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
+                      <ParagraphSmall
+                        fontWeight={"600"}
+                        translation-key='course_assignment_detail_open_time'
+                      >
+                        {t("course_assignment_detail_open_time")}:
+                      </ParagraphSmall>
                     </Grid>
                     <Grid item>
                       <ParagraphBody>
@@ -457,7 +468,12 @@ export default function GradingExam() {
                   </Grid>
                   <Grid container direction='row' alignItems='center' gap={1}>
                     <Grid item>
-                      <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
+                      <ParagraphSmall
+                        fontWeight={"600"}
+                        translation-key='course_assignment_detail_close_time'
+                      >
+                        {t("course_assignment_detail_close_time")}:
+                      </ParagraphSmall>
                     </Grid>
                     <Grid item>
                       <ParagraphBody>
@@ -469,7 +485,9 @@ export default function GradingExam() {
                   </Grid>
                   <Grid container direction='row' alignItems='center' gap={1}>
                     <Grid item>
-                      <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
+                      <ParagraphSmall fontWeight={"600"} translation-key='common_do_time'>
+                        {t("common_do_time")}:
+                      </ParagraphSmall>
                     </Grid>
                     <Grid item>
                       <ParagraphBody>
@@ -489,7 +507,9 @@ export default function GradingExam() {
                 </Card>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Heading2>Danh sách câu hỏi</Heading2>
+                    <Heading2 translation-key='exam_management_create_question_list'>
+                      {t("exam_management_create_question_list")}
+                    </Heading2>
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
@@ -532,7 +552,7 @@ export default function GradingExam() {
             <Divider />
             <Box className={classes.drawerBody}>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Sinh viên</TextTitle>
+                <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
                 <BasicSelect
                   labelId='select-assignment-submission-student-label'
                   value={assignmentSubmissionStudent}
@@ -573,17 +593,22 @@ export default function GradingExam() {
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Điểm trên thang điểm 100</TextTitle>
+                <TextTitle translation-key='course_lecturer_score_on_range'>
+                  {t("course_lecturer_score_on_range", { range: 100 })}
+                </TextTitle>
                 <InputTextField
                   type='number'
                   value={assignmentMaximumGrade}
                   onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
-                  placeholder='Nhập điểm tối đa'
+                  placeholder={t("exam_management_create_enter_score")}
                   backgroundColor='#D9E2ED'
+                  translation-key='exam_management_create_enter_score'
                 />
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle>Nhận xét</TextTitle>
+                <TextTitle translation-key='course_lecturer_grade_comment'>
+                  {t("course_lecturer_grade_comment")}
+                </TextTitle>
                 <Box className={classes.textEditor}>
                   <TextEditor
                     style={{
@@ -601,8 +626,9 @@ export default function GradingExam() {
                 padding='10px'
                 loading={loading}
                 onClick={handleClick}
+                translation-key='course_lecturer_evaluate'
               >
-                Đánh giá
+                {t("course_lecturer_evaluate")}
               </LoadButton>
             </Box>
           </Drawer>
