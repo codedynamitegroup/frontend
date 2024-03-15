@@ -41,9 +41,9 @@ export enum SubmissionStatusGraded {
   NOT_GRADED = "Chưa chấm"
 }
 
-interface IFeedbackGradedAI {
+export interface IFeedbackGradedAI {
   id: number;
-  feedback: string[];
+  feedback: string;
   score: number;
 }
 const AIScoring = () => {
@@ -290,10 +290,11 @@ const AIScoring = () => {
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params.row.id);
     navigate(routes.lecturer.exam.ai_scroring_detail, {
       state: {
         feedback: params.row,
-        answer: data[params.row.id].studentAnswer
+        answer: data[params.row.id - 1]?.studentAnswer
       }
     });
   };
@@ -305,12 +306,13 @@ const AIScoring = () => {
 
   const question: QuestionEssay = useMemo(
     () => ({
-      content:
-        "Trình bày cách thực hiện một thuật toán để tìm phần tử lớn nhất trong danh sách liên kết đơn?",
-      answer:
-        "**Thuật toán:** 1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max.",
-      criteria:
-        "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm, thiếu mất 1 tiêu chí bị trừ 3 điểm",
+      content: "Mảng Động: Chúng Là Gì? Điều Gì Làm Chúng Khác Biệt Với Mảng Cơ Bản?",
+      answer: `
+				Việc chia tỷ lệ tự động mà mảng động (còn được gọi là mảng có thể phát triển, mảng có thể thay đổi kích thước, mảng có thể thay đổi hoặc ArrayLists trong Java) cung cấp là một lợi thế đáng kể.
+
+				Bạn phải luôn biết trước có bao nhiêu phần tử mà mảng của bạn sẽ lưu trữ vì mảng có kích thước cố định. Mặt khác, một mảng động sẽ phát triển khi bạn thêm các thành viên bổ sung vào nó, vì vậy bạn không cần biết trước kích thước chính xác của nó.
+				`,
+      rubics: "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm",
       maxScore: 10
     }),
     []
@@ -320,13 +322,12 @@ const AIScoring = () => {
     () => [
       {
         id: 1,
-        studentAnswer:
-          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max."
+        studentAnswer: "Mảng động là con trỏ"
       },
       {
         id: 2,
         studentAnswer:
-          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại."
+          "Bạn phải luôn biết trước có bao nhiêu phần tử mà mảng của bạn sẽ lưu trữ vì mảng có kích thước cố định. Mặt khác, một mảng động sẽ phát triển khi bạn thêm các thành viên bổ sung vào nó, vì vậy bạn không cần biết trước kích thước chính xác của nó."
       }
     ],
     []
@@ -337,7 +338,7 @@ const AIScoring = () => {
   function isResponseFeedbackGradedAI(obj: any): obj is IFeedbackGradedAI {
     return (
       typeof obj.id === "number" &&
-      typeof obj.feedback === "object" &&
+      typeof obj.feedback === "string" &&
       typeof obj.score === "number"
     );
   }
@@ -346,9 +347,9 @@ const AIScoring = () => {
     if (effectRan.current === false) {
       const handleScoringByAI = async () => {
         setLoading(true);
-
         await scoringByAI(data, question)
           .then((results) => {
+            console.log(results);
             if (results && isResponseFeedbackGradedAI(results[0])) {
               setFeedback(results);
               setOpenSnackbarAlert(true);
