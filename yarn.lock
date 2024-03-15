@@ -3762,6 +3762,11 @@
     "@replit/codemirror-lang-svelte" "^6.0.0"
     codemirror-lang-mermaid "^0.5.0"
 
+"@uiw/codemirror-extensions-zebra-stripes@^4.21.24":
+  version "4.21.24"
+  resolved "https://registry.yarnpkg.com/@uiw/codemirror-extensions-zebra-stripes/-/codemirror-extensions-zebra-stripes-4.21.24.tgz#d4b050da0fcde339719a3da8a39c38468630f436"
+  integrity sha512-6CdWPp8RZ23alLTrAquIyPsHc1oVFpI6m+WbihUdJ6D2x7CmiR7rtcPLiYVR711SH0sVZiDouPV737871tOJtw==
+
 "@uiw/codemirror-theme-github@^4.21.24":
   version "4.21.24"
   resolved "https://registry.npmjs.org/@uiw/codemirror-theme-github/-/codemirror-theme-github-4.21.24.tgz"

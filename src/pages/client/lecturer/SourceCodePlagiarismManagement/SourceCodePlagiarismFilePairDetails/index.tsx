@@ -34,6 +34,9 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 import classes from "./styles.module.scss";
+import CodeMirrorMerge from "react-codemirror-merge";
+import { githubLight } from "@uiw/codemirror-theme-github";
+import { EditorState, EditorView } from "@uiw/react-codemirror";
 
 const drawerWidth = 450;
 
@@ -159,6 +162,24 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
     }
   );
 
+  const leftBuildFragments = React.useMemo(() => {
+    return data.buildFragments.map((fragment, index) => {
+      return {
+        ...fragment.left,
+        id: index
+      };
+    });
+  }, [data.buildFragments]);
+
+  const rightBuildFragments = React.useMemo(() => {
+    return data.buildFragments.map((fragment, index) => {
+      return {
+        ...fragment.right,
+        id: index
+      };
+    });
+  }, [data.buildFragments]);
+
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeIndex = (index: number) => {
     setTabIndex(index);
@@ -167,6 +188,9 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
   const handleChangeTabIndex = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
+
+  const Original = CodeMirrorMerge.Original;
+  const Modified = CodeMirrorMerge.Modified;
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -346,113 +370,227 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                     height: `calc(100% - ${toolbarCodeHeight}px)`
                   }}
                 >
-                  <Grid
-                    container
-                    sx={{
-                      height: "100%"
-                    }}
-                  >
+                  {tabIndex === 0 ? (
                     <Grid
-                      item
-                      xs={5.9}
+                      container
                       sx={{
                         height: "100%"
                       }}
                     >
-                      <Card className={classes.codeWrapper}>
-                        <Box className={classes.codeHead} ref={codeHeadRef}>
-                          <Box className={classes.fileNameWrapper}>
-                            <InsertDriveFileOutlinedIcon
-                              className={classes.insertDriveFileOutlinedIcon}
-                            />
-                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                              {data.leftFile.extra.filename}
-                            </ParagraphBody>
-                          </Box>
-                          {data.leftFile.extra.labels && data.leftFile.extra.labels.length > 0 && (
+                      <Grid
+                        item
+                        xs={5.9}
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Card className={classes.codeWrapper}>
+                          <Box className={classes.codeHead} ref={codeHeadRef}>
                             <Box className={classes.fileNameWrapper}>
-                              <LocalOfferOutlinedIcon
+                              <InsertDriveFileOutlinedIcon
                                 className={classes.insertDriveFileOutlinedIcon}
                               />
                               <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.leftFile.extra.labels}
+                                {data.leftFile.extra.filename}
                               </ParagraphBody>
                             </Box>
-                          )}
-                          <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                            {data.leftFile.extra.labels &&
+                              data.leftFile.extra.labels.length > 0 && (
+                                <Box className={classes.fileNameWrapper}>
+                                  <LocalOfferOutlinedIcon
+                                    className={classes.insertDriveFileOutlinedIcon}
+                                  />
+                                  <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                    {data.leftFile.extra.labels}
+                                  </ParagraphBody>
+                                </Box>
+                              )}
+                            <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Divider />
+                          <Box
+                            className={classes.codeContent}
+                            sx={{
+                              height: `calc(100% - ${codeHeadHeight}px)`
+                            }}
+                          >
+                            <CodeEditor
+                              value={data.leftFile.lines.join("\n")}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                              buildFragments={leftBuildFragments}
+                            />
+                          </Box>
+                        </Card>
+                      </Grid>
+                      <Grid item xs={0.2}></Grid>
+                      <Grid
+                        item
+                        xs={5.9}
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Card className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
                             <Box className={classes.fileNameWrapper}>
-                              <CalendarIcon />
-                              <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
+                              />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.rightFile.extra.filename}
+                              </ParagraphBody>
                             </Box>
-                          </Tooltip>
-                        </Box>
-                        <Divider />
-                        <Box
-                          className={classes.codeContent}
+                            {data.rightFile.extra.labels &&
+                              data.rightFile.extra.labels.length > 0 && (
+                                <Box className={classes.fileNameWrapper}>
+                                  <LocalOfferOutlinedIcon
+                                    className={classes.insertDriveFileOutlinedIcon}
+                                  />
+                                  <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                    {data.rightFile.extra.labels}
+                                  </ParagraphBody>
+                                </Box>
+                              )}
+                            <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Divider />
+                          <Box
+                            className={classes.codeContent}
+                            sx={{
+                              height: `calc(100% - ${codeHeadHeight}px)`
+                            }}
+                          >
+                            <CodeEditor
+                              value={data.rightFile.lines.join("\n")}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                              buildFragments={rightBuildFragments}
+                            />
+                          </Box>
+                        </Card>
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <CodeMirrorMerge theme={githubLight}>
+                      <Grid
+                        container
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Grid
+                          item
+                          xs={5.9}
                           sx={{
-                            height: `calc(100% - ${codeHeadHeight}px)`
+                            height: "100%"
                           }}
                         >
-                          <CodeEditor
-                            value={data.leftFile.lines.join("\n")}
-                            readOnly={true}
-                            highlightActiveLine={false}
-                          />
-                        </Box>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={0.2}></Grid>
-                    <Grid
-                      item
-                      xs={5.9}
-                      sx={{
-                        height: "100%"
-                      }}
-                    >
-                      <Card className={classes.codeWrapper}>
-                        <Box className={classes.codeHead}>
-                          <Box className={classes.fileNameWrapper}>
-                            <InsertDriveFileOutlinedIcon
-                              className={classes.insertDriveFileOutlinedIcon}
-                            />
-                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                              {data.rightFile.extra.filename}
-                            </ParagraphBody>
-                          </Box>
-                          {data.rightFile.extra.labels &&
-                            data.rightFile.extra.labels.length > 0 && (
+                          <Box className={classes.codeWrapper}>
+                            <Box className={classes.codeHead} ref={codeHeadRef}>
                               <Box className={classes.fileNameWrapper}>
-                                <LocalOfferOutlinedIcon
+                                <InsertDriveFileOutlinedIcon
                                   className={classes.insertDriveFileOutlinedIcon}
                                 />
                                 <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.rightFile.extra.labels}
+                                  {data.leftFile.extra.filename}
                                 </ParagraphBody>
                               </Box>
-                            )}
-                          <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
-                            <Box className={classes.fileNameWrapper}>
-                              <CalendarIcon />
-                              <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                              {data.leftFile.extra.labels &&
+                                data.leftFile.extra.labels.length > 0 && (
+                                  <Box className={classes.fileNameWrapper}>
+                                    <LocalOfferOutlinedIcon
+                                      className={classes.insertDriveFileOutlinedIcon}
+                                    />
+                                    <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                      {data.leftFile.extra.labels}
+                                    </ParagraphBody>
+                                  </Box>
+                                )}
+                              <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                                <Box className={classes.fileNameWrapper}>
+                                  <CalendarIcon />
+                                  <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                                </Box>
+                              </Tooltip>
                             </Box>
-                          </Tooltip>
-                        </Box>
-                        <Divider />
-                        <Box
-                          className={classes.codeContent}
+                            <Divider />
+                            <Box
+                              className={classes.codeContent}
+                              sx={{
+                                height: `calc(100% - ${codeHeadHeight}px)`
+                              }}
+                            >
+                              <Original value={data.leftFile.lines.join("\n")} />
+                            </Box>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={0.2}></Grid>
+                        <Grid
+                          item
+                          xs={5.9}
                           sx={{
-                            height: `calc(100% - ${codeHeadHeight}px)`
+                            height: "100%"
                           }}
                         >
-                          <CodeEditor
-                            value={data.rightFile.lines.join("\n")}
-                            readOnly={true}
-                            highlightActiveLine={false}
-                          />
-                        </Box>
-                      </Card>
-                    </Grid>
-                  </Grid>
+                          <Box className={classes.codeWrapper}>
+                            <Box className={classes.codeHead}>
+                              <Box className={classes.fileNameWrapper}>
+                                <InsertDriveFileOutlinedIcon
+                                  className={classes.insertDriveFileOutlinedIcon}
+                                />
+                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                  {data.rightFile.extra.filename}
+                                </ParagraphBody>
+                              </Box>
+                              {data.rightFile.extra.labels &&
+                                data.rightFile.extra.labels.length > 0 && (
+                                  <Box className={classes.fileNameWrapper}>
+                                    <LocalOfferOutlinedIcon
+                                      className={classes.insertDriveFileOutlinedIcon}
+                                    />
+                                    <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                      {data.rightFile.extra.labels}
+                                    </ParagraphBody>
+                                  </Box>
+                                )}
+                              <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
+                                <Box className={classes.fileNameWrapper}>
+                                  <CalendarIcon />
+                                  <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                                </Box>
+                              </Tooltip>
+                            </Box>
+                            <Divider />
+                            <Box
+                              className={classes.codeContent}
+                              sx={{
+                                height: `calc(100% - ${codeHeadHeight}px)`
+                              }}
+                            >
+                              <Modified
+                                value={data.rightFile.lines.join("\n")}
+                                extensions={[
+                                  EditorView.editable.of(false),
+                                  EditorState.readOnly.of(true)
+                                ]}
+                              />
+                            </Box>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CodeMirrorMerge>
+                  )}
                 </Grid>
               </Grid>
             </Card>
