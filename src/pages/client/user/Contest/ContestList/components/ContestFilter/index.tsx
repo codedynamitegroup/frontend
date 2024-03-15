@@ -21,8 +21,8 @@ const ContestFilter = (props: PropsData) => {
         <Grid item xs={12}>
           <Grid container>
             <Grid item xs={12}>
-              <Heading5 translation-key='contest_difficulty_title'>
-                {t("contest_difficulty_title")}
+              <Heading5 translation-key='common_difficult_level'>
+                {t("common_difficult_level")}
               </Heading5>
             </Grid>
             <Grid item xs={12}>

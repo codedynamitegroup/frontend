@@ -60,7 +60,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       path: routes.user.course_certificate.root
     },
     {
-      name: "header_practice",
+      name: "common_practice",
       path: routes.user.problem.root
     },
     {

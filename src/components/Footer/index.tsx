@@ -34,8 +34,8 @@ export default function Footer() {
             </Link>
           </Typography>
           <Typography paragraph>
-            <Link to='#!' className='text-reset' translation-key='footer_link_practice'>
-              {t("footer_link_practice")}
+            <Link to='#!' className='text-reset' translation-key='common_practice'>
+              {t("common_practice")}
             </Link>
           </Typography>
           <Typography paragraph>
