@@ -171,14 +171,12 @@ async function feedbackCodeByByAI(
 							**** Title of the code question: **${codeQuestion.title}**
 							**** Description of the code question: **${codeQuestion.description}**
 					** Must be use "\\n" when using line breaks
-					** Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with \\"Personal Name\\" 
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
 
 			+ suggestCode:
 				* Data type: string
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly.
 				* Note:
-					** Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with \\"Personal Name\\" 
 					** Must be use "\\n" for line breaks.
 					** Instead of use \\t, you should use tab
 			+ explainCode:
