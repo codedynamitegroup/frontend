@@ -3,10 +3,10 @@ import { BarPlot, ChartsTooltip, axisClasses, useDrawingArea } from "@mui/x-char
 import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
 import { ResponsiveChartContainer } from "@mui/x-charts/ResponsiveChartContainer";
 import { AxisConfig } from "@mui/x-charts/models";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { DrawingThresholdLine } from "./components/DrawingThresholdLine";
 import DrawingXAxis from "./components/DrawingXAxis";
-import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 
 const SimilarityHistogram = ({
   xAxisData,
@@ -17,7 +17,7 @@ const SimilarityHistogram = ({
   y: number[];
   threshold: number;
 }) => {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
 
@@ -54,7 +54,7 @@ const SimilarityHistogram = ({
       <ResponsiveChartContainer
         xAxis={[
           {
-            label: "Độ tương đồng",
+            label: t("code_plagiarism_similarity_title"),
             scaleType: "band",
             data: xAxisData,
             barGapRatio: 0,
@@ -67,13 +67,13 @@ const SimilarityHistogram = ({
             type: "bar",
             data: y,
             valueFormatter(value) {
-              return `${value} bài nộp`;
+              return t("code_plagiarism_report_analyzed_submissions_count", { count: value });
             }
           }
         ]}
         yAxis={[
           {
-            label: "Số lượng bài nộp",
+            label: t("code_plagiarism_submissions_count_title"),
             scaleType: "linear"
           }
         ]}
@@ -89,7 +89,7 @@ const SimilarityHistogram = ({
         <DrawingXAxis />
         <DrawingThresholdLine
           threshold={threshold}
-          label={"Ngưỡng độ tương đồng cao nhất"}
+          label={t("code_plagiarism_threshold_title")}
           lineStyle={{ stroke: "black" }}
           labelStyle={{ fontSize: "10" }}
           labelAlign='start'

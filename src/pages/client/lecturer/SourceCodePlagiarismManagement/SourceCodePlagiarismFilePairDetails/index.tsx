@@ -34,6 +34,10 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 import classes from "./styles.module.scss";
+import CodeMirrorMerge from "react-codemirror-merge";
+import { githubLight } from "@uiw/codemirror-theme-github";
+import { EditorState, EditorView } from "@uiw/react-codemirror";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -85,6 +89,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function LecturerSourceCodePlagiarismFilePairDetails() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
@@ -159,6 +164,24 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
     }
   );
 
+  const leftBuildFragments = React.useMemo(() => {
+    return data.buildFragments.map((fragment, index) => {
+      return {
+        ...fragment.left,
+        id: index
+      };
+    });
+  }, [data.buildFragments]);
+
+  const rightBuildFragments = React.useMemo(() => {
+    return data.buildFragments.map((fragment, index) => {
+      return {
+        ...fragment.right,
+        id: index
+      };
+    });
+  }, [data.buildFragments]);
+
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeIndex = (index: number) => {
     setTabIndex(index);
@@ -167,6 +190,9 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
   const handleChangeTabIndex = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
+
+  const Original = CodeMirrorMerge.Original;
+  const Modified = CodeMirrorMerge.Modified;
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -248,13 +274,14 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
         >
           <Card className={classes.formBody}>
             <Box className={classes.cardHeader} ref={cardHeaderRef}>
-              <Heading1>
-                So sánh {data?.leftFile?.extra?.filename || ""} với{" "}
-                {data?.rightFile?.extra?.filename || ""}
+              <Heading1 translation-key='code_plagiarism_no_file_pairs_comparing_title'>
+                {t("code_plagiarism_no_file_pairs_comparing_title", {
+                  leftFileName: data?.leftFile?.extra?.filename || "",
+                  rightFileName: data?.rightFile?.extra?.filename || ""
+                })}
               </Heading1>
-              <ParagraphBody>
-                So sánh giữa 2 tệp code. Bạn có thể xem các đoạn code trùng lặp và khác biệt giữa 2
-                tệp code.
+              <ParagraphBody translation-key='code_plagiarism_no_file_pairs_comparing_description'>
+                {t("code_plagiarism_no_file_pairs_comparing_description")}
               </ParagraphBody>
             </Box>
             <Card
@@ -274,8 +301,18 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                   <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Tabs value={tabIndex} onChange={handleChangeTabIndex} aria-label='tabIndex'>
-                        <Tab icon={<JoinInnerIcon />} iconPosition='start' label='Trùng khớp' />
-                        <Tab icon={<DifferenceIcon />} iconPosition='start' label='Khác nhau' />
+                        <Tab
+                          icon={<JoinInnerIcon />}
+                          iconPosition='start'
+                          label={t("code_plagiarism_match_title")}
+                          translation-key='code_plagiarism_match_title'
+                        />
+                        <Tab
+                          icon={<DifferenceIcon />}
+                          iconPosition='start'
+                          label={t("code_plagiarism_diff_title")}
+                          translation-key='code_plagiarism_diff_title'
+                        />
                       </Tabs>
                     </Grid>
                     <Grid item xs={6}>
@@ -297,40 +334,48 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                         </Grid>
                         <Grid item xs={3}>
                           <Tooltip
-                            title={"Tỷ lệ các dấu vân tay chung giữa hai tệp"}
+                            title={t("code_plagiarism_shared_fingerprints_fraction_tooltip")}
                             placement='top'
+                            translation-key='code_plagiarism_shared_fingerprints_fraction_tooltip'
                           >
                             <Box className={classes.flexBoxWrapper}>
                               <ParagraphBody fontSize={"30px"} fontWeight={600}>
                                 &asymp;
                               </ParagraphBody>
                               <ParagraphBody>
-                                Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
-                              </ParagraphBody>
-                            </Box>
-                          </Tooltip>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Tooltip title={"Số dấu vân tay chung giữa hai tệp"} placement='top'>
-                            <Box className={classes.flexBoxWrapper}>
-                              <FileCopyIcon />
-                              <ParagraphBody>
-                                Đoạn trùng dài nhất: {data?.longestFragment || 0}
+                                {t("code_plagiarism_similarity_title")}
+                                {": "}
+                                {Math.round(data?.highestSimilarity * 100 || 0)}%
                               </ParagraphBody>
                             </Box>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
                           <Tooltip
-                            title={
-                              "Độ dài (tính bằng dấu vân tay) của chuỗi con dấu vân tay dài nhất giữa hai tệp, hữu ích khi không phải toàn bộ mã nguồn được sao chép"
-                            }
+                            title={t("code_plagiarism_longest_fragment_tooltip")}
                             placement='top'
+                            translation-key='code_plagiarism_longest_fragment_tooltip'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyIcon />
+                              <ParagraphBody translation-key='code_plagiarism_longest_fragment_title'>
+                                {t("code_plagiarism_longest_fragment_title")}:{" "}
+                                {data?.longestFragment || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Tooltip
+                            title={t("code_plagiarism_total_overlap_tooltip")}
+                            placement='top'
+                            translation-key='code_plagiarism_total_overlap_tooltip'
                           >
                             <Box className={classes.flexBoxWrapper}>
                               <FileCopyOutlinedIcon />
                               <ParagraphBody>
-                                Trùng lặp tổng cộng: {data?.totalOverlap || 0}
+                                {t("code_plagiarism_total_overlap_title")}:{" "}
+                                {data?.totalOverlap || 0}
                               </ParagraphBody>
                             </Box>
                           </Tooltip>
@@ -346,113 +391,227 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                     height: `calc(100% - ${toolbarCodeHeight}px)`
                   }}
                 >
-                  <Grid
-                    container
-                    sx={{
-                      height: "100%"
-                    }}
-                  >
+                  {tabIndex === 0 ? (
                     <Grid
-                      item
-                      xs={5.9}
+                      container
                       sx={{
                         height: "100%"
                       }}
                     >
-                      <Card className={classes.codeWrapper}>
-                        <Box className={classes.codeHead} ref={codeHeadRef}>
-                          <Box className={classes.fileNameWrapper}>
-                            <InsertDriveFileOutlinedIcon
-                              className={classes.insertDriveFileOutlinedIcon}
-                            />
-                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                              {data.leftFile.extra.filename}
-                            </ParagraphBody>
-                          </Box>
-                          {data.leftFile.extra.labels && data.leftFile.extra.labels.length > 0 && (
+                      <Grid
+                        item
+                        xs={5.9}
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Card className={classes.codeWrapper}>
+                          <Box className={classes.codeHead} ref={codeHeadRef}>
                             <Box className={classes.fileNameWrapper}>
-                              <LocalOfferOutlinedIcon
+                              <InsertDriveFileOutlinedIcon
                                 className={classes.insertDriveFileOutlinedIcon}
                               />
                               <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                {data.leftFile.extra.labels}
+                                {data.leftFile.extra.filename}
                               </ParagraphBody>
                             </Box>
-                          )}
-                          <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                            {data.leftFile.extra.labels &&
+                              data.leftFile.extra.labels.length > 0 && (
+                                <Box className={classes.fileNameWrapper}>
+                                  <LocalOfferOutlinedIcon
+                                    className={classes.insertDriveFileOutlinedIcon}
+                                  />
+                                  <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                    {data.leftFile.extra.labels}
+                                  </ParagraphBody>
+                                </Box>
+                              )}
+                            <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Divider />
+                          <Box
+                            className={classes.codeContent}
+                            sx={{
+                              height: `calc(100% - ${codeHeadHeight}px)`
+                            }}
+                          >
+                            <CodeEditor
+                              value={data.leftFile.lines.join("\n")}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                              buildFragments={leftBuildFragments}
+                            />
+                          </Box>
+                        </Card>
+                      </Grid>
+                      <Grid item xs={0.2}></Grid>
+                      <Grid
+                        item
+                        xs={5.9}
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Card className={classes.codeWrapper}>
+                          <Box className={classes.codeHead}>
                             <Box className={classes.fileNameWrapper}>
-                              <CalendarIcon />
-                              <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                              <InsertDriveFileOutlinedIcon
+                                className={classes.insertDriveFileOutlinedIcon}
+                              />
+                              <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                {data.rightFile.extra.filename}
+                              </ParagraphBody>
                             </Box>
-                          </Tooltip>
-                        </Box>
-                        <Divider />
-                        <Box
-                          className={classes.codeContent}
+                            {data.rightFile.extra.labels &&
+                              data.rightFile.extra.labels.length > 0 && (
+                                <Box className={classes.fileNameWrapper}>
+                                  <LocalOfferOutlinedIcon
+                                    className={classes.insertDriveFileOutlinedIcon}
+                                  />
+                                  <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                    {data.rightFile.extra.labels}
+                                  </ParagraphBody>
+                                </Box>
+                              )}
+                            <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
+                              <Box className={classes.fileNameWrapper}>
+                                <CalendarIcon />
+                                <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                              </Box>
+                            </Tooltip>
+                          </Box>
+                          <Divider />
+                          <Box
+                            className={classes.codeContent}
+                            sx={{
+                              height: `calc(100% - ${codeHeadHeight}px)`
+                            }}
+                          >
+                            <CodeEditor
+                              value={data.rightFile.lines.join("\n")}
+                              readOnly={true}
+                              highlightActiveLine={false}
+                              buildFragments={rightBuildFragments}
+                            />
+                          </Box>
+                        </Card>
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <CodeMirrorMerge theme={githubLight}>
+                      <Grid
+                        container
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Grid
+                          item
+                          xs={5.9}
                           sx={{
-                            height: `calc(100% - ${codeHeadHeight}px)`
+                            height: "100%"
                           }}
                         >
-                          <CodeEditor
-                            value={data.leftFile.lines.join("\n")}
-                            readOnly={true}
-                            highlightActiveLine={false}
-                          />
-                        </Box>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={0.2}></Grid>
-                    <Grid
-                      item
-                      xs={5.9}
-                      sx={{
-                        height: "100%"
-                      }}
-                    >
-                      <Card className={classes.codeWrapper}>
-                        <Box className={classes.codeHead}>
-                          <Box className={classes.fileNameWrapper}>
-                            <InsertDriveFileOutlinedIcon
-                              className={classes.insertDriveFileOutlinedIcon}
-                            />
-                            <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                              {data.rightFile.extra.filename}
-                            </ParagraphBody>
-                          </Box>
-                          {data.rightFile.extra.labels &&
-                            data.rightFile.extra.labels.length > 0 && (
+                          <Box className={classes.codeWrapper}>
+                            <Box className={classes.codeHead} ref={codeHeadRef}>
                               <Box className={classes.fileNameWrapper}>
-                                <LocalOfferOutlinedIcon
+                                <InsertDriveFileOutlinedIcon
                                   className={classes.insertDriveFileOutlinedIcon}
                                 />
                                 <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                  {data.rightFile.extra.labels}
+                                  {data.leftFile.extra.filename}
                                 </ParagraphBody>
                               </Box>
-                            )}
-                          <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
-                            <Box className={classes.fileNameWrapper}>
-                              <CalendarIcon />
-                              <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                              {data.leftFile.extra.labels &&
+                                data.leftFile.extra.labels.length > 0 && (
+                                  <Box className={classes.fileNameWrapper}>
+                                    <LocalOfferOutlinedIcon
+                                      className={classes.insertDriveFileOutlinedIcon}
+                                    />
+                                    <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                      {data.leftFile.extra.labels}
+                                    </ParagraphBody>
+                                  </Box>
+                                )}
+                              <Tooltip title={data.leftFile.extra.createdAt} placement='top'>
+                                <Box className={classes.fileNameWrapper}>
+                                  <CalendarIcon />
+                                  <ParagraphBody>{data.leftFile.extra.createdAt}</ParagraphBody>
+                                </Box>
+                              </Tooltip>
                             </Box>
-                          </Tooltip>
-                        </Box>
-                        <Divider />
-                        <Box
-                          className={classes.codeContent}
+                            <Divider />
+                            <Box
+                              className={classes.codeContent}
+                              sx={{
+                                height: `calc(100% - ${codeHeadHeight}px)`
+                              }}
+                            >
+                              <Original value={data.leftFile.lines.join("\n")} />
+                            </Box>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={0.2}></Grid>
+                        <Grid
+                          item
+                          xs={5.9}
                           sx={{
-                            height: `calc(100% - ${codeHeadHeight}px)`
+                            height: "100%"
                           }}
                         >
-                          <CodeEditor
-                            value={data.rightFile.lines.join("\n")}
-                            readOnly={true}
-                            highlightActiveLine={false}
-                          />
-                        </Box>
-                      </Card>
-                    </Grid>
-                  </Grid>
+                          <Box className={classes.codeWrapper}>
+                            <Box className={classes.codeHead}>
+                              <Box className={classes.fileNameWrapper}>
+                                <InsertDriveFileOutlinedIcon
+                                  className={classes.insertDriveFileOutlinedIcon}
+                                />
+                                <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                  {data.rightFile.extra.filename}
+                                </ParagraphBody>
+                              </Box>
+                              {data.rightFile.extra.labels &&
+                                data.rightFile.extra.labels.length > 0 && (
+                                  <Box className={classes.fileNameWrapper}>
+                                    <LocalOfferOutlinedIcon
+                                      className={classes.insertDriveFileOutlinedIcon}
+                                    />
+                                    <ParagraphBody fontWeight={500} colorname='--blue-500'>
+                                      {data.rightFile.extra.labels}
+                                    </ParagraphBody>
+                                  </Box>
+                                )}
+                              <Tooltip title={data.rightFile.extra.createdAt} placement='top'>
+                                <Box className={classes.fileNameWrapper}>
+                                  <CalendarIcon />
+                                  <ParagraphBody>{data.rightFile.extra.createdAt}</ParagraphBody>
+                                </Box>
+                              </Tooltip>
+                            </Box>
+                            <Divider />
+                            <Box
+                              className={classes.codeContent}
+                              sx={{
+                                height: `calc(100% - ${codeHeadHeight}px)`
+                              }}
+                            >
+                              <Modified
+                                value={data.rightFile.lines.join("\n")}
+                                extensions={[
+                                  EditorView.editable.of(false),
+                                  EditorState.readOnly.of(true)
+                                ]}
+                              />
+                            </Box>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CodeMirrorMerge>
+                  )}
                 </Grid>
               </Grid>
             </Card>

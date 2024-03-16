@@ -18,6 +18,7 @@ import { Dispatch, useEffect, useState } from "react";
 import { Textarea } from "@mui/joy";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface TestCasePopupProps {
   setOpen: Dispatch<React.SetStateAction<boolean>>;
@@ -36,7 +37,6 @@ export const CustomDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupProps) => {
-  const { t } = useTranslation();
   const [score, setScore] = useState<number>(0);
   const [isSample, setIsSample] = useState<boolean>(false);
 
@@ -56,6 +56,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
     setOpen(false);
     setItemEdit(null);
   };
+  const { t } = useTranslation();
 
   return (
     <CustomDialog
@@ -151,8 +152,9 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
             <Button btnType={BtnType.Outlined} onClick={onClose} translation-key='common_cancel'>
               {t("common_cancel")}
             </Button>
-            <Button btnType={BtnType.Primary} translation-key='course_lecturer_assignment_add_new'>
-              {t("course_lecturer_assignment_add_new")}
+
+            <Button btnType={BtnType.Primary} translation-key='common_add_new'>
+              {i18next.format(t("common_add_new"), "firstUppercase")}
             </Button>
           </Box>
         </Box>

@@ -1,4 +1,3 @@
-import { useMatches, useParams } from "react-router-dom";
 import { Box, Stack, Grid, Container } from "@mui/material";
 
 import Typography from "@mui/joy/Typography";
@@ -21,9 +20,11 @@ import { Textarea } from "@mui/joy";
 
 import SearchBar from "components/common/search/SearchBar";
 import { red, grey } from "@mui/material/colors";
-import { useNavigate, Outlet, useLocation, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -149,7 +150,6 @@ const QuestionListOfCourse = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              setIsAddingQuestion(true);
               setIsAddNewQuestionDialogOpen(false);
               navigate(`update/${typeToCreateNewQuestion}`);
             }}
@@ -172,53 +172,34 @@ const QuestionListOfCourse = () => {
   useEffect(() => {
     //fetch data
   }, [pageState.page, pageState.pageSize]);
-  const location = useLocation();
-  useEffect(() => {
-    if (location.state?.reset === true) setIsAddingQuestion(false);
-  }, [location]);
 
-  useEffect(() => {
-    const handlePopstate = () => setIsAddingQuestion(false);
-
-    // Đăng ký sự kiện popstate
-    window.addEventListener("popstate", handlePopstate);
-
-    // Hủy đăng ký sự kiện khi component unmount
-    return () => {
-      window.removeEventListener("popstate", handlePopstate);
-    };
-  }, []);
   const navigate = useNavigate();
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     console.log(params);
     // navigate(`${params.row.id}`);
   };
+  const urlParams = useParams();
   const handleCreateQuestion = () => {
-    setIsAddingQuestion(true);
     setIsAddNewQuestionDialogOpen(false);
     navigate(`create/${typeToCreateNewQuestion}`);
   };
 
   const handleCreateQuestionAI = () => {
-    setIsAddingQuestion(true);
     navigate(`ai/create`);
   };
 
   const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
-  const urlParams = useParams();
+
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
-  const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
-  const matches = useMatches();
-  // console.log(matches);
-  const [value, setValue]: any[] = useOutletContext();
+  const { value, setValue }: any = useOutletContext();
   const [initialized, setInitialized] = useState(true);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setIsAddingQuestion(false);
     if (initialized) {
       setInitialized(false);
     } else {
@@ -245,139 +226,134 @@ const QuestionListOfCourse = () => {
         maxWidth='md'
         fullWidth
       />
-      {isAddingQuestion && <Outlet />}
-      {!isAddingQuestion && (
-        <TabPanel value='1' sx={{ padding: 0 }}>
-          <Box className={classes.tabWrapper}>
-            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
-                Ngân hàng câu hỏi
-              </span>{" "}
-              {"> "}
-              <span onClick={() => navigate(".")}>Học thuật toán</span>
-            </ParagraphBody>
-          </Box>
-          <Container>
-            <Stack spacing={2} marginBottom={3} paddingTop={1}>
-              <Heading1 fontWeight={500}>Học thuật toán</Heading1>
-              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-                Thông tin danh mục: các bài tập về OOP
-              </Heading5>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-                <Button btnType={BtnType.Primary}>
-                  <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
-                </Button>
-                <Button
-                  btnType={BtnType.Primary}
-                  onClick={() => setIsAddNewQuestionDialogOpen(true)}
-                >
-                  <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
-                </Button>
-                <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                  <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
-                </Button>
-              </Stack>
+      <TabPanel value='1' sx={{ padding: 0 }}>
+        <Box className={classes.tabWrapper}>
+          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
+            <span
+              onClick={() => navigate(routes.lecturer.question_bank.path)}
+              translation-key='common_question_bank'
+            >
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate(".")}>Học thuật toán</span>
+          </ParagraphBody>
+        </Box>
+        <Container>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
+            <Heading1 fontWeight={500}>Học thuật toán</Heading1>
+            <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
+              Thông tin danh mục: các bài tập về OOP
+            </Heading5>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Primary}>
+                <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+              </Button>
+              <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
+                <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+              </Button>
+              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+                <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
+              </Button>
+            </Stack>
 
+            <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+            <DataGrid
+              sx={{
+                "& .MuiDataGrid-cell": { padding: "16px" }
+              }}
+              autoHeight
+              getRowHeight={() => "auto"}
+              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+              rowCount={pageState.total}
+              loading={pageState.isLoading}
+              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              onPaginationModelChange={(model, details) => {
+                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+              }}
+              columns={columns}
+              pageSizeOptions={[5, 10, 30, 50]}
+              paginationMode='server'
+              disableColumnFilter
+              hideFooterSelectedRowCount
+              // onRowClick={handleRowClick}
+              // slots={{
+              //   toolbar: EditToolbar
+              // }}
+            />
+          </Stack>
+        </Container>
+      </TabPanel>
+      <TabPanel value='2' sx={{ padding: 0 }}>
+        <Box className={classes.tabWrapper}>
+          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
+            <span
+              onClick={() => navigate(routes.lecturer.question_bank.path)}
+              translation-key='common_question_bank'
+            >
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </span>{" "}
+            {"> "}
+            <span onClick={() => navigate(".")}>Học OOP</span>
+          </ParagraphBody>
+        </Box>
+        <Container>
+          <Stack spacing={2} marginBottom={3} paddingTop={1}>
+            <Heading1 fontWeight={500}>Học OOP</Heading1>
+            <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
+              Thông tin danh mục: các bài tập về OOP
+            </Heading5>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+              <Button btnType={BtnType.Primary}>
+                <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+              </Button>
+              <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
+                <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+              </Button>
+              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+                <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
+              </Button>
+            </Stack>
+
+            <Stack direction='row' justifyContent='space-between'>
               <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
-              <DataGrid
-                sx={{
-                  "& .MuiDataGrid-cell": { padding: "16px" }
-                }}
-                autoHeight
-                getRowHeight={() => "auto"}
-                rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-                rowCount={pageState.total}
-                loading={pageState.isLoading}
-                paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
-                onPaginationModelChange={(model, details) => {
-                  setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-                }}
-                columns={columns}
-                pageSizeOptions={[5, 10, 30, 50]}
-                paginationMode='server'
-                disableColumnFilter
-                hideFooterSelectedRowCount
-                // onRowClick={handleRowClick}
-                // slots={{
-                //   toolbar: EditToolbar
-                // }}
-              />
+              <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(true)}>
+                <ParagraphBody paddingX={3}>Quyền truy cập</ParagraphBody>
+              </Button>
             </Stack>
-          </Container>
-        </TabPanel>
-      )}
-      {!isAddingQuestion && (
-        <TabPanel value='2' sx={{ padding: 0 }}>
-          <Box className={classes.tabWrapper}>
-            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(routes.lecturer.question_bank.path)}>
-                Ngân hàng câu hỏi
-              </span>{" "}
-              {"> "}
-              <span onClick={() => navigate(".")}>Học OOP</span>
-            </ParagraphBody>
-          </Box>
-          <Container>
-            <Stack spacing={2} marginBottom={3} paddingTop={1}>
-              <Heading1 fontWeight={500}>Học OOP</Heading1>
-              <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-                Thông tin danh mục: các bài tập về OOP
-              </Heading5>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-                <Button btnType={BtnType.Primary}>
-                  <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
-                </Button>
-                <Button
-                  btnType={BtnType.Primary}
-                  onClick={() => setIsAddNewQuestionDialogOpen(true)}
-                >
-                  <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
-                </Button>
-                <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                  <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
-                </Button>
-              </Stack>
-
-              <Stack direction='row' justifyContent='space-between'>
-                <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
-                <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(true)}>
-                  <ParagraphBody paddingX={3}>Quyền truy cập</ParagraphBody>
-                </Button>
-              </Stack>
-              <DataGrid
-                sx={{
-                  "& .MuiDataGrid-cell": { padding: "16px" }
-                }}
-                autoHeight
-                getRowHeight={() => "auto"}
-                rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-                rowCount={pageState.total}
-                loading={pageState.isLoading}
-                paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
-                onPaginationModelChange={(model, details) => {
-                  setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-                }}
-                columns={columns}
-                pageSizeOptions={[5, 10, 30, 50]}
-                paginationMode='server'
-                disableColumnFilter
-                hideFooterSelectedRowCount
-                // onRowClick={handleRowClick}
-                // slots={{
-                //   toolbar: EditToolbar
-                // }}
-              />
-            </Stack>
-          </Container>
-          <AccessedUserListDialog
-            aria-labelledby='assess-list-dialog'
-            open={openAccessDialog}
-            setOpenAccessDialog={setOpenAccessDialog}
-            maxWidth='sm'
-            fullWidth
-          />
-        </TabPanel>
-      )}
+            <DataGrid
+              sx={{
+                "& .MuiDataGrid-cell": { padding: "16px" }
+              }}
+              autoHeight
+              getRowHeight={() => "auto"}
+              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
+              rowCount={pageState.total}
+              loading={pageState.isLoading}
+              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              onPaginationModelChange={(model, details) => {
+                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+              }}
+              columns={columns}
+              pageSizeOptions={[5, 10, 30, 50]}
+              paginationMode='server'
+              disableColumnFilter
+              hideFooterSelectedRowCount
+              // onRowClick={handleRowClick}
+              // slots={{
+              //   toolbar: EditToolbar
+              // }}
+            />
+          </Stack>
+        </Container>
+        <AccessedUserListDialog
+          aria-labelledby='assess-list-dialog'
+          open={openAccessDialog}
+          setOpenAccessDialog={setOpenAccessDialog}
+          maxWidth='sm'
+          fullWidth
+        />
+      </TabPanel>
     </div>
   );
 };

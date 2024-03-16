@@ -11,30 +11,11 @@ import classes from "./styles.module.scss";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const drawerWidth = 300;
-const sideBarItemListData: SidebarItem[] = [
-  {
-    name: "Trang chủ",
-    icon: <DashboardIcon className={classes.itemIcon} />,
-    link: routes.lecturer.course.management
-  },
-  {
-    name: "Lịch",
-    icon: <CalendarIcon className={classes.itemIcon} />,
-    link: routes.lecturer.calendar
-  },
-  {
-    name: "Quản lý câu hỏi code",
-    icon: <CodeIcon className={classes.itemIcon} />,
-    link: routes.lecturer.code_question.management
-  },
-  {
-    name: "Ngân hàng câu hỏi",
-    icon: <AccountBalanceIcon className={classes.itemIcon} />,
-    link: routes.lecturer.question_bank.path
-  }
-];
+
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
@@ -57,6 +38,30 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }));
 
 export default function SidebarLecturer({ children }: any) {
+  const { t } = useTranslation();
+  const sideBarItemListData: SidebarItem[] = [
+    {
+      name: "Trang chủ",
+      icon: <DashboardIcon className={classes.itemIcon} />,
+      link: routes.lecturer.course.management
+    },
+    {
+      name: "Lịch",
+      icon: <CalendarIcon className={classes.itemIcon} />,
+      link: routes.lecturer.calendar
+    },
+    {
+      name: "Quản lý câu hỏi code",
+      icon: <CodeIcon className={classes.itemIcon} />,
+      link: routes.lecturer.code_question.management
+    },
+    {
+      name: i18next.format(t("common_question_bank"), "firstUppercase"),
+      "translation-key": "common_question_bank",
+      icon: <AccountBalanceIcon className={classes.itemIcon} />,
+      link: routes.lecturer.question_bank.path
+    }
+  ];
   const [open, setOpen] = React.useState(true);
 
   const toggleDrawer = () => {

@@ -1,47 +1,125 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
-import {
-  ICodeQuestion,
-  IFeedbackCodeByAI,
-  ISourceCodeSubmission
-} from "pages/client/user/DetailProblem/components/Submission/components/DetailSubmission";
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
+interface ICorrectnessFeedback {
+  accuracy: string;
+  completeness: string;
+  consistency: string;
+}
+
+interface IEfficiencyFeedback {
+  executionTime: string;
+  memory: string;
+  complexity: string;
+}
+
+interface IMaintainabilityFeedback {
+  readability: string;
+  reuseability: string;
+  extensibility: string;
+}
+
+interface IScalabilityFeedback {
+  dataScalability: string;
+  functionalScalability: string;
+}
+
+interface IAnalysisFeedback {
+  correctness: ICorrectnessFeedback;
+  efficiency: IEfficiencyFeedback;
+  maintainability: IMaintainabilityFeedback;
+  scalability: IScalabilityFeedback;
+}
+
+export interface IFeedbackCode {
+  analysis: IAnalysisFeedback;
+  improvementSuggestions: string;
+  conclusion: string;
+}
+
+export interface IFeedbackCodeByAI {
+  id: number;
+  feedback: IFeedbackCode;
+  suggestedCode: string;
+  explainedCode: string;
+}
+
+export interface ICodeQuestion {
+  title: string;
+  description: string;
+}
+
+export interface ISourceCodeSubmission {
+  source_code: string;
+  language: string;
+}
+
 const format_response: IFeedbackCodeByAI = {
   id: 1,
-  feedback: `
-1. Phân tích:
-a. Tính chính xác:
-	- Code thực hiện đúng chức năng tìm độ dài chuỗi con dài nhất không có ký tự lặp lại.
-	- Không có lỗi logic hay lỗi thời gian chạy được phát hiện.
-	- Kết quả đầu ra chính xác và phù hợp với kỳ vọng.
-
-b. Tính hiệu quả:
-	- Mã nguồn chạy tương đối nhanh với độ phức tạp thời gian \`O(n)\` do chỉ duyệt qua chuỗi một lần.
-	- Có thể tối ưu hóa sử dụng mảng thay cho HashSet để tiết kiệm bộ nhớ.
-	- Sử dụng thuật toán và cấu trúc dữ liệu phù hợp \`(sliding window)\`.
-
-c. Tính bảo trì:
-	- Mã nguồn dễ đọc, dễ hiểu và dễ bảo trì.
-	- Viết theo phong cách lập trình rõ ràng, nhất quán và dễ theo dõi.
-	- Được tổ chức thành các module, lớp và hàm hợp lý.
-
-d. Tính khả năng mở rộng:
-	- Mã nguồn dễ dàng mở rộng để thêm tính năng mới như tìm chuỗi con dài nhất với các điều kiện bổ sung.
-	- Được thiết kế theo mô hình linh hoạt và có thể tái sử dụng.
-
-2. Gợi ý cải tiến:
-- Sử dụng mảng thay cho \`HashSet\` để tiết kiệm bộ nhớ.
-- Viết thêm bình luận để giải thích code và thuật toán.
-
-3. Kết luận:
-- Code \`lengthOfLongestSubstring\` được viết tốt, đáp ứng đầy đủ các yêu cầu về tính chính xác, hiệu quả, bảo trì, khả năng mở rộng và tuân thủ. Một số cải tiến nhỏ có thể được thực hiện để tối ưu hóa hiệu suất sử dụng bộ nhớ.
-- Đánh giá chung: Tốt
-	`,
-  suggestCode:
+  feedback: {
+    analysis: {
+      correctness: {
+        accuracy: `
+				- Code sử dụng vòng lặp \`while\` để đảo ngược từng chữ số của \`số nguyên x\`.
+				- Sau mỗi vòng lặp, kết quả \`result\` được cập nhật bằng cách nhân 10 và cộng thêm chữ số cuối cùng của x.
+				- Quá trình này được lặp lại cho đến khi x bằng 0.
+				- Do đó, kết quả cuối cùng result sẽ là số nguyên đảo ngược của x.				
+				`,
+        completeness:
+          "Code xử lý được tất cả các trường hợp đầu vào hợp lệ, bao gồm số nguyên dương, số nguyên âm và số 0.",
+        consistency: "Cho cùng một đầu vào x, code luôn cho ra kết quả result giống nhau."
+      },
+      efficiency: {
+        executionTime: `
+				- Code sử dụng vòng lặp while để đảo ngược từng chữ số của số nguyên x.
+				- Do đó, thời gian thực thi của code sẽ phụ thuộc vào số lượng chữ số của x.
+				- Ví dụ, với số nguyên có 10 chữ số, code sẽ thực hiện 10 vòng lặp.
+				- Nhìn chung, thời gian thực thi của code được đánh giá là tương đối nhanh.
+				`,
+        memory: `
+				- Code sử dụng biến result để lưu trữ kết quả đảo ngược.
+				- Kích thước của biến result phụ thuộc vào số lượng chữ số của x.
+				- Ví dụ, với số nguyên có 10 chữ số, biến result sẽ cần 4 byte (32 bit) để lưu trữ.
+				- Nhìn chung, code sử dụng bộ nhớ hiệu quả.
+				`,
+        complexity: `
+				- Độ phức tạp thời gian của code là O(n), với n là số lượng chữ số của x.
+				- Độ phức tạp bộ nhớ của code là O(1).
+				`
+      },
+      maintainability: {
+        readability: `
+				- Code được viết khá dễ đọc và dễ hiểu.
+				- Các biến được đặt tên rõ ràng, dễ nhận biết.
+				- Vòng lặp while được sử dụng để đảo ngược từng chữ số của số nguyên x được giải thích rõ ràng.				
+				`,
+        reuseability:
+          "Code có thể được tái sử dụng cho các bài toán tương tự, chẳng hạn như đảo ngược chuỗi.",
+        extensibility:
+          "Code có thể được mở rộng để xử lý các trường hợp phức tạp hơn, chẳng hạn như đảo ngược số nguyên có dấu."
+      },
+      scalability: {
+        dataScalability: `
+				Code có thể xử lý được lượng dữ liệu lớn.
+				Ví dụ, code có thể đảo ngược số nguyên có hàng tỷ chữ số.`,
+        functionalScalability:
+          "Code có thể được mở rộng để thêm các chức năng mới, chẳng hạn như kiểm tra số đối xứng."
+      }
+    },
+    improvementSuggestions: `
+		- Sử dụng mảng thay cho \`HashSet\` để tiết kiệm bộ nhớ.
+		- Viết thêm bình luận để giải thích code và thuật toán.
+		`,
+    conclusion: `
+		- Code \`lengthOfLongestSubstring\` được viết tốt, đáp ứng đầy đủ các yêu cầu về tính chính xác, hiệu quả, bảo trì, khả năng mở rộng và tuân thủ. Một số cải tiến nhỏ có thể được thực hiện để tối ưu hóa hiệu suất sử dụng bộ nhớ.
+		- Đánh giá chung: Tốt
+		`
+  },
+  suggestedCode:
     " class Solution { \n  public: \n    vector<vector<int>> divideArray(vector<int>& nums, int ki) { \n      vector<vector<int>> ans; \n      ... (rest of the code with line breaks) \n    } \n  }; \n",
-  explainCode: `1. Khai báo biến:
+  explainedCode: `1. Khai báo biến:
 		- \`left\`: Biến lưu trữ vị trí bắt đầu của chuỗi con hiện tại.
 		- \`right\`: Biến lưu trữ vị trí kết thúc của chuỗi con hiện tại.
 		- \`max\`: Biến lưu trữ độ dài chuỗi con dài nhất được tìm thấy.
@@ -82,6 +160,7 @@ d. Tính khả năng mở rộng:
 	 -   Sau khi vòng lặp while kết thúc, \`max = 3\`.
 	 -   Chuỗi con dài nhất không có ký tự lặp lại là \`"abc"\`.`
 };
+
 async function feedbackCodeByByAI(
   sourceCodeSubmission: ISourceCodeSubmission,
   codeQuestion: ICodeQuestion
@@ -89,6 +168,7 @@ async function feedbackCodeByByAI(
   const language = "Vietnamese";
 
   const AI_ROLE = `
+I. YOUR ROLE:
 	A. You are a 'supportive programming mentor' trained on a massive dataset of code examples, student submissions, and expert feedback. Your primary function is to:
 	- 'Evaluate student code' in a fair and consistent manner, providing clear and actionable feedback.
 	- 'Identify key programming concepts' and assess their implementation in the code.
@@ -106,17 +186,14 @@ async function feedbackCodeByByAI(
 		- 'Motivates students' to learn from their mistakes and improve their coding skills.`;
 
   const SYSTEM_INSTRUCTIONS = `
+II. SYSTEM_INSTRUCTIONS:
 	A. Your Task: Provide 'comprehensive and constructive feedback' about the student's source code, addressing the following key aspects:
 		- 'Code correctness:' Identify any syntax errors, logical mistakes, or incorrect implementations that prevent the code from functioning as intended.
 		- 'Code clarity:' Assess the readability, maintainability, and overall structure of the code. Suggest improvements in naming conventions, code formatting, and commenting.
 		- 'Code efficiency:' Analyze the time and space complexity of the code, suggesting potential optimizations to improve performance.
 		- 'Adherence to best practices:'Guide students towards writing code that follows established programming principles and conventions.
 
-	B. Question Details:
-	- Title of the code question: **${codeQuestion.title}**
-	- Description of the code question: **${codeQuestion.description}**
-
-	C. Source Code Student Submissions:
+	B. Source Code Student Submissions:
 		- There are two attributes: language and source_code:
 			+ language:
 				* Data type: string
@@ -129,85 +206,127 @@ async function feedbackCodeByByAI(
 		- This is the source code of the student's submission:
 			${JSON.stringify(sourceCodeSubmission)}
 
-	D. Expected Response Format:
-		From the student's submission source code above, please provide feedback and suggest a new students' source code. Then, give a new source code for students to refer to according to the following structure:
-		- There are three attributes: id, feedback and suggestCode:
+	C. Expected Response Format:
+		The feedback results is based on question details below and student's source code to provide feedback to the user:
+		- Title of the code question: 
+			${codeQuestion.title}
+
+		- Description of the code question: 
+			${codeQuestion.description}
+
+		This is the list of students' submissions (ISourceCodeSubmission) that will be reviewed by you. You will provide feedback for the attribute source_code (The source code of the student's submission):
+			${JSON.stringify(sourceCodeSubmission)} 
+
+		From the student's submission source code above, please provide feedback and suggest a new students' source code. Then, give a new source code for students to refer to according to the following structure (IfeedbackCodeByAI) is JSON format!!!:
+		{
+			id: number,
+			feedback: {
+				analysis: {
+					correctness: {
+						accuracy: string (not be empty or null),
+						completeness: string (not be empty or null),
+						consistency: string (not be empty or null)
+					},
+					efficiency: {
+						executionTime: string (not be empty or null),
+						memory: string (not be empty or null),
+						complexity: string (not be empty or null)
+					},
+					maintainability: {
+						readability: string (not be empty or null),
+						reuseability: string (not be empty or null),
+						extensibility: string (not be empty or null)
+					},
+					scalability: {
+						dataScalability: string (not be empty or null),
+						functionalScalability: string (not be empty or null)
+					}
+				},
+				improvementSuggestions: string (not be empty or null),
+				conclusion: string (not be empty or null)
+			},
+			suggestedCode: string (not be empty or null),
+			explainedCode: string (not be empty or null)
+		}
+
+		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
 			+ id:
 				* Data type: number
-				* Description: Unique identifier code for each scoring format.
+				* Description: Unique identifier code for feedback code.
 			+ feedback:
-				* Data type: string
-				* Description: A string of actionable feedback messages and comments about the student's source code, tailored to the student's writing. Avoid generic statements. You need to use markdown syntax.
-				* You should follow the following guidelines, depending on the feedback:
-					1. Analysis:
-						a. Correctness:
-							+ Does the code perform the correct functionality as per the requirements?
-							+ Are there any logical errors or runtime errors?
-							+ Is the output accurate and consistent with expectations?
-						b. Efficiency:
-							+ Does the code run fast and use resources efficiently?
-							+ Can the code be optimized to improve performance?
-							+ Are appropriate algorithms and data structures used?
-						c. Maintainability:
-							+ Is the code easy to read, understand, and maintain?
-							+ Is it written in a clear, consistent, and easy-to-follow programming style?
-							+ Is it organized into modules, classes, and functions logically?
-						d. Extensibility:
-							+ Is the code easy to extend to add new features?
-							+ Is it designed in a flexible and reusable manner?
-	
-					2. Improvement Suggestions:
-						- Propose specific solutions to improve the code quality.
-
-					3. Conclusion:
-						- Summarize the feedback.
-
-				* Note:
-					** Do not include any code in the feedback.
+				* Data type: object
+				* Description: A object of actionable feedback messages and comments (IFeedback) about the student's source code, tailored to the student's writing. Avoid generic statements. You need to use markdown syntax.
+					- IFeedback: The data structure for a feedback:
+					{
+						analysis: {
+							correctness: {
+								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								completeness: A string (not be empty or null). The algorithm must handle all valid input cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+							},
+							efficiency: {
+								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+							},
+							maintainability: {
+								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+							},
+							scalability: {
+								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+							}
+						},
+						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+					}
+				* Note for feedback:
 					** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab
-					** It will be use to feedback the question details:
-						*** Question Details:
-							**** Title of the code question: **${codeQuestion.title}**
-							**** Description of the code question: **${codeQuestion.description}**
 					** Must be use "\\n" when using line breaks
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
 
-			+ suggestCode:
-				* Data type: string
-				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly.
-				* Note:
+				* Here is example of feedback:
+					${JSON.stringify(format_response.feedback)}
+
+			+ suggestedCode:
+				* Data type: string (not be "" or null)
+				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
+				* Note of suggested code:
 					** Must be use "\\n" for line breaks.
 					** Instead of use \\t, you should use tab
-			+ explainCode:
-				* Data type: string
-				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax.
+					
+				* Here is example of suggested code:
+					${format_response.suggestedCode}
+
+			+ explainedCode:
+				* Data type: string (not be "" or null)
+				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note: 
 					** Explain code follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab
 
-		Example Response Format:
+				* Here is example of explained code:
+					${format_response.explainedCode}
+
+	D. For example:
 			${JSON.stringify(format_response)}
 
-		Note:
-			- Ensure the response is in valid JSON format !!!
-			- The sample response format above is just example to reference. Dont use it to respond to users.
+		Note of example:
+			1. Ensure the response is in valid JSON format !!!
+			2. The example is just for reference. You can change the example to fit your needs.
 		
 	E. Feedback Language: Use **${language}** to write feedback messages for students.
-
-	F. Additional Considerations:
-   - 'Tailor your feedback to the student's level of experience.' Provide more detailed explanations for beginners and gradually increase the level of complexity as students progress.
-   - 'Offer suggestions for further learning resources' (e.g., tutorials, documentation) to help students deepen their understanding and coding skills.
 	`;
 
   const prompt = `
-I. YOUR ROLE:
-	${AI_ROLE}
+${AI_ROLE}
 
-II. SYSTEM_INSTRUCTIONS:
-	${SYSTEM_INSTRUCTIONS}`;
+${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-  console.log("prompt", prompt);
+
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;

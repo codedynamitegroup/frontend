@@ -85,22 +85,18 @@ const router = createHashRouter(
       <Route
         path={routes.lecturer.question.essay.create}
         element={<QuestionCreated qtype={qtype.essay.code} />}
-        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.multiple_choice.create}
         element={<QuestionCreated qtype={qtype.multiple_choice.code} />}
-        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.short_answer.create}
         element={<QuestionCreated qtype={qtype.short_answer.code} />}
-        handle={{ crumbName: "default" }}
       />
       <Route
         path={routes.lecturer.question.true_false.create}
         element={<QuestionCreated qtype={qtype.true_false.code} />}
-        handle={{ crumbName: "default" }}
       />
 
       <Route

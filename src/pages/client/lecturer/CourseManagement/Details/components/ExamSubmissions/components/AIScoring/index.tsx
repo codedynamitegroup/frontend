@@ -27,7 +27,14 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import TextTitle from "components/text/TextTitle";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
-import { AssignmentStudent, QuestionEssay, scoringByAI } from "service/ScoringByAI";
+import {
+  AssignmentStudent,
+  EFeedbackGradedCriteriaRate,
+  IFeedback,
+  IFeedbackGradedAI,
+  QuestionEssay,
+  scoringByAI
+} from "service/ScoringByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -41,11 +48,6 @@ export enum SubmissionStatusGraded {
   NOT_GRADED = "Chưa chấm"
 }
 
-interface IFeedbackGradedAI {
-  id: number;
-  feedback: string[];
-  score: number;
-}
 const AIScoring = () => {
   const drawerWidth = 450;
 
@@ -125,7 +127,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[0]?.score : 0,
+      current_final_grade: feedback?.length !== 0 ? feedback[0]?.feedback?.score : 0,
 
       feedback: feedback?.length !== 0 ? feedback[0]?.feedback : ""
     },
@@ -140,7 +142,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[1]?.score : 0,
+      current_final_grade: feedback?.length !== 0 ? feedback[1]?.feedback?.score : 0,
       feedback: feedback?.length !== 0 ? feedback[1]?.feedback : ""
     }
   ];
@@ -223,6 +225,32 @@ const AIScoring = () => {
       headerName: "Phản hồi",
       width: 200,
       renderCell: (params) => {
+        const feedbackTemp: IFeedback = params.value;
+        if (!feedbackTemp) {
+          return "";
+        }
+
+        const feedback = `
+				1. Nội dung:
+					- Độ chính xác: ${feedbackTemp?.content?.accuracy}
+					- Logic: ${feedbackTemp?.content?.logic}
+					- Sáng tạo: ${feedbackTemp?.content?.creativity}
+					- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+				
+				2. Hình thức:
+					- Ngữ pháp: ${feedbackTemp?.form?.grammar}
+					- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
+					- Chính tả:  ${feedbackTemp?.form?.spelling}
+					- Bố cục:  ${feedbackTemp?.form?.layout}
+				
+				3. Phong cách:
+					- Rõ ràng: ${feedbackTemp?.style?.clarity}
+					- Hấp dẫn: ${feedbackTemp?.style?.engagement}
+					- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+
+				4. Phản hồi chung:
+					- ${feedbackTemp?.overall}
+				`;
         return (
           <Box
             sx={{
@@ -230,7 +258,7 @@ const AIScoring = () => {
             }}
           >
             <Box className={classes.textLimit}>
-              <ParagraphBody>{params.value}</ParagraphBody>
+              <ParagraphBody>{feedback}</ParagraphBody>
             </Box>
           </Box>
         );
@@ -290,10 +318,12 @@ const AIScoring = () => {
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params.row.id);
     navigate(routes.lecturer.exam.ai_scroring_detail, {
       state: {
         feedback: params.row,
-        answer: data[params.row.id].studentAnswer
+        answer: data[params.row.id - 1]?.studentAnswer,
+        question: question
       }
     });
   };
@@ -305,12 +335,19 @@ const AIScoring = () => {
 
   const question: QuestionEssay = useMemo(
     () => ({
-      content:
-        "Trình bày cách thực hiện một thuật toán để tìm phần tử lớn nhất trong danh sách liên kết đơn?",
-      answer:
-        "**Thuật toán:** 1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max.",
-      criteria:
-        "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm, thiếu mất 1 tiêu chí bị trừ 3 điểm",
+      content: "Cách Chuyển Tất Cả Các Số Không Của Mảng Về Cuối",
+      answer: `
+			Di chuyển tất cả các số không trong một mảng số nguyên đến cuối. Câu trả lời nên tránh sử dụng không gian không đổi và bảo toàn thứ tự tương đối của các thành phần của mảng.
+
+			Đầu vào: {1,2,3,0,8,0,4,7}
+
+			Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+
+			Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.
+
+			Giải pháp trước có độ phức tạp thời gian O (n), trong đó n là kích thước của đầu vào.
+			`,
+      rubics: "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm",
       maxScore: 10
     }),
     []
@@ -320,13 +357,17 @@ const AIScoring = () => {
     () => [
       {
         id: 1,
-        studentAnswer:
-          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại. 3. Trả về giá trị của max."
+        studentAnswer: "Mảng động là con trỏ, chứa chuỗi ký tự ASCII"
       },
       {
         id: 2,
-        studentAnswer:
-          "1. Khởi tạo một biến max để lưu giá trị lớn nhất ban đầu là giá trị của phần tử đầu tiên trong danh sách liên kết. 2. Duyệt qua danh sách liên kết, so sánh từng phần tử với max. Nếu phần tử hiện tại lớn hơn max thì gán max bằng giá trị của phần tử hiện tại."
+        studentAnswer: `
+				Đầu vào: {1,2,3,0,8,0,4,7}
+
+				Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+				
+				Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.				
+				`
       }
     ],
     []
@@ -338,7 +379,33 @@ const AIScoring = () => {
     return (
       typeof obj.id === "number" &&
       typeof obj.feedback === "object" &&
-      typeof obj.score === "number"
+      typeof obj.feedback.content === "object" &&
+      typeof obj.feedback.content.accuracy === "string" &&
+      obj.feedback.content.accuracy !== "" &&
+      typeof obj.feedback.content.logic === "string" &&
+      obj.feedback.content.logic !== "" &&
+      typeof obj.feedback.content.creativity === "string" &&
+      obj.feedback.content.creativity !== "" &&
+      typeof obj.feedback.content.sourceUsage === "string" &&
+      obj.feedback.content.sourceUsage !== "" &&
+      typeof obj.feedback.form === "object" &&
+      typeof obj.feedback.form.grammar === "string" &&
+      obj.feedback.form.grammar !== "" &&
+      typeof obj.feedback.form.vocabulary === "string" &&
+      obj.feedback.form.vocabulary !== "" &&
+      typeof obj.feedback.form.spelling === "string" &&
+      obj.feedback.form.spelling !== "" &&
+      typeof obj.feedback.form.layout === "string" &&
+      obj.feedback.form.layout !== "" &&
+      typeof obj.feedback.style === "object" &&
+      typeof obj.feedback.style.clarity === "string" &&
+      obj.feedback.style.clarity !== "" &&
+      typeof obj.feedback.style.engagement === "string" &&
+      obj.feedback.style.engagement !== "" &&
+      typeof obj.feedback.style.appropriateness === "string" &&
+      obj.feedback.style.appropriateness !== "" &&
+      typeof obj.feedback.overall === "string" &&
+      typeof obj.feedback.score === "number"
     );
   }
 
@@ -346,10 +413,14 @@ const AIScoring = () => {
     if (effectRan.current === false) {
       const handleScoringByAI = async () => {
         setLoading(true);
-
         await scoringByAI(data, question)
           .then((results) => {
-            if (results && isResponseFeedbackGradedAI(results[0])) {
+            if (
+              results &&
+              results.length === 2 &&
+              isResponseFeedbackGradedAI(results[0]) &&
+              isResponseFeedbackGradedAI(results[1])
+            ) {
               setFeedback(results);
               setOpenSnackbarAlert(true);
               setAlertContent("Chấm điểm thành công");

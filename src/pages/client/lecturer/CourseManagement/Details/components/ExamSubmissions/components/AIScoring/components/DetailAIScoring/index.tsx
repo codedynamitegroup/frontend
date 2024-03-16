@@ -29,8 +29,9 @@ import { routes } from "routes/routes";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import ReactQuill from "react-quill";
 import { Textarea } from "@mui/joy";
+import MDEditor from "@uiw/react-md-editor";
+import { EFeedbackGradedCriteriaRate, IFeedback } from "service/ScoringByAI";
 
 const drawerWidth = 450;
 
@@ -98,6 +99,7 @@ export default function DetailAIScoring() {
   const location = useLocation();
   const feedback = location?.state.feedback;
   const answer = location?.state.answer;
+  const question = location?.state.question;
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
@@ -140,8 +142,66 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
-      console.log(feedback);
-      setAssignmentFeedback(feedback?.feedback.join("<br/>"));
+      console.log("feedback", feedback);
+      const feedbackTemp: IFeedback = feedback?.feedback;
+      if (feedbackTemp) {
+        const feedbackTemplate = `
+I. **Nội dung:**
+
+a. **Độ chính xác:** 
+
+${feedbackTemp.content?.accuracy}
+
+b. **Logic:**
+
+${feedbackTemp.content?.logic}
+
+c. **Sáng tạo:** 
+
+${feedbackTemp.content?.creativity}
+
+d. **Sử dụng nguồn:** 
+
+${feedbackTemp?.content?.sourceUsage}
+
+II. **Hình thức:**
+
+a. **Ngữ pháp:** 
+
+${feedbackTemp?.form?.grammar}
+
+c. **Từ vựng:**  
+
+${feedbackTemp?.form?.vocabulary}
+
+b. **Chính tả:**  
+
+${feedbackTemp?.form?.spelling}
+
+d. **Bố cục:** 
+
+${feedbackTemp?.form?.layout}
+
+III. **Phong cách:**
+
+a. **Rõ ràng:** 
+
+${feedbackTemp?.style?.clarity}
+
+b. **Hấp dẫn:** 
+
+${feedbackTemp?.style?.engagement}
+
+c. **Phù hợp:** 
+
+${feedbackTemp?.style?.appropriateness}
+
+IV. **Phản hồi chung:**
+
+${feedbackTemp?.overall}
+`;
+        setAssignmentFeedback(feedbackTemplate);
+      }
       setAssignmentMaximumGrade(feedback?.current_final_grade);
     }
   }, [feedback]);
@@ -152,7 +212,8 @@ export default function DetailAIScoring() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight}px`
+          marginTop: `${headerHeight}px`,
+          height: `calc(100% - ${headerHeight}px)`
         }}
       >
         <CssBaseline />
@@ -167,38 +228,6 @@ export default function DetailAIScoring() {
         >
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
-              >
-                Bài kiểm tra cuối kỳ
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
@@ -233,17 +262,23 @@ export default function DetailAIScoring() {
           className={classes.mainContent}
           sx={{
             height: `calc(100% - ${header2Height}px)`,
-            marginTop: `${header2Height}px`
+            marginTop: `${header2Height}px`,
+            overflow: "auto"
           }}
         >
-          <Textarea value={"Câu hỏi 2: Con trỏ là gì?"} readOnly={true} />
+          <Textarea
+            value={question?.content}
+            readOnly={true}
+            minRows={2}
+            maxRows={3}
+            sx={{ backgroundColor: "white" }}
+          />
           <Card className={classes.card}>
-            <ReactQuill
-              style={{ height: `calc(100vh - ${250}px` }}
-              value={assignmentStudent}
-              readOnly={true}
-            />
+            <TextEditor value={assignmentStudent} readOnly={true} />
           </Card>
+          <Box className={classes.textEditor} data-color-mode='light'>
+            <MDEditor.Markdown source={assignmentFeedback} className={classes.markdown} />
+          </Box>
         </Main>
         <Drawer
           sx={{
@@ -280,7 +315,7 @@ export default function DetailAIScoring() {
               </Box>
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm trên thang điểm 100</TextTitle>
+              <TextTitle>Điểm trên thang điểm {question?.maxScore}</TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}
@@ -288,18 +323,6 @@ export default function DetailAIScoring() {
                 placeholder='Nhập điểm tối đa'
                 fullWidth
               />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Nhận xét</TextTitle>
-              <Box className={classes.textEditor}>
-                <TextEditor
-                  style={{
-                    marginTop: "10px"
-                  }}
-                  value={assignmentFeedback}
-                  onChange={setAssignmentFeedback}
-                />
-              </Box>
             </Box>
             <LoadButton
               btnType={BtnType.Outlined}

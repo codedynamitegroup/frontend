@@ -34,6 +34,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@uiw/codemirror-extensions-classname": "^4.21.24",
     "@uiw/codemirror-extensions-langs": "^4.21.24",
+    "@uiw/codemirror-extensions-zebra-stripes": "^4.21.24",
     "@uiw/codemirror-theme-github": "^4.21.24",
     "@uiw/react-codemirror": "^4.21.24",
     "@uiw/react-heat-map": "^2.2.2",

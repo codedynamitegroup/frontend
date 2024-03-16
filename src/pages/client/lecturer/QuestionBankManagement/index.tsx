@@ -10,7 +10,7 @@ import {
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -24,6 +24,8 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import classes from "./styles.module.scss";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 
 const rows = [
   {
@@ -59,6 +61,7 @@ const rows = [
 ];
 
 const QuestionBankManagement = () => {
+  const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: false,
     data: rows,
@@ -67,18 +70,15 @@ const QuestionBankManagement = () => {
     pageSize: 5
   });
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const columns: GridColDef[] = [
+  const columnsProps: GridColDef[] = [
     {
       field: "stt",
       sortable: false,
-      width: 20,
+      flex: 0.5,
       align: "center",
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.stt}</ParagraphBody>;
-      },
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>STT</ParagraphBody>;
       }
     },
     {
@@ -88,16 +88,10 @@ const QuestionBankManagement = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.category}</ParagraphBody>;
-      },
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Tên danh mục</ParagraphBody>;
       }
     },
     {
       field: "created",
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Ngày tạo bởi</ParagraphBody>;
-      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
@@ -110,9 +104,6 @@ const QuestionBankManagement = () => {
     },
     {
       field: "updated",
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Lần chỉnh sửa cuối bởi</ParagraphBody>;
-      },
       sortable: false,
       flex: 3,
       renderCell: (params) => (
@@ -125,9 +116,6 @@ const QuestionBankManagement = () => {
     },
     {
       field: "operation",
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Tác vụ</ParagraphBody>;
-      },
       sortable: false,
       flex: 1,
       type: "actions",
@@ -159,6 +147,27 @@ const QuestionBankManagement = () => {
       headerClassName: classes["table-head"]
     }
   ];
+  const addHeaderNameByLanguage = (
+    columns: GridColDef[],
+    headerName: Array<String>
+  ): GridColDef[] => {
+    return headerName.map(
+      (value, index) =>
+        (columns[index] = {
+          ...columns[index],
+          renderHeader: (params) => {
+            return <ParagraphBody fontWeight={700}>{value}</ParagraphBody>;
+          }
+        })
+    );
+  };
+  const headerName = t("question_bank_category_header_table", {
+    returnObjects: true
+  }) as Array<String>;
+  const columns = useMemo(
+    () => addHeaderNameByLanguage(columnsProps, headerName),
+    [columnsProps, headerName]
+  );
   useEffect(() => {
     //fetch data
   }, [pageState.page, pageState.pageSize]);
@@ -173,14 +182,22 @@ const QuestionBankManagement = () => {
       <TabPanel value='1' className={classes["tab-panel"]}>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
-                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_add_new'>
+                  {i18next.format(t("common_add_new"), "firstUppercase")}
+                </ParagraphBody>
               </Button>
             </Stack>
 
-            <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
+            <SearchBar
+              onSearchClick={() => null}
+              placeHolder={`${t("question_bank_category_find_by_category")} ...`}
+              translation-key='question_bank_category_find_by_category'
+            />
             <DataGrid
               sx={{
                 "& .MuiDataGrid-cell": { padding: "16px" },
@@ -188,6 +205,7 @@ const QuestionBankManagement = () => {
                   cursor: "pointer"
                 }
               }}
+              translation-key-header='question_bank_category_header_table'
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
@@ -204,6 +222,14 @@ const QuestionBankManagement = () => {
               disableColumnFilter
               onRowClick={handleRowClick}
               hideFooterSelectedRowCount
+              localeText={{
+                MuiTablePagination: {
+                  labelDisplayedRows: ({ from, to, count, page }) => {
+                    return t("common_table_from_to", { from: from, to: to, countText: count });
+                  },
+                  labelRowsPerPage: t("common_table_row_per_page")
+                }
+              }}
               // slots={{
               //   toolbar: EditToolbar
               // }}
@@ -214,14 +240,22 @@ const QuestionBankManagement = () => {
       <TabPanel value='2' className={classes["tab-panel"]}>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
-                <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_add_new'>
+                  {i18next.format(t("common_add_new"), "firstUppercase")}
+                </ParagraphBody>
               </Button>
             </Stack>
 
-            <SearchBar onSearchClick={() => null} placeHolder='Tìm kiếm theo danh mục ...' />
+            <SearchBar
+              onSearchClick={() => null}
+              placeHolder={`${t("question_bank_category_find_by_category")} ...`}
+              translation-key='question_bank_category_find_by_category'
+            />
             <DataGrid
               sx={{
                 "& .MuiDataGrid-cell": { padding: "16px" },
@@ -245,6 +279,14 @@ const QuestionBankManagement = () => {
               disableColumnFilter
               onRowClick={handleRowClick}
               hideFooterSelectedRowCount
+              localeText={{
+                MuiTablePagination: {
+                  labelDisplayedRows: ({ from, to, count, page }) => {
+                    return t("common_table_from_to", { from: from, to: to, countText: count });
+                  },
+                  labelRowsPerPage: t("common_table_row_per_page")
+                }
+              }}
               // slots={{
               //   toolbar: EditToolbar
               // }}

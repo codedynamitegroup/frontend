@@ -3762,6 +3762,11 @@
     "@replit/codemirror-lang-svelte" "^6.0.0"
     codemirror-lang-mermaid "^0.5.0"
 
+"@uiw/codemirror-extensions-zebra-stripes@^4.21.24":
+  version "4.21.24"
+  resolved "https://registry.npmjs.org/@uiw/codemirror-extensions-zebra-stripes/-/codemirror-extensions-zebra-stripes-4.21.24.tgz"
+  integrity sha512-6CdWPp8RZ23alLTrAquIyPsHc1oVFpI6m+WbihUdJ6D2x7CmiR7rtcPLiYVR711SH0sVZiDouPV737871tOJtw==
+
 "@uiw/codemirror-theme-github@^4.21.24":
   version "4.21.24"
   resolved "https://registry.npmjs.org/@uiw/codemirror-theme-github/-/codemirror-theme-github-4.21.24.tgz"
@@ -10770,7 +10775,7 @@ react-app-polyfill@^3.0.0:
 
 react-codemirror-merge@^4.21.24:
   version "4.21.24"
-  resolved "https://registry.yarnpkg.com/react-codemirror-merge/-/react-codemirror-merge-4.21.24.tgz#8d5b53849f086a715e0b547d10720a3bba7a293b"
+  resolved "https://registry.npmjs.org/react-codemirror-merge/-/react-codemirror-merge-4.21.24.tgz"
   integrity sha512-apdevGJqzFik2Rb0bDihYKM7K3jw844/lcVD2a5NGxFD/F0azF0+2KbEpYU1L9DuVOoRHpI3ioE22QhzCgYQNw==
   dependencies:
     "@babel/runtime" "^7.18.6"

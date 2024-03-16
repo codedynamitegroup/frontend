@@ -49,23 +49,23 @@ export const routes = {
     question_bank: {
       path: "/lecturer/question-bank-management",
       questions_list_of_category: {
-        path: ":categoryId",
-        create_question: {
-          paths: Object.values(qtype)
-            .map((value) => value.code)
-            .map((code) => ({
-              path: `${code === "ai" ? "ai/create" : `create/${code}`}`,
-              code
-            }))
-        },
-        update_question: {
-          paths: Object.values(qtype)
-            .map((value) => value.code)
-            .map((code) => ({
-              path: `update/${code}`,
-              code
-            }))
-        }
+        path: ":categoryId"
+      },
+      create_question: {
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/${code === "ai" ? "ai/create" : `create/${code}`}`,
+            code
+          }))
+      },
+      update_question: {
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/update/${code}`,
+            code
+          }))
       }
     },
     exam: {

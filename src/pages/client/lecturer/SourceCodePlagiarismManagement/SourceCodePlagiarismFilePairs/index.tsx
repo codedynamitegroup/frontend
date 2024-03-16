@@ -24,6 +24,7 @@ import {
 } from "@mui/x-data-grid";
 import CircularProgressWithLabel from "../SourceCodePlagiarismOverview/components/FilePairsTable/components/CircularProgressWithLabel";
 import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -84,6 +85,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function LecturerSourceCodePlagiarismSubmissions() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
@@ -135,31 +137,39 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
   const tableHeading: GridColDef[] = [
     {
       field: "leftFile",
-      headerName: "Tệp trái",
+      headerName: t("code_plagiarism_left_file_title"),
       flex: 1,
       renderCell: (params) => {
-        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+        return (
+          <ParagraphBody>
+            {params.value?.extra?.filename || t("code_plagiarism_not_updated")}
+          </ParagraphBody>
+        );
       }
     },
     {
       field: "rightFile",
-      headerName: "Tệp phải",
+      headerName: t("code_plagiarism_right_file_title"),
       flex: 1,
 
       renderCell: (params) => {
-        return <ParagraphBody>{params.value?.extra?.filename || "Chưa cập nhật"}</ParagraphBody>;
+        return (
+          <ParagraphBody>
+            {params.value?.extra?.filename || t("code_plagiarism_not_updated")}
+          </ParagraphBody>
+        );
       }
     },
     {
       field: "highestSimilarity",
-      headerName: "Độ tương đồng cao nhất",
+      headerName: t("code_plagiarism_highest_similarity_title"),
       flex: 1,
       renderCell: (params) => {
         return <CircularProgressWithLabel value={Number(params.value) * 100 || 0} />;
       }
     },
-    { field: "longestFragment", headerName: "Đoạn trùng dài nhất", flex: 1 },
-    { field: "totalOverlap", headerName: "Trùng lặp tổng cộng", flex: 1 }
+    { field: "longestFragment", headerName: t("code_plagiarism_longest_fragment_title"), flex: 1 },
+    { field: "totalOverlap", headerName: t("code_plagiarism_total_overlap_title"), flex: 1 }
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
@@ -232,11 +242,12 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
           <DrawerHeader />
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1>Danh sách cặp tệp bài nộp lập trình</Heading1>
+              <Heading1 translation-key='code_plagiarism_file_pairs_list_title'>
+                {t("code_plagiarism_file_pairs_list_title")}
+              </Heading1>
               <Heading3>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading3>
-              <ParagraphBody>
-                Một cặp là một tập hợp 2 tệp tin được so sánh với nhau để tìm ra sự tương đồng và
-                các đoạn mã khớp nhau.
+              <ParagraphBody translation-key='code_plagiarism_file_pairs_list_description'>
+                {t("code_plagiarism_file_pairs_list_description")}
               </ParagraphBody>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
