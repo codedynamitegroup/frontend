@@ -12,7 +12,13 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import { feedbackCodeByByAI } from "service/FeedbackCodeByAI";
+import {
+  ICodeQuestion,
+  IFeedbackCode,
+  IFeedbackCodeByAI,
+  ISourceCodeSubmission,
+  feedbackCodeByByAI
+} from "service/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
@@ -22,22 +28,7 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 interface Props {
   handleSubmissionDetail: () => void;
 }
-export interface IFeedbackCodeByAI {
-  id: number;
-  feedback: string;
-  suggestCode: string;
-  explainCode: string;
-}
 
-export interface ICodeQuestion {
-  title: string;
-  description: string;
-}
-
-export interface ISourceCodeSubmission {
-  source_code: string;
-  language: string;
-}
 export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { t } = useTranslation();
   const sourceCodeSubmission: ISourceCodeSubmission = {
@@ -84,12 +75,14 @@ class Solution {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const [feedbackContent, setFeedbackContent] = useState<string>(``);
 
   function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
     return (
       typeof obj.id === "number" &&
-      typeof obj.feedback === "string" &&
-      typeof obj.suggestCode === "string"
+      typeof obj.feedback === "object" &&
+      typeof obj.suggestedCode === "string" &&
+      typeof obj.explainedCode === "string"
     );
   }
 
@@ -99,6 +92,55 @@ class Solution {
       .then((result) => {
         if (result && isFeedbackCodeByAI(result)) {
           setFeedbackCodeByAI(result);
+          const feedbackTemp: IFeedbackCode = result.feedback;
+          if (feedbackTemp) {
+            setFeedbackContent(`
+I. **Phân tích**
+
+\n 1. **Đúng đắn:**
+
+\n\na. **Tính chính xác:**  
+\n\n${feedbackTemp.analysis?.correctness?.accuracy}  
+\n\nb. **Tính đầy đủ:** 
+\n\n${feedbackTemp.analysis?.correctness?.completeness}  
+\n\nc. **Tính nhất quán:**
+\n\n${feedbackTemp.analysis?.correctness?.consistency}  
+
+\n 2. **Hiệu quả:**
+
+\n\na. **Thời gian thực thi:**
+\n\n${feedbackTemp.analysis?.efficiency?.executionTime}  
+\n\nb. **Bộ nhớ:**
+\n\n${feedbackTemp.analysis?.efficiency?.memory}  
+\n\nc. **Độ phức tạp:** 
+\n\n${feedbackTemp.analysis?.efficiency?.complexity}  
+
+\n 3. **Tính bảo trì:**
+
+\n\na. **Khả năng đọc hiểu:**
+\n\n${feedbackTemp.analysis?.maintainability?.readability}  
+\n\nb. **Khả năng tái sử dụng:**
+\n\n${feedbackTemp.analysis?.maintainability?.reuseability}  
+\n\nc. **Khả năng mở rộng:** 
+\n\n${feedbackTemp.analysis?.maintainability?.extensibility}  
+
+\n4. **Khả năng mở rộng:**
+
+\n\na. **Khả năng mở rộng dữ liệu:**
+\n\n${feedbackTemp.analysis?.scalability?.dataScalability}  
+\n\nb. **Khả năng mở rộng chức năng:** 
+\n\n${feedbackTemp.analysis?.scalability?.functionalScalability}  
+
+II. **Gợi ý cải tiến**
+
+${feedbackTemp.improvementSuggestions}
+
+III. **Kết luận**
+
+${feedbackTemp.conclusion}
+`);
+          }
+
           setOpenSnackbarAlert(true);
           setAlertContent("Đánh giá thành công");
           setAlertType(AlertType.Success);
@@ -227,25 +269,22 @@ class Solution {
 
             {feedbackCodeByAI.feedback && (
               <Box data-color-mode='light'>
-                <MDEditor.Markdown
-                  source={feedbackCodeByAI.feedback}
-                  className={classes.markdown}
-                />
+                <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
               </Box>
             )}
             <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
-            {feedbackCodeByAI.suggestCode && (
+            {feedbackCodeByAI.suggestedCode && (
               <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
+                <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestedCode + ""} />
               </Box>
             )}
-            {feedbackCodeByAI.explainCode && (
+            {feedbackCodeByAI.explainedCode && (
               <>
                 <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
                 <Box data-color-mode='light'>
                   <MDEditor.Markdown
-                    source={feedbackCodeByAI.explainCode}
+                    source={feedbackCodeByAI.explainedCode}
                     className={classes.markdown}
                   />
                 </Box>
