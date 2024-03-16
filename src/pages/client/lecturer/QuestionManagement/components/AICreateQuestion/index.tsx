@@ -131,6 +131,7 @@ const AIQuestionCreated = () => {
   const handleButtonClick = () => {
     setModeEdit(!modeEdit);
   };
+  console.log(matches);
 
   return (
     <Grid className={classes.root}>
@@ -172,6 +173,9 @@ const AIQuestionCreated = () => {
                         navigate(value.pathname, { state: value.handle?.state });
                       else navigate(value.pathname);
                     }}
+                    translation-key={
+                      value.handle["translation-key"] ? value.handle["translation-key"] : "none"
+                    }
                   >
                     {i !== matches.length - 1
                       ? `${value.handle?.crumbName} > `

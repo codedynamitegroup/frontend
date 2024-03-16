@@ -24,6 +24,8 @@ import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import classes from "./styles.module.scss";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 
 const rows = [
   {
@@ -167,13 +169,16 @@ const QuestionBankManagement = () => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
+  const { t } = useTranslation();
 
   return (
     <div>
       <TabPanel value='1' className={classes["tab-panel"]}>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
                 <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>
@@ -214,7 +219,9 @@ const QuestionBankManagement = () => {
       <TabPanel value='2' className={classes["tab-panel"]}>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"}>Ngân hàng câu hỏi</Heading1>
+            <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
+            </Heading1>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
                 <ParagraphBody paddingX={3}> Thêm mới</ParagraphBody>

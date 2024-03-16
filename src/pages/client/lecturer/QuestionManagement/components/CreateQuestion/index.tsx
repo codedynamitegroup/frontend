@@ -17,8 +17,8 @@ import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useMemo, useRef, useState } from "react";
-import { useMatches, useNavigate } from "react-router-dom";
+import { useMemo, useRef, useState, useEffect } from "react";
+import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,6 +32,7 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 
 interface Props {
   qtype: String;
+  insideCrumb?: boolean;
 }
 
 const QuestionCreated = (props: Props) => {
@@ -41,20 +42,46 @@ const QuestionCreated = (props: Props) => {
     [props.qtype]
   );
   const navigate = useNavigate();
-  const matches = useMatches();
-  const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
 
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  const [initialized, setInitialized] = useState(true);
+
+  const [value, setValue]: any[] = useOutletContext();
+  useEffect(() => {
+    if (initialized) {
+      setInitialized(false);
+    } else {
+      navigate("/lecturer/question-bank-management");
+    }
+  }, [value]);
+  const urlParams = useParams();
+  console.log(urlParams);
 
   return (
     <Grid className={classes.root}>
-      {breadcrumbs && <Header ref={headerRef} />}
+      {props.insideCrumb && <Header ref={headerRef} />}
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
-          {breadcrumbs ? (
+          {props.insideCrumb ? (
+            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
+              <span onClick={() => navigate("/lecturer/question-bank-management")}>
+                Ngân hàng câu hỏi
+              </span>{" "}
+              {"> "}
+              <span
+                onClick={() =>
+                  navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
+                }
+              >
+                Học OOP
+              </span>{" "}
+              {"> "}
+              <span onClick={() => navigate("/")}>Tạo câu hỏi</span>
+            </ParagraphBody>
+          ) : (
             <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
               <span onClick={() => navigate(routes.lecturer.course.management)}>
                 Quản lý khoá học
@@ -77,25 +104,6 @@ const QuestionCreated = (props: Props) => {
               </span>{" "}
               {"> "}
               <span>Tạo câu hỏi</span>
-            </ParagraphBody>
-          ) : (
-            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              {matches.map((value: any, i) => {
-                if (value.handle === undefined) return null;
-                return (
-                  <span
-                    onClick={() => {
-                      if (value.handle?.state)
-                        navigate(value.pathname, { state: value.handle?.state });
-                      else navigate(value.pathname);
-                    }}
-                  >
-                    {i !== matches.length - 1
-                      ? `${value.handle?.crumbName} > `
-                      : `${value.handle?.crumbName}`}
-                  </span>
-                );
-              })}
             </ParagraphBody>
           )}
         </Box>

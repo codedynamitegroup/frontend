@@ -1,5 +1,4 @@
 import { Box, Grid } from "@mui/material";
-import React from "react";
 import classes from "./styles.module.scss";
 import { Route, Routes } from "react-router";
 import LecturerEventCalendar from "./LecturerEventCalendar";
@@ -16,9 +15,13 @@ import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse"
 import AIQuestionCreated from "./QuestionManagement/components/AICreateQuestion";
 import QuestionCreated from "./QuestionManagement/components/CreateQuestion";
 
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
 type Props = {};
 
 const LecturerCoursesManagement = (props: Props) => {
+  const { t } = useTranslation();
   return (
     <Grid className={classes.root}>
       <SidebarLecturer>
@@ -35,46 +38,40 @@ const LecturerCoursesManagement = (props: Props) => {
                 path={"question-bank-management"}
                 element={<QuestionBankManagementLayout />}
                 handle={{
-                  crumbName: "Ngân hàng câu hỏi"
+                  crumbName: i18next.format(t("common_question_bank"), "firstUppercase"),
+                  "translation-key": "common_question_bank"
                 }}
               >
                 <Route index element={<QuestionBankManagement />} />
                 <Route
                   path={routes.lecturer.question_bank.questions_list_of_category.path}
                   element={<QuestionListOfCourse />}
-                  handle={{ crumbName: "Học thuật toán", state: { reset: true } }}
-                >
-                  {routes.lecturer.question_bank.questions_list_of_category.create_question.paths.map(
-                    (value, index) => {
-                      return (
-                        <Route
-                          path={value.path}
-                          element={
-                            value.code === "ai" ? (
-                              <AIQuestionCreated />
-                            ) : (
-                              <QuestionCreated qtype={value.code} />
-                            )
-                          }
-                          handle={{ crumbName: "Tạo câu hỏi" }}
-                          key={index}
-                        />
-                      );
-                    }
-                  )}
-                  {routes.lecturer.question_bank.questions_list_of_category.update_question.paths.map(
-                    (value, index) => {
-                      return (
-                        <Route
-                          path={value.path}
-                          element={<QuestionCreated qtype={value.code} />}
-                          handle={{ crumbName: "Chỉnh sửa câu hỏi" }}
-                          key={index}
-                        />
-                      );
-                    }
-                  )}
-                </Route>
+                />
+                {routes.lecturer.question_bank.create_question.paths.map((value, index) => {
+                  return (
+                    <Route
+                      path={value.path}
+                      element={
+                        value.code === "ai" ? (
+                          <AIQuestionCreated />
+                        ) : (
+                          <QuestionCreated qtype={value.code} insideCrumb={true} />
+                        )
+                      }
+                      key={index}
+                    />
+                  );
+                })}
+
+                {routes.lecturer.question_bank.update_question.paths.map((value, index) => {
+                  return (
+                    <Route
+                      path={value.path}
+                      element={<QuestionCreated qtype={value.code} insideCrumb={true} />}
+                      key={index}
+                    />
+                  );
+                })}
               </Route>
             </Routes>
           </Box>
