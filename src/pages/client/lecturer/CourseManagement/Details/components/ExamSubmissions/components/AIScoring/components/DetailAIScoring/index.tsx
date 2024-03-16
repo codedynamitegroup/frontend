@@ -99,6 +99,7 @@ export default function DetailAIScoring() {
   const location = useLocation();
   const feedback = location?.state.feedback;
   const answer = location?.state.answer;
+  const question = location?.state.question;
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
@@ -141,6 +142,7 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
+      console.log("feedback", feedback);
       const feedbackTemp: IFeedback = feedback?.feedback;
       if (feedbackTemp) {
         const feedbackTemplate = `
@@ -234,7 +236,13 @@ export default function DetailAIScoring() {
             overflow: "auto"
           }}
         >
-          <Textarea value={"Câu hỏi 2: Con trỏ là gì?"} readOnly={true} />
+          <Textarea
+            value={question?.content}
+            readOnly={true}
+            minRows={2}
+            maxRows={3}
+            sx={{ backgroundColor: "white" }}
+          />
           <Card className={classes.card}>
             <TextEditor value={assignmentStudent} readOnly={true} />
           </Card>
@@ -277,7 +285,7 @@ export default function DetailAIScoring() {
               </Box>
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm trên thang điểm 10</TextTitle>
+              <TextTitle>Điểm trên thang điểm {question?.maxScore}</TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}

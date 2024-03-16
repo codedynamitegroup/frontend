@@ -62,8 +62,8 @@ const format_response: IFeedbackCodeByAI = {
     analysis: {
       correctness: {
         accuracy: `
-				- Code sử dụng vòng lặp while để đảo ngược từng chữ số của số nguyên x.
-				- Sau mỗi vòng lặp, kết quả result được cập nhật bằng cách nhân 10 và cộng thêm chữ số cuối cùng của x.
+				- Code sử dụng vòng lặp \`while\` để đảo ngược từng chữ số của \`số nguyên x\`.
+				- Sau mỗi vòng lặp, kết quả \`result\` được cập nhật bằng cách nhân 10 và cộng thêm chữ số cuối cùng của x.
 				- Quá trình này được lặp lại cho đến khi x bằng 0.
 				- Do đó, kết quả cuối cùng result sẽ là số nguyên đảo ngược của x.				
 				`,
@@ -260,27 +260,27 @@ II. SYSTEM_INSTRUCTIONS:
 					{
 						analysis: {
 							correctness: {
-								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output.
-								completeness: A string (not be empty or null). The algorithm must handle all valid input cases.
-								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed.
+								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								completeness: A string (not be empty or null). The algorithm must handle all valid input cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							efficiency: {
-								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time.
-								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste.
-								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data.
+								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							maintainability: {
-								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain.
-								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems.
-								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases.
+								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							scalability: {
-								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data.
-								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features.
+								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							}
 						},
-						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality.,
-						conclusion: A string (not be empty or null). Summarize the feedback.
+						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					}
 				* Note:
 					** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
