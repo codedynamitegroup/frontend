@@ -163,6 +163,7 @@ async function feedbackCodeByByAI(
 						- Summarize the feedback.
 
 				* Note:
+					** Feedback must not be empty or null. It should be filled with complete information
 					** Do not include any code in the feedback.
 					** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab

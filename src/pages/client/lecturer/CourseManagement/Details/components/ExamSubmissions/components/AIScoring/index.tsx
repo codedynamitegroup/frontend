@@ -27,7 +27,14 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import TextTitle from "components/text/TextTitle";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
-import { AssignmentStudent, QuestionEssay, scoringByAI } from "service/ScoringByAI";
+import {
+  AssignmentStudent,
+  EFeedbackGradedCriteriaRate,
+  IFeedback,
+  IFeedbackGradedAI,
+  QuestionEssay,
+  scoringByAI
+} from "service/ScoringByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -41,11 +48,6 @@ export enum SubmissionStatusGraded {
   NOT_GRADED = "Chưa chấm"
 }
 
-export interface IFeedbackGradedAI {
-  id: number;
-  feedback: string;
-  score: number;
-}
 const AIScoring = () => {
   const drawerWidth = 450;
 
@@ -125,7 +127,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[0]?.score : 0,
+      current_final_grade: feedback?.length !== 0 ? feedback[0]?.feedback?.score : 0,
 
       feedback: feedback?.length !== 0 ? feedback[0]?.feedback : ""
     },
@@ -140,7 +142,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[1]?.score : 0,
+      current_final_grade: feedback?.length !== 0 ? feedback[1]?.feedback?.score : 0,
       feedback: feedback?.length !== 0 ? feedback[1]?.feedback : ""
     }
   ];
@@ -223,6 +225,32 @@ const AIScoring = () => {
       headerName: "Phản hồi",
       width: 200,
       renderCell: (params) => {
+        const feedbackTemp: IFeedback = params.value;
+        if (!feedbackTemp) {
+          return "";
+        }
+
+        const feedback = `
+				1. Nội dung:
+					- Độ chính xác: ${feedbackTemp?.content?.accuracy}
+					- Logic: ${feedbackTemp?.content?.logic}
+					- Sáng tạo: ${feedbackTemp?.content?.creativity}
+					- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+				
+				2. Hình thức:
+					- Ngữ pháp: ${feedbackTemp?.form?.grammar}
+					- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
+					- Chính tả:  ${feedbackTemp?.form?.spelling}
+					- Bố cục:  ${feedbackTemp?.form?.layout}
+				
+				3. Phong cách:
+					- Rõ ràng: ${feedbackTemp?.style?.clarity}
+					- Hấp dẫn: ${feedbackTemp?.style?.engagement}
+					- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+
+				4. Phản hồi chung:
+					- ${feedbackTemp?.overall}
+				`;
         return (
           <Box
             sx={{
@@ -230,7 +258,7 @@ const AIScoring = () => {
             }}
           >
             <Box className={classes.textLimit}>
-              <ParagraphBody>{params.value}</ParagraphBody>
+              <ParagraphBody>{feedback}</ParagraphBody>
             </Box>
           </Box>
         );
@@ -306,12 +334,18 @@ const AIScoring = () => {
 
   const question: QuestionEssay = useMemo(
     () => ({
-      content: "Mảng Động: Chúng Là Gì? Điều Gì Làm Chúng Khác Biệt Với Mảng Cơ Bản?",
+      content: "Cách Chuyển Tất Cả Các Số Không Của Mảng Về Cuối",
       answer: `
-				Việc chia tỷ lệ tự động mà mảng động (còn được gọi là mảng có thể phát triển, mảng có thể thay đổi kích thước, mảng có thể thay đổi hoặc ArrayLists trong Java) cung cấp là một lợi thế đáng kể.
+			Di chuyển tất cả các số không trong một mảng số nguyên đến cuối. Câu trả lời nên tránh sử dụng không gian không đổi và bảo toàn thứ tự tương đối của các thành phần của mảng.
 
-				Bạn phải luôn biết trước có bao nhiêu phần tử mà mảng của bạn sẽ lưu trữ vì mảng có kích thước cố định. Mặt khác, một mảng động sẽ phát triển khi bạn thêm các thành viên bổ sung vào nó, vì vậy bạn không cần biết trước kích thước chính xác của nó.
-				`,
+			Đầu vào: {1,2,3,0,8,0,4,7}
+
+			Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+
+			Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.
+
+			Giải pháp trước có độ phức tạp thời gian O (n), trong đó n là kích thước của đầu vào.
+			`,
       rubics: "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm",
       maxScore: 10
     }),
@@ -322,12 +356,17 @@ const AIScoring = () => {
     () => [
       {
         id: 1,
-        studentAnswer: "Mảng động là con trỏ"
+        studentAnswer: "Mảng động là con trỏ, chứa chuỗi ký tự ASCII"
       },
       {
         id: 2,
-        studentAnswer:
-          "Bạn phải luôn biết trước có bao nhiêu phần tử mà mảng của bạn sẽ lưu trữ vì mảng có kích thước cố định. Mặt khác, một mảng động sẽ phát triển khi bạn thêm các thành viên bổ sung vào nó, vì vậy bạn không cần biết trước kích thước chính xác của nó."
+        studentAnswer: `
+				Đầu vào: {1,2,3,0,8,0,4,7}
+
+				Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+				
+				Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.				
+				`
       }
     ],
     []
@@ -338,8 +377,12 @@ const AIScoring = () => {
   function isResponseFeedbackGradedAI(obj: any): obj is IFeedbackGradedAI {
     return (
       typeof obj.id === "number" &&
-      typeof obj.feedback === "string" &&
-      typeof obj.score === "number"
+      typeof obj.feedback === "object" &&
+      typeof obj.feedback.content === "object" &&
+      typeof obj.feedback.form === "object" &&
+      typeof obj.feedback.style === "object" &&
+      typeof obj.feedback.overall === "string" &&
+      typeof obj.feedback.score === "number"
     );
   }
 
@@ -349,7 +392,6 @@ const AIScoring = () => {
         setLoading(true);
         await scoringByAI(data, question)
           .then((results) => {
-            console.log(results);
             if (results && isResponseFeedbackGradedAI(results[0])) {
               setFeedback(results);
               setOpenSnackbarAlert(true);

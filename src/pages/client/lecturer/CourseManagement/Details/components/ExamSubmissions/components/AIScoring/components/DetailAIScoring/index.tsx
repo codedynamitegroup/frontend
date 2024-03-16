@@ -29,9 +29,9 @@ import { routes } from "routes/routes";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import ReactQuill from "react-quill";
 import { Textarea } from "@mui/joy";
 import MDEditor from "@uiw/react-md-editor";
+import { EFeedbackGradedCriteriaRate, IFeedback } from "service/ScoringByAI";
 
 const drawerWidth = 450;
 
@@ -141,7 +141,31 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
-      setAssignmentFeedback(feedback?.feedback);
+      const feedbackTemp: IFeedback = feedback?.feedback;
+      if (feedbackTemp) {
+        const feedbackTemplate = `
+1. Nội dung:
+	- Độ chính xác: ${feedbackTemp.content?.accuracy}
+	- Logic: ${feedbackTemp.content?.logic}
+	- Sáng tạo: ${feedbackTemp.content?.creativity}
+	- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+
+2. Hình thức:
+	- Ngữ pháp: ${feedbackTemp?.form?.grammar}
+	- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
+	- Chính tả:  ${feedbackTemp?.form?.spelling}
+	- Bố cục:  ${feedbackTemp?.form?.layout}
+
+3. Phong cách:
+	- Rõ ràng: ${feedbackTemp?.style?.clarity}
+	- Hấp dẫn: ${feedbackTemp?.style?.engagement}
+	- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+
+4. Phản hồi chung:
+	- ${feedbackTemp?.overall}
+`;
+        setAssignmentFeedback(feedbackTemplate);
+      }
       setAssignmentMaximumGrade(feedback?.current_final_grade);
     }
   }, [feedback]);
