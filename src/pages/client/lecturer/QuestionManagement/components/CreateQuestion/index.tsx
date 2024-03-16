@@ -44,9 +44,10 @@ const QuestionCreated = (props: Props) => {
   const navigate = useNavigate();
 
   const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
+  let { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  if (props.insideCrumb) headerHeight = 0;
   const [initialized, setInitialized] = useState(true);
   let outletContext: any = useOutletContext();
 
@@ -63,7 +64,7 @@ const QuestionCreated = (props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      {props.insideCrumb && <Header ref={headerRef} />}
+      <Header ref={headerRef} />
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           {props.insideCrumb ? (
@@ -80,7 +81,7 @@ const QuestionCreated = (props: Props) => {
                 Học OOP
               </span>{" "}
               {"> "}
-              <span onClick={() => navigate("/")}>Tạo câu hỏi</span>
+              <span>Tạo câu hỏi</span>
             </ParagraphBody>
           ) : (
             <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
