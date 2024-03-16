@@ -68,7 +68,24 @@ const LecturerCourseExamSubmissions = () => {
     const codeSubmissionsData = {
       code_submissions: [
         {
-          code_content: 'console.log("Hello Wolrd")',
+          code_content: `public class Solution {
+            public int reverse(int x) {
+                StringBuilder result = new StringBuilder();
+                if (x < 0) {
+                    result.append('-');
+                    x = -x;
+                }
+                while (x != 0) {
+                    result.append(x % 10);
+                    x /= 10;
+                }
+                try {
+                    return Integer.parseInt(result.toString());
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            }
+        }`,
           extension: ".js",
           language: "javascript",
           student_id: "1",
@@ -76,7 +93,18 @@ const LecturerCourseExamSubmissions = () => {
           created_at: "2023-07-23 17:12:33 +0200"
         },
         {
-          code_content: 'console.log("Hello Hell")',
+          code_content: `class Solution {
+            public int reverse(int x) {
+                long result = 0;
+                while (x != 0) {
+                    result = result*10 + x%10;
+                    x /= 10;
+                        if( result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
+                            return 0;
+                }
+                return (int)result;
+            }
+        }`,
           extension: ".js",
           language: "javascript",
           student_id: "2",

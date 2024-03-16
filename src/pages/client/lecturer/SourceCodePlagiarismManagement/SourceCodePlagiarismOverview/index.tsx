@@ -21,6 +21,7 @@ import FilePairsTable from "./components/FilePairsTable";
 import LabelSubmissionsTable from "./components/LabelSubmissionsTable";
 import SimilarityHistogram from "./components/SimilarityHistogram";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -96,6 +97,7 @@ export interface DolosCustomFile {
 }
 
 export default function LecturerSourceCodePlagiarismManagement() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
@@ -238,42 +240,64 @@ export default function LecturerSourceCodePlagiarismManagement() {
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Heading1>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading1>
-              <ParagraphBody>Báo cáo phát hiện gian lận mã nguồn</ParagraphBody>
+              <ParagraphBody translation-key='code_plagiarism_report_description'>
+                {t("code_plagiarism_report_description")}
+              </ParagraphBody>
               <Grid container spacing={1}>
                 <Grid item xs={12} md={3}>
                   <Card className={classes.cardWrapper}>
-                    <Heading2 className={classes.cardTitleHeader}>Thông tin báo cáo</Heading2>
+                    <Heading2
+                      className={classes.cardTitleHeader}
+                      translation-key='code_plagiarism_report_info'
+                    >
+                      {t("code_plagiarism_report_info")}
+                    </Heading2>
                     <Box className={classes.reportOpenTimeWrapper}>
-                      <Tooltip title='Thời gian mở bài kiểm tra' placement='top'>
+                      <Tooltip
+                        title={t("code_plagiarism_report_creation_date_tooltip")}
+                        placement='top'
+                      >
                         <FontAwesomeIcon icon={faCalendar} color='#737373' size={"lg"} />
                       </Tooltip>
                       <ParagraphBody>
                         {data.report?.createdAt
                           ? new Date(data.report.createdAt).toLocaleString()
-                          : "Chưa cập nhật"}
+                          : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
-                      <Tooltip title='Số lượng bài nộp' placement='top'>
+                      <Tooltip
+                        title={t("code_plagiarism_report_analyzed_submissions_count_tooltip")}
+                        placement='top'
+                      >
                         <FontAwesomeIcon icon={faFile} color='#737373' size={"lg"} />
                       </Tooltip>
-                      <ParagraphBody>
-                        {data.report?.files ? data.report.files.length : "Chưa cập nhật"} bài nộp
+                      <ParagraphBody translation-key='code_plagiarism_report_analyzed_submissions_count'>
+                        {data.report?.files
+                          ? t("code_plagiarism_report_analyzed_submissions_count", {
+                              count: data.report.files.length
+                            })
+                          : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
                     </Box>
                     <Box className={classes.codeLanguage}>
-                      <Tooltip title='Ngôn ngữ lập trình' placement='top'>
+                      <Tooltip title={t("contest_programming_language_title")} placement='top'>
                         <FontAwesomeIcon icon={faCode} color='#737373' size={"lg"} />
                       </Tooltip>
                       <ParagraphBody>
-                        {data.report?.language ? data.report.language?.name : "Chưa cập nhật"}
+                        {data.report?.language
+                          ? data.report.language?.name
+                          : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
                     </Box>
                     <TextTitle className={classes.labelTitle}>
                       {`${data.report?.labels.length || 0} nhãn được phát hiện`}
                     </TextTitle>
                     <LabelSubmissionsTable
-                      headers={["Nhãn", "Bài nộp"]}
+                      headers={[
+                        t("code_plagiarism_label_title"),
+                        t("code_plagiarism_submissions_title")
+                      ]}
                       rows={
                         data.report?.labels.map((label) => ({
                           label: label.label,
@@ -298,10 +322,14 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             </Card>
                           </Grid>
                           <Grid item xs={6}>
-                            <Heading4>
-                              Độ tương đồng cao nhất{" "}
+                            <Heading4 translation-key='code_plagiarism_highest_similarity'>
+                              {t("code_plagiarism_highest_similarity")}{" "}
                               <Tooltip
-                                title={`Phần trăm tương đồng cao nhất giữa 2 bài nộp là ${Math.round((data.report?.maxHighSimilarity || 0) * 100)}%`}
+                                title={t("code_plagiarism_highest_similarity_tooltip", {
+                                  similarity: Math.round(
+                                    (data.report?.maxHighSimilarity || 0) * 100
+                                  )
+                                })}
                                 placement='top'
                               >
                                 <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
@@ -317,8 +345,11 @@ export default function LecturerSourceCodePlagiarismManagement() {
                             <Link
                               to={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
                               state={{ pairs: data.report?.pairs }}
+                              translation-key='code_plagiarism_view_all_code_plagiarism_file_pairs'
                             >
-                              Xem tất cả cặp bài nộp
+                              {t("code_plagiarism_view_all_code_plagiarism_file_pairs", {
+                                count: data.report?.pairs.length || 0
+                              })}
                             </Link>
                           </Grid>
                         </Grid>
@@ -340,9 +371,9 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           </Grid>
                           <Grid item xs={6}>
                             <Heading4>
-                              Độ tương đồng trung bình{" "}
+                              {t("code_plagiarism_average_similarity")}{" "}
                               <Tooltip
-                                title={`Trung bình phần trăm tương đồng giữa các bài nộp`}
+                                title={t("code_plagiarism_average_similarity_tooltip")}
                                 placement='top'
                               >
                                 <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
@@ -356,45 +387,14 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               {Math.round((data.report?.averageHighSimilarity || 0) * 100)}%
                             </ParagraphBody>
                             <ParagraphSmall>
-                              Trung vị độ tương đồng:{" "}
+                              {t("code_plagiarism_median_similarity")}
+                              {": "}
                               {Math.round((data.report?.medianHighSimilarity || 0) * 100)}%
                             </ParagraphSmall>
                           </Grid>
                         </Grid>
                       </Card>
                     </Grid>
-                    {/* <Grid item xs={12}>
-                      <Card className={classes.cardWrapper}>
-                        <Grid container spacing={1}>
-                          <Grid item xs={6}>
-                            <Card className={classes.similarityWrapper}>
-                              <FontAwesomeIcon icon={faUsers} color={"var(--blue-500)"} size='3x' />
-                            </Card>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Heading4>
-                              Chia Cụm{" "}
-                              <Tooltip
-                                title={`Tất cả bài nộp sẽ được chia thành các cụm dựa trên độ tương đồng. Nếu 1 cặp bài nào đó có độ tương đồng cao hơn độ tương đồng cao nhất, chúng sẽ được chia vào cùng 1 cụm.`}
-                                placement='top'
-                              >
-                                <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
-                              </Tooltip>
-                            </Heading4>
-                            <ParagraphBody
-                              fontSize={"30px"}
-                              fontWeight={600}
-                              colorname='--eerie-black'
-                            >
-                              0
-                            </ParagraphBody>
-                            <ParagraphSmall>
-                              Dựa trên độ tương đồng cao nhất hiện tại ({threshold}%)
-                            </ParagraphSmall>
-                          </Grid>
-                        </Grid>
-                      </Card>
-                    </Grid> */}
                   </Grid>
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -402,9 +402,9 @@ export default function LecturerSourceCodePlagiarismManagement() {
                     <Grid container spacing={1}>
                       <Grid item xs={8}>
                         <Heading4>
-                          Phân phối độ tương đồng{" "}
+                          {t("code_plagiarism_similarity_distribution_chart_title")}{" "}
                           <Tooltip
-                            title={`Biếu đồ thể hiện phân phối độ tương đồng giữa các bài nộp. Phân phối này sẽ khác nhau tuỳ theo bộ dữ liệu đầu vào, và cho biết góc độ của độ tương đồng mà bạn muốn. Bạn có thể thay đổi ngưỡng giá trị độ tương đồng cao nhất`}
+                            title={t("code_plagiarism_similarity_distribution_chart_tooltip")}
                             placement='top'
                           >
                             <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
@@ -412,8 +412,12 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         </Heading4>
                       </Grid>
                       <Grid item xs={4}>
-                        <ParagraphBody id='input-series-number' gutterBottom>
-                          Ngưỡng độ tương đồng cao nhất &#8805; {threshold}%
+                        <ParagraphBody
+                          id='input-series-number'
+                          gutterBottom
+                          translation-key='threshold_title'
+                        >
+                          {t("code_plagiarism_threshold_title")} &#8805; {threshold}%
                         </ParagraphBody>
                         <Slider
                           value={threshold}
@@ -437,44 +441,30 @@ export default function LecturerSourceCodePlagiarismManagement() {
                   <Card className={classes.cardWrapper}>
                     <Grid container spacing={1}>
                       <Grid item xs={12}>
-                        <Heading4>Danh sách cặp tệp bài nộp</Heading4>
+                        <Heading4 translation-key='code_plagiarism_file_pairs_list_title'>
+                          {t("code_plagiarism_file_pairs_list_title")}
+                        </Heading4>
                       </Grid>
                       <Grid item xs={12}>
-                        <ParagraphBody>
-                          Danh sách các cặp tệp bài nộp có độ tương đồng cao nhất với nhau.
+                        <ParagraphBody translation-key='code_plagiarism_file_pairs_list_description'>
+                          {t("code_plagiarism_file_pairs_list_description")}
                         </ParagraphBody>
                       </Grid>
                       <Grid item xs={12}>
                         <FilePairsTable
                           headers={[
-                            "Tệp trái",
-                            "Tệp phải",
-                            "Độ tương đồng cao nhất",
-                            "Đoạn trùng dài nhất",
-                            "Trùng lập tổng cộng"
+                            t("code_plagiarism_left_file_title"),
+                            t("code_plagiarism_right_file_title"),
+                            t("code_plagiarism_highest_similarity_title"),
+                            t("code_plagiarism_longest_fragment_title"),
+                            t("code_plagiarism_total_overlap_title")
                           ]}
-                          // rows={data.report?.pairs}
                           rows={data.report?.pairs || []}
                         />
                       </Grid>
                     </Grid>
                   </Card>
                 </Grid>
-                {/* <Grid item xs={12} md={6}>
-                  <Card className={classes.cardWrapper}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={12}>
-                        <Heading4>Danh sách chia cụm</Heading4>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ParagraphBody>
-                          Bạn có thể xem chi tiết từng cụm bài nộp theo độ tương đồng.
-                        </ParagraphBody>
-                      </Grid>
-                      <Grid item xs={12}></Grid>
-                    </Grid>
-                  </Card>
-                </Grid> */}
               </Grid>
             </Box>
           </Card>

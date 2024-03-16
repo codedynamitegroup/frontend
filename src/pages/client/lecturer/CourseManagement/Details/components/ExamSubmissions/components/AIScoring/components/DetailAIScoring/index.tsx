@@ -99,6 +99,7 @@ export default function DetailAIScoring() {
   const location = useLocation();
   const feedback = location?.state.feedback;
   const answer = location?.state.answer;
+  const question = location?.state.question;
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
@@ -141,28 +142,33 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
+      console.log("feedback", feedback);
       const feedbackTemp: IFeedback = feedback?.feedback;
       if (feedbackTemp) {
         const feedbackTemplate = `
-1. Nội dung:
-	- Độ chính xác: ${feedbackTemp.content?.accuracy}
-	- Logic: ${feedbackTemp.content?.logic}
-	- Sáng tạo: ${feedbackTemp.content?.creativity}
-	- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+1. **Nội dung:**
 
-2. Hình thức:
-	- Ngữ pháp: ${feedbackTemp?.form?.grammar}
-	- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
-	- Chính tả:  ${feedbackTemp?.form?.spelling}
-	- Bố cục:  ${feedbackTemp?.form?.layout}
+	- **Độ chính xác:** ${feedbackTemp.content?.accuracy}
+	- **Logic:** ${feedbackTemp.content?.logic}
+	- **Sáng tạo:** ${feedbackTemp.content?.creativity}
+	- **Sử dụng nguồn:** ${feedbackTemp?.content?.sourceUsage}
 
-3. Phong cách:
-	- Rõ ràng: ${feedbackTemp?.style?.clarity}
-	- Hấp dẫn: ${feedbackTemp?.style?.engagement}
-	- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+2. **Hình thức:**
 
-4. Phản hồi chung:
-	- ${feedbackTemp?.overall}
+	- **Ngữ pháp:** ${feedbackTemp?.form?.grammar}
+	- **Từ vựng:**  ${feedbackTemp?.form?.vocabulary}
+	- **Chính tả:**  ${feedbackTemp?.form?.spelling}
+	- **Bố cục:** ${feedbackTemp?.form?.layout}
+
+3. **Phong cách:**
+
+	- **Rõ ràng:** ${feedbackTemp?.style?.clarity}
+	- **Hấp dẫn:** ${feedbackTemp?.style?.engagement}
+	- **Phù hợp:** ${feedbackTemp?.style?.appropriateness}
+
+4. **Phản hồi chung:**
+
+	${feedbackTemp?.overall}
 `;
         setAssignmentFeedback(feedbackTemplate);
       }
@@ -230,7 +236,13 @@ export default function DetailAIScoring() {
             overflow: "auto"
           }}
         >
-          <Textarea value={"Câu hỏi 2: Con trỏ là gì?"} readOnly={true} />
+          <Textarea
+            value={question?.content}
+            readOnly={true}
+            minRows={2}
+            maxRows={3}
+            sx={{ backgroundColor: "white" }}
+          />
           <Card className={classes.card}>
             <TextEditor value={assignmentStudent} readOnly={true} />
           </Card>
@@ -273,7 +285,7 @@ export default function DetailAIScoring() {
               </Box>
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm trên thang điểm 10</TextTitle>
+              <TextTitle>Điểm trên thang điểm {question?.maxScore}</TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}

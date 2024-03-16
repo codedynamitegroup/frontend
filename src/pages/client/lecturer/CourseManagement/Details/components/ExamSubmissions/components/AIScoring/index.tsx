@@ -322,7 +322,8 @@ const AIScoring = () => {
     navigate(routes.lecturer.exam.ai_scroring_detail, {
       state: {
         feedback: params.row,
-        answer: data[params.row.id - 1]?.studentAnswer
+        answer: data[params.row.id - 1]?.studentAnswer,
+        question: question
       }
     });
   };

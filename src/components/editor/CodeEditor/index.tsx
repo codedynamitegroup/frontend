@@ -39,7 +39,7 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: Co
   }, [buildFragments]);
 
   const extensions = useMemo(() => {
-    const extensions = [];
+    const extensions: any[] = [];
 
     const supportedLanguagesExtensions = [
       langs.java(),
@@ -50,7 +50,12 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: Co
       langs.html()
     ];
 
-    if (buildFragments !== undefined && lineNumber !== undefined) {
+    if (
+      buildFragments !== undefined &&
+      lineNumber !== undefined &&
+      lineNumber.length > 0 &&
+      buildFragments.length > 0
+    ) {
       extensions.push(
         zebraStripes({
           lineNumber: lineNumber,
