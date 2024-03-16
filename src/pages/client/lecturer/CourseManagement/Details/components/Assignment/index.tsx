@@ -13,6 +13,7 @@ import { useState } from "react";
 import ReusedCourseResourceDialog from "./components/ReuseResourceDialog/CourseDialog";
 import ReusedResourceDialog from "./components/ReuseResourceDialog/ResourceDialog";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const LecturerCourseAssignment = () => {
   const { t } = useTranslation();
@@ -71,7 +72,7 @@ const LecturerCourseAssignment = () => {
           <Grid item xs={5}>
             <MenuPopup
               popupId='add-question-popup'
-              triggerButtonText={t("course_lecturer_assignment_add_new")}
+              triggerButtonText={i18next.format(t("common_add_new"), "firstUppercase")}
               triggerButtonProps={{
                 width: "150px"
               }}
@@ -91,7 +92,7 @@ const LecturerCourseAssignment = () => {
                 }
               ]}
               translation-key={[
-                "course_lecturer_assignment_add_new",
+                "common_add_new",
                 "course_lecturer_assignment_create_new_assignment",
                 "course_lecturer_assignment_create_exam",
                 "course_lecturer_assignment_reuse_resource"
