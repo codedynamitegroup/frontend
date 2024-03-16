@@ -22,6 +22,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
+interface Props {
+  insideCrumb?: boolean;
+}
 export enum AlertType {
   Success = "success",
   INFO = "info",
@@ -48,15 +51,15 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
-const AIQuestionCreated = () => {
+const AIQuestionCreated = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
-  const breadcrumbs = matches.some((value: any) => value.handle?.crumbName === "default");
 
   const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
+  let { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+  if (props.insideCrumb) headerHeight = 0;
 
   const [modeEdit, setModeEdit] = useState(false);
 
@@ -135,56 +138,14 @@ const AIQuestionCreated = () => {
 
   return (
     <Grid className={classes.root}>
-      {breadcrumbs && <Header ref={headerRef} />}
+      <Header ref={headerRef} />
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
-          {breadcrumbs ? (
-            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(routes.lecturer.course.management)}>
-                Quản lý khoá học
-              </span>{" "}
-              {"> "}
-              <span
-                onClick={() =>
-                  navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                }
-              >
-                CS202 - Nhập môn lập trình
-              </span>{" "}
-              {"> "}
-              <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                Xem bài tập
-              </span>{" "}
-              {"> "}
-              <span onClick={() => navigate(routes.lecturer.exam.create)}>
-                Tạo bài kiểm tra
-              </span>{" "}
-              {"> "}
-              <span>Tạo câu hỏi</span>
-            </ParagraphBody>
-          ) : (
-            <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              {matches.map((value: any, i) => {
-                if (value.handle === undefined) return null;
-                return (
-                  <span
-                    onClick={() => {
-                      if (value.handle?.state)
-                        navigate(value.pathname, { state: value.handle?.state });
-                      else navigate(value.pathname);
-                    }}
-                    translation-key={
-                      value.handle["translation-key"] ? value.handle["translation-key"] : "none"
-                    }
-                  >
-                    {i !== matches.length - 1
-                      ? `${value.handle?.crumbName} > `
-                      : `${value.handle?.crumbName}`}
-                  </span>
-                );
-              })}
-            </ParagraphBody>
-          )}
+          <ParagraphBody
+            className={classes.breadCump}
+            colorname='--gray-50'
+            fontWeight={"600"}
+          ></ParagraphBody>
         </Box>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={6}>

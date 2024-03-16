@@ -53,7 +53,7 @@ const LecturerCoursesManagement = (props: Props) => {
                       path={value.path}
                       element={
                         value.code === "ai" ? (
-                          <AIQuestionCreated />
+                          <AIQuestionCreated insideCrumb={true} />
                         ) : (
                           <QuestionCreated qtype={value.code} insideCrumb={true} />
                         )
