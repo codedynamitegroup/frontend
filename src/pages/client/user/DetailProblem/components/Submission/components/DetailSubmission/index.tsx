@@ -97,7 +97,7 @@ class Solution {
             setFeedbackContent(`
 I. **Phân tích**
 
-\n 1. **Đúng đắn:**
+\n 1. **Tính Đúng đắn:**
 
 \n\na. **Tính chính xác:**  
 \n\n${feedbackTemp.analysis?.correctness?.accuracy}  
@@ -106,7 +106,7 @@ I. **Phân tích**
 \n\nc. **Tính nhất quán:**
 \n\n${feedbackTemp.analysis?.correctness?.consistency}  
 
-\n 2. **Hiệu quả:**
+\n 2. **Tính hiệu quả:**
 
 \n\na. **Thời gian thực thi:**
 \n\n${feedbackTemp.analysis?.efficiency?.executionTime}  
