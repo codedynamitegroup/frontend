@@ -380,8 +380,30 @@ const AIScoring = () => {
       typeof obj.id === "number" &&
       typeof obj.feedback === "object" &&
       typeof obj.feedback.content === "object" &&
+      typeof obj.feedback.content.accuracy === "string" &&
+      obj.feedback.content.accuracy !== "" &&
+      typeof obj.feedback.content.logic === "string" &&
+      obj.feedback.content.logic !== "" &&
+      typeof obj.feedback.content.creativity === "string" &&
+      obj.feedback.content.creativity !== "" &&
+      typeof obj.feedback.content.sourceUsage === "string" &&
+      obj.feedback.content.sourceUsage !== "" &&
       typeof obj.feedback.form === "object" &&
+      typeof obj.feedback.form.grammar === "string" &&
+      obj.feedback.form.grammar !== "" &&
+      typeof obj.feedback.form.vocabulary === "string" &&
+      obj.feedback.form.vocabulary !== "" &&
+      typeof obj.feedback.form.spelling === "string" &&
+      obj.feedback.form.spelling !== "" &&
+      typeof obj.feedback.form.layout === "string" &&
+      obj.feedback.form.layout !== "" &&
       typeof obj.feedback.style === "object" &&
+      typeof obj.feedback.style.clarity === "string" &&
+      obj.feedback.style.clarity !== "" &&
+      typeof obj.feedback.style.engagement === "string" &&
+      obj.feedback.style.engagement !== "" &&
+      typeof obj.feedback.style.appropriateness === "string" &&
+      obj.feedback.style.appropriateness !== "" &&
       typeof obj.feedback.overall === "string" &&
       typeof obj.feedback.score === "number"
     );
