@@ -37,6 +37,7 @@ import classes from "./styles.module.scss";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { githubLight } from "@uiw/codemirror-theme-github";
 import { EditorState, EditorView } from "@uiw/react-codemirror";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -88,6 +89,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function LecturerSourceCodePlagiarismFilePairDetails() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || "0";
@@ -272,13 +274,14 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
         >
           <Card className={classes.formBody}>
             <Box className={classes.cardHeader} ref={cardHeaderRef}>
-              <Heading1>
-                So sánh {data?.leftFile?.extra?.filename || ""} với{" "}
-                {data?.rightFile?.extra?.filename || ""}
+              <Heading1 translation-key='code_plagiarism_no_file_pairs_comparing_title'>
+                {t("code_plagiarism_no_file_pairs_comparing_title", {
+                  leftFileName: data?.leftFile?.extra?.filename || "",
+                  rightFileName: data?.rightFile?.extra?.filename || ""
+                })}
               </Heading1>
-              <ParagraphBody>
-                So sánh giữa 2 tệp code. Bạn có thể xem các đoạn code trùng lặp và khác biệt giữa 2
-                tệp code.
+              <ParagraphBody translation-key='code_plagiarism_no_file_pairs_comparing_description'>
+                {t("code_plagiarism_no_file_pairs_comparing_description")}
               </ParagraphBody>
             </Box>
             <Card
@@ -298,8 +301,18 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                   <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Tabs value={tabIndex} onChange={handleChangeTabIndex} aria-label='tabIndex'>
-                        <Tab icon={<JoinInnerIcon />} iconPosition='start' label='Trùng khớp' />
-                        <Tab icon={<DifferenceIcon />} iconPosition='start' label='Khác nhau' />
+                        <Tab
+                          icon={<JoinInnerIcon />}
+                          iconPosition='start'
+                          label={t("code_plagiarism_match_title")}
+                          translation-key='code_plagiarism_match_title'
+                        />
+                        <Tab
+                          icon={<DifferenceIcon />}
+                          iconPosition='start'
+                          label={t("code_plagiarism_diff_title")}
+                          translation-key='code_plagiarism_diff_title'
+                        />
                       </Tabs>
                     </Grid>
                     <Grid item xs={6}>
@@ -321,40 +334,48 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                         </Grid>
                         <Grid item xs={3}>
                           <Tooltip
-                            title={"Tỷ lệ các dấu vân tay chung giữa hai tệp"}
+                            title={t("code_plagiarism_shared_fingerprints_fraction_tooltip")}
                             placement='top'
+                            translation-key='code_plagiarism_shared_fingerprints_fraction_tooltip'
                           >
                             <Box className={classes.flexBoxWrapper}>
                               <ParagraphBody fontSize={"30px"} fontWeight={600}>
                                 &asymp;
                               </ParagraphBody>
                               <ParagraphBody>
-                                Độ tương đồng: {Math.round(data?.highestSimilarity * 100 || 0)}%
-                              </ParagraphBody>
-                            </Box>
-                          </Tooltip>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Tooltip title={"Số dấu vân tay chung giữa hai tệp"} placement='top'>
-                            <Box className={classes.flexBoxWrapper}>
-                              <FileCopyIcon />
-                              <ParagraphBody>
-                                Đoạn trùng dài nhất: {data?.longestFragment || 0}
+                                {t("code_plagiarism_similarity_title")}
+                                {": "}
+                                {Math.round(data?.highestSimilarity * 100 || 0)}%
                               </ParagraphBody>
                             </Box>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
                           <Tooltip
-                            title={
-                              "Độ dài (tính bằng dấu vân tay) của chuỗi con dấu vân tay dài nhất giữa hai tệp, hữu ích khi không phải toàn bộ mã nguồn được sao chép"
-                            }
+                            title={t("code_plagiarism_longest_fragment_tooltip")}
                             placement='top'
+                            translation-key='code_plagiarism_longest_fragment_tooltip'
+                          >
+                            <Box className={classes.flexBoxWrapper}>
+                              <FileCopyIcon />
+                              <ParagraphBody translation-key='code_plagiarism_longest_fragment_title'>
+                                {t("code_plagiarism_longest_fragment_title")}:{" "}
+                                {data?.longestFragment || 0}
+                              </ParagraphBody>
+                            </Box>
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Tooltip
+                            title={t("code_plagiarism_total_overlap_tooltip")}
+                            placement='top'
+                            translation-key='code_plagiarism_total_overlap_tooltip'
                           >
                             <Box className={classes.flexBoxWrapper}>
                               <FileCopyOutlinedIcon />
                               <ParagraphBody>
-                                Trùng lặp tổng cộng: {data?.totalOverlap || 0}
+                                {t("code_plagiarism_total_overlap_title")}:{" "}
+                                {data?.totalOverlap || 0}
                               </ParagraphBody>
                             </Box>
                           </Tooltip>

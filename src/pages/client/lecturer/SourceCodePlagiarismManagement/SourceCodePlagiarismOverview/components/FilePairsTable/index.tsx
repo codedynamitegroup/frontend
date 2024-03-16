@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import CircularProgressWithLabel from "./components/CircularProgressWithLabel";
 import { routes } from "routes/routes";
 import { DolosCustomFile } from "../..";
+import { useTranslation } from "react-i18next";
 
 export default function FilePairsTable({
   rows,
@@ -41,6 +42,7 @@ export default function FilePairsTable({
   }[];
   headers: string[];
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
   const [searchParams] = useSearchParams();
@@ -93,7 +95,9 @@ export default function FilePairsTable({
           {rows.length === 0 && (
             <tr>
               <td colSpan={3}>
-                <ParagraphBody align='center'>Không có bài nộp nào</ParagraphBody>
+                <ParagraphBody align='center' translation-key='no_submissions_message'>
+                  {t("no_submissions_message")}
+                </ParagraphBody>
               </td>
             </tr>
           )}
@@ -114,8 +118,14 @@ export default function FilePairsTable({
               }}
             >
               <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                <ParagraphBody colorname='--primary' margin={"0 10px"}>
-                  Xem tất cả ({rows.length}) cặp tệp bài nộp
+                <ParagraphBody
+                  colorname='--primary'
+                  margin={"0 10px"}
+                  translation-key='code_plagiarism_view_all_code_plagiarism_file_pairs'
+                >
+                  {t("code_plagiarism_view_all_code_plagiarism_file_pairs", {
+                    count: rows.length || 0
+                  })}
                 </ParagraphBody>
                 <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
               </Box>
