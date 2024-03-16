@@ -32,7 +32,7 @@ const QuestionBankManagementLayout = () => {
             <CustomTab label='Cá nhân' value='2' />
           </TabList>
         </Box>
-        <Outlet context={[value, setValue]} />
+        <Outlet context={{ value, setValue }} />
       </TabContext>
     </Box>
   );

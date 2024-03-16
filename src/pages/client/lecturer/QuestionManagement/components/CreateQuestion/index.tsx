@@ -48,15 +48,16 @@ const QuestionCreated = (props: Props) => {
     ref: headerRef
   });
   const [initialized, setInitialized] = useState(true);
+  let outletContext: any = useOutletContext();
 
-  const [value, setValue]: any[] = useOutletContext();
   useEffect(() => {
     if (initialized) {
       setInitialized(false);
     } else {
       navigate("/lecturer/question-bank-management");
     }
-  }, [value]);
+  }, [outletContext]);
+
   const urlParams = useParams();
   console.log(urlParams);
 

@@ -194,7 +194,7 @@ const QuestionListOfCourse = () => {
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
-  const [value, setValue]: any[] = useOutletContext();
+  const { value, setValue }: any = useOutletContext();
   const [initialized, setInitialized] = useState(true);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
   const { t } = useTranslation();
