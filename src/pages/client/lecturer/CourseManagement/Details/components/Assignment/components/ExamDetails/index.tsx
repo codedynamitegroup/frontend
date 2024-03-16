@@ -14,8 +14,11 @@ import { millisToHoursAndMinutesString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import GradingExamTable from "./components/GradingExamTable";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const LecturerCourseExamDetails = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const examOpenTime = dayjs();
   const examCloseTime = dayjs();
@@ -42,7 +45,7 @@ const LecturerCourseExamDetails = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody>Quay lại</ParagraphBody>
+        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>Bài kiểm tra 1</Heading1>
       <Card
@@ -54,7 +57,9 @@ const LecturerCourseExamDetails = () => {
       >
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
+            <ParagraphSmall fontWeight={"600"} translation-key='course_assignment_detail_open_time'>
+              {t("course_assignment_detail_open_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -64,7 +69,12 @@ const LecturerCourseExamDetails = () => {
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
+            <ParagraphSmall
+              fontWeight={"600"}
+              translation-key='course_assignment_detail_close_time'
+            >
+              {t("course_assignment_detail_close_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>
@@ -74,7 +84,9 @@ const LecturerCourseExamDetails = () => {
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
           <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
+            <ParagraphSmall fontWeight={"600"} translation-key='common_do_time'>
+              {t("common_do_time")}:
+            </ParagraphSmall>
           </Grid>
           <Grid item>
             <ParagraphBody>{millisToHoursAndMinutesString(examLimitTimeInMillis)}</ParagraphBody>
@@ -131,7 +143,9 @@ const LecturerCourseExamDetails = () => {
             );
           }}
         >
-          <ParagraphBody>Xem danh sách bài nộp</ParagraphBody>
+          <ParagraphBody translation-key='course_lecturer_assignment_see_submit'>
+            {t("course_lecturer_assignment_see_submit")}
+          </ParagraphBody>
         </Button>
         <Button
           btnType={BtnType.Primary}
@@ -139,37 +153,55 @@ const LecturerCourseExamDetails = () => {
             navigate(routes.lecturer.exam.grading);
           }}
         >
-          <ParagraphBody>Chấm điểm</ParagraphBody>
+          <ParagraphBody translation-key='course_lecturer_assignment_grading'>
+            {t("course_lecturer_assignment_grading")}
+          </ParagraphBody>
         </Button>
       </Box>
-      <Heading2>Tổng quan chấm điểm</Heading2>
+      <Heading2>
+        {`${t("common_overview")} ${i18next.format(t("course_lecturer_assignment_grading"), "lowercase")}`}
+      </Heading2>
       <GradingExamTable
         rows={[
           {
-            header: "Ẩn khỏi sinh viên",
+            header: t("course_lecturer_assignment_hide"),
             data: "Có"
           },
           {
-            header: "Số lượng sinh viên",
+            header: t("course_lecturer_assignment_student_num"),
             data: "1"
           },
           {
-            header: "Đã nộp",
+            header: t("course_lecturer_assignment_submitted"),
             data: "1"
           },
           {
-            header: "Cần chấm điểm",
+            header: t("course_lecturer_assignment_need_grading"),
             data: "1"
           },
           {
-            header: "Thời gian còn lại",
+            header: t("common_time_left"),
             data: "1 ngày 2 giờ"
           }
         ]}
+        translation-key={[
+          "course_lecturer_assignment_hide",
+          "course_lecturer_assignment_student_num",
+          "course_lecturer_assignment_submitted",
+          "course_lecturer_assignment_need_grading",
+          "common_time_left"
+        ]}
       />
-      <Heading2>Tóm tắt những lần làm bài trước</Heading2>
+      <Heading2 translation-key='course_management_exam_prev'>
+        {t("course_management_exam_prev")}
+      </Heading2>
       <ExamAttemptSummaryTable
-        headers={["Lần thử", "Trạng thái", "Điểm / 20.0", "Xem đánh giá"]}
+        headers={[
+          t("course_management_exam_try_time"),
+          t("list_problem_problem_status"),
+          `${t("common_score")} / 20.0`,
+          t("common_see_evaluating")
+        ]}
         rows={[
           {
             no: "Xem trước",
@@ -190,9 +222,15 @@ const LecturerCourseExamDetails = () => {
             submitted_at: dayjs().toString()
           }
         ]}
+        translation-key={[
+          "common_score",
+          "course_management_exam_try_time",
+          "list_problem_problem_status",
+          "common_see_evaluating"
+        ]}
       />
-      <Heading2>
-        Điểm cao nhất: <span style={{ color: "red" }}>20.0</span>
+      <Heading2 translation-key='course_management_exam_max_score'>
+        {t("course_management_exam_max_score")}: <span style={{ color: "red" }}>20.0</span>
       </Heading2>
       <Button
         btnType={BtnType.Primary}
@@ -201,7 +239,9 @@ const LecturerCourseExamDetails = () => {
         }}
         width='fit-content'
       >
-        <ParagraphBody>Xem trước bài kiểm tra</ParagraphBody>
+        <ParagraphBody translation-key='course_management_exam_preview'>
+          {t("course_management_exam_preview")}
+        </ParagraphBody>
       </Button>
     </Box>
   );

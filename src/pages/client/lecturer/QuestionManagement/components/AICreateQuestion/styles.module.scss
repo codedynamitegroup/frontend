@@ -108,14 +108,19 @@
     }
   }
   .answer {
+    [class~="MuiFormGroup-root"] {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .answerItem {
       display: flex;
       gap: 15px;
-      align-items: center;
+      align-items: flex-start;
       max-width: 500px;
 
       .answerContent {
-        padding: 5px 10px;
+        padding: 0px 10px;
       }
 
       .answerContentEdit {

@@ -31,6 +31,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import useBoxDimensions from "hooks/useBoxDimensions";
 import ReactQuill from "react-quill";
 import { Textarea } from "@mui/joy";
+import MDEditor from "@uiw/react-md-editor";
 
 const drawerWidth = 450;
 
@@ -140,8 +141,7 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
-      console.log(feedback);
-      setAssignmentFeedback(feedback?.feedback.join("<br/>"));
+      setAssignmentFeedback(feedback?.feedback);
       setAssignmentMaximumGrade(feedback?.current_final_grade);
     }
   }, [feedback]);
@@ -152,7 +152,8 @@ export default function DetailAIScoring() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight}px`
+          marginTop: `${headerHeight}px`,
+          height: `calc(100% - ${headerHeight}px)`
         }}
       >
         <CssBaseline />
@@ -167,38 +168,6 @@ export default function DetailAIScoring() {
         >
           <Toolbar>
             <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
-              >
-                Bài kiểm tra cuối kỳ
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
@@ -233,17 +202,17 @@ export default function DetailAIScoring() {
           className={classes.mainContent}
           sx={{
             height: `calc(100% - ${header2Height}px)`,
-            marginTop: `${header2Height}px`
+            marginTop: `${header2Height}px`,
+            overflow: "auto"
           }}
         >
           <Textarea value={"Câu hỏi 2: Con trỏ là gì?"} readOnly={true} />
           <Card className={classes.card}>
-            <ReactQuill
-              style={{ height: `calc(100vh - ${250}px` }}
-              value={assignmentStudent}
-              readOnly={true}
-            />
+            <TextEditor value={assignmentStudent} readOnly={true} />
           </Card>
+          <Box className={classes.textEditor} data-color-mode='light'>
+            <MDEditor.Markdown source={assignmentFeedback} className={classes.markdown} />
+          </Box>
         </Main>
         <Drawer
           sx={{
@@ -280,7 +249,7 @@ export default function DetailAIScoring() {
               </Box>
             </Box>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Điểm trên thang điểm 100</TextTitle>
+              <TextTitle>Điểm trên thang điểm 10</TextTitle>
               <InputTextField
                 type='number'
                 value={assignmentMaximumGrade}
@@ -288,18 +257,6 @@ export default function DetailAIScoring() {
                 placeholder='Nhập điểm tối đa'
                 fullWidth
               />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle>Nhận xét</TextTitle>
-              <Box className={classes.textEditor}>
-                <TextEditor
-                  style={{
-                    marginTop: "10px"
-                  }}
-                  value={assignmentFeedback}
-                  onChange={setAssignmentFeedback}
-                />
-              </Box>
             </Box>
             <LoadButton
               btnType={BtnType.Outlined}

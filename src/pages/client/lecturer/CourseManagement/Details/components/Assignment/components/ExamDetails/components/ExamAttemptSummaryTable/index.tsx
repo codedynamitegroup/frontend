@@ -3,6 +3,7 @@ import Table from "@mui/joy/Table";
 import Button, { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 
@@ -13,6 +14,7 @@ export default function ExamAttemptSummaryTable({
   rows: any[];
   headers: string[];
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
     <Sheet variant='outlined'>
@@ -30,7 +32,7 @@ export default function ExamAttemptSummaryTable({
               <td>{row.no}</td>
               <td>
                 <ParagraphBody>{row.state}</ParagraphBody>
-                <ParagraphSmall>{`Nộp bài vào lúc ${row.submitted_at}`}</ParagraphSmall>
+                <ParagraphSmall translation-key='course_management_exam_submmit_on'>{`${t("course_management_exam_submmit_on")} ${row.submitted_at}`}</ParagraphSmall>
               </td>
               <td>{row.grade}</td>
               <td>
@@ -39,8 +41,9 @@ export default function ExamAttemptSummaryTable({
                   onClick={() => {
                     navigate(routes.lecturer.exam.review);
                   }}
+                  translation-key='common_see_evaluating'
                 >
-                  Xem đánh giá
+                  {t("common_see_evaluating")}
                 </Button>
               </td>
             </tr>

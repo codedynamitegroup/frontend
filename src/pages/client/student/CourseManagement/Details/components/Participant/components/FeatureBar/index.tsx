@@ -45,7 +45,7 @@ const CourseParticipantFeatureBar = () => {
               {t("common_name")}
             </MenuItem>
             <MenuItem value={"emai"}>Email</MenuItem>
-            <MenuItem value={"role"} translation-key='commmon_role'>
+            <MenuItem value={"role"} translation-key='common_role'>
               {t("common_role")}
             </MenuItem>
           </Select>

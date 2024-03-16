@@ -134,8 +134,8 @@ export default function ProblemTable() {
             <TableHead className={classes["table-head"]}>
               <TableRow>
                 <TableCell align='center' className={classes.status}>
-                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_status'>
-                    {t("list_problem_problem_status")}
+                  <ParagraphBody fontWeight={700} translation-key='common_status'>
+                    {t("common_status")}
                   </ParagraphBody>
                 </TableCell>
                 <TableCell align='left'>
@@ -144,8 +144,8 @@ export default function ProblemTable() {
                   </ParagraphBody>
                 </TableCell>
                 <TableCell align='left' className={classes.status}>
-                  <ParagraphBody fontWeight={700} translation-key='list_problem_difficult_level'>
-                    {t("list_problem_difficult_level")}
+                  <ParagraphBody fontWeight={700} translation-key='common_difficult_level'>
+                    {t("common_difficult_level")}
                   </ParagraphBody>
                 </TableCell>
               </TableRow>
@@ -188,8 +188,8 @@ export default function ProblemTable() {
           page={Number(page)}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
-          translation-key='list_problem_data_grid_pagination'
-          labelRowsPerPage={t("list_problem_data_grid_pagination")} // Thay đổi text ở đây
+          translation-key='common_table_row_per_page'
+          labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
           onRowsPerPageChange={handleChangeRowsPerPage}
           className={classes.pagination}
         />

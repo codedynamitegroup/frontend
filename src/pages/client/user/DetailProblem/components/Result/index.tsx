@@ -21,7 +21,8 @@ export default function Result() {
         </Box>
         <Box className={classes.result}>
           <ParagraphExtraSmall translation-key='detail_problem_input'>
-            {t("detail_problem_input")}{" "}
+            {t("detail_problem_input")}
+            {": "}
           </ParagraphExtraSmall>
           <TextField
             fullWidth
@@ -43,7 +44,8 @@ export default function Result() {
 
         <Box className={classes.result}>
           <ParagraphExtraSmall translation-key='detail_problem_output'>
-            {t("detail_problem_output")}{" "}
+            {t("detail_problem_output")}
+            {": "}
           </ParagraphExtraSmall>
           <TextField
             fullWidth
@@ -58,6 +60,7 @@ export default function Result() {
         <Box className={classes.result}>
           <ParagraphExtraSmall translation-key='detail_problem_actual_result'>
             {t("detail_problem_actual_result")}
+            {": "}
           </ParagraphExtraSmall>
           <TextField
             fullWidth

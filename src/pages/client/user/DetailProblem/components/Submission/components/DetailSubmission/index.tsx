@@ -24,8 +24,9 @@ interface Props {
 }
 export interface IFeedbackCodeByAI {
   id: number;
-  feedback: string[];
+  feedback: string;
   suggestCode: string;
+  explainCode: string;
 }
 
 export interface ICodeQuestion {
@@ -41,47 +42,38 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const { t } = useTranslation();
   const sourceCodeSubmission: ISourceCodeSubmission = {
     source_code: `
-	class Solution {
-		public int lengthOfLongestSubstring(String s) {
-			int left = 0, right = 0, max = 0;
-			Set<Character> set = new HashSet();
-
-			while(right < s.length()) {
-				if (!set.contains(s.charAt(right))) {
-					set.add(s.charAt(right));
-					right++;
-					max = Math.max(max, set.size());
-				} else {
-					set.remove(s.charAt(left));
-					left++;
-				}
-			}
-			return max;
+class Solution {
+	public int reverse(int x) {
+		long result = 0;
+		while (x != 0) {
+			result = result*10 + x%10;
+			x /= 10;
+				if( result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
+					return 0;
 		}
-	}`,
+		return (int)result;
+	}
+}`,
     language: "java"
   };
   const codeQuestion: ICodeQuestion = {
-    title: "Longest Substring Without Repeating Characters",
+    title: "Reverse Integer",
     description: `
-		Given a string s, find the length of the longest substring without repeating characters.
+	Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0.
 
-		Example 1:
-		Input: s = "abcabcbb"
-		Output: 3
-		Explanation: The answer is "abc", with the length of 3.
+	Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
 
-		Example 2:
-		Input: s = "bbbbb"
-		Output: 1
-		Explanation: The answer is "b", with the length of 1.
+	Example 1:
+		Input: x = 123
+		Output: 321
 
-		Example 3:
-		Input: s = "pwwkew"
-		Output: 3
-		Explanation: The answer is "wke", with the length of 3.
-		Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
-		`
+	Example 2:
+		Input: x = -123
+		Output: -321
+
+	Example 3:
+		Input: x = 120
+		Output: 21`
   };
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
@@ -96,7 +88,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
     return (
       typeof obj.id === "number" &&
-      typeof obj.feedback === "object" &&
+      typeof obj.feedback === "string" &&
       typeof obj.suggestCode === "string"
     );
   }
@@ -125,59 +117,12 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
       });
   };
 
-  const markdownContent = `1. Khai báo biến:
-
-  - \`left\`: Biến lưu trữ vị trí bắt đầu của chuỗi con hiện tại.
-  - \`right\`: Biến lưu trữ vị trí kết thúc của chuỗi con hiện tại.
-  - \`max\`: Biến lưu trữ độ dài chuỗi con dài nhất được tìm thấy.
-  - \`set\`: Biến kiểu \`Set\` lưu trữ các ký tự đã xuất hiện trong chuỗi con hiện tại.
- 2. Vòng lặp while:
- 
-  - Vòng lặp này sẽ chạy cho đến khi \`right\` bằng với độ dài của chuỗi \`s\`.
- 3. Kiểm tra ký tự:
- 
-  - Kiểm tra xem ký tự tại vị trí \`right\` có trong \`set\` hay không.
-  - Nếu không có:
-    - Thêm ký tự vào \`set\`.
-    - Tăng \`right\` lên 1 để di chuyển đến ký tự tiếp theo.
-    - Cập nhật \`max\` nếu độ dài của \`set\` lớn hơn \`max\`.
-  - Nếu có:
-    - Xóa ký tự tại vị trí \`left\` khỏi \`set\`.
-    - Tăng \`left\` lên 1 để di chuyển đến ký tự tiếp theo.
- 4. Trả về kết quả:
- 
-  - Sau khi vòng lặp while kết thúc, \`max\` sẽ lưu trữ độ dài chuỗi con dài nhất không có ký tự lặp lại.
-  - Trả về \`max\`.
- 
- Cách thức hoạt động:
- 
- - Thuật toán sử dụng một "cửa sổ trượt" để di chuyển qua chuỗi. Cửa sổ này bắt đầu từ vị trí 0 và mở rộng cho đến khi gặp một ký tự lặp lại.
- - Khi gặp một ký tự lặp lại, cửa sổ sẽ thu hẹp lại từ đầu cho đến khi ký tự lặp lại bị loại bỏ.
- - Độ dài của cửa sổ được cập nhật liên tục và giá trị lớn nhất sẽ được lưu trữ.
- - Sau khi cửa sổ trượt đến cuối chuỗi, độ dài chuỗi con dài nhất không có ký tự lặp lại sẽ được trả về.
- 
- Ví dụ:
- 
- - Cho chuỗi \`s = "abcabcbb"\`.
- - Ban đầu, \`left = 0\` và \`right = 0\`.
- - Cửa sổ trượt qua chuỗi:
-   - \`right = 1\`: Ký tự \`a\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-   - \`right = 2\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-   - \`right = 3\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-   - \`right = 4\`: Ký tự \`a\` đã có trong \`set\`, xóa \`a\` khỏi \`set\` và tăng \`left\` lên 1.
-   - \`right = 5\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
-   - \`right = 6\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
- -   Sau khi vòng lặp while kết thúc, \`max = 3\`.
- -   Chuỗi con dài nhất không có ký tự lặp lại là \`"abc"\`.`;
-
   return (
     <Grid className={classes.root}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
         <Box onClick={handleSubmissionDetail} className={classes.backButton}>
           <ArrowBackIcon className={classes.backIcon} />
-          <span translation-key='detail_problem_submission_detail_back'>
-            {t("detail_problem_submission_detail_back")}
-          </span>
+          <span translation-key='common_back'>{t("common_back")}</span>
         </Box>
         <Divider />
       </Box>
@@ -272,7 +217,7 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
+            <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
 
@@ -280,13 +225,14 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
           <Box className={classes.submissionText}>
             <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
 
-            <Box className={classes.evaluateText}>
-              {feedbackCodeByAI.feedback &&
-                feedbackCodeByAI.feedback?.length > 0 &&
-                feedbackCodeByAI.feedback.map((feedback, index) => (
-                  <ParagraphBody key={index}>- {feedback}</ParagraphBody>
-                ))}
-            </Box>
+            {feedbackCodeByAI.feedback && (
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown
+                  source={feedbackCodeByAI.feedback}
+                  className={classes.markdown}
+                />
+              </Box>
+            )}
             <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
             {feedbackCodeByAI.suggestCode && (
@@ -294,10 +240,17 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
                 <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestCode + ""} />
               </Box>
             )}
-            <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
-            <Box data-color-mode='light'>
-              <MDEditor.Markdown source={markdownContent} className={classes.markdown} />
-            </Box>
+            {feedbackCodeByAI.explainCode && (
+              <>
+                <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
+                <Box data-color-mode='light'>
+                  <MDEditor.Markdown
+                    source={feedbackCodeByAI.explainCode}
+                    className={classes.markdown}
+                  />
+                </Box>
+              </>
+            )}
           </Box>
         )}
       </Box>

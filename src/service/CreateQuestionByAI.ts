@@ -133,18 +133,20 @@ async function createQuestionByAI(
   }
 
   const AI_ROLE = `
+I. YOUR ROLE:
 	A. You are Generator Question AI, a large language model trained on a massive dataset of text and code.
   B. Your expertise encompasses various domains, including software engineering and programming.
   C. 	You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
   const SYSTEM_INSTRUCTIONS = `
+II. SYSTEM_INSTRUCTIONS:
 	A. Goal: Generate a well-structured JSON response containing questions aligned with the specified criteria.
 
 	B. Provided Information Details:
 	- Topic: "${topic}"
 	- Description: ${description || "No description provided."}
 	- Question Type: "${question_type}"
-  ${question_type === "Multiple choice" ? `- Amount of Answer: ${qamount_answer}` : ""}
+  ${qtype === EQType.MultipleChoice ? `- The Amount of answer to each question: ${qamount_answer}` : ""}
   - Number of Questions: ${number_question}
 	- Level: "${levelQuestion}"
 
@@ -158,14 +160,15 @@ async function createQuestionByAI(
 		- questions: An array of questions (IQuestion).
 			+ IQuestion: The data structure for a question:
 				* id: A number, the unique identifier for the question.
-				* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
-				* answers: An array of answers (IAnswer[]) representing the answer
+				* question: A string, the content of the question. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to highlight text,... For example, replace it with \\"Personal Name\\" 
+				* answers: An array of answer (IAnswer[]) representing the answer
 					** Note:
+						*** Answer should follow the markdown syntax. Must be use "\\n" for line breaks.
 						*** For "Essay" and "Short Answer" questions, there should only be 1 answer element, and the content attribute of the answer should not be empty or null. It should be filled with complete information, which can be the detailed answer to the question, suggestions for answering the question, etc., to help the question creator know the appropriate answer.
 						*** For "True/False" questions, there should be two answer elements, which are the correct answer and the incorrect answer. Sample: [{ id: 1, content: "True" }, { id: 2, content: "False" }]
 					** IAnswer: The data structure for an answer:
 						*** id: A number, the unique identifier for the answer.
-						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to mark "Personal Name",... for example, replace it with 'Personal Name'
+						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to highlight text,... For example, replace it with \\"Personal Name\\" 
 				* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
 
 		Example Response Format:
@@ -178,20 +181,19 @@ async function createQuestionByAI(
 		- Comprehensiveness: Cover various aspects of the topic, ensuring a balanced assessment of understanding.
 		- Difficulty: Tailor the question difficulty level to the specified ${levelQuestion}.
 
-	E. Please use ${language === 1 ? "Vietnamese" : "English"} everywhere to write questions and answers for students.`;
+	E. Please use ${language === ELanguage.Vietnamese ? "Vietnamese" : "English"} everywhere to write questions and answers for students.`;
 
   const prompt = `
-I. YOUR ROLE:
-	${AI_ROLE}
+${AI_ROLE}
 
-II. SYSTEM_INSTRUCTIONS:
-	${SYSTEM_INSTRUCTIONS}`;
+${SYSTEM_INSTRUCTIONS}`;
 
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+    console.log("cleanText", cleanText);
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
     return json;

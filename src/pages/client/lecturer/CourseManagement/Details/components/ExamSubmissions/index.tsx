@@ -22,7 +22,9 @@ import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -35,6 +37,10 @@ export enum SubmissionStatusGraded {
 }
 
 const LecturerCourseExamSubmissions = () => {
+  const { t } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -218,11 +224,15 @@ const LecturerCourseExamSubmissions = () => {
   ];
 
   const tableHeading: GridColDef[] = [
-    { field: "student_name", headerName: "Tên sinh viên", width: 200 },
+    {
+      field: "student_name",
+      headerName: `${t("common_fullname")} ${i18next.format(t("common_student"), "lowercase")}`,
+      width: 200
+    },
     { field: "student_email", headerName: "Email", width: 200 },
     {
       field: "status",
-      headerName: "Trạng thái",
+      headerName: t("common_status"),
       width: 250,
       renderCell: (params) => {
         return (
@@ -272,11 +282,19 @@ const LecturerCourseExamSubmissions = () => {
         );
       }
     },
-    { field: "last_submission_time", headerName: "Thời gian nộp cuối", width: 200 },
-    { field: "last_grade_time", headerName: "Thời gian chấm cuối", width: 200 },
+    {
+      field: "last_submission_time",
+      headerName: t("course_lecturer_sub_last_submission_time"),
+      width: 200
+    },
+    {
+      field: "last_grade_time",
+      headerName: t("course_lecturer_sub_last_grading_time"),
+      width: 200
+    },
     {
       field: "current_final_grade",
-      headerName: "Điểm tổng kết",
+      headerName: t("common_final_grade"),
       width: 200,
       renderCell: (params) => {
         return (
@@ -291,8 +309,9 @@ const LecturerCourseExamSubmissions = () => {
                 navigate(routes.lecturer.exam.grading);
               }}
               margin='0 0 10px 0'
+              translation-key='course_lecturer_assignment_grading'
             >
-              Chấm điểm
+              {t("course_lecturer_assignment_grading")}
             </Button>
             <TextTitle>
               {params.value} / {examData.max_grade}
@@ -331,7 +350,7 @@ const LecturerCourseExamSubmissions = () => {
         {
           groupId: `question-${question.id}-type`,
           children: [{ field: `question-${question.id}` }],
-          headerName: `Câu hỏi ${question.type.vi_name}`
+          headerName: currentLang === "en" ? question.type.en_name : question.type.vi_name
         }
       ],
       renderHeaderGroup() {
@@ -341,8 +360,9 @@ const LecturerCourseExamSubmissions = () => {
               loading={isPlagiarismDetectionLoading}
               btnType={BtnType.Outlined}
               onClick={() => onHandlePlagiarismDetection(question.id.toString())}
+              translation-key='common_check_cheating'
             >
-              Kiểm tra gian lận
+              {t("common_check_cheating")}
             </LoadButton>
           );
         } else if (question.type.code === "essay") {
@@ -352,8 +372,9 @@ const LecturerCourseExamSubmissions = () => {
               onClick={() => {
                 navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
               }}
+              translation-key='common_AI_grading'
             >
-              Chấm điểm AI
+              {t("common_AI_grading")}
             </Button>
           );
         } else {
@@ -362,6 +383,10 @@ const LecturerCourseExamSubmissions = () => {
       }
     });
   });
+
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+  }, [i18next.language]);
 
   const submissionDataset = [
     {
@@ -434,11 +459,11 @@ const LecturerCourseExamSubmissions = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody>Quay lại</ParagraphBody>
+        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>Bài kiểm tra cuối kỳ</Heading1>
-      <ParagraphBody>
-        Số sinh viên nộp: {totalSubmissionCount}/{totalStudent}
+      <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
+        {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
       </ParagraphBody>
       <Box
         sx={{
@@ -456,7 +481,9 @@ const LecturerCourseExamSubmissions = () => {
       </Box>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Heading1>Danh sách bài làm</Heading1>
+          <Heading1 translation-key='course_lecturer_submission_list'>
+            {t("course_lecturer_submission_list")}
+          </Heading1>
         </Grid>
         <Grid item xs={12}>
           <ExamSubmissionFeatureBar />
