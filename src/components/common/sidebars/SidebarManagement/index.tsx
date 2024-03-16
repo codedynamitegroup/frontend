@@ -18,6 +18,7 @@ export interface SidebarItem {
   icon: JSX.Element;
   link?: string;
   children?: Array<{ name: string; link: string }>;
+  "translation-key"?: string;
 }
 
 interface SidebarManagementProps {
@@ -31,6 +32,9 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
   const path = locationHook.pathname;
   const [sideBar, setSidebar] = useState<SidebarItem[]>(sideBarItemList.sideBarItem);
   const [openItems, setOpenItems] = useState<number | null>(null);
+  useEffect(() => {
+    setSidebar(sideBarItemList.sideBarItem);
+  }, [sideBarItemList.sideBarItem]);
 
   useEffect(() => {
     sideBar.forEach((item, index) => {
@@ -102,7 +106,11 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
                   selected={state.parentIndex === index && state.childIndex === -1}
                 >
                   <ListItemIcon>{list.icon}</ListItemIcon>
-                  <ListItemText primary={list.name} className={classes.itemText} />
+                  <ListItemText
+                    translation-key={list["translation-key"] ? list["translation-key"] : "none"}
+                    primary={list.name}
+                    className={classes.itemText}
+                  />
                   {list.children && (openItems === index ? <ExpandLess /> : <ExpandMore />)}
                 </ListItemButton>
               </ListItem>
