@@ -61,6 +61,8 @@ const LecturerCourseExamSubmissions = () => {
   const [isPlagiarismDetectionLoading, setIsPlagiarismDetectionLoading] = useState(false);
 
   const fetchPlagiarismDetectionForCodeQuestion = async (questionId: string) => {
+    const codePlagiarismDetectionApiUrl =
+      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
     setIsPlagiarismDetectionLoading(true);
     // Maybe fetch data from server
     const codeSubmissionsData = {
@@ -93,7 +95,7 @@ const LecturerCourseExamSubmissions = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:4000/api/reports", codeSubmissionsData);
+      const response = await axios.post(codePlagiarismDetectionApiUrl, codeSubmissionsData);
       setIsPlagiarismDetectionLoading(false);
       return response.data;
     } catch (error) {
