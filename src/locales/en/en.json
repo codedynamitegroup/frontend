@@ -94,6 +94,9 @@
   "common_AI_grading": "AI grading",
   "common_practice": "Practice",
   "common_question_bank": "question bank",
+  "common_general": "general",
+  "common_personal": "personal",
+  "common_add_new": "add new",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -246,7 +249,6 @@
   "course_lecturer_announcement_title": "Announcement title",
   "course_lecturer_enter_announcement": "Enter announcement",
 
-  "course_lecturer_assignment_add_new": "Add new",
   "course_lecturer_assignment_create_new_assignment": "New assignment",
   "course_lecturer_assignment_create_exam": "New exam",
   "course_lecturer_assignment_reuse_resource": "Reuse resource",
@@ -349,6 +351,15 @@
   "list_problem": "List problems",
   "list_problem_problem_name": "Problem name",
   "list_problem_not_found_data": "Not found data",
+
+  "question_bank_category_header_table": [
+    "NO.",
+    "Category",
+    "Created at",
+    "Last updated at",
+    "Action"
+  ],
+  "question_bank_category_find_by_category": "Find by category",
 
   "detail_problem_description": "Description",
   "detail_problem_discussion": "Discussion",
