@@ -84,8 +84,7 @@ const format_scoring: IFeedbackGradedAI[] = [
     id: 2,
     feedback: {
       content: {
-        accuracy:
-          "Câu trả lời chỉ cung cấp một bước ('3. Trả về giá trị của max') và thiếu thông tin quan trọng về toàn bộ thuật toán.",
+        accuracy: `Câu trả lời chỉ cung cấp một bước (\`3. Trả về giá trị của max\`) và thiếu thông tin quan trọng về toàn bộ thuật toán.`,
         logic: "Không có lời giải thích logic hoặc các bước để tìm phần tử lớn nhất.",
         creativity:
           "Không có cách tiếp cận sáng tạo nào được thể hiện trong việc giải quyết vấn đề.",
@@ -150,9 +149,6 @@ II. SYSTEM_INSTRUCTIONS:
 		The feedback results is based on question details below and studenAnswer to grade and provide feedback to user:
 			- Based on questions: 
 				${question.content}
-
-			- This answer is provided by teacher, not the student's submission. You need to check the studentAnswer to meet the answer of teacher: 
-				${question.answer}
 		
 		This is the list of students' submissions (SubmissionStudent[]) that will be reviewed by you. You will provide feedback for the attribute studentAnswer (The content of the student's essay) for each student's submission (indentified by "ID").:
 			${JSON.stringify(data)} 
@@ -196,21 +192,21 @@ II. SYSTEM_INSTRUCTIONS:
 						- IFeedback: The data structure for a feedback:
 						{
 							content (an object that contains the content of the feedback (IFeedbackContent)): {
-								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question.
-								logic: A string, indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas.
-								creativity: A string, indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem.
-								sourceUsage: A string, indicating the extent to which sources are used appropriately, accurately, and with complete information.
+								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								logic: A string, indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								creativity: A string, indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								sourceUsage: A string, indicating the extent to which sources are used appropriately, accurately, and with complete information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							form (an object that contains the form of the feedback (IFeedbackForm)): {
-								grammar: A string (not be empty or null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively.
-								vocabulary: A string (not be empty or null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay.
-								spelling: A string (not be empty or null), indicating the extent to which spelling is accurate.
-								layout: A string (not be empty or null), indicating the extent to which the layout is clear, organized, and easy to understand.
+								grammar: A string (not be empty or null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								vocabulary: A string (not be empty or null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								spelling: A string (not be empty or null), indicating the extent to which spelling is accurate. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								layout: A string (not be empty or null), indicating the extent to which the layout is clear, organized, and easy to understand. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							style (an object that contains the style of the feedback (IFeedbackStyle)): {
-								clarity: A string (not be empty or null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information.
-								engagement: A string (not be empty or null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader.
-								appropriateness: A string (not be empty or null), indicating the extent to which the style is appropriate for the topic, purpose, and audience.
+								clarity: A string (not be empty or null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								engagement: A string (not be empty or null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								appropriateness: A string (not be empty or null), indicating the extent to which the style is appropriate for the topic, purpose, and audience. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							},
 							overall: A string (not be empty or null), indicating the overall feedback of the student within the content, form, and style.
 							score: number, between 0 and ${question.maxScore}, The score assigned to the essay is based on the rubrics, depending on the feedback above.
@@ -232,12 +228,14 @@ II. SYSTEM_INSTRUCTIONS:
 										- Score: ${(0.25 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}: The essay is unclear, not engaging, and not appropriate for the topic, purpose, and audience.
 			
 								* Note of score:
-									** You also need to use the rubics: ${question.rubics}
+									** You also need to use the rubics: ${question.rubics}	
 						}
 
 					* Note: 
 						* You need to check accuracy, logic, creativity, and source usage of the student's submission meet the question details and respond to user. 
 						* If the student answer is incorrect, please give accuracy, logic, creativity, and source usage feedback to the student.
+						* Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+						* Instead of use \\t, you should use tab
 
 	D. Please use ${language} everywhere to write feedback messages for students.
 	

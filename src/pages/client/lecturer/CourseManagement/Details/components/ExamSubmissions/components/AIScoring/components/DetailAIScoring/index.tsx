@@ -144,25 +144,29 @@ export default function DetailAIScoring() {
       const feedbackTemp: IFeedback = feedback?.feedback;
       if (feedbackTemp) {
         const feedbackTemplate = `
-1. Nội dung:
-	- Độ chính xác: ${feedbackTemp.content?.accuracy}
-	- Logic: ${feedbackTemp.content?.logic}
-	- Sáng tạo: ${feedbackTemp.content?.creativity}
-	- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+1. **Nội dung:**
 
-2. Hình thức:
-	- Ngữ pháp: ${feedbackTemp?.form?.grammar}
-	- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
-	- Chính tả:  ${feedbackTemp?.form?.spelling}
-	- Bố cục:  ${feedbackTemp?.form?.layout}
+	- **Độ chính xác:** ${feedbackTemp.content?.accuracy}
+	- **Logic:** ${feedbackTemp.content?.logic}
+	- **Sáng tạo:** ${feedbackTemp.content?.creativity}
+	- **Sử dụng nguồn:** ${feedbackTemp?.content?.sourceUsage}
 
-3. Phong cách:
-	- Rõ ràng: ${feedbackTemp?.style?.clarity}
-	- Hấp dẫn: ${feedbackTemp?.style?.engagement}
-	- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+2. **Hình thức:**
 
-4. Phản hồi chung:
-	- ${feedbackTemp?.overall}
+	- **Ngữ pháp:** ${feedbackTemp?.form?.grammar}
+	- **Từ vựng:**  ${feedbackTemp?.form?.vocabulary}
+	- **Chính tả:**  ${feedbackTemp?.form?.spelling}
+	- **Bố cục:** ${feedbackTemp?.form?.layout}
+
+3. **Phong cách:**
+
+	- **Rõ ràng:** ${feedbackTemp?.style?.clarity}
+	- **Hấp dẫn:** ${feedbackTemp?.style?.engagement}
+	- **Phù hợp:** ${feedbackTemp?.style?.appropriateness}
+
+4. **Phản hồi chung:**
+
+	${feedbackTemp?.overall}
 `;
         setAssignmentFeedback(feedbackTemplate);
       }
