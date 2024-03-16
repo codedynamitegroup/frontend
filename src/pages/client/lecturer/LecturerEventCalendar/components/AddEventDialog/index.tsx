@@ -11,6 +11,7 @@ import { useCallback } from "react";
 import classes from "./styles.module.scss";
 import BasicSelect from "components/common/select/BasicSelect";
 import useWindowDimensions from "hooks/useWindowDimensions";
+import { useTranslation } from "react-i18next";
 
 interface AddEventDialogProps extends DialogProps {
   data: {
@@ -57,6 +58,7 @@ const AddEventDialog = ({
   onHanldeConfirm,
   ...props
 }: AddEventDialogProps) => {
+  const { t } = useTranslation();
   const handleToggle = useCallback(() => {
     handleChangData({
       isExpanded: !data.isExpanded,
@@ -88,7 +90,8 @@ const AddEventDialog = ({
       <Box component='form' className={classes.formBody} autoComplete='off'>
         <InputTextField
           type='text'
-          title='Tên sự kiện'
+          title={t("calendar_event_name")}
+          translation-key='calendar_event_name'
           value={data.eventTitle}
           onChange={(e) => {
             handleChangData({
@@ -106,7 +109,7 @@ const AddEventDialog = ({
         />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Ngày</TextTitle>
+            <TextTitle translation-key='calendar_event_date'>{t("calendar_event_date")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <CustomDateTimePicker
@@ -129,7 +132,7 @@ const AddEventDialog = ({
         </Grid>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Loại sự kiện</TextTitle>
+            <TextTitle translation-key='calendar_event_type'>{t("calendar_event_type")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <BasicSelect
@@ -152,23 +155,34 @@ const AddEventDialog = ({
               items={[
                 {
                   value: "0",
-                  label: "Người dùng"
+                  label: t("calendar_event_type_user")
                 },
                 {
                   value: "1",
-                  label: "Khoá học"
+                  label: t("calendar_event_type_course")
                 }
               ]}
+              translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
             />
           </Grid>
         </Grid>
-        <Button btnType={BtnType.Text} onClick={handleToggle} width='fit-content' padding='0px'>
-          {data.isExpanded ? "Thu gọn..." : "Mở rộng..."}
+        <Button
+          btnType={BtnType.Text}
+          onClick={handleToggle}
+          width='fit-content'
+          padding='0px'
+          translation-key={["calendar_event_collapse", "calendar_event_expand"]}
+        >
+          {data.isExpanded
+            ? `${t("calendar_event_collapse")}...`
+            : `${t("calendar_event_expand")}...`}
         </Button>
         <Collapse in={data.isExpanded}>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
-              <TextTitle>Mô tả</TextTitle>
+              <TextTitle translation-key='detail_problem_description'>
+                {t("detail_problem_description")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor
@@ -204,7 +218,9 @@ const AddEventDialog = ({
                 marginTop: "10px"
               }}
             >
-              <TextTitle>Khoảng thời gian</TextTitle>
+              <TextTitle translation-key='calendar_event_time_range'>
+                {t("calendar_event_time_range")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9}>
               <RadioGroup
@@ -229,9 +245,16 @@ const AddEventDialog = ({
                   key={0}
                   value={"0"}
                   control={<Radio />}
-                  label={"Không có khoảng thời gian"}
+                  label={t("calendar_event_name_time_no_range")}
+                  translation-key='calendar_event_name_time_no_range'
                 />
-                <FormControlLabel key={1} value={"1"} control={<Radio />} label={"Đến khi"} />
+                <FormControlLabel
+                  key={1}
+                  value={"1"}
+                  control={<Radio />}
+                  label={t("calendar_event_name_time_till")}
+                  translation-key='calendar_event_name_time_till'
+                />
                 <CustomDateTimePicker
                   value={dayjs(data.end)}
                   onHandleValueChange={(newValue) => {
@@ -253,7 +276,8 @@ const AddEventDialog = ({
                   key={2}
                   value={"2"}
                   control={<Radio />}
-                  label={"Khoảng thời gian tính theo phút"}
+                  label={t("calendar_event_name_time_minute")}
+                  translation-key='calendar_event_name_time_minute'
                 />
                 <InputTextField
                   type='number'

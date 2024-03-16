@@ -5,6 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useTranslation } from "react-i18next";
 
 interface AlertDialogProps {
   title: string;
@@ -14,6 +15,7 @@ interface AlertDialogProps {
   handleDelete: () => void;
 }
 export default function ConfirmAlert(props: AlertDialogProps) {
+  const { t } = useTranslation();
   const { title, content, open, setOpen, handleDelete } = props;
   const handleClose = () => {
     setOpen(false);
@@ -35,9 +37,11 @@ export default function ConfirmAlert(props: AlertDialogProps) {
         <DialogContentText id='alert-dialog-description'>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Hủy</Button>
-        <Button onClick={handleConfirm} autoFocus>
-          Xác nhận
+        <Button onClick={handleClose} translation-key='common_cancel'>
+          {t("common_cancel")}
+        </Button>
+        <Button onClick={handleConfirm} autoFocus translation-key='common_confirm'>
+          {t("common_confirm")}
         </Button>
       </DialogActions>
     </Dialog>

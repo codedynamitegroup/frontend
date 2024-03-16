@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./index.scss";
@@ -49,9 +49,8 @@ type Props = {
   [key: string]: any;
 };
 
-const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", readOnly, ...props }) => {
+const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, ...props }) => {
   const reactQuillRef: any = useRef(null);
-
   const modules = React.useMemo(
     () => ({
       toolbar: {
@@ -123,6 +122,9 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", readOn
     }),
     []
   );
+  useEffect(() => {
+    reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
+  }, [reactQuillRef, placeholder]);
 
   return (
     <>
@@ -134,7 +136,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder = "", readOn
         modules={modules}
         formats={formats}
         onChange={onChange}
-        placeholder={placeholder}
+        // placeholder={placeholder}
         className='text-editor'
         {...props}
       />

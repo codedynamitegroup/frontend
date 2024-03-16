@@ -1,4 +1,4 @@
-import { Box, Container, Grid, TablePagination } from "@mui/material";
+import { Box, TablePagination } from "@mui/material";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TableTemplate from "components/common/table/TableTemplate";
@@ -7,9 +7,10 @@ import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
 import SearchBar from "components/common/search/SearchBar";
-import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
+import { useTranslation } from "react-i18next";
 
 const LecturerCodeQuestionManagement = () => {
+  const { t } = useTranslation();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -55,7 +56,12 @@ const LecturerCodeQuestionManagement = () => {
       updateAt: "13-03-2023"
     }
   ];
-  const customHeading = ["STT", "Tên câu hỏi", "Độ khó", "Ngày chỉnh sửa"];
+  const customHeading = [
+    t("common_num_order"),
+    t("exam_management_create_question_name"),
+    t("common_difficult_level"),
+    t("common_edit_date")
+  ];
   const customColumns = ["id", "name", "difficulty", "updateAt"];
   const navigate = useNavigate();
   const onEdit = (id: number) => {
@@ -66,16 +72,19 @@ const LecturerCodeQuestionManagement = () => {
 
   return (
     <Box id={classes.codequestionsBody}>
-      <Heading1 fontWeight={"500"}>Quản lý câu hỏi code</Heading1>
+      <Heading1 fontWeight={"500"} translation-key='code_management_title'>
+        {t("code_management_title")}
+      </Heading1>
       <Box className={classes.btnWrapper}>
         <SearchBar onSearchClick={onSearchClickHandler} />
         <Button
-          children='Thêm câu hỏi'
+          children={t("exam_management_create_add_question")}
           btnType={BtnType.Primary}
           width='150px'
           onClick={() => {
             navigate(routes.lecturer.code_question.create);
           }}
+          translation-key='exam_management_create_add_question'
         />
       </Box>
       <TableTemplate
@@ -93,8 +102,12 @@ const LecturerCodeQuestionManagement = () => {
         page={Number(page)}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
-        labelRowsPerPage='Số dòng trên mỗi trang' // Thay đổi text ở đây
+        labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelDisplayedRows={({ from, to, count, page }) => {
+          return t("common_table_from_to", { from: from, to: to, countText: count });
+        }}
+        translation-key={["common_table_row_per_page"]}
       />
     </Box>
   );

@@ -17,6 +17,7 @@ import TextTitle from "components/text/TextTitle";
 import { Dispatch, useEffect, useState } from "react";
 import { Textarea } from "@mui/joy";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { useTranslation } from "react-i18next";
 
 interface TestCasePopupProps {
   setOpen: Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ export const CustomDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupProps) => {
+  const { t } = useTranslation();
   const [score, setScore] = useState<number>(0);
   const [isSample, setIsSample] = useState<boolean>(false);
 
@@ -64,7 +66,15 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
       maxWidth='md'
     >
       <DialogTitle className={classes.dialogTitle}>
-        {!!itemEdit ? <Heading4>Cập nhật test case</Heading4> : <Heading4>Thêm test case</Heading4>}
+        {!!itemEdit ? (
+          <Heading4 translation-key='code_management_detail_update_test_case'>
+            {t("code_management_detail_update_test_case")}
+          </Heading4>
+        ) : (
+          <Heading4 translation-key='code_management_detail_add_test_case'>
+            {t("code_management_detail_add_test_case")}
+          </Heading4>
+        )}
 
         <IconButton
           aria-label='close'
@@ -86,7 +96,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
               <FormControl>
                 <Grid container>
                   <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
-                    <TextTitle>Điểm</TextTitle>
+                    <TextTitle translation-key='common_score'>{t("common_score")}</TextTitle>
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
@@ -103,7 +113,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
               <FormControl>
                 <Grid container>
                   <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
-                    <TextTitle>Mẫu</TextTitle>
+                    <TextTitle translation-key='common_template'>{t("common_template")}</TextTitle>
                   </Grid>
                   <Grid item xs={6}>
                     <Checkbox
@@ -118,7 +128,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
             </Grid>
           </Grid>
           <FormControl fullWidth className={classes.inputContainer}>
-            <TextTitle>Đầu vào</TextTitle>
+            <TextTitle>{t("detail_problem_input")}</TextTitle>
             <Textarea
               defaultValue={itemEdit ? itemEdit.inputValue : ""}
               sx={{ backgroundColor: "white" }}
@@ -127,7 +137,9 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
             />
           </FormControl>
           <FormControl fullWidth className={classes.inputContainer}>
-            <TextTitle>Đầu ra</TextTitle>
+            <TextTitle translation-key='detail_problem_output'>
+              {t("detail_problem_output")}
+            </TextTitle>
             <Textarea
               defaultValue={itemEdit ? itemEdit.outputValue : ""}
               sx={{ backgroundColor: "white" }}
@@ -136,10 +148,12 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
             />
           </FormControl>
           <Box className={classes.btnWrapper}>
-            <Button btnType={BtnType.Outlined} onClick={onClose}>
-              Hủy
+            <Button btnType={BtnType.Outlined} onClick={onClose} translation-key='common_cancel'>
+              {t("common_cancel")}
             </Button>
-            <Button btnType={BtnType.Primary}>Thêm mới</Button>
+            <Button btnType={BtnType.Primary} translation-key='course_lecturer_assignment_add_new'>
+              {t("course_lecturer_assignment_add_new")}
+            </Button>
           </Box>
         </Box>
       </DialogContent>

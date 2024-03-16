@@ -7,9 +7,8 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridEventListener, GridSlotsComponentsProps } from "@mui/x-data-grid";
+import { GridEventListener } from "@mui/x-data-grid";
 import classes from "./styles.module.scss";
-import { truncate } from "fs";
 import { useTranslation } from "react-i18next";
 
 interface DataGridProps {

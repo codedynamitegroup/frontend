@@ -10,8 +10,10 @@ import dayjs from "dayjs";
 import { useCallback, useState } from "react";
 import AddEventDialog from "./components/AddEventDialog";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 const StudentEventCalendar = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<{
     isExpanded: boolean;
     durationRadioIndex: string;
@@ -138,9 +140,9 @@ const StudentEventCalendar = () => {
             };
           });
         }}
-        title='Tạo sự kiện'
-        cancelText='Hủy'
-        confirmText='Tạo'
+        title={t("calendar_add_event")}
+        cancelText={t("common_cancel")}
+        confirmText={t("common_add")}
         onHandleCancel={() => {
           closeAddEventDialog();
           setData((pre) => {
@@ -150,12 +152,13 @@ const StudentEventCalendar = () => {
             };
           });
         }}
+        translation-key={["calendar_add_event", "common_add", "common_cancel"]}
         onHanldeConfirm={() => {
           onHanldeConfirmAddEvent();
         }}
       />
       <Box id={classes.calendarBody}>
-        <Heading1>Lịch sự kiện</Heading1>
+        <Heading1 translation-key='calendar_title'>{t("calendar_title")}</Heading1>
         <Divider />
         <Box
           sx={{
@@ -181,7 +184,7 @@ const StudentEventCalendar = () => {
             items={[
               {
                 value: "0",
-                label: "Tất cả các môn học"
+                label: t("calendar_all_course")
               },
               {
                 value: "1",
@@ -192,6 +195,7 @@ const StudentEventCalendar = () => {
                 label: "Lập trình hướng đối tượng"
               }
             ]}
+            translation-key='calendar_all_course'
           />
           <Button
             btnType={BtnType.Outlined}
@@ -199,8 +203,9 @@ const StudentEventCalendar = () => {
               openAddEventDialog();
             }}
             startIcon={<AddIcon />}
+            translation-key='calendar_add_event'
           >
-            Tạo sự kiện
+            {t("calendar_add_event")}
           </Button>
         </Box>
         <Box>

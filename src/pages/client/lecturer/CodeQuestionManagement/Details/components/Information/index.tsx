@@ -1,4 +1,3 @@
-import { Textarea } from "@mui/joy";
 import { Box, FormControl, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
@@ -6,6 +5,7 @@ import TextTitle from "components/text/TextTitle";
 import { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Heading5 from "components/text/Heading5";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
 
@@ -15,6 +15,7 @@ enum EDifficulty {
   HARD = "HARD"
 }
 const CodeQuestionInformation = memo((props: Props) => {
+  const { t } = useTranslation();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
@@ -32,20 +33,38 @@ const CodeQuestionInformation = memo((props: Props) => {
 
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
-      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-        Dưới đây là một số thông tin cần thiết về câu hỏi code của bạn
+      <Heading5
+        fontStyle={"italic"}
+        fontWeight={"400"}
+        colorname='--gray-50'
+        translation-key='code_management_detail_info_description'
+      >
+        {t("code_management_detail_info_description")}{" "}
       </Heading5>
-      <InputTextField title='Tên câu hỏi' type='text' value={questionName} />
+      <InputTextField
+        title={t("exam_management_create_question_name")}
+        type='text'
+        value={questionName}
+        translation-key='exam_management_create_question_name'
+      />
       <FormControl>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Độ khó</TextTitle>
+            <TextTitle translation-key='common_difficult_level'>
+              {t("common_difficult_level")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9}>
             <Select value={difficulty} onChange={handleChange} sx={{ width: "200px" }}>
-              <MenuItem value={EDifficulty.EASY}>Dễ</MenuItem>
-              <MenuItem value={EDifficulty.MEDIUM}>Trung bình</MenuItem>
-              <MenuItem value={EDifficulty.HARD}>Khó</MenuItem>
+              <MenuItem value={EDifficulty.EASY} translation-key='common_easy'>
+                {t("common_easy")}
+              </MenuItem>
+              <MenuItem value={EDifficulty.MEDIUM} translation-key='common_medium'>
+                {t("common_medium")}
+              </MenuItem>
+              <MenuItem value={EDifficulty.HARD} translation-key='common_hard'>
+                {t("common_hard")}
+              </MenuItem>
             </Select>
           </Grid>
         </Grid>
@@ -53,7 +72,9 @@ const CodeQuestionInformation = memo((props: Props) => {
       <FormControl>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Mô tả bài toán</TextTitle>
+            <TextTitle translation-key='code_management_create_description'>
+              {t("code_management_create_description")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9} className={classes.textEditor}>
             <TextEditor value={problemDescription} onChange={setProblemDescription} />
@@ -62,15 +83,17 @@ const CodeQuestionInformation = memo((props: Props) => {
       </FormControl>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
-          <TextTitle>Phát biểu bài toán</TextTitle>
+          <TextTitle translation-key='code_management_create_statement'>
+            {t("code_management_create_statement")}
+          </TextTitle>
         </Grid>
         <Grid item xs={9} className={classes.textEditor}>
           <TextEditor value={problemStatement} onChange={setProblemStatement} />
         </Grid>
       </Grid>
       <Grid container spacing={1} columns={12}>
-        <Grid item xs={3}>
-          <TextTitle>Định dạng đầu vào</TextTitle>
+        <Grid item xs={3} translation-key='code_management_create_input_format'>
+          <TextTitle>{t("code_management_create_input_format")}</TextTitle>
         </Grid>
         <Grid item xs={9} className={classes.textEditor}>
           <TextEditor value={inputFormat} onChange={setInputFormat} />
@@ -78,7 +101,9 @@ const CodeQuestionInformation = memo((props: Props) => {
       </Grid>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
-          <TextTitle>Ràng buộc</TextTitle>
+          <TextTitle translation-key='code_management_create_constraint'>
+            {t("code_management_create_constraint")}
+          </TextTitle>
         </Grid>
         <Grid item xs={9} className={classes.textEditor}>
           <TextEditor value={contraints} onChange={setContraints} />
@@ -86,7 +111,9 @@ const CodeQuestionInformation = memo((props: Props) => {
       </Grid>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
-          <TextTitle>Định dạng đầu ra</TextTitle>
+          <TextTitle translation-key='code_management_create_output_format'>
+            {t("code_management_create_output_format")}
+          </TextTitle>
         </Grid>
         <Grid item xs={9} className={classes.textEditor}>
           <TextEditor value={outputFormat} onChange={setOutputFormat} />

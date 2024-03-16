@@ -13,6 +13,7 @@ import TextEditor from "../TextEditor";
 import AnswerPoint from "utils/AnswerPoint";
 import qtype from "utils/constant/Qtype";
 import classes from "./styles.module.scss";
+import { useTranslation } from "react-i18next";
 
 interface AnswerEditorProps {
   answerNumber: number;
@@ -23,6 +24,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 }));
 const AnswerEditor = (props: AnswerEditorProps) => {
   const theme = createTheme();
+  const { t } = useTranslation();
   return (
     <Grid
       border={1}
@@ -34,19 +36,41 @@ const AnswerEditor = (props: AnswerEditorProps) => {
       paddingX={1}
       container
     >
-      <Grid item xs={12} md={3} textAlign={{ xs: "left", md: "right" }}>
-        {props.qtype === qtype.multiple_choice.code && `Lựa chọn ${props.answerNumber}`}
-        {props.qtype === qtype.short_answer.code && `Đáp án ${props.answerNumber}`}
+      <Grid
+        item
+        xs={12}
+        md={3}
+        textAlign={{ xs: "left", md: "right" }}
+        translation-key={["question_management_option", "common_answer"]}
+      >
+        {props.qtype === qtype.multiple_choice.code &&
+          `${t("question_management_option")} ${props.answerNumber}`}
+        {props.qtype === qtype.short_answer.code && `${t("common_answer")} ${props.answerNumber}`}
       </Grid>
-      <Grid item xs={12} md={9} className={classes.textEditor}>
+      <Grid
+        item
+        xs={12}
+        md={9}
+        sx={{ height: props.qtype === qtype.multiple_choice.code ? "200px" : "auto" }}
+      >
         {props.qtype === qtype.multiple_choice.code && (
-          <TextEditor placeholder='Nhập nội dung' value={""} />
+          <TextEditor
+            translation-key='question_management_enter_content'
+            placeholder={`${t("question_management_enter_content")}...`}
+            value={""}
+          />
         )}
         {props.qtype === qtype.short_answer.code && <TextField size='small' />}
       </Grid>
 
-      <Grid item xs={12} md={3} textAlign={{ xs: "left", md: "right" }}>
-        Phần trăm điểm chiếm
+      <Grid
+        item
+        xs={12}
+        md={3}
+        textAlign={{ xs: "left", md: "right" }}
+        translation-key='question_management_percentage'
+      >
+        {t("question_management_percentage")}
       </Grid>
       <Grid item xs={12} md={9}>
         <Select defaultValue={-1} size='small'>
@@ -56,15 +80,25 @@ const AnswerEditor = (props: AnswerEditorProps) => {
           ))}
         </Select>
       </Grid>
-      <Grid item xs={12} md={3} textAlign={{ xs: "left", md: "right" }}>
-        Nhận xét chung
+      <Grid
+        item
+        xs={12}
+        md={3}
+        textAlign={{ xs: "left", md: "right" }}
+        translation-key='question_management_general_comment'
+      >
+        {t("question_management_general_comment")}
       </Grid>
       <Grid item xs={12} md={9} className={classes.textEditor}>
-        <TextEditor placeholder='Nhập nhận xét ...' value={""} />
+        <TextEditor
+          translation-key='question_management_comment_answer'
+          placeholder={`${t("question_management_comment_answer")}...`}
+          value={""}
+        />
       </Grid>
       <Grid item xs={12} container justifyContent={"center"}>
-        <Button color='primary' variant='outlined'>
-          Xóa
+        <Button color='primary' variant='outlined' translation-key='common_delete'>
+          {t("common_delete")}
         </Button>
       </Grid>
     </Grid>

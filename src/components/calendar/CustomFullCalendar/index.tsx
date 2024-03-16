@@ -9,6 +9,9 @@ import "./index.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import viLocale from "@fullcalendar/core/locales/vi";
+import enLocale from "@fullcalendar/core/locales/en-gb";
+import i18next from "i18next";
+import { useEffect, useState } from "react";
 
 interface CustomFullCalendarProps {
   events: any[];
@@ -21,6 +24,14 @@ export default function CustomFullCalendar({
   handleDateSelect,
   editable
 }: CustomFullCalendarProps) {
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
+
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+  }, [i18next.language]);
+
   return (
     <div className='demo-app'>
       <div className='demo-app-main'>
@@ -40,7 +51,7 @@ export default function CustomFullCalendar({
           eventContent={renderEventContent} // custom render function
           eventClick={function () {}}
           events={events}
-          locale={viLocale}
+          locale={currentLang === "en" ? enLocale : viLocale}
           // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
           /* you can update a remote database when these fire:
             eventAdd={function(){}}

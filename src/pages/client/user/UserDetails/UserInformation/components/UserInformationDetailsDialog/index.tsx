@@ -109,7 +109,7 @@ const UserInformationDetailsDialog = ({
                 },
                 {
                   value: "1",
-                  label: t("comon_female")
+                  label: t("common_female")
                 }
               ]}
               translation-key={["common_female", "common_male"]}

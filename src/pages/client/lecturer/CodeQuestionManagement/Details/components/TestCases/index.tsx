@@ -21,10 +21,12 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
 
 const CodeQuestionTestCases = memo((props: Props) => {
+  const { t } = useTranslation();
   const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
   const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
@@ -131,10 +133,10 @@ const CodeQuestionTestCases = memo((props: Props) => {
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "STT", width: 100, editable: false },
+    { field: "id", headerName: t("common_num_order"), width: 100, editable: false },
     {
       field: "input",
-      headerName: "Đầu vào",
+      headerName: t("detail_problem_input"),
       type: "text",
       width: 200,
       align: "left",
@@ -143,7 +145,7 @@ const CodeQuestionTestCases = memo((props: Props) => {
     },
     {
       field: "output",
-      headerName: "Đầu ra",
+      headerName: t("detail_problem_output"),
       width: 200,
       type: "text",
       align: "left",
@@ -153,13 +155,13 @@ const CodeQuestionTestCases = memo((props: Props) => {
     {
       field: "isSample",
       width: 150,
-      headerName: "Mẫu",
+      headerName: t("common_template"),
       editable: true,
       type: "boolean"
     },
     {
       field: "score",
-      headerName: "Điểm",
+      headerName: t("common_score"),
       width: 150,
       editable: true,
       type: "number"
@@ -167,7 +169,7 @@ const CodeQuestionTestCases = memo((props: Props) => {
     {
       field: "actions",
       type: "actions",
-      headerName: "Hành động",
+      headerName: t("common_action"),
       width: 300,
       cellClassName: "actions",
       getActions: ({ id }) => {
@@ -219,13 +221,24 @@ const CodeQuestionTestCases = memo((props: Props) => {
   return (
     <Box className={classes["body"]}>
       <Box className={classes["head-wrapper"]}>
-        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-          Để đánh giá tính chính xác của mã của người dùng, bạn cần thêm các trường hợp kiểm thử
+        <Heading5
+          translation-key='code_management_detail_test_case_description'
+          fontStyle={"italic"}
+          fontWeight={"400"}
+          colorname='--gray-50'
+        >
+          {t("code_management_detail_test_case_description")}{" "}
         </Heading5>
         <Box className={classes["btn-wrapper"]}>
-          <Button btnType={BtnType.Outlined}>Tải lên tệp zip</Button>
-          <Button btnType={BtnType.Primary} onClick={() => setOpenTestCasePopup(true)}>
-            Thêm test case
+          <Button btnType={BtnType.Outlined} translation-key='code_management_detail_upload_zip'>
+            {t("code_management_detail_upload_zip")}
+          </Button>
+          <Button
+            translation-key='code_management_detail_add_test_case'
+            btnType={BtnType.Primary}
+            onClick={() => setOpenTestCasePopup(true)}
+          >
+            {t("code_management_detail_add_test_case")}
           </Button>
         </Box>
       </Box>
@@ -251,9 +264,13 @@ const CodeQuestionTestCases = memo((props: Props) => {
       <ConfirmAlert
         open={openConfirmAlert}
         setOpen={setOpenConfirmAlert}
-        title='Xác nhận xóa?'
-        content='Bạn có chắc chắn muốn xóa test case này?'
+        title={t("code_management_detail_delete_confirm")}
+        content={t("code_management_detail_delete_confirm_question")}
         handleDelete={handleDelete}
+        translation-key={[
+          "code_management_detail_delete_confirm_question",
+          "code_management_detail_delete_confirm"
+        ]}
       />
     </Box>
   );

@@ -95,8 +95,8 @@ export default function PickQuestionFromQuestionBankDialog({
         minWidth: 250
       },
       {
-        field: t("exam_management_create_question_description"),
-        headerName: "Mô tả câu hỏi",
+        field: "description",
+        headerName: t("exam_management_create_question_description"),
         minWidth: 400
       },
       {

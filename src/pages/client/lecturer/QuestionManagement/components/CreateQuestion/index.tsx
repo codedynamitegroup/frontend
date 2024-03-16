@@ -17,7 +17,7 @@ import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMatches, useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
@@ -29,15 +29,25 @@ import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface Props {
   qtype: String;
 }
 
 const QuestionCreated = (props: Props) => {
+  const { t } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
   const [answerOpen, setAnswerOpen] = useState(true);
   const vi_name = useMemo(
     () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
+    [props.qtype]
+  );
+  const en_name = useMemo(
+    () => Object.values(qtype).find((value) => value.code === props.qtype)?.en_name,
     [props.qtype]
   );
   const navigate = useNavigate();
@@ -49,6 +59,10 @@ const QuestionCreated = (props: Props) => {
     ref: headerRef
   });
 
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+  }, [i18next.language]);
+
   return (
     <Grid className={classes.root}>
       {breadcrumbs && <Header ref={headerRef} />}
@@ -56,8 +70,11 @@ const QuestionCreated = (props: Props) => {
         <Box className={classes.tabWrapper}>
           {breadcrumbs ? (
             <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate(routes.lecturer.course.management)}>
-                Quản lý khoá học
+              <span
+                translation-key='common_course_management'
+                onClick={() => navigate(routes.lecturer.course.management)}
+              >
+                {t("common_course_management")}
               </span>{" "}
               {"> "}
               <span
@@ -72,11 +89,16 @@ const QuestionCreated = (props: Props) => {
                 Xem bài tập
               </span>{" "}
               {"> "}
-              <span onClick={() => navigate(routes.lecturer.exam.create)}>
-                Tạo bài kiểm tra
+              <span
+                onClick={() => navigate(routes.lecturer.exam.create)}
+                translation-key='course_lecturer_assignment_create_exam'
+              >
+                {t("course_lecturer_assignment_create_exam")}
               </span>{" "}
               {"> "}
-              <span>Tạo câu hỏi</span>
+              <span translation-key='question_management_create_question'>
+                {t("question_management_create_question")}
+              </span>
             </ParagraphBody>
           ) : (
             <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
@@ -100,10 +122,15 @@ const QuestionCreated = (props: Props) => {
           )}
         </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
-          <Heading1 fontWeight={"500"}>Thêm câu hỏi {vi_name}</Heading1>
+          <Heading1 fontWeight={"500"} translation-key='common_add'>
+            {t("common_add")}{" "}
+            {currentLang === "en"
+              ? i18next.format(en_name, "lowercase")
+              : i18next.format(vi_name, "lowercase")}
+          </Heading1>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
-              <TextTitle>Danh mục</TextTitle>
+              <TextTitle translation-key='common_topic'>{t("common_topic")}</TextTitle>
             </Grid>
             <Grid item xs={12} md={9}>
               <Select defaultValue={10} fullWidth={true} size='small' required>
@@ -114,40 +141,67 @@ const QuestionCreated = (props: Props) => {
             </Grid>
           </Grid>
 
-          <InputTextField title='Tên câu hỏi *' type='text' placeholder='Tên câu hỏi' required />
-
-          <Grid container spacing={1} columns={12}>
-            <Grid item xs={12} md={3}>
-              <TextTitle>Mô tả câu hỏi *</TextTitle>
-            </Grid>
-            <Grid item xs={12} md={9} className={classes.textEditor}>
-              <TextEditor placeholder='Nhập mô tả ...' value={""} required />
-            </Grid>
-          </Grid>
-
           <InputTextField
-            title='Điểm mặc định *'
+            title={`${t("exam_management_create_question_name")} *`}
             type='text'
-            placeholder='Điểm mặc định'
+            placeholder={t("exam_management_create_question_name")}
             required
+            translation-key='exam_management_create_question_name'
           />
 
           <Grid container spacing={1} columns={12}>
             <Grid item xs={12} md={3}>
-              <TextTitle>Nhận xét chung</TextTitle>
+              <TextTitle translation-key='exam_management_create_question_description'>
+                {t("exam_management_create_question_description")} *
+              </TextTitle>
             </Grid>
             <Grid item xs={12} md={9} className={classes.textEditor}>
-              <TextEditor placeholder='Nhập nhận xét chung ...' value={""} />
+              <TextEditor
+                placeholder={`${t("question_management_enter_question_description")}...`}
+                value={""}
+                required
+                translation-key='question_management_enter_question_description'
+              />
+            </Grid>
+          </Grid>
+
+          <InputTextField
+            title={`${t("question_management_default_score")} *`}
+            type='text'
+            placeholder={t("question_management_default_score")}
+            required
+            translation-key='question_management_default_score'
+          />
+
+          <Grid container spacing={1} columns={12}>
+            <Grid item xs={12} md={3}>
+              <TextTitle translation-key='question_management_general_comment'>
+                {t("question_management_general_comment")}
+              </TextTitle>
+            </Grid>
+            <Grid item xs={12} md={9} className={classes.textEditor}>
+              <TextEditor
+                placeholder={`${t("question_management_enter_general_comment")}...`}
+                value={""}
+                translation-key='question_management_enter_general_comment'
+              />
             </Grid>
           </Grid>
 
           {props.qtype === qtype.essay.code && (
             <Grid container spacing={1} columns={12}>
               <Grid item xs={12} md={3}>
-                <TextTitle>Tiêu chí đánh giá </TextTitle>
+                <TextTitle translation-key='question_management_rating_criteria'>
+                  {t("question_management_rating_criteria")}
+                </TextTitle>
               </Grid>
               <Grid item xs={12} md={9} className={classes.textEditor}>
-                <TextEditor min placeholder='Nhập tiêu chí đánh giá ...' value={""} />
+                <TextEditor
+                  min
+                  placeholder={`${t("question_management_enter_rating_criteria")}...`}
+                  value={""}
+                  translation-key='question_management_enter_rating_criteria'
+                />
               </Grid>
             </Grid>
           )}
@@ -155,25 +209,43 @@ const QuestionCreated = (props: Props) => {
             <div>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Đáp án đúng *</TextTitle>
+                  <TextTitle translation-key='question_management_correct_answer'>
+                    {t("question_management_correct_answer")} *
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <Select defaultValue={0} size='small' required>
-                    <MenuItem value={0}>False</MenuItem>
-                    <MenuItem value={1}>True</MenuItem>
+                    <MenuItem value={0} translation-key='common_false'>
+                      {t("common_false")}
+                    </MenuItem>
+                    <MenuItem value={1} translation-key='common_true'>
+                      {t("common_true")}
+                    </MenuItem>
                   </Select>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét câu trả lời đúng</TextTitle>
+                  <TextTitle translation-key='question_management_comment_correct_answer'>
+                    {t("question_management_comment_correct_answer")}
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9} className={classes.textEditor}>
-                  <TextEditor placeholder='Nhập nhận xét ...' value={""} />
+                  <TextEditor
+                    placeholder={`${t("question_management_comment_answer")}...`}
+                    value={""}
+                    translation-key='question_management_comment_answer'
+                  />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextTitle>Nhận xét câu trả lời sai</TextTitle>
+                  <TextTitle translation-key='question_management_comment_wrong_answer'>
+                    {t("question_management_comment_wrong_answer")}
+                  </TextTitle>
                 </Grid>
                 <Grid item xs={12} md={9} className={classes.textEditor}>
-                  <TextEditor placeholder='Nhập nhận xét ...' value={""} />
+                  <TextEditor
+                    placeholder={t("question_management_comment_answer")}
+                    value={""}
+                    translation-key='question_management_comment_answer'
+                  />
                 </Grid>
               </Grid>
             </div>
@@ -182,16 +254,24 @@ const QuestionCreated = (props: Props) => {
           {props.qtype === qtype.multiple_choice.code && (
             <Grid container spacing={1} columns={12}>
               <Grid item xs={12} md={3}>
-                <TextTitle>Một hoặc nhiều câu trả lời đúng</TextTitle>
+                <TextTitle translation-key='question_management_one_or_many'>
+                  {t("question_management_one_or_many")}
+                </TextTitle>
               </Grid>
               <Grid item xs={12} md={9}>
                 <Select defaultValue={1} fullWidth={true} size='small'>
-                  <MenuItem value={1}>Một câu trả lời đúng</MenuItem>
-                  <MenuItem value={2}>Nhiều câu trả lời đúng</MenuItem>
+                  <MenuItem value={1} translation-key='question_management_one'>
+                    {t("question_management_one")}
+                  </MenuItem>
+                  <MenuItem value={2} translation-key='question_management_many'>
+                    {t("question_management_many")}
+                  </MenuItem>
                 </Select>
               </Grid>
               <Grid item xs={3}>
-                <TextTitle>Xáo trộn đáp án</TextTitle>
+                <TextTitle translation-key='question_management_scramble'>
+                  {t("question_management_scramble")}
+                </TextTitle>
               </Grid>
               <Checkbox defaultChecked />
             </Grid>
@@ -199,7 +279,9 @@ const QuestionCreated = (props: Props) => {
           {props.qtype === qtype.short_answer.code && (
             <Grid container spacing={1} columns={12}>
               <Grid item xs={3}>
-                <TextTitle>Phân biệt hoa thường</TextTitle>
+                <TextTitle translation-key='question_management_distinguish_lettercase'>
+                  {t("question_management_distinguish_lettercase")}
+                </TextTitle>
               </Grid>
               <Checkbox defaultChecked />
             </Grid>
@@ -210,7 +292,12 @@ const QuestionCreated = (props: Props) => {
               <ListItemButton onClick={() => setAnswerOpen(!answerOpen)} sx={{ paddingX: 0 }}>
                 <Grid container alignItems={"center"} columns={12}>
                   <Grid item xs={12} md={3}>
-                    <Heading2 sx={{ display: "inline" }}>Câu trả lời</Heading2>
+                    <Heading2
+                      sx={{ display: "inline" }}
+                      translation-key='question_management_answer'
+                    >
+                      {t("question_management_answer")}
+                    </Heading2>
                   </Grid>
                   <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>
                     {answerOpen ? <ExpandLess /> : <ExpandMore />}
@@ -235,22 +322,15 @@ const QuestionCreated = (props: Props) => {
               </Collapse>
             </div>
           )}
-          {/* <Grid container justifyContent={"center"}>
-            <Button
-              color='primary'
-              type='submit'
-              variant='outlined'
-              sx={{
-                minWidth: "32%"
-              }}
-            >
-              Thêm câu hỏi
-            </Button>
-          </Grid> */}
           <Box className={classes.stickyFooterContainer}>
             <Box className={classes.phantom} />
             <Box className={classes.stickyFooterItem}>
-              <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
+              <Button
+                btnType={BtnType.Primary}
+                translation-key='question_management_create_question'
+              >
+                {t("question_management_create_question")}
+              </Button>
             </Box>
           </Box>
         </Box>

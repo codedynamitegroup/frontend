@@ -17,10 +17,11 @@ import {
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
-
 const CodeQuestionLanguages = memo((props: Props) => {
+  const { t } = useTranslation();
   const initialRows: GridRowsProp = [
     {
       id: 1,
@@ -87,7 +88,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
   const columns: GridColDef[] = [
     {
       field: "name",
-      headerName: "Ngôn ngữ",
+      headerName: t("common_language"),
       type: "text",
       width: 150,
       align: "left",
@@ -96,7 +97,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
     },
     {
       field: "timeLimit",
-      headerName: "Giới hạn thời gian(giây)",
+      headerName: t("code_management_detail_lang_time_limit"),
       width: 300,
       type: "number",
       align: "center",
@@ -106,7 +107,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
     {
       field: "memoryLimit",
       width: 300,
-      headerName: "Giới hạn bộ nhớ(MB)",
+      headerName: t("code_management_detail_lang_storage_limit"),
       editable: true,
       align: "center",
       headerAlign: "center",
@@ -115,14 +116,14 @@ const CodeQuestionLanguages = memo((props: Props) => {
     {
       field: "isSelected",
       width: 150,
-      headerName: "Sử dụng",
+      headerName: t("common_use"),
       editable: true,
       type: "boolean"
     },
     {
       field: "actions",
       type: "actions",
-      headerName: "Hành động",
+      headerName: t("common_action"),
       width: 200,
       align: "center",
       headerAlign: "center",
@@ -166,7 +167,7 @@ const CodeQuestionLanguages = memo((props: Props) => {
   return (
     <Box className={classes["body"]}>
       <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-        Dưới đây là danh sách các ngôn ngữ lập trình có sẵn
+        {t("code_management_detail_lang_description")}
       </Heading5>
       <DataGrid
         rows={rows}

@@ -8,6 +8,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import CodeEditor from "components/editor/CodeEditor";
 import Heading5 from "components/text/Heading5";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
 
@@ -23,6 +24,7 @@ interface QCodeStub {
   codeStubTail: string;
 }
 const CodeQuestionCodeStubs = memo((props: Props) => {
+  const { t } = useTranslation();
   const codeStubs: QCodeStub[] = [
     {
       language: ELanguage.JAVA,
@@ -226,13 +228,19 @@ int sumOfTwoIntegers(int a, int b) {
   return (
     <>
       <Box component='form' autoComplete='off' className={classes.formBody}>
-        <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-          Để đọc dữ liệu test case đầu vào một cách tiêu chuẩn, bạn có thể sử dụng ngôn ngữ DSL của
-          chúng tôi như một cách tiếp cận hiệu quả và dễ sử dụng
+        <Heading5
+          fontStyle={"italic"}
+          fontWeight={"400"}
+          colorname='--gray-50'
+          translation-key='code_management_detail_template_description'
+        >
+          {t("code_management_detail_template_description")}
         </Heading5>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>DSL cho code mẫu</TextTitle>
+            <TextTitle translation-key='code_management_detail_template_dsl'>
+              {t("code_management_detail_template_dsl")}
+            </TextTitle>
           </Grid>
           <Grid item xs={9}>
             <Textarea
@@ -252,13 +260,22 @@ print(integer,result)`}
           </Grid>
         </Grid>
         <Box className={classes.btnWrapper}>
-          <Button btnType={BtnType.Primary} width='150px'>
-            Tạo code mẫu
+          <Button
+            btnType={BtnType.Primary}
+            width='150px'
+            translation-key='code_management_detail_template_create'
+          >
+            {t("code_management_detail_template_create")}{" "}
           </Button>
         </Box>
       </Box>
-      <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-        Xem các đoạn mã nguồn đã được tạo tự động ở bên dươi
+      <Heading5
+        fontStyle={"italic"}
+        fontWeight={"400"}
+        colorname='--gray-50'
+        translation-key='code_management_detail_template_dsl_description'
+      >
+        {t("code_management_detail_template_dsl_description")}{" "}
       </Heading5>
       <Box mt={2} id={classes.codeStubsContainer}>
         <Box className={classes.codeStubsWrapper}>

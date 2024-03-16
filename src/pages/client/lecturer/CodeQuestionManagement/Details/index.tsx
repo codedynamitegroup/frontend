@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
@@ -10,11 +10,12 @@ import CodeQuestionTestCases from "./components/TestCases";
 import CodeQuestionCodeStubs from "./components/CodeStubs";
 import CodeQuestionLanguages from "./components/Languages";
 import { routes } from "routes/routes";
-import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const LecturerCodeQuestionDetails = memo((props: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { pathname } = useLocation();
@@ -52,10 +53,13 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
       <Box>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate(routes.lecturer.code_question.management)}>
-              Quản lý câu hỏi code
-            </span>{" "}
-            {">"}{" "}
+            <span
+              translation-key='code_management_title'
+              onClick={() => navigate(routes.lecturer.code_question.management)}
+            >
+              {t("code_management_title")}
+            </span>
+            {">"}
             <span
               onClick={() => {
                 if (id) navigate(pathname);
@@ -77,7 +81,9 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
             >
               <Tab
                 sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Thông tin</ParagraphBody>}
+                label={
+                  <ParagraphBody translation-key='common_info'>{t("common_info")}</ParagraphBody>
+                }
                 value={0}
               />
               <Tab
@@ -87,12 +93,20 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
               />
               <Tab
                 sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Code mẫu</ParagraphBody>}
+                label={
+                  <ParagraphBody translation-key='code_management_detail_stub'>
+                    {t("code_management_detail_stub")}
+                  </ParagraphBody>
+                }
                 value={2}
               />
               <Tab
                 sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Ngôn ngữ</ParagraphBody>}
+                label={
+                  <ParagraphBody translation-key='common_language'>
+                    {t("common_language")}
+                  </ParagraphBody>
+                }
                 value={3}
               />
             </Tabs>
@@ -110,7 +124,9 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
       <Box className={classes.stickyFooterContainer}>
         <Box className={classes.phantom} />
         <Box className={classes.stickyFooterItem}>
-          <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
+          <Button btnType={BtnType.Primary} translation-key='common_save_changes'>
+            {t("common_save_changes")}
+          </Button>
         </Box>
       </Box>
     </>

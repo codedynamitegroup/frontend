@@ -1,5 +1,4 @@
 import { Box, Button, CardMedia, Container, Grid } from "@mui/material";
-import React, { useRef } from "react";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -84,8 +83,9 @@ export default function HomePage() {
                       fullWidth
                       variant='outlined'
                       color='primary'
+                      translation-key='common_see_detail'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -125,8 +125,9 @@ export default function HomePage() {
                       fullWidth
                       variant='outlined'
                       color='primary'
+                      translation-key='common_see_detail'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -166,8 +167,9 @@ export default function HomePage() {
                       fullWidth
                       variant='outlined'
                       color='primary'
+                      translation-key='common_see_detail'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -211,9 +213,10 @@ export default function HomePage() {
                       className={classes.viewDetailBtn}
                       fullWidth
                       variant='outlined'
+                      translation-key='common_see_detail'
                       color='primary'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -253,8 +256,9 @@ export default function HomePage() {
                       fullWidth
                       variant='outlined'
                       color='primary'
+                      translation-key='common_see_detail'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -294,8 +298,9 @@ export default function HomePage() {
                       fullWidth
                       variant='outlined'
                       color='primary'
+                      translation-key='common_see_detail'
                     >
-                      Xem chi tiết
+                      {t("common_see_detail")}
                     </Button>
                   </CardContent>
                 </Card>

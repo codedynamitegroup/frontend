@@ -20,6 +20,7 @@ import CustomFileList from "components/editor/FileUploader/components/CustomFile
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 450;
 
@@ -80,6 +81,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function SubmitAssignment() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
@@ -208,7 +210,12 @@ export default function SubmitAssignment() {
               >
                 <Grid container direction='row' alignItems='center' gap={1}>
                   <Grid item>
-                    <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
+                    <ParagraphSmall
+                      fontWeight={"600"}
+                      translation-key='course_assignment_detail_open_time'
+                    >
+                      {t("course_assignment_detail_open_time")}:
+                    </ParagraphSmall>
                   </Grid>
                   <Grid item>
                     <ParagraphBody>
@@ -220,7 +227,12 @@ export default function SubmitAssignment() {
                 </Grid>
                 <Grid container direction='row' alignItems='center' gap={1}>
                   <Grid item>
-                    <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
+                    <ParagraphSmall
+                      fontWeight={"600"}
+                      translation-key='course_assignment_detail_close_time'
+                    >
+                      {t("course_assignment_detail_close_time")}:
+                    </ParagraphSmall>
                   </Grid>
                   <Grid item>
                     <ParagraphBody>
@@ -268,11 +280,14 @@ export default function SubmitAssignment() {
                   />
                 </Box>
               </Card>
-              <BasicAccordion title='Thêm bài nộp'>
+              <BasicAccordion
+                title={t("course_assignment_detail_submit")}
+                translation-key='course_assignment_detail_submit'
+              >
                 <Box className={classes.formBody}>
                   <Grid container spacing={1} columns={12}>
                     <Grid item xs={3}>
-                      <TextTitle>Tự luận</TextTitle>
+                      <TextTitle translation-key='common_essay'>{t("common_essay")}</TextTitle>
                     </Grid>
                     <Grid item xs={9} className={classes.textEditor}>
                       <TextEditor value={""} onChange={(e) => console.log(e)} />
@@ -280,7 +295,9 @@ export default function SubmitAssignment() {
                   </Grid>
                   <Grid container spacing={1} columns={12}>
                     <Grid item xs={3}>
-                      <TextTitle>Tệp bài nộp</TextTitle>
+                      <TextTitle translation-key='course_lecturer_assignment_submit_file'>
+                        {t("course_lecturer_assignment_submit_file")}
+                      </TextTitle>
                     </Grid>
                     <Grid item xs={9}>
                       <FileUploader />
@@ -291,10 +308,14 @@ export default function SubmitAssignment() {
               <Divider />
               <Grid container direction='row' justifyContent='center' gap={1}>
                 <Grid item>
-                  <Button btnType={BtnType.Primary}>Lưu thay đổi</Button>
+                  <Button btnType={BtnType.Primary} translation-key='common_save_changes'>
+                    {t("common_save_changes")}
+                  </Button>
                 </Grid>
                 <Grid item>
-                  <Button btnType={BtnType.Outlined}>Huỷ bỏ</Button>
+                  <Button btnType={BtnType.Outlined} translation-key='common_cancel'>
+                    {t("common_cancel")}
+                  </Button>
                 </Grid>
               </Grid>
             </Box>

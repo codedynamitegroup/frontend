@@ -9,10 +9,12 @@ import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { routes } from "routes/routes";
+import { useTranslation } from "react-i18next";
 
 interface Props {}
 
 const LecturerCodeQuestionCreation = memo((props: Props) => {
+  const { t } = useTranslation();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
@@ -30,27 +32,42 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
       <Box id={classes.codequestionCreationBody}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate(routes.lecturer.code_question.management)}>
-              Quản lý câu hỏi code
+            <span
+              onClick={() => navigate(routes.lecturer.code_question.management)}
+              translation-key='code_management_title'
+            >
+              {t("code_management_title")}
             </span>{" "}
             {">"}{" "}
-            <span onClick={() => navigate(routes.lecturer.code_question.create)}>Tạo câu hỏi</span>
+            <span
+              onClick={() => navigate(routes.lecturer.code_question.create)}
+              translation-key='code_management_create_new_title'
+            >
+              {t("code_management_create_new_title")}
+            </span>
           </ParagraphBody>
         </Box>
         <Box component='form' className={classes.formBody} autoComplete='off'>
-          <Heading1 fontWeight={"500"}>Tạo câu hỏi code</Heading1>
-          <InputTextField title='Tên câu hỏi' type='text' value={questionName} />
+          <Heading1 fontWeight={"500"}>{t("code_management_create_new_title")}</Heading1>
+          <InputTextField
+            translation-key='code_management_create_new_title'
+            title={t("code_management_create_new_title")}
+            type='text'
+            value={questionName}
+          />
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
-              <TextTitle>Mô tả bài toán</TextTitle>
+              <TextTitle translation-key='code_management_create_description'>
+                {t("code_management_create_description")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor value={problemDescription} onChange={setProblemDescription} />
             </Grid>
           </Grid>
           <Grid container spacing={1} columns={12}>
-            <Grid item xs={3}>
-              <TextTitle>Phát biểu bài toán</TextTitle>
+            <Grid item xs={3} translation-key='code_management_create_statement'>
+              <TextTitle>{t("code_management_create_statement")}</TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor value={problemStatement} onChange={setProblemStatement} />
@@ -58,7 +75,9 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
           </Grid>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
-              <TextTitle>Định dạng đầu vào</TextTitle>
+              <TextTitle translation-key='code_management_create_input_format'>
+                {t("code_management_create_input_format")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor value={inputFormat} onChange={setInputFormat} />
@@ -66,7 +85,9 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
           </Grid>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
-              <TextTitle>Ràng buộc</TextTitle>
+              <TextTitle translation-key='code_management_create_constraint'>
+                {t("code_management_create_constraint")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor value={contraints} onChange={setContraints} />
@@ -74,7 +95,9 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
           </Grid>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
-              <TextTitle>Định dạng đầu ra</TextTitle>
+              <TextTitle translation-key='code_management_create_output_format'>
+                {t("code_management_create_output_format")}
+              </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
               <TextEditor value={outputFormat} onChange={setOutputFormat} />
@@ -85,7 +108,9 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
       <Box className={classes.stickyFooterContainer}>
         <Box className={classes.phantom} />
         <Box className={classes.stickyFooterItem}>
-          <Button btnType={BtnType.Primary}>Tạo câu hỏi</Button>
+          <Button btnType={BtnType.Primary} translation-key='exam_management_create_new_question'>
+            {t("exam_management_create_new_question")}
+          </Button>
         </Box>
       </Box>
     </>
