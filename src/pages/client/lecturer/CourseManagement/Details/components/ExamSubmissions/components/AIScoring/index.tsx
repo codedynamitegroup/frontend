@@ -415,7 +415,12 @@ const AIScoring = () => {
         setLoading(true);
         await scoringByAI(data, question)
           .then((results) => {
-            if (results && isResponseFeedbackGradedAI(results[0])) {
+            if (
+              results &&
+              results.length === 2 &&
+              isResponseFeedbackGradedAI(results[0]) &&
+              isResponseFeedbackGradedAI(results[1])
+            ) {
               setFeedback(results);
               setOpenSnackbarAlert(true);
               setAlertContent("Chấm điểm thành công");

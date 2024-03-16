@@ -145,16 +145,16 @@ II. SYSTEM_INSTRUCTIONS:
 		This is the list of students' submissions (SubmissionStudent[]) that will be reviewed by you. You will provide feedback for the attribute studentAnswer (The content of the student's essay) for each student's submission (indentified by "ID").:
 			${JSON.stringify(data)} 
 			
-	C. Feedback Results:
+	C. Feedback Results (${data.length} elements):
 		The feedback results will have ${data.length} elements. Each element is based on question details below and studenAnswer to grade and provide feedback to user:
-			- Based on questions: 
+			- question content:
 				${question.content}
 		
 		This is the list of students' submissions (SubmissionStudent[]) that will be reviewed by you. You will provide feedback for the attribute studentAnswer (The content of the student's essay) for each student's submission (indentified by "ID").:
 			${JSON.stringify(data)} 
 
 		From the students' submission data above, please give me the grading and feedback suggestions for each student's submission. The feedback suggestion ID should match the student's submission ID above. It must be follow JSON format !!!. According to the following structure:
-			- IFeedbackGradingAI[]: The data structure for a list of feedback. Attribute "feedback" has five attributes: content, form, style, overall, and score.
+			- IFeedbackGradingAI[]: The feedback results will have ${data.length} elements. The data structure for a list of feedback.
 			[
 				{
 					id: number,
@@ -182,14 +182,14 @@ II. SYSTEM_INSTRUCTIONS:
 				},
 				...
 			]
-			- Description: There are two attributes id and feedback for each feedback (IFeedbackGradingAI): 
+			- Description: Each feedback has two attributes id and feedback for each feedback (IFeedbackGradingAI): 
 				+ id:
 					* Data type: number
 					* Description: A unique identifier that will match the student's submission ID in the list of student submissions above.
 				+ feedback:
 					* Data type: object
 					* Description: An object that contains the feedback for the student's submission (IFeedback). The feedback depends on the attribute studentAnswer, which matches the feedback ID and the student's submission ID.
-						- IFeedback: The data structure for a feedback:
+						- IFeedback: The data structure for a feedback, has five attributes: content, form, style, overall, and score are same at level:
 						{
 							content (an object that contains the content of the feedback (IFeedbackContent)): {
 								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "accuracy" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information 
@@ -231,11 +231,14 @@ II. SYSTEM_INSTRUCTIONS:
 									** You also need to use the rubics: ${question.rubics}	
 						}
 
-					* Note: 
-						* You need to check accuracy, logic, creativity, and source usage of the student's submission meet the question details and respond to user. 
-						* If the student answer is incorrect, please give accuracy, logic, creativity, and source usage feedback to the student.
-						* Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-						* Instead of use \\t, you should use tab
+					* Note of feedback: 
+						** You need to check accuracy, logic, creativity, and source usage of the student's submission meet the question details and respond to user. 
+						** If the student answer is incorrect, please give accuracy, logic, creativity, and source usage feedback to the student.
+						** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+						** Instead of use \\t, you should use tab
+
+					* Here is example of feedback:
+					${JSON.stringify(format_scoring[0].feedback)}
 
 	D. Please use ${language} everywhere to write feedback messages for students.
 	

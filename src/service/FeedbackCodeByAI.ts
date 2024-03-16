@@ -223,30 +223,30 @@ II. SYSTEM_INSTRUCTIONS:
 			feedback: {
 				analysis: {
 					correctness: {
-						accuracy: string,
-						completeness: string,
-						consistency: string
+						accuracy: string (not be empty or null),
+						completeness: string (not be empty or null),
+						consistency: string (not be empty or null)
 					},
 					efficiency: {
-						executionTime: string,
-						memory: string,
-						complexity: string
+						executionTime: string (not be empty or null),
+						memory: string (not be empty or null),
+						complexity: string (not be empty or null)
 					},
 					maintainability: {
-						readability: string,
-						reuseability: string,
-						extensibility: string
+						readability: string (not be empty or null),
+						reuseability: string (not be empty or null),
+						extensibility: string (not be empty or null)
 					},
 					scalability: {
-						dataScalability: string,
-						functionalScalability: string
+						dataScalability: string (not be empty or null),
+						functionalScalability: string (not be empty or null)
 					}
 				},
-				improvementSuggestions: string,
-				conclusion: string
+				improvementSuggestions: string (not be empty or null),
+				conclusion: string (not be empty or null)
 			},
-			suggestedCode: string,
-			explainedCode: string
+			suggestedCode: string (not be empty or null),
+			explainedCode: string (not be empty or null)
 		}
 
 		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
@@ -282,18 +282,24 @@ II. SYSTEM_INSTRUCTIONS:
 						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					}
-				* Note:
+				* Note for feedback:
 					** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab
 					** Must be use "\\n" when using line breaks
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
 
+				* Here is example of feedback:
+					${JSON.stringify(format_response.feedback)}
+
 			+ suggestedCode:
 				* Data type: string (not be "" or null)
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
-				* Note:
+				* Note of suggested code:
 					** Must be use "\\n" for line breaks.
 					** Instead of use \\t, you should use tab
+					
+				* Here is example of suggested code:
+					${format_response.suggestedCode}
 
 			+ explainedCode:
 				* Data type: string (not be "" or null)
@@ -301,6 +307,9 @@ II. SYSTEM_INSTRUCTIONS:
 				* Note: 
 					** Explain code follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab
+
+				* Here is example of explained code:
+					${format_response.explainedCode}
 
 	D. For example:
 			${JSON.stringify(format_response)}
@@ -317,7 +326,7 @@ ${AI_ROLE}
 
 ${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-  console.log("prompt", prompt);
+
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
