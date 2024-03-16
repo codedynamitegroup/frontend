@@ -217,7 +217,7 @@ II. SYSTEM_INSTRUCTIONS:
 		This is the list of students' submissions (ISourceCodeSubmission) that will be reviewed by you. You will provide feedback for the attribute source_code (The source code of the student's submission):
 			${JSON.stringify(sourceCodeSubmission)} 
 
-		From the student's submission source code above, please provide feedback and suggest a new students' source code. Then, give a new source code for students to refer to according to the following structure:
+		From the student's submission source code above, please provide feedback and suggest a new students' source code. Then, give a new source code for students to refer to according to the following structure (IfeedbackCodeByAI) is JSON format!!!:
 		{
 			id: number,
 			feedback: {
@@ -234,7 +234,7 @@ II. SYSTEM_INSTRUCTIONS:
 					},
 					maintainability: {
 						readability: string,
-						reuseability: string
+						reuseability: string,
 						extensibility: string
 					},
 					scalability: {
@@ -249,7 +249,7 @@ II. SYSTEM_INSTRUCTIONS:
 			explainedCode: string
 		}
 
-		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI):
+		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
 			+ id:
 				* Data type: number
 				* Description: Unique identifier code for feedback code.
@@ -289,14 +289,14 @@ II. SYSTEM_INSTRUCTIONS:
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
 
 			+ suggestedCode:
-				* Data type: string
+				* Data type: string (not be "" or null)
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note:
 					** Must be use "\\n" for line breaks.
 					** Instead of use \\t, you should use tab
 
 			+ explainedCode:
-				* Data type: string
+				* Data type: string (not be "" or null)
 				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note: 
 					** Explain code follow the markdown syntax. you should use \`\` to wrap the highlighted text. 

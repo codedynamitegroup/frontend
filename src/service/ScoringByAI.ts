@@ -146,37 +146,37 @@ II. SYSTEM_INSTRUCTIONS:
 			${JSON.stringify(data)} 
 			
 	C. Feedback Results:
-		The feedback results is based on question details below and studenAnswer to grade and provide feedback to user:
+		The feedback results will have ${data.length} elements. Each element is based on question details below and studenAnswer to grade and provide feedback to user:
 			- Based on questions: 
 				${question.content}
 		
 		This is the list of students' submissions (SubmissionStudent[]) that will be reviewed by you. You will provide feedback for the attribute studentAnswer (The content of the student's essay) for each student's submission (indentified by "ID").:
 			${JSON.stringify(data)} 
 
-		From the students' submission data above, please give me the grading and feedback suggestions for each student's submission. The feedback suggestion ID should match the student's submission ID above. It must be follow JSON format !!! . According to the following structure:
-			- IFeedbackGradingAI[]: The data structure for a list of feedback.
+		From the students' submission data above, please give me the grading and feedback suggestions for each student's submission. The feedback suggestion ID should match the student's submission ID above. It must be follow JSON format !!!. According to the following structure:
+			- IFeedbackGradingAI[]: The data structure for a list of feedback. Attribute "feedback" has five attributes: content, form, style, overall, and score.
 			[
 				{
 					id: number,
 					feedback: {
 						content: {
-							accuracy: string
-							logic: string
-							creativity: string
-							sourceUsage: string
+							accuracy: string (not be empty or null)
+							logic: string (not be empty or null)
+							creativity: string (not be empty or null)
+							sourceUsage: string (not be empty or null)
 						},
 						form: {
-							grammar: string
-							vocabulary: string
-							spelling: string
-							layout: string
+							grammar: string (not be empty or null)
+							vocabulary: string (not be empty or null)
+							spelling: string (not be empty or null)
+							layout: string (not be empty or null)
 						},
 						style: {
-							clarity: string
-							engagement: string
-							appropriateness: string
+							clarity: string (not be empty or null)
+							engagement: string (not be empty or null)
+							appropriateness: string (not be empty or null)
 						},
-						overall: string,
+						overall: string (not be empty or null),
 						score: number
 					}
 				},
@@ -192,24 +192,24 @@ II. SYSTEM_INSTRUCTIONS:
 						- IFeedback: The data structure for a feedback:
 						{
 							content (an object that contains the content of the feedback (IFeedbackContent)): {
-								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								logic: A string, indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								creativity: A string, indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								sourceUsage: A string, indicating the extent to which sources are used appropriately, accurately, and with complete information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "accuracy" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information 
+								logic: A string (not be empty or null), indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "logic" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								creativity: A string (not be empty or null), indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "creativity" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								sourceUsage: A string (not be empty or null), indicating the extent to which sources are used appropriately, accurately, and with complete information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "sourceUsage" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
 							},
 							form (an object that contains the form of the feedback (IFeedbackForm)): {
-								grammar: A string (not be empty or null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								vocabulary: A string (not be empty or null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								spelling: A string (not be empty or null), indicating the extent to which spelling is accurate. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								layout: A string (not be empty or null), indicating the extent to which the layout is clear, organized, and easy to understand. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								grammar: A string (not be empty or null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "grammar" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								vocabulary: A string (not be empty or null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "vocabulary" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								spelling: A string (not be empty or null), indicating the extent to which spelling is accurate. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "spelling" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								layout: A string (not be empty or null), indicating the extent to which the layout is clear, organized, and easy to understand. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "layout" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
 							},
 							style (an object that contains the style of the feedback (IFeedbackStyle)): {
-								clarity: A string (not be empty or null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								engagement: A string (not be empty or null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
-								appropriateness: A string (not be empty or null), indicating the extent to which the style is appropriate for the topic, purpose, and audience. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+								clarity: A string (not be empty or null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "clarity" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								engagement: A string (not be empty or null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "engagement" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								appropriateness: A string (not be empty or null), indicating the extent to which the style is appropriate for the topic, purpose, and audience. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "appropriateness" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
 							},
-							overall: A string (not be empty or null), indicating the overall feedback of the student within the content, form, and style.
-							score: number, between 0 and ${question.maxScore}, The score assigned to the essay is based on the rubrics, depending on the feedback above.
+							overall: A string (not be empty or null), indicating the overall feedback of the student within the content, form, and style. Do not write the title "overall" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+							score: number, between 0 and ${question.maxScore}, The score assigned to the essay is based on the rubrics below and depending on the feedback above.
 								* Here is a rubric description that helped you calculate an exact score:
 									1. Content (number score of the user after feedback, which is calculated by rubics/${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)})
 										- Score: ${(1 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, logical, creative, and uses sources appropriately.

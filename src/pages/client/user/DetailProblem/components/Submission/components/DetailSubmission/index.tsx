@@ -82,7 +82,9 @@ class Solution {
       typeof obj.id === "number" &&
       typeof obj.feedback === "object" &&
       typeof obj.suggestedCode === "string" &&
-      typeof obj.explainedCode === "string"
+      obj.suggestedCode !== "" &&
+      typeof obj.explainedCode === "string" &&
+      obj.explainedCode !== ""
     );
   }
 
@@ -97,39 +99,57 @@ class Solution {
             setFeedbackContent(`
 I. **Phân tích**
 
-\n 1. **Tính Đúng đắn:**
+1. **Tính Đúng đắn:**
 
-\n\na. **Tính chính xác:**  
-\n\n${feedbackTemp.analysis?.correctness?.accuracy}  
-\n\nb. **Tính đầy đủ:** 
-\n\n${feedbackTemp.analysis?.correctness?.completeness}  
-\n\nc. **Tính nhất quán:**
-\n\n${feedbackTemp.analysis?.correctness?.consistency}  
+a. **Tính chính xác:** 
 
-\n 2. **Tính hiệu quả:**
+${feedbackTemp.analysis?.correctness?.accuracy}  
 
-\n\na. **Thời gian thực thi:**
-\n\n${feedbackTemp.analysis?.efficiency?.executionTime}  
-\n\nb. **Bộ nhớ:**
-\n\n${feedbackTemp.analysis?.efficiency?.memory}  
-\n\nc. **Độ phức tạp:** 
-\n\n${feedbackTemp.analysis?.efficiency?.complexity}  
+b. **Tính đầy đủ:** 
 
-\n 3. **Tính bảo trì:**
+${feedbackTemp.analysis?.correctness?.completeness}  
 
-\n\na. **Khả năng đọc hiểu:**
-\n\n${feedbackTemp.analysis?.maintainability?.readability}  
-\n\nb. **Khả năng tái sử dụng:**
-\n\n${feedbackTemp.analysis?.maintainability?.reuseability}  
-\n\nc. **Khả năng mở rộng:** 
-\n\n${feedbackTemp.analysis?.maintainability?.extensibility}  
+c. **Tính nhất quán:**
 
-\n4. **Khả năng mở rộng:**
+${feedbackTemp.analysis?.correctness?.consistency}  
 
-\n\na. **Khả năng mở rộng dữ liệu:**
-\n\n${feedbackTemp.analysis?.scalability?.dataScalability}  
-\n\nb. **Khả năng mở rộng chức năng:** 
-\n\n${feedbackTemp.analysis?.scalability?.functionalScalability}  
+2. **Tính hiệu quả:**
+
+a. **Thời gian thực thi:**
+
+${feedbackTemp.analysis?.efficiency?.executionTime}  
+
+b. **Bộ nhớ:**
+
+${feedbackTemp.analysis?.efficiency?.memory}  
+
+c. **Độ phức tạp:** 
+
+${feedbackTemp.analysis?.efficiency?.complexity}  
+
+3. **Tính bảo trì:**
+
+a. **Khả năng đọc hiểu:**
+
+${feedbackTemp.analysis?.maintainability?.readability}  
+
+b. **Khả năng tái sử dụng:**
+
+${feedbackTemp.analysis?.maintainability?.reuseability}  
+
+c. **Khả năng mở rộng:** 
+
+${feedbackTemp.analysis?.maintainability?.extensibility}  
+
+4. **Khả năng mở rộng:**
+
+a. **Khả năng mở rộng dữ liệu:**
+
+${feedbackTemp.analysis?.scalability?.dataScalability}  
+
+b. **Khả năng mở rộng chức năng:** 
+
+${feedbackTemp.analysis?.scalability?.functionalScalability}  
 
 II. **Gợi ý cải tiến**
 

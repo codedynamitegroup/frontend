@@ -146,29 +146,59 @@ export default function DetailAIScoring() {
       const feedbackTemp: IFeedback = feedback?.feedback;
       if (feedbackTemp) {
         const feedbackTemplate = `
-1. **Nội dung:**
+I. **Nội dung:**
 
-	- **Độ chính xác:** ${feedbackTemp.content?.accuracy}
-	- **Logic:** ${feedbackTemp.content?.logic}
-	- **Sáng tạo:** ${feedbackTemp.content?.creativity}
-	- **Sử dụng nguồn:** ${feedbackTemp?.content?.sourceUsage}
+a. **Độ chính xác:** 
 
-2. **Hình thức:**
+${feedbackTemp.content?.accuracy}
 
-	- **Ngữ pháp:** ${feedbackTemp?.form?.grammar}
-	- **Từ vựng:**  ${feedbackTemp?.form?.vocabulary}
-	- **Chính tả:**  ${feedbackTemp?.form?.spelling}
-	- **Bố cục:** ${feedbackTemp?.form?.layout}
+b. **Logic:**
 
-3. **Phong cách:**
+${feedbackTemp.content?.logic}
 
-	- **Rõ ràng:** ${feedbackTemp?.style?.clarity}
-	- **Hấp dẫn:** ${feedbackTemp?.style?.engagement}
-	- **Phù hợp:** ${feedbackTemp?.style?.appropriateness}
+c. **Sáng tạo:** 
 
-4. **Phản hồi chung:**
+${feedbackTemp.content?.creativity}
 
-	${feedbackTemp?.overall}
+d. **Sử dụng nguồn:** 
+
+${feedbackTemp?.content?.sourceUsage}
+
+II. **Hình thức:**
+
+a. **Ngữ pháp:** 
+
+${feedbackTemp?.form?.grammar}
+
+c. **Từ vựng:**  
+
+${feedbackTemp?.form?.vocabulary}
+
+b. **Chính tả:**  
+
+${feedbackTemp?.form?.spelling}
+
+d. **Bố cục:** 
+
+${feedbackTemp?.form?.layout}
+
+III. **Phong cách:**
+
+a. **Rõ ràng:** 
+
+${feedbackTemp?.style?.clarity}
+
+b. **Hấp dẫn:** 
+
+${feedbackTemp?.style?.engagement}
+
+c. **Phù hợp:** 
+
+${feedbackTemp?.style?.appropriateness}
+
+IV. **Phản hồi chung:**
+
+${feedbackTemp?.overall}
 `;
         setAssignmentFeedback(feedbackTemplate);
       }
