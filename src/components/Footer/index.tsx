@@ -66,7 +66,7 @@ export default function Footer() {
       {/* Footer Bottom */}
       <Grid container justifyContent='center' padding={4} style={{ backgroundColor: "white" }}>
         <Typography variant='body1' translation-key='footer_copyright'>
-          © 2024 {t("footer_copyright")}: 6BrosT
+          © 2024 {t("footer_copyright")}: CodeDynamite
         </Typography>
       </Grid>
     </Grid>
