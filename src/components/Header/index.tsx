@@ -145,7 +145,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const handleClickPage = (page: any) => {
     localStorage.setItem("page", page.name);
-    if (localStorage.getItem("role")) {
+    if (
+      localStorage.getItem("role") === "lecturer" &&
+      page.path === routes.student.course.management
+    ) {
       navigate(routes.lecturer.course.management);
     } else {
       navigate(page.path);
@@ -173,6 +176,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("role");
     setState(false);
     navigate(routes.user.homepage.root);
   };
