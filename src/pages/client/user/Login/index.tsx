@@ -18,8 +18,10 @@ export default function Login() {
     localStorage.setItem("user", "HIEUTHUHAI");
     if (email === "student@gmail.com") {
       navigate(routes.user.dashboard.root);
+      localStorage.setItem("role", "student");
     } else if (email === "lecturer@gmail.com") {
       navigate(routes.lecturer.course.management);
+      localStorage.setItem("role", "lecturer");
     }
   };
   const [email, setEmail] = useState("");
