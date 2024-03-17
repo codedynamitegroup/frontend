@@ -1,7 +1,9 @@
 import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
-import LessonAccordion, { Chapter } from "components/common/accordion/LessonAccordion";
+import LessonAccordion, {
+  Chapter
+} from "pages/client/user/CourseCertificate/Detail/components/Lesson/components/LessonAccordion";
 type Props = {};
 
 const CourseCertificateLesson = (props: Props) => {

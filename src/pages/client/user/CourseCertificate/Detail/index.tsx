@@ -153,6 +153,13 @@ const CourseCertificateDetail = () => {
                   startIcon={<SchoolIcon id={classes.icSchool} />}
                   btnType={BtnType.Primary}
                   translation-key='certificate_detail_start_button'
+                  onClick={() => {
+                    navigate(
+                      routes.user.course_certificate.detail.lesson.description
+                        .replace(":courseId", "1")
+                        .replace(":lessonId", "1")
+                    );
+                  }}
                 >
                   {t("certificate_detail_start_button")}
                 </Button>

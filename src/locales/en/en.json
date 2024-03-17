@@ -184,6 +184,7 @@
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
   "certificate_basic": "Basic knowledge",
   "certificate_advance": "Advance knowledge",
+  "certificate_hot_recommend": "The course certificate everyone is learning",
 
   "certificate_detail_rating": "Ratings",
   "certificate_detail_lesson": "Lesson",
@@ -207,7 +208,6 @@
   "login_register_account": "Don't have an account ? Register now",
   "forget_password_back_link": "Back to login page",
   "forget_password_description": "Enter registerd email, we will send a change password email to this email",
-
 
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
@@ -465,7 +465,6 @@
   "question_management_scramble": "Scramble answer",
   "question_management_distinguish_lettercase": "Distinguish uppercase and lettercase",
   "question_management_enter_content": "Enter content",
-
 
   "code_plagiarism_report_description": "Source code plagiarism detection report",
   "code_plagiarism_report_info": "Report info",

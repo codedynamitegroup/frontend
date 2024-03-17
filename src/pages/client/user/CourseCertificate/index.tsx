@@ -68,6 +68,41 @@ const CourseCertificates = () => {
     }
   ];
 
+  const recommendedCourseCertificates: CourseCertificate[] = [
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
+      title: "Học C++ cơ bản",
+      description:
+        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
+      lesson: 10,
+      level: "Dễ"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
+      title: "Học Python nâng cao",
+      description:
+        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
+      lesson: 15,
+      level: "Nâng cao"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/greedy-algorithms.svg",
+      title: "Thuật toán nhị phân",
+      description:
+        "Binary search is an efficient search algorithm for sorted data. Learning this is beneficial as it dramatically reduces the time complexity to logarithmic, making it incredibly fast for large scale data.",
+      lesson: 10,
+      level: "Trung bình"
+    },
+    {
+      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+      title: "Học Go cơ bản",
+      description:
+        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
+      lesson: 35,
+      level: "Dễ"
+    }
+  ];
+
   const courseCertificatesBasic: CourseCertificate[] = [
     {
       imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
@@ -190,6 +225,23 @@ const CourseCertificates = () => {
             <Grid item xs={0.5}></Grid>
             <Grid item xs={9}>
               <Box id={classes.couseCertificatesWrapper}>
+                <Box className={classes.couseCertificatesByTopic}>
+                  <Heading2 translation-key='certificate_hot_recommend'>
+                    {t("certificate_hot_recommend")}
+                  </Heading2>
+                  <Grid container spacing={3}>
+                    {recommendedCourseCertificates.map((course, index) => (
+                      <Grid
+                        item
+                        xs={4}
+                        key={index}
+                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                      >
+                        <CourseCertificateCard course={course} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading2 translation-key='certificate_basic'>{t("certificate_basic")}</Heading2>
                   <Grid container spacing={3}>

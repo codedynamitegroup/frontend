@@ -101,7 +101,6 @@
   "common_delete": "Xoá",
   "common_answer": "Đáp án",
 
-
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
   "register_have_account": "Đã có tài khoản ? Đến trang đăng nhập",
@@ -186,6 +185,7 @@
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
   "certificate_basic": "Kiến thức cơ bản",
   "certificate_advance": "Kiến thức nâng cao",
+  "certificate_hot_recommend": "Chứng chỉ mà mọi người đang học",
 
   "certificate_detail_rating": "Đánh giá",
   "certificate_detail_lesson": "Bài học",
@@ -463,7 +463,7 @@
   "question_management_scramble": "Xáo trộn đáp án",
   "question_management_distinguish_lettercase": "Phân biệt hoa thường",
   "question_management_enter_content": "Nhập nội dung",
-  
+
   "code_plagiarism_report_description": "Báo cáo phát hiện gian lận đoạn mã nguồn",
   "code_plagiarism_report_info": "Thông tin báo cáo",
   "code_plagiarism_report_creation_date_tooltip": "Ngày tạo báo cáo",
