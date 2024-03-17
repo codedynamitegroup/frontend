@@ -74,7 +74,7 @@ const QuestionBankManagement = () => {
     {
       field: "stt",
       sortable: false,
-      flex: 0.5,
+      flex: 0.7,
       align: "center",
       headerClassName: classes["table-head"],
       renderCell: (params) => {
@@ -164,10 +164,7 @@ const QuestionBankManagement = () => {
   const headerName = t("question_bank_category_header_table", {
     returnObjects: true
   }) as Array<String>;
-  const columns = useMemo(
-    () => addHeaderNameByLanguage(columnsProps, headerName),
-    [columnsProps, headerName]
-  );
+  const columns = addHeaderNameByLanguage(columnsProps, headerName);
   useEffect(() => {
     //fetch data
   }, [pageState.page, pageState.pageSize]);
@@ -301,8 +298,12 @@ const QuestionBankManagement = () => {
         maxWidth='sm'
         fullWidth
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          Tạo danh mục
+        <DialogTitle
+          sx={{ m: 0, p: 2 }}
+          id='customized-dialog-title'
+          translation-key='question_bank_create_category'
+        >
+          {t("question_bank_create_category")}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -318,10 +319,17 @@ const QuestionBankManagement = () => {
         </IconButton>
         <DialogContent dividers>
           <Stack spacing={1}>
-            <Textarea name='Outlined' placeholder='Tên danh mục' variant='outlined' minRows={1} />
             <Textarea
+              translation-key='question_bank_create_category_name'
               name='Outlined'
-              placeholder='Thông tin danh mục'
+              placeholder={t("question_bank_create_category_name")}
+              variant='outlined'
+              minRows={1}
+            />
+            <Textarea
+              transaltion-key='question_bank_create_category_info'
+              name='Outlined'
+              placeholder={t("question_bank_create_category_info")}
               variant='outlined'
               minRows={4}
             />
@@ -329,7 +337,7 @@ const QuestionBankManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
-            <ParagraphBody> Lưu</ParagraphBody>
+            <ParagraphBody translation-key='common_save'> {t("common_save")}</ParagraphBody>
           </Button>
         </DialogActions>
       </Dialog>

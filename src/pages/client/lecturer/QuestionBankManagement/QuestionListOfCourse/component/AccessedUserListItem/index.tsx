@@ -2,6 +2,7 @@ import { Grid, Avatar, FormControl, InputLabel, Select, MenuItem } from "@mui/ma
 import { SelectChangeEvent } from "@mui/material/Select";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useState, memo } from "react";
+import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 enum AccessLevel {
   OWNER = "OWNER",
@@ -14,6 +15,7 @@ interface AccessedUserListItemProp {
   accessLevel: AccessLevel;
 }
 const AccessedUserListItem = (props: AccessedUserListItemProp) => {
+  const { t } = useTranslation();
   const [accessLevel, setAccessLevel] = useState(
     props.accessLevel === AccessLevel.EDITOR ? "20" : "10"
   );
@@ -39,7 +41,9 @@ const AccessedUserListItem = (props: AccessedUserListItemProp) => {
       </Grid>
       <Grid container md={6} alignItems='center' justifyContent='flex-end'>
         {props.accessLevel !== AccessLevel.EDITOR ? (
-          <ParagraphBody fontWeight={100}>Chủ sở hữu</ParagraphBody>
+          <ParagraphBody fontWeight={100} translation-key='question_bank_access_right_owner'>
+            {t("question_bank_access_right_owner")}
+          </ParagraphBody>
         ) : (
           <FormControl variant='outlined' className={classes.formControl}>
             <Select
@@ -48,8 +52,12 @@ const AccessedUserListItem = (props: AccessedUserListItemProp) => {
               value={accessLevel}
               onChange={handleChange}
             >
-              <MenuItem value={10}>Chỉ xem</MenuItem>
-              <MenuItem value={20}>Người chỉnh sửa</MenuItem>
+              <MenuItem value={10} translation-key='question_bank_access_right_editor'>
+                {t("question_bank_access_right_editor")}
+              </MenuItem>
+              <MenuItem value={20} translation-key='question_bank_access_right_readonly'>
+                {t("question_bank_access_right_readonly")}
+              </MenuItem>
             </Select>
           </FormControl>
         )}

@@ -552,7 +552,13 @@ export default function LecturerSourceCodePlagiarismFilePairDetails() {
                                 height: `calc(100% - ${codeHeadHeight}px)`
                               }}
                             >
-                              <Original value={data.leftFile.lines.join("\n")} />
+                              <Original
+                                value={data.leftFile.lines.join("\n")}
+                                extensions={[
+                                  EditorView.editable.of(false),
+                                  EditorState.readOnly.of(true)
+                                ]}
+                              />
                             </Box>
                           </Box>
                         </Grid>

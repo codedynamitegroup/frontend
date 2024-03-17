@@ -76,10 +76,10 @@ export default function FilePairsTable({
               }}
             >
               <td>
-                <ParagraphBody>{row.leftFile.extra.filename}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.leftFile.extra.filename}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.rightFile.extra.filename}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.rightFile.extra.filename}</ParagraphBody>
               </td>
               <td>
                 <CircularProgressWithLabel value={Number(row.highestSimilarity * 100) || 0} />

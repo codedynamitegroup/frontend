@@ -548,7 +548,7 @@ export default function ExamCreated() {
                     marginTop: "20px"
                   }}
                   popupId='add-question-popup'
-                  triggerButtonText={t("exam_management_create_add_question")}
+                  triggerButtonText={t("common_add_question")}
                   triggerButtonProps={{
                     width: "150px"
                   }}
@@ -564,7 +564,7 @@ export default function ExamCreated() {
                     }
                   ]}
                   translation-key={[
-                    "exam_management_create_add_question",
+                    "common_add_question",
                     "exam_management_create_new_question",
                     "exam_management_create_from_bank"
                   ]}

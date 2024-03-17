@@ -31,6 +31,7 @@ import HeaderNotification from "./HeaderNotification";
 interface ILinkMenu {
   name: string;
   path: string;
+  isActice?: boolean;
 }
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
@@ -57,19 +58,23 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const pages: ILinkMenu[] = [
     {
       name: "header_explore_course",
-      path: routes.user.course_certificate.root
+      path: routes.user.course_certificate.root,
+      isActice: false
     },
     {
       name: "common_practice",
-      path: routes.user.problem.root
+      path: routes.user.problem.root,
+      isActice: false
     },
     {
       name: "header_contest",
-      path: routes.user.contest.root
+      path: routes.user.contest.root,
+      isActice: false
     },
     {
       name: "header_course",
-      path: routes.student.course.management
+      path: routes.student.course.management,
+      isActice: false
     }
   ];
 
@@ -105,7 +110,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-
+  const [listPage, setListPage] = React.useState<ILinkMenu[]>(pages);
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -138,10 +143,29 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     return !!user; // Convert user to boolean value
   });
 
+  const handleClickPage = (page: any) => {
+    localStorage.setItem("page", page.name);
+    navigate(page.path);
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     setState(!!user);
   }, [localStorage.getItem("user")]);
+
+  useEffect(() => {
+    const page = localStorage.getItem("page");
+    const listPageUpdate = listPage.map((item) => {
+      if (item.name === page) {
+        item.isActice = true;
+      } else {
+        item.isActice = false;
+      }
+      return item;
+    });
+    setListPage(listPageUpdate);
+    console.log("listPage", listPage);
+  }, [localStorage.getItem("page")]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -150,6 +174,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   };
 
   const handleLogo = () => {
+    localStorage.removeItem("page");
     if (state === true) {
       navigate(routes.user.dashboard.root);
     } else {
@@ -180,14 +205,19 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </Box>
           </Box>
           <Box className={classes.navbarItem}>
-            {pages.map((page, index) => (
+            {listPage.map((page, index) => (
               <Button
                 key={index}
                 sx={{ textTransform: "none", margin: "1rem" }}
                 className={classes.item}
-                onClick={() => navigate(page.path)}
+                onClick={() => handleClickPage(page)}
               >
-                <ParagraphSmall colorname={"--white"} fontWeight={600} translation-key={page.name}>
+                <ParagraphSmall
+                  className={page.isActice ? classes.actice : ""}
+                  colorname={"--white"}
+                  fontWeight={600}
+                  translation-key={page.name}
+                >
                   {t(page.name)}
                 </ParagraphSmall>
               </Button>

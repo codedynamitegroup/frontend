@@ -291,6 +291,9 @@ II. SYSTEM_INSTRUCTIONS:
 				* Here is example of feedback:
 					${JSON.stringify(format_response.feedback)}
 
+				* Note for example of feedback:
+					** The example of feedback is just for reference. You can change the example to fit your needs.
+
 			+ suggestedCode:
 				* Data type: string (not be "" or null)
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
@@ -301,24 +304,28 @@ II. SYSTEM_INSTRUCTIONS:
 				* Here is example of suggested code:
 					${format_response.suggestedCode}
 
+				* Note for example of suggested code:
+					** The example of suggested code is just for reference. You can change the example to fit your needs.
+
 			+ explainedCode:
 				* Data type: string (not be "" or null)
 				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note: 
 					** Explain code follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					** Instead of use \\t, you should use tab
+					** Do not write any code in the explanation, just explain the code above
 
 				* Here is example of explained code:
 					${format_response.explainedCode}
 
-	D. For example:
-			${JSON.stringify(format_response)}
+				* Note for example of explained code:
+					** The example of explained code is just for reference. You can change the example to fit your needs.
 
-		Note of example:
-			1. Ensure the response is in valid JSON format !!!
-			2. The example is just for reference. You can change the example to fit your needs.
-		
-	E. Feedback Language: Use **${language}** to write feedback messages for students.
+	Note of example:
+		1. Ensure the response is in valid JSON format !!!
+		2. The example is just for reference. You can change the example to fit your needs.
+			
+	D. Feedback Language: Use **${language}** to write feedback messages for students.
 	`;
 
   const prompt = `
