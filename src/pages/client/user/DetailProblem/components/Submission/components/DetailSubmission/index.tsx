@@ -104,55 +104,109 @@ class Solution {
 
 #### 1. Tính Đúng đắn:
 
-a. **Tính chính xác:** 
+${
+  feedbackTemp.analysis?.correctness?.accuracy &&
+  feedbackTemp.analysis?.correctness?.accuracy !== ""
+    ? `- **Tính chính xác:** 
 
-${feedbackTemp.analysis?.correctness?.accuracy}  
+${feedbackTemp.analysis?.correctness?.accuracy}`
+    : ""
+}
 
-b. **Tính đầy đủ:** 
+${
+  feedbackTemp.analysis?.correctness?.completeness &&
+  feedbackTemp.analysis?.correctness?.completeness !== ""
+    ? `- **Tính đầy đủ:** 
 
-${feedbackTemp.analysis?.correctness?.completeness}  
+${feedbackTemp.analysis?.correctness?.completeness}`
+    : ""
+}
 
-c. **Tính nhất quán:**
+${
+  feedbackTemp.analysis?.correctness?.consistency &&
+  feedbackTemp.analysis?.correctness?.consistency !== ""
+    ? `- **Tính nhất quán:**
 
-${feedbackTemp.analysis?.correctness?.consistency}  
+${feedbackTemp.analysis?.correctness?.consistency}`
+    : ""
+}
 
 #### 2. Tính hiệu quả:
 
-a. **Thời gian thực thi:**
+${
+  feedbackTemp.analysis?.efficiency?.executionTime &&
+  feedbackTemp.analysis?.efficiency?.executionTime !== ""
+    ? `- **Thời gian thực thi:**
 
-${feedbackTemp.analysis?.efficiency?.executionTime}  
+${feedbackTemp.analysis?.efficiency?.executionTime}`
+    : ""
+}
 
-b. **Bộ nhớ:**
+${
+  feedbackTemp.analysis?.efficiency?.memory && feedbackTemp.analysis?.efficiency?.memory !== ""
+    ? `- **Bộ nhớ:**
 
-${feedbackTemp.analysis?.efficiency?.memory}  
+${feedbackTemp.analysis?.efficiency?.memory}`
+    : ""
+}
 
-c. **Độ phức tạp:** 
+${
+  feedbackTemp.analysis?.efficiency?.complexity &&
+  feedbackTemp.analysis?.efficiency?.complexity !== ""
+    ? `- **Độ phức tạp:** 
 
-${feedbackTemp.analysis?.efficiency?.complexity}  
+${feedbackTemp.analysis?.efficiency?.complexity}`
+    : ""
+}
 
 #### 3. Tính bảo trì:
 
-a. **Khả năng đọc hiểu:**
+${
+  feedbackTemp.analysis?.maintainability?.readability &&
+  feedbackTemp.analysis?.maintainability?.readability !== ""
+    ? `- **Khả năng đọc hiểu:**
 
-${feedbackTemp.analysis?.maintainability?.readability}  
+${feedbackTemp.analysis?.maintainability?.readability}`
+    : ""
+}
 
-b. **Khả năng tái sử dụng:**
+${
+  feedbackTemp.analysis?.maintainability?.reuseability &&
+  feedbackTemp.analysis?.maintainability?.reuseability !== ""
+    ? `- **Khả năng tái sử dụng:**
 
-${feedbackTemp.analysis?.maintainability?.reuseability}  
+${feedbackTemp.analysis?.maintainability?.reuseability}`
+    : ""
+}
 
-c. **Khả năng mở rộng:** 
+${
+  feedbackTemp.analysis?.maintainability?.extensibility &&
+  feedbackTemp.analysis?.maintainability?.extensibility !== ""
+    ? `- **Khả năng mở rộng:** 
 
-${feedbackTemp.analysis?.maintainability?.extensibility}  
+${feedbackTemp.analysis?.maintainability?.extensibility}`
+    : ""
+}
 
 #### 4. Khả năng mở rộng:
 
-a. **Khả năng mở rộng dữ liệu:**
+${
+  feedbackTemp.analysis?.scalability?.dataScalability &&
+  feedbackTemp.analysis?.scalability?.dataScalability !== ""
+    ? `- **Khả năng mở rộng dữ liệu:**
 
-${feedbackTemp.analysis?.scalability?.dataScalability}  
+${feedbackTemp.analysis?.scalability?.dataScalability}`
+    : ""
+}
 
-b. **Khả năng mở rộng chức năng:** 
+${
+  feedbackTemp.analysis?.scalability?.functionalScalability &&
+  feedbackTemp.analysis?.scalability?.functionalScalability !== ""
+    ? `- **Khả năng mở rộng chức năng:** 
 
-${feedbackTemp.analysis?.scalability?.functionalScalability}  
+${feedbackTemp.analysis?.scalability?.functionalScalability}  `
+    : ""
+}
 
 ### II. Gợi ý cải tiến
 
