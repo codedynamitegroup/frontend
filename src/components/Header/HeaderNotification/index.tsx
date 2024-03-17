@@ -1,13 +1,15 @@
 import IconButton from "@mui/material/IconButton";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { Divider, Stack, Box, Chip } from "@mui/material";
 import classes from "./styles.module.scss";
 import { useState } from "react";
 import TextTitle from "components/text/TextTitle";
 import NotificationItem, { NotificationType } from "./component/NotificationItem";
+import { useTranslation } from "react-i18next";
+
 const HeaderNotification = () => {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterChips, setFilterChips] = useState({ all: true, event: false, sync: false });
   const resetFilterChips = { all: false, event: false, sync: false };
@@ -18,6 +20,7 @@ const HeaderNotification = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <>
       <IconButton
@@ -50,23 +53,25 @@ const HeaderNotification = () => {
       >
         <Stack>
           <Box className={classes["notification-title"]}>
-            <TextTitle fontSize='24px'>Thông báo</TextTitle>
+            <TextTitle fontSize='24px' translation-key='common_notification'>
+              {t("common_notification")}
+            </TextTitle>
           </Box>
           <Stack direction='row' className={classes["notification-title"]} spacing={1}>
             <Chip
-              label={<TextTitle>Tất cả</TextTitle>}
+              label={<TextTitle translation-key='common_all'>{t("common_all")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, all: true })}
               className={filterChips.all ? classes["chip-filter-selected"] : classes["chip-filter"]}
             />
             <Chip
-              label={<TextTitle>Sự kiện</TextTitle>}
+              label={<TextTitle translation-key='common_event'>{t("common_event")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, event: true })}
               className={
                 filterChips.event ? classes["chip-filter-selected"] : classes["chip-filter"]
               }
             />
             <Chip
-              label={<TextTitle>Đồng bộ</TextTitle>}
+              label={<TextTitle translation-key='common_sync'>{t("common_sync")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, sync: true })}
               className={
                 filterChips.sync ? classes["chip-filter-selected"] : classes["chip-filter"]
@@ -78,31 +83,35 @@ const HeaderNotification = () => {
           <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.DEADLINE}
-            content='Bạn còn 1 ngày để hoàn thành bài tập 1'
+            content={t("notification_title_deadline_content", {
+              time: `1 ${t("contest_detail_feature_day")}`,
+              deadlineName: "Bài tập 1"
+            })}
             time='12/03/2024 11:00:00'
+            translation-key='notification_title_deadline_content'
           />
           <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.CONTEST}
-            content='Cuộc thi ai là siêu dev sẽ mở sau 1 ngày.'
+            content={`${t("notification_title_registerd_contest_content", { contestName: "Ai là siêu dev", time: `1 ${t("contest_detail_feature_day")}` })}`}
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.EXAM}
-            content='Bài kiểm tra của môn nmlt sẽ bắt đầu sau 4 tiếng.'
+            content={`${t("notification_title_exam_content", { courseName: "Nhập môn lập trình", time: `4 ${t("contest_detail_feature_hour")}` })}`}
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.HOMEWORK}
-            content='Có bài tập mới trong khóa học nmlt'
+            content={`${t("notification_title_new_assignment_content", { courseName: "Nhập môn lập trình" })}`}
             time='12/03/2024 11:00:00'
           />
           <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.SYNC}
-            content='Khóa học nmlt trường hcmus vừa đồng bộ với hệ thống'
+            content={`${t("notification_title_system_sync_content", { courseName: "Nhập môn lập trình" })}`}
             time='12/03/2024 11:00:00'
           />
         </Stack>

@@ -1,8 +1,8 @@
 import { Stack, Avatar, Box, BoxProps } from "@mui/material";
-import CircleIcon from "@mui/icons-material/Circle";
 import Heading6 from "components/text/Heading6";
 import { notificaionIcon } from "config/images";
 import { grey } from "@mui/material/colors";
+import i18next from "i18next";
 
 enum NotificationType {
   EXAM,
@@ -18,23 +18,23 @@ interface ContentContainer {
 const mapTypeToContent = new Map<NotificationType, ContentContainer>();
 mapTypeToContent.set(NotificationType.EXAM, {
   iconPath: notificaionIcon.examIcon,
-  generalTitle: "Bài kiểm tra"
+  generalTitle: i18next.t("notification_title_exam")
 });
 mapTypeToContent.set(NotificationType.DEADLINE, {
   iconPath: notificaionIcon.deadlineIcon,
-  generalTitle: "Deadline khóa học"
+  generalTitle: i18next.t("notification_title_deadline")
 });
 mapTypeToContent.set(NotificationType.HOMEWORK, {
   iconPath: notificaionIcon.homeworkIcon,
-  generalTitle: "Bài tập về nhà mới"
+  generalTitle: i18next.t("notification_title_new_assignment")
 });
 mapTypeToContent.set(NotificationType.CONTEST, {
   iconPath: notificaionIcon.contestIcon,
-  generalTitle: "Cuộc thi mà bạn đăng kí"
+  generalTitle: i18next.t("notification_title_registerd_contest")
 });
 mapTypeToContent.set(NotificationType.SYNC, {
   iconPath: notificaionIcon.syncIcon,
-  generalTitle: "Đồng bộ hệ thống"
+  generalTitle: i18next.t("notification_title_system_sync")
 });
 
 interface NotificationItemProps extends BoxProps {

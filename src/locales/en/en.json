@@ -110,6 +110,11 @@
   "common_general": "general",
   "common_personal": "personal",
   "common_add_new": "add new",
+  "common_logout": "Log out",
+  "common_account_info": "Account information",
+  "common_notification": "Notification",
+  "common_event": "Event",
+  "common_sync": "Sync",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -499,5 +504,16 @@
   "code_plagiarism_diff_title": "Diff",
   "code_plagiarism_shared_fingerprints_fraction_tooltip": "The fraction of shared fingerprints between the two files",
   "code_plagiarism_longest_fragment_tooltip": "The length (in fingerprints) of the longest subsequence of fingerprints matching between the two files, useful when not the whole source code is copied",
-  "code_plagiarism_total_overlap_tooltip": "The absolute value of shared fingerprints, useful for larger projects"
+  "code_plagiarism_total_overlap_tooltip": "The absolute value of shared fingerprints, useful for larger projects",
+
+  "notification_title_deadline": "Course deadline",
+  "notification_title_deadline_content": "You have {{time}} to finish {{deadlineName}}",
+  "notification_title_registerd_contest": "Registered contest",
+  "notification_title_registerd_contest_content": "{{contestName}} contest will start in {{time}}",
+  "notification_title_exam": "Exam",
+  "notification_title_exam_content": "Exam of {{courseName}} course will start in {{time}}",
+  "notification_title_new_assignment": "New assignment",
+  "notification_title_new_assignment_content": "New assignment of {{courseName}} course",
+  "notification_title_system_sync": "Systemm synchronize",
+  "notification_title_system_sync_content": "{{courseName}} course have just synchronized with systemm"
 }

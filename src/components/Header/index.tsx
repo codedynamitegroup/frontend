@@ -281,17 +281,24 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem onClick={() => navigate(routes.user.information)}>
+          <MenuItem
+            onClick={() => navigate(routes.user.information)}
+            translation-key='common_account_info'
+          >
             <ListItemIcon>
               <Person fontSize='small' />
             </ListItemIcon>
-            Thông tin tài khoản
+            {t("common_account_info")}
           </MenuItem>
-          <MenuItem className={classes.logout} onClick={handleLogout}>
+          <MenuItem
+            className={classes.logout}
+            onClick={handleLogout}
+            translation-key='common_logout'
+          >
             <ListItemIcon>
               <Logout className={classes.iconLogout} fontSize='small' />
             </ListItemIcon>
-            Đăng xuất
+            {t("common_logout")}
           </MenuItem>
         </Menu>
         <Drawer

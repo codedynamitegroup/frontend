@@ -100,6 +100,11 @@
   "common_false": "Sai",
   "common_delete": "Xoá",
   "common_answer": "Đáp án",
+  "common_logout": "Đăng xuất",
+  "common_account_info": "Thông tin tài khoản",
+  "common_notification": "Thông báo",
+  "common_event": "Sự kiện",
+  "common_sync": "Đồng bộ",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -497,5 +502,16 @@
   "code_plagiarism_diff_title": "Khác biệt",
   "code_plagiarism_shared_fingerprints_fraction_tooltip": "Tỷ lệ các dấu vân tay chung giữa hai tệp",
   "code_plagiarism_longest_fragment_tooltip": "Độ dài (tính bằng số dấu vân tay) của dãy con dấu vân tay dài nhất giữa hai tệp",
-  "code_plagiarism_total_overlap_tooltip": "Giá trị tuyệt đối của các dấu vân tay chung, hữu ích cho các dự án lớn"
+  "code_plagiarism_total_overlap_tooltip": "Giá trị tuyệt đối của các dấu vân tay chung, hữu ích cho các dự án lớn",
+
+  "notification_title_deadline": "Deadline khoá học",
+  "notification_title_deadline_content": "Bạn còn {{time}} để hoàn thành {{deadlineName}}",
+  "notification_title_registerd_contest": "Cuộc thi mà bạn đăng ký",
+  "notification_title_registerd_contest_content": "Cuộc thi {{contestName}} sẽ bắt đầu trong {{time}}",
+  "notification_title_exam": "Bài kiểm tra",
+  "notification_title_exam_content": "Bài kiểm tra của môn {{courseName}} sẽ bắt đầu sau {{time}}",
+  "notification_title_new_assignment": "Bài tập về nhà mới",
+  "notification_title_new_assignment_content": "Có bài tập mới trong khoá học {{courseName}}",
+  "notification_title_system_sync": "Đồng bộ hệ thống",
+  "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống"
 }
