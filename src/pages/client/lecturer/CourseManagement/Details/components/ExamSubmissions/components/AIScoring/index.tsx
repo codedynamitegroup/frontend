@@ -332,13 +332,11 @@ const AIScoring = () => {
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
-    navigate(routes.lecturer.exam.ai_scroring_detail, {
-      state: {
-        feedback: params.row,
-        answer: data[params.row.id - 1]?.studentAnswer,
-        question: question
-      }
-    });
+    const url = routes.lecturer.exam.ai_scroring_detail;
+    localStorage.setItem("feedback", JSON.stringify(params.row));
+    localStorage.setItem("answer", JSON.stringify(data[params.row.id - 1]?.studentAnswer));
+    localStorage.setItem("question", JSON.stringify(question));
+    window.open("/frontend#" + url);
   };
 
   const [loading, setLoading] = useState(false);
