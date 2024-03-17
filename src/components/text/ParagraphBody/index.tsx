@@ -4,6 +4,7 @@ interface Props {
   colorname?: string;
   fontWeight?: number | string;
   fontSize?: string;
+  wordWrap?: string;
 }
 
 const ParagraphBody = styled(Typography)<Props>`
@@ -13,6 +14,7 @@ const ParagraphBody = styled(Typography)<Props>`
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
   font-size: ${(props) => props.fontSize || "16px"};
   line-height: "24px";
+  word-wrap: ${(props) => props.wordWrap || undefined};
 `;
 
 export default ParagraphBody;
