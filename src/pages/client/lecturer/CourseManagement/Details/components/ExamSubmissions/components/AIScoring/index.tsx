@@ -412,6 +412,9 @@ const AIScoring = () => {
   }
 
   useEffect(() => {
+    if (localStorage.getItem("feedback") === null) {
+      return;
+    }
     if (effectRan.current === false) {
       const handleScoringByAI = async () => {
         setLoading(true);

@@ -145,7 +145,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const handleClickPage = (page: any) => {
     localStorage.setItem("page", page.name);
-    navigate(page.path);
+    if (localStorage.getItem("role")) {
+      navigate(routes.lecturer.course.management);
+    } else {
+      navigate(page.path);
+    }
   };
 
   useEffect(() => {
