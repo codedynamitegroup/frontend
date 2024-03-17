@@ -23,6 +23,7 @@ import SnackbarAlert from "components/common/SnackbarAlert";
 import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 interface Props {
   insideCrumb?: boolean;
 }
@@ -143,8 +144,11 @@ const AIQuestionCreated = (props: Props) => {
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span onClick={() => navigate("/lecturer/question-bank-management")}>
-              Ngân hàng câu hỏi
+            <span
+              onClick={() => navigate("/lecturer/question-bank-management")}
+              translation-key='common_question_bank'
+            >
+              {i18next.format(t("common_question_bank"), "firstUppercase")}
             </span>{" "}
             {"> "}
             <span

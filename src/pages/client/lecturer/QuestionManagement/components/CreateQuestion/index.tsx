@@ -60,14 +60,14 @@ const QuestionCreated = (props: Props) => {
   if (props.insideCrumb) headerHeight = 0;
   const [initialized, setInitialized] = useState(true);
   let outletContext: any = useOutletContext();
-
+  let outletTab = outletContext?.value;
   useEffect(() => {
     if (initialized) {
       setInitialized(false);
     } else {
       navigate("/lecturer/question-bank-management");
     }
-  }, [outletContext]);
+  }, [outletTab]);
 
   const urlParams = useParams();
   console.log(urlParams);
@@ -83,8 +83,11 @@ const QuestionCreated = (props: Props) => {
         <Box className={classes.tabWrapper}>
           {props.insideCrumb ? (
             <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-              <span onClick={() => navigate("/lecturer/question-bank-management")}>
-                Ngân hàng câu hỏi
+              <span
+                onClick={() => navigate("/lecturer/question-bank-management")}
+                translation-key='common_question_bank'
+              >
+                {i18next.format(t("common_question_bank"), "firstUppercase")}
               </span>{" "}
               {"> "}
               <span
