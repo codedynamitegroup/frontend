@@ -66,22 +66,57 @@ const LecturerCourseExamSubmissions = () => {
     setIsPlagiarismDetectionLoading(true);
     // Maybe fetch data from server
     const codeSubmissionsData = {
-      report_name: "Kiếm tra cuối kỳ",
-      language: "javascript",
+      report_name: "Câu hỏi 1 - Kiểm tra cuối kỳ",
       code_submissions_data: [
+        // {
+        //     "url": "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710657073/copy_of_sample_azlqwi.js",
+        //     "extra": {
+        //         "student_id": "1",
+        //         "question_id": "1",
+        //         "created_at": "2023-07-23 17:12:33 +0200",
+        //         "labels": "test"
+        //     }
+        // },
+        // {
+        //     "url": "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710657065/sample_w5tt4n.js",
+        //     "extra": {
+        //         "student_id": "2",
+        //         "question_id": "1",
+        //         "created_at": "2023-07-23 17:12:33 +0200",
+        //         "labels": "test"
+        //     }
+        // },
+        // {
+        //     "url": "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663299/gea4zulaqievzaxrj7mz.java",
+        //     "extra": {
+        //         "student_id": "3",
+        //         "question_id": "1",
+        //         "created_at": "2023-07-23 17:12:33 +0200",
+        //         "labels": "test"
+        //     }
+        // },
         {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710657073/copy_of_sample_azlqwi.js",
+          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663696/UPGMA_B_djgb99.py",
           extra: {
-            student_id: "1",
+            student_id: "4",
             question_id: "1",
             created_at: "2023-07-23 17:12:33 +0200",
             labels: "test"
           }
         },
         {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710657065/sample_w5tt4n.js",
+          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663695/UPGMA_A_yj7i5w.py",
           extra: {
-            student_id: "2",
+            student_id: "5",
+            question_id: "1",
+            created_at: "2023-07-23 17:12:33 +0200",
+            labels: "test"
+          }
+        },
+        {
+          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663694/UPGMA_A_variablenames_bg3y05.py",
+          extra: {
+            student_id: "6",
             question_id: "1",
             created_at: "2023-07-23 17:12:33 +0200",
             labels: "test"
