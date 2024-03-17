@@ -171,12 +171,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       return item;
     });
     setListPage(listPageUpdate);
-    console.log("listPage", listPage);
   }, [localStorage.getItem("page")]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("role");
+    localStorage.removeItem("page");
     setState(false);
     navigate(routes.user.homepage.root);
   };
