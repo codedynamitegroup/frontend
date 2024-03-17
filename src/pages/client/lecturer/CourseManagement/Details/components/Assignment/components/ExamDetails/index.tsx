@@ -198,7 +198,7 @@ const LecturerCourseExamDetails = () => {
       <ExamAttemptSummaryTable
         headers={[
           t("course_management_exam_try_time"),
-          t("list_problem_problem_status"),
+          t("common_status"),
           `${t("common_score")} / 20.0`,
           t("common_see_evaluating")
         ]}
@@ -225,7 +225,7 @@ const LecturerCourseExamDetails = () => {
         translation-key={[
           "common_score",
           "course_management_exam_try_time",
-          "list_problem_problem_status",
+          "common_status",
           "common_see_evaluating"
         ]}
       />
