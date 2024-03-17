@@ -41,17 +41,20 @@ export default function SidebarLecturer({ children }: any) {
   const { t } = useTranslation();
   const sideBarItemListData: SidebarItem[] = [
     {
-      name: "Trang chủ",
+      name: t("side_bar_dashboard"),
+      "translation-key": "side_bar_dashboard",
       icon: <DashboardIcon className={classes.itemIcon} />,
       link: routes.lecturer.course.management
     },
     {
-      name: "Lịch",
+      name: t("calendar_title"),
+      "translation-key": "calendar_title",
       icon: <CalendarIcon className={classes.itemIcon} />,
       link: routes.lecturer.calendar
     },
     {
-      name: "Quản lý câu hỏi code",
+      name: t("code_management_title"),
+      "translation-key": "code_management_title",
       icon: <CodeIcon className={classes.itemIcon} />,
       link: routes.lecturer.code_question.management
     },
