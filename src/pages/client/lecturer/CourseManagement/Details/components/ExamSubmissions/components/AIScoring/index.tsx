@@ -127,7 +127,14 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[0]?.feedback?.score : 0,
+      current_final_grade:
+        feedback?.length !== 0
+          ? (
+              feedback[0]?.feedback?.content?.score +
+              feedback[0]?.feedback?.form?.score +
+              feedback[0]?.feedback?.style?.score
+            ).toFixed(2)
+          : 0,
 
       feedback: feedback?.length !== 0 ? feedback[0]?.feedback : ""
     },
@@ -142,7 +149,14 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade: feedback?.length !== 0 ? feedback[1]?.feedback?.score : 0,
+      current_final_grade:
+        feedback?.length !== 0
+          ? (
+              feedback[1]?.feedback?.content?.score +
+              feedback[1]?.feedback?.form?.score +
+              feedback[1]?.feedback?.style?.score
+            ).toFixed(2)
+          : 0,
       feedback: feedback?.length !== 0 ? feedback[1]?.feedback : ""
     }
   ];
@@ -231,25 +245,25 @@ const AIScoring = () => {
         }
 
         const feedback = `
-				1. Nội dung:
-					- Độ chính xác: ${feedbackTemp?.content?.accuracy}
-					- Logic: ${feedbackTemp?.content?.logic}
-					- Sáng tạo: ${feedbackTemp?.content?.creativity}
-					- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
-				
-				2. Hình thức:
-					- Ngữ pháp: ${feedbackTemp?.form?.grammar}
-					- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
-					- Chính tả:  ${feedbackTemp?.form?.spelling}
-					- Bố cục:  ${feedbackTemp?.form?.layout}
-				
-				3. Phong cách:
-					- Rõ ràng: ${feedbackTemp?.style?.clarity}
-					- Hấp dẫn: ${feedbackTemp?.style?.engagement}
-					- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+1. Nội dung (${feedbackTemp?.content?.score}/${EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore}):
+	- Độ chính xác: ${feedbackTemp?.content?.accuracy}
+	- Logic: ${feedbackTemp?.content?.logic}
+	- Sáng tạo: ${feedbackTemp?.content?.creativity}
+	- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
 
-				4. Phản hồi chung:
-					- ${feedbackTemp?.overall}
+2. Hình thức (${feedbackTemp?.form?.score}/${EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore}):
+	- Ngữ pháp: ${feedbackTemp?.form?.grammar}
+	- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
+	- Chính tả:  ${feedbackTemp?.form?.spelling}
+	- Bố cục:  ${feedbackTemp?.form?.layout}
+
+3. Phong cách (${feedbackTemp?.style?.score}/${EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore}):
+	- Rõ ràng: ${feedbackTemp?.style?.clarity}
+	- Hấp dẫn: ${feedbackTemp?.style?.engagement}
+	- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+
+4. Phản hồi chung:
+	- ${feedbackTemp?.overall}
 				`;
         return (
           <Box
@@ -318,7 +332,6 @@ const AIScoring = () => {
   ];
 
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params.row.id);
     navigate(routes.lecturer.exam.ai_scroring_detail, {
       state: {
         feedback: params.row,
@@ -357,7 +370,7 @@ const AIScoring = () => {
     () => [
       {
         id: 1,
-        studentAnswer: "Mảng động là con trỏ, chứa chuỗi ký tự ASCII"
+        studentAnswer: "Mảng động là con trỏ"
       },
       {
         id: 2,
@@ -381,31 +394,22 @@ const AIScoring = () => {
       typeof obj.feedback === "object" &&
       typeof obj.feedback.content === "object" &&
       typeof obj.feedback.content.accuracy === "string" &&
-      obj.feedback.content.accuracy !== "" &&
       typeof obj.feedback.content.logic === "string" &&
-      obj.feedback.content.logic !== "" &&
       typeof obj.feedback.content.creativity === "string" &&
-      obj.feedback.content.creativity !== "" &&
       typeof obj.feedback.content.sourceUsage === "string" &&
-      obj.feedback.content.sourceUsage !== "" &&
+      typeof obj.feedback.content.score === "number" &&
       typeof obj.feedback.form === "object" &&
       typeof obj.feedback.form.grammar === "string" &&
-      obj.feedback.form.grammar !== "" &&
       typeof obj.feedback.form.vocabulary === "string" &&
-      obj.feedback.form.vocabulary !== "" &&
       typeof obj.feedback.form.spelling === "string" &&
-      obj.feedback.form.spelling !== "" &&
       typeof obj.feedback.form.layout === "string" &&
-      obj.feedback.form.layout !== "" &&
+      typeof obj.feedback.form.score === "number" &&
       typeof obj.feedback.style === "object" &&
       typeof obj.feedback.style.clarity === "string" &&
-      obj.feedback.style.clarity !== "" &&
       typeof obj.feedback.style.engagement === "string" &&
-      obj.feedback.style.engagement !== "" &&
       typeof obj.feedback.style.appropriateness === "string" &&
-      obj.feedback.style.appropriateness !== "" &&
-      typeof obj.feedback.overall === "string" &&
-      typeof obj.feedback.score === "number"
+      typeof obj.feedback.style.score === "number" &&
+      typeof obj.feedback.overall === "string"
     );
   }
 

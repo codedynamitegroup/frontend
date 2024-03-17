@@ -31,7 +31,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { Textarea } from "@mui/joy";
 import MDEditor from "@uiw/react-md-editor";
-import { EFeedbackGradedCriteriaRate, IFeedback } from "service/ScoringByAI";
+import { EFeedbackGradedCriteriaRate, IFeedback, QuestionEssay } from "service/ScoringByAI";
 
 const drawerWidth = 450;
 
@@ -99,7 +99,7 @@ export default function DetailAIScoring() {
   const location = useLocation();
   const feedback = location?.state.feedback;
   const answer = location?.state.answer;
-  const question = location?.state.question;
+  const question: QuestionEssay = location?.state.question;
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
@@ -142,61 +142,106 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
-      console.log("feedback", feedback);
       const feedbackTemp: IFeedback = feedback?.feedback;
       if (feedbackTemp) {
         const feedbackTemplate = `
-I. **Nội dung:**
+#### 1. Nội dung (${feedbackTemp?.content?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question?.maxScore).toFixed(2)}):
 
-a. **Độ chính xác:** 
+${
+  feedbackTemp?.content?.accuracy !== ""
+    ? `- **Độ chính xác:** 
 
 ${feedbackTemp.content?.accuracy}
+	`
+    : ""
+}
 
-b. **Logic:**
+${
+  feedbackTemp?.content?.logic !== ""
+    ? `- **Logic:**
 
 ${feedbackTemp.content?.logic}
+	`
+    : ""
+}
 
-c. **Sáng tạo:** 
+${
+  feedbackTemp?.content?.creativity !== ""
+    ? `- **Sáng tạo:** 
 
-${feedbackTemp.content?.creativity}
+${feedbackTemp.content?.creativity}`
+    : ""
+}
 
-d. **Sử dụng nguồn:** 
+${
+  feedbackTemp?.content?.sourceUsage !== ""
+    ? `- **Sử dụng nguồn:** 
 
-${feedbackTemp?.content?.sourceUsage}
+${feedbackTemp?.content?.sourceUsage}`
+    : ""
+}
 
-II. **Hình thức:**
+#### 2. Hình thức (${feedbackTemp?.form?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question?.maxScore).toFixed(2)}):
 
-a. **Ngữ pháp:** 
+${
+  feedbackTemp?.form?.grammar !== ""
+    ? `- **Ngữ pháp:** 
 
-${feedbackTemp?.form?.grammar}
+${feedbackTemp?.form?.grammar}`
+    : ""
+}
 
-c. **Từ vựng:**  
+${
+  feedbackTemp?.form?.vocabulary !== ""
+    ? `- **Từ vựng:** 
 
-${feedbackTemp?.form?.vocabulary}
+${feedbackTemp?.form?.vocabulary}`
+    : ""
+}
 
-b. **Chính tả:**  
+${
+  feedbackTemp?.form?.spelling !== ""
+    ? `- **Chính tả:**  
 
-${feedbackTemp?.form?.spelling}
+${feedbackTemp?.form?.spelling}`
+    : ""
+}
 
-d. **Bố cục:** 
+${
+  feedbackTemp?.form?.layout !== ""
+    ? `- **Bố cục:** 
 
-${feedbackTemp?.form?.layout}
+${feedbackTemp?.form?.layout}`
+    : ""
+}
 
-III. **Phong cách:**
+#### 3. Phong cách (${feedbackTemp?.style?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question?.maxScore).toFixed(2)}):
 
-a. **Rõ ràng:** 
+${
+  feedbackTemp?.style?.clarity !== ""
+    ? `- **Rõ ràng:** 
 
-${feedbackTemp?.style?.clarity}
+${feedbackTemp?.style?.clarity}`
+    : ""
+}
 
-b. **Hấp dẫn:** 
+${
+  feedbackTemp?.style?.engagement !== ""
+    ? `- **Hấp dẫn:** 
 
-${feedbackTemp?.style?.engagement}
+${feedbackTemp?.style?.engagement}`
+    : ""
+}
 
-c. **Phù hợp:** 
+${
+  feedbackTemp?.style?.appropriateness !== ""
+    ? `- **Phù hợp:** 
 
-${feedbackTemp?.style?.appropriateness}
+${feedbackTemp?.style?.appropriateness}`
+    : ""
+}
 
-IV. **Phản hồi chung:**
+#### 4. Phản hồi chung:
 
 ${feedbackTemp?.overall}
 `;
@@ -204,7 +249,7 @@ ${feedbackTemp?.overall}
       }
       setAssignmentMaximumGrade(feedback?.current_final_grade);
     }
-  }, [feedback]);
+  }, [feedback, question?.maxScore]);
 
   return (
     <Grid className={classes.root}>

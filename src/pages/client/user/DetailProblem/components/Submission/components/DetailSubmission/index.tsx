@@ -81,6 +81,9 @@ class Solution {
     return (
       typeof obj.id === "number" &&
       typeof obj.feedback === "object" &&
+      typeof obj.feedback.analysis === "object" &&
+      typeof obj.feedback.improvementSuggestions === "string" &&
+      typeof obj.feedback.improvementSuggestions === "string" &&
       typeof obj.suggestedCode === "string" &&
       obj.suggestedCode !== "" &&
       typeof obj.explainedCode === "string" &&
@@ -97,9 +100,9 @@ class Solution {
           const feedbackTemp: IFeedbackCode = result.feedback;
           if (feedbackTemp) {
             setFeedbackContent(`
-I. **Phân tích**
+### I. Phân tích
 
-1. **Tính Đúng đắn:**
+#### 1. Tính Đúng đắn:
 
 a. **Tính chính xác:** 
 
@@ -113,7 +116,7 @@ c. **Tính nhất quán:**
 
 ${feedbackTemp.analysis?.correctness?.consistency}  
 
-2. **Tính hiệu quả:**
+#### 2. Tính hiệu quả:
 
 a. **Thời gian thực thi:**
 
@@ -127,7 +130,7 @@ c. **Độ phức tạp:**
 
 ${feedbackTemp.analysis?.efficiency?.complexity}  
 
-3. **Tính bảo trì:**
+#### 3. Tính bảo trì:
 
 a. **Khả năng đọc hiểu:**
 
@@ -141,7 +144,7 @@ c. **Khả năng mở rộng:**
 
 ${feedbackTemp.analysis?.maintainability?.extensibility}  
 
-4. **Khả năng mở rộng:**
+#### 4. Khả năng mở rộng:
 
 a. **Khả năng mở rộng dữ liệu:**
 
@@ -151,11 +154,11 @@ b. **Khả năng mở rộng chức năng:**
 
 ${feedbackTemp.analysis?.scalability?.functionalScalability}  
 
-II. **Gợi ý cải tiến**
+### II. Gợi ý cải tiến
 
 ${feedbackTemp.improvementSuggestions}
 
-III. **Kết luận**
+### III. Kết luận
 
 ${feedbackTemp.conclusion}
 `);

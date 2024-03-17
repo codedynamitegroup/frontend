@@ -15,6 +15,7 @@ interface FeedbackContent {
   logic: string;
   creativity: string;
   sourceUsage: string;
+  score: number;
 }
 
 interface FeedbackForm {
@@ -22,12 +23,14 @@ interface FeedbackForm {
   vocabulary: string;
   spelling: string;
   layout: string;
+  score: number;
 }
 
 interface FeedbackStyle {
   clarity: string;
   engagement: string;
   appropriateness: string;
+  score: number;
 }
 
 export interface IFeedback {
@@ -35,7 +38,6 @@ export interface IFeedback {
   form: FeedbackForm;
   style: FeedbackStyle;
   overall: string;
-  score: number;
 }
 
 export interface IFeedbackGradedAI {
@@ -44,9 +46,9 @@ export interface IFeedbackGradedAI {
 }
 
 export enum EFeedbackGradedCriteriaRate {
-  CONTENT_FEEDBACK = 0.6,
-  FORM_FEEDBACK = 0.2,
-  STYLE_FEEDBACK = 0.2
+  CONTENT_FEEDBACK = 0.9,
+  FORM_FEEDBACK = 0.05,
+  STYLE_FEEDBACK = 0.05
 }
 
 const format_scoring: IFeedbackGradedAI[] = [
@@ -60,24 +62,26 @@ const format_scoring: IFeedbackGradedAI[] = [
           "Câu trả lời trình bày một chuỗi các bước hợp lý để lặp qua danh sách và cập nhật biến max.",
         creativity:
           "Mặc dù không hoàn toàn cần thiết cho câu hỏi này, nhưng không đề cập đến các phương pháp tiếp cận thay thế.",
-        sourceUsage: "Không áp dụng cho dạng câu hỏi này."
+        sourceUsage: "Không áp dụng cho dạng câu hỏi này.",
+        score: 6
       },
       form: {
         grammar: " Câu trả lời sử dụng ngữ pháp và cấu trúc câu thích hợp.",
         vocabulary: "Từ vựng được sử dụng rõ ràng, súc tích và phù hợp với giải thích kỹ thuật.",
         spelling: "Không có lỗi chính tả.",
-        layout: "Câu trả lời được cấu trúc tốt với các bước được đánh số, giúp dễ hiểu."
+        layout: "Câu trả lời được cấu trúc tốt với các bước được đánh số, giúp dễ hiểu.",
+        score: 1
       },
       style: {
         clarity: "Câu trả lời giải thích rõ ràng từng bước của thuật toán.",
         engagement:
           "Mặc dù câu trả lời mang tính thông tin, nhưng nó có thể không hấp dẫn đối với một đối tượng chung.",
         appropriateness:
-          "Phong cách súc tích và đi vào trọng tâm, phù hợp với tính chất kỹ thuật của câu hỏi."
+          "Phong cách súc tích và đi vào trọng tâm, phù hợp với tính chất kỹ thuật của câu hỏi.",
+        score: 1
       },
       overall:
-        "Câu trả lời này giải quyết hiệu quả lời nhắc bằng cách cung cấp một lời giải thích rõ ràng và chính xác về thuật toán để tìm giá trị lớn nhất trong danh sách liên kết đơn. Nó thể hiện sự hiểu biết tốt về các bước cần thiết và trình bày chúng theo cách có cấu trúc tốt.",
-      score: 8
+        "Câu trả lời này giải quyết hiệu quả lời nhắc bằng cách cung cấp một lời giải thích rõ ràng và chính xác về thuật toán để tìm giá trị lớn nhất trong danh sách liên kết đơn. Nó thể hiện sự hiểu biết tốt về các bước cần thiết và trình bày chúng theo cách có cấu trúc tốt."
     }
   },
   {
@@ -88,23 +92,25 @@ const format_scoring: IFeedbackGradedAI[] = [
         logic: "Không có lời giải thích logic hoặc các bước để tìm phần tử lớn nhất.",
         creativity:
           "Không có cách tiếp cận sáng tạo nào được thể hiện trong việc giải quyết vấn đề.",
-        sourceUsage: "Không áp dụng cho dạng câu hỏi này."
+        sourceUsage: "Không áp dụng cho dạng câu hỏi này.",
+        score: 2
       },
       form: {
         grammar: "Câu trả lời đúng ngữ pháp như một câu đơn.",
         vocabulary: "Từ vựng được sử dụng đơn giản và phù hợp.",
         spelling: "Không có lỗi chính tả.",
-        layout: "Câu trả lời chỉ bao gồm một câu, vì vậy bố cục không áp dụng."
+        layout: "Câu trả lời chỉ bao gồm một câu, vì vậy bố cục không áp dụng.",
+        score: 0.5
       },
       style: {
         clarity: "Câu trả lời rõ ràng nhưng không đầy đủ.",
         engagement: "Câu trả lời không hấp dẫn vì thiếu lời giải thích hoặc ngữ cảnh.",
         appropriateness:
-          "Phong cách câu trả lời phù hợp cho một tuyên bố ngắn gọn nhưng không đủ cho một giải pháp hoàn chỉnh."
+          "Phong cách câu trả lời phù hợp cho một tuyên bố ngắn gọn nhưng không đủ cho một giải pháp hoàn chỉnh.",
+        score: 0.5
       },
       overall:
-        "Câu trả lời chỉ cung cấp một bước và không giải quyết được yêu cầu cốt lõi là giải thích thuật toán tìm phần tử lớn nhất trong danh sách liên kết đơn.",
-      score: 2
+        "Câu trả lời chỉ cung cấp một bước và không giải quyết được yêu cầu cốt lõi là giải thích thuật toán tìm phần tử lớn nhất trong danh sách liên kết đơn."
     }
   }
 ];
@@ -160,24 +166,26 @@ II. SYSTEM_INSTRUCTIONS:
 					id: number,
 					feedback: {
 						content: {
-							accuracy: string (not be empty or null)
-							logic: string (not be empty or null)
-							creativity: string (not be empty or null)
-							sourceUsage: string (not be empty or null)
+							accuracy: string (not be empty and null)
+							logic: string (not be empty and null)
+							creativity: string (not be empty and null)
+							sourceUsage: string (not be empty and null),
+							score: number
 						},
 						form: {
-							grammar: string (not be empty or null)
-							vocabulary: string (not be empty or null)
-							spelling: string (not be empty or null)
-							layout: string (not be empty or null)
+							grammar: string (not be empty and null)
+							vocabulary: string (not be empty and null)
+							spelling: string (not be empty and null)
+							layout: string (not be empty and null),
+							score: number
 						},
 						style: {
-							clarity: string (not be empty or null)
-							engagement: string (not be empty or null)
-							appropriateness: string (not be empty or null)
+							clarity: string (not be empty and null)
+							engagement: string (not be empty and null)
+							appropriateness: string (not be empty and null),
+							score: number
 						},
-						overall: string (not be empty or null),
-						score: number
+						overall: string (not be empty and null),
 					}
 				},
 				...
@@ -192,43 +200,49 @@ II. SYSTEM_INSTRUCTIONS:
 						- IFeedback: The data structure for a feedback, has five attributes: content, form, style, overall, and score are same at level:
 						{
 							content (an object that contains the content of the feedback (IFeedbackContent)): {
-								accuracy: A string (not be empty or null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "accuracy" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information 
-								logic: A string (not be empty or null), indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "logic" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								creativity: A string (not be empty or null), indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "creativity" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								sourceUsage: A string (not be empty or null), indicating the extent to which sources are used appropriately, accurately, and with complete information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "sourceUsage" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								accuracy: A string (not be empty and null), indicating the extent to which the information in the essay is accurate, complete, and relevant to the topic assigned to the question. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "accuracy" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								logic: A string (not be empty and null), indicating the extent to which the essay is logical, coherent, and consistent in its argument and presentation of ideas. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "logic" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								creativity: A string (not be empty and null), indicating the extent to which the essay is unique, original, and creative in its approach to and solution of the problem. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "creativity" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								sourceUsage: A string (not be empty and null), indicating the extent to which sources are used appropriately, accurately, and with complete information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "sourceUsage" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								score: A number (not be null), indicates the content score of the feedback. Content score must be between 0 and ${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}
+									* Here is a rubric description that helped you calculate an exact content score:
+											Content score: number score of the user after feedback, which is calculated by rubics below:
+												- Score: ${(1 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, logical, creative, and uses sources appropriately.
+												- Score: ${(0.75 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, and logical, and uses sources appropriately.
+												- Score: ${(0.5 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, but lacks logic, and uses sources somewhat appropriately.
+												- Score: ${(0.25 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is incomplete, inaccurate, illogical, and uses sources inappropriately.
+								
+									* Note of content score:
+										** You alse need to use the rubics below to calculate the content score:
+											${question.rubics}	
+											
 							},
 							form (an object that contains the form of the feedback (IFeedbackForm)): {
-								grammar: A string (not be empty or null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "grammar" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								vocabulary: A string (not be empty or null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "vocabulary" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								spelling: A string (not be empty or null), indicating the extent to which spelling is accurate. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "spelling" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								layout: A string (not be empty or null), indicating the extent to which the layout is clear, organized, and easy to understand. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "layout" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								grammar: A string (not be empty and null), indicating the extent to which grammar, sentence structure, and punctuation are used accurately and effectively. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "grammar" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								vocabulary: A string (not be empty and null), indicating the extent to which vocabulary is varied, rich, and appropriate for the essay. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "vocabulary" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								spelling: A string (not be empty and null), indicating the extent to which spelling is accurate. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "spelling" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								layout: A string (not be empty and null), indicating the extent to which the layout is clear, organized, and easy to understand. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "layout" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								score: A number (not be null), indicates the form score of the feedback. Form score must be between 0 and ${(EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}
+									* Here is a rubric description that helped you calculate an exact content score:
+											Form score: number score of the user after feedback, which is calculated by rubic below:
+												- Score: ${(1 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has no errors in grammar, spelling, or punctuation, and uses varied, rich, and appropriate vocabulary with a clear layout.
+												- Score: ${(0.75 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has few errors in grammar, spelling, or punctuation, uses varied, rich, and appropriate vocabulary, and has a relatively clear layout.
+												- Score: ${(0.5 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has several errors in grammar, spelling, or punctuation, uses somewhat varied and rich vocabulary, and has a somewhat clear layout.
+												- Score: ${(0.25 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has many errors in grammar, spelling, or punctuation, uses limited vocabulary, and has an unclear layout.
 							},
 							style (an object that contains the style of the feedback (IFeedbackStyle)): {
-								clarity: A string (not be empty or null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "clarity" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								engagement: A string (not be empty or null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "engagement" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-								appropriateness: A string (not be empty or null), indicating the extent to which the style is appropriate for the topic, purpose, and audience. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "appropriateness" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
+								clarity: A string (not be empty and null), indicating the extent to which the essay is clear, concise, and direct in its presentation of information. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "clarity" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								engagement: A string (not be empty and null), indicating the extent to which the essay is engaging, interesting, and creates a sense of excitement for the reader. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "engagement" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								appropriateness: A string (not be empty and null), indicating the extent to which the style is appropriate for the topic, purpose, and audience. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. Do not write the title "appropriateness" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
+								score: A number (not be null), indicates the style score of the feedback. score must be between 0 and ${(EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}
+								* Here is a rubric description that helped you calculate an exact content score:
+										Style score: number score of the user after feedback, which is calculated by rubics below:
+											- Score: ${(1 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}:	The essay is clear, engaging, and appropriate for the topic, purpose, and audience.
+											- Score: ${(0.75 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}: The essay is relatively clear, engaging, and appropriate for the topic, purpose, and audience.
+											- Score: ${(0.5 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}:	The essay is unclear, lacks engagement, and is somewhat appropriate for the topic, purpose, and audience.
+											- Score: ${(0.25 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}: The essay is unclear, not engaging, and not appropriate for the topic, purpose, and audience.
 							},
-							overall: A string (not be empty or null), indicating the overall feedback of the student within the content, form, and style. Do not write the title "overall" in the feedback. the content attribute of the answer should not be empty or null. It should be filled with complete information
-							score: number, between 0 and ${question.maxScore}, The score assigned to the essay is based on the rubrics below and depending on the feedback above.
-								* Here is a rubric description that helped you calculate an exact score:
-									1. Content (number score of the user after feedback, which is calculated by rubics/${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)})
-										- Score: ${(1 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, logical, creative, and uses sources appropriately.
-										- Score: ${(0.75 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, and logical, and uses sources appropriately.
-										- Score: ${(0.5 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is complete, accurate, but lacks logic, and uses sources somewhat appropriately.
-										- Score: ${(0.25 * EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore).toFixed(2)}: The essay is incomplete, inaccurate, illogical, and uses sources inappropriately.
-									2. Form (number score of the user after feedback, which is calculated by rubics/${(0.3 * question.maxScore).toFixed(2)})
-										- Score: ${(1 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has no errors in grammar, spelling, or punctuation, and uses varied, rich, and appropriate vocabulary with a clear layout.
-										- Score: ${(0.75 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has few errors in grammar, spelling, or punctuation, uses varied, rich, and appropriate vocabulary, and has a relatively clear layout.
-										- Score: ${(0.5 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has several errors in grammar, spelling, or punctuation, uses somewhat varied and rich vocabulary, and has a somewhat clear layout.
-										- Score: ${(0.25 * EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore).toFixed(2)}: The essay has many errors in grammar, spelling, or punctuation, uses limited vocabulary, and has an unclear layout.
-									3. Style (number score of the user after feedback, which is calculated by rubics/${(0.3 * question.maxScore).toFixed(2)})
-										- Score: ${(1 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}:	The essay is clear, engaging, and appropriate for the topic, purpose, and audience.
-										- Score: ${(0.75 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}: The essay is relatively clear, engaging, and appropriate for the topic, purpose, and audience.
-										- Score: ${(0.5 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}:	The essay is unclear, lacks engagement, and is somewhat appropriate for the topic, purpose, and audience.
-										- Score: ${(0.25 * EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore).toFixed(2)}: The essay is unclear, not engaging, and not appropriate for the topic, purpose, and audience.
-			
-								* Note of score:
-									** You also need to use the rubics: ${question.rubics}	
+							overall: A string (not be empty and null), indicating the overall feedback of the student within the content, form, and style. Do not write the title "overall" in the feedback. the content attribute of the answer should not be empty and null. It should be filled with complete information
 						}
 
 					* Note of feedback: 
@@ -236,9 +250,6 @@ II. SYSTEM_INSTRUCTIONS:
 						** If the student answer is incorrect, please give accuracy, logic, creativity, and source usage feedback to the student.
 						** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 						** Instead of use \\t, you should use tab
-
-					* Here is example of feedback:
-					${JSON.stringify(format_scoring[0].feedback)}
 
 	D. Please use ${language} everywhere to write feedback messages for students.
 	
@@ -271,8 +282,6 @@ ${AI_ROLE}
 ${SYSTEM_INSTRUCTIONS}`;
 
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-  console.log("prompt", prompt);
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
