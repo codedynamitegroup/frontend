@@ -52,6 +52,7 @@ const rows = [
   }
 ];
 const QuestionListOfCourse = () => {
+  const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: false,
     data: rows,
@@ -59,7 +60,7 @@ const QuestionListOfCourse = () => {
     page: 1,
     pageSize: 5
   });
-  const columns: GridColDef[] = [
+  const columnsProps: GridColDef[] = [
     {
       field: "stt",
       sortable: false,
@@ -68,9 +69,6 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.stt}</ParagraphBody>;
-      },
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>STT</ParagraphBody>;
       }
     },
     {
@@ -80,9 +78,6 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.questionName}</ParagraphBody>;
-      },
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Tên câu hỏi</ParagraphBody>;
       }
     },
     {
@@ -95,10 +90,7 @@ const QuestionListOfCourse = () => {
           <div>{params.row.createdAtBy.time}</div>
         </div>
       ),
-      headerClassName: classes["table-head"],
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Ngày tạo bởi</ParagraphBody>;
-      }
+      headerClassName: classes["table-head"]
     },
     {
       field: "updated",
@@ -110,10 +102,7 @@ const QuestionListOfCourse = () => {
           <div>{params.row.updatedAtBy.time}</div>
         </div>
       ),
-      headerClassName: classes["table-head"],
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Lần chỉnh sửa bởi</ParagraphBody>;
-      }
+      headerClassName: classes["table-head"]
     },
     {
       field: "qtype",
@@ -122,9 +111,6 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.qtype}</ParagraphBody>;
-      },
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Phân loại</ParagraphBody>;
       }
     },
     {
@@ -133,9 +119,7 @@ const QuestionListOfCourse = () => {
       flex: 2,
       type: "actions",
       cellClassName: "actions",
-      renderHeader: (params) => {
-        return <ParagraphBody fontWeight={700}>Tác vụ</ParagraphBody>;
-      },
+
       getActions: ({ id }) => {
         return [
           <GridActionsCellItem
@@ -168,6 +152,24 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"]
     }
   ];
+  const addHeaderNameByLanguage = (
+    columns: GridColDef[],
+    headerName: Array<String>
+  ): GridColDef[] => {
+    return headerName.map(
+      (value, index) =>
+        (columns[index] = {
+          ...columns[index],
+          renderHeader: (params) => {
+            return <ParagraphBody fontWeight={700}>{value}</ParagraphBody>;
+          }
+        })
+    );
+  };
+  const headerName = t("question_bank_category_question_list_header_table", {
+    returnObjects: true
+  }) as Array<String>;
+  const columns = addHeaderNameByLanguage(columnsProps, headerName);
 
   useEffect(() => {
     //fetch data
@@ -197,7 +199,6 @@ const QuestionListOfCourse = () => {
   const { value, setValue }: any = useOutletContext();
   const [initialized, setInitialized] = useState(true);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (initialized) {
@@ -211,7 +212,8 @@ const QuestionListOfCourse = () => {
       <PickQuestionTypeToAddDialog
         open={isAddNewQuestionDialogOpen}
         handleClose={() => setIsAddNewQuestionDialogOpen(false)}
-        title='Chọn kiểu câu hỏi muốn thêm'
+        transaltion-key='question_bank_add_question_title'
+        title={t("question_bank_add_question_title")}
         cancelText='Hủy bỏ'
         confirmText='Thêm'
         onHanldeConfirm={handleCreateQuestion}
@@ -242,22 +244,41 @@ const QuestionListOfCourse = () => {
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
             <Heading1 fontWeight={500}>Học thuật toán</Heading1>
-            <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-              Thông tin danh mục: các bài tập về OOP
+            <Heading5
+              fontStyle={"italic"}
+              fontWeight={"400"}
+              colorname='--gray-50'
+              translation-key='question_bank_create_category_info'
+            >
+              {t("question_bank_create_category_info")}: các bài tập về OOP
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary}>
-                <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_data_export'>
+                  {t("common_data_export")}
+                </ParagraphBody>
               </Button>
               <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
-                <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_add_question'>
+                  {" "}
+                  {t("common_add_question")}
+                </ParagraphBody>
               </Button>
               <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
+                <ParagraphBody
+                  paddingX={3}
+                  translation-key='question_bank_category_question_list_create_by_AI'
+                >
+                  {t("question_bank_category_question_list_create_by_AI")}
+                </ParagraphBody>
               </Button>
             </Stack>
 
-            <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+            <SearchBar
+              onSearchClick={() => null}
+              translation-key='question_bank_category_question_list_enter_question_name'
+              placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
+            />
             <DataGrid
               sx={{
                 "& .MuiDataGrid-cell": { padding: "16px" }
@@ -300,25 +321,45 @@ const QuestionListOfCourse = () => {
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
             <Heading1 fontWeight={500}>Học OOP</Heading1>
-            <Heading5 fontStyle={"italic"} fontWeight={"400"} colorname='--gray-50'>
-              Thông tin danh mục: các bài tập về OOP
+            <Heading5
+              fontStyle={"italic"}
+              fontWeight={"400"}
+              colorname='--gray-50'
+              translation-key='question_bank_create_category_info'
+            >
+              {t("question_bank_create_category_info")}: các bài tập về OOP
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary}>
-                <ParagraphBody paddingX={3}>Export câu hỏi ra file</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_data_export'>
+                  {t("common_data_export")}
+                </ParagraphBody>
               </Button>
               <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
-                <ParagraphBody paddingX={3}> Thêm câu hỏi</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='common_add_question'>
+                  {t("common_add_question")}
+                </ParagraphBody>
               </Button>
               <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                <ParagraphBody paddingX={3}> Tạo câu hỏi bằng AI</ParagraphBody>
+                <ParagraphBody
+                  paddingX={3}
+                  translation-key='question_bank_category_question_list_create_by_AI'
+                >
+                  {t("question_bank_category_question_list_create_by_AI")}
+                </ParagraphBody>
               </Button>
             </Stack>
 
             <Stack direction='row' justifyContent='space-between'>
-              <SearchBar onSearchClick={() => null} placeHolder='Nhập tên câu hỏi ...' />
+              <SearchBar
+                onSearchClick={() => null}
+                translation-key='question_bank_category_question_list_enter_question_name'
+                placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
+              />
               <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(true)}>
-                <ParagraphBody paddingX={3}>Quyền truy cập</ParagraphBody>
+                <ParagraphBody paddingX={3} translation-key='question_bank_access_right'>
+                  {t("question_bank_access_right")}
+                </ParagraphBody>
               </Button>
             </Stack>
             <DataGrid

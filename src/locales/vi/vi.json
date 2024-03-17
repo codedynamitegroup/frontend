@@ -57,6 +57,7 @@
   "common_time_left": "Thời gian còn lại",
   "common_essay": "Tự luận",
   "common_save_changes": "Lưu thay đổi",
+  "common_save": "Lưu",
   "common_student": "Sinh viên",
   "common_status": "Trạng thái",
   "common_assignment_name": "Tên bài tập",
@@ -100,6 +101,7 @@
   "common_false": "Sai",
   "common_delete": "Xoá",
   "common_answer": "Đáp án",
+  "common_add_question": "Thêm câu hỏi",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -308,7 +310,6 @@
 
   "exam_management_create_enter_exam_name": "Nhập tên bài kiểm tra",
   "exam_management_create_enter_score": "Nhập điểm tối đa",
-  "exam_management_create_add_question": "Thêm câu hỏi",
   "exam_management_create_question_list": "Danh sách câu hỏi",
   "exam_management_create_question_scramble": "Xáo trộn câu hỏi",
   "exam_management_create_question_name": "Tên câu hỏi",
@@ -369,7 +370,30 @@
     "Lần chỉnh sửa cuối bởi",
     "Tác vụ"
   ],
+  "question_bank_category_question_list_header_table": [
+    "STT",
+    "Tên câu hỏi",
+    "Ngày tạo bởi",
+    "Lần chỉnh sửa cuối bởi",
+    "Phân loại",
+    "Tác vụ"
+  ],
+  "question_bank_category_question_list_create_by_AI": "Tạo câu hỏi bằng AI",
+  "question_bank_category_question_list_enter_question_name": "Nhập tên câu hỏi",
+  "question_bank_access_right": "Quyền truy cập",
+  "question_bank_access_right_list": "Danh sách quyền truy cập",
+  "question_bank_access_right_list_title": "Những người có quyền truy cập",
+  "question_bank_access_right_owner": "Chủ sở hữu",
+  "question_bank_access_right_editor": "Chỉnh sửa",
+  "question_bank_access_right_readonly": "Chỉ xem",
+  "question_bank_add_question_title": "Chọn kiểu câu hỏi muốn thêm",
+  "question_bank_access_right_message": "Lời nhắn",
+
+  "quesion_bank_access_share": "Chia sẻ",
   "question_bank_category_find_by_category": "Tìm kiếm theo danh mục",
+  "question_bank_create_category": "Tạo danh mục",
+  "question_bank_create_category_info": "Thông tin danh mục",
+  "question_bank_create_category_name": "Tên danh mục",
 
   "detail_problem_description": "Mô tả",
   "detail_problem_discussion": "Thảo luận",

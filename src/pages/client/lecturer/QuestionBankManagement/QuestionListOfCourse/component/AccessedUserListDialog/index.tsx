@@ -18,6 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Textarea } from "@mui/joy";
 import { useState, KeyboardEvent, memo } from "react";
+import { useTranslation } from "react-i18next";
 interface AccessedUserListDialogProps extends DialogProps {
   setOpenAccessDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -29,6 +30,7 @@ const dumpData: AccessedUserListItemProp = {
   accessLevel: AccessLevel.EDITOR
 };
 const AccessedUserListDialog = ({ setOpenAccessDialog, ...props }: AccessedUserListDialogProps) => {
+  const { t } = useTranslation();
   const [addingPeople, setAddingPeople] = useState(false);
   const [addingPeopleList, setAddingPeopleList] = useState<AccessedUserListItemProp[]>([]);
   const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -61,8 +63,12 @@ const AccessedUserListDialog = ({ setOpenAccessDialog, ...props }: AccessedUserL
           )}
 
           <Grid>
-            <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-              {addingPeople ? "Chia sẻ" : "Danh sách quyền truy cập"}
+            <DialogTitle
+              sx={{ m: 0, p: 2 }}
+              id='customized-dialog-title'
+              translation-key={["question_bank_access_right_list", "question_bank_access_share"]}
+            >
+              {addingPeople ? t("quesion_bank_access_share") : t("question_bank_access_right_list")}
             </DialogTitle>
           </Grid>
         </Grid>
@@ -84,7 +90,8 @@ const AccessedUserListDialog = ({ setOpenAccessDialog, ...props }: AccessedUserL
         <Stack spacing={2}>
           <Textarea
             minRows={1}
-            placeholder='Thêm người'
+            translation-key='common_add'
+            placeholder={t("common_add")}
             onClick={() => setAddingPeople(true)}
             onKeyDown={onEnterPress}
           />
@@ -92,12 +99,18 @@ const AccessedUserListDialog = ({ setOpenAccessDialog, ...props }: AccessedUserL
             <>
               {addingPeopleList.map((value) => (
                 <AccessedUserListItem {...value} />
-              ))}{" "}
-              <Textarea placeholder='Lời nhắn' minRows={3} />
+              ))}
+              <Textarea
+                placeholder={t("question_bank_access_right_message")}
+                translation-key='question_bank_access_right_message'
+                minRows={3}
+              />
             </>
           ) : (
             <>
-              <ParagraphBody>Những người có quyền truy cập</ParagraphBody>
+              <ParagraphBody translation-key='question_bank_access_right_list_title'>
+                {t("question_bank_access_right_list_title")}
+              </ParagraphBody>
               <Stack spacing={1}>
                 <AccessedUserListItem
                   email='nguyenquoctuan385@gmail.com'
@@ -126,19 +139,19 @@ const AccessedUserListDialog = ({ setOpenAccessDialog, ...props }: AccessedUserL
         {addingPeople ? (
           <>
             <Button btnType={BtnType.Outlined} onClick={handleCloseAddingPeople}>
-              <ParagraphBody> Hủy</ParagraphBody>
+              <ParagraphBody translation-key='common_cancel'> {t("common_cancel")}</ParagraphBody>
             </Button>
             <Button
               btnType={BtnType.Primary}
               onClick={() => setOpenAccessDialog(false)}
               disabled={addingPeopleList.length < 1}
             >
-              <ParagraphBody> Gửi</ParagraphBody>
+              <ParagraphBody translation-key='common_send'> {t("common_send")}</ParagraphBody>
             </Button>
           </>
         ) : (
           <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(false)} fullWidth>
-            <ParagraphBody> Lưu</ParagraphBody>
+            <ParagraphBody translation-key='common_save'>{t("common_save")}</ParagraphBody>
           </Button>
         )}
       </DialogActions>

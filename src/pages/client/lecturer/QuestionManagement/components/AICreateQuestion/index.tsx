@@ -5,7 +5,7 @@ import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useRef, useState } from "react";
-import { useMatches, useNavigate } from "react-router-dom";
+import { useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -22,6 +22,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
+import { useTranslation } from "react-i18next";
 interface Props {
   insideCrumb?: boolean;
 }
@@ -62,7 +63,7 @@ const AIQuestionCreated = (props: Props) => {
   if (props.insideCrumb) headerHeight = 0;
 
   const [modeEdit, setModeEdit] = useState(false);
-
+  const { t } = useTranslation();
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [lengthQuestion, setLengthQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -134,23 +135,35 @@ const AIQuestionCreated = (props: Props) => {
   const handleButtonClick = () => {
     setModeEdit(!modeEdit);
   };
-  console.log(matches);
+  const urlParams = useParams();
 
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
-          <ParagraphBody
-            className={classes.breadCump}
-            colorname='--gray-50'
-            fontWeight={"600"}
-          ></ParagraphBody>
+          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
+            <span onClick={() => navigate("/lecturer/question-bank-management")}>
+              Ngân hàng câu hỏi
+            </span>{" "}
+            {"> "}
+            <span
+              onClick={() =>
+                navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
+              }
+            >
+              Học OOP
+            </span>{" "}
+            {"> "}
+            <span>Tạo câu hỏi</span>
+          </ParagraphBody>
         </Box>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={6}>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"}>Thêm câu hỏi </Heading1>
+              <Heading1 fontWeight={"500"} translation-key='common_add_question'>
+                {t("common_add_question")}
+              </Heading1>
               <Grid container spacing={1} columns={12}>
                 <Grid item xs={12} md={3}>
                   <TextTitle>Danh mục</TextTitle>

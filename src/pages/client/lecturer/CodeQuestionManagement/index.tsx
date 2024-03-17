@@ -78,13 +78,13 @@ const LecturerCodeQuestionManagement = () => {
       <Box className={classes.btnWrapper}>
         <SearchBar onSearchClick={onSearchClickHandler} />
         <Button
-          children={t("exam_management_create_add_question")}
+          children={t("common_add_question")}
           btnType={BtnType.Primary}
           width='150px'
           onClick={() => {
             navigate(routes.lecturer.code_question.create);
           }}
-          translation-key='exam_management_create_add_question'
+          translation-key='common_add_question'
         />
       </Box>
       <TableTemplate
