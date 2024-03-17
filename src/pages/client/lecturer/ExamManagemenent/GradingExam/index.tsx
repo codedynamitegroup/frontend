@@ -273,7 +273,8 @@ export default function GradingExam() {
       openPreviewMultipleChoiceDialog,
       openPreviewEssay,
       openPreviewShortAnswer,
-      openPreviewTrueFalse
+      openPreviewTrueFalse,
+      t
     ]
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
@@ -537,7 +538,7 @@ export default function GradingExam() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
-                top: "64px"
+                top: `${headerHeight}px`
               }
             }}
             variant='persistent'
