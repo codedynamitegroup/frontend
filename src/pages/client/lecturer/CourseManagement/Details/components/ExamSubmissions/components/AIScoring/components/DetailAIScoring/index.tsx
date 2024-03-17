@@ -96,10 +96,9 @@ export default function DetailAIScoring() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
-  const location = useLocation();
-  const feedback = location?.state.feedback;
-  const answer = location?.state.answer;
-  const question: QuestionEssay = location?.state.question;
+  const feedback = JSON.parse(localStorage.getItem("feedback") || "{}");
+  const answer = JSON.parse(localStorage.getItem("answer") || "{}");
+  const question: QuestionEssay = JSON.parse(localStorage.getItem("question") || "{}");
   const [open, setOpen] = React.useState(true);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
