@@ -9,3 +9,11 @@
     }
   }
 }
+.text-editor-no-toolbar {
+  .ql-container {
+    height: 100% !important;
+    .ql-editor {
+      height: 100%;
+    }
+  }
+}

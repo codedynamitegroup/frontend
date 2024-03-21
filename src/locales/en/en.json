@@ -333,7 +333,7 @@
   "exam_management_create_from_bank": "Get question from question bank",
   "exam_management_create_from_bank_choose_topic": "Choose topic",
 
-  "course_management_exam_prev": "Summary of previous exams",
+  "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
   "course_management_exam_preview": "Preview exam",
   "course_management_exam_max_score": "Highest score",
