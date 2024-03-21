@@ -1,14 +1,21 @@
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
+import CustomControlledSwitch from "components/common/switch/CustomControlledSwitch";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 
 export default function LabelSubmissionsTable({
   rows,
-  headers
+  headers,
+  handleLabelChange
 }: {
-  rows: any[];
+  rows: {
+    label: string;
+    submissions: number;
+    isActive: boolean;
+  }[];
   headers: string[];
+  handleLabelChange: (label: string, value: boolean) => void;
 }) {
   return (
     <Sheet variant='outlined'>
@@ -28,6 +35,15 @@ export default function LabelSubmissionsTable({
               </td>
               <td>
                 <ParagraphSmall>{row.submissions}</ParagraphSmall>
+              </td>
+              <td>
+                <CustomControlledSwitch
+                  checked={row.isActive}
+                  handleChange={(label: string, event: React.ChangeEvent<HTMLInputElement>) =>
+                    handleLabelChange(label, event.target.checked)
+                  }
+                  inputProps={{ "aria-label": row.label }}
+                />
               </td>
             </tr>
           ))}

@@ -4,13 +4,19 @@ import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
 import { Box } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import CircularProgressWithLabel from "./components/CircularProgressWithLabel";
-import { routes } from "routes/routes";
+import { File } from "models/codePlagiarism";
 import { useTranslation } from "react-i18next";
-import { Pair } from "models/codePlagiarism";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import CircularProgressWithLabel from "../FilePairsTable/components/CircularProgressWithLabel";
+import { routes } from "routes/routes";
 
-export default function FilePairsTable({ rows, headers }: { rows: Pair[]; headers: string[] }) {
+export default function FileSubmissionsTable({
+  rows,
+  headers
+}: {
+  rows: File[];
+  headers: string[];
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
@@ -36,34 +42,37 @@ export default function FilePairsTable({ rows, headers }: { rows: Pair[]; header
               }}
               onClick={() => {
                 navigate(
-                  routes.lecturer.exam.code_plagiarism_detection_pairs_detail +
-                    `?questionId=${questionId}`,
-                  {
-                    state: { data: row }
-                  }
+                  routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
+                    ":submissionId",
+                    row.id.toString()
+                  )
                 );
               }}
             >
               <td>
-                <ParagraphBody wordWrap='break-word'>{row.leftFile.extra.filename}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.extra.studentId}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody wordWrap='break-word'>{row.rightFile.extra.filename}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.extra.studentName}</ParagraphBody>
               </td>
               <td>
-                <CircularProgressWithLabel value={Number(row.similarity * 100) || 0} />
+                <ParagraphBody wordWrap='break-word'>{row.extra.questionName}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.longestFragment}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>
+                  {new Date(row.extra.createdAt).toLocaleString()}
+                </ParagraphBody>
               </td>
               <td>
-                <ParagraphBody>{row.totalOverlap}</ParagraphBody>
+                <CircularProgressWithLabel
+                  value={Number((row?.fileScoring?.similarityScore?.similarity || 0) * 100) || 0}
+                />
               </td>
             </tr>
           ))}
           {rows.length === 0 && (
             <tr>
-              <td colSpan={3}>
+              <td colSpan={5}>
                 <ParagraphBody align='center' translation-key='no_submissions_message'>
                   {t("no_submissions_message")}
                 </ParagraphBody>
@@ -77,13 +86,7 @@ export default function FilePairsTable({ rows, headers }: { rows: Pair[]; header
                 cursor: "pointer"
               }}
               onClick={() => {
-                navigate(
-                  routes.lecturer.exam.code_plagiarism_detection_pairs +
-                    `?questionId=${questionId}`,
-                  {
-                    state: { pairs: rows }
-                  }
-                );
+                navigate(routes.lecturer.exam.code_plagiarism_detection_submissions);
               }}
             >
               <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -92,9 +95,7 @@ export default function FilePairsTable({ rows, headers }: { rows: Pair[]; header
                   margin={"0 10px"}
                   translation-key='code_plagiarism_view_all_code_plagiarism_file_pairs'
                 >
-                  {t("code_plagiarism_view_all_code_plagiarism_file_pairs", {
-                    count: rows.length || 0
-                  })}
+                  Xem tất cả ({rows.length}) bài nộp
                 </ParagraphBody>
                 <FontAwesomeIcon icon={faGreaterThan} color='#737373' />
               </Box>

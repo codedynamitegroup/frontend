@@ -54,7 +54,7 @@ const UserInformation = () => {
           gap={3}
           sx={{
             height: "100%",
-            marginTop: `${headerHeight + 20}px`
+            marginTop: `${headerHeight}px`
           }}
         >
           <Grid item xs={3}>

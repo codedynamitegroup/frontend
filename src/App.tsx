@@ -29,8 +29,12 @@ import AIScoring from "pages/client/lecturer/CourseManagement/Details/components
 import DetailAIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring";
 import DetailProblem from "pages/client/user/DetailProblem";
 import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
-import LecturerSourceCodePlagiarismFilePairs from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFilePairs";
-import LecturerSourceCodePlagiarismFilePairDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFilePairDetails";
+import LecturerSourceCodePlagiarismPairs from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairs";
+import LecturerSourceCodePlagiarismPairDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairDetails";
+import LecturerSourceCodePlagiarismFileSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissions";
+import LecturerSourceCodePlagiarismFileSubmissionDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails";
+import LecturerSourceCodePlagiarismClusters from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters";
+import LecturerSourceCodePlagiarismClustersDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -75,12 +79,28 @@ const router = createHashRouter(
         element={<LecturerSourceCodePlagiarismManagement />}
       />
       <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
-        element={<LecturerSourceCodePlagiarismFilePairs />}
+        path={routes.lecturer.exam.code_plagiarism_detection_submissions}
+        element={<LecturerSourceCodePlagiarismFileSubmissions />}
       />
       <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail}
-        element={<LecturerSourceCodePlagiarismFilePairDetails />}
+        path={routes.lecturer.exam.code_plagiarism_detection_submissions_detail}
+        element={<LecturerSourceCodePlagiarismFileSubmissionDetails />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection_pairs}
+        element={<LecturerSourceCodePlagiarismPairs />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection_pairs_detail}
+        element={<LecturerSourceCodePlagiarismPairDetails />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection_clusters}
+        element={<LecturerSourceCodePlagiarismClusters />}
+      />
+      <Route
+        path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
+        element={<LecturerSourceCodePlagiarismClustersDetails />}
       />
       <Route
         path={routes.lecturer.question.essay.create}
