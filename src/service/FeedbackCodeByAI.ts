@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
+import splitPrompt from "utils/SplitPrompt";
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
@@ -244,12 +245,10 @@ II. SYSTEM_INSTRUCTIONS:
 				},
 				improvementSuggestions: string (not be empty or null),
 				conclusion: string (not be empty or null)
-			},
-			suggestedCode: string (not be empty or null),
-			explainedCode: string (not be empty or null)
+			}
 		}
 
-		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
+		- Description: There are 2 attributes: id, feedback (IFeedbackCodeByAI) is JSON format:
 			+ id:
 				* Data type: number
 				* Description: Unique identifier code for feedback code.
@@ -279,7 +278,7 @@ II. SYSTEM_INSTRUCTIONS:
 								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 							}
 						},
-						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
+						improvementSuggestions: A string (not be empty or null). Propose some specific solutions to improve the quality of the given code. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text. 
 					}
 				* Note for feedback:
@@ -294,6 +293,166 @@ II. SYSTEM_INSTRUCTIONS:
 				* Note for example of feedback:
 					** The example of feedback is just for reference. You can change the example to fit your needs.
 
+	Note of example:
+		1. Ensure the response is in valid JSON format !!!
+		2. The example is just for reference. You can change the example to fit your needs.
+			
+	D. Feedback Language: Use **${language}** to write feedback messages for students.
+	`;
+
+  // 	const SYSTEM_INSTRUCTIONS = `
+  // II. SYSTEM_INSTRUCTIONS:
+  // 	A. Your Task: Provide 'comprehensive and constructive feedback' about the student's source code, addressing the following key aspects:
+  // 		- 'Code correctness:' Identify any syntax errors, logical mistakes, or incorrect implementations that prevent the code from functioning as intended.
+  // 		- 'Code clarity:' Assess the readability, maintainability, and overall structure of the code. Suggest improvements in naming conventions, code formatting, and commenting.
+  // 		- 'Code efficiency:' Analyze the time and space complexity of the code, suggesting potential optimizations to improve performance.
+  // 		- 'Adherence to best practices:'Guide students towards writing code that follows established programming principles and conventions.
+
+  // 	B. Source Code Student Submissions:
+  // 		- There are two attributes: language and source_code:
+  // 			+ language:
+  // 				* Data type: string
+  // 				* Description: The programming language of the source code student's submission.
+  // 			+ source_code:
+  // 				* Data type: string
+  // 				* Description: The source code of the student's submission.
+  // 		- Note: The structure of the source code of students' submissions is in JSON format!!!
+
+  // 		- This is the source code of the student's submission:
+  // 			${JSON.stringify(sourceCodeSubmission)}
+
+  // 	C. Expected Response Format:
+  // 		The feedback results is based on question details below and student's source code to provide feedback to the user:
+  // 		- Title of the code question:
+  // 			${codeQuestion.title}
+
+  // 		- Description of the code question:
+  // 			${codeQuestion.description}
+
+  // 		This is the list of students' submissions (ISourceCodeSubmission) that will be reviewed by you. You will provide feedback for the attribute source_code (The source code of the student's submission):
+  // 			${JSON.stringify(sourceCodeSubmission)}
+
+  // 		From the student's submission source code above, please provide feedback and suggest a new students' source code. Then, give a new source code for students to refer to according to the following structure (IfeedbackCodeByAI) is JSON format!!!:
+  // 		{
+  // 			id: number,
+  // 			feedback: {
+  // 				analysis: {
+  // 					correctness: {
+  // 						accuracy: string (not be empty or null),
+  // 						completeness: string (not be empty or null),
+  // 						consistency: string (not be empty or null)
+  // 					},
+  // 					efficiency: {
+  // 						executionTime: string (not be empty or null),
+  // 						memory: string (not be empty or null),
+  // 						complexity: string (not be empty or null)
+  // 					},
+  // 					maintainability: {
+  // 						readability: string (not be empty or null),
+  // 						reuseability: string (not be empty or null),
+  // 						extensibility: string (not be empty or null)
+  // 					},
+  // 					scalability: {
+  // 						dataScalability: string (not be empty or null),
+  // 						functionalScalability: string (not be empty or null)
+  // 					}
+  // 				},
+  // 				improvementSuggestions: string (not be empty or null),
+  // 				conclusion: string (not be empty or null)
+  // 			},
+  // 			suggestedCode: string (not be empty or null),
+  // 			explainedCode: string (not be empty or null)
+  // 		}
+
+  // 		- Description: There are four attributes: id, feedback, suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
+  // 			+ id:
+  // 				* Data type: number
+  // 				* Description: Unique identifier code for feedback code.
+  // 			+ feedback:
+  // 				* Data type: object
+  // 				* Description: A object of actionable feedback messages and comments (IFeedback) about the student's source code, tailored to the student's writing. Avoid generic statements. You need to use markdown syntax.
+  // 					- IFeedback: The data structure for a feedback:
+  // 					{
+  // 						analysis: {
+  // 							correctness: {
+  // 								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								completeness: A string (not be empty or null). The algorithm must handle all valid input cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 							},
+  // 							efficiency: {
+  // 								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 							},
+  // 							maintainability: {
+  // 								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 							},
+  // 							scalability: {
+  // 								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 							}
+  // 						},
+  // 						improvementSuggestions: A string (not be empty or null). Propose specific solutions to improve the code quality. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 					}
+  // 				* Note for feedback:
+  // 					** Feedback follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 					** Instead of use \\t, you should use tab
+  // 					** Must be use "\\n" when using line breaks
+  // 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
+
+  // 				* Here is example of feedback:
+  // 					${JSON.stringify(format_response.feedback)}
+
+  // 				* Note for example of feedback:
+  // 					** The example of feedback is just for reference. You can change the example to fit your needs.
+
+  // 			+ suggestedCode:
+  // 				* Data type: string (not be "" or null)
+  // 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
+  // 				* Note of suggested code:
+  // 					** Must be use "\\n" for line breaks.
+  // 					** Instead of use \\t, you should use tab
+
+  // 				* Here is example of suggested code:
+  // 					${format_response.suggestedCode}
+
+  // 				* Note for example of suggested code:
+  // 					** The example of suggested code is just for reference. You can change the example to fit your needs.
+
+  // 			+ explainedCode:
+  // 				* Data type: string (not be "" or null)
+  // 				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
+  // 				* Note:
+  // 					** Explain code follow the markdown syntax. you should use \`\` to wrap the highlighted text.
+  // 					** Instead of use \\t, you should use tab
+  // 					** Do not write any code in the explanation, just explain the code above
+
+  // 				* Here is example of explained code:
+  // 					${format_response.explainedCode}
+
+  // 				* Note for example of explained code:
+  // 					** The example of explained code is just for reference. You can change the example to fit your needs.
+
+  // 	Note of example:
+  // 		1. Ensure the response is in valid JSON format !!!
+  // 		2. The example is just for reference. You can change the example to fit your needs.
+
+  // 	D. Feedback Language: Use **${language}** to write feedback messages for students.
+  // 	`;
+
+  const SYSTEM_INSTRUCTIONS2 = `
+  	Based on the analysis above, suggest specific improvements for the code
+	A. Expected Response Format:
+		Please give a new source code for students to refer to according to the following structure (IfeedbackCodeByAI) is JSON format!!!:
+		{
+			suggestedCode: string (not be empty or null),
+			explainedCode: string (not be empty or null)
+		}
+
+		- Description: There are two attributes: suggestedCode and explainedCode (IFeedbackCodeByAI) is JSON format:
 			+ suggestedCode:
 				* Data type: string (not be "" or null)
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
@@ -325,7 +484,7 @@ II. SYSTEM_INSTRUCTIONS:
 		1. Ensure the response is in valid JSON format !!!
 		2. The example is just for reference. You can change the example to fit your needs.
 			
-	D. Feedback Language: Use **${language}** to write feedback messages for students.
+	B. Feedback Language: Use **${language}** to write feedback messages for students.
 	`;
 
   const prompt = `
@@ -333,16 +492,73 @@ ${AI_ROLE}
 
 ${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
+    // // const splittedPrompt = splitPrompt(prompt, 5000).map((part) => part.content);
+    let result = await model.generateContent(prompt);
+    let response = await result.response;
     let text = response.text();
-    let cleanText = text.replace(/```/g, "").replace(/json/g, "");
-    console.log(cleanText);
-    const repaired = jsonrepair(cleanText);
-    const json = JSON.parse(repaired);
+
+    const chat = model.startChat({
+      history: [
+        {
+          role: "user",
+          parts: [{ text: prompt }]
+        },
+        {
+          role: "model",
+          parts: [{ text: String(text) }]
+        }
+      ]
+    });
+
+    // for (let i = 1; i < splittedPrompt.length; i++) {
+    //   result = await chat.sendMessage(splittedPrompt[i]);
+    //   response = await result.response;
+    //   text = response.text();
+    // }
+    let json, repaired, codeJson;
+    console.log(text);
+
+    try {
+      let cleanText = text
+        ?.replace(/```/g, "")
+        .replace(/json/g, "")
+        .replace(/\\n/g, "")
+        .replace(/\\t/g, "");
+      repaired = jsonrepair(cleanText);
+      json = JSON.parse(repaired);
+	    console.log(json);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+    result = await chat.sendMessage(SYSTEM_INSTRUCTIONS2);
+    response = await result.response;
+    text = response.text();
+    console.log(text);
+
+    chat.getHistory().then((history) => {
+      console.log(history);
+    });
+
+    try {
+      let cleanText = text?.replace(/```/g, "").replace(/json/g, "");
+      let repaired = jsonrepair(cleanText);
+      codeJson = JSON.parse(repaired);
+    } catch (error) {
+      console.log(error);
+    }
+    json = Object.assign(json, codeJson);
+
     return json;
+    // try {
+    // 	const json = jsonrepair(ssss);
+
+    // }
+    // catch (error) {
+    // 	console.log(error);
+    // }
   } catch (error) {
     return error;
   }
