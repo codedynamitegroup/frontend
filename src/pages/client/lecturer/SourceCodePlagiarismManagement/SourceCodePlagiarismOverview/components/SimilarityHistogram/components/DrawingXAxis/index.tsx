@@ -2,10 +2,8 @@ import React from "react";
 import StyledPath from "../StyledPath";
 import { useDrawingArea } from "@mui/x-charts";
 import StyledText from "../StyledText";
-import { useTranslation } from "react-i18next";
 
-const DrawingXAxis = () => {
-  const { t } = useTranslation();
+const DrawingXAxis = ({ label }: { label: string }) => {
   const xAxisData = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
   const { left, top, width, height } = useDrawingArea();
 
@@ -37,7 +35,7 @@ const DrawingXAxis = () => {
         dominantBaseline='text-before-edge'
         fontSize={"14px"}
       >
-        {t("code_plagiarism_similarity_title")}
+        {label}
       </StyledText>
     </React.Fragment>
   );

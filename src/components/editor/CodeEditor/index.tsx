@@ -9,7 +9,7 @@ interface CodeEditorProps {
   value: string;
   readOnly?: boolean;
   highlightActiveLine?: boolean;
-  buildFragments?: {
+  fragments?: {
     id: number;
     startRow: number;
     startCol: number;
@@ -18,7 +18,7 @@ interface CodeEditorProps {
   }[];
 }
 
-const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: CodeEditorProps) => {
+const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEditorProps) => {
   const onChange = useCallback(
     () => (value: string, viewUpdate: ViewUpdate) => {
       // setValue(value);
@@ -28,15 +28,15 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: Co
   );
 
   const lineNumber = useMemo(() => {
-    if (!buildFragments) return undefined;
+    if (!fragments) return undefined;
     const lineNumbers: number[] = [];
-    buildFragments.forEach((fragment) => {
+    fragments.forEach((fragment) => {
       for (let i = fragment.startRow + 1; i <= fragment.endRow + 1; i++) {
         lineNumbers.push(i);
       }
     });
     return lineNumbers;
-  }, [buildFragments]);
+  }, [fragments]);
 
   const extensions = useMemo(() => {
     const extensions: any[] = [];
@@ -51,10 +51,10 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: Co
     ];
 
     if (
-      buildFragments !== undefined &&
+      fragments !== undefined &&
       lineNumber !== undefined &&
       lineNumber.length > 0 &&
-      buildFragments.length > 0
+      fragments.length > 0
     ) {
       extensions.push(
         zebraStripes({
@@ -66,7 +66,7 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, buildFragments }: Co
     }
 
     return extensions.concat(supportedLanguagesExtensions);
-  }, [buildFragments, lineNumber]);
+  }, [fragments, lineNumber]);
 
   return (
     <CodeMirror

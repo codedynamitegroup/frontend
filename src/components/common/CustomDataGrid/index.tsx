@@ -1,22 +1,22 @@
 /* eslint-disable react/jsx-no-undef */
 import Box from "@mui/material/Box";
 
+import { GridEventListener } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
+import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
-import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
-import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridEventListener } from "@mui/x-data-grid";
-import classes from "./styles.module.scss";
+import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { useTranslation } from "react-i18next";
+import classes from "./styles.module.scss";
 
 interface DataGridProps {
   dataList: Array<any>;
   tableHeader: Array<GridColDef>;
   visibleColumn?: any;
   onSelectData: any;
-  onClickRow: any;
+  onClickRow?: any;
   dataGridToolBar?: any;
   pageSize: number;
   page: number;
@@ -29,6 +29,7 @@ interface DataGridProps {
   getRowHeight?: any;
   checkboxSelection?: boolean;
   columnHeaderHeight?: number;
+  cellClickParamFields?: string[];
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -48,7 +49,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     customColumnMenu,
     customFooter,
     onClickRow,
-    columnHeaderHeight
+    columnHeaderHeight,
+    cellClickParamFields
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -63,6 +65,13 @@ const CustomDataGrid = (props: DataGridProps) => {
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     onClickRow(params);
+  };
+
+  const handleCellClick: GridEventListener<"cellClick"> = (params, event) => {
+    // Disable cell click event if the field is in the cellClickParamFields
+    if (params.field && cellClickParamFields?.includes(params.field)) {
+      event.stopPropagation();
+    }
   };
   const { t } = useTranslation();
 
@@ -83,7 +92,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
         onRowSelectionModelChange={rowSelectionHandler}
-        onRowClick={handleRowClick}
+        onRowClick={onClickRow ? handleRowClick : undefined}
         density='comfortable'
         disableColumnFilter
         disableColumnSelector
@@ -123,6 +132,7 @@ const CustomDataGrid = (props: DataGridProps) => {
             cursor: onClickRow ? "pointer" : "default"
           }
         }}
+        onCellClick={handleCellClick}
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
         columnHeaderHeight={columnHeaderHeight || 56}

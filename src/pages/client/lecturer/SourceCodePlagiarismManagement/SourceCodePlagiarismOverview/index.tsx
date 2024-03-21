@@ -1,5 +1,5 @@
 import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faChartLine, faCircleInfo, faCode } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faCircleInfo, faCode, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -15,13 +15,18 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { setLabel, setReport, setThreshold } from "reduxes/CodePlagiarism";
 import { routes } from "routes/routes";
-import FilePairsTable from "./components/FilePairsTable";
+import { RootState } from "store";
+import FileSubmissionsTable from "./components/FileSubmissionsTable";
 import LabelSubmissionsTable from "./components/LabelSubmissionsTable";
 import SimilarityHistogram from "./components/SimilarityHistogram";
+import SubmissionsClustersTable from "./components/SubmissionsClustersTable";
 import classes from "./styles.module.scss";
-import { useTranslation } from "react-i18next";
+import { File } from "models/codePlagiarism";
 
 const drawerWidth = 450;
 
@@ -81,72 +86,162 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export interface DolosCustomFile {
-  id: string;
-  path: string;
-  charCount: number;
-  lines: string[];
-  lineCount: number;
-  extra: {
-    id: string;
-    filename: string;
-    createdAt: string;
-    labels: string;
-  };
-  highestSimilarity: number | null;
-}
-
 export default function LecturerSourceCodePlagiarismManagement() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const questionId = searchParams.get("questionId") || "0";
-  const [threshold, setThreshold] = React.useState(70);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const codePlagiarismState = useSelector((state: RootState) => state.codePlagiarism);
+  const {
+    report,
+    highestSimilarity,
+    threshold,
+    filterdFiles,
+    averageSimilarity,
+    medianSimilarity,
+    clusters
+  } = codePlagiarismState;
 
-  const [data, setData] = React.useState<{
-    report: {
-      labels: {
-        label: string;
-        submissions: number;
-      }[];
-      maxHighSimilarity: number;
-      averageHighSimilarity: number;
-      medianHighSimilarity: number;
-      name: string;
-      createdAt: string;
-      files: DolosCustomFile[];
-      language: { name: string; extensions: string[] };
-      pairs: {
-        id: string;
-        leftFile: DolosCustomFile;
-        rightFile: DolosCustomFile;
-        leftCovered: number;
-        rightCovered: number;
-        leftTotal: number;
-        rightTotal: number;
-        longestFragment: number;
-        highestSimilarity: number;
-        totalOverlap: number;
-        buildFragments: {
-          left: {
-            startRow: number;
-            startCol: number;
-            endRow: number;
-            endCol: number;
-          };
-          right: {
-            startRow: number;
-            startCol: number;
-            endRow: number;
-            endCol: number;
-          };
-        }[];
-      }[];
-    } | null;
-  }>({
-    report: location.state?.report
-  });
+  // const [data, setData] = React.useState<{
+  //   report: {
+  //     name: string;
+  //     createdAt: string;
+  //     files: File[];
+  //     language: { name: string; extensions: string[] };
+  //     pairs: Pair[];
+  //     labels: { label: string; submissions: number; isActive: boolean }[];
+  //   } | null;
+  // }>({
+  //   report: {
+  //     ...location.state?.report,
+  //     labels: getUniqueLabelsFromPairsAndFiles(
+  //       location.state?.report?.pairs,
+  //       location.state?.report?.files
+  //     )
+  //   }
+  // });
+
+  // const filteredPairs = React.useMemo(() => {
+  //   // Fitter pairs with labels has isActive = true
+  //   const copyPairs = [
+  //     ...(report?.pairs?.map((pair) => {
+  //       return pair;
+  //     }) || [])
+  //   ];
+  //   return (
+  //     copyPairs.filter(
+  //       (pair) =>
+  //         report?.labels.length === 0 ||
+  //         report?.labels.some(
+  //           (label) =>
+  //             pair.leftFile.extra?.labels === label.label &&
+  //             pair.rightFile.extra?.labels === label.label &&
+  //             label.isActive
+  //         )
+  //     ) || []
+  //   );
+  // }, [report?.pairs, report?.labels]);
+
+  // const filterdFiles = React.useMemo(() => {
+  //   // Fitter files with labels has isActive = true
+  //   const copyFiles = [
+  //     ...(report?.files?.map((file) => {
+  //       return file;
+  //     }) || [])
+  //   ];
+  //   return (
+  //     copyFiles.filter(
+  //       (file) =>
+  //         report?.labels.length === 0 ||
+  //         report?.labels.some((label) => file.extra?.labels === label.label && label.isActive)
+  //     ) || []
+  //   );
+  // }, [report?.files, report?.labels]);
+
+  // const fileInterestingnessCalculator = React.useMemo(() => {
+  //   return new FileInterestingnessCalculator(filteredPairs || []);
+  // }, [filteredPairs]);
+
+  // const [threshold, setThreshold] = React.useState<number>(
+  //   Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) < 25
+  //     ? 25
+  //     : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) > 100
+  //       ? 100
+  //       : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0))
+  // );
+
+  // const highestSimilarityPair = React.useMemo(() => {
+  //   // Fix error Reduce of empty array with no initial value
+  //   if (filteredPairs.length === 0) {
+  //     return null;
+  //   }
+  //   return filteredPairs.reduce((a, b) => (a.similarity > b.similarity ? a : b));
+  // }, [filteredPairs]);
+
+  // // Highest similarity.
+  // const highestSimilarity = React.useMemo(() => {
+  //   return highestSimilarityPair?.similarity || 0;
+  // }, [highestSimilarityPair]);
+
+  // const similarities = React.useMemo(() => {
+  //   return new Map(
+  //     filterdFiles.map((file) => [file, file.fileScoring?.similarityScore || null]) || []
+  //   );
+  // }, [filterdFiles]);
+
+  // const similaritiesList = React.useMemo(() => {
+  //   const similaritiesList = Array.from(similarities.values()).filter(
+  //     (s) => s !== null
+  //   ) as SimilarityScore[];
+  //   const similaritiesListCheck = similaritiesList.map((s) => s?.similarity || 0);
+  //   return similaritiesListCheck;
+  // }, [similarities]);
+
+  // // Average maximum similarity.
+  // const averageSimilarity = React.useMemo(() => {
+  //   const mean = similaritiesList.reduce((a, b) => a + b, 0) / similaritiesList.length;
+  //   return isNaN(mean) ? 0 : mean;
+  // }, [similaritiesList]);
+
+  // // Median maximum similarity.
+  // const medianSimilarity = React.useMemo(() => {
+  //   const sorted = [...similaritiesList].sort();
+  //   const middle = Math.floor(sorted.length / 2);
+  //   const median = sorted[middle];
+  //   return isNaN(median) ? 0 : median;
+  // }, [similaritiesList]);
+
+  // const clustering = React.useMemo(() => {
+  //   if (filterdFiles && filteredPairs) {
+  //     return singleLinkageCluster(filteredPairs, filterdFiles, threshold / 100);
+  //   }
+  //   return [];
+  // }, [filteredPairs, filterdFiles, threshold]);
+
+  // const clusters = React.useMemo(() => {
+  //   const result = clustering.map((cluster) => {
+  //     const findIndex = clustering.findIndex((c) => c === cluster);
+  //     const files = getClusterElementsArray(cluster);
+
+  //     // Calculate similarity score for each file
+  //     files.forEach((file) => {
+  //       if (!file.fileScoring) {
+  //         const fileScoring = fileInterestingnessCalculator.calculateFileScoring(file);
+  //         file.fileScoring = fileScoring;
+  //       }
+  //     });
+
+  //     return {
+  //       id: findIndex,
+  //       submissions: files,
+  //       size: files.length,
+  //       similarity: [...cluster].reduce((acc, pair) => acc + pair.similarity, 0) / cluster.size,
+  //       cluster
+  //     };
+  //   });
+  //   result.sort((a, b) => b.size - a.size);
+  //   return result;
+  // }, [clustering, fileInterestingnessCalculator]);
 
   const xAxisData = React.useMemo(() => {
     return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
@@ -154,31 +249,27 @@ export default function LecturerSourceCodePlagiarismManagement() {
 
   const yAxisData = React.useMemo(() => {
     const zeroArray = Array(xAxisData.length).fill(0);
-    if (data.report?.files) {
-      data.report.files.forEach((file) => {
-        for (let i = 0; i < xAxisData.length; i++) {
-          if (file.highestSimilarity === null) continue;
-          if (
-            file.highestSimilarity * 100 >= xAxisData[i] &&
-            file.highestSimilarity * 100 < xAxisData[i] + 5
-          ) {
-            zeroArray[i] += 1;
-          }
-          if (xAxisData[i] === 95 && file.highestSimilarity * 100 === 100) {
-            zeroArray[i] += 1;
-          }
+    filterdFiles.forEach((file: File) => {
+      for (let i = 0; i < xAxisData.length; i++) {
+        const similarity = file.fileScoring?.similarityScore?.similarity || 0;
+        if (similarity * 100 >= xAxisData[i] && similarity * 100 < xAxisData[i] + 5) {
+          zeroArray[i] += 1;
         }
-      });
-    }
+        if (xAxisData[i] === 95 && similarity * 100 === 100) {
+          zeroArray[i] += 1;
+        }
+      }
+    });
 
     return zeroArray;
-  }, [xAxisData, data.report?.files]);
+  }, [xAxisData, filterdFiles]);
 
-  const handleThresholdChange = (event: Event, newValue: number | number[]) => {
-    if (typeof newValue !== "number") {
-      return;
-    }
-    setThreshold(newValue);
+  const handleLabelChange = (label: string, isActive: boolean) => {
+    dispatch(setLabel({ label, isActive }));
+  };
+
+  const handleThresholdChange = (value: number) => {
+    dispatch(setThreshold(value));
   };
 
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -186,13 +277,19 @@ export default function LecturerSourceCodePlagiarismManagement() {
     ref: headerRef
   });
 
+  React.useEffect(() => {
+    if (location.state?.report) {
+      dispatch(setReport({ report: location.state.report }));
+    }
+  }, [dispatch, location.state.report]);
+
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight + 20}px`
+          marginTop: `${headerHeight}px`
         }}
       >
         <CssBaseline />
@@ -200,7 +297,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
           position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            top: `${headerHeight}px`,
             backgroundColor: "white"
           }}
           open={false}
@@ -260,8 +357,8 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         <FontAwesomeIcon icon={faCalendar} color='#737373' size={"lg"} />
                       </Tooltip>
                       <ParagraphBody>
-                        {data.report?.createdAt
-                          ? new Date(data.report.createdAt).toLocaleString()
+                        {report?.createdAt
+                          ? new Date(report.createdAt).toLocaleString()
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
                     </Box>
@@ -273,9 +370,9 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         <FontAwesomeIcon icon={faFile} color='#737373' size={"lg"} />
                       </Tooltip>
                       <ParagraphBody translation-key='code_plagiarism_report_analyzed_submissions_count'>
-                        {data.report?.files
+                        {report?.files
                           ? t("code_plagiarism_report_analyzed_submissions_count", {
-                              count: data.report.files.length
+                              count: report.files.length
                             })
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
@@ -285,25 +382,22 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         <FontAwesomeIcon icon={faCode} color='#737373' size={"lg"} />
                       </Tooltip>
                       <ParagraphBody>
-                        {data.report?.language
-                          ? data.report.language?.name
+                        {report?.language
+                          ? report.language?.name
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
                     </Box>
                     <TextTitle className={classes.labelTitle}>
-                      {`${data.report?.labels.length || 0} nhãn được phát hiện`}
+                      {`${report?.labels.length || 0} nhãn được phát hiện`}
                     </TextTitle>
                     <LabelSubmissionsTable
                       headers={[
                         t("code_plagiarism_label_title"),
-                        t("code_plagiarism_submissions_title")
+                        t("code_plagiarism_submissions_title"),
+                        ""
                       ]}
-                      rows={
-                        data.report?.labels.map((label) => ({
-                          label: label.label,
-                          submissions: label.submissions
-                        })) || []
-                      }
+                      rows={report?.labels || []}
+                      handleLabelChange={handleLabelChange}
                     />
                   </Card>
                 </Grid>
@@ -326,9 +420,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               {t("code_plagiarism_highest_similarity")}{" "}
                               <Tooltip
                                 title={t("code_plagiarism_highest_similarity_tooltip", {
-                                  similarity: Math.round(
-                                    (data.report?.maxHighSimilarity || 0) * 100
-                                  )
+                                  similarity: Math.round((highestSimilarity || 0) * 100)
                                 })}
                                 placement='top'
                               >
@@ -340,16 +432,10 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--red-error-01'
                             >
-                              {Math.round((data.report?.maxHighSimilarity || 0) * 100)}%
+                              {Math.round((highestSimilarity || 0) * 100)}%
                             </ParagraphBody>
-                            <Link
-                              to={routes.lecturer.exam.code_plagiarism_detection_file_pairs}
-                              state={{ pairs: data.report?.pairs }}
-                              translation-key='code_plagiarism_view_all_code_plagiarism_file_pairs'
-                            >
-                              {t("code_plagiarism_view_all_code_plagiarism_file_pairs", {
-                                count: data.report?.pairs.length || 0
-                              })}
+                            <Link to={routes.lecturer.exam.code_plagiarism_detection_submissions}>
+                              Xem tất cả bài nộp
                             </Link>
                           </Grid>
                         </Grid>
@@ -384,12 +470,44 @@ export default function LecturerSourceCodePlagiarismManagement() {
                               fontWeight={600}
                               colorname='--orange-400'
                             >
-                              {Math.round((data.report?.averageHighSimilarity || 0) * 100)}%
+                              {Math.round((averageSimilarity || 0) * 100)}%
                             </ParagraphBody>
                             <ParagraphSmall>
                               {t("code_plagiarism_median_similarity")}
                               {": "}
-                              {Math.round((data.report?.medianHighSimilarity || 0) * 100)}%
+                              {Math.round((medianSimilarity || 0) * 100)}%
+                            </ParagraphSmall>
+                          </Grid>
+                        </Grid>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Card className={classes.cardWrapper}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={6}>
+                            <Card className={classes.similarityWrapper}>
+                              <FontAwesomeIcon icon={faUsers} color={"var(--blue-500)"} size='3x' />
+                            </Card>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Heading4>
+                              Chia Nhóm{" "}
+                              <Tooltip
+                                title={`Tất cả bài nộp sẽ được chia thành các cụm dựa trên độ tương đồng. Nếu 1 cặp bài nào đó có độ tương đồng cao hơn độ tương đồng cao nhất, chúng sẽ được chia vào cùng 1 cụm.`}
+                                placement='top'
+                              >
+                                <FontAwesomeIcon icon={faCircleInfo} color={"#737373"} />
+                              </Tooltip>
+                            </Heading4>
+                            <ParagraphBody
+                              fontSize={"30px"}
+                              fontWeight={600}
+                              colorname='--eerie-black'
+                            >
+                              {clusters.length}
+                            </ParagraphBody>
+                            <ParagraphSmall>
+                              Dựa trên độ tương đồng cao nhất hiện tại ({threshold}%)
                             </ParagraphSmall>
                           </Grid>
                         </Grid>
@@ -421,9 +539,11 @@ export default function LecturerSourceCodePlagiarismManagement() {
                         </ParagraphBody>
                         <Slider
                           value={threshold}
-                          onChange={handleThresholdChange}
+                          onChangeCommitted={(_, newValue) => {
+                            handleThresholdChange(newValue as number);
+                          }}
                           valueLabelDisplay='auto'
-                          min={20}
+                          min={25}
                           max={100}
                           step={1}
                           aria-labelledby='input-series-number'
@@ -437,30 +557,54 @@ export default function LecturerSourceCodePlagiarismManagement() {
                     </Grid>
                   </Card>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6}>
                   <Card className={classes.cardWrapper}>
                     <Grid container spacing={1}>
                       <Grid item xs={12}>
-                        <Heading4 translation-key='code_plagiarism_file_pairs_list_title'>
-                          {t("code_plagiarism_file_pairs_list_title")}
-                        </Heading4>
+                        <Heading4>Danh sách bài nộp</Heading4>
                       </Grid>
                       <Grid item xs={12}>
-                        <ParagraphBody translation-key='code_plagiarism_file_pairs_list_description'>
-                          {t("code_plagiarism_file_pairs_list_description")}
+                        <ParagraphBody>
+                          Đánh dấu các bài nộp cá nhân nghi ngờ nhất, hữu ích cho bài kiểm tra.
                         </ParagraphBody>
                       </Grid>
                       <Grid item xs={12}>
-                        <FilePairsTable
+                        <FileSubmissionsTable
                           headers={[
-                            t("code_plagiarism_left_file_title"),
-                            t("code_plagiarism_right_file_title"),
-                            t("code_plagiarism_highest_similarity_title"),
-                            t("code_plagiarism_longest_fragment_title"),
-                            t("code_plagiarism_total_overlap_title")
+                            "MSSV",
+                            "Tên sinh viên",
+                            "Câu hỏi",
+                            "Ngày nộp",
+                            "Độ tương đồng cao nhẩt"
                           ]}
-                          rows={data.report?.pairs || []}
+                          rows={
+                            // sort by similarity score
+                            filterdFiles && filterdFiles.length > 0
+                              ? [...filterdFiles].sort(
+                                  (a, b) =>
+                                    (b.fileScoring?.finalScore || 0) -
+                                    (a.fileScoring?.finalScore || 0)
+                                )
+                              : []
+                          }
                         />
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Card className={classes.cardWrapper}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12}>
+                        <Heading4>Chia nhóm</Heading4>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <ParagraphBody>
+                          Tập hợp các bài nộp thành các nhóm, hữu ích cho bài tập.
+                        </ParagraphBody>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <SubmissionsClustersTable headers={["Nhóm", "Bài nộp"]} rows={clusters} />
                       </Grid>
                     </Grid>
                   </Card>

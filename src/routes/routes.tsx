@@ -78,10 +78,18 @@ export const routes = {
       review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
       code_plagiarism_detection:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
-      code_plagiarism_detection_file_pairs:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs",
-      code_plagiarism_detection_file_pairs_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/file-pairs/:filePairId",
+      code_plagiarism_detection_submissions:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/submissions",
+      code_plagiarism_detection_submissions_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/submissions/:submissionId",
+      code_plagiarism_detection_clusters:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/clusters",
+      code_plagiarism_detection_clusters_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/clusters/:clusterId",
+      code_plagiarism_detection_pairs:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/pairs",
+      code_plagiarism_detection_pairs_detail:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/pairs/:pairId",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"

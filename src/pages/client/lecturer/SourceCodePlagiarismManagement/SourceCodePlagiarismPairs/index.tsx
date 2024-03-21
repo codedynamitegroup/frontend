@@ -23,8 +23,8 @@ import {
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import CircularProgressWithLabel from "../SourceCodePlagiarismOverview/components/FilePairsTable/components/CircularProgressWithLabel";
-import { DolosCustomFile } from "../SourceCodePlagiarismOverview";
 import { useTranslation } from "react-i18next";
+import { Pair } from "models/codePlagiarism";
 
 const drawerWidth = 450;
 
@@ -84,7 +84,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
-export default function LecturerSourceCodePlagiarismSubmissions() {
+export default function LecturerSourceCodePlagiarismPairs() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -106,32 +106,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
 
   const location = useLocation();
   const [data, setData] = React.useState<{
-    pairs: {
-      id: string;
-      leftFile: DolosCustomFile;
-      rightFile: DolosCustomFile;
-      leftCovered: number;
-      rightCovered: number;
-      leftTotal: number;
-      rightTotal: number;
-      longestFragment: number;
-      highestSimilarity: number;
-      totalOverlap: number;
-      buildFragments: {
-        left: {
-          startRow: number;
-          startCol: number;
-          endRow: number;
-          endCol: number;
-        };
-        right: {
-          startRow: number;
-          startCol: number;
-          endRow: number;
-          endCol: number;
-        };
-      }[];
-    }[];
+    pairs: Pair[];
   }>({ pairs: location.state?.pairs || [] });
 
   const tableHeading: GridColDef[] = [
@@ -161,7 +136,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
       }
     },
     {
-      field: "highestSimilarity",
+      field: "similarity",
       headerName: t("code_plagiarism_highest_similarity_title"),
       flex: 1,
       renderCell: (params) => {
@@ -174,8 +149,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     navigate(
-      routes.lecturer.exam.code_plagiarism_detection_file_pairs_detail +
-        `?questionId=${questionId}`,
+      routes.lecturer.exam.code_plagiarism_detection_pairs_detail + `?questionId=${questionId}`,
       {
         state: {
           data: params.row
@@ -195,7 +169,7 @@ export default function LecturerSourceCodePlagiarismSubmissions() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight + 20}px`
+          marginTop: `${headerHeight}px`
         }}
       >
         <CssBaseline />

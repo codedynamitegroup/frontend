@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import App from "./App";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import store from "./store";
 import "config/i18n";
 import { LinearProgress } from "@mui/material";
 

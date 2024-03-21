@@ -1,0 +1,146 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--blue-1);
+}
+
+.container {
+  display: flex;
+  background-color: var(--blue-1);
+}
+
+.mainContent {
+  background-color: var(--blue-1);
+  margin-top: -10px;
+  width: 100%;
+}
+
+.flexBoxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cardWrapper {
+  width: 100%;
+  padding: 20px;
+  height: 100%;
+
+  .cardTitleHeader {
+    padding: 10px 0;
+  }
+
+  .reportOpenTimeWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .submissionsQuantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .codeLanguage {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .labelTitle {
+    padding: 10px 0 20px 0;
+  }
+
+  .similarityWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    background-color: var(--blue-1);
+  }
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.drawerBody {
+  padding: 20px;
+}
+
+.drawerFieldContainer {
+  margin-bottom: 20px;
+}
+
+.textEditor {
+  height: 200px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+
+.codeWrapper {
+  // padding: 10px;
+  height: 100%;
+  width: 100%;
+  // box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+  // border: 1px solid rgba(0, 0, 0, 0.2);
+
+  .codeHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 10px;
+
+    .firstPartCodeHead {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .insertDriveFileOutlinedIcon {
+      gap: 5px;
+      color: var(--blue-500);
+    }
+
+    .fileNameWrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+
+  .codeContent {
+    overflow: auto;
+  }
+}
