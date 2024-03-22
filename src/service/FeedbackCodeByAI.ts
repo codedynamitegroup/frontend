@@ -275,6 +275,8 @@ II. SYSTEM_INSTRUCTIONS:
 						conclusion: A string (not be empty or null). Summarize the feedback.
 					}
 				* Note for feedback:
+					** Do not write "\\n\\t\\t" or "\\n\\t" or "\\n\\t\\t\\t" in the first line of the feedback message.
+					** Do not write the title of the feedback message in the first line of the feedback message.
 					** Do not use ** to highlight text, instead, you should use \`\` to wrap the highlighted text.
 					** Do not use "\\t"
 					** Must be use "\\n" when using line breaks
@@ -318,9 +320,9 @@ II. SYSTEM_INSTRUCTIONS:
 
 			+ explainedCode:
 				* Data type: string (not be "" or null)
-				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
+				* Description: A detailed explanation of suggested code above. Ensure you explain code correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note: 
-					** Do not write the suggested code in the explanation. 
+					** Do not include any code in the explanation. 
 					** Do not use "**" to highlight text, instead, you should use \`\` to wrap the highlighted text.
 					** Do not use "\\t"
 
