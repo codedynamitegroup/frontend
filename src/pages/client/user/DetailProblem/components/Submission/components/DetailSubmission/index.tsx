@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Container, Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -19,10 +19,10 @@ import {
   feedbackCodeByAI
 } from "service/FeedbackCodeByAI";
 import { useState } from "react";
+
 import MDEditor from "@uiw/react-md-editor";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import Typed, { ReactTyped } from "react-typed";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -94,7 +94,6 @@ class Solution {
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [feedbackContent, setFeedbackContent] = useState<string>(``);
   const [chunckLoading, setChunkLoading] = useState(false);
-  const [chunkContent, setChunkContent] = useState<string>("");
   const [suggestedCode, setSuggestedCode] = useState<string>("");
   const [explainedCode, setExplainedCode] = useState<string>("");
 
@@ -111,31 +110,11 @@ class Solution {
 
   const handleFeedbackCodeByAI = async () => {
     setFeedbackContent(``); // Clear previous content
-    setChunkContent(``); // Clear previous content
-    setLoading(true);
-    setChunkLoading(true);
     setSuggestedCode(``);
+    setExplainedCode(``);
 
-    // await feedbackCodeByAI(sourceCodeSubmission, codeQuestion)
-    //   .then((result) => {
-    //     if (result && isFeedbackCodeByAI(result)) {
-    //       setFeedbackCode(result);
-    //       setOpenSnackbarAlert(true);
-    //       setAlertContent("Đánh giá thành công");
-    //       setAlertType(AlertType.Success);
-    //     } else {
-    //       throw new Error("Internal server error");
-    //     }
-    //   })
-    //   .catch((err: any) => {
-    //     console.error("Error generating content:", err);
-    //     setOpenSnackbarAlert(true);
-    //     setAlertContent("Đánh giá thất bại, hãy thử lại lần nữa");
-    //     setAlertType(AlertType.Error);
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
+    setChunkLoading(true);
+    setLoading(true);
 
     try {
       let isFeedback = false;
@@ -143,31 +122,36 @@ class Solution {
       let isExplainedCode = false;
 
       for await (const chunk of feedbackCodeByAI(sourceCodeSubmission, codeQuestion)) {
-        if (chunk === "feedback") {
+        if (chunk === "feedback_prompt") {
           isFeedback = true;
+          isExplainedCode = false;
+          isSugessted = false;
+
           continue;
-        }
-        if (chunk === "suggestedCode") {
+        } else if (chunk === "suggested_code_prompt") {
           isFeedback = false;
           isSugessted = true;
+          isExplainedCode = false;
+
           continue;
-        }
-        if (chunk === "explainedCode") {
+        } else if (chunk === "explained_code_prompt") {
           isSugessted = false;
+          isFeedback = false;
           isExplainedCode = true;
+
           continue;
         }
 
         if (isFeedback) {
-          setFeedbackContent((prevContent) => prevContent + chunk);
+          setFeedbackContent((prev) => prev + chunk);
           // setChunkContent(chunk);
           console.log("Feedback:", chunk);
         } else if (isSugessted) {
           // setChunkContent(chunk);
-          setSuggestedCode((prevContent) => prevContent + chunk);
+          setSuggestedCode((prev) => prev + chunk);
           console.log("Suggested:", chunk);
         } else if (isExplainedCode) {
-          setExplainedCode((prevContent) => prevContent + chunk);
+          setExplainedCode((prev) => prev + chunk);
           console.log("Explained:", chunk);
         }
       }
@@ -275,13 +259,40 @@ class Solution {
               color='primary'
               onClick={handleFeedbackCodeByAI}
             >
-              {t("detail_submission_AI_evaluation")}
+              Đánh giá bởi AI
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
             <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
+        {/* 
+        {feedbackCode && (
+          <Box className={classes.submissionText}>
+            {feedbackCode.feedback && (
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
+              </Box>
+            )}
+            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
+
+            {feedbackCode.suggestedCode && (
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown source={"```java\n" + feedbackCode.suggestedCode + ""} />
+              </Box>
+            )}
+            {feedbackCode.explainedCode && (
+              <>
+                <Box data-color-mode='light'>
+                  <MDEditor.Markdown
+                    source={feedbackCode.explainedCode}
+                    className={classes.markdown}
+                  />
+                </Box>
+              </>
+            )}
+          </Box>
+        )} */}
 
         {feedbackContent && (
           <Box className={classes.submissionText}>
@@ -290,13 +301,12 @@ class Solution {
                 <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
               </Box>
             )}
+            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
             {suggestedCode && (
-              <>
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
-                </Box>
-              </>
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
+              </Box>
             )}
             {explainedCode && (
               <>
