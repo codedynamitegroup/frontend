@@ -60,8 +60,8 @@ export interface ISourceCodeSubmission {
 const format_response: IFeedbackCodeByAI = {
   id: 1,
   feedback: `
-## I. Phân tích
-### 1. Tính đúng đắn:
+### I. Phân tích
+#### 1. Tính đúng đắn:
 #### a. Tính chính xác:
 - Code sử dụng vòng lặp \`while\` để đảo ngược từng chữ số của số nguyên \`x\`.
 - Sau mỗi vòng lặp, kết quả \`result\` được cập nhật bằng cách nhân 10 và cộng thêm chữ số cuối cùng của \`x\`.
@@ -72,7 +72,7 @@ const format_response: IFeedbackCodeByAI = {
 #### c. Tính nhất quán:
 - Cho cùng một đầu vào \`x\`, code luôn cho ra kết quả \`result\` giống nhau.
 
-### 2. Tính hiệu quả:
+#### 2. Tính hiệu quả:
 #### a. Thời gian thực thi:
 - Code sử dụng vòng lặp \`while\` để đảo ngược từng chữ số của số nguyên \`x\`.
 - Do đó, thời gian thực thi của code sẽ phụ thuộc vào số lượng chữ số của \`x\`.
@@ -87,7 +87,7 @@ const format_response: IFeedbackCodeByAI = {
 - Độ phức tạp thời gian của code là O(n), với n là số lượng chữ số của \`x\`.
 - Độ phức tạp bộ nhớ của code là O(1).
 
-### 3. Tính bảo trì:
+#### 3. Tính bảo trì:
 #### a. Khả năng đọc hiểu:
 - Code được viết khá dễ đọc và dễ hiểu.
 - Các biến được đặt tên rõ ràng, dễ nhận biết.
@@ -97,59 +97,31 @@ const format_response: IFeedbackCodeByAI = {
 - Khả năng mở rộng:
 - Code có thể được mở rộng để xử lý các trường hợp phức tạp hơn, chẳng hạn như đảo ngược số nguyên có dấu.
 
-### 4. Khả năng mở rộng:
+#### 4. Khả năng mở rộng:
 #### a. Khả năng mở rộng dữ liệu:
 - Code có thể xử lý được lượng dữ liệu lớn.
 - Ví dụ, code có thể đảo ngược số nguyên có hàng tỷ chữ số.
 #### b. Khả năng mở rộng chức năng:
 - Code có thể được mở rộng để thêm các chức năng mới, chẳng hạn như kiểm tra số đối xứng.
 
-## II. Kết luận:
+### II. Kết luận:
 - Code đảo ngược số nguyên được đánh giá là tốt. 
 - Code đáp ứng đầy đủ các tiêu chí về tính chính xác, hiệu quả, tính bảo trì, khả năng mở rộng.
 	`,
   suggestedCode:
     " class Solution { \n  public: \n    vector<vector<int>> divideArray(vector<int>& nums, int ki) { \n      vector<vector<int>> ans; \n      ... (rest of the code with line breaks) \n    } \n  }; \n",
-  explainedCode: `1. Khai báo biến:
-		- \`left\`: Biến lưu trữ vị trí bắt đầu của chuỗi con hiện tại.
-		- \`right\`: Biến lưu trữ vị trí kết thúc của chuỗi con hiện tại.
-		- \`max\`: Biến lưu trữ độ dài chuỗi con dài nhất được tìm thấy.
-		- \`set\`: Biến kiểu \`Set\` lưu trữ các ký tự đã xuất hiện trong chuỗi con hiện tại.
-	 2. Vòng lặp while: 
-		- Vòng lặp này sẽ chạy cho đến khi \`right\` bằng với độ dài của chuỗi \`s\`.
-	 3. Kiểm tra ký tự:
-		- Kiểm tra xem ký tự tại vị trí \`right\` có trong \`set\` hay không.
-		- Nếu không có:
-			- Thêm ký tự vào \`set\`.
-			- Tăng \`right\` lên 1 để di chuyển đến ký tự tiếp theo.
-			- Cập nhật \`max\` nếu độ dài của \`set\` lớn hơn \`max\`.
-		- Nếu có:
-			- Xóa ký tự tại vị trí \`left\` khỏi \`set\`.
-			- Tăng \`left\` lên 1 để di chuyển đến ký tự tiếp theo.
-	 4. Trả về kết quả:
-		- Sau khi vòng lặp while kết thúc, \`max\` sẽ lưu trữ độ dài chuỗi con dài nhất không có ký tự lặp lại.
-		- Trả về \`max\`.
-	 
-	 Cách thức hoạt động:
-	 
-	 - Thuật toán sử dụng một "cửa sổ trượt" để di chuyển qua chuỗi. Cửa sổ này bắt đầu từ vị trí 0 và mở rộng cho đến khi gặp một ký tự lặp lại.
-	 - Khi gặp một ký tự lặp lại, cửa sổ sẽ thu hẹp lại từ đầu cho đến khi ký tự lặp lại bị loại bỏ.
-	 - Độ dài của cửa sổ được cập nhật liên tục và giá trị lớn nhất sẽ được lưu trữ.
-	 - Sau khi cửa sổ trượt đến cuối chuỗi, độ dài chuỗi con dài nhất không có ký tự lặp lại sẽ được trả về.
-	 
-	 Ví dụ:
-	 
-	 - Cho chuỗi \`s = "abcabcbb"\`.
-	 - Ban đầu, \`left = 0\` và \`right = 0\`.
-	 - Cửa sổ trượt qua chuỗi:
-		 - \`right = 1\`: Ký tự \`a\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-		 - \`right = 2\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-		 - \`right = 3\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`right\` lên 1.
-		 - \`right = 4\`: Ký tự \`a\` đã có trong \`set\`, xóa \`a\` khỏi \`set\` và tăng \`left\` lên 1.
-		 - \`right = 5\`: Ký tự \`b\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
-		 - \`right = 6\`: Ký tự \`c\` không có trong \`set\`, thêm vào \`set\` và tăng \`left\` lên 1.
-	 -   Sau khi vòng lặp while kết thúc, \`max = 3\`.
-	 -   Chuỗi con dài nhất không có ký tự lặp lại là \`"abc"\`.`
+  explainedCode: `
+	### I. Giải thích chi tiết
+	- Thêm một node ảo dummy vào đầu danh sách liên kết để xử lý trường hợp xóa node đầu tiên.
+	- Sử dụng hai node slow và fast để duyệt danh sách liên kết. fast sẽ di chuyển trước slow n bước.
+	- Khi fast đạt đến cuối danh sách liên kết, slow sẽ trỏ đến node trước node cần xóa.
+	- Cập nhật liên kết để bỏ qua node cần xóa.
+	- Trả về danh sách liên kết mới với node thứ n từ cuối đã bị xóa.
+
+	### II. Độ phức tạp
+	- Độ phức tạp thời gian: O(n), với n là số lượng node trong danh sách liên kết.
+	- Độ phức tạp không gian: O(1).	
+	`
 };
 
 async function* feedbackCodeByAI(
@@ -205,27 +177,28 @@ II. SYSTEM_INSTRUCTIONS:
 				* Data type: string
 				* Description: A string of actionable feedback messages about the student's source code, tailored to the student's writing. Avoid generic statements. Do not need to write any suggested code in the feedback, we will do it later.
 				* You must follow the following structure to provide feedback to the user's code. It only has 2 sections: Analysis and Conclusion:
-				"
-					I. Analysis:
-						1. Correctness:
-							a. Accuracy: The output of the algorithm must match the desired output.
-							b. Completeness: The algorithm must handle all valid input cases.
-							c. Consistency: The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed.
-						2. Efficiency:
-							a. Execution Time: The algorithm must run quickly and optimize processing time.
-							b. Memory: The algorithm must use memory efficiently and avoid waste.
-							c. Complexity: The algorithm must have low complexity (time and memory) to be able to handle large data.
-						3. Maintainability:
-							a. Readability: The algorithm code should be easy to read, understand, and maintain.
-							b. Reuseability: The algorithm can be reused for similar problems.
-							c. Extensibility: The algorithm can be extended to handle more complex cases.
-						4. Scalability:
-							a. Data Scalability: The algorithm can handle larger amounts of data.
-							b. Functional Scalability: The algorithm can be extended to add new features.
+					"
+						I. Analysis:
+							1. Correctness:
+								a. Accuracy: The output of the algorithm must match the desired output.
+								b. Completeness: The algorithm must handle all valid input cases.
+								c. Consistency: The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed.
+							2. Efficiency:
+								a. Execution Time: The algorithm must run quickly and optimize processing time.
+								b. Memory: The algorithm must use memory efficiently and avoid waste.
+								c. Complexity: The algorithm must have low complexity (time and memory) to be able to handle large data.
+							3. Maintainability:
+								a. Readability: The algorithm code should be easy to read, understand, and maintain.
+								b. Reuseability: The algorithm can be reused for similar problems.
+								c. Extensibility: The algorithm can be extended to handle more complex cases.
+							4. Scalability:
+								a. Data Scalability: The algorithm can handle larger amounts of data.
+								b. Functional Scalability: The algorithm can be extended to add new features.
 
-					II. Conclusion (Do not write any code in the feedback,  in this section):
-					- Summarize the feedback.
-				"
+						II. Conclusion:
+						- Summarize the feedback.
+						- Do not write any code in the conclusion. In this section, you only need to summarize the feedback.
+					"
 
 				* Note:
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
@@ -277,6 +250,16 @@ II. SYSTEM_INSTRUCTIONS:
 			+ explainedCode:
 				* Data type: string (not be "" or null)
 				* Description: A detailed explanation of suggested code above. Do not include suggested code above in the explanation. Ensure you explain code correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
+				* You must follow the following structure to provide feedback to the user's code. It only has 2 sections: detailed explanation and complexity:
+					"
+						I. Detailed Explanation:
+							- Explain the purpose of the code snippet and how it addresses the identified issues.
+							- Describe the modifications made to the original code and why they were necessary.
+							- Highlight any new features or functions included in the suggested code.
+						II. Complexity:
+							- Analyze the time and space complexity of the suggested code.
+							- Compare the complexity of the suggested code with the original code.
+					"
 				* Note: 
 					** Do not include any code in the explanation. 
 					** Do not use "**" to highlight text, instead, you should use \`\` to wrap the highlighted text.

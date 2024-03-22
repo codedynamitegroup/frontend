@@ -272,25 +272,22 @@ class Solution {
           </Box>
         </Box>
 
-        {/* {feedbackContent !== "" && ( */}
-        <Box className={classes.submissionText}>
-          <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
+        {feedbackCode && (
+          <Box className={classes.submissionText}>
+            {feedbackCode.feedback && (
+              <Box data-color-mode='light'>
+                <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
+              </Box>
+            )}
+            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
-          {/* {feedbackContent && ( */}
-          <Box data-color-mode='light'>
-            <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
-          </Box>
-          {/* )} */}
-          <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
-
-          {/* {suggestedCode && ( */}
-          <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
-          </Box>
-          {/* )} */}
-          {/* {feedbackCode.explainedCode && (
+            {/* {suggestedCode && ( */}
+            <Box data-color-mode='light'>
+              <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
+            </Box>
+            {/* )} */}
+            {/* {feedbackCode.explainedCode && (
               <>
-                <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
                 <Box data-color-mode='light'>
                   <MDEditor.Markdown
                     source={feedbackCode.explainedCode}
@@ -299,8 +296,8 @@ class Solution {
                 </Box>
               </>
             )} */}
-        </Box>
-        {/* )} */}
+          </Box>
+        )}
         {chunckLoading && <CircularProgress />}
       </Box>
       <SnackbarAlert
