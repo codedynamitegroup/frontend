@@ -2,7 +2,19 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Card,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Toolbar,
+  Pagination,
+  InputAdornment,
+  TextField
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
@@ -22,7 +34,7 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
-
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 const drawerWidth = 350;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -338,6 +350,22 @@ export default function StudentReviewExamAttempt() {
           <Box className={classes.drawerBody}>
             <Box className={classes.drawerFieldContainer}>
               <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
+              <TextField
+                placeholder='Nhập số thứ tự câu hỏi'
+                size='small'
+                type='number'
+                fullWidth
+                sx={{ marginBottom: "10px" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton>
+                        <KeyboardReturnIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
               <Grid container spacing={1} className={classes.pageNavigationDrawer}>
                 {questions.map((question, index) => (
                   <Grid item key={index}>
@@ -356,6 +384,8 @@ export default function StudentReviewExamAttempt() {
                   </Grid>
                 ))}
               </Grid>
+
+              <Pagination count={10} showFirstButton showLastButton size='small' />
               <Grid container>
                 <Grid item xs={12}>
                   <Button

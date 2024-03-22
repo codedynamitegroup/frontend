@@ -61,21 +61,22 @@ const HeaderNotification = () => {
             <Chip
               label={<TextTitle translation-key='common_all'>{t("common_all")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, all: true })}
-              className={filterChips.all ? classes["chip-filter-selected"] : classes["chip-filter"]}
+              // className={filterChips.all ? classes["chip-filter-selected"] : classes["chip-filter"]}
+              sx={{ backgroundColor: filterChips.all ? "rgba(0, 0, 0, 0.08)" : "rgba(0, 0, 0, 0)" }}
             />
             <Chip
               label={<TextTitle translation-key='common_event'>{t("common_event")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, event: true })}
-              className={
-                filterChips.event ? classes["chip-filter-selected"] : classes["chip-filter"]
-              }
+              sx={{
+                backgroundColor: filterChips.event ? "rgba(0, 0, 0, 0.08)" : "rgba(0, 0, 0, 0)"
+              }}
             />
             <Chip
               label={<TextTitle translation-key='common_sync'>{t("common_sync")}</TextTitle>}
               onClick={() => setFilterChips({ ...resetFilterChips, sync: true })}
-              className={
-                filterChips.sync ? classes["chip-filter-selected"] : classes["chip-filter"]
-              }
+              sx={{
+                backgroundColor: filterChips.sync ? "rgba(0, 0, 0, 0.08)" : "rgba(0, 0, 0, 0)"
+              }}
             />
           </Stack>
 

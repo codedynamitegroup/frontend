@@ -2,7 +2,19 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Card,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Toolbar,
+  InputAdornment,
+  TextField,
+  Pagination
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
@@ -23,7 +35,9 @@ import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuesti
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { useTranslation } from "react-i18next";
+import { green, grey, yellow } from "@mui/material/colors";
 
 const drawerWidth = 350;
 
@@ -96,27 +110,33 @@ export default function PreviewExam() {
   const [questions, setQuestions] = React.useState([
     {
       id: "0",
-      type: qtype.essay
+      type: qtype.essay,
+      done: true
     },
     {
       id: "1",
-      type: qtype.short_answer
+      type: qtype.short_answer,
+      done: true
     },
     {
       id: "2",
-      type: qtype.multiple_choice
+      type: qtype.multiple_choice,
+      done: true
     },
     {
       id: "3",
-      type: qtype.true_false
+      type: qtype.true_false,
+      done: false
     },
     {
       id: "4",
-      type: qtype.true_false
+      type: qtype.true_false,
+      done: false
     },
     {
       id: "5",
-      type: qtype.multiple_choice
+      type: qtype.multiple_choice,
+      done: false
     }
   ]);
 
@@ -385,13 +405,37 @@ export default function PreviewExam() {
               >
                 {t("course_management_exam_preview_navigate")}
               </TextTitle>
-              <Grid container spacing={1}>
+              <TextField
+                placeholder='Nhập số thứ tự câu hỏi'
+                size='small'
+                type='number'
+                fullWidth
+                sx={{ marginBottom: "10px" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton>
+                        <KeyboardReturnIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+
+              <Grid container spacing={1} marginBottom={"10px"}>
                 {questions.map((question, index) => (
                   <Grid item key={index}>
                     <Button
-                      btnType={BtnType.Outlined}
+                      btnType={questionPageIndex === index ? BtnType.Outlined : undefined}
+                      sx={{
+                        backgroundColor: question.done
+                          ? question.type === qtype.essay || question.type === qtype.short_answer
+                            ? yellow[100]
+                            : green[100]
+                          : grey[100]
+                      }}
                       onClick={() => {
-                        navigate(`${routes.lecturer.exam.preview}?page=${index}`, {
+                        navigate(`${routes.student.exam.take}?page=${index}`, {
                           replace: true
                         });
                       }}
@@ -401,6 +445,7 @@ export default function PreviewExam() {
                   </Grid>
                 ))}
               </Grid>
+              <Pagination count={10} showFirstButton showLastButton size='small' />
               <Button btnType={BtnType.Text} onClick={() => {}} padding='10px 0'>
                 <ParagraphBody translation-key='course_management_exam_preview_end'>
                   {t("course_management_exam_preview_end")}...
