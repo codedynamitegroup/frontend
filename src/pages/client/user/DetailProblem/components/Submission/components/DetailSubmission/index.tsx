@@ -82,8 +82,7 @@ class Solution {
       typeof obj.id === "number" &&
       typeof obj.feedback === "object" &&
       typeof obj.feedback.analysis === "object" &&
-      typeof obj.feedback.improvementSuggestions === "string" &&
-      typeof obj.feedback.improvementSuggestions === "string" &&
+      typeof obj.feedback.conclusion === "string" &&
       typeof obj.suggestedCode === "string" &&
       obj.suggestedCode !== "" &&
       typeof obj.explainedCode === "string" &&
@@ -208,11 +207,7 @@ ${feedbackTemp.analysis?.scalability?.functionalScalability}  `
     : ""
 }
 
-### II. Gợi ý cải tiến
-
-${feedbackTemp.improvementSuggestions}
-
-### III. Kết luận
+### II. Kết luận
 
 ${feedbackTemp.conclusion}
 `);

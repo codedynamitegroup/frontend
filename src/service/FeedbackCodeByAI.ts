@@ -36,7 +36,6 @@ interface IAnalysisFeedback {
 
 export interface IFeedbackCode {
   analysis: IAnalysisFeedback;
-  improvementSuggestions: string;
   conclusion: string;
 }
 
@@ -109,10 +108,6 @@ const format_response: IFeedbackCodeByAI = {
           "Code có thể được mở rộng để thêm các chức năng mới, chẳng hạn như kiểm tra số đối xứng."
       }
     },
-    improvementSuggestions: `
-		- Sử dụng mảng thay cho \`HashSet\` để tiết kiệm bộ nhớ.
-		- Viết thêm bình luận để giải thích code và thuật toán.
-		`,
     conclusion: `
 		- Code \`lengthOfLongestSubstring\` được viết tốt, đáp ứng đầy đủ các yêu cầu về tính chính xác, hiệu quả, bảo trì, khả năng mở rộng và tuân thủ. Một số cải tiến nhỏ có thể được thực hiện để tối ưu hóa hiệu suất sử dụng bộ nhớ.
 		- Đánh giá chung: Tốt
@@ -243,7 +238,6 @@ II. SYSTEM_INSTRUCTIONS:
 						functionalScalability: string (not be empty or null)
 					}
 				},
-				improvementSuggestions: string (not be empty or null),
 				conclusion: string (not be empty or null)
 			}
 		}
@@ -259,31 +253,30 @@ II. SYSTEM_INSTRUCTIONS:
 					{
 						analysis: {
 							correctness: {
-								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								completeness: A string (not be empty or null). The algorithm must handle all valid input cases. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
+								accuracy: A string (not be empty or null). The output of the algorithm must match the desired output.
+								completeness: A string (not be empty or null). The algorithm must handle all valid input cases.
+								consistency: A string (not be empty or null). The algorithm must produce the same output for the same input, regardless of the time or environment in which it is executed.
 							},
 							efficiency: {
-								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
+								executionTime: A string (not be empty or null). The algorithm must run quickly and optimize processing time.
+								memory: A string (not be empty or null). The algorithm must use memory efficiently and avoid waste.
+								complexity: A string (not be empty or null). The algorithm must have low complexity (time and memory) to be able to handle large data.
 							},
 							maintainability: {
-								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
+								readability: A string (not be empty or null). The algorithm code should be easy to read, understand, and maintain.
+								reuseability:  A string (not be empty or null). The algorithm can be reused for similar problems.
+								extensibility: A string (not be empty or null). The algorithm can be extended to handle more complex cases.
 							},
 							scalability: {
-								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
+								dataScalability: A string (not be empty or null). The algorithm can handle larger amounts of data.
+								functionalScalability: A string (not be empty or null). The algorithm can be extended to add new features.
 							}
 						},
-						improvementSuggestions: A string (not be empty or null). Propose some specific solutions to improve the quality of the given code. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
-						conclusion: A string (not be empty or null). Summarize the feedback. Feedback follow the markdown syntax. You should use \`\` to wrap the highlighted text. 
+						conclusion: A string (not be empty or null). Summarize the feedback.
 					}
 				* Note for feedback:
-					** Feedback follow the markdown syntax. Do not use ** to highlight text, instead, you should use \`\` to wrap the highlighted text.
-					** Instead of use \\t, you should use tab
+					** Do not use ** to highlight text, instead, you should use \`\` to wrap the highlighted text.
+					** Do not use "\\t"
 					** Must be use "\\n" when using line breaks
 					** You need to check whether the user's code runs correctly according to the question's requirements; if not, you must remind the user.
 
@@ -315,7 +308,7 @@ II. SYSTEM_INSTRUCTIONS:
 				* Description: New or modified code snippet that addresses the identified issues and incorporates best practices according to your feedback. Use consistent indentation and formatting. Ensure the code is functional and adheres to the prompt requirements . Use line breaks between each line by using "\\n" . This ensures the LLM parses each line break correctly. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note of suggested code:
 					** Must be use "\\n" for line breaks.
-					** Instead of use \\t, you should use tab
+					** Do not use "\\t"
 					
 				* Here is example of suggested code:
 					${format_response.suggestedCode}
@@ -327,8 +320,9 @@ II. SYSTEM_INSTRUCTIONS:
 				* Data type: string (not be "" or null)
 				* Description: A detailed explanation of suggest code above. Ensure you explain code correctly and use markdown syntax. The content attribute of the answer should not be empty or null. It should be filled with complete information
 				* Note: 
-					** Explain code follow the markdown syntax. Do not use ** to highlight text, instead, you should use \`\` to wrap the highlighted text.
-					** Instead of use \\t, you should use tab
+					** Do not write the suggested code in the explanation. 
+					** Do not use "**" to highlight text, instead, you should use \`\` to wrap the highlighted text.
+					** Do not use "\\t"
 
 				* Here is example of explained code:
 					${format_response.explainedCode}
@@ -376,7 +370,7 @@ ${SYSTEM_INSTRUCTIONS}`;
     console.log(text);
 
     try {
-      let cleanText = text?.replace(/```/g, "").replace(/json/g, "").replace(/\\t/g, " ");
+      let cleanText = text?.replace(/```/g, "").replace(/json/g, "").replace(/\\t/g, "	");
       repaired = jsonrepair(cleanText);
       json = JSON.parse(repaired);
       console.log(json);
@@ -394,7 +388,7 @@ ${SYSTEM_INSTRUCTIONS}`;
     });
 
     try {
-      let cleanText = text?.replace(/```/g, "").replace(/json/g, "");
+      let cleanText = text?.replace(/```/g, "").replace(/json/g, "").replace(/\\t/g, "	");
       let repaired = jsonrepair(cleanText);
       codeJson = JSON.parse(repaired);
     } catch (error) {
