@@ -234,8 +234,6 @@ class Solution {
 
         {feedbackCode && (
           <Box className={classes.submissionText}>
-            <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
-
             {feedbackCode.feedback && (
               <Box data-color-mode='light'>
                 <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
@@ -250,7 +248,6 @@ class Solution {
             )}
             {feedbackCode.explainedCode && (
               <>
-                <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
                 <Box data-color-mode='light'>
                   <MDEditor.Markdown
                     source={feedbackCode.explainedCode}
