@@ -96,8 +96,7 @@ class Solution {
   const [chunckLoading, setChunkLoading] = useState(false);
   const [chunkContent, setChunkContent] = useState<string>("");
   const [suggestedCode, setSuggestedCode] = useState<string>("");
-  const [isFeedback, setIsFeedback] = useState(false);
-  const [isSuggested, setIsSuggested] = useState(false);
+  const [explainedCode, setExplainedCode] = useState<string>("");
 
   function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
     return (
@@ -139,25 +138,37 @@ class Solution {
     //   });
 
     try {
+      let isFeedback = false;
+      let isSugessted = false;
+      let isExplainedCode = false;
+
       for await (const chunk of feedbackCodeByAI(sourceCodeSubmission, codeQuestion)) {
         if (chunk === "feedback") {
-          setIsFeedback(true);
+          isFeedback = true;
           continue;
         }
         if (chunk === "suggestedCode") {
-          setIsFeedback(false);
-          setIsSuggested(true);
+          isFeedback = false;
+          isSugessted = true;
+          continue;
+        }
+        if (chunk === "explainedCode") {
+          isSugessted = false;
+          isExplainedCode = true;
           continue;
         }
 
         if (isFeedback) {
           setFeedbackContent((prevContent) => prevContent + chunk);
           // setChunkContent(chunk);
-          console.log("feedback:", chunk);
-        } else {
+          console.log("Feedback:", chunk);
+        } else if (isSugessted) {
           // setChunkContent(chunk);
           setSuggestedCode((prevContent) => prevContent + chunk);
           console.log("Suggested:", chunk);
+        } else if (isExplainedCode) {
+          setExplainedCode((prevContent) => prevContent + chunk);
+          console.log("Explained:", chunk);
         }
       }
     } catch (error) {
@@ -272,30 +283,28 @@ class Solution {
           </Box>
         </Box>
 
-        {feedbackCode && (
+        {feedbackContent && (
           <Box className={classes.submissionText}>
-            {feedbackCode.feedback && (
+            {feedbackContent && (
               <Box data-color-mode='light'>
-                <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
+                <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
               </Box>
             )}
-            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
-            {/* {suggestedCode && ( */}
-            <Box data-color-mode='light'>
-              <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
-            </Box>
-            {/* )} */}
-            {/* {feedbackCode.explainedCode && (
+            {suggestedCode && (
               <>
                 <Box data-color-mode='light'>
-                  <MDEditor.Markdown
-                    source={feedbackCode.explainedCode}
-                    className={classes.markdown}
-                  />
+                  <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
                 </Box>
               </>
-            )} */}
+            )}
+            {explainedCode && (
+              <>
+                <Box data-color-mode='light'>
+                  <MDEditor.Markdown source={explainedCode} className={classes.markdown} />
+                </Box>
+              </>
+            )}
           </Box>
         )}
         {chunckLoading && <CircularProgress />}
