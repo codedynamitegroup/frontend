@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import i18next from "i18next";
 import { jsonrepair } from "jsonrepair";
 import splitPrompt from "utils/SplitPrompt";
 // Access your API key as an environment variable (see "Set up your API key" above)
@@ -151,11 +152,11 @@ const format_response: IFeedbackCodeByAI = {
 	 -   Chuỗi con dài nhất không có ký tự lặp lại là \`"abc"\`.`
 };
 
-async function feedbackCodeByAI(
+async function* feedbackCodeByAI(
   sourceCodeSubmission: ISourceCodeSubmission,
   codeQuestion: ICodeQuestion
 ) {
-  const language = "Vietnamese";
+  const language = i18next.language === "en" ? "English" : "Vietnamese";
 
   const AI_ROLE = `
 I. YOUR ROLE:
@@ -301,9 +302,21 @@ ${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   try {
     // // const splittedPrompt = splitPrompt(prompt, 5000).map((part) => part.content);
-    let result = await model.generateContent(prompt);
-    let response = await result.response;
-    let text = response.text();
+
+    let json,
+      repaired,
+      codeJson,
+      result,
+      response,
+      text = "";
+
+    result = await model.generateContentStream(prompt);
+
+    yield "feedback";
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text();
+      yield chunkText;
+    }
 
     const chat = model.startChat({
       history: [
@@ -318,44 +331,48 @@ ${SYSTEM_INSTRUCTIONS}`;
       ]
     });
 
-    // for (let i = 1; i < splittedPrompt.length; i++) {
-    //   result = await chat.sendMessage(splittedPrompt[i]);
-    //   response = await result.response;
-    //   text = response.text();
-    // }
-    let json, repaired, codeJson;
-
-    try {
-      let cleanText = text?.replace(/```/g, "").replace(/json/g, "");
-      repaired = jsonrepair(cleanText);
-      json = JSON.parse(repaired);
-    } catch (error) {
-      console.log(error);
+    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS2);
+    yield "suggestedCode";
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text();
+      yield chunkText;
     }
 
-    result = await chat.sendMessage(SYSTEM_INSTRUCTIONS2);
-    response = await result.response;
-    text = response.text();
+    // // response = await result.response;
+    // // text = response.text();
 
-    chat.getHistory().then((history) => {});
 
-    try {
-      let cleanText = text?.replace(/```/g, "").replace(/json/g, "").replace(/\\t/g, "	");
-      let repaired = jsonrepair(cleanText);
-      codeJson = JSON.parse(repaired);
-    } catch (error) {
-      console.log(error);
-    }
-    json = Object.assign(json, codeJson);
-    console.log("json: ", json);
-    return json;
+    // // } while (text.includes("null"));
+
+    // // for (let i = 1; i < splittedPrompt.length; i++) {
+    // //   result = await chat.sendMessage(splittedPrompt[i]);
+    // //   response = await result.response;
+    // //   text = response.text();
+    // // }
+
     // try {
-    // 	const json = jsonrepair(ssss);
+    //   let cleanText = text?.replace(/```/g, "").replace(/json/g, "").replace(/\\t/g, " ");
+    //   repaired = jsonrepair(cleanText);
+    //   json = JSON.parse(repaired);
+    //   console.log(json);
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
+    // response = await result.response;
+    // text = response.text();
+    // console.log(text);
+
+    // try {
+    //   let cleanText = text?.replace(/```/g, "").replace(/json/g, "");
+    //   let repaired = jsonrepair(cleanText);
+    //   codeJson = JSON.parse(repaired);
+    // } catch (error) {
+    //   console.log(error);
     // }
-    // catch (error) {
-    // 	console.log(error);
-    // }
+    // json = Object.assign(json, codeJson);
+
+    // return json;
   } catch (error) {
     return error;
   }

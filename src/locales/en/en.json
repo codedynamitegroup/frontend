@@ -117,6 +117,24 @@
   "common_event": "Event",
   "common_sync": "Sync",
   "common_add_question": "Add question",
+  "common_analysis": "Analysis",
+  "common_correctness": "Correctness",
+  "common_accuracy": "Accuracy",
+  "common_completeness": "Completeness",
+  "common_consisitency": "Consistency",
+  "common_efficiency": "Efficiency",
+  "common_execution_time": "Execution time",
+  "common_memory_usage": "Memory usage",
+  "common_complexity": "Complexity",
+  "common_maintainability": "Maintainability",
+  "common_readability": "Readability",
+  "common_reusability": "Reusability",
+  "common_extensibility": "Extensibility",
+  "common_scalability": "Scalability",
+  "common_data_scability": "Data scalability",
+  "common_functional_scability": "Functional scalability",
+  "common_improvement_suggestion": "Improvement suggestion",
+  "common_conclusion": "Conclusion",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -541,5 +559,8 @@
   "notification_title_new_assignment": "New assignment",
   "notification_title_new_assignment_content": "New assignment of {{courseName}} course",
   "notification_title_system_sync": "Systemm synchronize",
-  "notification_title_system_sync_content": "{{courseName}} course have just synchronized with systemm"
+  "notification_title_system_sync_content": "{{courseName}} course have just synchronized with systemm",
+
+  "detail_submission_AI_evaluation": "AI evaluation"
+
 }

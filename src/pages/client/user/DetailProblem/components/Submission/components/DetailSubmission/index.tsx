@@ -1,5 +1,5 @@
-import { Button, Container, Grid } from "@mui/material";
-import React from "react";
+import { Button, CircularProgress, Container, Grid } from "@mui/material";
+import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -19,10 +19,10 @@ import {
   feedbackCodeByAI
 } from "service/FeedbackCodeByAI";
 import { useState } from "react";
-
 import MDEditor from "@uiw/react-md-editor";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import Typed, { ReactTyped } from "react-typed";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -92,6 +92,12 @@ class Solution {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const [feedbackContent, setFeedbackContent] = useState<string>(``);
+  const [chunckLoading, setChunkLoading] = useState(false);
+  const [chunkContent, setChunkContent] = useState<string>("");
+  const [suggestedCode, setSuggestedCode] = useState<string>("");
+  const [isFeedback, setIsFeedback] = useState(false);
+  const [isSuggested, setIsSuggested] = useState(false);
 
   function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
     return (
@@ -105,27 +111,61 @@ class Solution {
   }
 
   const handleFeedbackCodeByAI = async () => {
+    setFeedbackContent(``); // Clear previous content
+    setChunkContent(``); // Clear previous content
     setLoading(true);
-    await feedbackCodeByAI(sourceCodeSubmission, codeQuestion)
-      .then((result) => {
-        if (result && isFeedbackCodeByAI(result)) {
-          setFeedbackCode(result);
-          setOpenSnackbarAlert(true);
-          setAlertContent("Đánh giá thành công");
-          setAlertType(AlertType.Success);
-        } else {
-          throw new Error("Internal server error");
+    setChunkLoading(true);
+    setSuggestedCode(``);
+
+    // await feedbackCodeByAI(sourceCodeSubmission, codeQuestion)
+    //   .then((result) => {
+    //     if (result && isFeedbackCodeByAI(result)) {
+    //       setFeedbackCode(result);
+    //       setOpenSnackbarAlert(true);
+    //       setAlertContent("Đánh giá thành công");
+    //       setAlertType(AlertType.Success);
+    //     } else {
+    //       throw new Error("Internal server error");
+    //     }
+    //   })
+    //   .catch((err: any) => {
+    //     console.error("Error generating content:", err);
+    //     setOpenSnackbarAlert(true);
+    //     setAlertContent("Đánh giá thất bại, hãy thử lại lần nữa");
+    //     setAlertType(AlertType.Error);
+    //   })
+    //   .finally(() => {
+    //     setLoading(false);
+    //   });
+
+    try {
+      for await (const chunk of feedbackCodeByAI(sourceCodeSubmission, codeQuestion)) {
+        if (chunk === "feedback") {
+          setIsFeedback(true);
+          continue;
         }
-      })
-      .catch((err) => {
-        console.error("Error generating content:", err);
-        setOpenSnackbarAlert(true);
-        setAlertContent("Đánh giá thất bại, hãy thử lại lần nữa");
-        setAlertType(AlertType.Error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        if (chunk === "suggestedCode") {
+          setIsFeedback(false);
+          setIsSuggested(true);
+          continue;
+        }
+
+        if (isFeedback) {
+          setFeedbackContent((prevContent) => prevContent + chunk);
+          // setChunkContent(chunk);
+          console.log("feedback:", chunk);
+        } else {
+          // setChunkContent(chunk);
+          setSuggestedCode((prevContent) => prevContent + chunk);
+          console.log("Suggested:", chunk);
+        }
+      }
+    } catch (error) {
+      console.error("Error generating text:", error);
+    } finally {
+      setLoading(false);
+      setChunkLoading(false);
+    }
   };
 
   return (
@@ -224,7 +264,7 @@ class Solution {
               color='primary'
               onClick={handleFeedbackCodeByAI}
             >
-              Đánh giá bởi AI
+              {t("detail_submission_AI_evaluation")}
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
@@ -232,23 +272,23 @@ class Solution {
           </Box>
         </Box>
 
-        {feedbackCode && (
-          <Box className={classes.submissionText}>
-            <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
+        {/* {feedbackContent !== "" && ( */}
+        <Box className={classes.submissionText}>
+          <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
 
-            {feedbackCode.feedback && (
-              <Box data-color-mode='light'>
-                <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
-              </Box>
-            )}
-            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
+          {/* {feedbackContent && ( */}
+          <Box data-color-mode='light'>
+            <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
+          </Box>
+          {/* )} */}
+          <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
 
-            {feedbackCode.suggestedCode && (
-              <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"```java\n" + feedbackCode.suggestedCode + ""} />
-              </Box>
-            )}
-            {feedbackCode.explainedCode && (
+          {/* {suggestedCode && ( */}
+          <Box data-color-mode='light'>
+            <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
+          </Box>
+          {/* )} */}
+          {/* {feedbackCode.explainedCode && (
               <>
                 <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
                 <Box data-color-mode='light'>
@@ -258,9 +298,10 @@ class Solution {
                   />
                 </Box>
               </>
-            )}
-          </Box>
-        )}
+            )} */}
+        </Box>
+        {/* )} */}
+        {chunckLoading && <CircularProgress />}
       </Box>
       <SnackbarAlert
         open={openSnackbarAlert}

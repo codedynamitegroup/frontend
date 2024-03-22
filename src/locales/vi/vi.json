@@ -107,6 +107,24 @@
   "common_event": "Sự kiện",
   "common_sync": "Đồng bộ",
   "common_add_question": "Thêm câu hỏi",
+  "common_analysis": "Phân tích",
+  "common_correctness": "Tính đúng đắn",
+  "common_accuracy": "Tính chính xác",
+  "common_completeness": "Tính hoàn thiện",
+  "common_consisitency": "Tính nhất quán",
+  "common_efficiency": "Tính hiệu quả",
+  "common_execution_time": "Thời gian thực thi",
+  "common_memory_usage": "Sử dụng bộ nhớ",
+  "common_complexity": "Độ phức tạp",
+  "common_maintainability": "Tính bảo trì",
+  "common_readability": "Khả năng dễ đọc",
+  "common_reusability": "Khả năng tái sử dụng",
+  "common_extensibility": "Tính mở rộng",
+  "common_scalability": "Khả năng mở rộng",
+  "common_data_scability": "Khả năng mở rộng dữ liệu",
+  "common_functional_scability": "Khả năng mở rộng chức năng",
+  "common_improvement_suggestion": "Gợi ý cải thiện",
+  "common_conclusion": "Kết luận",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -539,5 +557,7 @@
   "notification_title_new_assignment": "Bài tập về nhà mới",
   "notification_title_new_assignment_content": "Có bài tập mới trong khoá học {{courseName}}",
   "notification_title_system_sync": "Đồng bộ hệ thống",
-  "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống"
+  "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống",
+
+  "detail_submission_AI_evaluation": "Đánh giá bằng AI"
 }
