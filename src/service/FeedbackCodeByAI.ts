@@ -269,10 +269,10 @@ II. SYSTEM_INSTRUCTIONS:
 B. Feedback Language: Use **${language}** to write feedback messages for users.
 `;
 
-  const prompt = `
-  ${AI_ROLE}
+//   const prompt = `
+//   ${AI_ROLE}
 
-  ${SYSTEM_INSTRUCTIONS}`;
+//   ${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   try {
     // // const splittedPrompt = splitPrompt(prompt, 5000).map((part) => part.content);
@@ -297,7 +297,7 @@ B. Feedback Language: Use **${language}** to write feedback messages for users.
       ]
     });
 
-    result = await chat.sendMessageStream(prompt);
+    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
     for await (const chunk of result.stream) {
       const chunkText = chunk.text();
       yield chunkText;
@@ -310,8 +310,8 @@ B. Feedback Language: Use **${language}** to write feedback messages for users.
       yield chunkText;
     }
 
-    result = await chat.sendMessageStream(EXPLAINED_CODE);
     yield "explained_code_prompt";
+    result = await chat.sendMessageStream(EXPLAINED_CODE);
     for await (const chunk of result.stream) {
       const chunkText = chunk.text();
       yield chunkText;

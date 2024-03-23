@@ -1,0 +1,72 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column !important;
+  justify-content: space-between;
+  background-color: var(--blue-1);
+//   min-height: 100%;
+//   display: grid;
+//   grid-template-rows: auto 1fr auto;
+
+  .container {
+    background-color: white;
+    border-radius: 5px;
+    padding-bottom: 20px;
+
+    .generalDescription {
+        color: #6b7280;
+        font-size: 12px;
+        text-align: center;
+        margin-bottom: 2rem;
+        line-height: 14px;
+    }
+
+    .selectLabel {
+        margin-top: 5px;
+        margin-bottom: -5px;
+    }
+    .configlabel {
+        color: rgba(29, 33, 48, .749);
+        font-size: 13px;
+    }
+    .infoIcon {
+        font-size: 15px;
+    }
+  }
+
+  .stickyFooter {
+    background-color: white;
+    height: 80px;
+  }
+
+  .stickyFooter {
+    padding: 0px 50px 0 50px;
+
+    .stepButton {
+        height: 40px;
+    }
+  }
+  
+  #breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+  flex-grow: 1;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+}

@@ -35,6 +35,7 @@ import LecturerSourceCodePlagiarismFileSubmissions from "pages/client/lecturer/S
 import LecturerSourceCodePlagiarismFileSubmissionDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails";
 import LecturerSourceCodePlagiarismClusters from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters";
 import LecturerSourceCodePlagiarismClustersDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails";
+import GradingConfig from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -125,6 +126,11 @@ const router = createHashRouter(
         handle={{ crumbName: "default" }}
       />
 
+      <Route
+        path={routes.lecturer.exam.ai_grading_config}
+        element={<GradingConfig />}
+        // handle={{ crumbName: "default" }}
+      />
       <Route path={routes.student.root} element={<StudentCoursesManagement />} />
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
       <Route path={routes.student.exam.take} element={<TakeExam />} />
