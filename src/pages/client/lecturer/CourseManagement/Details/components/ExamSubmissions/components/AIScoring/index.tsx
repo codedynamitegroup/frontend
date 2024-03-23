@@ -33,8 +33,8 @@ import {
   IFeedback,
   IFeedbackGradedAI,
   QuestionEssay,
-  scoringByAI
-} from "service/ScoringByAI";
+  gradingEssayByAI
+} from "service/GradingEssayByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -246,25 +246,15 @@ const AIScoring = () => {
 
         const feedback = `
 1. Nội dung (${feedbackTemp?.content?.score}/${EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore}):
-	- Độ chính xác: ${feedbackTemp?.content?.accuracy}
-	- Logic: ${feedbackTemp?.content?.logic}
-	- Sáng tạo: ${feedbackTemp?.content?.creativity}
-	- Sử dụng nguồn: ${feedbackTemp?.content?.sourceUsage}
+	${feedbackTemp?.content?.content}
 
 2. Hình thức (${feedbackTemp?.form?.score}/${EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore}):
-	- Ngữ pháp: ${feedbackTemp?.form?.grammar}
-	- Từ vựng:  ${feedbackTemp?.form?.vocabulary}
-	- Chính tả:  ${feedbackTemp?.form?.spelling}
-	- Bố cục:  ${feedbackTemp?.form?.layout}
+	${feedbackTemp?.form?.content}
 
 3. Phong cách (${feedbackTemp?.style?.score}/${EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore}):
-	- Rõ ràng: ${feedbackTemp?.style?.clarity}
-	- Hấp dẫn: ${feedbackTemp?.style?.engagement}
-	- Phù hợp: ${feedbackTemp?.style?.appropriateness}
+	${feedbackTemp?.style?.content}
 
-4. Phản hồi chung:
-	- ${feedbackTemp?.overall}
-				`;
+	- ${feedbackTemp?.overall}`;
         return (
           <Box
             sx={{
@@ -388,24 +378,13 @@ const AIScoring = () => {
 
   function isResponseFeedbackGradedAI(obj: any): obj is IFeedbackGradedAI {
     return (
-      typeof obj.id === "number" &&
+      typeof obj.studentSubmissionId === "number" &&
       typeof obj.feedback === "object" &&
       typeof obj.feedback.content === "object" &&
-      typeof obj.feedback.content.accuracy === "string" &&
-      typeof obj.feedback.content.logic === "string" &&
-      typeof obj.feedback.content.creativity === "string" &&
-      typeof obj.feedback.content.sourceUsage === "string" &&
       typeof obj.feedback.content.score === "number" &&
       typeof obj.feedback.form === "object" &&
-      typeof obj.feedback.form.grammar === "string" &&
-      typeof obj.feedback.form.vocabulary === "string" &&
-      typeof obj.feedback.form.spelling === "string" &&
-      typeof obj.feedback.form.layout === "string" &&
       typeof obj.feedback.form.score === "number" &&
       typeof obj.feedback.style === "object" &&
-      typeof obj.feedback.style.clarity === "string" &&
-      typeof obj.feedback.style.engagement === "string" &&
-      typeof obj.feedback.style.appropriateness === "string" &&
       typeof obj.feedback.style.score === "number" &&
       typeof obj.feedback.overall === "string"
     );
@@ -416,9 +395,9 @@ const AIScoring = () => {
       return;
     }
     if (effectRan.current === false) {
-      const handleScoringByAI = async () => {
+      const handleGradingEssayByAI = async () => {
         setLoading(true);
-        await scoringByAI(data, question)
+        await gradingEssayByAI(data, question)
           .then((results) => {
             if (
               results &&
@@ -445,7 +424,7 @@ const AIScoring = () => {
           });
       };
 
-      handleScoringByAI();
+      handleGradingEssayByAI();
       return () => {
         effectRan.current = true;
       };
