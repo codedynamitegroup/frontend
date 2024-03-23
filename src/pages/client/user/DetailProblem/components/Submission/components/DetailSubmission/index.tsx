@@ -12,12 +12,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import {
-  ICodeQuestion,
-  IFeedbackCodeByAI,
-  ISourceCodeSubmission,
-  feedbackCodeByAI
-} from "service/FeedbackCodeByAI";
+import { ICodeQuestion, ISourceCodeSubmission, feedbackCodeByAI } from "service/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
@@ -88,7 +83,6 @@ class Solution {
     ref: stickyBackRef
   });
   const [loading, setLoading] = useState(false);
-  const [feedbackCode, setFeedbackCode] = useState<IFeedbackCodeByAI | null>(null);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
@@ -96,17 +90,6 @@ class Solution {
   const [chunckLoading, setChunkLoading] = useState(false);
   const [suggestedCode, setSuggestedCode] = useState<string>("");
   const [explainedCode, setExplainedCode] = useState<string>("");
-
-  function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
-    return (
-      typeof obj.feedback === "string" &&
-      obj.feedback !== "" &&
-      typeof obj.suggestedCode === "string" &&
-      obj.suggestedCode !== "" &&
-      typeof obj.explainedCode === "string" &&
-      obj.explainedCode !== ""
-    );
-  }
 
   const handleFeedbackCodeByAI = async () => {
     setFeedbackContent(``); // Clear previous content
@@ -144,15 +127,10 @@ class Solution {
 
         if (isFeedback) {
           setFeedbackContent((prev) => prev + chunk);
-          // setChunkContent(chunk);
-          console.log("Feedback:", chunk);
         } else if (isSugessted) {
-          // setChunkContent(chunk);
           setSuggestedCode((prev) => prev + chunk);
-          console.log("Suggested:", chunk);
         } else if (isExplainedCode) {
           setExplainedCode((prev) => prev + chunk);
-          console.log("Explained:", chunk);
         }
       }
     } catch (error) {
@@ -259,40 +237,13 @@ class Solution {
               color='primary'
               onClick={handleFeedbackCodeByAI}
             >
-              Đánh giá bởi AI
+              {t("detail_submission_AI_evaluation")}
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
             <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
-        {/* 
-        {feedbackCode && (
-          <Box className={classes.submissionText}>
-            {feedbackCode.feedback && (
-              <Box data-color-mode='light'>
-                <MDEditor.Markdown source={feedbackCode.feedback} className={classes.markdown} />
-              </Box>
-            )}
-            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
-
-            {feedbackCode.suggestedCode && (
-              <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"```java\n" + feedbackCode.suggestedCode + ""} />
-              </Box>
-            )}
-            {feedbackCode.explainedCode && (
-              <>
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown
-                    source={feedbackCode.explainedCode}
-                    className={classes.markdown}
-                  />
-                </Box>
-              </>
-            )}
-          </Box>
-        )} */}
 
         {feedbackContent && (
           <Box className={classes.submissionText}>
@@ -301,11 +252,9 @@ class Solution {
                 <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
               </Box>
             )}
-            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
-
             {suggestedCode && (
               <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"```java\n" + suggestedCode + ""} />
+                <MDEditor.Markdown source={"\n" + suggestedCode} />
               </Box>
             )}
             {explainedCode && (
