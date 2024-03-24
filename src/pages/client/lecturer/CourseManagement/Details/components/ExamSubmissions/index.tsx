@@ -1,5 +1,16 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { Grid } from "@mui/material";
+import {
+  Grid,
+  Autocomplete,
+  TextField,
+  IconButton,
+  Stack,
+  Chip,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Slider
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import {
   GridCallbackDetails,
@@ -25,6 +36,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import Heading4 from "components/text/Heading4";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -205,6 +218,11 @@ const LecturerCourseExamSubmissions = () => {
       }
     ]
   };
+  const filterExamQuestionData = examData.questions.map((value) => ({
+    question: value.question,
+    questionId: value.id
+  }));
+  filterExamQuestionData.unshift({ question: "Câu hỏi 11 đến 20", questionId: "-1" });
 
   const submissionList = [
     {
@@ -374,68 +392,6 @@ const LecturerCourseExamSubmissions = () => {
     }
   ];
 
-  const columnGroupingModel: GridColumnGroupingModel = [];
-
-  examData.questions.forEach((question) => {
-    tableHeading.push({
-      field: `question-${question.id}`,
-      headerName: question.question,
-      width: 180,
-      renderCell: () => {
-        for (let i = 0; i < submissionList.length; i++) {
-          for (let j = 0; j < submissionList[i].grades.length; j++) {
-            if (submissionList[i].grades[j].question_id === question.id) {
-              return (
-                <TextTitle>
-                  {submissionList[i].grades[j].current_grade} / {question.max_grade}
-                </TextTitle>
-              );
-            }
-          }
-        }
-      }
-    });
-
-    columnGroupingModel.push({
-      groupId: `question-${question.id}-plagiarism-detection`,
-      children: [
-        {
-          groupId: `question-${question.id}-type`,
-          children: [{ field: `question-${question.id}` }],
-          headerName: currentLang === "en" ? question.type.en_name : question.type.vi_name
-        }
-      ],
-      renderHeaderGroup() {
-        if (question.type.code === qtype.source_code.code) {
-          return (
-            <LoadButton
-              loading={isPlagiarismDetectionLoading}
-              btnType={BtnType.Outlined}
-              onClick={() => onHandlePlagiarismDetection(question.id.toString())}
-              translation-key='common_check_cheating'
-            >
-              {t("common_check_cheating")}
-            </LoadButton>
-          );
-        } else if (question.type.code === "essay") {
-          return (
-            <Button
-              btnType={BtnType.Outlined}
-              onClick={() => {
-                navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
-              }}
-              translation-key='common_AI_grading'
-            >
-              {t("common_AI_grading")}
-            </Button>
-          );
-        } else {
-          return null;
-        }
-      }
-    });
-  });
-
   useEffect(() => {
     setCurrentLang(i18next.language);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -495,6 +451,88 @@ const LecturerCourseExamSubmissions = () => {
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
+  const [openFilterSettingDialog, setOpenFilterSettingDialog] = useState(false);
+  const handleCloseDialog = () => setOpenFilterSettingDialog(false);
+  const [sliderValue, setSliderValue] = useState<number[]>([1, examData.questions.length]);
+  const [filterValues, setFilterValues] = useState<number[][]>([[1, 1]]);
+  const [tableHeadingPlus, setTableHeadingPlus] = useState<GridColDef[]>([]);
+  const [columnGroupingModelPlus, setColumnGroupingModelPlus] = useState<GridColumnGroupingModel>(
+    []
+  );
+  useEffect(() => {
+    const filterSet = new Set<number>();
+    const tableHeadingTemp: GridColDef[] = [];
+    const columnGroupingModelTemp: GridColumnGroupingModel = [];
+
+    filterValues.forEach((value) => {
+      const start = value[0];
+      const end = value[1];
+      for (let i = start; i <= end; i++) {
+        if (!filterSet.has(i)) {
+          filterSet.add(i);
+          const question = examData.questions[i - 1];
+          tableHeadingTemp.push({
+            field: `question-${question.id}`,
+            headerName: question.question,
+            width: 180,
+            renderCell: () => {
+              for (let i = 0; i < submissionList.length; i++) {
+                for (let j = 0; j < submissionList[i].grades.length; j++) {
+                  if (submissionList[i].grades[j].question_id === question.id) {
+                    return (
+                      <TextTitle>
+                        {submissionList[i].grades[j].current_grade} / {question.max_grade}
+                      </TextTitle>
+                    );
+                  }
+                }
+              }
+            }
+          });
+          columnGroupingModelTemp.push({
+            groupId: `question-${question.id}-plagiarism-detection`,
+            children: [
+              {
+                groupId: `question-${question.id}-type`,
+                children: [{ field: `question-${question.id}` }],
+                headerName: currentLang === "en" ? question.type.en_name : question.type.vi_name
+              }
+            ],
+            renderHeaderGroup() {
+              if (question.type.code === qtype.source_code.code) {
+                return (
+                  <LoadButton
+                    loading={isPlagiarismDetectionLoading}
+                    btnType={BtnType.Outlined}
+                    onClick={() => onHandlePlagiarismDetection(question.id.toString())}
+                    translation-key='common_check_cheating'
+                  >
+                    {t("common_check_cheating")}
+                  </LoadButton>
+                );
+              } else if (question.type.code === "essay") {
+                return (
+                  <Button
+                    btnType={BtnType.Outlined}
+                    onClick={() => {
+                      navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
+                    }}
+                    translation-key='common_AI_grading'
+                  >
+                    {t("common_AI_grading")}
+                  </Button>
+                );
+              } else {
+                return null;
+              }
+            }
+          });
+        }
+      }
+    });
+    setTableHeadingPlus(tableHeadingTemp);
+    setColumnGroupingModelPlus(columnGroupingModelTemp);
+  }, [filterValues]);
 
   return (
     <Box className={classes.examBody}>
@@ -542,9 +580,76 @@ const LecturerCourseExamSubmissions = () => {
           <ExamSubmissionFeatureBar />
         </Grid>
         <Grid item xs={12}>
+          <Stack direction={"row"} alignItems={"center"}>
+            <Heading4>Lọc câu hỏi</Heading4>
+            <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
+              <AddCircleIcon />
+            </IconButton>
+          </Stack>
+          <Dialog
+            open={openFilterSettingDialog}
+            onClose={handleCloseDialog}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+            fullWidth={true}
+          >
+            <DialogContent>
+              <Box marginTop={"16px"}>
+                <Stack direction={"row"} alignItems={"end"}>
+                  <ParagraphBody>Câu {sliderValue[0]} </ParagraphBody>
+                  <Stack flex={9} alignItems={"center"} marginX={4}>
+                    <ParagraphBody>đến</ParagraphBody>
+                    <Slider
+                      value={sliderValue}
+                      onChange={(e, val) => {
+                        console.log(val);
+                        setSliderValue(val as number[]);
+                      }}
+                      min={1}
+                      max={examData.questions.length}
+                      defaultValue={[1, examData.questions.length]}
+                      valueLabelDisplay='auto'
+                    />
+                  </Stack>
+
+                  <ParagraphBody>{sliderValue[1]}</ParagraphBody>
+                </Stack>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button btnType={BtnType.Primary} onClick={handleCloseDialog}>
+                Đóng
+              </Button>
+              <Button
+                btnType={BtnType.Primary}
+                onClick={() => {
+                  handleCloseDialog();
+                  setFilterValues([...filterValues, sliderValue]);
+                }}
+              >
+                Lưu
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
+            {filterValues.map((value, index) => (
+              <Chip
+                key={index}
+                label={`Câu ${value[0] === value[1] ? value[0] : `${value[0]} - ${value[1]}`}`}
+                onDelete={() => {
+                  const temp = [...filterValues];
+                  temp.splice(index, 1);
+                  setFilterValues(temp);
+                }}
+              />
+            ))}
+          </Stack>
+        </Grid>
+        <Grid item xs={12}>
           <CustomDataGrid
             dataList={submissionList}
-            tableHeader={tableHeading}
+            tableHeader={[...tableHeading, ...tableHeadingPlus]}
             onSelectData={rowSelectionHandler}
             visibleColumn={visibleColumnList}
             dataGridToolBar={dataGridToolbar}
@@ -555,7 +660,7 @@ const LecturerCourseExamSubmissions = () => {
             showVerticalCellBorder={true}
             getRowHeight={() => "auto"}
             onClickRow={rowClickHandler}
-            columnGroupingModel={columnGroupingModel}
+            columnGroupingModel={columnGroupingModelPlus}
           />
         </Grid>
       </Grid>
