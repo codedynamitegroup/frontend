@@ -1,0 +1,30 @@
+.container {
+    .criteriaNameCell {
+        font-weight: 600;
+        color: #686868;
+        font-size: .9rem;
+    }
+    .criteriaDescriptionCell {
+        font-size: .8rem;
+        font-weight: 400;
+        overflow: hidden;
+        color: #686868;
+        text-overflow: ellipsis !important;
+        white-space: nowrap;
+
+    }
+    .iconBtn {
+        min-width: 20px;
+        width: 20px;
+        min-height: 30px;
+        height: 30px;
+    }
+    .tabButton {
+        box-shadow: none;
+    }
+    .activeTabButton {
+        background-color: #6992f6;
+        color: white;
+        
+    }
+}

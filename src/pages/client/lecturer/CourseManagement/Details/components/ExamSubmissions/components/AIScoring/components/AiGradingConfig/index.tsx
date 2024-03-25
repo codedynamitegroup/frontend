@@ -39,6 +39,8 @@ import { useDispatch } from "react-redux";
 import { open as openSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import NewRubricDialog from "./components/NewRubricDialog";
 import CriteriaCard from "./components/CriteriaCard";
+import { open as openCriteria } from "reduxes/SelectRubricCriteriaDialog";
+import SelectCriteriaConfig from "./components/SelectCriteriaDialog";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -153,6 +155,9 @@ const GradingConfig = () => {
       marginRight: drawerWidth
     })
   }));
+  const handleAddCriteria = () => {
+    dispatch(openCriteria());
+  };
 
   return (
     <>
@@ -431,6 +436,7 @@ const GradingConfig = () => {
                           className={classes.addBtn}
                           startIcon={<AddIcon color='primary' />}
                           fullWidth
+                          onClick={handleAddCriteria}
                         >
                           Add Criteria
                         </Button>
@@ -482,6 +488,7 @@ const GradingConfig = () => {
       </Box>
       <SelectRubricDialog />
       <NewRubricDialog />
+      <SelectCriteriaConfig />
     </>
   );
 };
