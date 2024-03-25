@@ -211,10 +211,10 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                 <Heading1 translation-key='code_plagiarism_no_file_pairs_comparing_title'>
                   {t("code_plagiarism_no_file_pairs_comparing_title", {
                     leftFileName:
-                      `${data?.leftFile?.extra?.studentId} - ${data?.leftFile?.extra?.studentName}` ||
+                      `${data?.leftFile?.extra?.orgUserId} - ${data?.leftFile?.extra?.userFullName}` ||
                       "",
                     rightFileName:
-                      `${data?.rightFile?.extra?.studentId} - ${data?.rightFile?.extra?.studentName}` ||
+                      `${data?.rightFile?.extra?.orgUserId} - ${data?.rightFile?.extra?.userFullName}` ||
                       ""
                   })}
                 </Heading1>
@@ -357,7 +357,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                     className={classes.insertDriveFileOutlinedIcon}
                                   />
                                   <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                    {`${data?.leftFile.extra.studentId} - ${data?.leftFile.extra.studentName}`}
+                                    {`${data?.leftFile.extra.orgUserId} - ${data?.leftFile.extra.userFullName}`}
                                   </ParagraphBody>
                                 </Box>
                                 {data &&
@@ -435,7 +435,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                     className={classes.insertDriveFileOutlinedIcon}
                                   />
                                   <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                    {`${data?.rightFile.extra.studentId} - ${data?.rightFile.extra.studentName}`}
+                                    {`${data?.rightFile.extra.orgUserId} - ${data?.rightFile.extra.userFullName}`}
                                   </ParagraphBody>
                                 </Box>
                                 {data &&
@@ -521,7 +521,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                       className={classes.insertDriveFileOutlinedIcon}
                                     />
                                     <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                      {`${data?.leftFile.extra.studentId} - ${data?.leftFile.extra.studentName}`}
+                                      {`${data?.leftFile.extra.orgUserId} - ${data?.leftFile.extra.userFullName}`}
                                     </ParagraphBody>
                                   </Box>
                                   {data &&
@@ -600,7 +600,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                       className={classes.insertDriveFileOutlinedIcon}
                                     />
                                     <ParagraphBody fontWeight={500} colorname='--blue-500'>
-                                      {`${data?.rightFile.extra.studentId} - ${data?.rightFile.extra.studentName}`}
+                                      {`${data?.rightFile.extra.orgUserId} - ${data?.rightFile.extra.userFullName}`}
                                     </ParagraphBody>
                                   </Box>
                                   {data &&

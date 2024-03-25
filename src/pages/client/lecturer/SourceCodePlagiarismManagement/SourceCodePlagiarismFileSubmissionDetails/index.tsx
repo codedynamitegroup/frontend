@@ -159,8 +159,8 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
 
       return {
         id: otherFileWithFileScoring.id,
-        studentId: otherFileWithFileScoring.extra.studentId,
-        studentName: otherFileWithFileScoring.extra.studentName,
+        orgUserId: otherFileWithFileScoring.extra.orgUserId,
+        userFullName: otherFileWithFileScoring.extra.userFullName,
         labels: otherFileWithFileScoring.extra.labels,
         questionName: otherFileWithFileScoring.extra.questionName,
         createdAt: otherFileWithFileScoring.extra.createdAt,
@@ -196,7 +196,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
 
   const tableHeading: GridColDef[] = [
     {
-      field: "studentId",
+      field: "orgUserId",
       headerName: "MSSV",
       width: 100,
       renderCell: (params) => {
@@ -204,7 +204,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
       }
     },
     {
-      field: "studentName",
+      field: "userFullName",
       headerName: "Tên sinh viên",
       width: 150,
       renderCell: (params) => {
@@ -409,8 +409,8 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
               <Heading1>
-                Bài nộp của {currentSubmissionFile?.extra.studentId} -{" "}
-                {currentSubmissionFile?.extra.studentName}
+                Bài nộp của {currentSubmissionFile?.extra.orgUserId} -{" "}
+                {currentSubmissionFile?.extra.userFullName}
               </Heading1>
               <ParagraphBody>Thông tin liên quan đến bài nộp hiện tại.</ParagraphBody>
               <Grid container spacing={2}>
@@ -457,8 +457,8 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
                     <Grid container spacing={1}>
                       <Grid item xs={12}>
                         <Heading3>
-                          Code của {currentSubmissionFile?.extra?.studentId ?? ""} -{" "}
-                          {currentSubmissionFile?.extra?.studentName ?? ""}
+                          Code của {currentSubmissionFile?.extra?.orgUserId ?? ""} -{" "}
+                          {currentSubmissionFile?.extra?.userFullName ?? ""}
                         </Heading3>
                       </Grid>
                       <Grid item xs={12}>
@@ -497,7 +497,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
                           >
                             <AccountCircleIcon />
                             <ParagraphBody fontWeight={500}>
-                              {currentSubmissionFile?.extra?.studentId}
+                              {currentSubmissionFile?.extra?.orgUserId}
                             </ParagraphBody>
                           </Box>
                         </Tooltip>
@@ -514,7 +514,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
                           >
                             <BadgeIcon />
                             <ParagraphBody fontWeight={500}>
-                              {currentSubmissionFile?.extra?.studentName}
+                              {currentSubmissionFile?.extra?.userFullName}
                             </ParagraphBody>
                           </Box>
                         </Tooltip>

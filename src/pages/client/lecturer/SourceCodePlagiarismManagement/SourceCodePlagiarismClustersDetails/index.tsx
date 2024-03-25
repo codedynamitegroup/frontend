@@ -96,8 +96,9 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
     const result = filterdFiles.map((file, index) => {
       return {
         id: file.id.toString(),
-        studentId: file.extra.studentId,
-        studentName: file.extra.studentName,
+        userId: file.extra.userId,
+        orgUserId: file.extra.orgUserId,
+        userFullName: file.extra.userFullName,
         labels: file.extra.labels,
         questionName: file.extra.questionName,
         createdAt: file.extra.createdAt,
@@ -111,7 +112,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
 
   const submissionListTableHeading: GridColDef[] = [
     {
-      field: "studentId",
+      field: "orgUserId",
       headerName: "MSSV",
       width: 120,
       renderCell: (params) => {
@@ -119,7 +120,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
       }
     },
     {
-      field: "studentName",
+      field: "userFullName",
       headerName: "Tên sinh viên",
       flex: 1,
       renderCell: (params) => {
@@ -198,7 +199,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
       renderCell: (params) => {
         return (
           <ParagraphBody>
-            {params.value?.extra?.studentId || t("code_plagiarism_not_updated")}
+            {params.value?.extra?.orgUserId || t("code_plagiarism_not_updated")}
           </ParagraphBody>
         );
       }
@@ -210,7 +211,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
       renderCell: (params) => {
         return (
           <ParagraphBody>
-            {params.value?.extra?.studentId || t("code_plagiarism_not_updated")}
+            {params.value?.extra?.orgUserId || t("code_plagiarism_not_updated")}
           </ParagraphBody>
         );
       }

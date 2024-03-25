@@ -1,6 +1,7 @@
-import { Pair, File } from "models/codePlagiarism";
+import { Pair } from "models/codePlagiarism";
+import getUniqueFilesFromPairs from "./getUniqueFilesFromPairs";
 
-const getUniqueLabelsFromPairsAndFiles = (pairs: Pair[], files: File[]) => {
+const getUniqueLabelsFromPairs = (pairs: Pair[]) => {
   const labels = new Set<string>();
   for (const pair of pairs || []) {
     if (pair.leftFile.extra) {
@@ -10,6 +11,9 @@ const getUniqueLabelsFromPairsAndFiles = (pairs: Pair[], files: File[]) => {
       labels.add(pair.rightFile.extra.labels);
     }
   }
+
+  const files = getUniqueFilesFromPairs(pairs);
+
   const resultArray = Array.from(labels).map((label) => ({
     label,
     submissions: files?.filter((file) => file.extra?.labels === label).length || 0,
@@ -23,4 +27,4 @@ const getUniqueLabelsFromPairsAndFiles = (pairs: Pair[], files: File[]) => {
   return filterEmptyLabelArray;
 };
 
-export default getUniqueLabelsFromPairsAndFiles;
+export default getUniqueLabelsFromPairs;
