@@ -3,6 +3,7 @@ import Heading6 from "components/text/Heading6";
 import { notificaionIcon } from "config/images";
 import { grey } from "@mui/material/colors";
 import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 
 enum NotificationType {
   EXAM,
@@ -15,27 +16,6 @@ interface ContentContainer {
   iconPath: string;
   generalTitle: string;
 }
-const mapTypeToContent = new Map<NotificationType, ContentContainer>();
-mapTypeToContent.set(NotificationType.EXAM, {
-  iconPath: notificaionIcon.examIcon,
-  generalTitle: i18next.t("notification_title_exam")
-});
-mapTypeToContent.set(NotificationType.DEADLINE, {
-  iconPath: notificaionIcon.deadlineIcon,
-  generalTitle: i18next.t("notification_title_deadline")
-});
-mapTypeToContent.set(NotificationType.HOMEWORK, {
-  iconPath: notificaionIcon.homeworkIcon,
-  generalTitle: i18next.t("notification_title_new_assignment")
-});
-mapTypeToContent.set(NotificationType.CONTEST, {
-  iconPath: notificaionIcon.contestIcon,
-  generalTitle: i18next.t("notification_title_registerd_contest")
-});
-mapTypeToContent.set(NotificationType.SYNC, {
-  iconPath: notificaionIcon.syncIcon,
-  generalTitle: i18next.t("notification_title_system_sync")
-});
 
 interface NotificationItemProps extends BoxProps {
   type: NotificationType;
@@ -44,6 +24,28 @@ interface NotificationItemProps extends BoxProps {
 }
 
 const NotificationItem = (props: NotificationItemProps) => {
+  const { t } = useTranslation();
+  const mapTypeToContent = new Map<NotificationType, ContentContainer>();
+  mapTypeToContent.set(NotificationType.EXAM, {
+    iconPath: notificaionIcon.examIcon,
+    generalTitle: t("notification_title_exam")
+  });
+  mapTypeToContent.set(NotificationType.DEADLINE, {
+    iconPath: notificaionIcon.deadlineIcon,
+    generalTitle: t("notification_title_deadline")
+  });
+  mapTypeToContent.set(NotificationType.HOMEWORK, {
+    iconPath: notificaionIcon.homeworkIcon,
+    generalTitle: t("notification_title_new_assignment")
+  });
+  mapTypeToContent.set(NotificationType.CONTEST, {
+    iconPath: notificaionIcon.contestIcon,
+    generalTitle: t("notification_title_registerd_contest")
+  });
+  mapTypeToContent.set(NotificationType.SYNC, {
+    iconPath: notificaionIcon.syncIcon,
+    generalTitle: t("notification_title_system_sync")
+  });
   const boxProps: BoxProps = props;
 
   const generalContent: ContentContainer | undefined = mapTypeToContent.get(props.type);

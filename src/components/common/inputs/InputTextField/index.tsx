@@ -48,7 +48,8 @@ const InputTextField = memo((props: InputsProps) => {
       <FormControl
         className={classes.inputContainer}
         sx={{
-          width: `${fullWidth ? "100%" : "auto"}`
+          width: `${fullWidth ? "100%" : "auto"}`,
+          ...props.sx
         }}
       >
         <Grid container spacing={1} columns={12}>

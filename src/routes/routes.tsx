@@ -92,7 +92,9 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/pairs/:pairId",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId",
+      ai_grading_config:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submisions/ai-grading-config"
     }
   },
   student: {

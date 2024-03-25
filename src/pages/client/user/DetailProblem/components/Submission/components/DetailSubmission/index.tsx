@@ -1,4 +1,4 @@
-import { Button, Container, Grid } from "@mui/material";
+import { Button, CircularProgress, Container, Grid } from "@mui/material";
 import React from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
@@ -12,13 +12,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import {
-  ICodeQuestion,
-  IFeedbackCode,
-  IFeedbackCodeByAI,
-  ISourceCodeSubmission,
-  feedbackCodeByByAI
-} from "service/FeedbackCodeByAI";
+import { ICodeQuestion, ISourceCodeSubmission, feedbackCodeByAI } from "service/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
@@ -34,206 +28,117 @@ export default function DetailSolution({ handleSubmissionDetail }: Props) {
   const sourceCodeSubmission: ISourceCodeSubmission = {
     source_code: `
 class Solution {
-	public int reverse(int x) {
-		long result = 0;
-		while (x != 0) {
-			result = result*10 + x%10;
-			x /= 10;
-				if( result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
-					return 0;
+	public ListNode removeNthFromEnd(ListNode head, int n) {
+		if (head == null || head.next == null)
+			return null;
+		int numNodes = 0;
+		ListNode temp = head;
+		while(temp != null) {
+			temp = temp.next;
+			numNodes++;
 		}
-		return (int)result;
+		if (numNodes == n) {
+			head = head.next;
+			return  head;
+		}
+		ListNode cur = head.next;
+		ListNode prev = head;
+		int index = 1;
+		while(cur != null) {
+			if (numNodes - index == n) {
+				prev.next = cur.next;
+				cur = cur.next;
+				break;
+			}
+			index++;
+			prev = cur;
+			cur = cur.next;
+		}
+	return head;
 	}
-}`,
+}
+`,
     language: "java"
   };
   const codeQuestion: ICodeQuestion = {
-    title: "Reverse Integer",
+    title: "Remove Nth Node From End of List",
     description: `
-	Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0.
+		Given the head of a linked list, remove the n^th node from the end of the list and return its head.
 
-	Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
+		Example 1:
+			Input: head = [1,2,3,4,5], n = 2
+			Output: [1,2,3,5]
 
-	Example 1:
-		Input: x = 123
-		Output: 321
+		Example 2:
+			Input: head = [1], n = 1
+			Output: []
 
-	Example 2:
-		Input: x = -123
-		Output: -321
-
-	Example 3:
-		Input: x = 120
-		Output: 21`
+		Example 3:
+			Input: head = [1,2], n = 1
+			Output: [1]
+		`
   };
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
   const [loading, setLoading] = useState(false);
-  const [feedbackCodeByAI, setFeedbackCodeByAI] = useState<IFeedbackCodeByAI | null>(null);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [feedbackContent, setFeedbackContent] = useState<string>(``);
-
-  function isFeedbackCodeByAI(obj: any): obj is IFeedbackCodeByAI {
-    return (
-      typeof obj.id === "number" &&
-      typeof obj.feedback === "object" &&
-      typeof obj.feedback.analysis === "object" &&
-      typeof obj.feedback.improvementSuggestions === "string" &&
-      typeof obj.feedback.improvementSuggestions === "string" &&
-      typeof obj.suggestedCode === "string" &&
-      obj.suggestedCode !== "" &&
-      typeof obj.explainedCode === "string" &&
-      obj.explainedCode !== ""
-    );
-  }
+  const [chunckLoading, setChunkLoading] = useState(false);
+  const [suggestedCode, setSuggestedCode] = useState<string>("");
+  const [explainedCode, setExplainedCode] = useState<string>("");
 
   const handleFeedbackCodeByAI = async () => {
+    setFeedbackContent(``); // Clear previous content
+    setSuggestedCode(``);
+    setExplainedCode(``);
+
+    setChunkLoading(true);
     setLoading(true);
-    await feedbackCodeByByAI(sourceCodeSubmission, codeQuestion)
-      .then((result) => {
-        if (result && isFeedbackCodeByAI(result)) {
-          setFeedbackCodeByAI(result);
-          const feedbackTemp: IFeedbackCode = result.feedback;
-          if (feedbackTemp) {
-            setFeedbackContent(`
-### I. Phân tích
 
-#### 1. Tính Đúng đắn:
+    try {
+      let isFeedback = false;
+      let isSugessted = false;
+      let isExplainedCode = false;
 
-${
-  feedbackTemp.analysis?.correctness?.accuracy &&
-  feedbackTemp.analysis?.correctness?.accuracy !== ""
-    ? `- **Tính chính xác:** 
+      for await (const chunk of feedbackCodeByAI(sourceCodeSubmission, codeQuestion)) {
+        if (chunk === "feedback_prompt") {
+          isFeedback = true;
+          isExplainedCode = false;
+          isSugessted = false;
 
-${feedbackTemp.analysis?.correctness?.accuracy}`
-    : ""
-}
+          continue;
+        } else if (chunk === "suggested_code_prompt") {
+          isFeedback = false;
+          isSugessted = true;
+          isExplainedCode = false;
 
-${
-  feedbackTemp.analysis?.correctness?.completeness &&
-  feedbackTemp.analysis?.correctness?.completeness !== ""
-    ? `- **Tính đầy đủ:** 
+          continue;
+        } else if (chunk === "explained_code_prompt") {
+          isSugessted = false;
+          isFeedback = false;
+          isExplainedCode = true;
 
-${feedbackTemp.analysis?.correctness?.completeness}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.correctness?.consistency &&
-  feedbackTemp.analysis?.correctness?.consistency !== ""
-    ? `- **Tính nhất quán:**
-
-${feedbackTemp.analysis?.correctness?.consistency}`
-    : ""
-}
-
-#### 2. Tính hiệu quả:
-
-${
-  feedbackTemp.analysis?.efficiency?.executionTime &&
-  feedbackTemp.analysis?.efficiency?.executionTime !== ""
-    ? `- **Thời gian thực thi:**
-
-${feedbackTemp.analysis?.efficiency?.executionTime}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.efficiency?.memory && feedbackTemp.analysis?.efficiency?.memory !== ""
-    ? `- **Bộ nhớ:**
-
-${feedbackTemp.analysis?.efficiency?.memory}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.efficiency?.complexity &&
-  feedbackTemp.analysis?.efficiency?.complexity !== ""
-    ? `- **Độ phức tạp:** 
-
-${feedbackTemp.analysis?.efficiency?.complexity}`
-    : ""
-}
-
-#### 3. Tính bảo trì:
-
-${
-  feedbackTemp.analysis?.maintainability?.readability &&
-  feedbackTemp.analysis?.maintainability?.readability !== ""
-    ? `- **Khả năng đọc hiểu:**
-
-${feedbackTemp.analysis?.maintainability?.readability}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.maintainability?.reuseability &&
-  feedbackTemp.analysis?.maintainability?.reuseability !== ""
-    ? `- **Khả năng tái sử dụng:**
-
-${feedbackTemp.analysis?.maintainability?.reuseability}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.maintainability?.extensibility &&
-  feedbackTemp.analysis?.maintainability?.extensibility !== ""
-    ? `- **Khả năng mở rộng:** 
-
-${feedbackTemp.analysis?.maintainability?.extensibility}`
-    : ""
-}
-
-#### 4. Khả năng mở rộng:
-
-${
-  feedbackTemp.analysis?.scalability?.dataScalability &&
-  feedbackTemp.analysis?.scalability?.dataScalability !== ""
-    ? `- **Khả năng mở rộng dữ liệu:**
-
-${feedbackTemp.analysis?.scalability?.dataScalability}`
-    : ""
-}
-
-${
-  feedbackTemp.analysis?.scalability?.functionalScalability &&
-  feedbackTemp.analysis?.scalability?.functionalScalability !== ""
-    ? `- **Khả năng mở rộng chức năng:** 
-
-${feedbackTemp.analysis?.scalability?.functionalScalability}  `
-    : ""
-}
-
-### II. Gợi ý cải tiến
-
-${feedbackTemp.improvementSuggestions}
-
-### III. Kết luận
-
-${feedbackTemp.conclusion}
-`);
-          }
-
-          setOpenSnackbarAlert(true);
-          setAlertContent("Đánh giá thành công");
-          setAlertType(AlertType.Success);
-        } else {
-          throw new Error("Internal server error");
+          continue;
         }
-      })
-      .catch((err) => {
-        console.error("Error generating content:", err);
-        setOpenSnackbarAlert(true);
-        setAlertContent("Đánh giá thất bại, hãy thử lại lần nữa");
-        setAlertType(AlertType.Error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+
+        if (isFeedback) {
+          setFeedbackContent((prev) => prev + chunk);
+        } else if (isSugessted) {
+          setSuggestedCode((prev) => prev + chunk);
+        } else if (isExplainedCode) {
+          setExplainedCode((prev) => prev + chunk);
+        }
+      }
+    } catch (error) {
+      console.error("Error generating text:", error);
+    } finally {
+      setLoading(false);
+      setChunkLoading(false);
+    }
   };
 
   return (
@@ -332,7 +237,7 @@ ${feedbackTemp.conclusion}
               color='primary'
               onClick={handleFeedbackCodeByAI}
             >
-              Đánh giá bởi AI
+              {t("detail_submission_AI_evaluation")}
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
@@ -340,35 +245,28 @@ ${feedbackTemp.conclusion}
           </Box>
         </Box>
 
-        {feedbackCodeByAI && (
+        {feedbackContent && (
           <Box className={classes.submissionText}>
-            <ParagraphBody fontWeight={700}>Đánh giá</ParagraphBody>
-
-            {feedbackCodeByAI.feedback && (
+            {feedbackContent && (
               <Box data-color-mode='light'>
                 <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
               </Box>
             )}
-            <ParagraphBody fontWeight={700}>Bài làm được đề xuất bởi AI</ParagraphBody>
-
-            {feedbackCodeByAI.suggestedCode && (
+            {suggestedCode && (
               <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"```java\n" + feedbackCodeByAI.suggestedCode + ""} />
+                <MDEditor.Markdown source={"\n" + suggestedCode} />
               </Box>
             )}
-            {feedbackCodeByAI.explainedCode && (
+            {explainedCode && (
               <>
-                <ParagraphBody fontWeight={700}>Giải thích chi tiết</ParagraphBody>
                 <Box data-color-mode='light'>
-                  <MDEditor.Markdown
-                    source={feedbackCodeByAI.explainedCode}
-                    className={classes.markdown}
-                  />
+                  <MDEditor.Markdown source={explainedCode} className={classes.markdown} />
                 </Box>
               </>
             )}
           </Box>
         )}
+        {chunckLoading && <CircularProgress />}
       </Box>
       <SnackbarAlert
         open={openSnackbarAlert}

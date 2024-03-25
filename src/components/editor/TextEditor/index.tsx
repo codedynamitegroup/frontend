@@ -44,6 +44,7 @@ interface OnChangeHandler {
 type Props = {
   value: string;
   placeholder?: string;
+  noToolbar?: boolean;
   onChange?: OnChangeHandler;
   readOnly?: boolean;
   [key: string]: any;
@@ -53,17 +54,19 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
   const reactQuillRef: any = useRef(null);
   const modules = React.useMemo(
     () => ({
-      toolbar: {
-        container: [
-          // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
-          [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-          ["link", "image"],
-          [{ color: [] }, { background: [] }, { align: [] }],
-          ["clean"]
-        ]
-      },
+      toolbar: props?.noToolbar
+        ? false
+        : {
+            container: [
+              // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
+              [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+              ["link", "image"],
+              [{ color: [] }, { background: [] }, { align: [] }],
+              ["clean"]
+            ]
+          },
       imageUploader: {
         upload: (file: Blob) => {
           return new Promise((resolve, reject) => {
@@ -137,7 +140,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
         formats={formats}
         onChange={onChange}
         // placeholder={placeholder}
-        className='text-editor'
+        className={`text-editor ${props?.noToolbar ? "text-editor-no-toolbar" : ""}`}
         {...props}
       />
     </>

@@ -192,8 +192,8 @@ const LecturerCourseExamDetails = () => {
           "common_time_left"
         ]}
       />
-      <Heading2 translation-key='course_management_exam_prev'>
-        {t("course_management_exam_prev")}
+      <Heading2 translation-key='course_management_exam_previous'>
+        {t("course_management_exam_previous")}
       </Heading2>
       <ExamAttemptSummaryTable
         headers={[

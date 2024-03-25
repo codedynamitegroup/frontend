@@ -22,7 +22,7 @@ import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import * as React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
@@ -31,7 +31,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { Textarea } from "@mui/joy";
 import MDEditor from "@uiw/react-md-editor";
-import { EFeedbackGradedCriteriaRate, IFeedback, QuestionEssay } from "service/ScoringByAI";
+import { EFeedbackGradedCriteriaRate, IFeedback, QuestionEssay } from "service/GradingEssayByAI";
 
 const drawerWidth = 450;
 
@@ -145,102 +145,13 @@ export default function DetailAIScoring() {
       if (feedbackTemp) {
         const feedbackTemplate = `
 #### 1. Nội dung (${feedbackTemp?.content?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question?.maxScore).toFixed(2)}):
-
-${
-  feedbackTemp?.content?.accuracy !== ""
-    ? `- **Độ chính xác:** 
-
-${feedbackTemp.content?.accuracy}
-	`
-    : ""
-}
-
-${
-  feedbackTemp?.content?.logic !== ""
-    ? `- **Logic:**
-
-${feedbackTemp.content?.logic}
-	`
-    : ""
-}
-
-${
-  feedbackTemp?.content?.creativity !== ""
-    ? `- **Sáng tạo:** 
-
-${feedbackTemp.content?.creativity}`
-    : ""
-}
-
-${
-  feedbackTemp?.content?.sourceUsage !== ""
-    ? `- **Sử dụng nguồn:** 
-
-${feedbackTemp?.content?.sourceUsage}`
-    : ""
-}
+${feedbackTemp?.content?.content}
 
 #### 2. Hình thức (${feedbackTemp?.form?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question?.maxScore).toFixed(2)}):
-
-${
-  feedbackTemp?.form?.grammar !== ""
-    ? `- **Ngữ pháp:** 
-
-${feedbackTemp?.form?.grammar}`
-    : ""
-}
-
-${
-  feedbackTemp?.form?.vocabulary !== ""
-    ? `- **Từ vựng:** 
-
-${feedbackTemp?.form?.vocabulary}`
-    : ""
-}
-
-${
-  feedbackTemp?.form?.spelling !== ""
-    ? `- **Chính tả:**  
-
-${feedbackTemp?.form?.spelling}`
-    : ""
-}
-
-${
-  feedbackTemp?.form?.layout !== ""
-    ? `- **Bố cục:** 
-
-${feedbackTemp?.form?.layout}`
-    : ""
-}
+${feedbackTemp?.form?.content}
 
 #### 3. Phong cách (${feedbackTemp?.style?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question?.maxScore).toFixed(2)}):
-
-${
-  feedbackTemp?.style?.clarity !== ""
-    ? `- **Rõ ràng:** 
-
-${feedbackTemp?.style?.clarity}`
-    : ""
-}
-
-${
-  feedbackTemp?.style?.engagement !== ""
-    ? `- **Hấp dẫn:** 
-
-${feedbackTemp?.style?.engagement}`
-    : ""
-}
-
-${
-  feedbackTemp?.style?.appropriateness !== ""
-    ? `- **Phù hợp:** 
-
-${feedbackTemp?.style?.appropriateness}`
-    : ""
-}
-
-#### 4. Phản hồi chung:
+${feedbackTemp?.style?.content}
 
 ${feedbackTemp?.overall}
 `;

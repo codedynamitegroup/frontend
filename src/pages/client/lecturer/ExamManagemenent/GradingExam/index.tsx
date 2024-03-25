@@ -209,30 +209,7 @@ export default function GradingExam() {
       {
         field: "max_grade",
         headerName: t("assignment_management_max_score"),
-        minWidth: 50,
-        renderCell: (params) => (
-          <InputTextField
-            type='number'
-            value={params.value || "0"}
-            onChange={(e) => {
-              setQuestionList((prev) => {
-                const newList = prev.map((item) => {
-                  if (item.id === params.row.id) {
-                    return {
-                      ...item,
-                      max_grade: parseInt(e.target.value)
-                    };
-                  }
-                  return item;
-                });
-                return newList;
-              });
-            }}
-            placeholder={t("exam_management_create_enter_score")}
-            backgroundColor='white'
-            translation-key='exam_management_create_enter_score'
-          />
-        )
+        minWidth: 150
       },
       {
         field: "type",
@@ -244,7 +221,7 @@ export default function GradingExam() {
         field: "action",
         headerName: t("common_action"),
         type: "actions",
-        minWidth: 200,
+        flex: 1,
         getActions: (params) => [
           <GridActionsCellItem
             onClick={() => {
@@ -344,6 +321,7 @@ export default function GradingExam() {
         readOnly={true}
       />
       <PreviewEssay
+        grading={true}
         open={openPreviewEssay}
         setOpen={setOpenPreviewEssay}
         aria-labelledby={"customized-dialog-title2"}
@@ -558,34 +536,53 @@ export default function GradingExam() {
                   labelId='select-assignment-submission-student-label'
                   value={assignmentSubmissionStudent}
                   onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
+                  searchAble={true}
                   items={[
                     {
                       value: "0",
-                      label: "Nguyễn Văn A",
+                      label: "123456789 - Nguyễn Văn A",
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>
+                            MSSV: 123456789 - đã chấm
+                          </ParagraphBody>
                         </Box>
                       )
                     },
                     {
                       value: "1",
-                      label: "Nguyễn Văn B",
+                      label: "123456789 - Nguyễn Văn B",
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>
+                            MSSV: 123456789 - đang chấm
+                          </ParagraphBody>
                         </Box>
                       )
                     },
                     {
                       value: "2",
-                      label: "Nguyễn Văn C",
+                      label: "123456789 - Nguyễn Văn C",
                       customNode: (
                         <Box>
                           <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
+                          <ParagraphBody colorname='--gray-50'>
+                            MSSV: 123456789 - đang chấm
+                          </ParagraphBody>
+                        </Box>
+                      )
+                    },
+                    {
+                      value: "3",
+                      label: "123456789 - Nguyễn Văn D",
+                      customNode: (
+                        <Box>
+                          <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
+                          <ParagraphBody colorname='--gray-50'>
+                            MSSV: 123456789 - chưa chấm
+                          </ParagraphBody>
                         </Box>
                       )
                     }

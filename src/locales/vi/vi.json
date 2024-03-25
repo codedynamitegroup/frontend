@@ -74,6 +74,7 @@
   "common_question_type_multi_choice": "Trắc nghiệm",
   "common_question_type_short": "Trả lời ngắn",
   "common_question_type_yes_no": "Đúng / sai",
+  "common_question_type_code": "Lập trình",
   "common_add": "Thêm",
   "common_question": "Câu hỏi",
   "common_enter_grade": "Nhập điểm",
@@ -107,6 +108,26 @@
   "common_event": "Sự kiện",
   "common_sync": "Đồng bộ",
   "common_add_question": "Thêm câu hỏi",
+  "common_analysis": "Phân tích",
+  "common_correctness": "Tính đúng đắn",
+  "common_accuracy": "Tính chính xác",
+  "common_completeness": "Tính hoàn thiện",
+  "common_consisitency": "Tính nhất quán",
+  "common_efficiency": "Tính hiệu quả",
+  "common_execution_time": "Thời gian thực thi",
+  "common_memory_usage": "Sử dụng bộ nhớ",
+  "common_complexity": "Độ phức tạp",
+  "common_maintainability": "Tính bảo trì",
+  "common_readability": "Khả năng dễ đọc",
+  "common_reusability": "Khả năng tái sử dụng",
+  "common_extensibility": "Tính mở rộng",
+  "common_scalability": "Khả năng mở rộng",
+  "common_data_scability": "Khả năng mở rộng dữ liệu",
+  "common_functional_scability": "Khả năng mở rộng chức năng",
+  "common_improvement_suggestion": "Gợi ý cải thiện",
+  "common_conclusion": "Kết luận",
+  "common_automatic": "Tự động",
+  "common_finish": "Hoàn thành",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -539,5 +560,22 @@
   "notification_title_new_assignment": "Bài tập về nhà mới",
   "notification_title_new_assignment_content": "Có bài tập mới trong khoá học {{courseName}}",
   "notification_title_system_sync": "Đồng bộ hệ thống",
-  "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống"
+  "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống",
+
+  "detail_submission_AI_evaluation": "Đánh giá bằng AI",
+
+  "grading_config_setting": "Cài đặt chung",
+  "grading_config_description": "Tại đây, bạn có thể thông báo cho AI biết loại bài kiểm tra (trắc nghiệm, luận, trả lời ngắn, v.v.) và cách bạn muốn chấm điểm (theo điểm, theo thang điểm, v.v.). Bạn thậm chí có thể kiểm soát mức độ tin cậy cần thiết của AI trước khi đưa ra điểm.",
+  "grading_config_choose_criteria": "Chọn tiêu chí",
+  "grading_config_exam_type": "Loại bài làm",
+  "grading_config_scale": "Loại thang điểm",
+  "grading_config_letter_scale": "Chữ",
+  "grading_config_point_scale": "Số",
+  "grading_config_scale_note": "Nếu sử dụng thang đánh giá tùy chỉnh với thang đo tùy chỉnh thì các cài đặt này sẽ bị bỏ qua",
+  "grading_config_feedback_style": "Phong cách phản hồi",
+  "grading_config_feedback_style_note": "Phong cách phản hồi giúp xác định phong cách và giọng điệu của phản hồi. Bạn có thể cung cấp thông tin tại đây để giúp AI xác định nội dung phản hồi nên tập trung vào hoặc cách học sinh nên tham gia.",
+  "grading_config_answer_objective": "Mục tiêu câu trả lời",
+  "grading_config_answer_objective_note": "Mục tiêu trả lời được sử dụng để giúp hướng dẫn phản hồi cuối cùng của điểm đánh giá, giúp AI xác định mục đích của câu trả lời, và có thể được dùng để cung cấp cảnh báo nếu câu hỏi không đáp ứng mục tiêu."
+
+
 }

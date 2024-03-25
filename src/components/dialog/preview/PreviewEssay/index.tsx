@@ -13,15 +13,23 @@ import {
 } from "@mui/material";
 import { blue, grey, yellow } from "@mui/material/colors";
 import TextEditor from "components/editor/TextEditor";
-import React, { useState } from "react";
+import { useState } from "react";
+import InputTextField from "components/common/inputs/InputTextField";
 
 interface PreviewMultipleChoiceProps extends DialogProps {
   readOnly?: boolean;
+  grading?: boolean;
   value?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PreviewEssay = ({ setOpen, value, readOnly, ...props }: PreviewMultipleChoiceProps) => {
+const PreviewEssay = ({
+  setOpen,
+  value,
+  readOnly,
+  grading,
+  ...props
+}: PreviewMultipleChoiceProps) => {
   const [value1, setValue1] = useState<string>(value || "");
   const [submitedValue1, setSubmitedValue1] = useState(false);
 
@@ -57,6 +65,17 @@ const PreviewEssay = ({ setOpen, value, readOnly, ...props }: PreviewMultipleCho
               <Box sx={{ background: "white", height: "200px" }}>
                 <TextEditor value={value1} onChange={(val) => setValue1(val)} readOnly={readOnly} />
               </Box>
+              {grading && (
+                <>
+                  <Typography gutterBottom>Nhận xét</Typography>
+                  {/* <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={5} /> */}
+                  <Box sx={{ background: "white", height: "100px" }}>
+                    <TextEditor value={""} onChange={(val) => setValue1(val)} noToolbar={true} />
+                  </Box>
+                  <Typography gutterBottom>Điểm</Typography>
+                  <InputTextField type='number' />
+                </>
+              )}
 
               {submitedValue1 && (
                 <Typography sx={{ backgroundColor: yellow[100] }} gutterBottom>

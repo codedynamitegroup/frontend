@@ -78,7 +78,8 @@
   "common_question_type_essay": "Essay",
   "common_question_type_multi_choice": "Multiple choice",
   "common_question_type_short": "Short answer",
-  "common_question_type_yes_no": "Yes / No",
+  "common_question_type_code": "Coding",
+  "common_question_type_yes_no": "True / False",
   "common_add": "Add",
   "common_question": "Question",
   "common_enter_grade": "Enter grade",
@@ -117,6 +118,26 @@
   "common_event": "Event",
   "common_sync": "Sync",
   "common_add_question": "Add question",
+  "common_analysis": "Analysis",
+  "common_correctness": "Correctness",
+  "common_accuracy": "Accuracy",
+  "common_completeness": "Completeness",
+  "common_consisitency": "Consistency",
+  "common_efficiency": "Efficiency",
+  "common_execution_time": "Execution time",
+  "common_memory_usage": "Memory usage",
+  "common_complexity": "Complexity",
+  "common_maintainability": "Maintainability",
+  "common_readability": "Readability",
+  "common_reusability": "Reusability",
+  "common_extensibility": "Extensibility",
+  "common_scalability": "Scalability",
+  "common_data_scability": "Data scalability",
+  "common_functional_scability": "Functional scalability",
+  "common_improvement_suggestion": "Improvement suggestion",
+  "common_conclusion": "Conclusion",
+  "common_automatic": "Automatic",
+  "common_finish": "Finish",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -333,7 +354,7 @@
   "exam_management_create_from_bank": "Get question from question bank",
   "exam_management_create_from_bank_choose_topic": "Choose topic",
 
-  "course_management_exam_prev": "Summary of previous exams",
+  "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
   "course_management_exam_preview": "Preview exam",
   "course_management_exam_max_score": "Highest score",
@@ -541,5 +562,23 @@
   "notification_title_new_assignment": "New assignment",
   "notification_title_new_assignment_content": "New assignment of {{courseName}} course",
   "notification_title_system_sync": "Systemm synchronize",
-  "notification_title_system_sync_content": "{{courseName}} course have just synchronized with systemm"
+  "notification_title_system_sync_content": "{{courseName}} course have just synchronized with systemm",
+
+  "detail_submission_AI_evaluation": "AI evaluation",
+
+  "grading_config_setting": "Grading configuration",
+  "grading_config_choose_criteria": "Choose criteria",
+
+  "grading_config_exam_type": "Exam type",
+  "grading_config_description": "Here you can tell the AI what kind of exam it's grading (multiple choice, essay, etc.) and how you want it scored (points, rubric, etc.). You can even control how confident the AI needs to be before giving a grade.",
+  "grading_config_scale": "Grading scale",
+  "grading_config_letter_scale": "Letter",
+  "grading_config_point_scale": "Point",
+  "grading_config_scale_note": "If a custom rubric with a custom scale is used, these settings will be ignored",
+  "grading_config_feedback_style": "Feedback style",
+  "grading_config_feedback_style_note": "Feedback style helps determine the style and tone of the response. You can provide info here to help the AI determine what the feedback should focus on or how the student should be engaged.",
+  "grading_config_answer_objective": "Answer objective",
+  "grading_config_answer_objective_note": "Answer objective is used to help guide the final feedback of the grade, help the AI determine the intent of the answer, and may be used to provide warnings if the answer doesn't meet the objective."
+
+
 }
