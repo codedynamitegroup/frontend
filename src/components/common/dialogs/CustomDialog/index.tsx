@@ -5,6 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button, { BtnType } from "components/common/buttons/Button";
+import LoadButton from "components/common/buttons/LoadingButton";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +21,7 @@ interface CustomDialogProps extends DialogProps {
   maxHeight?: string;
   actionsDisabled?: boolean;
   confirmDisabled?: boolean;
+  isConfirmLoading?: boolean;
 }
 
 export default function CustomDialog({
@@ -35,6 +37,7 @@ export default function CustomDialog({
   maxHeight,
   actionsDisabled,
   confirmDisabled,
+  isConfirmLoading = false,
   ...props
 }: CustomDialogProps) {
   const { t } = useTranslation();
@@ -74,15 +77,17 @@ export default function CustomDialog({
           >
             {cancelText || t("common_cancel")}
           </Button>
-          <Button
+          <LoadButton
+            loading={isConfirmLoading}
             onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
+            colorname={"--white"}
             btnType={BtnType.Primary}
             autoFocus
             disabled={confirmDisabled}
             translation-key='common_confirm'
           >
             {confirmText || t("common_confirm")}
-          </Button>
+          </LoadButton>
         </DialogActions>
       )}
     </Dialog>

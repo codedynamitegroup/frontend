@@ -104,8 +104,9 @@ export default function LecturerSourceCodePlagiarismFileSubmissions() {
     const result = newFilteredFilesByStartAndEndSimilarity.map((file, index) => {
       return {
         id: file.id.toString(),
-        studentId: file.extra.studentId,
-        studentName: file.extra.studentName,
+        userId: file.extra.userId,
+        orgUserId: file.extra.orgUserId,
+        userFullName: file.extra.userFullName,
         labels: file.extra.labels,
         questionName: file.extra.questionName,
         createdAt: file.extra.createdAt,
@@ -133,7 +134,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissions() {
 
   const tableHeading: GridColDef[] = [
     {
-      field: "studentId",
+      field: "orgUserId",
       headerName: "MSSV",
       width: 120,
       renderCell: (params) => {
@@ -141,21 +142,13 @@ export default function LecturerSourceCodePlagiarismFileSubmissions() {
       }
     },
     {
-      field: "studentName",
+      field: "userFullName",
       headerName: "Tên sinh viên",
       flex: 1,
       renderCell: (params) => {
         return <ParagraphBody>{params.value || t("code_plagiarism_not_updated")}</ParagraphBody>;
       }
     },
-    // {
-    //   field: "labels",
-    //   headerName: "Nhãn",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     return <ParagraphBody>{params.value || t("code_plagiarism_not_updated")}</ParagraphBody>;
-    //   }
-    // },
     {
       field: "questionName",
       headerName: "Tiêu đề câu hỏi",

@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { File } from "models/codePlagiarism";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CircularProgressWithLabel from "../FilePairsTable/components/CircularProgressWithLabel";
 import { routes } from "routes/routes";
 
@@ -20,9 +20,6 @@ export default function FileSubmissionsTable({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const size = rows.length > 5 ? 5 : rows.length;
-  const [searchParams] = useSearchParams();
-  const questionId = searchParams.get("questionId") || "0";
-
   return (
     <Sheet variant='outlined'>
       <Table variant='soft' borderAxis='bothBetween' hoverRow>
@@ -50,10 +47,10 @@ export default function FileSubmissionsTable({
               }}
             >
               <td>
-                <ParagraphBody wordWrap='break-word'>{row.extra.studentId}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.extra.orgUserId}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody wordWrap='break-word'>{row.extra.studentName}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.extra.userFullName}</ParagraphBody>
               </td>
               <td>
                 <ParagraphBody wordWrap='break-word'>{row.extra.questionName}</ParagraphBody>

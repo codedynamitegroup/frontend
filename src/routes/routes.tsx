@@ -77,19 +77,19 @@ export const routes = {
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
       review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
       code_plagiarism_detection:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId",
       code_plagiarism_detection_submissions:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/submissions",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/submissions",
       code_plagiarism_detection_submissions_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/submissions/:submissionId",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/submissions/:submissionId",
       code_plagiarism_detection_clusters:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/clusters",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/clusters",
       code_plagiarism_detection_clusters_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/clusters/:clusterId",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/clusters/:clusterId",
       code_plagiarism_detection_pairs:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/pairs",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/pairs",
       code_plagiarism_detection_pairs_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/pairs/:pairId",
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/pairs/:pairId",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"

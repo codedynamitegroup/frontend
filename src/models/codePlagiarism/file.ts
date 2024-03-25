@@ -11,8 +11,10 @@ export interface DolosCustomFile {
     id: string;
     questionId: string;
     questionName: string;
-    studentId: string;
-    studentName: string;
+    userId: string;
+    orgUserId: string;
+    userFullName: string;
+    programmingLanguage: string;
     filename: string;
     fullName: string;
     status: string;

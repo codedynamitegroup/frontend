@@ -8,10 +8,12 @@ import {
 import { getClusterElementsArray } from "utils/codePlagiarism/clusteringAlgorithms/ClusterFunctions";
 import { singleLinkageCluster } from "utils/codePlagiarism/clusteringAlgorithms/SingleLinkageClustering";
 import { guessSimilarityThreshold } from "utils/codePlagiarism/cutoff";
-import getUniqueLabelsFromPairsAndFiles from "utils/codePlagiarism/getUniqueLabelsFromPairsAndFiles";
+import getUniqueFilesFromPairs from "utils/codePlagiarism/getUniqueFilesFromPairs";
+import getUniqueLabelsFromPairs from "utils/codePlagiarism/getUniqueLabelsFromPairs";
 
 interface InitialState {
   report: {
+    id: string;
     name: string;
     createdAt: string;
     files: File[];
@@ -66,7 +68,10 @@ export const getFileWithFileScoring = (file: File, filteredPairs: Pair[]): File 
   return newFile as File;
 };
 
-const getFilteredPairsByLabel = (pairs: Pair[], labels: { label: string; isActive: boolean }[]) => {
+const getFilteredPairsWithActiveLabel = (
+  pairs: Pair[],
+  labels: { label: string; isActive: boolean }[]
+) => {
   const inActiveLabels = labels.filter((label) => !label.isActive);
   return [...pairs].filter(
     (pair) =>
@@ -79,11 +84,12 @@ const getFilteredPairsByLabel = (pairs: Pair[], labels: { label: string; isActiv
   );
 };
 
-const getFilteredFilesByLabel = (
-  files: File[],
-  labels: { label: string; isActive: boolean }[],
-  filteredPairs: Pair[]
+const getUniqueFilteredFilesFromFilteredPairsWithActiveLabel = (
+  filteredPairs: Pair[],
+  labels: { label: string; isActive: boolean }[]
 ) => {
+  const files = getUniqueFilesFromPairs(filteredPairs);
+
   const inActiveLabels = labels.filter((label) => !label.isActive);
   const filteredFiles = [...files].filter(
     (file) =>
@@ -187,20 +193,23 @@ const codePlagiarismSlice = createSlice({
       state,
       action: PayloadAction<{
         report: {
+          id: string;
           name: string;
           createdAt: string;
-          files: File[];
           language: { name: string; extensions: string[] };
           pairs: Pair[];
         };
       }>
     ) => {
       const { report } = action.payload;
-      const labels = getUniqueLabelsFromPairsAndFiles(report.pairs, report.files);
+      const labels = getUniqueLabelsFromPairs(report.pairs);
 
-      const filteredPairs = getFilteredPairsByLabel(report.pairs, labels);
+      const filteredPairs = getFilteredPairsWithActiveLabel(report.pairs, labels);
 
-      const filterdFiles = getFilteredFilesByLabel(report.files, labels, filteredPairs);
+      const filterdFiles = getUniqueFilteredFilesFromFilteredPairsWithActiveLabel(
+        filteredPairs,
+        labels
+      );
 
       const threshold =
         Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) < 25
@@ -224,6 +233,7 @@ const codePlagiarismSlice = createSlice({
 
       state.report = {
         ...report,
+        files: filterdFiles,
         labels: labels
       };
       state.filteredPairs = filteredPairs;
@@ -246,10 +256,12 @@ const codePlagiarismSlice = createSlice({
         return l;
       });
 
-      const filteredPairs = getFilteredPairsByLabel(state.report.pairs, newLabels);
+      const filteredPairs = getFilteredPairsWithActiveLabel(state.report.pairs, newLabels);
 
-      const filterdFiles = getFilteredFilesByLabel(state.report.files, newLabels, filteredPairs);
-
+      const filterdFiles = getUniqueFilteredFilesFromFilteredPairsWithActiveLabel(
+        filteredPairs,
+        newLabels
+      );
       const {
         highestSimilarityPair,
         highestSimilarity,

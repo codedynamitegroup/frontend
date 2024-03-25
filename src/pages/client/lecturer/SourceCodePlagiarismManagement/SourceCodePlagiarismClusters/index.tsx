@@ -144,11 +144,11 @@ export default function LecturerSourceCodePlagiarismClusters() {
               return (
                 <Tooltip
                   key={submissionIndex}
-                  title={`${submission.id} - ${submission.extra.studentId} - ${submission.extra.studentName}`}
+                  title={`${submission.id} - ${submission.extra.orgUserId} - ${submission.extra.userFullName}`}
                   placement={"top"}
                 >
                   <Chip
-                    label={`${submission.extra.studentId}`}
+                    label={`${submission.extra.orgUserId}`}
                     sx={{
                       margin: "5px"
                     }}

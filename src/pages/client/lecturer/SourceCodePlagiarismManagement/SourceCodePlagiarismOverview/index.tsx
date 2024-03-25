@@ -336,7 +336,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
           <DrawerHeader />
           <Card>
             <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1>Câu hỏi code 1 - Bài kiểm tra cuối kỳ</Heading1>
+              <Heading1>{report?.name}</Heading1>
               <ParagraphBody translation-key='code_plagiarism_report_description'>
                 {t("code_plagiarism_report_description")}
               </ParagraphBody>
