@@ -30,6 +30,7 @@ interface DataGridProps {
   checkboxSelection?: boolean;
   columnHeaderHeight?: number;
   cellClickParamFields?: string[];
+  sx?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -50,7 +51,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     customFooter,
     onClickRow,
     columnHeaderHeight,
-    cellClickParamFields
+    cellClickParamFields,
+    sx = {}
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -89,6 +91,7 @@ const CustomDataGrid = (props: DataGridProps) => {
           }
         }}
         showCellVerticalBorder={showVerticalCellBorder}
+        showColumnVerticalBorder={false}
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
         onRowSelectionModelChange={rowSelectionHandler}
@@ -130,7 +133,8 @@ const CustomDataGrid = (props: DataGridProps) => {
         sx={{
           "& .MuiDataGrid-row:hover": {
             cursor: onClickRow ? "pointer" : "default"
-          }
+          },
+          ...sx
         }}
         onCellClick={handleCellClick}
         onPaginationModelChange={pageChangeHandler}

@@ -5,11 +5,7 @@
   overflow: auto;
   display: flex;
   flex-direction: column !important;
-  justify-content: space-between;
   background-color: var(--blue-1);
-//   min-height: 100%;
-//   display: grid;
-//   grid-template-rows: auto 1fr auto;
 
   .container {
     background-color: white;
@@ -24,6 +20,10 @@
         line-height: 14px;
     }
 
+    .critTitle {
+      font-size: 16px;
+    }
+
     .selectLabel {
         margin-top: 5px;
         margin-bottom: -5px;
@@ -32,8 +32,17 @@
         color: rgba(29, 33, 48, .749);
         font-size: 13px;
     }
+    .secondaryLabel {
+        color: rgba(29, 33, 48, .749);
+        font-size: 16px;
+    }
     .infoIcon {
         font-size: 15px;
+    }
+    .addBtn {
+      height: 40px;
+      border-radius: 15px;
+      max-width: 500px;
     }
   }
 
@@ -42,20 +51,31 @@
     height: 80px;
   }
 
-  .stickyFooter {
+  
+}
+
+.stickyFooter {
     padding: 0px 50px 0 50px;
+    background-color: #F8F8F8;
+    border-top: 1px solid #E7E7E7;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    // height: "60px",
+    width: 100%;
 
     .stepButton {
         height: 40px;
     }
   }
-  
-  #breadcumpWrapper {
+
+#breadcumpWrapper {
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 10px 10px;
-  flex-grow: 1;
 
   #icArrow {
     color: var(--blue-500);
@@ -68,5 +88,4 @@
       text-decoration: underline;
     }
   }
-}
 }

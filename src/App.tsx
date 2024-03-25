@@ -126,11 +126,7 @@ const router = createHashRouter(
         handle={{ crumbName: "default" }}
       />
 
-      <Route
-        path={routes.lecturer.exam.ai_grading_config}
-        element={<GradingConfig />}
-        // handle={{ crumbName: "default" }}
-      />
+      <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
       <Route path={routes.student.root} element={<StudentCoursesManagement />} />
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
       <Route path={routes.student.exam.take} element={<TakeExam />} />

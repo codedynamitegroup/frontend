@@ -1,0 +1,16 @@
+.rubricCard {
+    padding: 10px !important;
+    background-color: var(--blue-light-5) !important;
+    .rubricCardTitle {
+        font-size: 16px;
+        font-weight: 600;
+        color: #202c6c;
+        margin-bottom: 10px;
+    }
+    .iconBtn {
+        min-width: 20px;
+        width: 20px;
+        min-height: 30px;
+        height: 30px;
+    }
+}

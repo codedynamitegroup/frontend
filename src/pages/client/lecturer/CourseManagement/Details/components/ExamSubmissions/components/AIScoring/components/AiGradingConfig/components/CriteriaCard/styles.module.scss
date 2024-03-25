@@ -1,0 +1,18 @@
+.container {
+    padding: 10px;
+    background-color: var(--blue-light-4) !important;
+    border-radius: 15px;
+    .titleText {
+        font-size: 16px;
+        text-align: center;
+        line-height: 1.8;
+    }
+    .actionBtn {
+        height: 40px;
+        border-radius: 10px;
+        min-width: 20px;
+        width: 20px;
+        min-height: 30px;
+        height: 30px;
+    }
+}

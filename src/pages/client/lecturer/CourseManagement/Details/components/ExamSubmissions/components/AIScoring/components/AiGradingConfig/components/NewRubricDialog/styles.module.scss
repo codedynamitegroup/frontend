@@ -1,0 +1,20 @@
+.container {
+    .configlabel {
+        color: rgba(29, 33, 48, .749);
+        font-size: 13px;
+    }
+
+    // .inputBorder {
+    //     border-color: #3E68A8 !important;
+    // }
+    .inputBorder:focus {
+        border-color: red !important;
+    }
+    // .inputTextField {
+
+    // }
+
+    & [class~="MuiInput-underline"] {
+        border-color: red;
+    }
+}
