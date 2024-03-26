@@ -446,6 +446,14 @@ const LecturerCourseExamSubmissions = () => {
   const checkCheatingTableHeading: GridColDef[] = [
     { field: "title", headerName: "Câu hỏi", flex: 4 },
     {
+      field: "checkCheating",
+      headerName: "Trạng thái",
+      flex: 4,
+      renderCell: (params) => (
+        <Box marginY={"10px"}>{params.value ? "Chưa kiểm tra" : "Đã kiểm tra"}</Box>
+      )
+    },
+    {
       field: "action",
       headerName: "Hành động",
       flex: 4,
