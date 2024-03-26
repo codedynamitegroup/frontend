@@ -431,6 +431,7 @@ export default function GradingExam() {
             <Card>
               <Box className={classes.formBody}>
                 <Heading1>Bài kiểm tra 1</Heading1>
+                <ParagraphSmall fontWeight={"600"}>MSSV: 123456789</ParagraphSmall>
                 <Card className={classes.pageActivityHeader}>
                   <Grid container direction='row' alignItems='center' gap={1}>
                     <Grid item>
@@ -536,7 +537,7 @@ export default function GradingExam() {
             <Box className={classes.drawerBody}>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
-                <BasicSelect
+                {/* <BasicSelect
                   labelId='select-assignment-submission-student-label'
                   value={assignmentSubmissionStudent}
                   onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
@@ -592,7 +593,7 @@ export default function GradingExam() {
                     }
                   ]}
                   backgroundColor='#D9E2ED'
-                />
+                /> */}
               </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_score_on_range'>

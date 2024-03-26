@@ -140,6 +140,7 @@ const LecturerCourseExamSubmissions = () => {
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
         title: "Câu hỏi 1",
+        checkCheating: false,
         max_grade: 10,
         type: qtype.source_code
       },
