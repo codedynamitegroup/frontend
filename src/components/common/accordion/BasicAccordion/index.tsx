@@ -7,13 +7,18 @@ import * as React from "react";
 export default function BasicAccordion({
   title,
   children,
-  ...props
+  sx
 }: {
   title?: string;
   children: React.ReactNode;
+  sx?: any;
 }) {
   return (
-    <Accordion {...props}>
+    <Accordion
+      {...{
+        sx
+      }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls='panel1-content'

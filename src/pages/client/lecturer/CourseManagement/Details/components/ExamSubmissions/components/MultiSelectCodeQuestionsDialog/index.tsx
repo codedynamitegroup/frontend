@@ -1,6 +1,6 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HistoryIcon from "@mui/icons-material/History";
-import { Box, Grid, Tab, Tabs } from "@mui/material";
+import { Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
@@ -8,9 +8,11 @@ import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import BasicAccordion from "components/common/accordion/BasicAccordion";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
@@ -40,7 +42,6 @@ export default function MultiSelectCodeQuestionsDialog({
 }: MultiSelectCodeQuestionsDialogProps) {
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = React.useState(0);
-  const [reportName, setReportName] = React.useState("");
   const questionList = [
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d504",
@@ -177,19 +178,19 @@ export default function MultiSelectCodeQuestionsDialog({
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
           title: "Tìm số lớn nhất trong mảng",
-          exam_name: "Bài thi 1",
+          exam_name: "Bài thi cuối kỳ",
           course_name: "CSC101 - Lập trình căn bản"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           title: "Tìm số nhỏ nhất trong mảng",
-          exam_name: "Bài thi 1",
+          exam_name: "Bài thi giữa kỳ",
           course_name: "CSC102 - Lập trình hướng đối tượng"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           title: "Tìm giá trị lớn thứ 2 trong mảng",
-          exam_name: "Bài thi 1",
+          exam_name: "Bài thi giữa kỳ",
           course_name: "CSC103 - Cấu trúc dữ liệu và giải thuật"
         }
       ],
@@ -203,40 +204,40 @@ export default function MultiSelectCodeQuestionsDialog({
   ];
 
   const reportHistoryTableHeading: GridColDef[] = React.useMemo(
-    () => [
-      {
-        field: "name",
-        headerName: "Tên báo cáo",
-        minWidth: 300
-      },
-      {
-        field: "comparedCodeQuestions",
-        headerName: "Các câu hỏi lập trình đã so sánh",
-        minWidth: 450,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: "100%",
-              padding: "8px",
-              borderRadius: "8px",
-              border: "1px solid #e0e0e0"
-            }}
-          >
-            {params.value.map((question: any, index: number) => (
-              <div key={question.id}>
-                {question.title} - {question.exam_name} - {question.course_name}
-              </div>
-            ))}
-          </Box>
-        )
-      },
-      {
-        field: "createdAt",
-        headerName: "Ngày tạo",
-        flex: 1,
-        renderCell: (params) => <span>{new Date(params.value).toLocaleString()}</span>
-      }
-    ],
+    () =>
+      [
+        {
+          field: "name",
+          headerName: "Tên báo cáo",
+          minWidth: 300
+        },
+        {
+          field: "comparedCodeQuestions",
+          headerName: "Các câu hỏi đã so sánh",
+          minWidth: 450,
+          renderCell: (params) => {
+            return (
+              <BasicAccordion title={"Danh sách câu hỏi"}>
+                <Grid container spacing={2}>
+                  {params.value.map((item: any) => (
+                    <Grid item xs={12}>
+                      <ParagraphBody>
+                        {item.title} - {item.exam_name} - {item.course_name}
+                      </ParagraphBody>
+                    </Grid>
+                  ))}
+                </Grid>
+              </BasicAccordion>
+            );
+          }
+        },
+        {
+          field: "createdAt",
+          headerName: "Ngày tạo",
+          flex: 1,
+          renderCell: (params) => <span>{new Date(params.value).toLocaleString()}</span>
+        }
+      ] as GridColDef[],
     []
   );
 
@@ -252,7 +253,8 @@ export default function MultiSelectCodeQuestionsDialog({
   };
   const page = 0;
   const pageSize = 5;
-  const totalElement = questionList.length;
+  const questionListtotalElement = questionList.length;
+  const reportHistoryListTotalElement = reportHistoryList.length;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -318,10 +320,11 @@ export default function MultiSelectCodeQuestionsDialog({
                 dataGridToolBar={dataGridToolbar}
                 page={page}
                 pageSize={pageSize}
-                totalElement={totalElement}
+                totalElement={questionListtotalElement}
                 onPaginationModelChange={pageChangeHandler}
                 showVerticalCellBorder={false}
                 checkboxSelection
+                getRowHeight={() => "auto"}
                 onClickRow={rowClickHandler}
               />
             </Grid>
@@ -342,9 +345,10 @@ export default function MultiSelectCodeQuestionsDialog({
                 dataGridToolBar={dataGridToolbar}
                 page={page}
                 pageSize={pageSize}
-                totalElement={totalElement}
+                totalElement={reportHistoryListTotalElement}
                 onPaginationModelChange={pageChangeHandler}
                 showVerticalCellBorder={false}
+                getRowHeight={() => "auto"}
                 onClickRow={rowClickHandler}
               />
             </Grid>
