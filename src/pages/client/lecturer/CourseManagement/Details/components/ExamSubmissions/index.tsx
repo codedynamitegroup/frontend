@@ -139,20 +139,20 @@ const LecturerCourseExamSubmissions = () => {
     questions: [
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-        title: "Câu hỏi 1",
+        title: "Tính tổng các số lẻ từ 1 đến n",
         checkCheating: false,
         max_grade: 10,
         type: qtype.source_code
       },
       {
         id: "2",
-        title: "Câu hỏi 2",
+        title: "Thuật toán là gì",
         max_grade: 10,
         type: qtype.essay
       },
       {
         id: "3",
-        title: "Câu hỏi 3",
+        title: "HTML stands for Hyper Text Markup Language",
         max_grade: 10,
         type: qtype.multiple_choice
       }
