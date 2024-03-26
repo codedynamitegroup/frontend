@@ -10,10 +10,12 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import Heading3 from "components/text/Heading3";
 import {
   GridCallbackDetails,
+  GridColDef,
   GridPaginationModel,
   GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 interface CreateReportConfirmDialogProps extends DialogProps {
   title?: string;
@@ -58,11 +60,18 @@ export default function CreateReportConfirmDialog({
     }
   ];
 
-  const tableHeading = [
+  const tableHeading: GridColDef[] = [
     { field: "title", headerName: "Tên câu hỏi", flex: 2 },
     { field: "exam_name", headerName: "Bài kiểm tra", flex: 2 },
     { field: "course_name", headerName: "Môn học", flex: 2 },
-    { field: "created_at", headerName: "Ngày tạo", minWidth: 200 }
+    {
+      field: "created_at",
+      headerName: "Ngày tạo",
+      minWidth: 200,
+      valueFormatter: (params) => {
+        return new Date(params.value || "").toLocaleString();
+      }
+    }
   ];
 
   const dataGridToolbar = { enableToolbar: true };
@@ -109,7 +118,6 @@ export default function CreateReportConfirmDialog({
         </Grid>
         {isReportExisted && (
           <>
-            {" "}
             <Grid item xs={12}>
               <Heading3>Danh sách câu hỏi sử dụng trong báo cáo</Heading3>
             </Grid>
