@@ -48,7 +48,7 @@ export default function MultiSelectCodeQuestionsDialog({
   const questionList = [
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d504",
-      title: "Tính tổng từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
@@ -59,7 +59,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d505",
-      title: "Tỉnh tổng các số chẵn từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
@@ -70,7 +70,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d506",
-      title: "Tính tổng các số lẻ từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       exam_name: "Bài kiểm tra giữa kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
@@ -81,7 +81,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d507",
-      title: "Tính tổng các số nguyên tố từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       exam_name: "Bài kiểm tra hàng tuần 1",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
@@ -92,7 +92,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d508",
-      title: "Tính tổng các số chính phương từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       exam_name: "Bài kiểm tra hàng tuần 2",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
@@ -103,7 +103,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d509",
-      title: "Tính tổng các số hoàn thiện từ 1 đến n",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       exam_name: "Bài kiểm tra 1 tiết",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
@@ -114,7 +114,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d510",
-      title: "Thuật toán sắp xếp nổi bọt",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
       exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
@@ -125,7 +125,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d511",
-      title: "Thuật toán sắp xếp chọn",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
       exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
@@ -136,7 +136,7 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d512",
-      title: "Thuật toán sắp xếp chèn",
+      title: "Tìm số lớn nhất trong mảng",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
       exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
