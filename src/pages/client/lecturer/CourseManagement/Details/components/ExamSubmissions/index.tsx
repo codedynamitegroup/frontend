@@ -1,18 +1,17 @@
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import {
-  Grid,
-  Autocomplete,
-  DialogTitle,
-  IconButton,
-  Stack,
   Chip,
   Dialog,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  InputAdornment,
   Slider,
-  TextField,
-  Divider,
-  InputAdornment
+  Stack,
+  TextField
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import {
@@ -23,24 +22,25 @@ import {
   GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
+import axios from "axios";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import Heading1 from "components/text/Heading1";
+import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
+import i18next from "i18next";
+import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
+import CreateExistedReportConfirmDialog from "./components/CreateExistedReportConfirmDialog";
 import ExamSubmissionFeatureBar from "./components/FeatureBar";
+import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import Heading4 from "components/text/Heading4";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -57,6 +57,10 @@ const LecturerCourseExamSubmissions = () => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
+  const [isMultiSelectCodeQuestionsDialogOpen, setIsMultiSelectCodeQuestionsDialogOpen] =
+    useState(false);
+  const [isCreateExistedReportConfirmDialogOpen, setIsCreateExistedReportConfirmDialogOpen] =
+    useState(false);
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -75,155 +79,86 @@ const LecturerCourseExamSubmissions = () => {
   const pageSize = 5;
   const totalElement = 100;
   const [isPlagiarismDetectionLoading, setIsPlagiarismDetectionLoading] = useState(false);
+  const [isCheckReportExistLoading, setIsCheckReportExistLoading] = useState(false);
 
-  const fetchPlagiarismDetectionForCodeQuestion = async (questionId: string) => {
-    const codePlagiarismDetectionApiUrl =
-      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
-    setIsPlagiarismDetectionLoading(true);
-    // Maybe fetch data from server
-    const codeSubmissionsData = {
-      report_name: "Câu hỏi 1 - Kiểm tra cuối kỳ",
-      language: "python",
-      code_submissions_data: [
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663696/UPGMA_B_djgb99.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "2",
-            student_id: "20127001",
-            student_name: "Nguyễn Đinh Quang Khánh",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "original"
-          }
-        },
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663695/UPGMA_A_yj7i5w.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "3",
-            student_id: "20127002",
-            student_name: "Nguyễn Quốc Tien",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "copy"
-          }
-        },
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663695/UPGMA_A_yj7i5w.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "3",
-            student_id: "2012003",
-            student_name: "Nguyễn Quốc Tuấn",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "copy"
-          }
-        },
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663694/UPGMA_A_variablenames_bg3y05.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "3",
-            student_id: "20127004",
-            student_name: "Nguyễn Thanh Hoàng",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "original"
-          }
-        },
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663694/UPGMA_A_variablenames_bg3y05.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "3",
-            student_id: "20127005",
-            student_name: "Nguyễn Thanh Khiem",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "original"
-          }
-        },
-        {
-          url: "https://res.cloudinary.com/doofq4jvp/raw/upload/v1710663694/UPGMA_A_variablenames_bg3y05.py",
-          extra: {
-            question_id: "1",
-            question_name: "Câu hỏi 1",
-            submission_id: "3",
-            student_id: "20127006",
-            student_name: "Nguyễn Thanh Vinh",
-            created_at: "2023-07-23 17:12:33 +0200",
-            labels: "original"
-          }
-        }
-      ]
-    };
-
-    try {
-      const response = await axios.post(codePlagiarismDetectionApiUrl, codeSubmissionsData);
-      setIsPlagiarismDetectionLoading(false);
-      return response.data;
-    } catch (error) {
-      setIsPlagiarismDetectionLoading(false);
-      throw error;
+  const submissionDataset = [
+    {
+      student: 59,
+      range: "0.00 - 5.00"
+    },
+    {
+      student: 50,
+      range: "5.00 - 6.00"
+    },
+    {
+      student: 47,
+      range: "6.00 - 7.00"
+    },
+    {
+      student: 54,
+      range: "7.00 - 8.00"
+    },
+    {
+      student: 57,
+      range: "8.00 - 9.00"
+    },
+    {
+      student: 60,
+      range: "9.00 - 10.00"
+    },
+    {
+      student: 59,
+      range: "10.00 - 11.00"
+    },
+    {
+      student: 65,
+      range: "11.00 - 12.00"
+    },
+    {
+      student: 51,
+      range: "12.00 - 13.00"
+    },
+    {
+      student: 60,
+      range: "13.00 - 14.00"
+    },
+    {
+      student: 67,
+      range: "14.00 - 15.00"
+    },
+    {
+      student: 61,
+      range: "15.00 - 16.00"
     }
-  };
-
-  const onHandlePlagiarismDetection = async (questionId: string) => {
-    try {
-      const result = await fetchPlagiarismDetectionForCodeQuestion(questionId);
-      if (result.status === "success") {
-        navigate(`${routes.lecturer.exam.code_plagiarism_detection}?questionId=${questionId}`, {
-          state: {
-            report: result.data
-          }
-        });
-      } else {
-        console.error(result.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  ];
 
   const examData = {
     id: 1,
+    org_id: "f47ac10b-58cc-4372-a567-0e02b2c3d477",
     max_grade: 30,
     questions: [
       {
-        id: "1",
-        question: "Câu hỏi 1",
-        answer: "Đáp án 1",
-        checkCheating: false,
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+        title: "Câu hỏi 1",
         max_grade: 10,
-        type: qtype.source_code,
-        plagiarism_detection: {
-          is_checked: true,
-          result: {
-            is_plagiarism: true,
-            plagiarism_rate: 0.5
-          }
-        }
+        type: qtype.source_code
       },
       {
         id: "2",
-        question: "Câu hỏi 2",
-        answer: "Đáp án 2",
+        title: "Câu hỏi 2",
         max_grade: 10,
         type: qtype.essay
       },
       {
         id: "3",
-        question: "Câu hỏi 3",
-        answer: "Đáp án 3",
+        title: "Câu hỏi 3",
         max_grade: 10,
         type: qtype.multiple_choice
       }
     ]
   };
   const filterExamQuestionData = examData.questions.map((value) => ({
-    question: value.question,
+    question: value.title,
     questionId: value.id
   }));
   filterExamQuestionData.unshift({ question: "Câu hỏi 11 đến 20", questionId: "-1" });
@@ -246,7 +181,7 @@ const LecturerCourseExamSubmissions = () => {
       current_final_grade: 0,
       grades: [
         {
-          question_id: "1",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 10
         },
@@ -279,7 +214,7 @@ const LecturerCourseExamSubmissions = () => {
       current_final_grade: 10,
       grades: [
         {
-          question_id: "1",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 8
         },
@@ -395,84 +330,108 @@ const LecturerCourseExamSubmissions = () => {
       }
     }
   ];
-  const checkCheatingTableHeading: GridColDef[] = [
-    { field: "question", headerName: "Câu hỏi", flex: 4 },
-    {
-      field: "checkCheating",
-      headerName: "Trạng thái",
-      flex: 4,
-      renderCell: (params) => (
-        <Box marginY={"10px"}>{params.value ? "Chưa kiểm tra" : "Đã kiểm tra"}</Box>
-      )
-    },
-    {
-      field: "action",
-      headerName: "Hành động",
-      flex: 4,
-      type: "actions",
-      getActions: (params) => [
-        <Button btnType={BtnType.Primary}>
-          {params.row.checkCheating ? "Kiểm tra gian lận" : "Xem kết quả"}
-        </Button>
-      ]
-    }
-  ];
 
-  useEffect(() => {
-    setCurrentLang(i18next.language);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18next.language]);
+  const fetchPlagiarismDetectionForCodeQuestion = async (
+    reportName: string,
+    codeQuestionIds: string[]
+  ) => {
+    const codePlagiarismDetectionApiUrl =
+      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
+    setIsPlagiarismDetectionLoading(true);
+    setIsCheckReportExistLoading(true);
+    const codeSubmissionsData = {
+      report_name: reportName,
+      language: "Python",
+      user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d482",
+      code_question_ids: codeQuestionIds
+    };
 
-  const submissionDataset = [
-    {
-      student: 59,
-      range: "0.00 - 5.00"
-    },
-    {
-      student: 50,
-      range: "5.00 - 6.00"
-    },
-    {
-      student: 47,
-      range: "6.00 - 7.00"
-    },
-    {
-      student: 54,
-      range: "7.00 - 8.00"
-    },
-    {
-      student: 57,
-      range: "8.00 - 9.00"
-    },
-    {
-      student: 60,
-      range: "9.00 - 10.00"
-    },
-    {
-      student: 59,
-      range: "10.00 - 11.00"
-    },
-    {
-      student: 65,
-      range: "11.00 - 12.00"
-    },
-    {
-      student: 51,
-      range: "12.00 - 13.00"
-    },
-    {
-      student: 60,
-      range: "13.00 - 14.00"
-    },
-    {
-      student: 67,
-      range: "14.00 - 15.00"
-    },
-    {
-      student: 61,
-      range: "15.00 - 16.00"
+    try {
+      const response = await axios.post(
+        `${codePlagiarismDetectionApiUrl}/reports`,
+        codeSubmissionsData
+      );
+      setIsPlagiarismDetectionLoading(false);
+      setIsCheckReportExistLoading(false);
+      return response.data;
+    } catch (error) {
+      setIsPlagiarismDetectionLoading(false);
+      setIsCheckReportExistLoading(false);
+      throw error;
     }
-  ];
+  };
+
+  const onHandlePlagiarismDetection = async (reportName: string, codeQuestionIds: string[]) => {
+    try {
+      const result = await fetchPlagiarismDetectionForCodeQuestion(reportName, codeQuestionIds);
+      if (result.status === "success") {
+        navigate(
+          `${routes.lecturer.exam.code_plagiarism_detection.replace("reportId", result.data.id)}`,
+          {
+            state: {
+              report: result.data
+            }
+          }
+        );
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const fetchAllCodeQuestionsByOrgId = async (orgId: string) => {
+  //   const codePlagiarismDetectionApiUrl =
+  //     process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
+  //   setIsPlagiarismDetectionLoading(true);
+
+  //   try {
+  //     const response = await axios.get(`${codePlagiarismDetectionApiUrl}`);
+  //     setIsPlagiarismDetectionLoading(false);
+  //     return response.data;
+  //   } catch (error) {
+  //     setIsPlagiarismDetectionLoading(false);
+  //     throw error;
+  //   }
+  // };
+
+  const fetchCheckCodeQuestionIdsReportExists = async (codeQuestionIds: string[]) => {
+    const codePlagiarismDetectionApiUrl =
+      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
+    setIsCheckReportExistLoading(true);
+    try {
+      const response = await axios.post(
+        `${codePlagiarismDetectionApiUrl}/reports/check-code-question-ids-exist`,
+        {
+          code_question_ids: codeQuestionIds
+        }
+      );
+      setIsCheckReportExistLoading(false);
+      return response.data;
+    } catch (error) {
+      setIsCheckReportExistLoading(false);
+      throw error;
+    }
+  };
+
+  const onHandleReportExists = async (reportName: string, codeQuestionIds: string[]) => {
+    try {
+      if (!codeQuestionIds.length) return;
+      const result = await fetchCheckCodeQuestionIdsReportExists(codeQuestionIds);
+      if (result.status === "success") {
+        if (result.data) {
+          handleOpenCreateExistedReportConfirmDialog();
+        } else {
+          onHandlePlagiarismDetection(reportName, codeQuestionIds);
+        }
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -482,9 +441,44 @@ const LecturerCourseExamSubmissions = () => {
   const [sliderValue, setSliderValue] = useState<number[]>([1, examData.questions.length]);
   const [filterValues, setFilterValues] = useState<number[][]>([[1, 1]]);
   const [tableHeadingPlus, setTableHeadingPlus] = useState<GridColDef[]>([]);
-  const [columnGroupingModelPlus, setColumnGroupingModelPlus] = useState<GridColumnGroupingModel>(
-    []
-  );
+
+  const checkCheatingTableHeading: GridColDef[] = [
+    { field: "title", headerName: "Câu hỏi", flex: 4 },
+    {
+      field: "action",
+      headerName: "Hành động",
+      flex: 4,
+      type: "actions",
+      renderCell: (params) => {
+        return (
+          <Button
+            btnType={BtnType.Primary}
+            onClick={handleOpenMultiSelectCodeQuestionsDialog}
+            translation-key='common_check_cheating'
+          >
+            Tạo báo cáo gian lận
+          </Button>
+        );
+      }
+    }
+  ];
+
+  const handleOpenMultiSelectCodeQuestionsDialog = useCallback(() => {
+    setIsMultiSelectCodeQuestionsDialogOpen(true);
+  }, []);
+
+  const handleCloseMultiSelectCodeQuestionsDialog = useCallback(() => {
+    setIsMultiSelectCodeQuestionsDialogOpen(false);
+  }, []);
+
+  const handleOpenCreateExistedReportConfirmDialog = useCallback(() => {
+    setIsCreateExistedReportConfirmDialogOpen(true);
+  }, []);
+
+  const handleCloseCreateExistedReportConfirmDialog = useCallback(() => {
+    setIsCreateExistedReportConfirmDialogOpen(false);
+  }, []);
+
   const [openCheckCheating, setOpenCheckCheeting] = useState(false);
   useEffect(() => {
     const filterSet = new Set<number>();
@@ -500,7 +494,7 @@ const LecturerCourseExamSubmissions = () => {
           const question = examData.questions[i - 1];
           tableHeadingTemp.push({
             field: `question-${question.id}`,
-            headerName: question.question,
+            headerName: question.title,
             width: 180,
             renderCell: () => {
               for (let i = 0; i < submissionList.length; i++) {
@@ -531,7 +525,7 @@ const LecturerCourseExamSubmissions = () => {
                   <LoadButton
                     loading={isPlagiarismDetectionLoading}
                     btnType={BtnType.Outlined}
-                    onClick={() => onHandlePlagiarismDetection(question.id.toString())}
+                    onClick={handleOpenMultiSelectCodeQuestionsDialog}
                     translation-key='common_check_cheating'
                   >
                     {t("common_check_cheating")}
@@ -558,223 +552,385 @@ const LecturerCourseExamSubmissions = () => {
       }
     });
     setTableHeadingPlus(tableHeadingTemp);
-    setColumnGroupingModelPlus(columnGroupingModelTemp);
   }, [filterValues]);
 
   return (
-    <Box className={classes.examBody}>
-      <Button
-        btnType={BtnType.Primary}
-        onClick={() => {
-          navigate(routes.lecturer.exam.detail);
+    <>
+      <MultiSelectCodeQuestionsDialog
+        open={isMultiSelectCodeQuestionsDialogOpen}
+        handleClose={handleCloseMultiSelectCodeQuestionsDialog}
+        title={"Tạo báo cáo gian lận"}
+        cancelText={"Hủy"}
+        confirmText={"Xác nhận"}
+        isConfirmLoading={isCheckReportExistLoading}
+        onHanldeConfirm={() => {
+          onHandleReportExists("Báo cáo gian lận mới", [
+            "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d496",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d497"
+          ]);
         }}
-        startIcon={
-          <ChevronLeftIcon
-            sx={{
-              color: "white"
-            }}
+        onHandleCancel={handleCloseMultiSelectCodeQuestionsDialog}
+      />
+      <CreateExistedReportConfirmDialog
+        open={isCreateExistedReportConfirmDialogOpen}
+        handleClose={handleCloseCreateExistedReportConfirmDialog}
+        title={"Xác nhận ghi đè báo cáo gian lận"}
+        cancelText={"Xem lại"}
+        confirmText={"Xác nhận"}
+        isConfirmLoading={isPlagiarismDetectionLoading}
+        onHanldeConfirm={() => {
+          onHandlePlagiarismDetection("Báo cáo gian lận mới", [
+            "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d496",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d497"
+          ]);
+        }}
+        onHandleCancel={() => {}}
+      />
+      <Box className={classes.examBody}>
+        <Button
+          btnType={BtnType.Primary}
+          onClick={() => {
+            navigate(routes.lecturer.exam.detail);
+          }}
+          startIcon={
+            <ChevronLeftIcon
+              sx={{
+                color: "white"
+              }}
+            />
+          }
+          width='fit-content'
+        >
+          <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
+        </Button>
+        <Heading1>Bài kiểm tra cuối kỳ</Heading1>
+        <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
+          {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
+        </ParagraphBody>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <SubmissionBarChart
+            dataset={submissionDataset}
+            xAxis={[{ scaleType: "band", dataKey: "range" }]}
+            width={1000}
+            height={500}
           />
-        }
-        width='fit-content'
-      >
-        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
-      </Button>
-      <Heading1>Bài kiểm tra cuối kỳ</Heading1>
-      <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
-        {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
-      </ParagraphBody>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <SubmissionBarChart
-          dataset={submissionDataset}
-          xAxis={[{ scaleType: "band", dataKey: "range" }]}
-          width={1000}
-          height={500}
-        />
+        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Heading1 translation-key='course_lecturer_submission_list'>
+              {t("course_lecturer_submission_list")}
+            </Heading1>
+          </Grid>
+          <Grid item xs={12}>
+            <ExamSubmissionFeatureBar />
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction={"row"} alignItems={"center"}>
+              <Heading4>Lọc câu hỏi</Heading4>
+              <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
+                <AddCircleIcon />
+              </IconButton>
+            </Stack>
+            <Dialog
+              open={openFilterSettingDialog}
+              onClose={handleCloseDialog}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
+              fullWidth={true}
+            >
+              <DialogContent>
+                <Box marginTop={"16px"}>
+                  <Grid container>
+                    <Grid container justifyContent={"space-between"} xs={12} alignItems={"center"}>
+                      <TextField
+                        placeholder='Từ'
+                        value={sliderValue[0]}
+                        InputProps={{
+                          startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
+                          inputProps: { min: 1, max: examData.questions.length }
+                        }}
+                        onChange={(e) => {
+                          let min = parseInt(e.target.value);
+                          let max = sliderValue[1];
+                          let temp = 0;
+                          if (min > max) {
+                            temp = min;
+                            min = max;
+                            max = temp;
+                          }
+                          setSliderValue([min, max]);
+                        }}
+                        type='number'
+                      />
+                      <ParagraphBody>đến</ParagraphBody>
+                      <TextField
+                        placeholder='Đến'
+                        value={sliderValue[1]}
+                        InputProps={{
+                          startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
+                          inputProps: { min: 1, max: examData.questions.length }
+                        }}
+                        onChange={(e) => {
+                          let max = parseInt(e.target.value);
+                          let min = sliderValue[0];
+                          let temp = 0;
+                          if (min > max) {
+                            temp = min;
+                            min = max;
+                            max = temp;
+                          }
+                          setSliderValue([min, max]);
+                        }}
+                        type='number'
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Slider
+                        value={sliderValue}
+                        onChange={(e, val) => {
+                          console.log(val);
+                          setSliderValue(val as number[]);
+                        }}
+                        min={1}
+                        max={examData.questions.length}
+                        defaultValue={[1, examData.questions.length]}
+                        valueLabelDisplay='auto'
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button btnType={BtnType.Primary} onClick={handleCloseDialog}>
+                  Đóng
+                </Button>
+                <Button
+                  btnType={BtnType.Primary}
+                  onClick={() => {
+                    handleCloseDialog();
+                    setFilterValues([...filterValues, sliderValue]);
+                  }}
+                >
+                  Lưu
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
+              {filterValues.map((value, index) => (
+                <Chip
+                  key={index}
+                  label={`Câu ${value[0] === value[1] ? value[0] : `${value[0]} - ${value[1]}`}`}
+                  onDelete={() => {
+                    const temp = [...filterValues];
+                    temp.splice(index, 1);
+                    setFilterValues(temp);
+                  }}
+                />
+              ))}
+            </Stack>
+          </Grid>
+          <Grid item xs={12} marginTop={3}>
+            <LoadButton
+              // loading={isPlagiarismDetectionLoading}
+              btnType={BtnType.Outlined}
+              onClick={() => setOpenCheckCheeting(true)}
+              translation-key='common_check_cheating'
+            >
+              {t("common_check_cheating")}
+            </LoadButton>
+            <Dialog
+              open={openCheckCheating}
+              onClose={() => setOpenCheckCheeting(false)}
+              fullWidth={true}
+            >
+              <DialogTitle>Kiểm tra gian lận</DialogTitle>
+              <DialogContent>
+                <CustomDataGrid
+                  dataList={examData.questions.filter(
+                    (value) => value.type.code === qtype.source_code.code
+                  )}
+                  tableHeader={checkCheatingTableHeading}
+                  onSelectData={rowSelectionHandler}
+                  // visibleColumn={visibleColumnList}
+                  dataGridToolBar={dataGridToolbar}
+                  page={page}
+                  pageSize={pageSize}
+                  totalElement={totalElement}
+                  onPaginationModelChange={pageChangeHandler}
+                  showVerticalCellBorder={true}
+                  getRowHeight={() => "auto"}
+                  // onClickRow={rowClickHandler}
+                  // slots={{toolbar:}}
+                  // columnGroupingModel={columnGroupingModelPlus}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button btnType={BtnType.Outlined} onClick={() => setOpenCheckCheeting(false)}>
+                  Đóng
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Grid>
+
+          <Grid item xs={12}>
+            <CustomDataGrid
+              dataList={submissionList}
+              tableHeader={[...tableHeading, ...tableHeadingPlus]}
+              onSelectData={rowSelectionHandler}
+              visibleColumn={visibleColumnList}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              getRowHeight={() => "auto"}
+              onClickRow={rowClickHandler}
+              // slots={{toolbar:}}
+              // columnGroupingModel={columnGroupingModelPlus}
+            />
+          </Grid>
+        </Grid>
       </Box>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Heading1 translation-key='course_lecturer_submission_list'>
-            {t("course_lecturer_submission_list")}
-          </Heading1>
-        </Grid>
-        <Grid item xs={12}>
-          <ExamSubmissionFeatureBar />
-        </Grid>
-        <Grid item xs={12}>
-          <Stack direction={"row"} alignItems={"center"}>
-            <Heading4>Lọc câu hỏi</Heading4>
-            <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
-              <AddCircleIcon />
-            </IconButton>
-          </Stack>
-          <Dialog
-            open={openFilterSettingDialog}
-            onClose={handleCloseDialog}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-            fullWidth={true}
-          >
-            <DialogContent>
-              <Box marginTop={"16px"}>
-                <Grid container>
-                  <Grid container justifyContent={"space-between"} xs={12} alignItems={"center"}>
-                    <TextField
-                      placeholder='Từ'
-                      value={sliderValue[0]}
-                      InputProps={{
-                        startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
-                        inputProps: { min: 1, max: examData.questions.length }
-                      }}
-                      onChange={(e) => {
-                        let min = parseInt(e.target.value);
-                        let max = sliderValue[1];
-                        let temp = 0;
-                        if (min > max) {
-                          temp = min;
-                          min = max;
-                          max = temp;
-                        }
-                        setSliderValue([min, max]);
-                      }}
-                      type='number'
-                    />
-                    <ParagraphBody>đến</ParagraphBody>
-                    <TextField
-                      placeholder='Đến'
-                      value={sliderValue[1]}
-                      InputProps={{
-                        startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
-                        inputProps: { min: 1, max: examData.questions.length }
-                      }}
-                      onChange={(e) => {
-                        let max = parseInt(e.target.value);
-                        let min = sliderValue[0];
-                        let temp = 0;
-                        if (min > max) {
-                          temp = min;
-                          min = max;
-                          max = temp;
-                        }
-                        setSliderValue([min, max]);
-                      }}
-                      type='number'
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Slider
-                      value={sliderValue}
-                      onChange={(e, val) => {
-                        console.log(val);
-                        setSliderValue(val as number[]);
-                      }}
-                      min={1}
-                      max={examData.questions.length}
-                      defaultValue={[1, examData.questions.length]}
-                      valueLabelDisplay='auto'
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button btnType={BtnType.Primary} onClick={handleCloseDialog}>
-                Đóng
-              </Button>
-              <Button
-                btnType={BtnType.Primary}
-                onClick={() => {
-                  handleCloseDialog();
-                  setFilterValues([...filterValues, sliderValue]);
-                }}
-              >
-                Lưu
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-          <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
-            {filterValues.map((value, index) => (
-              <Chip
-                key={index}
-                label={`Câu ${value[0] === value[1] ? value[0] : `${value[0]} - ${value[1]}`}`}
-                onDelete={() => {
-                  const temp = [...filterValues];
-                  temp.splice(index, 1);
-                  setFilterValues(temp);
-                }}
-              />
-            ))}
-          </Stack>
-        </Grid>
-        <Grid item xs={12} marginTop={3}>
-          <LoadButton
-            // loading={isPlagiarismDetectionLoading}
-            btnType={BtnType.Outlined}
-            onClick={() => setOpenCheckCheeting(true)}
-            translation-key='common_check_cheating'
-          >
-            {t("common_check_cheating")}
-          </LoadButton>
-          <Dialog
-            open={openCheckCheating}
-            onClose={() => setOpenCheckCheeting(false)}
-            fullWidth={true}
-          >
-            <DialogTitle>Kiểm tra gian lận</DialogTitle>
-            <DialogContent>
-              <CustomDataGrid
-                dataList={examData.questions.filter(
-                  (value) => value.type.code === qtype.source_code.code
-                )}
-                tableHeader={checkCheatingTableHeading}
-                onSelectData={rowSelectionHandler}
-                // visibleColumn={visibleColumnList}
-                dataGridToolBar={dataGridToolbar}
-                page={page}
-                pageSize={pageSize}
-                totalElement={totalElement}
-                onPaginationModelChange={pageChangeHandler}
-                showVerticalCellBorder={true}
-                getRowHeight={() => "auto"}
-                // onClickRow={rowClickHandler}
-                // slots={{toolbar:}}
-                // columnGroupingModel={columnGroupingModelPlus}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button btnType={BtnType.Outlined} onClick={() => setOpenCheckCheeting(false)}>
-                Đóng
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Grid>
-
-        <Grid item xs={12}>
-          <CustomDataGrid
-            dataList={submissionList}
-            tableHeader={[...tableHeading, ...tableHeadingPlus]}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={true}
-            getRowHeight={() => "auto"}
-            onClickRow={rowClickHandler}
-            // slots={{toolbar:}}
-            // columnGroupingModel={columnGroupingModelPlus}
+      {/* <Box className={classes.examBody}>
+        <Button
+          btnType={BtnType.Primary}
+          onClick={() => {
+            navigate(routes.lecturer.exam.detail);
+          }}
+          startIcon={
+            <ChevronLeftIcon
+              sx={{
+                color: "white"
+              }}
+            />
+          }
+          width='fit-content'
+        >
+          <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
+        </Button>
+        <Heading1>Bài kiểm tra cuối kỳ</Heading1>
+        <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
+          {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
+        </ParagraphBody>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <SubmissionBarChart
+            dataset={submissionDataset}
+            xAxis={[{ scaleType: "band", dataKey: "range" }]}
+            width={1000}
+            height={500}
           />
+        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Heading1 translation-key='course_lecturer_submission_list'>
+              {t("course_lecturer_submission_list")}
+            </Heading1>
+          </Grid>
+          <Grid item xs={12}>
+            <ExamSubmissionFeatureBar />
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction={"row"} alignItems={"center"}>
+              <Heading4>Lọc câu hỏi</Heading4>
+              <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
+                <AddCircleIcon />
+              </IconButton>
+            </Stack>
+            <Dialog
+              open={openFilterSettingDialog}
+              onClose={handleCloseDialog}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
+              fullWidth={true}
+            >
+              <DialogContent>
+                <Box marginTop={"16px"}>
+                  <Stack direction={"row"} alignItems={"end"}>
+                    <ParagraphBody>Câu {sliderValue[0]} </ParagraphBody>
+                    <Stack flex={9} alignItems={"center"} marginX={4}>
+                      <ParagraphBody>đến</ParagraphBody>
+                      <Slider
+                        value={sliderValue}
+                        onChange={(e, val) => {
+                          console.log(val);
+                          setSliderValue(val as number[]);
+                        }}
+                        min={1}
+                        max={examData.questions.length}
+                        defaultValue={[1, examData.questions.length]}
+                        valueLabelDisplay='auto'
+                      />
+                    </Stack>
+
+                    <ParagraphBody>{sliderValue[1]}</ParagraphBody>
+                  </Stack>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button btnType={BtnType.Primary} onClick={handleCloseDialog}>
+                  Đóng
+                </Button>
+                <Button
+                  btnType={BtnType.Primary}
+                  onClick={() => {
+                    handleCloseDialog();
+                    setFilterValues([...filterValues, sliderValue]);
+                  }}
+                >
+                  Lưu
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
+              {filterValues.map((value, index) => (
+                <Chip
+                  key={index}
+                  label={`Câu ${value[0] === value[1] ? value[0] : `${value[0]} - ${value[1]}`}`}
+                  onDelete={() => {
+                    const temp = [...filterValues];
+                    temp.splice(index, 1);
+                    setFilterValues(temp);
+                  }}
+                />
+              ))}
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomDataGrid
+              dataList={submissionList}
+              tableHeader={[...tableHeading, ...tableHeadingPlus]}
+              onSelectData={rowSelectionHandler}
+              visibleColumn={visibleColumnList}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              getRowHeight={() => "auto"}
+              onClickRow={rowClickHandler}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box> */}
+    </>
   );
 };
 
