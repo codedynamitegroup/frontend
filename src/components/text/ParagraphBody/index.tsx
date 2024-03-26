@@ -2,6 +2,7 @@ import { Typography, styled } from "@mui/material";
 
 interface Props {
   colorname?: string;
+  fontStyle?: string;
   fontWeight?: number | string;
   fontSize?: string;
   wordWrap?: string;
@@ -9,7 +10,7 @@ interface Props {
 
 const ParagraphBody = styled(Typography)<Props>`
   font-family: "Inter";
-  font-style: normal;
+  font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 400};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
   font-size: ${(props) => props.fontSize || "16px"};

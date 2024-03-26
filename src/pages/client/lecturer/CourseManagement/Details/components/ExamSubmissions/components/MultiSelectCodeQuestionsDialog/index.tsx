@@ -1,6 +1,6 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HistoryIcon from "@mui/icons-material/History";
-import { Box, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Card, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
@@ -14,6 +14,9 @@ import Heading3 from "components/text/Heading3";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import Heading5 from "components/text/Heading5";
 
 interface MultiSelectCodeQuestionsDialogProps extends DialogProps {
   title?: string;
@@ -275,23 +278,16 @@ export default function MultiSelectCodeQuestionsDialog({
       minWidth='1000px'
       {...props}
     >
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <InputTextField
-            type='text'
-            title={"Tên báo cáo gian lận"}
-            value={reportName}
-            onChange={(e) => setReportName(e.target.value)}
-            placeholder={"Nhập tên báo cáo gian lận"}
-            fullWidth
-          />
-        </Grid>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Tabs
             value={tabIndex}
             onChange={handleChangeTabIndex}
             aria-label='tabIndex'
             variant='fullWidth'
+            sx={{
+              border: "1px solid #e0e0e0"
+            }}
           >
             <Tab
               icon={<ChecklistIcon />}
@@ -304,13 +300,18 @@ export default function MultiSelectCodeQuestionsDialog({
         {tabIndex === 0 ? (
           <>
             <Grid item xs={12}>
-              <Heading3>
-                Đánh dấu các câu hỏi lập trình bạn muốn tạo báo cáo gian lận cho danh sách bài nộp
-                của sinh viên
-              </Heading3>
+              <CodeQuestionsFeatureBar />
             </Grid>
             <Grid item xs={12}>
-              <CodeQuestionsFeatureBar />
+              <Heading5
+                fontStyle={"italic"}
+                fontWeight={"400"}
+                colorname='--gray-50'
+                translation-key='code_management_detail_info_description'
+              >
+                Đánh dấu các câu hỏi lập trình bạn muốn tạo báo cáo gian lận cho danh sách bài nộp
+                của sinh viên
+              </Heading5>
             </Grid>
             <Grid item xs={12}>
               <CustomDataGrid
