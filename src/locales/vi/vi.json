@@ -128,6 +128,11 @@
   "common_conclusion": "Kết luận",
   "common_automatic": "Tự động",
   "common_finish": "Hoàn thành",
+  "common_create_at": "Thời gian tạo",
+  "common_description": "Mô tả",
+  "common_agree": "Đồng ý",
+  "common_default":"Mặc định",
+  "common_custom": "Tùy chỉnh",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -575,7 +580,27 @@
   "grading_config_feedback_style": "Phong cách phản hồi",
   "grading_config_feedback_style_note": "Phong cách phản hồi giúp xác định phong cách và giọng điệu của phản hồi. Bạn có thể cung cấp thông tin tại đây để giúp AI xác định nội dung phản hồi nên tập trung vào hoặc cách học sinh nên tham gia.",
   "grading_config_answer_objective": "Mục tiêu câu trả lời",
-  "grading_config_answer_objective_note": "Mục tiêu trả lời được sử dụng để giúp hướng dẫn phản hồi cuối cùng của điểm đánh giá, giúp AI xác định mục đích của câu trả lời, và có thể được dùng để cung cấp cảnh báo nếu câu hỏi không đáp ứng mục tiêu."
+  "grading_config_select_criteria": "Thêm tiêu chí",
+  "grading_config_answer_objective_note": "Mục tiêu trả lời được sử dụng để giúp hướng dẫn phản hồi cuối cùng của điểm đánh giá, giúp AI xác định mục đích của câu trả lời, và có thể được dùng để cung cấp cảnh báo nếu câu hỏi không đáp ứng mục tiêu.",
+  "grading_config_optional": "Không bắt buộc",
+  "grading_config_rubric": "Bảng chấm điểm",
+  "grading_config_select_rubric": "Chọn hoặc tạo bảng chấm điểm",
+  "grading_config_select_criteria_description": "Bảng chấm điểm là bộ gồm các tiêu chí. Bạn có thể sử dụng một bảng chấm đã có sẵn hoặc chọn tiêu chí và tạo bảng chấm mới",
+  
+  "grading_config_select_rubric_dialog_title": "Chọn bảng chấm điểm",
+  "grading_config_select_rubric_dialog_create": "Tạo bảng chấm điểm mới",
+  "grading_config_select_rubric_dialog_edit": "Chỉnh sửa bảng chấm điểm",
+  "grading_config_select_rubric_dialog_name": "Tên bảng chấm",
+  "grading_config_select_criteria_title": "Chọn tiêu chí",
+  "grading_config_back_to_select_rubric": "Quay lại chọn bảng chấm",
+  "grading_config_back_to_select_criteria": "Quay lại chọn tiêu chí",
+  "grading_config_add_new_rubric": "Thêm bảng chấm mới",
+  "grading_config_add_new_criteria": "Thêm tiêu chí mới",
+  "grading_config_criteria_name": "Tên tiêu chí",
+  "grading_config_criteria_edit": "Chỉnh sửa tiêu chí",
+  "grading_config_criteria": "Tiêu chí",
 
-
+  "grading_config_choose_question": "Chọn câu hỏi",
+  "grading_config_choose_question_note": "Chọn câu hỏi phù hợp từ danh sách câu hỏi để AI chấm điểm. Lựa chọn của bạn sẽ trực tiếp ảnh hưởng đến hiệu suất chấm của AI",
+  "grading_config_": "s"
 }

@@ -39,6 +39,7 @@ import clsx from "clsx";
 import { openEditCriteria, openNewCriteria } from "reduxes/NewEditRubricCriteriaDialog";
 import NewCriteriaDialog from "../NewCriteriaDialog";
 import EditCriteriaDialog from "../EditCriteriaDialog";
+import { useTranslation } from "react-i18next";
 
 interface SelectCriteriaConfigProps {}
 
@@ -93,13 +94,14 @@ const defaultCriteriaList = [
   }
 ];
 
-const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
+const SelectCriteriaConfig = () => {
   const page = 0;
   const pageSize = 20;
   const totalElement = 100;
 
   const status = useSelector((state: RootState) => state.selectCriteriaDialog.status);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleClose = () => {
     dispatch(close());
@@ -128,14 +130,14 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
   const tableHeading: GridColDef[] = [
     {
       field: "name",
-      headerName: "Criteria Name",
+      headerName: t("grading_config_criteria_name"),
       renderCell: (params) => (
         <Typography className={classes.criteriaNameCell}>{params.value}</Typography>
       )
     },
     {
       field: "description",
-      headerName: "Description",
+      headerName: t("common_description"),
       renderCell: (params) => (
         <Typography className={classes.criteriaDescriptionCell}>{params.value}</Typography>
       ),
@@ -143,7 +145,7 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: t("common_action"),
       renderCell: (params) => (
         <Stack direction='row' spacing={1}>
           <Button variant='outlined' color='error' className={classes.iconBtn}>
@@ -169,8 +171,8 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
       <Dialog
         open={status}
         onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby='select-criteria-dialog-title'
+        aria-describedby='select-criteria-dialog-description'
         className={classes.container}
         fullWidth={true}
         maxWidth={"sm"}
@@ -183,8 +185,12 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
           }
         }}
       >
-        <DialogTitle id='alert-dialog-title' sx={{ fontSize: "1.5rem", fontWeight: 700 }}>
-          {"Select Criteria"}
+        <DialogTitle
+          id='select-criteria-dialog-title'
+          sx={{ fontSize: "1.5rem", fontWeight: 700 }}
+          translation-key='grading_config_select_criteria_title'
+        >
+          {t("grading_config_select_criteria_title")}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -199,7 +205,7 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
+          <DialogContentText id='select-criteria-dialog-description'>
             <Box sx={{ marginBottom: "5px" }}>
               <Grid container>
                 <Grid item xs={6}>
@@ -209,8 +215,9 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
                     sx={{ borderStartEndRadius: "0px", borderEndEndRadius: "0px" }}
                     onClick={() => setActiveTab(0)}
                     className={clsx(classes.tabButton, activeTab === 0 && classes.activeTabButton)}
+                    translation-key='common_default'
                   >
-                    Default
+                    {t("common_default")}
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
@@ -220,8 +227,9 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
                     sx={{ borderStartStartRadius: "0px", borderEndStartRadius: "0px" }}
                     onClick={() => setActiveTab(1)}
                     className={clsx(classes.tabButton, activeTab === 1 && classes.activeTabButton)}
+                    translation-key='common_custom'
                   >
-                    Custom
+                    {t("common_custom")}
                   </Button>
                 </Grid>
               </Grid>
@@ -286,13 +294,19 @@ const SelectCriteriaConfig = ({}: SelectCriteriaConfigProps) => {
               startIcon={<AddIcon />}
               sx={{ textAlign: "center" }}
               variant='outlined'
+              translation-key='grading_config_add_new_criteria'
             >
-              Add new criteria
+              {t("grading_config_add_new_criteria")}
             </Button>
           )}
 
-          <Button onClick={handleClose} autoFocus variant='contained'>
-            Agree
+          <Button
+            onClick={handleClose}
+            autoFocus
+            variant='contained'
+            translation-key='common_agree'
+          >
+            {t("common_agree")}
           </Button>
         </DialogActions>
       </Dialog>

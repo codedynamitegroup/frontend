@@ -138,7 +138,12 @@
   "common_conclusion": "Conclusion",
   "common_automatic": "Automatic",
   "common_finish": "Finish",
-
+  "common_create_at": "Create at",
+  "common_description": "Description",
+  "common_agree": "Agree",
+  "common_default":"Default",
+  "common_custom": "Custom",
+  
   "side_bar_dashboard": "Dashboard",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
@@ -578,7 +583,28 @@
   "grading_config_feedback_style": "Feedback style",
   "grading_config_feedback_style_note": "Feedback style helps determine the style and tone of the response. You can provide info here to help the AI determine what the feedback should focus on or how the student should be engaged.",
   "grading_config_answer_objective": "Answer objective",
-  "grading_config_answer_objective_note": "Answer objective is used to help guide the final feedback of the grade, help the AI determine the intent of the answer, and may be used to provide warnings if the answer doesn't meet the objective."
+  "grading_config_answer_objective_note": "Answer objective is used to help guide the final feedback of the grade, help the AI determine the intent of the answer, and may be used to provide warnings if the answer doesn't meet the objective.",
+  "grading_config_optional": "Optional",
+  "grading_config_rubric": "Rubric",
+  "grading_config_select_rubric": "Choose or create rubric",
+  "grading_config_select_criteria": "Add criteria",
+  "grading_config_select_criteria_description": "Rubrics are a collection of criteira. You can use an existing rubric, or choose criteria individually",
 
+  "grading_config_select_rubric_dialog_title": "Select rubric",
+  "grading_config_select_rubric_dialog_create": "Create",
+  "grading_config_select_rubric_dialog_edit": "Edit rubric",
+  "grading_config_select_rubric_dialog_name": "Rubric name",
+  "grading_config_select_criteria_title": "Select criteria",
+  "grading_config_back_to_select_rubric": "Back to select rubric",
+  "grading_config_back_to_select_criteria": "Back to select criteria",
+  "grading_config_add_new_criteria": "Add new criteria",
+  "grading_config_add_new_rubric": "Add new rubric",
+  "grading_config_criteria_name": "Criteria name",
+  "grading_config_criteria_edit": "Edit criteria",
+  "grading_config_criteria": "Criteria",
+
+  "grading_config_choose_question": "Choose question",
+  "grading_config_choose_question_note": "Select the appropriate questions from the grid for AI grading. Your choices will directly impact the AI's grading performance."
+  
 
 }

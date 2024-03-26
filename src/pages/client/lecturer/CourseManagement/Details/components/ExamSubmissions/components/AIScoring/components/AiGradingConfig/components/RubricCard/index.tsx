@@ -4,7 +4,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import { useDispatch } from "react-redux";
 import { openEditRubric } from "reduxes/NewEditRubricDialog";
-import EditRubricDialog from "../EditRubricDialog";
 
 interface RubricCardProps {
   name: string;
