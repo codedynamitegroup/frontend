@@ -142,22 +142,22 @@ const LecturerCourseExamSubmissions = () => {
     questions: [
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-        title: "Tổng 2 số",
+        title: "Tính tổng các số lẻ từ 1 đến n",
         checkCheating: false,
         max_grade: 10,
         type: qtype.source_code,
         number: 1
       },
       {
-        id: "2",
-        title: "Câu hỏi 2",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
+        title: "Thuật toán là gì",
         max_grade: 10,
         type: qtype.essay,
         number: 2
       },
       {
-        id: "3",
-        title: "Câu hỏi 3",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+        title: "HTML stands for Hyper Text Markup Language",
         max_grade: 10,
         type: qtype.multiple_choice,
         number: 3
@@ -193,12 +193,12 @@ const LecturerCourseExamSubmissions = () => {
           current_grade: 10
         },
         {
-          question_id: "2",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 8
         },
         {
-          question_id: "3",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 5
         }
@@ -226,12 +226,12 @@ const LecturerCourseExamSubmissions = () => {
           current_grade: 8
         },
         {
-          question_id: "2",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 10
         },
         {
-          question_id: "3",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 9
         }
@@ -830,135 +830,6 @@ const LecturerCourseExamSubmissions = () => {
           </Grid>
         </Grid>
       </Box>
-      {/* <Box className={classes.examBody}>
-        <Button
-          btnType={BtnType.Primary}
-          onClick={() => {
-            navigate(routes.lecturer.exam.detail);
-          }}
-          startIcon={
-            <ChevronLeftIcon
-              sx={{
-                color: "white"
-              }}
-            />
-          }
-          width='fit-content'
-        >
-          <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
-        </Button>
-        <Heading1>Bài kiểm tra cuối kỳ</Heading1>
-        <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
-          {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
-        </ParagraphBody>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <SubmissionBarChart
-            dataset={submissionDataset}
-            xAxis={[{ scaleType: "band", dataKey: "range" }]}
-            width={1000}
-            height={500}
-          />
-        </Box>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Heading1 translation-key='course_lecturer_submission_list'>
-              {t("course_lecturer_submission_list")}
-            </Heading1>
-          </Grid>
-          <Grid item xs={12}>
-            <ExamSubmissionFeatureBar />
-          </Grid>
-          <Grid item xs={12}>
-            <Stack direction={"row"} alignItems={"center"}>
-              <Heading4>Lọc câu hỏi</Heading4>
-              <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
-                <AddCircleIcon />
-              </IconButton>
-            </Stack>
-            <Dialog
-              open={openFilterSettingDialog}
-              onClose={handleCloseDialog}
-              aria-labelledby='alert-dialog-title'
-              aria-describedby='alert-dialog-description'
-              fullWidth={true}
-            >
-              <DialogContent>
-                <Box marginTop={"16px"}>
-                  <Stack direction={"row"} alignItems={"end"}>
-                    <ParagraphBody>Câu {sliderValue[0]} </ParagraphBody>
-                    <Stack flex={9} alignItems={"center"} marginX={4}>
-                      <ParagraphBody>đến</ParagraphBody>
-                      <Slider
-                        value={sliderValue}
-                        onChange={(e, val) => {
-                          console.log(val);
-                          setSliderValue(val as number[]);
-                        }}
-                        min={1}
-                        max={examData.questions.length}
-                        defaultValue={[1, examData.questions.length]}
-                        valueLabelDisplay='auto'
-                      />
-                    </Stack>
-
-                    <ParagraphBody>{sliderValue[1]}</ParagraphBody>
-                  </Stack>
-                </Box>
-              </DialogContent>
-              <DialogActions>
-                <Button btnType={BtnType.Primary} onClick={handleCloseDialog}>
-                  Đóng
-                </Button>
-                <Button
-                  btnType={BtnType.Primary}
-                  onClick={() => {
-                    handleCloseDialog();
-                    setFilterValues([...filterValues, sliderValue]);
-                  }}
-                >
-                  Lưu
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
-              {filterValues.map((value, index) => (
-                <Chip
-                  key={index}
-                  label={`Câu ${value[0] === value[1] ? value[0] : `${value[0]} - ${value[1]}`}`}
-                  onDelete={() => {
-                    const temp = [...filterValues];
-                    temp.splice(index, 1);
-                    setFilterValues(temp);
-                  }}
-                />
-              ))}
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <CustomDataGrid
-              dataList={submissionList}
-              tableHeader={[...tableHeading, ...tableHeadingPlus]}
-              onSelectData={rowSelectionHandler}
-              visibleColumn={visibleColumnList}
-              dataGridToolBar={dataGridToolbar}
-              page={page}
-              pageSize={pageSize}
-              totalElement={totalElement}
-              onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
-              getRowHeight={() => "auto"}
-              onClickRow={rowClickHandler}
-            />
-          </Grid>
-        </Grid>
-      </Box> */}
     </>
   );
 };

@@ -46,7 +46,7 @@ export default function MultiSelectCodeQuestionsDialog({
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d504",
       title: "Tính tổng từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
-      exam_name: "Bài kiểm tra 1",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
       course_name: "CS101 - Lập trình căn bản",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -57,7 +57,7 @@ export default function MultiSelectCodeQuestionsDialog({
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d505",
       title: "Tỉnh tổng các số chẵn từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
-      exam_name: "Bài kiểm tra 1",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
       course_name: "CS101 - Lập trình căn bản",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -68,7 +68,7 @@ export default function MultiSelectCodeQuestionsDialog({
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d506",
       title: "Tính tổng các số lẻ từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
-      exam_name: "Bài kiểm tra 1",
+      exam_name: "Bài kiểm tra giữa kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
       course_name: "CS101 - Lập trình căn bản",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -77,9 +77,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d507",
-      title: "Question 1",
+      title: "Tính tổng các số nguyên tố từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
-      exam_name: "Bài kiểm tra 2",
+      exam_name: "Bài kiểm tra hàng tuần 1",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       course_name: "CS102 - Lập trình hướng đối tượng",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -88,9 +88,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d508",
-      title: "Question 2",
+      title: "Tính tổng các số chính phương từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
-      exam_name: "Bài kiểm tra 2",
+      exam_name: "Bài kiểm tra hàng tuần 2",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       course_name: "CS102 - Lập trình hướng đối tượng",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -99,9 +99,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d509",
-      title: "Question 3",
+      title: "Tính tổng các số hoàn thiện từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
-      exam_name: "Bài kiểm tra 2",
+      exam_name: "Bài kiểm tra 1 tiết",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
       course_name: "CS102 - Lập trình hướng đối tượng",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -110,9 +110,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d510",
-      title: "Question 1",
+      title: "Thuật toán sắp xếp nổi bọt",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
-      exam_name: "Bài kiểm tra 3",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       course_name: "CS103 - Cấu trúc dữ liệu và giải thuật",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d481",
@@ -121,9 +121,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d511",
-      title: "Question 2",
+      title: "Thuật toán sắp xếp chọn",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
-      exam_name: "Bài kiểm tra 3",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       course_name: "CS103 - Cấu trúc dữ liệu và giải thuật",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d481",
@@ -132,9 +132,9 @@ export default function MultiSelectCodeQuestionsDialog({
     },
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d512",
-      title: "Question 3",
+      title: "Thuật toán sắp xếp chèn",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d491",
-      exam_name: "Bài kiểm tra 3",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d490",
       course_name: "CS103 - Cấu trúc dữ liệu và giải thuật",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d481",
@@ -178,19 +178,19 @@ export default function MultiSelectCodeQuestionsDialog({
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
           title: "Tìm số lớn nhất trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC101 - Lập trình căn bản"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           title: "Tìm số nhỏ nhất trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC102 - Lập trình hướng đối tượng"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           title: "Tìm giá trị lớn thứ 2 trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC103 - Cấu trúc dữ liệu và giải thuật"
         }
       ],
       language: {
