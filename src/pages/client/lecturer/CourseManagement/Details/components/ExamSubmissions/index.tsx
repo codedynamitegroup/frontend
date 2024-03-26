@@ -145,13 +145,13 @@ const LecturerCourseExamSubmissions = () => {
         type: qtype.source_code
       },
       {
-        id: "2",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
         title: "Thuật toán là gì",
         max_grade: 10,
         type: qtype.essay
       },
       {
-        id: "3",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
         title: "HTML stands for Hyper Text Markup Language",
         max_grade: 10,
         type: qtype.multiple_choice
@@ -220,12 +220,12 @@ const LecturerCourseExamSubmissions = () => {
           current_grade: 8
         },
         {
-          question_id: "2",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 10
         },
         {
-          question_id: "3",
+          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           grade_status: SubmissionStatusGraded.GRADED,
           current_grade: 9
         }
