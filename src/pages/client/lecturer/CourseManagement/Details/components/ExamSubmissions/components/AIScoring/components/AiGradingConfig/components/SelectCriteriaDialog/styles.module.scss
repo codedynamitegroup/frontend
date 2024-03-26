@@ -21,10 +21,18 @@
     }
     .tabButton {
         box-shadow: none;
+        
+    }
+    .tabButton:hover {
+        background-color: #6992f6 ;
+        color: white ;
     }
     .activeTabButton {
         background-color: #6992f6;
         color: white;
-        
+    }
+    .activeTabButton:hover {
+        background-color: var(--blue-light-1);
+        color: white;
     }
 }

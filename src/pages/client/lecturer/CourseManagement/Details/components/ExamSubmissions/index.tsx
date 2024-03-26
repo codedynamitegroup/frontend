@@ -516,7 +516,8 @@ const LecturerCourseExamSubmissions = () => {
                   <Button
                     btnType={BtnType.Outlined}
                     onClick={() => {
-                      navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
+                      // navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
+                      navigate(`${routes.lecturer.exam.ai_grading_config}`);
                     }}
                     translation-key='common_AI_grading'
                   >
@@ -648,14 +649,26 @@ const LecturerCourseExamSubmissions = () => {
           </Stack>
         </Grid>
         <Grid item xs={12} marginTop={3}>
-          <LoadButton
-            // loading={isPlagiarismDetectionLoading}
-            btnType={BtnType.Outlined}
-            onClick={() => setOpenCheckCheeting(true)}
-            translation-key='common_check_cheating'
-          >
-            {t("common_check_cheating")}
-          </LoadButton>
+          <Stack direction={"row"} alignItems={"center"} spacing={1}>
+            <LoadButton
+              // loading={isPlagiarismDetectionLoading}
+              btnType={BtnType.Outlined}
+              onClick={() => setOpenCheckCheeting(true)}
+              translation-key='common_check_cheating'
+            >
+              {t("common_check_cheating")}
+            </LoadButton>
+            <LoadButton
+              btnType={BtnType.Outlined}
+              translation-key='common_AI_grading'
+              onClick={() => {
+                navigate(`${routes.lecturer.exam.ai_grading_config}`);
+              }}
+            >
+              {t("common_AI_grading")}{" "}
+            </LoadButton>
+          </Stack>
+
           <Dialog
             open={openCheckCheating}
             onClose={() => setOpenCheckCheeting(false)}
