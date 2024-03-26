@@ -44,6 +44,7 @@ import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
+import { blue, green } from "@mui/material/colors";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -163,7 +164,7 @@ const LecturerCourseExamSubmissions = () => {
         number: 3
       },
       {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d49",
         title: "Tính tổng các số lẻ từ 1 đến n",
         checkCheating: false,
         max_grade: 10,
@@ -171,7 +172,7 @@ const LecturerCourseExamSubmissions = () => {
         number: 4
       },
       {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+        id: "f47ac10b-58cc-4372-a567-002b2c3d495",
         title: "Tính tổng các số lẻ từ 1 đến n",
         checkCheating: true,
         max_grade: 10,
@@ -473,7 +474,13 @@ const LecturerCourseExamSubmissions = () => {
       headerName: "Trạng thái",
       flex: 1,
       renderCell: (params) => (
-        <Box>{params.value ? <Chip label='Đã kiểm tra' /> : <Chip label='Chưa kiểm tra' />}</Box>
+        <Box>
+          {params.value ? (
+            <Chip label='Đã kiểm tra' sx={{ backgroundColor: green[100] }} />
+          ) : (
+            <Chip label='Chưa kiểm tra' sx={{ backgroundColor: blue[100] }} />
+          )}
+        </Box>
       )
     },
     {
