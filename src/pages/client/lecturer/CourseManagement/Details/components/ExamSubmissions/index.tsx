@@ -161,6 +161,22 @@ const LecturerCourseExamSubmissions = () => {
         max_grade: 10,
         type: qtype.multiple_choice,
         number: 3
+      },
+      {
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+        title: "Tính tổng các số lẻ từ 1 đến n",
+        checkCheating: false,
+        max_grade: 10,
+        type: qtype.source_code,
+        number: 4
+      },
+      {
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+        title: "Tính tổng các số lẻ từ 1 đến n",
+        checkCheating: true,
+        max_grade: 10,
+        type: qtype.source_code,
+        number: 5
       }
     ]
   };
