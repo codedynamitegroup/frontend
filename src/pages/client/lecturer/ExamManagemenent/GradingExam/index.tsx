@@ -20,7 +20,10 @@ import {
   InputAdornment,
   Select,
   MenuItem,
-  Stack
+  Stack,
+  FormControl,
+  InputLabel,
+  Paper
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -39,6 +42,7 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import InputTextField from "components/common/inputs/InputTextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchIcon from "@mui/icons-material/Search";
+import SearchBar from "components/common/search/SearchBar";
 
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
@@ -63,7 +67,6 @@ import { useTranslation } from "react-i18next";
 import CustomNumberInput from "components/common/inputs/CustomNumberInput";
 import Button from "components/common/buttons/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { blue } from "@mui/material/colors";
 
 const drawerWidth = 450;
 
@@ -340,21 +343,21 @@ export default function GradingExam() {
       flex: 1,
       renderCell: (params) =>
         params.value === "đang chấm" ? (
-          <Chip label={params.value} sx={{ backgroundColor: blue[100] }} />
+          <Chip label={params.value} sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
         ) : (
           <Chip label={params.value} />
         )
-    },
-    {
-      field: "action",
-      type: "actions",
-      headerName: "Hành động",
-      getActions: (params) => [
-        <IconButton onClick={() => setOpenChooseStudent(false)}>
-          <VisibilityIcon />
-        </IconButton>
-      ]
     }
+    // {
+    //   field: "action",
+    //   type: "actions",
+    //   headerName: "Hành động",
+    //   getActions: (params) => [
+    //     <IconButton onClick={() => setOpenChooseStudent(false)}>
+    //       <VisibilityIcon />
+    //     </IconButton>
+    //   ]
+    // }
   ];
   const [gradingStatus, setGradingStatus] = React.useState(0);
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -604,35 +607,41 @@ export default function GradingExam() {
                 >
                   <DialogTitle>Chọn sinh viên</DialogTitle>
                   <DialogContent>
-                    <Grid container justifyContent={"space-between"} marginBottom={1}>
-                      <Grid item xs={7}>
-                        <OutlinedInput
-                          size='small'
-                          fullWidth
-                          translation-key='common_search'
-                          placeholder={t("common_search")}
-                          startAdornment={
-                            <InputAdornment position='start'>
-                              <SearchIcon />
-                            </InputAdornment>
-                          }
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Select value={gradingStatus} onChange={() => null} size='small'>
-                          <MenuItem value={0}>Tất cả</MenuItem>
-                          <MenuItem value={1}>Đang chấm</MenuItem>
-                          <MenuItem value={2}>Chưa chấm</MenuItem>
-                          <MenuItem value={3}>Đã chấm</MenuItem>
-                        </Select>
-                      </Grid>
-                    </Grid>
+                    <Paper className={classes.containerPaper}>
+                      <Box className={classes.searchWrapper}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={6}>
+                            <SearchBar onSearchClick={() => null} maxWidth='100%' />
+                          </Grid>
+                          <Grid item xs={3}>
+                            <FormControl className={classes.colSearchContainer} size='small'>
+                              <InputLabel id='filter-status'>Lọc</InputLabel>
+                              <Select
+                                labelId='filter-status'
+                                id='colSearchSelect'
+                                value={gradingStatus}
+                                label='Lọc'
+                                onChange={(e) => setGradingStatus(e.target.value as number)}
+                              >
+                                <MenuItem value={0}>Tất cả</MenuItem>
 
+                                <MenuItem value={1}>Đang chấm</MenuItem>
+                                <MenuItem value={2}>Chưa chấm</MenuItem>
+                                <MenuItem value={3}>Đã chấm</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Paper>
                     <CustomDataGrid
                       dataList={studentData}
                       sx={{
                         "& .MuiDataGrid-cell:nth-last-child(n+2)": {
                           padding: "16px"
+                        },
+                        "& .MuiDataGrid-cell:hover": {
+                          cursor: "pointer"
                         }
                       }}
                       tableHeader={chooseStudentHeading}
