@@ -633,7 +633,11 @@ const LecturerCourseExamSubmissions = () => {
         open={isCreateReportConfirmDialogOpen.value}
         isReportExisted={isCreateReportConfirmDialogOpen.isExisted}
         handleClose={handleCloseCreateReportConfirmDialog}
-        title={"Xác nhận tạo báo cáo gian lận"}
+        title={
+          isCreateReportConfirmDialogOpen.isExisted
+            ? "Xác nhận ghi đè báo cáo cũ"
+            : "Tạo báo cáo gian lận"
+        }
         cancelText={"Xem lại"}
         confirmText={"Xác nhận"}
         isConfirmLoading={isPlagiarismDetectionLoading}
