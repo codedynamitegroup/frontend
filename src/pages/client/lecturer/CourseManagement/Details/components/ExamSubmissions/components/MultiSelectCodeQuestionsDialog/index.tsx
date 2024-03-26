@@ -1,6 +1,6 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HistoryIcon from "@mui/icons-material/History";
-import { Grid, Tab, Tabs } from "@mui/material";
+import { Box, Card, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
@@ -218,7 +218,13 @@ export default function MultiSelectCodeQuestionsDialog({
           minWidth: 450,
           renderCell: (params) => {
             return (
-              <BasicAccordion title={"Danh sách câu hỏi"}>
+              <BasicAccordion
+                title={"Danh sách câu hỏi đã so sánh"}
+                // sx={{
+                //   backgroundColor: "transparent",
+                //   boxShadow: "none"
+                // }}
+              >
                 <Grid container spacing={2}>
                   {params.value.map((item: any) => (
                     <Grid item xs={12}>
