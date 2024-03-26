@@ -29,6 +29,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { openEditRubric, openNewRubric } from "reduxes/NewEditRubricDialog";
 import { close as closeSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import EditRubricDialog from "../EditRubricDialog";
+import { useTranslation } from "react-i18next";
 
 interface SelectRubricConfigProps {}
 
@@ -69,6 +70,7 @@ const SelectRubricConfig = ({}: SelectRubricConfigProps) => {
 
   const status = useSelector((state: RootState) => state.selectRubricDialog.status);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleClose = () => {
     dispatch(close());
@@ -98,14 +100,14 @@ const SelectRubricConfig = ({}: SelectRubricConfigProps) => {
   const tableHeading: GridColDef[] = [
     {
       field: "name",
-      headerName: "Rubric Name",
+      headerName: t("grading_config_select_rubric_dialog_name"),
       renderCell: (params) => (
         <Typography className={classes.rubricNameCell}>{params.value}</Typography>
       )
     },
     {
       field: "description",
-      headerName: "Description",
+      headerName: t("common_description"),
       renderCell: (params) => (
         <Typography className={classes.rubricDescriptionCell}>{params.value}</Typography>
       ),
@@ -113,7 +115,7 @@ const SelectRubricConfig = ({}: SelectRubricConfigProps) => {
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: t("common_action"),
       renderCell: (params) => (
         <Stack direction='row' spacing={1}>
           <Button variant='outlined' color='error' className={classes.iconBtn}>
@@ -138,15 +140,25 @@ const SelectRubricConfig = ({}: SelectRubricConfigProps) => {
       <Dialog
         open={status}
         onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
+        aria-labelledby='select-rubric-dialog-title'
         aria-describedby='alert-dialog-description'
         className={classes.container}
         fullWidth={true}
         maxWidth={"sm"}
         sx={{ height: "100%" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 630,
+            height: "100%"
+          }
+        }}
       >
-        <DialogTitle id='alert-dialog-title' sx={{ fontSize: "1.5rem", fontWeight: 700 }}>
-          {"Select Rubric"}
+        <DialogTitle
+          translation-key='grading_config_select_rubric_dialog_title'
+          id='select-rubric-dialog-title'
+          sx={{ fontSize: "1.5rem", fontWeight: 700 }}
+        >
+          {t("grading_config_select_rubric_dialog_title")}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -192,11 +204,17 @@ const SelectRubricConfig = ({}: SelectRubricConfigProps) => {
             startIcon={<AddIcon />}
             sx={{ textAlign: "center" }}
             variant='outlined'
+            translation-key='grading_config_add_new_rubric'
           >
-            Add new rubric
+            {t("grading_config_add_new_rubric")}
           </Button>
-          <Button onClick={handleClose} autoFocus variant='contained'>
-            Agree
+          <Button
+            onClick={handleClose}
+            autoFocus
+            variant='contained'
+            translation-key='common_agree'
+          >
+            {t("common_agree")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -31,6 +31,8 @@ interface DataGridProps {
   columnHeaderHeight?: number;
   cellClickParamFields?: string[];
   sx?: any;
+  slots?: any;
+  getCellClassName?: any;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -52,7 +54,9 @@ const CustomDataGrid = (props: DataGridProps) => {
     onClickRow,
     columnHeaderHeight,
     cellClickParamFields,
-    sx = {}
+    sx = {},
+    slots = {},
+    getCellClassName
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -97,6 +101,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         onRowSelectionModelChange={rowSelectionHandler}
         onRowClick={onClickRow ? handleRowClick : undefined}
         density='comfortable'
+        getCellClassName={getCellClassName}
         disableColumnFilter
         disableColumnSelector
         disableRowSelectionOnClick
@@ -128,7 +133,8 @@ const CustomDataGrid = (props: DataGridProps) => {
         slots={{
           toolbar: dataGridToolBar && dataGridToolBar.enableToolbar ? GridToolbar : null,
           columnMenu: customColumnMenu,
-          footer: customFooter
+          footer: customFooter,
+          ...slots
         }}
         sx={{
           "& .MuiDataGrid-row:hover": {

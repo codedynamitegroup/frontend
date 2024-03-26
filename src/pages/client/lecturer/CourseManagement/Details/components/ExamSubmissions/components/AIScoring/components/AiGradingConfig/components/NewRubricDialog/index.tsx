@@ -8,20 +8,18 @@ import {
   Button,
   Grid,
   Typography,
-  TextField,
-  Stack
+  TextField
 } from "@mui/material";
 import classes from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { closeNewRubric } from "reduxes/NewEditRubricDialog";
-import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { open as openSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import { styled } from "@mui/material/styles";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import CriteriaCard from "../CriteriaCard";
+import { useTranslation } from "react-i18next";
 
 interface RubricConfigDialogProps {
   name?: string;
@@ -63,6 +61,7 @@ const Textarea = styled(BaseTextareaAutosize)(
 const NewRubricDialog = () => {
   const status = useSelector((state: RootState) => state.rubricDialog.newRubricStatus);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleClose = () => {
     dispatch(closeNewRubric());
@@ -83,9 +82,19 @@ const NewRubricDialog = () => {
         fullWidth={true}
         maxWidth={"sm"}
         sx={{ height: "100%" }}
+        PaperProps={{
+          sx: {
+            maxHeight: 630,
+            height: "100%"
+          }
+        }}
       >
-        <DialogTitle id='alert-dialog-title' sx={{ fontSize: "1.5rem", fontWeight: 700 }}>
-          {"Add New Rubric"}
+        <DialogTitle
+          translation-key='grading_config_add_new_rubric'
+          id='alert-dialog-title'
+          sx={{ fontSize: "1.5rem", fontWeight: 700 }}
+        >
+          {t("grading_config_add_new_rubric")}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -103,7 +112,12 @@ const NewRubricDialog = () => {
           <DialogContentText id='alert-dialog-description'>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography className={classes.configlabel}>{`Name`}</Typography>
+                <Typography
+                  className={classes.configlabel}
+                  translation-key='grading_config_select_rubric_dialog_name'
+                >
+                  {t("grading_config_select_rubric_dialog_name")}
+                </Typography>
                 <TextField
                   id='outlined-basic'
                   variant='outlined'
@@ -114,7 +128,9 @@ const NewRubricDialog = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography className={classes.configlabel}>{`Description`}</Typography>
+                <Typography className={classes.configlabel} translation-key='common_description'>
+                  {t("common_description")}
+                </Typography>
                 <Textarea
                   aria-label='empty textarea'
                   placeholder='Positive with focus on where the user can improve'
@@ -122,9 +138,15 @@ const NewRubricDialog = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography sx={{ color: "black" }}>{`Criteria`}</Typography>
-                <Button fullWidth variant='outlined'>
-                  Select criteria
+                <Typography sx={{ color: "black" }} translation-key='grading_config_criteria'>
+                  {t("grading_config_criteria")}
+                </Typography>
+                <Button
+                  fullWidth
+                  variant='outlined'
+                  translation-key='grading_config_select_criteria_title'
+                >
+                  {t("grading_config_select_criteria_title")}
                 </Button>
               </Grid>
             </Grid>
@@ -136,11 +158,12 @@ const NewRubricDialog = () => {
             startIcon={<ArrowBackIcon />}
             sx={{ textAlign: "center" }}
             variant='outlined'
+            translation-key='grading_config_back_to_select_rubric'
           >
-            Back to select rubric
+            {t("grading_config_back_to_select_rubric")}
           </Button>
-          <Button onClick={handleClose} autoFocus variant='contained'>
-            Save
+          <Button onClick={handleClose} autoFocus variant='contained' translation-key='common_save'>
+            {t("common_save")}
           </Button>
         </DialogActions>
       </Dialog>

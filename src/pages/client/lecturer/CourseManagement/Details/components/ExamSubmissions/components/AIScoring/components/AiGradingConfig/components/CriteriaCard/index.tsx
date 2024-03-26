@@ -1,4 +1,3 @@
-import React from "react";
 import classes from "./styles.module.scss";
 import { Button, Paper, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";

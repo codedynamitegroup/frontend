@@ -8,8 +8,7 @@ import {
   Button,
   Grid,
   Typography,
-  TextField,
-  Stack
+  TextField
 } from "@mui/material";
 import classes from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { closeNewCriteria } from "reduxes/NewEditRubricCriteriaDialog";
 import { open } from "reduxes/SelectRubricCriteriaDialog";
+import { useTranslation } from "react-i18next";
 
 interface CriteriaConfigDialogProps {
   name?: string;
@@ -63,6 +63,7 @@ const NewCriteriaDialog = () => {
     (state: RootState) => state.rubricCriteriaConfigDialog.newCriteriaStatus
   );
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleClose = () => {
     dispatch(closeNewCriteria());
@@ -84,8 +85,12 @@ const NewCriteriaDialog = () => {
         maxWidth={"sm"}
         sx={{ height: "100%" }}
       >
-        <DialogTitle id='alert-dialog-title' sx={{ fontSize: "1.5rem", fontWeight: 700 }}>
-          {"Add New Criteria"}
+        <DialogTitle
+          id='alert-dialog-title'
+          sx={{ fontSize: "1.5rem", fontWeight: 700 }}
+          translation-key='grading_config_add_new_criteria'
+        >
+          {t("grading_config_add_new_criteria")}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -103,7 +108,12 @@ const NewCriteriaDialog = () => {
           <DialogContentText id='alert-dialog-description'>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography className={classes.configlabel}>{`Name`}</Typography>
+                <Typography
+                  className={classes.configlabel}
+                  translation-key='grading_config_criteria_name'
+                >
+                  {t("grading_config_criteria_name")}
+                </Typography>
                 <TextField
                   id='outlined-basic'
                   variant='outlined'
@@ -114,7 +124,9 @@ const NewCriteriaDialog = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography className={classes.configlabel}>{`Description`}</Typography>
+                <Typography className={classes.configlabel} translation-key='common_description'>
+                  {t("common_description")}
+                </Typography>
                 <Textarea
                   aria-label='empty textarea'
                   placeholder='Positive with focus on where the user can improve'
@@ -130,11 +142,12 @@ const NewCriteriaDialog = () => {
             startIcon={<ArrowBackIcon />}
             sx={{ textAlign: "center" }}
             variant='outlined'
+            translation-key='grading_config_back_to_select_criteria'
           >
-            Back to select criteria
+            {t("grading_config_back_to_select_criteria")}
           </Button>
-          <Button onClick={handleClose} autoFocus variant='contained'>
-            Save
+          <Button onClick={handleClose} autoFocus variant='contained' translation-key='common_save'>
+            {t("common_save")}
           </Button>
         </DialogActions>
       </Dialog>
