@@ -250,11 +250,12 @@ export default function GradingExam() {
       }
     ],
     [
+      t,
+      questionList,
       openPreviewMultipleChoiceDialog,
       openPreviewEssay,
       openPreviewShortAnswer,
-      openPreviewTrueFalse,
-      t
+      openPreviewTrueFalse
     ]
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
