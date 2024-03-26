@@ -46,7 +46,7 @@ export default function MultiSelectCodeQuestionsDialog({
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d504",
       title: "Tính tổng từ 1 đến n",
       exam_id: "f47ac10b-58cc-4372-a567-0e02b2c3d489",
-      exam_name: "Bài kiểm tra 1",
+      exam_name: "Bài kiểm tra cuối kỳ",
       course_id: "f47ac10b-58cc-4372-a567-0e02b2c3d488",
       course_name: "CS101 - Lập trình căn bản",
       user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d480",
@@ -178,19 +178,19 @@ export default function MultiSelectCodeQuestionsDialog({
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
           title: "Tìm số lớn nhất trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC101 - Lập trình căn bản"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
           title: "Tìm số nhỏ nhất trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC102 - Lập trình hướng đối tượng"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
           title: "Tìm giá trị lớn thứ 2 trong mảng",
           exam_name: "Bài thi 1",
-          course_name: "Môn học 1"
+          course_name: "CSC103 - Cấu trúc dữ liệu và giải thuật"
         }
       ],
       language: {
