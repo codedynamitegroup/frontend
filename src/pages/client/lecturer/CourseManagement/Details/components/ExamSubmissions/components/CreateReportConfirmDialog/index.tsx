@@ -1,13 +1,5 @@
-import { Box, Card, Grid, Tooltip } from "@mui/material";
+import { Grid } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
-import CustomDialog from "components/common/dialogs/CustomDialog";
-import Heading4 from "components/text/Heading4";
-import ParagraphBody from "components/text/ParagraphBody";
-import * as React from "react";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import InputTextField from "components/common/inputs/InputTextField";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import Heading3 from "components/text/Heading3";
 import {
   GridCallbackDetails,
   GridColDef,
@@ -15,7 +7,11 @@ import {
   GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import CustomDialog from "components/common/dialogs/CustomDialog";
+import InputTextField from "components/common/inputs/InputTextField";
+import Heading3 from "components/text/Heading3";
+import * as React from "react";
 
 interface CreateReportConfirmDialogProps extends DialogProps {
   title?: string;

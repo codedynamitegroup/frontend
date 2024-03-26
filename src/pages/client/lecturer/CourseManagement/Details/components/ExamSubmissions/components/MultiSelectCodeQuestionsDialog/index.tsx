@@ -1,6 +1,6 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HistoryIcon from "@mui/icons-material/History";
-import { Box, Card, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
@@ -9,14 +9,11 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
-import InputTextField from "components/common/inputs/InputTextField";
 import Heading3 from "components/text/Heading3";
+import Heading5 from "components/text/Heading5";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
-import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import Heading5 from "components/text/Heading5";
 
 interface MultiSelectCodeQuestionsDialogProps extends DialogProps {
   title?: string;
