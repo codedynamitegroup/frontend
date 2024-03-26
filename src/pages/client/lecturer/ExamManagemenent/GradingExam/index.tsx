@@ -3,7 +3,25 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import PreviewIcon from "@mui/icons-material/Preview";
-import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Card,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Toolbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Chip,
+  InputAdornment,
+  Select,
+  MenuItem,
+  Stack
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import {
@@ -19,7 +37,9 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import InputTextField from "components/common/inputs/InputTextField";
-import BasicSelect from "components/common/select/BasicSelect";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import SearchIcon from "@mui/icons-material/Search";
+
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
@@ -41,6 +61,9 @@ import { millisToHoursAndMinutesString } from "utils/time";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import CustomNumberInput from "components/common/inputs/CustomNumberInput";
+import Button from "components/common/buttons/Button";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { blue } from "@mui/material/colors";
 
 const drawerWidth = 450;
 
@@ -302,7 +325,38 @@ export default function GradingExam() {
       setOpen(true);
     }
   }, [width]);
-
+  const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
+  const studentData = [
+    { id: "123456", name: "Nguyễn văn A", status: "đã chấm" },
+    { id: "12346", name: "Nguyễn văn A", status: "đang chấm" },
+    { id: "1234356", name: "Nguyễn văn A", status: "chưa chấm" }
+  ];
+  const chooseStudentHeading: GridColDef[] = [
+    { field: "id", headerName: "Mssv", flex: 1 },
+    { field: "name", headerName: "Tên", flex: 2 },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: (params) =>
+        params.value === "đang chấm" ? (
+          <Chip label={params.value} sx={{ backgroundColor: blue[100] }} />
+        ) : (
+          <Chip label={params.value} />
+        )
+    },
+    {
+      field: "action",
+      type: "actions",
+      headerName: "Hành động",
+      getActions: (params) => [
+        <IconButton onClick={() => setOpenChooseStudent(false)}>
+          <VisibilityIcon />
+        </IconButton>
+      ]
+    }
+  ];
+  const [gradingStatus, setGradingStatus] = React.useState(0);
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
@@ -315,43 +369,45 @@ export default function GradingExam() {
 
   return (
     <>
-      <PreviewMultipleChoice
-        open={openPreviewMultipleChoiceDialog}
-        setOpen={setOpenPreviewMultipleChoiceDialog}
-        aria-labelledby={"customized-dialog-title1"}
-        maxWidth='md'
-        fullWidth
-        value={"1"}
-        readOnly={true}
-      />
-      <PreviewEssay
-        grading={true}
-        open={openPreviewEssay}
-        setOpen={setOpenPreviewEssay}
-        aria-labelledby={"customized-dialog-title2"}
-        maxWidth='md'
-        fullWidth
-        value={"Cha đẻ của SE là Moses"}
-        readOnly={true}
-      />
-      <PreviewShortAnswer
-        open={openPreviewShortAnswer}
-        setOpen={setOpenPreviewShortAnswer}
-        aria-labelledby={"customized-dialog-title3"}
-        maxWidth='md'
-        fullWidth
-        value={"Hyper Text Markup Language"}
-        readOnly={true}
-      />
-      <PreviewTrueFalse
-        open={openPreviewTrueFalse}
-        setOpen={setOpenPreviewTrueFalse}
-        aria-labelledby={"customized-dialog-title4"}
-        maxWidth='md'
-        fullWidth
-        value={"1"}
-        readOnly={true}
-      />
+      <>
+        <PreviewMultipleChoice
+          open={openPreviewMultipleChoiceDialog}
+          setOpen={setOpenPreviewMultipleChoiceDialog}
+          aria-labelledby={"customized-dialog-title1"}
+          maxWidth='md'
+          fullWidth
+          value={"1"}
+          readOnly={true}
+        />
+        <PreviewEssay
+          grading={true}
+          open={openPreviewEssay}
+          setOpen={setOpenPreviewEssay}
+          aria-labelledby={"customized-dialog-title2"}
+          maxWidth='md'
+          fullWidth
+          value={"Cha đẻ của SE là Moses"}
+          readOnly={true}
+        />
+        <PreviewShortAnswer
+          open={openPreviewShortAnswer}
+          setOpen={setOpenPreviewShortAnswer}
+          aria-labelledby={"customized-dialog-title3"}
+          maxWidth='md'
+          fullWidth
+          value={"Hyper Text Markup Language"}
+          readOnly={true}
+        />
+        <PreviewTrueFalse
+          open={openPreviewTrueFalse}
+          setOpen={setOpenPreviewTrueFalse}
+          aria-labelledby={"customized-dialog-title4"}
+          maxWidth='md'
+          fullWidth
+          value={"1"}
+          readOnly={true}
+        />
+      </>
 
       <Grid className={classes.root}>
         <Header ref={headerRef} />
@@ -536,7 +592,70 @@ export default function GradingExam() {
             <Divider />
             <Box className={classes.drawerBody}>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
+                {/* <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle> */}
+                <Button btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(true)}>
+                  Chọn sinh viên
+                </Button>
+                <Dialog
+                  open={openChooseStudent}
+                  onClose={() => setOpenChooseStudent(false)}
+                  fullWidth={true}
+                  maxWidth='md'
+                >
+                  <DialogTitle>Chọn sinh viên</DialogTitle>
+                  <DialogContent>
+                    <Grid container justifyContent={"space-between"} marginBottom={1}>
+                      <Grid item xs={7}>
+                        <OutlinedInput
+                          size='small'
+                          fullWidth
+                          translation-key='common_search'
+                          placeholder={t("common_search")}
+                          startAdornment={
+                            <InputAdornment position='start'>
+                              <SearchIcon />
+                            </InputAdornment>
+                          }
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Select value={gradingStatus} onChange={() => null} size='small'>
+                          <MenuItem value={0}>Tất cả</MenuItem>
+                          <MenuItem value={1}>Đang chấm</MenuItem>
+                          <MenuItem value={2}>Chưa chấm</MenuItem>
+                          <MenuItem value={3}>Đã chấm</MenuItem>
+                        </Select>
+                      </Grid>
+                    </Grid>
+
+                    <CustomDataGrid
+                      dataList={studentData}
+                      sx={{
+                        "& .MuiDataGrid-cell:nth-last-child(n+2)": {
+                          padding: "16px"
+                        }
+                      }}
+                      tableHeader={chooseStudentHeading}
+                      onSelectData={rowSelectionHandler}
+                      // visibleColumn={visibleColumnList}
+                      dataGridToolBar={dataGridToolbar}
+                      page={page}
+                      pageSize={pageSize}
+                      totalElement={totalElement}
+                      onPaginationModelChange={pageChangeHandler}
+                      showVerticalCellBorder={true}
+                      getRowHeight={() => "auto"}
+                      // onClickRow={rowClickHandler}
+                      // slots={{toolbar:}}
+                      // columnGroupingModel={columnGroupingModelPlus}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(false)}>
+                      Đóng
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 {/* <BasicSelect
                   labelId='select-assignment-submission-student-label'
                   value={assignmentSubmissionStudent}
