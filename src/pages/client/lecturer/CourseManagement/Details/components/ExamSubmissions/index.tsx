@@ -195,6 +195,7 @@ const LecturerCourseExamSubmissions = () => {
         id: "1",
         question: "Câu hỏi 1",
         answer: "Đáp án 1",
+        checkCheating: false,
         max_grade: 10,
         type: qtype.source_code,
         plagiarism_detection: {
@@ -392,6 +393,28 @@ const LecturerCourseExamSubmissions = () => {
           </Box>
         );
       }
+    }
+  ];
+  const checkCheatingTableHeading: GridColDef[] = [
+    { field: "question", headerName: "Câu hỏi", flex: 4 },
+    {
+      field: "checkCheating",
+      headerName: "Trạng thái",
+      flex: 4,
+      renderCell: (params) => (
+        <Box marginY={"10px"}>{params.value ? "Chưa kiểm tra" : "Đã kiểm tra"}</Box>
+      )
+    },
+    {
+      field: "action",
+      headerName: "Hành động",
+      flex: 4,
+      type: "actions",
+      getActions: (params) => [
+        <Button btnType={BtnType.Primary}>
+          {params.row.checkCheating ? "Kiểm tra gian lận" : "Xem kết quả"}
+        </Button>
+      ]
     }
   ];
 
@@ -705,22 +728,24 @@ const LecturerCourseExamSubmissions = () => {
           >
             <DialogTitle>Kiểm tra gian lận</DialogTitle>
             <DialogContent>
-              {examData.questions.map((value, index) => {
-                return (
-                  value.type.code === qtype.source_code.code && (
-                    <Stack spacing={1}>
-                      <Stack
-                        justifyContent={"space-between"}
-                        direction={"row"}
-                        alignItems={"center"}
-                      >
-                        <ParagraphBody>{value.question}</ParagraphBody>
-                        <Button btnType={BtnType.Primary}>Kiểm tra gian lận &gt;</Button>
-                      </Stack>
-                    </Stack>
-                  )
-                );
-              })}
+              <CustomDataGrid
+                dataList={examData.questions.filter(
+                  (value) => value.type.code === qtype.source_code.code
+                )}
+                tableHeader={checkCheatingTableHeading}
+                onSelectData={rowSelectionHandler}
+                // visibleColumn={visibleColumnList}
+                dataGridToolBar={dataGridToolbar}
+                page={page}
+                pageSize={pageSize}
+                totalElement={totalElement}
+                onPaginationModelChange={pageChangeHandler}
+                showVerticalCellBorder={true}
+                getRowHeight={() => "auto"}
+                // onClickRow={rowClickHandler}
+                // slots={{toolbar:}}
+                // columnGroupingModel={columnGroupingModelPlus}
+              />
             </DialogContent>
             <DialogActions>
               <Button btnType={BtnType.Outlined} onClick={() => setOpenCheckCheeting(false)}>
