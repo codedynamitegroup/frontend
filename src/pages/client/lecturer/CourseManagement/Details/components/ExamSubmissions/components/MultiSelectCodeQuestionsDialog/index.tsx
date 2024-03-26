@@ -9,8 +9,8 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
-import InputTextField from "components/common/inputs/InputTextField";
 import Heading3 from "components/text/Heading3";
+import Heading5 from "components/text/Heading5";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
@@ -275,23 +275,16 @@ export default function MultiSelectCodeQuestionsDialog({
       minWidth='1000px'
       {...props}
     >
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <InputTextField
-            type='text'
-            title={"Tên báo cáo gian lận"}
-            value={reportName}
-            onChange={(e) => setReportName(e.target.value)}
-            placeholder={"Nhập tên báo cáo gian lận"}
-            fullWidth
-          />
-        </Grid>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Tabs
             value={tabIndex}
             onChange={handleChangeTabIndex}
             aria-label='tabIndex'
             variant='fullWidth'
+            sx={{
+              border: "1px solid #e0e0e0"
+            }}
           >
             <Tab
               icon={<ChecklistIcon />}
@@ -304,13 +297,18 @@ export default function MultiSelectCodeQuestionsDialog({
         {tabIndex === 0 ? (
           <>
             <Grid item xs={12}>
-              <Heading3>
-                Đánh dấu các câu hỏi lập trình bạn muốn tạo báo cáo gian lận cho danh sách bài nộp
-                của sinh viên
-              </Heading3>
+              <CodeQuestionsFeatureBar />
             </Grid>
             <Grid item xs={12}>
-              <CodeQuestionsFeatureBar />
+              <Heading5
+                fontStyle={"italic"}
+                fontWeight={"400"}
+                colorname='--gray-50'
+                translation-key='code_management_detail_info_description'
+              >
+                Đánh dấu các câu hỏi lập trình bạn muốn tạo báo cáo gian lận cho danh sách bài nộp
+                của sinh viên
+              </Heading5>
             </Grid>
             <Grid item xs={12}>
               <CustomDataGrid

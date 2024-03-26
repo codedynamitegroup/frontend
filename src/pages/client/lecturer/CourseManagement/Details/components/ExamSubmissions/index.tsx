@@ -39,7 +39,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import CreateExistedReportConfirmDialog from "./components/CreateExistedReportConfirmDialog";
+import CreateReportConfirmDialog from "./components/CreateReportConfirmDialog";
 import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
@@ -63,8 +63,10 @@ const LecturerCourseExamSubmissions = () => {
   });
   const [isMultiSelectCodeQuestionsDialogOpen, setIsMultiSelectCodeQuestionsDialogOpen] =
     useState(false);
-  const [isCreateExistedReportConfirmDialogOpen, setIsCreateExistedReportConfirmDialogOpen] =
-    useState(false);
+  const [isCreateReportConfirmDialogOpen, setIsCreateReportConfirmDialogOpen] = useState({
+    value: false,
+    isExisted: false
+  });
   const navigate = useNavigate();
   const totalSubmissionCount = 20;
   const totalStudent = 30;
@@ -445,9 +447,15 @@ const LecturerCourseExamSubmissions = () => {
       const result = await fetchCheckCodeQuestionIdsReportExists(codeQuestionIds);
       if (result.status === "success") {
         if (result.data) {
-          handleOpenCreateExistedReportConfirmDialog();
+          handleOpenCreateReportConfirmDialog({
+            value: true,
+            isExisted: true
+          });
         } else {
-          onHandlePlagiarismDetection(reportName, codeQuestionIds);
+          handleOpenCreateReportConfirmDialog({
+            value: true,
+            isExisted: false
+          });
         }
       } else {
         console.error(result.message);
@@ -517,12 +525,15 @@ const LecturerCourseExamSubmissions = () => {
     setIsMultiSelectCodeQuestionsDialogOpen(false);
   }, []);
 
-  const handleOpenCreateExistedReportConfirmDialog = useCallback(() => {
-    setIsCreateExistedReportConfirmDialogOpen(true);
-  }, []);
+  const handleOpenCreateReportConfirmDialog = useCallback(
+    (value: { value: boolean; isExisted: boolean }) => {
+      setIsCreateReportConfirmDialogOpen(value);
+    },
+    []
+  );
 
-  const handleCloseCreateExistedReportConfirmDialog = useCallback(() => {
-    setIsCreateExistedReportConfirmDialogOpen(false);
+  const handleCloseCreateReportConfirmDialog = useCallback(() => {
+    setIsCreateReportConfirmDialogOpen({ value: false, isExisted: false });
   }, []);
 
   const [openCheckCheating, setOpenCheckCheeting] = useState(false);
@@ -618,10 +629,15 @@ const LecturerCourseExamSubmissions = () => {
         }}
         onHandleCancel={handleCloseMultiSelectCodeQuestionsDialog}
       />
-      <CreateExistedReportConfirmDialog
-        open={isCreateExistedReportConfirmDialogOpen}
-        handleClose={handleCloseCreateExistedReportConfirmDialog}
-        title={"Xác nhận ghi đè báo cáo gian lận"}
+      <CreateReportConfirmDialog
+        open={isCreateReportConfirmDialogOpen.value}
+        isReportExisted={isCreateReportConfirmDialogOpen.isExisted}
+        handleClose={handleCloseCreateReportConfirmDialog}
+        title={
+          isCreateReportConfirmDialogOpen.isExisted
+            ? "Xác nhận ghi đè báo cáo cũ"
+            : "Tạo báo cáo gian lận"
+        }
         cancelText={"Xem lại"}
         confirmText={"Xác nhận"}
         isConfirmLoading={isPlagiarismDetectionLoading}
