@@ -23,6 +23,9 @@ import {
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import axios from "axios";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
@@ -41,6 +44,7 @@ import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
+import { blue, green } from "@mui/material/colors";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -144,19 +148,38 @@ const LecturerCourseExamSubmissions = () => {
         title: "Tính tổng các số lẻ từ 1 đến n",
         checkCheating: false,
         max_grade: 10,
-        type: qtype.source_code
+        type: qtype.source_code,
+        number: 1
       },
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
         title: "Thuật toán là gì",
         max_grade: 10,
-        type: qtype.essay
+        type: qtype.essay,
+        number: 2
       },
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
         title: "HTML stands for Hyper Text Markup Language",
         max_grade: 10,
-        type: qtype.multiple_choice
+        type: qtype.multiple_choice,
+        number: 3
+      },
+      {
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d49",
+        title: "Tính tổng các số lẻ từ 1 đến n",
+        checkCheating: false,
+        max_grade: 10,
+        type: qtype.source_code,
+        number: 4
+      },
+      {
+        id: "f47ac10b-58cc-4372-a567-002b2c3d495",
+        title: "Tính tổng các số lẻ từ 1 đến n",
+        checkCheating: true,
+        max_grade: 10,
+        type: qtype.source_code,
+        number: 5
       }
     ]
   };
@@ -452,31 +475,45 @@ const LecturerCourseExamSubmissions = () => {
   const [tableHeadingPlus, setTableHeadingPlus] = useState<GridColDef[]>([]);
 
   const checkCheatingTableHeading: GridColDef[] = [
+    { field: "number", headerName: "STT", flex: 0.5 },
     { field: "title", headerName: "Câu hỏi", flex: 4 },
     {
       field: "checkCheating",
       headerName: "Trạng thái",
-      flex: 4,
+      flex: 1,
       renderCell: (params) => (
-        <Box marginY={"10px"}>{params.value ? "Chưa kiểm tra" : "Đã kiểm tra"}</Box>
+        <Box>
+          {params.value ? (
+            <Chip label='Đã kiểm tra' sx={{ backgroundColor: green[100] }} />
+          ) : (
+            <Chip label='Chưa kiểm tra' sx={{ backgroundColor: blue[100] }} />
+          )}
+        </Box>
       )
     },
     {
       field: "action",
       headerName: "Hành động",
-      flex: 4,
+      flex: 1,
       type: "actions",
-      renderCell: (params) => {
-        return (
-          <Button
-            btnType={BtnType.Primary}
-            onClick={handleOpenMultiSelectCodeQuestionsDialog}
-            translation-key='common_check_cheating'
-          >
-            Tạo báo cáo gian lận
-          </Button>
-        );
-      }
+      getActions: (params) =>
+        params.row.checkCheating
+          ? [
+              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+                <VisibilityIcon />
+              </IconButton>,
+              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+                <AddCircleOutlineIcon />
+              </IconButton>
+            ]
+          : [
+              <IconButton disabled>
+                <VisibilityOffIcon />
+              </IconButton>,
+              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+                <AddCircleOutlineIcon />
+              </IconButton>
+            ]
     }
   ];
 
@@ -772,6 +809,7 @@ const LecturerCourseExamSubmissions = () => {
               open={openCheckCheating}
               onClose={() => setOpenCheckCheeting(false)}
               fullWidth={true}
+              maxWidth='md'
             >
               <DialogTitle>Kiểm tra gian lận</DialogTitle>
               <DialogContent>
@@ -779,6 +817,11 @@ const LecturerCourseExamSubmissions = () => {
                   dataList={examData.questions.filter(
                     (value) => value.type.code === qtype.source_code.code
                   )}
+                  sx={{
+                    "& .MuiDataGrid-cell:nth-last-child(n+2)": {
+                      padding: "16px"
+                    }
+                  }}
                   tableHeader={checkCheatingTableHeading}
                   onSelectData={rowSelectionHandler}
                   // visibleColumn={visibleColumnList}
@@ -795,7 +838,7 @@ const LecturerCourseExamSubmissions = () => {
                 />
               </DialogContent>
               <DialogActions>
-                <Button btnType={BtnType.Outlined} onClick={() => setOpenCheckCheeting(false)}>
+                <Button btnType={BtnType.Primary} onClick={() => setOpenCheckCheeting(false)}>
                   Đóng
                 </Button>
               </DialogActions>
