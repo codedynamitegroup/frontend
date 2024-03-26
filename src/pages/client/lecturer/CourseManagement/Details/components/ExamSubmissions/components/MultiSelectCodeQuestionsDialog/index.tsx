@@ -214,12 +214,12 @@ export default function MultiSelectCodeQuestionsDialog({
         },
         {
           field: "comparedCodeQuestions",
-          headerName: "Các câu hỏi đã so sánh",
+          headerName: "Danh sách câu hỏi đã so sánh",
           minWidth: 450,
           renderCell: (params) => {
             return (
               <BasicAccordion
-                title={"Danh sách câu hỏi đã so sánh"}
+                title={"Xem các câu hỏi của báo cáo"}
                 // sx={{
                 //   backgroundColor: "transparent",
                 //   boxShadow: "none"
