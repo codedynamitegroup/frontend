@@ -1,8 +1,8 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HistoryIcon from "@mui/icons-material/History";
-import { Box, Card, Grid, Tab, Tabs } from "@mui/material";
+import { Card, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
-import { GridRowParams } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
@@ -12,11 +12,13 @@ import BasicAccordion from "components/common/accordion/BasicAccordion";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
-import ParagraphBody from "components/text/ParagraphBody";
+import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
-import useWindowDimensions from "hooks/useWindowDimensions";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import EyeIcon from "@mui/icons-material/Visibility";
+import classes from "./styles.module.scss";
 
 interface MultiSelectCodeQuestionsDialogProps extends DialogProps {
   title?: string;
@@ -175,6 +177,7 @@ export default function MultiSelectCodeQuestionsDialog({
   const reportHistoryList = [
     {
       id: "43a17420-868f-49e5-bdb3-4f0766d5fb4b",
+      sourceQuestionTitle: "Tìm số lớn nhất trong mảng",
       comparedCodeQuestions: [
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
@@ -184,13 +187,13 @@ export default function MultiSelectCodeQuestionsDialog({
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-          title: "Tìm số nhỏ nhất trong mảng",
+          title: "Tìm số lớn nhất trong mảng",
           exam_name: "Bài thi giữa kỳ",
           course_name: "CSC102 - Lập trình hướng đối tượng"
         },
         {
           id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
-          title: "Tìm giá trị lớn thứ 2 trong mảng",
+          title: "Tìm số lớn nhất trong mảng",
           exam_name: "Bài thi giữa kỳ",
           course_name: "CSC103 - Cấu trúc dữ liệu và giải thuật"
         }
@@ -210,27 +213,42 @@ export default function MultiSelectCodeQuestionsDialog({
         {
           field: "name",
           headerName: "Tên báo cáo",
-          minWidth: 300
+          flex: 1
+        },
+        {
+          field: "sourceQuestionTitle",
+          headerName: "Câu hỏi nguồn",
+          minWidth: 150,
+          valueFormatter: (params) => {
+            return `${params.value}`;
+          }
         },
         {
           field: "comparedCodeQuestions",
-          headerName: "Danh sách câu hỏi đã so sánh",
+          headerName: "Danh sách so sánh bài kiểm tra",
           minWidth: 450,
           renderCell: (params) => {
             return (
               <BasicAccordion
-                title={"Xem các câu hỏi của báo cáo"}
+                title={"Xem các bài kiểm tra"}
                 // sx={{
-                //   backgroundColor: "transparent",
+                //   background: "transparent",
                 //   boxShadow: "none"
                 // }}
               >
                 <Grid container spacing={2}>
                   {params.value.map((item: any) => (
                     <Grid item xs={12}>
-                      <ParagraphBody>
-                        {item.title} - {item.exam_name} - {item.course_name}
-                      </ParagraphBody>
+                      <Card
+                        sx={{
+                          padding: "8px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center"
+                        }}
+                      >
+                        {item.exam_name} - {item.course_name}
+                      </Card>
                     </Grid>
                   ))}
                 </Grid>
@@ -243,6 +261,29 @@ export default function MultiSelectCodeQuestionsDialog({
           headerName: "Ngày tạo",
           flex: 1,
           renderCell: (params) => <span>{new Date(params.value).toLocaleString()}</span>
+        },
+        {
+          field: "action",
+          headerName: "Hành động",
+          flex: 1,
+          type: "actions",
+          getActions: () => {
+            return [
+              <GridActionsCellItem
+                icon={<EyeIcon className={classes.icon} />}
+                label='View'
+                className='textPrimary'
+                onClick={() => {}}
+                color='inherit'
+              />,
+              <GridActionsCellItem
+                icon={<DeleteIcon className={classes.icon} />}
+                label='Delete'
+                onClick={() => {}}
+                color='inherit'
+              />
+            ];
+          }
         }
       ] as GridColDef[],
     []
