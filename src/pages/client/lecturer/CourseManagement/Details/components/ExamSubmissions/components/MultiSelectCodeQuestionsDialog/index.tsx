@@ -16,6 +16,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
+import useWindowDimensions from "hooks/useWindowDimensions";
 
 interface MultiSelectCodeQuestionsDialogProps extends DialogProps {
   title?: string;
@@ -264,6 +265,8 @@ export default function MultiSelectCodeQuestionsDialog({
     setTabIndex(newValue);
   };
 
+  const { height } = useWindowDimensions();
+
   return (
     <CustomDialog
       open={open}
@@ -275,6 +278,7 @@ export default function MultiSelectCodeQuestionsDialog({
       onHandleCancel={onHandleCancel}
       onHanldeConfirm={onHanldeConfirm}
       minWidth='1000px'
+      maxHeight={`${0.8 * height}px`}
       {...props}
     >
       <Grid container spacing={2}>
