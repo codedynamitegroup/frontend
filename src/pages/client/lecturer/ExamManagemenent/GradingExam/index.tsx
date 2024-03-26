@@ -40,6 +40,7 @@ import classes from "./styles.module.scss";
 import { millisToHoursAndMinutesString } from "utils/time";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import CustomNumberInput from "components/common/inputs/CustomNumberInput";
 
 const drawerWidth = 450;
 
@@ -182,29 +183,31 @@ export default function GradingExam() {
         field: "grade",
         headerName: t("common_grade"),
         minWidth: 50,
-        renderCell: (params) => (
-          <InputTextField
-            type='number'
-            value={params.value || "0"}
-            onChange={(e) => {
-              setQuestionList((prev) => {
-                const newList = prev.map((item) => {
-                  if (item.id === params.row.id) {
-                    return {
-                      ...item,
-                      grade: parseInt(e.target.value)
-                    };
-                  }
-                  return item;
+        renderCell: (params) => {
+          const maxGrade = questionList.find((item) => item.id === params.row.id)?.max_grade;
+          return (
+            <CustomNumberInput
+              value={params.value || 0}
+              onChange={(value) => {
+                setQuestionList((prev) => {
+                  const newList = prev.map((item) => {
+                    if (item.id === params.row.id) {
+                      return {
+                        ...item,
+                        grade: value
+                      };
+                    }
+                    return item;
+                  });
+                  return newList;
                 });
-                return newList;
-              });
-            }}
-            placeholder={t("common_enter_grade")}
-            backgroundColor='white'
-            translation-key='common_enter_grade'
-          />
-        )
+              }}
+              min={0}
+              max={maxGrade}
+              step={1}
+            />
+          );
+        }
       },
       {
         field: "max_grade",
