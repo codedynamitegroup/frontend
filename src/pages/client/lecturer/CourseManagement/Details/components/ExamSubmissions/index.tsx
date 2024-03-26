@@ -9,7 +9,10 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Slider
+  Slider,
+  TextField,
+  Divider,
+  InputAdornment
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import {
@@ -596,10 +599,51 @@ const LecturerCourseExamSubmissions = () => {
           >
             <DialogContent>
               <Box marginTop={"16px"}>
-                <Stack direction={"row"} alignItems={"end"}>
-                  <ParagraphBody>Câu {sliderValue[0]} </ParagraphBody>
-                  <Stack flex={9} alignItems={"center"} marginX={4}>
+                <Grid container>
+                  <Grid container justifyContent={"space-between"} xs={12} alignItems={"center"}>
+                    <TextField
+                      placeholder='Từ'
+                      value={sliderValue[0]}
+                      InputProps={{
+                        startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
+                        inputProps: { min: 1, max: examData.questions.length }
+                      }}
+                      onChange={(e) => {
+                        let min = parseInt(e.target.value);
+                        let max = sliderValue[1];
+                        let temp = 0;
+                        if (min > max) {
+                          temp = min;
+                          min = max;
+                          max = temp;
+                        }
+                        setSliderValue([min, max]);
+                      }}
+                      type='number'
+                    />
                     <ParagraphBody>đến</ParagraphBody>
+                    <TextField
+                      placeholder='Đến'
+                      value={sliderValue[1]}
+                      InputProps={{
+                        startAdornment: <InputAdornment position='start'>Câu</InputAdornment>,
+                        inputProps: { min: 1, max: examData.questions.length }
+                      }}
+                      onChange={(e) => {
+                        let max = parseInt(e.target.value);
+                        let min = sliderValue[0];
+                        let temp = 0;
+                        if (min > max) {
+                          temp = min;
+                          min = max;
+                          max = temp;
+                        }
+                        setSliderValue([min, max]);
+                      }}
+                      type='number'
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <Slider
                       value={sliderValue}
                       onChange={(e, val) => {
@@ -611,10 +655,8 @@ const LecturerCourseExamSubmissions = () => {
                       defaultValue={[1, examData.questions.length]}
                       valueLabelDisplay='auto'
                     />
-                  </Stack>
-
-                  <ParagraphBody>{sliderValue[1]}</ParagraphBody>
-                </Stack>
+                  </Grid>
+                </Grid>
               </Box>
             </DialogContent>
             <DialogActions>
