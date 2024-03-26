@@ -358,7 +358,7 @@ export default function ReviewExamAttempt() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               position: "fixed",
-              top: "64px"
+              top: `${headerHeight}px`
             }
           }}
           variant='persistent'
