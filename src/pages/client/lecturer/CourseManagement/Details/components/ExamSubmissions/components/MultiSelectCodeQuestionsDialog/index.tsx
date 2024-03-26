@@ -149,11 +149,11 @@ export default function MultiSelectCodeQuestionsDialog({
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
-      {
-        field: "title",
-        headerName: t("exam_management_create_question_name"),
-        flex: 1
-      },
+      // {
+      //   field: "title",
+      //   headerName: t("exam_management_create_question_name"),
+      //   flex: 1
+      // },
       {
         field: "exam_name",
         headerName: "Bài kiểm tra",
@@ -359,8 +359,8 @@ export default function MultiSelectCodeQuestionsDialog({
                 colorname='--gray-50'
                 translation-key='code_management_detail_info_description'
               >
-                Đánh dấu các câu hỏi lập trình bạn muốn tạo báo cáo gian lận cho danh sách bài nộp
-                của sinh viên
+                Đánh dấu các bài kiểm tra bạn muốn tạo báo cáo gian lận cho danh sách bài nộp của
+                sinh viên
               </Heading5>
             </Grid>
             <Grid item xs={12}>
