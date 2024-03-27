@@ -16,6 +16,12 @@ interface InitialState {
     id: string;
     name: string;
     createdAt: string;
+    sourceQuestionId: string;
+    sourceQuestionName: string;
+    examId: string;
+    examName: string;
+    courseId: string;
+    courseName: string;
     files: File[];
     language: { name: string; extensions: string[] };
     pairs: Pair[];
@@ -234,7 +240,13 @@ const codePlagiarismSlice = createSlice({
       state.report = {
         ...report,
         files: filterdFiles,
-        labels: labels
+        labels: labels,
+        sourceQuestionId: "",
+        sourceQuestionName: "",
+        examId: "",
+        examName: "",
+        courseId: "",
+        courseName: ""
       };
       state.filteredPairs = filteredPairs;
       state.filterdFiles = filterdFiles;

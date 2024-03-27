@@ -1,5 +1,13 @@
 import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faChartLine, faCircleInfo, faCode, faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChartLine,
+  faCircleInfo,
+  faCode,
+  faQuestion,
+  faSchool,
+  faTable,
+  faUsers
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -14,6 +22,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { File } from "models/codePlagiarism";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +35,6 @@ import LabelSubmissionsTable from "./components/LabelSubmissionsTable";
 import SimilarityHistogram from "./components/SimilarityHistogram";
 import SubmissionsClustersTable from "./components/SubmissionsClustersTable";
 import classes from "./styles.module.scss";
-import { File } from "models/codePlagiarism";
 
 const drawerWidth = 450;
 
@@ -361,6 +369,24 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           ? new Date(report.createdAt).toLocaleString()
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
+                    </Box>
+                    <Box className={classes.submissionsQuantity}>
+                      <Tooltip title={"Tiêu đề câu hỏi"} placement='top'>
+                        <FontAwesomeIcon icon={faQuestion} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <Link to={routes.lecturer.code_question.detail}>Tìm tổng từ 1 đến 10</Link>
+                    </Box>
+                    <Box className={classes.submissionsQuantity}>
+                      <Tooltip title={"Bài kiểm tra"} placement='top'>
+                        <FontAwesomeIcon icon={faTable} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <Link to={routes.lecturer.exam.detail}>Bài kiểm tra cuối kỳ</Link>
+                    </Box>
+                    <Box className={classes.submissionsQuantity}>
+                      <Tooltip title={"Khoá học"} placement='top'>
+                        <FontAwesomeIcon icon={faSchool} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <Link to={routes.lecturer.course.detail}>CSC101 - Nhập môn lập trình</Link>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
                       <Tooltip
