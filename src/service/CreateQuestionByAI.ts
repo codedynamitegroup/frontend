@@ -196,6 +196,7 @@ ${SYSTEM_INSTRUCTIONS}`;
     console.log("cleanText", cleanText);
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
+    console.log(json);
     return json;
   } catch (error) {
     return error;
