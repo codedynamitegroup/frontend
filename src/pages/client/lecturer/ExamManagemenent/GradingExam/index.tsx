@@ -6,22 +6,24 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import {
   Box,
   Card,
-  Chip,
   CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Toolbar,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
-  Drawer,
-  FormControl,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Paper,
+  Chip,
+  InputAdornment,
   Select,
-  Toolbar
+  MenuItem,
+  Stack,
+  FormControl,
+  InputLabel,
+  Paper
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -38,10 +40,10 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import InputTextField from "components/common/inputs/InputTextField";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import SearchIcon from "@mui/icons-material/Search";
 import SearchBar from "components/common/search/SearchBar";
 
-import Button from "components/common/buttons/Button";
-import CustomNumberInput from "components/common/inputs/CustomNumberInput";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
@@ -53,15 +55,18 @@ import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs from "dayjs";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import { millisToHoursAndMinutesString } from "utils/time";
 import classes from "./styles.module.scss";
+import { millisToHoursAndMinutesString } from "utils/time";
+import useBoxDimensions from "hooks/useBoxDimensions";
+import { useTranslation } from "react-i18next";
+import CustomNumberInput from "components/common/inputs/CustomNumberInput";
+import Button from "components/common/buttons/Button";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const drawerWidth = 450;
 
@@ -136,6 +141,7 @@ export default function GradingExam() {
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
+  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState("0");
   const examOpenTime = dayjs();
   const examCloseTime = dayjs();
   const examLimitTimeInMillis = 1000000;
@@ -648,7 +654,7 @@ export default function GradingExam() {
                       onPaginationModelChange={pageChangeHandler}
                       showVerticalCellBorder={true}
                       getRowHeight={() => "auto"}
-                      // onClickRow={rowClickHandler}
+                      onClickRow={() => setOpenChooseStudent(false)}
                       // slots={{toolbar:}}
                       // columnGroupingModel={columnGroupingModelPlus}
                     />

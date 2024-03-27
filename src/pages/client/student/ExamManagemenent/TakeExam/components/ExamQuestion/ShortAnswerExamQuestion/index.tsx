@@ -1,7 +1,9 @@
 import { Textarea } from "@mui/joy";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, FormControlLabel, Checkbox, Stack } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
+import FlagIcon from "@mui/icons-material/Flag";
 
+import ParagraphBody from "components/text/ParagraphBody";
 const ShortAnswerExamQuestion = () => {
   return (
     <Grid container spacing={1}>
@@ -14,8 +16,21 @@ const ShortAnswerExamQuestion = () => {
       <Grid item xs={12} md={10}>
         <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
           <Typography gutterBottom>What is the full form of HTML?</Typography>
-          <Textarea sx={{ marginBottom: 1, backgroundColor: "white" }} minRows={1} maxRows={1} />
+          <Textarea
+            sx={{ marginBottom: 1, backgroundColor: "white" }}
+            minRows={1}
+            maxRows={1}
+            placeholder='Answer'
+          />
         </Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={
+            <Stack direction={"row"} alignItems={"center"}>
+              <ParagraphBody>Gắn cờ</ParagraphBody> <FlagIcon sx={{ color: "red" }} />
+            </Stack>
+          }
+        />
       </Grid>
     </Grid>
   );

@@ -14,7 +14,9 @@ import {
   Stack,
   Toolbar,
   InputAdornment,
-  Pagination
+  Pagination,
+  Badge,
+  Autocomplete
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -37,9 +39,12 @@ import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { green, grey, yellow } from "@mui/material/colors";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import FlagIcon from "@mui/icons-material/Flag";
+import CircleIcon from "@mui/icons-material/Circle";
+import ModeIcon from "@mui/icons-material/Mode";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
-const drawerWidth = 350;
+const drawerWidth = 400;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -110,26 +115,210 @@ export default function TakeExam() {
     {
       id: "0",
       type: qtype.essay,
+      title: "1. Ai là cha của SE? Nêu những thành tựu nổi bật",
       done: true
     },
     {
       id: "1",
       type: qtype.short_answer,
+      title: "2. What is the full form of HTML?",
       done: true
     },
     {
       id: "2",
       type: qtype.multiple_choice,
+      title: "3. Con trỏ là gì?",
       done: true
     },
     {
       id: "3",
       type: qtype.true_false,
+      title: "4. Ai là cha của SE? Nêu những thành tựu nổi bật",
       done: false
     },
     {
       id: "4",
       type: qtype.true_false,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
+      done: false
+    },
+    {
+      id: "5",
+      type: qtype.multiple_choice,
       done: false
     },
     {
@@ -371,51 +560,100 @@ export default function TakeExam() {
           <Divider />
           <Box className={classes.drawerBody}>
             <Box className={classes.drawerFieldContainer}>
-              <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
-              <TextField
-                placeholder='Nhập số thứ tự câu hỏi'
-                size='small'
-                type='number'
-                fullWidth
-                sx={{ marginBottom: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton>
-                        <KeyboardReturnIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-
-              <Grid container spacing={1} marginBottom={"10px"}>
-                {questions.map((question, index) => (
-                  <Grid item key={index}>
-                    <Button
-                      btnType={questionPageIndex === index ? BtnType.Outlined : undefined}
-                      sx={{
-                        backgroundColor: question.done
-                          ? question.type === qtype.essay || question.type === qtype.short_answer
-                            ? yellow[100]
-                            : green[100]
-                          : grey[100]
-                      }}
-                      onClick={() => {
-                        navigate(`${routes.student.exam.take}?page=${index}`, {
-                          replace: true
-                        });
-                      }}
-                    >
-                      <ParagraphBody>{index + 1}</ParagraphBody>
-                    </Button>
+              <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
+                <Grid item xs={12}>
+                  <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
+                  <Autocomplete
+                    fullWidth
+                    size='small'
+                    options={questions.filter((value) => value.title)}
+                    getOptionLabel={(params) => (params.title ? params.title : "")}
+                    sx={{ marginBottom: "16px" }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder='Nhập câu hỏi'
+                        size='small'
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position='end'>
+                        //       <IconButton>
+                        //         <KeyboardReturnIcon />
+                        //       </IconButton>
+                        //     </InputAdornment>
+                        //   )
+                        // }}
+                      />
+                    )}
+                  />
+                  <Autocomplete
+                    disablePortal
+                    fullWidth
+                    multiple
+                    size='small'
+                    options={[
+                      { label: "Tự luận" },
+                      { label: "Trắc nghiệm" },
+                      { label: "Câu hỏi được đánh dấu" }
+                    ]}
+                    renderInput={(params) => <TextField {...params} label='Lọc câu hỏi' />}
+                    sx={{ marginBottom: "16px" }}
+                  />
+                  <Grid
+                    container
+                    spacing={1}
+                    marginBottom={"10px"}
+                    sx={{ overflow: "auto", maxHeight: "40dvh" }}
+                  >
+                    {questions.map((question, index) => (
+                      <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
+                        <Badge
+                          badgeContent={
+                            question.type.code === qtype.essay.code ||
+                            question.type.code === qtype.short_answer.code ? (
+                              <ModeIcon sx={{ width: "10px", height: "10x" }} />
+                            ) : (
+                              <FormatListBulletedIcon sx={{ width: "10px", height: "10x" }} />
+                            )
+                          }
+                          color='secondary'
+                        >
+                          <Button
+                            btnType={questionPageIndex === index ? BtnType.Outlined : undefined}
+                            sx={{
+                              backgroundColor: question.done ? yellow[200] : grey[100]
+                            }}
+                            onClick={() => {
+                              navigate(`${routes.student.exam.take}?page=${index}`, {
+                                replace: true
+                              });
+                            }}
+                            endIcon={
+                              index === 0 ? (
+                                <FlagIcon sx={{ width: "20px", height: "20px", color: "red" }} />
+                              ) : null
+                            }
+                          >
+                            <ParagraphBody>{index + 1}</ParagraphBody>
+                          </Button>
+                        </Badge>
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container justifyContent={"flex-end"}>
+                    <Grid container justifyContent={"center"}>
+                      <Pagination count={10} showFirstButton showLastButton size='small' />
+                    </Grid>
+                    <Grid item>
+                      <Button btnType={BtnType.Primary} onClick={() => {}} sx={{ marginY: "10px" }}>
+                        <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Pagination count={10} showFirstButton showLastButton size='small' />
-              <Button btnType={BtnType.Text} onClick={() => {}} padding='10px 0'>
-                <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
-              </Button>
             </Box>
           </Box>
         </Drawer>

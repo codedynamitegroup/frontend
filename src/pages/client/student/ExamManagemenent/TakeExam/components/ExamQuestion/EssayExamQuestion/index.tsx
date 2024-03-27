@@ -1,7 +1,8 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, FormControlLabel, Checkbox, Stack } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import TextEditor from "components/editor/TextEditor";
-
+import FlagIcon from "@mui/icons-material/Flag";
+import ParagraphBody from "components/text/ParagraphBody";
 const EssayExamQuestion = () => {
   return (
     <Grid container spacing={1}>
@@ -18,6 +19,14 @@ const EssayExamQuestion = () => {
             <TextEditor value='' />
           </Box>
         </Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={
+            <Stack direction={"row"} alignItems={"center"}>
+              <ParagraphBody>Gắn cờ</ParagraphBody> <FlagIcon sx={{ color: "red" }} />
+            </Stack>
+          }
+        />
       </Grid>
     </Grid>
   );

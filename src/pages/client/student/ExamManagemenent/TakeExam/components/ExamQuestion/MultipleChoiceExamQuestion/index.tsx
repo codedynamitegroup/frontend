@@ -1,15 +1,19 @@
 import {
   Box,
   FormControl,
-  FormControlLabel,
   Grid,
   Radio,
   RadioGroup,
-  Typography
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  Stack
 } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import { useState } from "react";
+import FlagIcon from "@mui/icons-material/Flag";
 
+import ParagraphBody from "components/text/ParagraphBody";
 const MultipleChoiceExamQuestion = () => {
   const [value1, setValue1] = useState<String>();
 
@@ -48,6 +52,14 @@ const MultipleChoiceExamQuestion = () => {
             </RadioGroup>
           </FormControl>
         </Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={
+            <Stack direction={"row"} alignItems={"center"}>
+              <ParagraphBody>Gắn cờ</ParagraphBody> <FlagIcon sx={{ color: "red" }} />
+            </Stack>
+          }
+        />
       </Grid>
     </Grid>
   );
