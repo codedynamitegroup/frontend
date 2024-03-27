@@ -57,7 +57,7 @@ export default function CreateReportConfirmDialog({
   ];
 
   const tableHeading: GridColDef[] = [
-    { field: "title", headerName: "Tên câu hỏi", flex: 2 },
+    // { field: "title", headerName: "Tên câu hỏi", flex: 2 },
     { field: "exam_name", headerName: "Bài kiểm tra", flex: 2 },
     { field: "course_name", headerName: "Môn học", flex: 2 },
     {
@@ -115,7 +115,7 @@ export default function CreateReportConfirmDialog({
         {isReportExisted && (
           <>
             <Grid item xs={12}>
-              <Heading3>Danh sách câu hỏi sử dụng trong báo cáo</Heading3>
+              <Heading3>Danh sách bài kiểm tra sử dụng trong báo cáo</Heading3>
             </Grid>
             <Grid item xs={12}>
               <CustomDataGrid
