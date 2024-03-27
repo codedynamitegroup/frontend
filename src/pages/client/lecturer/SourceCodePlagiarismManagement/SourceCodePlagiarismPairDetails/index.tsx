@@ -178,17 +178,24 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.detail)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection_submissions)}
               >
-                Bài kiểm tra cuối kỳ
+                Danh sách bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.submissions)}
+                onClick={() =>
+                  navigate(
+                    routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
+                      ":submissionId",
+                      data?.leftFile?.id.toString() || ""
+                    )
+                  )
+                }
               >
-                Danh sách bài nộp
+                Chi tiết bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall colorname='--blue-500'>Tổng quan Kiểm tra gian lận</ParagraphSmall>

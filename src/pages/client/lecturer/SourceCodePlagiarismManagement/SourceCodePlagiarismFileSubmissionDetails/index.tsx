@@ -380,20 +380,24 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.submissions)}
+                onClick={() =>
+                  navigate(routes.lecturer.exam.code_plagiarism_detection, {
+                    state: { report }
+                  })
+                }
               >
-                Danh sách bài nộp
+                Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
+                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection_submissions)}
               >
-                Tổng quan Kiểm tra gian lận
+                Danh sách bài nộp
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Danh sách cặp bài nộp</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>Chi tiết bài nộp</ParagraphSmall>
             </Box>
             <IconButton
               color='inherit'

@@ -245,7 +245,11 @@ export default function LecturerSourceCodePlagiarismFileSubmissions() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
+                onClick={() =>
+                  navigate(routes.lecturer.exam.code_plagiarism_detection, {
+                    state: { report: report }
+                  })
+                }
               >
                 Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
