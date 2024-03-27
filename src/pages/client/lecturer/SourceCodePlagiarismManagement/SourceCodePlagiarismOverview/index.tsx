@@ -278,6 +278,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
   });
 
   React.useEffect(() => {
+    console.log("location.state", location.state);
     if (location.state?.report) {
       dispatch(setReport({ report: location.state.report }));
     }

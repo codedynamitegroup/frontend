@@ -90,7 +90,7 @@ export default function LecturerSourceCodePlagiarismClusters() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const codePlagiarismState = useSelector((state: RootState) => state.codePlagiarism);
-  const { clusters } = codePlagiarismState;
+  const { clusters, report } = codePlagiarismState;
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -224,7 +224,11 @@ export default function LecturerSourceCodePlagiarismClusters() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.exam.code_plagiarism_detection)}
+                onClick={() =>
+                  navigate(routes.lecturer.exam.code_plagiarism_detection, {
+                    state: { report }
+                  })
+                }
               >
                 Tổng quan Kiểm tra gian lận
               </ParagraphSmall>
