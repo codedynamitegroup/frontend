@@ -604,7 +604,8 @@
   "grading_config_criteria": "Criteria",
 
   "grading_config_choose_question": "Choose question",
-  "grading_config_choose_question_note": "Select the appropriate questions from the grid for AI grading. Your choices will directly impact the AI's grading performance."
-  
+  "grading_config_choose_question_note": "Select the appropriate questions from the grid for AI grading. Your choices will directly impact the AI's grading performance.",
+  "grading_config_letter_description": "Traditional letter grades: A, B, C and D",
+  "grading_config_point_description": "Point-based grading: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1"
 
 }

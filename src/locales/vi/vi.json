@@ -602,5 +602,6 @@
 
   "grading_config_choose_question": "Chọn câu hỏi",
   "grading_config_choose_question_note": "Chọn câu hỏi phù hợp từ danh sách câu hỏi để AI chấm điểm. Lựa chọn của bạn sẽ trực tiếp ảnh hưởng đến hiệu suất chấm của AI",
-  "grading_config_": "s"
+  "grading_config_letter_description": "Cách tính điểm chữ truyền thống: A, B, C và D",
+  "grading_config_point_description": "Cách tính điểm số: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1"
 }
