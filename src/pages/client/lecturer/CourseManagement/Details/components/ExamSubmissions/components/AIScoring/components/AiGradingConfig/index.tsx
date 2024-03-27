@@ -179,7 +179,6 @@ const GradingConfig = () => {
     t("grading_config_choose_criteria")
   ];
   const language = [
-    { label: t("common_automatic"), value: "automatic" },
     { label: t("language_vn"), value: "vn" },
     { label: t("language_us"), value: "en" }
   ];
@@ -244,12 +243,12 @@ const GradingConfig = () => {
   const handleNextButton = () => {
     activeStep === 0 && setActiveStep(1);
     activeStep === 1 && setActiveStep(2);
-    activeStep === 2 && navigate(routes.lecturer.course.assignment);
+    activeStep === 2 && navigate(routes.lecturer.exam.ai_scroring);
   };
   const handleBackButton = () => {
     activeStep === 2 && setActiveStep(1);
     activeStep === 1 && setActiveStep(0);
-    activeStep === 0 && navigate(routes.lecturer.course.assignment);
+    activeStep === 0 && navigate(routes.lecturer.exam.submissions);
   };
   const handleChooseRubric = () => {
     dispatch(openSelectRubricDialog());
@@ -426,12 +425,12 @@ const GradingConfig = () => {
                             items={language}
                             label={t("common_language")}
                             changeItemHandler={onSelectLanguage}
-                            defaultValue={"automatic"}
+                            defaultValue={"vn"}
                             showIcon={true}
                             iconDescription='Chọn ngôn ngữ dùng để đánh giá bài làm của sinh viên'
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        {/* <Grid item xs={6}>
                           <GradingConfigSelect
                             items={textType}
                             label={t("grading_config_exam_type")}
@@ -439,15 +438,15 @@ const GradingConfig = () => {
                             changeItemHandler={onSelectLanguage}
                             defaultValue='essay'
                           />
-                        </Grid>
-                        <Grid item xs={6}>
+                        </Grid> */}
+                        {/* <Grid item xs={6}>
                           <GradingConfigSelect
                             items={difficulty}
                             label={t("common_difficult_level")}
                             changeItemHandler={onSelectLanguage}
                             defaultValue='easy'
                           />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={6}>
                           <FormControl size='small'>
                             <FormLabel
@@ -475,7 +474,12 @@ const GradingConfig = () => {
                                     translation-key='grading_config_letter_scale'
                                     sx={{ marginRight: "5px" }}
                                   />
-                                  <Tooltip title={"iconDescription"} placement='top' arrow>
+                                  <Tooltip
+                                    title={t("grading_config_letter_description")}
+                                    translation-key='grading_config_letter_description'
+                                    placement='top'
+                                    arrow
+                                  >
                                     <InfoIcon className={classes.infoIcon} color='primary' />
                                   </Tooltip>
                                 </Stack>
@@ -487,7 +491,12 @@ const GradingConfig = () => {
                                     translation-key='grading_config_point_scale'
                                     sx={{ marginRight: "5px" }}
                                   />
-                                  <Tooltip title={"iconDescription"} placement='top' arrow>
+                                  <Tooltip
+                                    title={t("grading_config_point_description")}
+                                    placement='top'
+                                    arrow
+                                    translation-key='grading_config_point_description'
+                                  >
                                     <InfoIcon className={classes.infoIcon} color='primary' />
                                   </Tooltip>
                                 </Stack>
