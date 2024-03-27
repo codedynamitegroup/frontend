@@ -53,7 +53,7 @@ export default function FileSubmissionsTable({
                 <ParagraphBody wordWrap='break-word'>{row.extra.userFullName}</ParagraphBody>
               </td>
               <td>
-                <ParagraphBody wordWrap='break-word'>{row.extra.questionName}</ParagraphBody>
+                <ParagraphBody wordWrap='break-word'>{row.extra.examName}</ParagraphBody>
               </td>
               <td>
                 <ParagraphBody wordWrap='break-word'>

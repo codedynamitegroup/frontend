@@ -15,6 +15,8 @@ export interface DolosCustomFile {
     orgUserId: string;
     userFullName: string;
     programmingLanguage: string;
+    examId: string;
+    examName: string;
     filename: string;
     fullName: string;
     status: string;

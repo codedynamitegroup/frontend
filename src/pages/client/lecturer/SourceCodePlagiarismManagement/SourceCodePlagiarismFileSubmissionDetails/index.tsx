@@ -163,6 +163,7 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
         userFullName: otherFileWithFileScoring.extra.userFullName,
         labels: otherFileWithFileScoring.extra.labels,
         questionName: otherFileWithFileScoring.extra.questionName,
+        examName: otherFileWithFileScoring.extra.examName,
         createdAt: otherFileWithFileScoring.extra.createdAt,
         similarity: pair.similarity,
         cluster: {
@@ -212,8 +213,8 @@ export default function LecturerSourceCodePlagiarismFileSubmissionDetails() {
       }
     },
     {
-      field: "questionName",
-      headerName: "Tiêu đề câu hỏi",
+      field: "examName",
+      headerName: "Bài kiểm tra",
       flex: 1,
       renderCell: (params) => {
         return <ParagraphBody>{params.value || t("code_plagiarism_not_updated")}</ParagraphBody>;

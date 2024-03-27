@@ -573,7 +573,7 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           headers={[
                             "MSSV",
                             "Tên sinh viên",
-                            "Câu hỏi",
+                            "Bài kiểm tra",
                             "Ngày nộp",
                             "Độ tương đồng cao nhẩt"
                           ]}

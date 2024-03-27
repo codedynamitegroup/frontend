@@ -322,6 +322,10 @@ const codePlagiarismSlice = createSlice({
   }
 });
 
-export const { setReport, setLabel, setThreshold } = codePlagiarismSlice.actions;
+export const {
+  setReport,
+  setLabel,
+  setThreshold
+}: { setReport: any; setLabel: any; setThreshold: any } = codePlagiarismSlice.actions;
 
 export default codePlagiarismSlice.reducer;
