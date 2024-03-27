@@ -333,7 +333,7 @@ const AIQuestionCreated = (props: Props) => {
                                   {value.correctAnswer ? (
                                     <>
                                       <FormControlLabel
-                                        value={index}
+                                        value={index + 1}
                                         control={modeEdit ? <Radio /> : <></>}
                                         label={String.fromCharCode(65 + index)}
                                         labelPlacement='start'
