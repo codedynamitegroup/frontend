@@ -194,7 +194,7 @@ export default function GradingExam() {
         value: qtype.true_false.code,
         label: "Đúng/Sai"
       },
-      isOpenEditTitle: true
+      isOpenEditTitle: false
     }
   ]);
 

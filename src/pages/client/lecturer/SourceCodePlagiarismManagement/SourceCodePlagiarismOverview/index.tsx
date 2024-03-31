@@ -4,8 +4,6 @@ import {
   faCircleInfo,
   faCode,
   faQuestion,
-  faSchool,
-  faTable,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
