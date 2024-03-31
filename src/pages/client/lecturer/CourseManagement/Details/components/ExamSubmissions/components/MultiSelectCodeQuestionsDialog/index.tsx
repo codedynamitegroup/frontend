@@ -1,5 +1,7 @@
 import ChecklistIcon from "@mui/icons-material/Checklist";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import HistoryIcon from "@mui/icons-material/History";
+import EyeIcon from "@mui/icons-material/Visibility";
 import { Card, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
@@ -16,8 +18,6 @@ import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CodeQuestionsFeatureBar from "./components/CodeQuestionsFeatureBar";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import EyeIcon from "@mui/icons-material/Visibility";
 import classes from "./styles.module.scss";
 
 interface MultiSelectCodeQuestionsDialogProps extends DialogProps {

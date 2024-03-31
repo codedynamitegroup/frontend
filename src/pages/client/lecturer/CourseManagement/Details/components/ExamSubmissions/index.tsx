@@ -1,5 +1,8 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Chip,
   Dialog,
@@ -14,18 +17,15 @@ import {
   TextField
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import { blue, green } from "@mui/material/colors";
 import {
   GridCallbackDetails,
   GridColDef,
-  GridColumnGroupingModel,
   GridPaginationModel,
   GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import axios from "axios";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
@@ -44,7 +44,6 @@ import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
-import { blue, green } from "@mui/material/colors";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -623,7 +622,7 @@ const LecturerCourseExamSubmissions = () => {
             ? "Xác nhận ghi đè báo cáo cũ"
             : "Tạo báo cáo gian lận"
         }
-        cancelText={"Xem lại"}
+        cancelText={isCheckReportExistLoading ? "Xem lại" : "Hủy"}
         confirmText={"Xác nhận"}
         isConfirmLoading={isPlagiarismDetectionLoading}
         onHanldeConfirm={() => {
@@ -633,7 +632,17 @@ const LecturerCourseExamSubmissions = () => {
             "f47ac10b-58cc-4372-a567-0e02b2c3d497"
           ]);
         }}
-        onHandleCancel={() => {}}
+        onHandleCancel={() => {
+          if (isCreateReportConfirmDialogOpen.isExisted) {
+            onHandlePlagiarismDetection("Báo cáo gian lận mới", [
+              "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d496",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d497"
+            ]);
+          } else {
+            handleCloseCreateReportConfirmDialog();
+          }
+        }}
       />
       <Box className={classes.examBody}>
         <Button
