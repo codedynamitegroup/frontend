@@ -1,18 +1,20 @@
 import {
   Box,
   FormControl,
-  FormControlLabel,
   Grid,
   Radio,
   RadioGroup,
-  Typography
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  Stack
 } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import FlagIcon from "@mui/icons-material/Flag";
 
+import ParagraphBody from "components/text/ParagraphBody";
 const MultipleChoiceExamQuestion = () => {
-  const { t } = useTranslation();
   const [value1, setValue1] = useState<String>();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,20 +24,14 @@ const MultipleChoiceExamQuestion = () => {
     <Grid container spacing={1}>
       <Grid item xs={12} md={2}>
         <Box sx={{ backgroundColor: grey[300] }} borderRadius={1} paddingX={3} paddingY={1}>
-          <Typography gutterBottom translation-key='common_question'>
-            {t("common_question")} 1
-          </Typography>
-          <Typography gutterBottom translation-key='course_management_exam_preview_available'>
-            {t("course_management_exam_preview_available")}: 2
-          </Typography>
+          <Typography gutterBottom>Câu hỏi 1</Typography>
+          <Typography gutterBottom>Điểm có thể đạt được: 2</Typography>
         </Box>
       </Grid>
       <Grid item xs={12} md={10}>
         <Box sx={{ backgroundColor: blue[100] }} borderRadius={1} paddingX={3} paddingY={3}>
           <Typography gutterBottom>Con trỏ là gì?</Typography>
-          <Typography translation-key='course_management_exam_preview_multichoice'>
-            {t("course_management_exam_preview_multichoice")}:
-          </Typography>
+          <Typography>Chọn một trong các đáp án sau:</Typography>
           <FormControl>
             <RadioGroup name='radio-buttons-group' value={value1} onChange={handleChange}>
               <FormControlLabel
@@ -56,6 +52,14 @@ const MultipleChoiceExamQuestion = () => {
             </RadioGroup>
           </FormControl>
         </Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={
+            <Stack direction={"row"} alignItems={"center"}>
+              <ParagraphBody>Gắn cờ</ParagraphBody> <FlagIcon sx={{ color: "red" }} />
+            </Stack>
+          }
+        />
       </Grid>
     </Grid>
   );
