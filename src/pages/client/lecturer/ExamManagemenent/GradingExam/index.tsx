@@ -22,7 +22,8 @@ import {
   Paper,
   Select,
   Toolbar,
-  Typography
+  Typography,
+  Stack
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -65,7 +66,9 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import { millisToHoursAndMinutesString } from "utils/time";
 import classes from "./styles.module.scss";
+import BasicSelect from "components/common/select/BasicSelect";
 import { grey } from "@mui/material/colors";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const drawerWidth = 450;
 
@@ -424,6 +427,7 @@ export default function GradingExam() {
     //   ]
     // }
   ];
+  const [dumvalue, setDumvalue] = React.useState("123456789 - Nguyễn Văn A");
   const [gradingStatus, setGradingStatus] = React.useState(0);
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -660,10 +664,19 @@ export default function GradingExam() {
             <Divider />
             <Box className={classes.drawerBody}>
               <Box className={classes.drawerFieldContainer}>
-                {/* <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle> */}
-                <Button btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(true)}>
-                  Chọn sinh viên
-                </Button>
+                <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
+
+                <Stack
+                  direction={"row"}
+                  justifyContent={"space-between"}
+                  border={1}
+                  borderRadius={1}
+                  padding={1}
+                  sx={{ backgroundColor: "rgb(217, 226, 237)", ":hover": { cursor: "pointer" } }}
+                  onClick={() => setOpenChooseStudent(true)}
+                >
+                  <ParagraphBody>123456789 - Nguyễn Văn A</ParagraphBody> <ArrowDropDownIcon />
+                </Stack>
                 <Dialog
                   open={openChooseStudent}
                   onClose={() => setOpenChooseStudent(false)}
@@ -742,11 +755,12 @@ export default function GradingExam() {
                     </Button>
                   </DialogActions>
                 </Dialog>
+
                 {/* <BasicSelect
                   labelId='select-assignment-submission-student-label'
-                  value={assignmentSubmissionStudent}
-                  onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
-                  searchAble={true}
+                  value={dumvalue}
+                  onHandleChange={(value) => setDumvalue(value)}
+                  onClick={() => setOpenChooseStudent(true)}
                   items={[
                     {
                       value: "0",
