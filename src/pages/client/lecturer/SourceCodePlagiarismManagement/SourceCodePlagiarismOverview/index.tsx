@@ -35,7 +35,6 @@ import LabelSubmissionsTable from "./components/LabelSubmissionsTable";
 import SimilarityHistogram from "./components/SimilarityHistogram";
 import SubmissionsClustersTable from "./components/SubmissionsClustersTable";
 import classes from "./styles.module.scss";
-import BasicAccordion from "components/common/accordion/BasicAccordion";
 
 const drawerWidth = 450;
 
