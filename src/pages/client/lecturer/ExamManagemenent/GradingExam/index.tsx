@@ -125,6 +125,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
+enum EGradingStatus {
+  GRADED = 1,
+  QUEUED = 2
+}
 export default function GradingExam() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -383,9 +387,9 @@ export default function GradingExam() {
   }, [width]);
   const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
   const studentData = [
-    { id: "123456", name: "Nguyễn văn A", status: "đã chấm" },
-    { id: "12346", name: "Nguyễn văn A", status: "đang chấm" },
-    { id: "1234356", name: "Nguyễn văn A", status: "chưa chấm" }
+    { id: "123456", name: "Nguyễn văn A", status: EGradingStatus.GRADED },
+    { id: "12346", name: "Nguyễn văn A", status: EGradingStatus.QUEUED },
+    { id: "1234356", name: "Nguyễn văn A", status: EGradingStatus.GRADED }
   ];
   const chooseStudentHeading: GridColDef[] = [
     { field: "id", headerName: "Mssv", flex: 1 },
@@ -395,10 +399,10 @@ export default function GradingExam() {
       headerName: "Trạng thái",
       flex: 1,
       renderCell: (params) =>
-        params.value === "đang chấm" ? (
-          <Chip label={params.value} sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
+        params.value === EGradingStatus.GRADED ? (
+          <Chip label='Đã chấm' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
         ) : (
-          <Chip label={params.value} />
+          <Chip label='Chưa chấm' />
         )
     }
     // {

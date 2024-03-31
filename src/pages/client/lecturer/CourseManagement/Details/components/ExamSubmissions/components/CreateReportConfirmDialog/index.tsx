@@ -74,9 +74,7 @@ export default function CreateReportConfirmDialog({
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
+  ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };

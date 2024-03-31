@@ -47,8 +47,7 @@ const customCriteriaList = [
   {
     id: 1,
     name: "Criteria 1",
-    description:
-      "Criteria 1 descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+    description: "Criteria 1 description"
   },
   {
     id: 2,
@@ -109,9 +108,7 @@ const SelectCriteriaConfig = () => {
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
+  ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };

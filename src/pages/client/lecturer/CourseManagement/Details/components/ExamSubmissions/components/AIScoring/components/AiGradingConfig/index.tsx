@@ -259,9 +259,7 @@ const GradingConfig = () => {
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
+  ) => {};
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
