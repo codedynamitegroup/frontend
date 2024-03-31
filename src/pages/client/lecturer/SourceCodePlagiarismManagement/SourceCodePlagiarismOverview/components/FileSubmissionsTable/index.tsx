@@ -2,7 +2,7 @@ import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
-import { Box } from "@mui/material";
+import { Box, TableCell } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { File } from "models/codePlagiarism";
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,19 @@ export default function FileSubmissionsTable({
         <thead>
           <tr>
             {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+              <TableCell
+                key={index}
+                component='th'
+                scope='row'
+                width={index === headers.length - 1 ? "130px" : undefined}
+                style={{
+                  whiteSpace: "normal",
+                  wordWrap: "break-word",
+                  alignContent: "center"
+                }}
+              >
+                {header}
+              </TableCell>
             ))}
           </tr>
         </thead>
@@ -46,25 +58,25 @@ export default function FileSubmissionsTable({
                 );
               }}
             >
-              <td>
+              <TableCell component='td' scope='row'>
                 <ParagraphBody wordWrap='break-word'>{row.extra.orgUserId}</ParagraphBody>
-              </td>
-              <td>
+              </TableCell>
+              <TableCell component='td' scope='row'>
                 <ParagraphBody wordWrap='break-word'>{row.extra.userFullName}</ParagraphBody>
-              </td>
-              <td>
+              </TableCell>
+              <TableCell component='td' scope='row'>
                 <ParagraphBody wordWrap='break-word'>{row.extra.examName}</ParagraphBody>
-              </td>
-              <td>
+              </TableCell>
+              <TableCell component='td' scope='row'>
                 <ParagraphBody wordWrap='break-word'>
                   {new Date(row.extra.createdAt).toLocaleString()}
                 </ParagraphBody>
-              </td>
-              <td>
+              </TableCell>
+              <TableCell component='td' scope='row'>
                 <CircularProgressWithLabel
                   value={Number((row?.fileScoring?.similarityScore?.similarity || 0) * 100) || 0}
                 />
-              </td>
+              </TableCell>
             </tr>
           ))}
           {rows.length === 0 && (

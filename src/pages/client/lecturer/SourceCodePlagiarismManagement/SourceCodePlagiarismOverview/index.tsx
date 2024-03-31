@@ -4,8 +4,6 @@ import {
   faCircleInfo,
   faCode,
   faQuestion,
-  faSchool,
-  faTable,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -371,22 +369,10 @@ export default function LecturerSourceCodePlagiarismManagement() {
                       </ParagraphBody>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
-                      <Tooltip title={"Tiêu đề câu hỏi"} placement='top'>
+                      <Tooltip title={"Tiêu đề câu hỏi nguồn"} placement='top'>
                         <FontAwesomeIcon icon={faQuestion} color='#737373' size={"lg"} />
                       </Tooltip>
                       <Link to={routes.lecturer.code_question.detail}>Tìm tổng từ 1 đến 10</Link>
-                    </Box>
-                    <Box className={classes.submissionsQuantity}>
-                      <Tooltip title={"Bài kiểm tra"} placement='top'>
-                        <FontAwesomeIcon icon={faTable} color='#737373' size={"lg"} />
-                      </Tooltip>
-                      <Link to={routes.lecturer.exam.detail}>Bài kiểm tra cuối kỳ</Link>
-                    </Box>
-                    <Box className={classes.submissionsQuantity}>
-                      <Tooltip title={"Khoá học"} placement='top'>
-                        <FontAwesomeIcon icon={faSchool} color='#737373' size={"lg"} />
-                      </Tooltip>
-                      <Link to={routes.lecturer.course.detail}>CSC101 - Nhập môn lập trình</Link>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
                       <Tooltip
@@ -412,6 +398,73 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           ? report.language?.name
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
+                    </Box>
+                    <TextTitle className={classes.labelTitle}>
+                      Danh sách bài kiểm tra của các khoá học so sánh
+                    </TextTitle>
+                    <Box
+                      sx={{
+                        maxHeight: "300px",
+                        overflow: "auto",
+                        padding: "10px",
+                        border: "1px solid var(--gray-20)",
+                        background: "var(--blue-1)",
+                        borderRadius: "4px"
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          height: "100%"
+                        }}
+                      >
+                        <Grid container spacing={2}>
+                          {[
+                            {
+                              id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
+                              title: "Tìm số lớn nhất trong mảng",
+                              exam_name: "Bài thi cuối kỳ",
+                              course_name: "CSC101 - Lập trình căn bản"
+                            },
+                            {
+                              id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
+                              title: "Tìm số lớn nhất trong mảng",
+                              exam_name: "Bài thi giữa kỳ",
+                              course_name: "CSC102 - Lập trình hướng đối tượng"
+                            },
+                            {
+                              id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+                              title: "Tìm số lớn nhất trong mảng",
+                              exam_name: "Bài thi giữa kỳ",
+                              course_name: "CSC103 - Cấu trúc dữ liệu và giải thuật"
+                            },
+                            {
+                              id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+                              title: "Tìm số lớn nhất trong mảng",
+                              exam_name: "Bài thi giữa kỳ",
+                              course_name: "CSC104 - Kỹ thuật lập trình"
+                            },
+                            {
+                              id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+                              title: "Tìm số lớn nhất trong mảng",
+                              exam_name: "Bài thi giữa kỳ",
+                              course_name: "CSC104 - Kỹ thuật lập trình"
+                            }
+                          ].map((item: any) => (
+                            <Grid item xs={12}>
+                              <Card
+                                sx={{
+                                  padding: "8px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center"
+                                }}
+                              >
+                                {item.exam_name} - {item.course_name}
+                              </Card>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
                     </Box>
                     <TextTitle className={classes.labelTitle}>
                       {`${report?.labels.length || 0} nhãn được phát hiện`}

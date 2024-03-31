@@ -61,8 +61,10 @@ const LecturerCourseExamSubmissions = () => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
-  const [isMultiSelectCodeQuestionsDialogOpen, setIsMultiSelectCodeQuestionsDialogOpen] =
-    useState(false);
+  const [isMultiSelectCodeQuestionsDialogOpen, setIsMultiSelectCodeQuestionsDialogOpen] = useState({
+    value: false,
+    defaultTabIndex: 0
+  });
   const [isCreateReportConfirmDialogOpen, setIsCreateReportConfirmDialogOpen] = useState({
     value: false,
     isExisted: false
@@ -499,10 +501,18 @@ const LecturerCourseExamSubmissions = () => {
       getActions: (params) =>
         params.row.checkCheating
           ? [
-              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+              <IconButton
+                onClick={() => {
+                  handleOpenMultiSelectCodeQuestionsDialog(1);
+                }}
+              >
                 <VisibilityIcon />
               </IconButton>,
-              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+              <IconButton
+                onClick={() => {
+                  handleOpenMultiSelectCodeQuestionsDialog(0);
+                }}
+              >
                 <AddCircleOutlineIcon />
               </IconButton>
             ]
@@ -510,19 +520,32 @@ const LecturerCourseExamSubmissions = () => {
               <IconButton disabled>
                 <VisibilityOffIcon />
               </IconButton>,
-              <IconButton onClick={handleOpenMultiSelectCodeQuestionsDialog}>
+              <IconButton
+                onClick={() => {
+                  handleOpenMultiSelectCodeQuestionsDialog(0);
+                }}
+              >
                 <AddCircleOutlineIcon />
               </IconButton>
             ]
     }
   ];
 
-  const handleOpenMultiSelectCodeQuestionsDialog = useCallback(() => {
-    setIsMultiSelectCodeQuestionsDialogOpen(true);
-  }, []);
+  const handleOpenMultiSelectCodeQuestionsDialog = (tabIndex: number) => {
+    setIsMultiSelectCodeQuestionsDialogOpen({
+      value: true,
+      defaultTabIndex: tabIndex
+    });
+  };
 
   const handleCloseMultiSelectCodeQuestionsDialog = useCallback(() => {
-    setIsMultiSelectCodeQuestionsDialogOpen(false);
+    setIsMultiSelectCodeQuestionsDialogOpen(
+      (prevState) =>
+        ({
+          ...prevState,
+          value: false
+        }) as any
+    );
   }, []);
 
   const handleOpenCreateReportConfirmDialog = useCallback(
@@ -540,7 +563,6 @@ const LecturerCourseExamSubmissions = () => {
   useEffect(() => {
     const filterSet = new Set<number>();
     const tableHeadingTemp: GridColDef[] = [];
-    const columnGroupingModelTemp: GridColumnGroupingModel = [];
 
     filterValues.forEach((value) => {
       const start = value[0];
@@ -567,45 +589,6 @@ const LecturerCourseExamSubmissions = () => {
               }
             }
           });
-          columnGroupingModelTemp.push({
-            groupId: `question-${question.id}-plagiarism-detection`,
-            children: [
-              {
-                groupId: `question-${question.id}-type`,
-                children: [{ field: `question-${question.id}` }],
-                headerName: currentLang === "en" ? question.type.en_name : question.type.vi_name
-              }
-            ],
-            renderHeaderGroup() {
-              if (question.type.code === qtype.source_code.code) {
-                return (
-                  <LoadButton
-                    loading={isPlagiarismDetectionLoading}
-                    btnType={BtnType.Outlined}
-                    onClick={handleOpenMultiSelectCodeQuestionsDialog}
-                    translation-key='common_check_cheating'
-                  >
-                    {t("common_check_cheating")}
-                  </LoadButton>
-                );
-              } else if (question.type.code === "essay") {
-                return (
-                  <Button
-                    btnType={BtnType.Outlined}
-                    onClick={() => {
-                      // navigate(`${routes.lecturer.exam.ai_scroring}?questionId=${question.id}`);
-                      navigate(`${routes.lecturer.exam.ai_grading_config}`);
-                    }}
-                    translation-key='common_AI_grading'
-                  >
-                    {t("common_AI_grading")}
-                  </Button>
-                );
-              } else {
-                return null;
-              }
-            }
-          });
         }
       }
     });
@@ -615,7 +598,7 @@ const LecturerCourseExamSubmissions = () => {
   return (
     <>
       <MultiSelectCodeQuestionsDialog
-        open={isMultiSelectCodeQuestionsDialogOpen}
+        open={isMultiSelectCodeQuestionsDialogOpen.value}
         handleClose={handleCloseMultiSelectCodeQuestionsDialog}
         title={"Tạo báo cáo gian lận"}
         cancelText={"Hủy"}
@@ -629,6 +612,7 @@ const LecturerCourseExamSubmissions = () => {
           ]);
         }}
         onHandleCancel={handleCloseMultiSelectCodeQuestionsDialog}
+        defaultTabIndex={isMultiSelectCodeQuestionsDialogOpen.defaultTabIndex}
       />
       <CreateReportConfirmDialog
         open={isCreateReportConfirmDialogOpen.value}

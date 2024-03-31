@@ -1,4 +1,5 @@
 import { CircularProgressProps, LinearProgress } from "@mui/joy";
+import { Box } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 
 const CircularProgressWithLabel = (props: CircularProgressProps & { value: number }) => {
@@ -7,23 +8,30 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
     props.value! > 75 ? "--white" : props.value! > 70 ? "--white" : "--eerie-black-00";
 
   return (
-    <LinearProgress
-      determinate
-      variant='outlined'
-      color={bgColor}
-      size='sm'
-      thickness={24}
-      value={Number(props.value!)}
+    <Box
       sx={{
-        "--LinearProgress-radius": "20px",
-        "--LinearProgress-thickness": "24px"
+        backgroundColor: "var(--white)",
+        borderRadius: "20px"
       }}
     >
-      <ParagraphBody
-        colorname={textColor}
-        zIndex={1}
-      >{`${Math.round(Number(props.value!))}%`}</ParagraphBody>
-    </LinearProgress>
+      <LinearProgress
+        determinate
+        variant='outlined'
+        color={bgColor}
+        size='sm'
+        thickness={24}
+        value={Number(props.value!)}
+        sx={{
+          "--LinearProgress-radius": "20px",
+          "--LinearProgress-thickness": "24px"
+        }}
+      >
+        <ParagraphBody
+          colorname={textColor}
+          zIndex={1}
+        >{`${Math.round(Number(props.value!))}%`}</ParagraphBody>
+      </LinearProgress>
+    </Box>
   );
 };
 

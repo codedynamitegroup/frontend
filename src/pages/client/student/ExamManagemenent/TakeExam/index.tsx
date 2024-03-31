@@ -1,8 +1,13 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import FlagIcon from "@mui/icons-material/Flag";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
+import ModeIcon from "@mui/icons-material/Mode";
 import {
+  Autocomplete,
+  Badge,
   Box,
   Card,
   CssBaseline,
@@ -10,15 +15,12 @@ import {
   Drawer,
   Grid,
   IconButton,
-  TextField,
-  Stack,
-  Toolbar,
-  InputAdornment,
   Pagination,
-  Badge,
-  Autocomplete
+  TextField,
+  Toolbar
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import { grey, yellow } from "@mui/material/colors";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -26,6 +28,7 @@ import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -37,12 +40,6 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import { green, grey, yellow } from "@mui/material/colors";
-import FlagIcon from "@mui/icons-material/Flag";
-import CircleIcon from "@mui/icons-material/Circle";
-import ModeIcon from "@mui/icons-material/Mode";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 const drawerWidth = 400;
 
@@ -382,7 +379,7 @@ export default function TakeExam() {
           position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            marginTop: `${headerHeight}px`,
             backgroundColor: "white"
           }}
           open={open}
