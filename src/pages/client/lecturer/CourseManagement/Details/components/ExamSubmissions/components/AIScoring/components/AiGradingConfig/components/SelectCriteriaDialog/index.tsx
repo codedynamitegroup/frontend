@@ -47,8 +47,7 @@ const customCriteriaList = [
   {
     id: 1,
     name: "Criteria 1",
-    description:
-      "Criteria 1 descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+    description: "Criteria 1 description"
   },
   {
     id: 2,

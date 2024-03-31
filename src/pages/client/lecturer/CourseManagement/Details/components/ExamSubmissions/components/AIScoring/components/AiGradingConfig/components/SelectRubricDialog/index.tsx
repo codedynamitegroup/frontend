@@ -37,8 +37,7 @@ const rubrisList = [
   {
     id: 1,
     name: "Rubric 1",
-    description:
-      "Rubric 1 descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+    description: "Rubric 1 description"
   },
   {
     id: 2,
