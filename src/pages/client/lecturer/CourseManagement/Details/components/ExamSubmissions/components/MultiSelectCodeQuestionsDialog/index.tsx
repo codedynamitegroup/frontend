@@ -29,6 +29,7 @@ interface MultiSelectCodeQuestionsDialogProps extends DialogProps {
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
   isConfirmLoading?: boolean;
+  defaultTabIndex?: number;
 }
 
 export default function MultiSelectCodeQuestionsDialog({
@@ -41,10 +42,11 @@ export default function MultiSelectCodeQuestionsDialog({
   onHandleCancel,
   onHanldeConfirm,
   isConfirmLoading = false,
+  defaultTabIndex = 0,
   ...props
 }: MultiSelectCodeQuestionsDialogProps) {
   const { t } = useTranslation();
-  const [tabIndex, setTabIndex] = React.useState(0);
+  const [tabIndex, setTabIndex] = React.useState(Number(defaultTabIndex));
   const questionList = [
     {
       id: "f47ac10b-58cc-4372-a567-0e02b2c3d504",
