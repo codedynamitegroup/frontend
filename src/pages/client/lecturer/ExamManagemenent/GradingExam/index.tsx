@@ -340,7 +340,8 @@ export default function GradingExam() {
       openPreviewMultipleChoiceDialog,
       openPreviewEssay,
       openPreviewShortAnswer,
-      openPreviewTrueFalse
+      openPreviewTrueFalse,
+      handleToggleEditTitle
     ]
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
