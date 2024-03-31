@@ -3,6 +3,7 @@ import {
   NumberInputProps,
   numberInputClasses
 } from "@mui/base/Unstable_NumberInput";
+import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 import * as React from "react";
 
@@ -41,7 +42,9 @@ export default function CustomNumberInput({
   endAdornment,
   min,
   max,
-  step
+  step,
+  maxWidth,
+  readOnly
 }: {
   value: number;
   onChange: (value: number) => void;
@@ -50,17 +53,22 @@ export default function CustomNumberInput({
   min?: number;
   max?: number;
   step?: number;
+  maxWidth?: string;
+  readOnly?: boolean;
 }) {
   return (
-    <NumberInput
-      startAdornment={startAdornment}
-      endAdornment={endAdornment}
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      onChange={(_, value) => onChange(value || 0)}
-    />
+    <Box maxWidth={maxWidth}>
+      <NumberInput
+        startAdornment={startAdornment}
+        endAdornment={endAdornment}
+        readOnly={readOnly}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(_, value) => onChange(value || 0)}
+      />
+    </Box>
   );
 }
 

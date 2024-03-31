@@ -6,24 +6,23 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import {
   Box,
   Card,
+  Chip,
   CssBaseline,
-  Divider,
-  Drawer,
-  Grid,
-  IconButton,
-  Toolbar,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Chip,
-  InputAdornment,
-  Select,
-  MenuItem,
-  Stack,
+  Divider,
+  Drawer,
   FormControl,
+  Grid,
+  IconButton,
   InputLabel,
-  Paper
+  MenuItem,
+  Paper,
+  Select,
+  Toolbar,
+  Typography
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -40,10 +39,12 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import InputTextField from "components/common/inputs/InputTextField";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import SearchIcon from "@mui/icons-material/Search";
 import SearchBar from "components/common/search/SearchBar";
 
+import EditImageIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import Button from "components/common/buttons/Button";
+import CustomNumberInput from "components/common/inputs/CustomNumberInput";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
@@ -55,18 +56,15 @@ import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs from "dayjs";
+import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import classes from "./styles.module.scss";
 import { millisToHoursAndMinutesString } from "utils/time";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import { useTranslation } from "react-i18next";
-import CustomNumberInput from "components/common/inputs/CustomNumberInput";
-import Button from "components/common/buttons/Button";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import classes from "./styles.module.scss";
 
 const drawerWidth = 450;
 
@@ -141,7 +139,6 @@ export default function GradingExam() {
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [loading, setLoading] = React.useState(false);
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState("0");
   const examOpenTime = dayjs();
   const examCloseTime = dayjs();
   const examLimitTimeInMillis = 1000000;
@@ -160,7 +157,8 @@ export default function GradingExam() {
       type: {
         value: qtype.multiple_choice.code,
         label: "Trắc nghiệm"
-      }
+      },
+      isOpenEditTitle: false
     },
     {
       id: 2,
@@ -171,7 +169,8 @@ export default function GradingExam() {
       type: {
         value: qtype.essay.code,
         label: "Tự luận"
-      }
+      },
+      isOpenEditTitle: false
     },
     {
       id: 3,
@@ -182,7 +181,8 @@ export default function GradingExam() {
       type: {
         value: qtype.short_answer.code,
         label: "Trả lời ngắn"
-      }
+      },
+      isOpenEditTitle: false
     },
     {
       id: 1,
@@ -193,88 +193,141 @@ export default function GradingExam() {
       type: {
         value: qtype.true_false.code,
         label: "Đúng/Sai"
-      }
+      },
+      isOpenEditTitle: true
     }
   ]);
 
+  const handleToggleEditTitle = React.useCallback(
+    (id: number) => {
+      setQuestionList((prev) => {
+        const newList = prev.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              isOpenEditTitle: !item.isOpenEditTitle
+            };
+          }
+          return item;
+        });
+        return newList;
+      });
+    },
+    [setQuestionList]
+  );
+
   const tableHeading: GridColDef[] = React.useMemo(
-    () => [
-      { field: "id", headerName: "STT", minWidth: 1 },
-      {
-        field: "name",
-        headerName: t("exam_management_create_question_name"),
-        minWidth: 250
-      },
-      {
-        field: "grade",
-        headerName: t("common_grade"),
-        minWidth: 50,
-        renderCell: (params) => {
-          const maxGrade = questionList.find((item) => item.id === params.row.id)?.max_grade;
-          return (
-            <CustomNumberInput
-              value={params.value || 0}
-              onChange={(value) => {
-                setQuestionList((prev) => {
-                  const newList = prev.map((item) => {
-                    if (item.id === params.row.id) {
-                      return {
-                        ...item,
-                        grade: value
-                      };
-                    }
-                    return item;
-                  });
-                  return newList;
-                });
+    () =>
+      [
+        { field: "id", headerName: "STT", minWidth: 1 },
+        {
+          field: "name",
+          headerName: t("exam_management_create_question_name"),
+          minWidth: 250
+        },
+        {
+          field: "grade",
+          headerName: t("common_grade"),
+          minWidth: 150,
+          renderCell: (params) => {
+            const maxGrade = questionList.find((item) => item.id === params.row.id)?.max_grade;
+            const isOpenEditTitle = questionList.find(
+              (item) => item.id === params.row.id
+            )?.isOpenEditTitle;
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {isOpenEditTitle ? (
+                  <CustomNumberInput
+                    value={params.value || 0}
+                    onChange={(value) => {
+                      setQuestionList((prev) => {
+                        const newList = prev.map((item) => {
+                          if (item.id === params.row.id) {
+                            return {
+                              ...item,
+                              grade: value
+                            };
+                          }
+                          return item;
+                        });
+                        return newList;
+                      });
+                    }}
+                    maxWidth='70px'
+                    min={0}
+                    max={maxGrade}
+                    step={1}
+                  />
+                ) : (
+                  <Typography align='center'>{params.value}</Typography>
+                )}
+
+                <Box>
+                  {!isOpenEditTitle ? (
+                    <IconButton
+                      onClick={() => handleToggleEditTitle(params.row.id)}
+                      className={classes.editTopicTitleImageContainer}
+                    >
+                      <EditImageIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => handleToggleEditTitle(params.row.id)}
+                      className={classes.editTopicTitleImageContainer}
+                    >
+                      <SaveIcon />
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
+            );
+          }
+        },
+        {
+          field: "max_grade",
+          headerName: t("assignment_management_max_score"),
+          minWidth: 150
+        },
+        {
+          field: "type",
+          headerName: t("exam_management_create_question_type"),
+          minWidth: 150,
+          renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+        },
+        {
+          field: "action",
+          headerName: t("common_action"),
+          type: "actions",
+          flex: 1,
+          getActions: (params) => [
+            <GridActionsCellItem
+              onClick={() => {
+                switch (params.row.type.value) {
+                  case qtype.multiple_choice.code:
+                    setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
+                    break;
+                  case qtype.essay.code:
+                    setOpenPreviewEssay(!openPreviewEssay);
+                    break;
+                  case qtype.short_answer.code:
+                    setOpenPreviewShortAnswer(!openPreviewShortAnswer);
+                    break;
+                  case qtype.true_false.code:
+                    setOpenPreviewTrueFalse(!openPreviewTrueFalse);
+                    break;
+                }
               }}
-              min={0}
-              max={maxGrade}
-              step={1}
+              icon={<PreviewIcon />}
+              label='Preview'
             />
-          );
+          ]
         }
-      },
-      {
-        field: "max_grade",
-        headerName: t("assignment_management_max_score"),
-        minWidth: 150
-      },
-      {
-        field: "type",
-        headerName: t("exam_management_create_question_type"),
-        minWidth: 150,
-        renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
-      },
-      {
-        field: "action",
-        headerName: t("common_action"),
-        type: "actions",
-        flex: 1,
-        getActions: (params) => [
-          <GridActionsCellItem
-            onClick={() => {
-              switch (params.row.type.value) {
-                case qtype.multiple_choice.code:
-                  setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
-                  break;
-                case qtype.essay.code:
-                  setOpenPreviewEssay(!openPreviewEssay);
-                  break;
-                case qtype.short_answer.code:
-                  setOpenPreviewShortAnswer(!openPreviewShortAnswer);
-                  break;
-                case qtype.true_false.code:
-                  setOpenPreviewTrueFalse(!openPreviewTrueFalse);
-                  break;
-              }
-            }}
-            icon={<PreviewIcon />}
-            label='Preview'
-          />
-        ]
-      }
-    ],
+      ] as GridColDef[],
     [
       t,
       questionList,
