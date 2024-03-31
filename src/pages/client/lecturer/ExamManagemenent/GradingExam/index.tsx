@@ -65,6 +65,7 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import { millisToHoursAndMinutesString } from "utils/time";
 import classes from "./styles.module.scss";
+import { grey } from "@mui/material/colors";
 
 const drawerWidth = 450;
 
@@ -126,8 +127,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 enum EGradingStatus {
-  GRADED = 1,
-  QUEUED = 2
+  GRADED,
+  QUEUED,
+  GRADING
 }
 export default function GradingExam() {
   const { t } = useTranslation();
@@ -387,7 +389,7 @@ export default function GradingExam() {
   }, [width]);
   const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
   const studentData = [
-    { id: "123456", name: "Nguyễn văn A", status: EGradingStatus.GRADED },
+    { id: "123456", name: "Nguyễn văn A", status: EGradingStatus.GRADING },
     { id: "12346", name: "Nguyễn văn A", status: EGradingStatus.QUEUED },
     { id: "1234356", name: "Nguyễn văn A", status: EGradingStatus.GRADED }
   ];
@@ -401,8 +403,13 @@ export default function GradingExam() {
       renderCell: (params) =>
         params.value === EGradingStatus.GRADED ? (
           <Chip label='Đã chấm' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
-        ) : (
+        ) : params.value === EGradingStatus.QUEUED ? (
           <Chip label='Chưa chấm' />
+        ) : (
+          <Chip
+            label='Đang chấm'
+            sx={{ backgroundColor: "rgb(190, 215, 243)", color: "rgb(25, 118, 210)" }}
+          />
         )
     }
     // {
@@ -693,13 +700,21 @@ export default function GradingExam() {
                     </Paper>
                     <CustomDataGrid
                       dataList={studentData}
+                      personalSx={true}
                       sx={{
                         "& .MuiDataGrid-cell:nth-last-child(n+2)": {
                           padding: "16px"
                         },
-                        "& .MuiDataGrid-cell:hover": {
+                        "& .normal-row:hover": {
                           cursor: "pointer"
+                        },
+                        "& .disable-row": {
+                          backgroundColor: grey[100]
                         }
+                      }}
+                      getRowClassName={(params) => {
+                        if (params.row.status === EGradingStatus.GRADING) return "disable-row";
+                        else return "normal-row";
                       }}
                       tableHeader={chooseStudentHeading}
                       onSelectData={rowSelectionHandler}
@@ -711,7 +726,11 @@ export default function GradingExam() {
                       onPaginationModelChange={pageChangeHandler}
                       showVerticalCellBorder={true}
                       getRowHeight={() => "auto"}
-                      onClickRow={() => setOpenChooseStudent(false)}
+                      onClickRow={(params, event) => {
+                        if (params.row.status === EGradingStatus.GRADING)
+                          event.defaultMuiPrevented = true;
+                        else setOpenChooseStudent(false);
+                      }}
                       // slots={{toolbar:}}
                       // columnGroupingModel={columnGroupingModelPlus}
                     />

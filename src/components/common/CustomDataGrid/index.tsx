@@ -7,7 +7,7 @@ import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
+import { GridRowSelectionModel, GridRowClassNameParams } from "@mui/x-data-grid/models";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 
@@ -16,7 +16,7 @@ interface DataGridProps {
   tableHeader: Array<GridColDef>;
   visibleColumn?: any;
   onSelectData: any;
-  onClickRow?: any;
+  onClickRow?: GridEventListener<"rowClick">;
   dataGridToolBar?: any;
   pageSize: number;
   page: number;
@@ -33,6 +33,8 @@ interface DataGridProps {
   sx?: any;
   slots?: any;
   getCellClassName?: any;
+  getRowClassName?: (params: GridRowClassNameParams<any>) => string;
+  personalSx?: boolean;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -56,7 +58,9 @@ const CustomDataGrid = (props: DataGridProps) => {
     cellClickParamFields,
     sx = {},
     slots = {},
-    getCellClassName
+    getCellClassName,
+    getRowClassName,
+    personalSx
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -67,10 +71,6 @@ const CustomDataGrid = (props: DataGridProps) => {
 
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     onPaginationModelChange(model, details);
-  };
-
-  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    onClickRow(params);
   };
 
   const handleCellClick: GridEventListener<"cellClick"> = (params, event) => {
@@ -99,9 +99,10 @@ const CustomDataGrid = (props: DataGridProps) => {
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
         onRowSelectionModelChange={rowSelectionHandler}
-        onRowClick={onClickRow ? handleRowClick : undefined}
+        onRowClick={onClickRow}
         density='comfortable'
         getCellClassName={getCellClassName}
+        getRowClassName={getRowClassName}
         disableColumnFilter
         disableColumnSelector
         disableRowSelectionOnClick
@@ -136,12 +137,16 @@ const CustomDataGrid = (props: DataGridProps) => {
           footer: customFooter,
           ...slots
         }}
-        sx={{
-          "& .MuiDataGrid-row:hover": {
-            cursor: onClickRow ? "pointer" : "default"
-          },
-          ...sx
-        }}
+        sx={
+          personalSx
+            ? { ...sx }
+            : {
+                "& .MuiDataGrid-row:hover": {
+                  cursor: onClickRow ? "pointer" : "default"
+                },
+                ...sx
+              }
+        }
         onCellClick={handleCellClick}
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
