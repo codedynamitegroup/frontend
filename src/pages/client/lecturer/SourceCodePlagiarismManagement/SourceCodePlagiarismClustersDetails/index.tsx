@@ -19,7 +19,7 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { RootState } from "store";
 import CircularProgressWithLabel from "../SourceCodePlagiarismOverview/components/FilePairsTable/components/CircularProgressWithLabel";
@@ -87,13 +87,18 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function LecturerSourceCodePlagiarismClustersDetails() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { clusterId } = useParams<{ clusterId: string }>();
   const [tabIndex, setTabIndex] = React.useState(0);
   const codePlagiarismState = useSelector((state: RootState) => state.codePlagiarism);
-  const { report, filterdFiles, filteredPairs } = codePlagiarismState;
+  const { clusters, report } = codePlagiarismState;
+
+  const currentCluster = React.useMemo(() => {
+    return clusters.find((cluster) => cluster.id === Number(clusterId));
+  }, [clusters, clusterId]);
 
   const dataSubmissionList = React.useMemo(() => {
-    if (filterdFiles.length === 0) return [];
-    const result = filterdFiles.map((file, index) => {
+    if (!currentCluster) return [];
+    const result = currentCluster.submissions.map((file, index) => {
       return {
         id: file.id.toString(),
         userId: file.extra.userId,
@@ -109,7 +114,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
     });
     // sort by highest similarity
     return result.sort((a, b) => b.highestSimilarity - a.highestSimilarity);
-  }, [filterdFiles]);
+  }, [currentCluster]);
 
   const submissionListTableHeading: GridColDef[] = [
     {
@@ -178,7 +183,8 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
   }
 
   const dataPairList = React.useMemo(() => {
-    const result = filteredPairs.map((pair, index) => {
+    if (!currentCluster) return [];
+    const result = currentCluster.cluster.map((pair, index) => {
       return {
         id: pair.id,
         leftFile: pair.leftFile,
@@ -190,7 +196,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
     });
     // sort by similarity
     return result.sort((a, b) => b.similarity - a.similarity);
-  }, [filteredPairs]);
+  }, [currentCluster]);
 
   const pairListTableHeading: GridColDef[] = [
     {
