@@ -11,7 +11,8 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
     <Box
       sx={{
         backgroundColor: "var(--white)",
-        borderRadius: "20px"
+        borderRadius: "20px",
+        width: "100%"
       }}
     >
       <LinearProgress

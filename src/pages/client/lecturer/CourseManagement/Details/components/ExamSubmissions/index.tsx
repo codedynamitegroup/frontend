@@ -629,7 +629,13 @@ const LecturerCourseExamSubmissions = () => {
           onHandlePlagiarismDetection("Báo cáo gian lận mới", [
             "f47ac10b-58cc-4372-a567-0e02b2c3d495",
             "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-            "f47ac10b-58cc-4372-a567-0e02b2c3d497"
+            "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d498",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d499",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d500",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d501",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d502",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d503"
           ]);
         }}
         onHandleCancel={() => {
@@ -637,7 +643,13 @@ const LecturerCourseExamSubmissions = () => {
             onHandlePlagiarismDetection("Báo cáo gian lận mới", [
               "f47ac10b-58cc-4372-a567-0e02b2c3d495",
               "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-              "f47ac10b-58cc-4372-a567-0e02b2c3d497"
+              "f47ac10b-58cc-4372-a567-0e02b2c3d497",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d498",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d499",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d500",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d501",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d502",
+              "f47ac10b-58cc-4372-a567-0e02b2c3d503"
             ]);
           } else {
             handleCloseCreateReportConfirmDialog();
