@@ -41,6 +41,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { RootState } from "store";
 import classes from "./styles.module.scss";
+import useWindowDimensions from "hooks/useWindowDimensions";
 
 const drawerWidth = 450;
 
@@ -213,7 +214,14 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
         <Main open={true} className={classes.mainContent}>
           <DrawerHeader />
           <Card>
-            <Box component='form' className={classes.formBody} autoComplete='off'>
+            <Box
+              component='form'
+              className={classes.formBody}
+              autoComplete='off'
+              sx={{
+                height: `calc(100vh - ${headerHeight}px)`
+              }}
+            >
               <Box className={classes.cardHeader} ref={cardHeaderRef}>
                 <Heading1 translation-key='code_plagiarism_no_file_pairs_comparing_title'>
                   {t("code_plagiarism_no_file_pairs_comparing_title", {
@@ -396,7 +404,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                 </Tooltip>
                               </Box>
                               <Button
-                                btnType={BtnType.Text}
+                                btnType={BtnType.Outlined}
                                 onClick={() => {
                                   navigate(
                                     routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
@@ -474,7 +482,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                 </Tooltip>
                               </Box>
                               <Button
-                                btnType={BtnType.Text}
+                                btnType={BtnType.Outlined}
                                 onClick={() => {
                                   navigate(
                                     routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
@@ -560,7 +568,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                   </Tooltip>
                                 </Box>
                                 <Button
-                                  btnType={BtnType.Text}
+                                  btnType={BtnType.Outlined}
                                   onClick={() => {
                                     navigate(
                                       routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
@@ -639,7 +647,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                   </Tooltip>
                                 </Box>
                                 <Button
-                                  btnType={BtnType.Text}
+                                  btnType={BtnType.Outlined}
                                   onClick={() => {
                                     navigate(
                                       routes.lecturer.exam.code_plagiarism_detection_submissions_detail.replace(
