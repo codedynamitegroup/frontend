@@ -382,7 +382,7 @@ export default function TakeExam() {
           position='fixed'
           sx={{
             // margin top to avoid appbar overlap with content
-            marginTop: "64px",
+            marginTop: `${headerHeight}px`,
             backgroundColor: "white"
           }}
           open={open}
