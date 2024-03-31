@@ -108,147 +108,6 @@ export default function LecturerSourceCodePlagiarismManagement() {
     clusters
   } = codePlagiarismState;
 
-  // const [data, setData] = React.useState<{
-  //   report: {
-  //     name: string;
-  //     createdAt: string;
-  //     files: File[];
-  //     language: { name: string; extensions: string[] };
-  //     pairs: Pair[];
-  //     labels: { label: string; submissions: number; isActive: boolean }[];
-  //   } | null;
-  // }>({
-  //   report: {
-  //     ...location.state?.report,
-  //     labels: getUniqueLabelsFromPairsAndFiles(
-  //       location.state?.report?.pairs,
-  //       location.state?.report?.files
-  //     )
-  //   }
-  // });
-
-  // const filteredPairs = React.useMemo(() => {
-  //   // Fitter pairs with labels has isActive = true
-  //   const copyPairs = [
-  //     ...(report?.pairs?.map((pair) => {
-  //       return pair;
-  //     }) || [])
-  //   ];
-  //   return (
-  //     copyPairs.filter(
-  //       (pair) =>
-  //         report?.labels.length === 0 ||
-  //         report?.labels.some(
-  //           (label) =>
-  //             pair.leftFile.extra?.labels === label.label &&
-  //             pair.rightFile.extra?.labels === label.label &&
-  //             label.isActive
-  //         )
-  //     ) || []
-  //   );
-  // }, [report?.pairs, report?.labels]);
-
-  // const filterdFiles = React.useMemo(() => {
-  //   // Fitter files with labels has isActive = true
-  //   const copyFiles = [
-  //     ...(report?.files?.map((file) => {
-  //       return file;
-  //     }) || [])
-  //   ];
-  //   return (
-  //     copyFiles.filter(
-  //       (file) =>
-  //         report?.labels.length === 0 ||
-  //         report?.labels.some((label) => file.extra?.labels === label.label && label.isActive)
-  //     ) || []
-  //   );
-  // }, [report?.files, report?.labels]);
-
-  // const fileInterestingnessCalculator = React.useMemo(() => {
-  //   return new FileInterestingnessCalculator(filteredPairs || []);
-  // }, [filteredPairs]);
-
-  // const [threshold, setThreshold] = React.useState<number>(
-  //   Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) < 25
-  //     ? 25
-  //     : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) > 100
-  //       ? 100
-  //       : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0))
-  // );
-
-  // const highestSimilarityPair = React.useMemo(() => {
-  //   // Fix error Reduce of empty array with no initial value
-  //   if (filteredPairs.length === 0) {
-  //     return null;
-  //   }
-  //   return filteredPairs.reduce((a, b) => (a.similarity > b.similarity ? a : b));
-  // }, [filteredPairs]);
-
-  // // Highest similarity.
-  // const highestSimilarity = React.useMemo(() => {
-  //   return highestSimilarityPair?.similarity || 0;
-  // }, [highestSimilarityPair]);
-
-  // const similarities = React.useMemo(() => {
-  //   return new Map(
-  //     filterdFiles.map((file) => [file, file.fileScoring?.similarityScore || null]) || []
-  //   );
-  // }, [filterdFiles]);
-
-  // const similaritiesList = React.useMemo(() => {
-  //   const similaritiesList = Array.from(similarities.values()).filter(
-  //     (s) => s !== null
-  //   ) as SimilarityScore[];
-  //   const similaritiesListCheck = similaritiesList.map((s) => s?.similarity || 0);
-  //   return similaritiesListCheck;
-  // }, [similarities]);
-
-  // // Average maximum similarity.
-  // const averageSimilarity = React.useMemo(() => {
-  //   const mean = similaritiesList.reduce((a, b) => a + b, 0) / similaritiesList.length;
-  //   return isNaN(mean) ? 0 : mean;
-  // }, [similaritiesList]);
-
-  // // Median maximum similarity.
-  // const medianSimilarity = React.useMemo(() => {
-  //   const sorted = [...similaritiesList].sort();
-  //   const middle = Math.floor(sorted.length / 2);
-  //   const median = sorted[middle];
-  //   return isNaN(median) ? 0 : median;
-  // }, [similaritiesList]);
-
-  // const clustering = React.useMemo(() => {
-  //   if (filterdFiles && filteredPairs) {
-  //     return singleLinkageCluster(filteredPairs, filterdFiles, threshold / 100);
-  //   }
-  //   return [];
-  // }, [filteredPairs, filterdFiles, threshold]);
-
-  // const clusters = React.useMemo(() => {
-  //   const result = clustering.map((cluster) => {
-  //     const findIndex = clustering.findIndex((c) => c === cluster);
-  //     const files = getClusterElementsArray(cluster);
-
-  //     // Calculate similarity score for each file
-  //     files.forEach((file) => {
-  //       if (!file.fileScoring) {
-  //         const fileScoring = fileInterestingnessCalculator.calculateFileScoring(file);
-  //         file.fileScoring = fileScoring;
-  //       }
-  //     });
-
-  //     return {
-  //       id: findIndex,
-  //       submissions: files,
-  //       size: files.length,
-  //       similarity: [...cluster].reduce((acc, pair) => acc + pair.similarity, 0) / cluster.size,
-  //       cluster
-  //     };
-  //   });
-  //   result.sort((a, b) => b.size - a.size);
-  //   return result;
-  // }, [clustering, fileInterestingnessCalculator]);
-
   const xAxisData = React.useMemo(() => {
     return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
   }, []);
@@ -284,10 +143,14 @@ export default function LecturerSourceCodePlagiarismManagement() {
   });
 
   React.useEffect(() => {
-    if (location.state?.report) {
-      dispatch(setReport({ report: location.state.report }));
+    if (location.state?.report && (report === null || report?.id !== location.state.report.id)) {
+      dispatch(
+        setReport({
+          report: location.state.report
+        })
+      );
     }
-  }, [dispatch, location.state.report]);
+  }, [dispatch, location.state.report, report]);
 
   return (
     <Grid className={classes.root}>

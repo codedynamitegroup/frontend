@@ -116,6 +116,11 @@ const getUniqueFilteredFilesFromFilteredPairsWithActiveLabel = (
   return result as File[];
 };
 
+const predictTheBestThreshold = (filteredPairs: Pair[]) => {
+  const threshold = Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0));
+  return threshold < 25 ? 25 : threshold > 100 ? 100 : threshold;
+};
+
 const generateAllNecessaryDataFromFilteredPairsAndFilteredFiles = (
   filteredPairs: Pair[],
   filterdFiles: File[],
@@ -217,12 +222,7 @@ const codePlagiarismSlice = createSlice({
         labels
       );
 
-      const threshold =
-        Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) < 25
-          ? 25
-          : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0)) > 100
-            ? 100
-            : Number((guessSimilarityThreshold(filteredPairs || []) * 100).toFixed(0));
+      const threshold = predictTheBestThreshold(filteredPairs);
 
       const {
         highestSimilarityPair,
@@ -274,6 +274,7 @@ const codePlagiarismSlice = createSlice({
         filteredPairs,
         newLabels
       );
+
       const {
         highestSimilarityPair,
         highestSimilarity,
