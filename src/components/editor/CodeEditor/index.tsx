@@ -71,7 +71,9 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEdi
   return (
     <CodeMirror
       id={classes.codeEditor}
-      minHeight={"150px"}
+      style={{
+        height: "100%"
+      }}
       value={value}
       theme={githubLight}
       onChange={onChange}

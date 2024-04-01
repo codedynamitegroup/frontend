@@ -347,7 +347,8 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                     item
                     xs={12}
                     sx={{
-                      height: `calc(100% - ${toolbarCodeHeight}px)`
+                      height: `calc(100% - ${toolbarCodeHeight}px)`,
+                      overflow: "auto"
                     }}
                   >
                     {tabIndex === 0 ? (
@@ -422,7 +423,8 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                             <Box
                               className={classes.codeContent}
                               sx={{
-                                height: `calc(100% - ${codeHeadHeight}px)`
+                                // height: `calc(100% - ${codeHeadHeight}px)`
+                                height: "100%"
                               }}
                             >
                               <CodeEditor
@@ -500,7 +502,8 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                             <Box
                               className={classes.codeContent}
                               sx={{
-                                height: `calc(100% - ${codeHeadHeight}px)`
+                                // height: `calc(100% - ${codeHeadHeight}px)`
+                                height: "100%"
                               }}
                             >
                               <CodeEditor
