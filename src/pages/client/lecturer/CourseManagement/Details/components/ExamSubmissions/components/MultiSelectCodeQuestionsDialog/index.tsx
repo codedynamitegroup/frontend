@@ -215,7 +215,7 @@ export default function MultiSelectCodeQuestionsDialog({
         {
           field: "name",
           headerName: "Tên báo cáo",
-          flex: 1
+          minWidth: 100
         },
         {
           field: "sourceQuestionTitle",
@@ -228,7 +228,7 @@ export default function MultiSelectCodeQuestionsDialog({
         {
           field: "comparedCodeQuestions",
           headerName: "Danh sách so sánh bài kiểm tra",
-          minWidth: 450,
+          minWidth: 350,
           renderCell: (params) => {
             return (
               <BasicAccordion

@@ -599,7 +599,7 @@ const LecturerCourseExamSubmissions = () => {
       <MultiSelectCodeQuestionsDialog
         open={isMultiSelectCodeQuestionsDialogOpen.value}
         handleClose={handleCloseMultiSelectCodeQuestionsDialog}
-        title={"Tạo báo cáo gian lận"}
+        title={"Tạo báo cáo gian lận cho câu hỏi"}
         cancelText={"Hủy"}
         confirmText={"Xác nhận"}
         isConfirmLoading={isCheckReportExistLoading}
@@ -619,8 +619,8 @@ const LecturerCourseExamSubmissions = () => {
         handleClose={handleCloseCreateReportConfirmDialog}
         title={
           isCreateReportConfirmDialogOpen.isExisted
-            ? "Xác nhận ghi đè báo cáo cũ"
-            : "Tạo báo cáo gian lận"
+            ? "Xác nhận ghi đè báo cáo cũ cho câu hỏi"
+            : "Xác nhận tạo báo cáo gian lận cho câu hỏi"
         }
         cancelText={isCheckReportExistLoading ? "Xem lại" : "Hủy"}
         confirmText={"Xác nhận"}
