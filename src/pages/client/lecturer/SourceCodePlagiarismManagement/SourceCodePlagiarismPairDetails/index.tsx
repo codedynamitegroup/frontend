@@ -27,7 +27,7 @@ import { githubLight } from "@uiw/codemirror-theme-github";
 import { EditorState, EditorView } from "@uiw/react-codemirror";
 import Header, { DrawerHeader } from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
-import CodeEditor from "components/editor/CodeEditor";
+import CodeEditor, { supportedLanguagesExtensions } from "components/editor/CodeEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
@@ -304,7 +304,21 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                                 <ParagraphBody>
                                   {t("code_plagiarism_similarity_title")}
                                   {": "}
-                                  {Math.round(data && data.similarity ? data.similarity * 100 : 0)}%
+                                  <span
+                                    style={{
+                                      color: `${
+                                        data && data.similarity && data.similarity >= 0.8
+                                          ? "var(--green-500)"
+                                          : "var(--red-500)"
+                                      }`,
+                                      fontWeight: 600
+                                    }}
+                                  >
+                                    {Math.round(
+                                      data && data.similarity ? data.similarity * 100 : 0
+                                    )}
+                                    %
+                                  </span>
                                 </ParagraphBody>
                               </Box>
                             </Tooltip>
@@ -515,7 +529,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                         </Grid>
                       </Grid>
                     ) : (
-                      <CodeMirrorMerge theme={githubLight}>
+                      <CodeMirrorMerge>
                         <Grid
                           container
                           sx={{
@@ -592,9 +606,14 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                               >
                                 <Original
                                   value={data?.leftFile.lines.join("\n") || ""}
+                                  basicSetup={{
+                                    highlightActiveLine: false
+                                  }}
                                   extensions={[
                                     EditorView.editable.of(false),
-                                    EditorState.readOnly.of(true)
+                                    EditorState.readOnly.of(true),
+                                    githubLight,
+                                    ...supportedLanguagesExtensions
                                   ]}
                                 />
                               </Box>
@@ -671,9 +690,14 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                               >
                                 <Modified
                                   value={data?.rightFile.lines.join("\n") || ""}
+                                  basicSetup={{
+                                    highlightActiveLine: false
+                                  }}
                                   extensions={[
                                     EditorView.editable.of(false),
-                                    EditorState.readOnly.of(true)
+                                    EditorState.readOnly.of(true),
+                                    githubLight,
+                                    ...supportedLanguagesExtensions
                                   ]}
                                 />
                               </Box>

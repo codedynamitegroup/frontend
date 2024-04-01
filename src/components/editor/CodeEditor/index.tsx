@@ -18,6 +18,15 @@ interface CodeEditorProps {
   }[];
 }
 
+export const supportedLanguagesExtensions = [
+  langs.java(),
+  langs.javascript(),
+  langs.cpp(),
+  langs.python(),
+  langs.angular(),
+  langs.html()
+];
+
 const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEditorProps) => {
   const onChange = useCallback(
     () => (value: string, viewUpdate: ViewUpdate) => {
@@ -41,15 +50,6 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEdi
   const extensions = useMemo(() => {
     const extensions: any[] = [];
 
-    const supportedLanguagesExtensions = [
-      langs.java(),
-      langs.javascript(),
-      langs.cpp(),
-      langs.python(),
-      langs.angular(),
-      langs.html()
-    ];
-
     if (
       fragments !== undefined &&
       lineNumber !== undefined &&
@@ -71,16 +71,13 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEdi
   return (
     <CodeMirror
       id={classes.codeEditor}
-      style={{
-        height: "100%"
-      }}
       value={value}
       theme={githubLight}
       onChange={onChange}
       readOnly={readOnly}
       basicSetup={{
         autocompletion: true,
-        highlightActiveLine: highlightActiveLine ?? true
+        highlightActiveLine: highlightActiveLine !== undefined ? highlightActiveLine : true
       }}
       extensions={extensions}
     />
