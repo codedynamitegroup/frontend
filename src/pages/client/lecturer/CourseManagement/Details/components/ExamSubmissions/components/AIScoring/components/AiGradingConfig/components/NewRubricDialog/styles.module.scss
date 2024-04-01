@@ -3,18 +3,36 @@
         color: rgba(29, 33, 48, .749);
         font-size: 13px;
     }
-
-    // .inputBorder {
-    //     border-color: #3E68A8 !important;
-    // }
     .inputBorder:focus {
         border-color: red !important;
     }
-    // .inputTextField {
-
-    // }
+    .inputTextField {
+        min-height: 10px;
+        height: 41px;
+        font-size: 14px;
+        border-radius: 15px
+    }
 
     & [class~="MuiInput-underline"] {
         border-color: red;
     }
+    .criteriaOrderText {
+        color: gray;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .removeCriteriaIconButton:hover {
+        background-color: #ea8f8f !important;
+        font-size: 1rem;
+    }
+    .scaleTextField {
+        border-radius: 15px;
+        font-size: 14px;
+        height: 100px;
+    }
+}
+
+.addScaleButtonContainer {
+    display: flex !important;
+    justify-content: center !important;
 }
