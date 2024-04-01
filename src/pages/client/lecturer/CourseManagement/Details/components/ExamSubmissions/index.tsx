@@ -146,7 +146,7 @@ const LecturerCourseExamSubmissions = () => {
     questions: [
       {
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-        title: "Tính tổng các số lẻ từ 1 đến n",
+        title: "Cài đặt thuật toán sắp xếp chọn",
         checkCheating: false,
         max_grade: 10,
         type: qtype.source_code,
@@ -176,7 +176,7 @@ const LecturerCourseExamSubmissions = () => {
       },
       {
         id: "f47ac10b-58cc-4372-a567-002b2c3d495",
-        title: "Tính tổng các số lẻ từ 1 đến n",
+        title: "Tính tổng bình phương các số từ 1 đến n",
         checkCheating: true,
         max_grade: 10,
         type: qtype.source_code,
