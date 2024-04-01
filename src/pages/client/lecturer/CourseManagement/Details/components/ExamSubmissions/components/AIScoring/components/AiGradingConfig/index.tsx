@@ -65,8 +65,8 @@ const Textarea = styled(BaseTextareaAutosize)(
     height: 100%;
     max-width: 100%;
     min-width: 100%;
-    min-height: 100px;
-    max-height: 280px;
+    min-height: 150px;
+    max-height: 340px;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 0.875rem;
     font-weight: 400;
@@ -611,7 +611,7 @@ const GradingConfig = () => {
                     <Grid item xs={12}>
                       <Typography className={classes.critTitle}>{`Criteria `}</Typography>
                     </Grid>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <Stack direction={"row"} spacing={2} justifyContent={"center"}>
                         <Button
                           variant='outlined'
@@ -624,19 +624,12 @@ const GradingConfig = () => {
                           {t("grading_config_select_criteria")}
                         </Button>
                       </Stack>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                       <Stack direction='column' spacing={2}>
                         <CriteriaCard name='Criteria 1' />
                         <CriteriaCard name='Criteria 2' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
-                        <CriteriaCard name='Criteria 3' />
+                        <CriteriaCard name='Criteria 9' />
                       </Stack>
                     </Grid>
                   </Grid>
@@ -670,7 +663,7 @@ const GradingConfig = () => {
         </Stack>
       </Box>
       <SelectRubricDialog />
-      <NewRubricDialog />
+      <NewRubricDialog headerHeight={headerHeight} />
       <SelectCriteriaConfig />
     </>
   );
