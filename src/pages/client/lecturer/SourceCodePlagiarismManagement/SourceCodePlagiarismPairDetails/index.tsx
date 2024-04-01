@@ -423,8 +423,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                             <Box
                               className={classes.codeContent}
                               sx={{
-                                // height: `calc(100% - ${codeHeadHeight}px)`
-                                height: "100%"
+                                height: `calc(100% - ${codeHeadHeight}px)`
                               }}
                             >
                               <CodeEditor
@@ -502,8 +501,7 @@ export default function LecturerSourceCodePlagiarismPairDetails() {
                             <Box
                               className={classes.codeContent}
                               sx={{
-                                // height: `calc(100% - ${codeHeadHeight}px)`
-                                height: "100%"
+                                height: `calc(100% - ${codeHeadHeight}px)`
                               }}
                             >
                               <CodeEditor

@@ -259,6 +259,12 @@ export default function MultiSelectCodeQuestionsDialog({
           }
         },
         {
+          field: "createdBy",
+          headerName: "Người tạo",
+          flex: 1,
+          renderCell: (params) => <span>Nguyễn Quốc Tuấn</span>
+        },
+        {
           field: "createdAt",
           headerName: "Ngày tạo",
           flex: 1,
