@@ -1,20 +1,15 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, FormControlLabel, Checkbox, Stack } from "@mui/material";
 import { blue, grey } from "@mui/material/colors";
 import TextEditor from "components/editor/TextEditor";
-import { useTranslation } from "react-i18next";
-
+import FlagIcon from "@mui/icons-material/Flag";
+import ParagraphBody from "components/text/ParagraphBody";
 const EssayExamQuestion = () => {
-  const { t } = useTranslation();
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={2}>
         <Box sx={{ backgroundColor: grey[300] }} borderRadius={1} paddingX={3} paddingY={1}>
-          <Typography gutterBottom translation-key='common_question'>
-            {t("common_question")} 1
-          </Typography>
-          <Typography gutterBottom translation-key='course_management_exam_preview_available'>
-            {t("course_management_exam_preview_available")}: 2
-          </Typography>
+          <Typography gutterBottom>Câu hỏi 1</Typography>
+          <Typography gutterBottom>Điểm có thể đạt được: 2</Typography>
         </Box>
       </Grid>
       <Grid item xs={12} md={10}>
@@ -24,6 +19,14 @@ const EssayExamQuestion = () => {
             <TextEditor value='' />
           </Box>
         </Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={
+            <Stack direction={"row"} alignItems={"center"}>
+              <ParagraphBody>Gắn cờ</ParagraphBody> <FlagIcon sx={{ color: "red" }} />
+            </Stack>
+          }
+        />
       </Grid>
     </Grid>
   );
