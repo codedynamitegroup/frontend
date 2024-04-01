@@ -1,4 +1,4 @@
-import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
+import { faCalendar, faFile, faUser } from "@fortawesome/free-regular-svg-icons";
 import {
   faChartLine,
   faCircleInfo,
@@ -230,6 +230,12 @@ export default function LecturerSourceCodePlagiarismManagement() {
                           ? new Date(report.createdAt).toLocaleString()
                           : t("code_plagiarism_not_updated")}
                       </ParagraphBody>
+                    </Box>
+                    <Box className={classes.reportOpenTimeWrapper}>
+                      <Tooltip title={"Nguời tạo"} placement='top'>
+                        <FontAwesomeIcon icon={faUser} color='#737373' size={"lg"} />
+                      </Tooltip>
+                      <ParagraphBody>Nguyễn Quốc Tuấn</ParagraphBody>
                     </Box>
                     <Box className={classes.submissionsQuantity}>
                       <Tooltip title={"Tiêu đề câu hỏi nguồn"} placement='top'>

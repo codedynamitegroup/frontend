@@ -225,7 +225,7 @@ export default function LecturerSourceCodePlagiarismClustersDetails() {
     },
     {
       field: "similarity",
-      headerName: t("code_plagiarism_highest_similarity_title"),
+      headerName: t("code_plagiarism_similarity_title"),
       flex: 1,
       renderCell: (params) => {
         return <CircularProgressWithLabel value={Number(params.value) * 100 || 0} />;
