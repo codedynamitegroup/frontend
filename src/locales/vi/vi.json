@@ -131,7 +131,7 @@
   "common_create_at": "Thời gian tạo",
   "common_description": "Mô tả",
   "common_agree": "Đồng ý",
-  "common_default":"Mặc định",
+  "common_default": "Mặc định",
   "common_custom": "Tùy chỉnh",
 
   "side_bar_dashboard": "Trang chủ",
@@ -188,6 +188,7 @@
   "contest_total_num": "CUỘC THI",
   "contest_participant_num": "THÍ SINH THAM GIA",
   "contest_list_title": "Danh sách cuộc thi",
+  "contest_upcoming_button": "Sắp diễn ra",
   "contest_happening_button": "Đang diễn ra",
   "contest_ended_button": "Đã kết thúc",
   "contest_beginner_difficulty": "Sơ cấp",
@@ -219,7 +220,9 @@
   "certificate_title": "Khóa học chứng chỉ",
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
   "certificate_basic": "Kiến thức cơ bản",
+  "certificate_intermediate": "Kiến thức trung cấp",
   "certificate_advance": "Kiến thức nâng cao",
+  "certificate_empty": "Không có khóa học nào",
   "certificate_hot_recommend": "Chứng chỉ mà mọi người đang học",
 
   "certificate_detail_rating": "Đánh giá",
@@ -586,7 +589,7 @@
   "grading_config_rubric": "Bảng chấm điểm",
   "grading_config_select_rubric": "Chọn hoặc tạo bảng chấm điểm",
   "grading_config_select_criteria_description": "Bảng chấm điểm là bộ gồm các tiêu chí. Bạn có thể sử dụng một bảng chấm đã có sẵn hoặc chọn tiêu chí và tạo bảng chấm mới",
-  
+
   "grading_config_select_rubric_dialog_title": "Chọn bảng chấm điểm",
   "grading_config_select_rubric_dialog_create": "Tạo bảng chấm điểm mới",
   "grading_config_select_rubric_dialog_edit": "Chỉnh sửa bảng chấm điểm",

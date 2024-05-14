@@ -5,6 +5,9 @@ import selectRubricDialogReducer from "reduxes/SelectRubricDialog/index";
 import rubricDialogReducer from "reduxes/NewEditRubricDialog/index";
 import selectRubricCriteriaDialog from "reduxes/SelectRubricCriteriaDialog";
 import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
+import topicReducer from "reduxes/coreService/Topic/index";
+import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
+import chapterReducer from "reduxes/coreService/Chapter/index";
 
 const store = configureStore({
   reducer: {
@@ -13,7 +16,10 @@ const store = configureStore({
     selectRubricDialog: selectRubricDialogReducer,
     rubricDialog: rubricDialogReducer,
     selectCriteriaDialog: selectRubricCriteriaDialog,
-    rubricCriteriaConfigDialog: rubricCriteriaConfigDialog
+    rubricCriteriaConfigDialog: rubricCriteriaConfigDialog,
+    topic: topicReducer,
+    certifcateCourse: certificateCourseReducer,
+    chapter: chapterReducer
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

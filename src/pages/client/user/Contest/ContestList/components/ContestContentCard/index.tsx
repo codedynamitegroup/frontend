@@ -27,13 +27,13 @@ const ContestContentCard = (props: PropsData) => {
         <Grid item xs={10}>
           <Box className={classes.contestInfo}>
             <Grid container>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Stack className={classes.contestTypeContainer} direction='row' spacing={0.5}>
                   <Chip size='small' label='DSA' variant='outlined' onClick={chipClickHandle} />
                   <Chip size='small' label='OOP' variant='outlined' onClick={chipClickHandle} />
                   <Chip size='small' label='Java' variant='outlined' onClick={chipClickHandle} />
                 </Stack>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <Heading3 sx={{ color: "inherit" }}>{name}</Heading3>
               </Grid>

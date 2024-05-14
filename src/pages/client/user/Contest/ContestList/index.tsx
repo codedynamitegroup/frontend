@@ -170,16 +170,16 @@ const ContestList = () => {
 
       <Container className={classes.container}>
         <Grid container className={classes.contestListContainer}>
-          <Grid item sm={12} xs={12} md={2.5} lg={2.5}>
+          {/* <Grid item sm={12} xs={12} md={2.5} lg={2.5}>
             <Grid container>
               <Grid item xs={12} />
               <Grid item xs={12}>
                 <ContestFilter filterObject={filterObject} />
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={0.5}></Grid>
-          <Grid item sm={12} xs={12} md={9} lg={9}>
+          </Grid> */}
+          {/* <Grid item xs={0.5}></Grid> */}
+          <Grid item sm={12} xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={10} lg={8}>
                 <Typography
@@ -200,6 +200,14 @@ const ContestList = () => {
               <Grid item xs={12} md={10} lg={8}>
                 <Box className={classes.contestListButtonGroup}>
                   <ToggleButtonGroup {...control}>
+                    <ToggleButton
+                      key='upcoming'
+                      value='upcoming'
+                      className={classes.listStateButton}
+                      translation-key='contest_upcoming_button'
+                    >
+                      {t("contest_upcoming_button")}
+                    </ToggleButton>
                     <ToggleButton
                       key='happening'
                       value='happening'

@@ -1,9 +1,8 @@
-import { Box, Checkbox, Container, Grid } from "@mui/material";
+import { Box, Checkbox, Container, FormControlLabel, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
-import SearchBar from "components/common/search/SearchBar";
 import BasicSelect from "components/common/select/BasicSelect";
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
@@ -13,6 +12,14 @@ import { useTranslation } from "react-i18next";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { fetchAllTopics, setFilterForTopic } from "reduxes/coreService/Topic";
+import { fetchAllCertificateCourses } from "reduxes/coreService/CertificateCourse";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
+import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import AutoSearchBar from "components/common/search/AutoSearchBar";
 
 export interface CourseCertificate {
   imgUrl: string;
@@ -22,143 +29,75 @@ export interface CourseCertificate {
   lesson?: number;
 }
 
-interface FilterByTopic {
-  checked: boolean;
-  title: string;
-  courseNumber: number;
-}
-
 const CourseCertificates = () => {
-  const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
-  };
+  const [searchText, setSearchText] = useState("");
+
+  const dispatch = useDispatch<AppDispatch>();
+  const topicState = useSelector((state: RootState) => state.topic);
+  const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
+
+  const filterTopicIds = useMemo(() => {
+    return topicState.topicsFilter
+      .filter((topicFilter) => topicFilter.checked)
+      .map((topicFilter) => topicFilter.topic.topicId);
+  }, [topicState.topicsFilter]);
+
+  const searchHandle = useCallback(
+    (searchText: string) => {
+      dispatch(
+        fetchAllCertificateCourses({
+          courseName: searchText,
+          filterTopicIds: filterTopicIds,
+          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        })
+      );
+    },
+    [dispatch, filterTopicIds]
+  );
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
-  const filterByTopics: FilterByTopic[] = [
-    {
-      checked: true,
-      title: "Học C++",
-      courseNumber: 10
-    },
-    {
-      checked: false,
-      title: "Học Java",
-      courseNumber: 15
-    },
-    {
-      checked: false,
-      title: "Học Python",
-      courseNumber: 20
-    },
-    {
-      checked: false,
-      title: "Học Javascript",
-      courseNumber: 10
-    },
-    {
-      checked: false,
-      title: "Cấu trúc dữ liệu và giải thuật",
-      courseNumber: 3
-    },
-    {
-      checked: false,
-      title: "Kỹ thuật lập trình",
-      courseNumber: 5
-    }
-  ];
+  const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    return certificateCourseState.certificateCourses.filter(
+      (course) => course.skillLevel === SkillLevelEnum.BASIC
+    );
+  }, [certificateCourseState.certificateCourses]);
 
-  const recommendedCourseCertificates: CourseCertificate[] = [
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-      title: "Học C++ cơ bản",
-      description:
-        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-      lesson: 10,
-      level: "Dễ"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-      title: "Học Python nâng cao",
-      description:
-        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-      lesson: 15,
-      level: "Nâng cao"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/greedy-algorithms.svg",
-      title: "Thuật toán nhị phân",
-      description:
-        "Binary search is an efficient search algorithm for sorted data. Learning this is beneficial as it dramatically reduces the time complexity to logarithmic, making it incredibly fast for large scale data.",
-      lesson: 10,
-      level: "Trung bình"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go cơ bản",
-      description:
-        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-      lesson: 35,
-      level: "Dễ"
-    }
-  ];
+  const intermediateCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    return certificateCourseState.certificateCourses.filter(
+      (course) => course.skillLevel === SkillLevelEnum.INTERMEDIATE
+    );
+  }, [certificateCourseState.certificateCourses]);
 
-  const courseCertificatesBasic: CourseCertificate[] = [
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-      title: "Học C++ cơ bản",
-      description:
-        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-      lesson: 10,
-      level: "Dễ"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-      title: "Học Python cơ bản",
-      description:
-        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-      lesson: 30,
-      level: "Dễ"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go cơ bản",
-      description:
-        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-      lesson: 35,
-      level: "Dễ"
-    }
-  ];
-
-  const courseCertificatesAdvanced: CourseCertificate[] = [
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-      title: "Học C++ nâng cao",
-      description:
-        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-      lesson: 10,
-      level: "Nâng cao"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-      title: "Học Python nâng cao",
-      description:
-        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-      lesson: 15,
-      level: "Nâng cao"
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go nâng cao",
-      description:
-        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-      lesson: 35,
-      level: "Nâng cao"
-    }
-  ];
+  const advancedCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    return certificateCourseState.certificateCourses.filter(
+      (course) => course.skillLevel === SkillLevelEnum.ADVANCED
+    );
+  }, [certificateCourseState.certificateCourses]);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchAllTopics({ pageNo: 0, pageSize: 10, fetchAll: true }));
+    dispatch(
+      fetchAllCertificateCourses({
+        courseName: searchText,
+        filterTopicIds: [],
+        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      fetchAllCertificateCourses({
+        courseName: searchText,
+        filterTopicIds,
+        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      })
+    );
+  }, [filterTopicIds]);
 
   return (
     <>
@@ -176,7 +115,11 @@ const CourseCertificates = () => {
             {t("certificate_description")}
           </Heading3>
           <Box id={classes.bannerSearch}>
-            <SearchBar onSearchClick={searchHandle} />
+            <AutoSearchBar
+              value={searchText}
+              setValue={setSearchText}
+              onHandleChange={searchHandle}
+            />
             <BasicSelect
               labelId='select-assignment-section-label'
               value={assignmentSection}
@@ -211,12 +154,28 @@ const CourseCertificates = () => {
                 <Heading4 translation-key='common_filter_topic'>
                   {t("common_filter_topic")}
                 </Heading4>
-                {filterByTopics.map((topic, index) => (
+                {topicState.topicsFilter.map((topicFilter, index) => (
                   <Box className={classes.couseCertificatesByTopicItem} key={index}>
-                    <Checkbox checked={topic.checked} className={classes.checkbox} />
-                    <ParagraphBody className={classes.couseCertificatesByTopicTitle}>
-                      {topic.title} <span>({topic.courseNumber})</span>
-                    </ParagraphBody>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={topicFilter.checked}
+                          onChange={(e) =>
+                            dispatch(
+                              setFilterForTopic({
+                                topicId: topicFilter.topic.topicId,
+                                checked: e.target.checked
+                              })
+                            )
+                          }
+                        />
+                      }
+                      label={
+                        <ParagraphBody>
+                          {topicFilter.topic.name} ({topicFilter.topic.numOfCertificateCourses})
+                        </ParagraphBody>
+                      }
+                    />
                   </Box>
                 ))}
               </Box>
@@ -230,7 +189,7 @@ const CourseCertificates = () => {
                     {t("certificate_hot_recommend")}
                   </Heading2>
                   <Grid container spacing={3}>
-                    {recommendedCourseCertificates.map((course, index) => (
+                    {certificateCourseState.mostEnrolledCertificateCourses.map((course, index) => (
                       <Grid
                         item
                         xs={4}
@@ -245,7 +204,24 @@ const CourseCertificates = () => {
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading2 translation-key='certificate_basic'>{t("certificate_basic")}</Heading2>
                   <Grid container spacing={3}>
-                    {courseCertificatesBasic.map((course, index) => (
+                    {basicCertificateCourses.map((course, index) => (
+                      <Grid
+                        item
+                        xs={4}
+                        key={index}
+                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                      >
+                        <CourseCertificateCard course={course} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+                <Box className={classes.couseCertificatesByTopic}>
+                  <Heading2 translation-key='certificate_intermediate'>
+                    {t("certificate_intermediate")}
+                  </Heading2>
+                  <Grid container spacing={3}>
+                    {intermediateCertificateCourses.map((course, index) => (
                       <Grid
                         item
                         xs={4}
@@ -262,7 +238,7 @@ const CourseCertificates = () => {
                     {t("certificate_advance")}
                   </Heading2>
                   <Grid container spacing={3}>
-                    {courseCertificatesAdvanced.map((course, index) => (
+                    {advancedCertificateCourses.map((course, index) => (
                       <Grid
                         item
                         xs={4}

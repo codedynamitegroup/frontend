@@ -5,23 +5,36 @@ import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-regular-svg-icons";
-import { CourseCertificate } from "../..";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
-  course: CourseCertificate;
+  course: CertificateCourseEntity;
 };
 
 const CourseCertificateCard = ({ course }: Props) => {
+  const formatSkillLevel = (skillLevel: SkillLevelEnum) => {
+    switch (skillLevel) {
+      case SkillLevelEnum.BASIC:
+        return "Cơ bản";
+      case SkillLevelEnum.INTERMEDIATE:
+        return "Trung bình";
+      case SkillLevelEnum.ADVANCED:
+        return "Nâng cao";
+      default:
+        return "";
+    }
+  };
   return (
     <Box className={classes.courseCerticate}>
       <Grid container direction={"column"} margin={0} gap={2}>
         <Grid item container xs={5} className={classes.titleCourse}>
           <Grid item xs={3} className={classes.imgCourse}>
-            <img alt='img course' src={course.imgUrl} />
+            <img alt='img course' src={course.topic.thumbnailUrl} />
           </Grid>
           <Grid item xs={9} className={classes.nameCourse}>
-            <Heading3>{course.title}</Heading3>
+            <Heading3>{course.name}</Heading3>
           </Grid>
         </Grid>
         <Divider />
@@ -31,12 +44,14 @@ const CourseCertificateCard = ({ course }: Props) => {
         <Divider />
         <Grid item xs={2}>
           <Box className={classes.iconCourse}>
-            <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-            <ParagraphBody>{course.lesson} bài học</ParagraphBody>
+            <FontAwesomeIcon icon={faBook} className={classes.fileIcon} />
+            <ParagraphBody>
+              {course.numOfQuestions} bài học • {course.numOfStudents} người học
+            </ParagraphBody>
           </Box>
           <Box className={classes.iconCourse}>
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
-            <ParagraphBody>{course.level}</ParagraphBody>
+            <ParagraphBody>{formatSkillLevel(course.skillLevel)}</ParagraphBody>
           </Box>
         </Grid>
       </Grid>

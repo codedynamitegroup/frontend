@@ -6,3 +6,5 @@ declare module "quill-image-resize-module-react";
 declare module "quill-image-uploader";
 declare module "quill-image-drop-and-paste";
 declare module "@mui/joy/*";
+declare module "redux-persist/es/persistReducer";
+declare module "redux-persist/es/persistStore";
