@@ -16,18 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { fetchAllTopics, setFilterForTopic } from "reduxes/coreService/Topic";
 import { fetchAllCertificateCourses } from "reduxes/coreService/CertificateCourse";
-import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
-
-export interface CourseCertificate {
-  imgUrl: string;
-  title: string;
-  description?: string;
-  level?: string;
-  lesson?: number;
-}
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -47,8 +38,7 @@ const CourseCertificates = () => {
       dispatch(
         fetchAllCertificateCourses({
           courseName: searchText,
-          filterTopicIds: filterTopicIds,
-          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+          filterTopicIds: filterTopicIds
         })
       );
     },
@@ -83,8 +73,7 @@ const CourseCertificates = () => {
     dispatch(
       fetchAllCertificateCourses({
         courseName: searchText,
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        filterTopicIds: []
       })
     );
   }, []);
@@ -93,8 +82,7 @@ const CourseCertificates = () => {
     dispatch(
       fetchAllCertificateCourses({
         courseName: searchText,
-        filterTopicIds,
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        filterTopicIds
       })
     );
   }, [filterTopicIds]);
@@ -194,7 +182,14 @@ const CourseCertificates = () => {
                         item
                         xs={4}
                         key={index}
-                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                        onClick={() =>
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.root.replace(
+                              ":courseId",
+                              course.certificateCourseId
+                            )
+                          )
+                        }
                       >
                         <CourseCertificateCard course={course} />
                       </Grid>
@@ -204,16 +199,25 @@ const CourseCertificates = () => {
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading2 translation-key='certificate_basic'>{t("certificate_basic")}</Heading2>
                   <Grid container spacing={3}>
-                    {basicCertificateCourses.map((course, index) => (
-                      <Grid
-                        item
-                        xs={4}
-                        key={index}
-                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
-                      >
-                        <CourseCertificateCard course={course} />
-                      </Grid>
-                    ))}
+                    {basicCertificateCourses.map(
+                      (course: CertificateCourseEntity, index: number) => (
+                        <Grid
+                          item
+                          xs={4}
+                          key={index}
+                          onClick={() =>
+                            navigate(
+                              routes.user.course_certificate.detail.lesson.root.replace(
+                                ":courseId",
+                                course.certificateCourseId
+                              )
+                            )
+                          }
+                        >
+                          <CourseCertificateCard course={course} />
+                        </Grid>
+                      )
+                    )}
                   </Grid>
                 </Box>
                 <Box className={classes.couseCertificatesByTopic}>
@@ -226,7 +230,14 @@ const CourseCertificates = () => {
                         item
                         xs={4}
                         key={index}
-                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                        onClick={() =>
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.root.replace(
+                              ":courseId",
+                              course.certificateCourseId
+                            )
+                          )
+                        }
                       >
                         <CourseCertificateCard course={course} />
                       </Grid>
@@ -243,7 +254,14 @@ const CourseCertificates = () => {
                         item
                         xs={4}
                         key={index}
-                        onClick={() => navigate(routes.user.course_certificate.detail.lesson.root)}
+                        onClick={() =>
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.root.replace(
+                              ":courseId",
+                              course.certificateCourseId
+                            )
+                          )
+                        }
                       >
                         <CourseCertificateCard course={course} />
                       </Grid>

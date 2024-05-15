@@ -12,7 +12,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import { ICodeQuestion, ISourceCodeSubmission, feedbackCodeByAI } from "service/FeedbackCodeByAI";
+import { ICodeQuestion, ISourceCodeSubmission, feedbackCodeByAI } from "services/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
