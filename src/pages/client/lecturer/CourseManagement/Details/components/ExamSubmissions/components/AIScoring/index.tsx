@@ -34,7 +34,7 @@ import {
   IFeedbackGradedAI,
   QuestionEssay,
   gradingEssayByAI
-} from "service/GradingEssayByAI";
+} from "services/GradingEssayByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";

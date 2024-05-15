@@ -20,7 +20,7 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
-import createQuestionByAI, { IFormatQuestion, IQuestion } from "service/CreateQuestionByAI";
+import createQuestionByAI, { IFormatQuestion, IQuestion } from "services/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
