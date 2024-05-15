@@ -20,6 +20,7 @@
     "@fullcalendar/react": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
     "@google/generative-ai": "^0.2.1",
+    "@hookform/resolvers": "^3.4.0",
     "@mui/icons-material": "^5.15.6",
     "@mui/joy": "^5.0.0-beta.24",
     "@mui/lab": "^5.0.0-alpha.162",
@@ -61,7 +62,7 @@
     "react": "^18.2.0",
     "react-codemirror-merge": "^4.21.24",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.51.2",
+    "react-hook-form": "^7.51.4",
     "react-i18next": "^14.1.0",
     "react-markdown": "^9.0.1",
     "react-pdf": "^7.7.1",
@@ -77,7 +78,7 @@
     "swiper": "^11.0.7",
     "typed.js": "^2.1.0",
     "web-vitals": "^2.1.4",
-    "yup": "^1.3.3"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
