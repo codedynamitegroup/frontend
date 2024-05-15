@@ -6,7 +6,7 @@ import { User } from "models/courseService/user";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
@@ -14,6 +14,10 @@ import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import Heading1 from "components/text/Heading1";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { AppDispatch, RootState } from "store";
+import { fetchAllCourses } from "reduxes/courseService/course";
 
 enum EView {
   cardView = 1,
@@ -183,10 +187,28 @@ const StudentCourses = () => {
   ];
   const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
 
+  const [searchText, setSearchText] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const courseState = useSelector((state: RootState) => state.course);
+
+  const searchHandle = useCallback((searchText: string) => {
+    setSearchText(searchText);
+  }, []);
+
+  const courseList: CourseEntity[] = useMemo(() => {
+    return courseState.courses;
+  }, [courseState.courses]);
+
+  useEffect(() => {
+    dispatch(fetchAllCourses({ search: searchText, pageNo: 0, pageSize: 10 }));
+  }, [dispatch, searchText]);
+
+  courseList.forEach((course) => {
+    console.log(course.name);
+  });
+
   const [viewType, setViewType] = useState(EView.listView);
-  const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
-  };
+
   const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
     setViewType(nextView);
   };
@@ -246,13 +268,13 @@ const StudentCourses = () => {
       ) : (
         <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
           <Grid container spacing={4}>
-            {tempCourse.map((course) => (
+            {courseList.map((course) => (
               <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
                 <CourseList
-                  courseAvatarUrl={course.avatarUrl}
-                  courseCategory={course.category}
+                  courseAvatarUrl={"https://picsum.photos/200"}
+                  courseCategory={course.name}
                   courseName={course.name}
-                  teacherList={course.teacherList}
+                  teacherList={tempTeacher2}
                 />
               </Grid>
             ))}
