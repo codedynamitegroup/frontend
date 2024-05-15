@@ -14,7 +14,7 @@ interface InputsProps extends OutlinedInputProps {
   value?: string | number;
   inputRef?: any;
   autoComplete?: string;
-  errorMessage?: string | null;
+  errorMessage?: string | null | undefined;
   optional?: boolean;
   readOnly?: boolean;
   disabled?: boolean;
@@ -22,6 +22,7 @@ interface InputsProps extends OutlinedInputProps {
   backgroundColor?: string;
   fullWidth?: boolean;
   maxWith?: string;
+  error?: boolean;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -40,7 +41,8 @@ const InputTextField = memo((props: InputsProps) => {
     onChange,
     backgroundColor,
     fullWidth,
-    maxWith
+    maxWith,
+    error
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -65,6 +67,7 @@ const InputTextField = memo((props: InputsProps) => {
               disabled={disabled}
               name={name}
               type={type}
+              error={error}
               classes={{
                 root: clsx(classes.inputTextfield, {
                   [classes.inputInvalid]: !!errorMessage
@@ -82,9 +85,14 @@ const InputTextField = memo((props: InputsProps) => {
               inputRef={refInput}
             />
           </Grid>
+          <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
+            <></>
+          </Grid>
+          <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          </Grid>
         </Grid>
       </FormControl>
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </>
   );
 });

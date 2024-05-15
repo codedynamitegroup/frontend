@@ -17,3 +17,30 @@
     }
   }
 }
+
+.text-editor-no-toolbar-error {
+  border-color: red;
+
+  .ql-container {
+    height: 100% !important;
+    .ql-editor {
+      height: 100%;
+    }
+  }
+}
+
+.text-editor-error {
+  height: 100%;
+
+  .ql-container {
+    height: calc(100% - 42px) !important;
+    border-color: white red red red;
+
+    .ql-editor {
+      height: 100%;
+    }
+  }
+  .ql-toolbar {
+    border-color: red;
+  }
+}

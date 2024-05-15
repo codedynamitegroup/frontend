@@ -5,6 +5,7 @@ import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
+import ErrorMessage from "components/text/ErrorMessage";
 
 declare global {
   interface Window {
@@ -42,16 +43,18 @@ interface OnChangeHandler {
 }
 
 type Props = {
-  value: string;
+  value?: string;
   placeholder?: string;
   noToolbar?: boolean;
   onChange?: OnChangeHandler;
   readOnly?: boolean;
+  error?: boolean;
   [key: string]: any;
 };
 
 const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, ...props }) => {
   const reactQuillRef: any = useRef(null);
+  const { error } = props;
   const modules = React.useMemo(
     () => ({
       toolbar: props?.noToolbar
@@ -140,7 +143,15 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
         formats={formats}
         onChange={onChange}
         // placeholder={placeholder}
-        className={`text-editor ${props?.noToolbar ? "text-editor-no-toolbar" : ""}`}
+        className={`text-editor ${
+          props?.noToolbar
+            ? error
+              ? "text-editor-no-toolbar-error"
+              : "text-editor-no-toolbar"
+            : error
+              ? "text-editor-error"
+              : ""
+        }`}
         {...props}
       />
     </>

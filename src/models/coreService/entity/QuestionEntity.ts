@@ -1,11 +1,11 @@
 import { QuestionDifficultyEnum } from "../enum/QuestionDifficultyEnum";
 import { QuestionTypeEnum } from "../enum/QuestionTypeEnum";
+import { AnswerOfQuestion } from "./AnswerOfQuestionEntity";
 import { OrganizationEntity } from "./OrganizationEntity";
 import { UserEntity } from "./UserEntity";
 
 export interface QuestionEntity {
   id: string;
-  // TODO: Add missing properties
   organization: OrganizationEntity;
   difficulty: QuestionDifficultyEnum;
   name: string;
@@ -15,7 +15,8 @@ export interface QuestionEntity {
   createdBy: UserEntity;
   updatedBy: UserEntity;
   qtype: QuestionTypeEnum;
+  answers: AnswerOfQuestion[];
   failureMessages: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

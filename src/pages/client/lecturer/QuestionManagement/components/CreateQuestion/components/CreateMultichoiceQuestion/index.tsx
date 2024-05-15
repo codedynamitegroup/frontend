@@ -241,9 +241,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
             <Collapse in={answerOpen} timeout='auto' unmountOnExit>
               <Stack spacing={{ xs: 4 }} useFlexGap>
                 <Divider />
-                <AnswerEditor answerNumber={1} qtype={props.qtype} />
+                {/* <AnswerEditor answerNumber={1} qtype={props.qtype} />
                 <AnswerEditor answerNumber={2} qtype={props.qtype} />
-                <AnswerEditor answerNumber={3} qtype={props.qtype} />
+                <AnswerEditor answerNumber={3} qtype={props.qtype} /> */}
                 <Grid container justifyContent={"center"}>
                   <Button>
                     <AddIcon />
