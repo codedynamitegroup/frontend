@@ -13,13 +13,16 @@ import { useNavigate } from "react-router";
 import { routes } from "routes/routes";
 import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import { useTranslation } from "react-i18next";
+import { string } from "yup";
+import dayjs from "dayjs";
 
 interface Props {
   resourceTitle: string;
-  resourceEndedDate: string;
+  resourceEndedDate: Date | string;
+  intro?: string;
   type?: ResourceType;
 }
-const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) => {
+const AssignmentResource = ({ resourceTitle, resourceEndedDate, intro, type }: Props) => {
   const { t } = useTranslation();
   const [resourceExpansion, setResourceExpansion] = useState(false);
   type = type || ResourceType.assignment;
@@ -45,14 +48,11 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, type }: Props) =
         >
           <ParagraphBody>{resourceTitle}</ParagraphBody>
           <ParagraphBody translation-key='course_assignment_deadline'>
-            {t("course_assignment_deadline")}: {resourceEndedDate}
+            {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("DD/MM/YYYY")}
           </ParagraphBody>
         </AccordionSummary>
         <AccordionDetails>
-          <TextEditor
-            value='<p><span style="color: rgb(95, 99, 104);">Technique need to be prepared for the seminar next week</span></p><p><br></p><p><span style="color: rgb(95, 99, 104);">👉 Implement a mechanism to log request and response data of all api endpoints</span></p><p><span style="color: rgb(95, 99, 104);">👉 Log can be saved to text file, database, or 3rd party service</span></p><p><span style="color: rgb(95, 99, 104);">👉 Propose &amp; implement a method to support log rotation (eg: daily rotation, weekly rotation, file size rotation, ...)</span></p><p><span style="color: rgb(95, 99, 104);">👉 Propose &amp; implement a method to search through log data for debugging purposes</span></p>'
-            readOnly={true}
-          />
+          <TextEditor value={intro} readOnly={true} />
         </AccordionDetails>
         <AccordionActions>
           <Button

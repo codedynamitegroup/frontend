@@ -25,50 +25,6 @@ enum EView {
 }
 
 const LecturerCourses = () => {
-  const tempTeacher: Array<User> = [
-    {
-      id: 1,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn A",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 2,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn B",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 3,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Yên",
-      lastName: "Nguyễn Bình",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    }
-  ];
   const tempTeacher2: Array<User> = [
     {
       id: 1,
@@ -99,92 +55,7 @@ const LecturerCourses = () => {
       updatedAt: new Date(2000, 0, 1)
     }
   ];
-  const tempCourse = [
-    {
-      id: 1,
-      avatarUrl: "https://picsum.photos/200",
-      category: "Chất lượng cao",
-      name: "Kỹ thuật lập trình",
-      teacherList: tempTeacher
-    },
-    {
-      id: 2,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Cấu trúc dữ liệu và giải thuật",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 3,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 4,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 5,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 6,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 7,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 8,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 9,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 10,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 11,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 12,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    }
-  ];
+
   const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
 
   const [searchText, setSearchText] = useState("");

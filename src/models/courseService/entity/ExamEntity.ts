@@ -1,20 +1,18 @@
 export interface ExamEntity {
-  id: string;
-  courseId: {
-    value: string;
-  };
+  id?: string;
+  courseId: string;
   name: string;
-  scores: number;
-  maxScores: number;
+  scores?: number;
+  maxScores?: number;
   timeOpen: Date;
   timeClose: Date;
-  timeLimit: number;
+  timeLimit?: number;
   intro: string;
-  overdueHanding: string;
-  canRedoQuestions: boolean;
-  maxAttempts: number;
+  overdueHanding?: string;
+  canRedoQuestions?: boolean;
+  maxAttempts?: number;
   shuffleAnswers?: boolean;
   gradeMethod: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
