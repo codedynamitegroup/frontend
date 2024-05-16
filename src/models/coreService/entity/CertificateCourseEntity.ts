@@ -13,6 +13,9 @@ export interface CertificateCourseEntity {
   topic: TopicEntity;
   numOfStudents: number;
   numOfQuestions: number;
+  numOfCompletedQuestions?: number;
+  numOfReviews: number;
+  isRegistered?: boolean;
   createdBy: UserEntity;
   createdAt: string;
   updatedAt: string;
