@@ -8,12 +8,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   course: CertificateCourseEntity;
 };
 
 const CourseCertificateCard = ({ course }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <Box className={classes.courseCerticate}>
       <Grid container direction={"column"} margin={0} gap={2}>
@@ -43,11 +46,11 @@ const CourseCertificateCard = ({ course }: Props) => {
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
             <ParagraphBody>
               {course?.skillLevel === SkillLevelEnum.BASIC
-                ? "Cơ bản"
+                ? t("common_easy")
                 : course?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                  ? "Trung bình"
+                  ? t("common_medium")
                   : course?.skillLevel === SkillLevelEnum.ADVANCED
-                    ? "Nâng cao"
+                    ? t("common_hard")
                     : ""}
             </ParagraphBody>
           </Box>
