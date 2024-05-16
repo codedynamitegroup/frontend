@@ -613,5 +613,13 @@
   "grading_config_enter_rubric_name": "Nhập tên bảng chấm",
   "grading_config_enter_criteria_name": "Nhập tên tiêu chí",
   "grading_config_enter_scale": "Nhập mô tả thang điểm {{index}}",
-  "grading_config_criteria_description": "Mô tả tiêu chí"
+  "grading_config_criteria_description": "Mô tả tiêu chí",
+
+  "question_answer_content_required": "Nội dung đáp án là bắt buộc",
+  "question_feedback_answer_required": "Nhận xét chung của đáp án là bắt buộc",
+  "question_name_required": "Tên câu hỏi là bắt buộc",
+  "question_description_required": "Mô tả câu hỏi là bắt buộc",
+  "question_default_score_required": "Điểm mặc định là bắt buộc",
+  "question_default_score_invalid": "Điểm mặc định phải lớn hơn hoặc bằng 0"
+
 }
