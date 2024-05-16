@@ -37,12 +37,12 @@ const CourseCertificates = () => {
   }, [topicState.topicsFilter]);
 
   const searchHandle = async (searchText: string) => {
-    // const getCertificateCoursesResponse = CertificateCourseService.getCertificateCourses({
-    //   courseName: searchText,
-    //   filterTopicIds: filterTopicIds,
-    //   isRegisteredFilter: IsRegisteredFilterEnum.ALL
-    // });
-    // dispatch(setCertificateCourses(getCertificateCoursesResponse));
+    const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+      courseName: searchText,
+      filterTopicIds: filterTopicIds,
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+    });
+    dispatch(setCertificateCourses(getCertificateCoursesResponse));
   };
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
@@ -115,13 +115,12 @@ const CourseCertificates = () => {
       await handleGetTopics();
       await handleGetCertificateCourses({
         data: {
-          courseName: searchText,
+          courseName: "",
           filterTopicIds: filterTopicIds,
           isRegisteredFilter: IsRegisteredFilterEnum.ALL
         }
       });
     };
-
     fetchInitialData();
   }, []);
 
