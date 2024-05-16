@@ -59,15 +59,15 @@ const CreateMultichoiceQuestion = (props: Props) => {
   });
   if (props.insideCrumb) headerHeight = 0;
   const [initialized, setInitialized] = useState(true);
-  let outletContext: any = useOutletContext();
-  let outletTab = outletContext?.value;
-  useEffect(() => {
-    if (initialized) {
-      setInitialized(false);
-    } else {
-      navigate("/lecturer/question-bank-management");
-    }
-  }, [outletTab]);
+  // let outletContext: any = useOutletContext();
+  // let outletTab = outletContext?.value;
+  // useEffect(() => {
+  //   if (initialized) {
+  //     setInitialized(false);
+  //   } else {
+  //     navigate("/lecturer/question-bank-management");
+  //   }
+  // }, [outletTab]);
 
   const urlParams = useParams();
   console.log(urlParams);

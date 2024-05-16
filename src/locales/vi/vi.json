@@ -620,6 +620,8 @@
   "question_name_required": "Tên câu hỏi là bắt buộc",
   "question_description_required": "Mô tả câu hỏi là bắt buộc",
   "question_default_score_required": "Điểm mặc định là bắt buộc",
-  "question_default_score_invalid": "Điểm mặc định phải lớn hơn hoặc bằng 0"
+  "question_default_score_invalid": "Điểm mặc định phải lớn hơn hoặc bằng 0",
+  "min_answer_required": "Ít nhất phải có một câu trả lời"
+
 
 }

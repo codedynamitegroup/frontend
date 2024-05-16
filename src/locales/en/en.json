@@ -623,5 +623,6 @@
   "question_name_required": "Question name is required",
   "question_description_required": "Question description is required",
   "question_default_score_required": "Default score is required",
-  "question_default_score_invalid": "Default score must be a number greater than or equal to 0"
+  "question_default_score_invalid": "Default score must be a number greater than or equal to 0",
+  "min_answer_required": "At least one answer is required"
 }
