@@ -33,6 +33,7 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 interface CardProps {
+  courseId: string;
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
@@ -57,7 +58,7 @@ const CourseCard = (props: CardProps) => {
       <Divider className={classes.cardDivider} />
       <Link
         component={RouterLink}
-        to={routes.student.course.information.replace(":courseId", "1")}
+        to={routes.student.course.information.replace(":courseId", props.courseId)}
         underline='hover'
         color='inherit'
       >
