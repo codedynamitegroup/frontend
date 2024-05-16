@@ -5,7 +5,8 @@ export const API = {
       GET_BY_IS_REGISTERED: "/core/certificate-courses/fetch-by-is-registered",
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
-      DELETE_BY_ID: "/core/certificate-courses/:id"
+      DELETE_BY_ID: "/core/certificate-courses/:id",
+      REGISTER_BY_ID: "/core/certificate-courses/register"
     },
     TOPIC: {
       DEFAULT: "/core/topics",

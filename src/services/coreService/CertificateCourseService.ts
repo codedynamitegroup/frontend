@@ -1,128 +1,109 @@
 import axios from "axios";
 import { API } from "constants/API";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class CertificateCourseService {
-  // Role: Anonymous
-  static async getCertificateCourses(data: { courseName: string; filterTopicIds: string[] }) {
+  static async getCertificateCourses(data: {
+    courseName: string;
+    filterTopicIds: string[];
+    isRegisteredFilter: IsRegisteredFilterEnum;
+  }) {
     try {
       const response = await axios.post(
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`,
         {
           courseName: data.courseName,
-          filterTopicIds: data.filterTopicIds
-        }
-      );
-      if (response.status === 200) {
-        Promise.resolve(response.data);
-      } else {
-        console.error("Failed to fetch certificate courses", response.data);
-        Promise.reject({
-          code: response.data.code,
-          status: response.data.status,
-          message: response.data.message
-        });
-      }
-    } catch (error: any) {
-      console.error("Failed to fetch certificate courses", error.response?.data || error.message);
-      Promise.reject({
-        code: error.response?.status || 503,
-        status: error.response?.statusText || "Service Unavailable",
-        message: error.response?.data || error.message
-      });
-    }
-  }
-
-  // Role: User
-  static async getCertificateCoursesByIsRegistered(data: {
-    courseName: string;
-    filterTopicIds: string[];
-    isRegistered: boolean;
-  }) {
-    try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_IS_REGISTERED}`,
-        {
-          courseName: data.courseName,
           filterTopicIds: data.filterTopicIds,
-          isRegistered: data.isRegistered
+          isRegisteredFilter: data.isRegisteredFilter
         }
       );
       if (response.status === 200) {
-        Promise.resolve(response.data);
-      } else {
-        console.error("Failed to fetch certificate courses", response.data);
-        Promise.reject({
-          code: response.data.code,
-          status: response.data.status,
-          message: response.data.message
-        });
+        return Promise.resolve(response.data);
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate courses", error.response?.data || error.message);
-      Promise.reject({
-        code: error.response?.status || 503,
-        status: error.response?.statusText || "Service Unavailable",
-        message: error.response?.data || error.message
+      console.error("Failed to fetch certificate courses", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
       });
     }
   }
 
-  // Role: User
   static async getCertificateCourseById(id: string) {
     try {
       const response = await axios.get(
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        Promise.resolve(response.data);
-      } else {
-        console.error("Failed to fetch certificate course", response.data);
-        Promise.reject({
-          code: response.data.code,
-          status: response.data.status,
-          message: response.data.message
-        });
+        return Promise.resolve(response.data);
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error.response?.data || error.message);
-      Promise.reject({
-        code: error.response?.status || 503,
-        status: error.response?.statusText || "Service Unavailable",
-        message: error.response?.data || error.message
+      console.error("Failed to fetch certificate course", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
       });
     }
   }
 
-  // Role: Teacher
-  static async updateCertificateCourseById(id: string, data: any) {
+  static async createCertificateCourse(data: any) {
     try {
-      const response = await axios.put(
-        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.UPDATE_BY_ID.replace(":id", id)}`,
-        data
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`
       );
       if (response.status === 200) {
-        Promise.resolve(response.data);
-      } else {
-        console.error("Failed to update certificate course", response.data);
-        Promise.reject({
-          code: response.data.code,
-          status: response.data.status,
-          message: response.data.message
-        });
+        return Promise.resolve(response.data);
       }
     } catch (error: any) {
-      console.error("Failed to update certificate course", error.response?.data || error.message);
-      Promise.reject({
-        code: error.response?.status || 503,
-        status: error.response?.statusText || "Service Unavailable",
-        message: error.response?.data || error.message
+      console.error("Failed to fetch certificate courses", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
       });
     }
   }
 
-  // Role: Organization
+  static async registerCertificateCourseById(id: string) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch certificate course", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async updateCertificateCourseById(id: string, data: any) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch certificate course", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async deleteCertificateCourseById(id: string) {
     try {
       const response = await axios.delete(
@@ -130,20 +111,13 @@ export class CertificateCourseService {
       );
       if (response.status === 200) {
         Promise.resolve(response.data);
-      } else {
-        console.error("Failed to delete certificate course", response.data);
-        Promise.reject({
-          code: response.data.code,
-          status: response.data.status,
-          message: response.data.message
-        });
       }
     } catch (error: any) {
-      console.error("Failed to delete certificate course", error.response?.data || error.message);
-      Promise.reject({
-        code: error.response?.status || 503,
-        status: error.response?.statusText || "Service Unavailable",
-        message: error.response?.data || error.message
+      console.error("Failed to fetch certificate course", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
       });
     }
   }
