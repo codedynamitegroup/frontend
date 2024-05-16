@@ -14,11 +14,14 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { fetchAllTopics, setFilterForTopic } from "reduxes/coreService/Topic";
-import { fetchAllCertificateCourses } from "reduxes/coreService/CertificateCourse";
+import { setFilterForTopic, setTopics } from "reduxes/coreService/Topic";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { setCertificateCourses } from "reduxes/coreService/CertificateCourse";
+import { TopicService } from "services/coreService/TopicService";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -33,17 +36,14 @@ const CourseCertificates = () => {
       .map((topicFilter) => topicFilter.topic.topicId);
   }, [topicState.topicsFilter]);
 
-  const searchHandle = useCallback(
-    (searchText: string) => {
-      dispatch(
-        fetchAllCertificateCourses({
-          courseName: searchText,
-          filterTopicIds: filterTopicIds
-        })
-      );
-    },
-    [dispatch, filterTopicIds]
-  );
+  const searchHandle = async (searchText: string) => {
+    // const getCertificateCoursesResponse = CertificateCourseService.getCertificateCourses({
+    //   courseName: searchText,
+    //   filterTopicIds: filterTopicIds,
+    //   isRegisteredFilter: IsRegisteredFilterEnum.ALL
+    // });
+    // dispatch(setCertificateCourses(getCertificateCoursesResponse));
+  };
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
@@ -68,23 +68,74 @@ const CourseCertificates = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const handleGetTopics = async () => {
+    try {
+      const getTopicsResponse = await TopicService.getTopics({
+        fetchAll: true
+      });
+      dispatch(setTopics(getTopicsResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch topics", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  const handleGetCertificateCourses = async ({
+    data: { courseName, filterTopicIds, isRegisteredFilter }
+  }: {
+    data: {
+      courseName: string;
+      filterTopicIds: string[];
+      isRegisteredFilter: IsRegisteredFilterEnum;
+    };
+  }) => {
+    try {
+      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+        courseName: courseName,
+        filterTopicIds: filterTopicIds,
+        isRegisteredFilter: isRegisteredFilter
+      });
+      dispatch(setCertificateCourses(getCertificateCoursesResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch certificate courses", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchAllTopics({ pageNo: 0, pageSize: 10, fetchAll: true }));
-    dispatch(
-      fetchAllCertificateCourses({
-        courseName: searchText,
-        filterTopicIds: []
-      })
-    );
+    const fetchInitialData = async () => {
+      await handleGetTopics();
+      await handleGetCertificateCourses({
+        data: {
+          courseName: searchText,
+          filterTopicIds: filterTopicIds,
+          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        }
+      });
+    };
+
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
-    dispatch(
-      fetchAllCertificateCourses({
-        courseName: searchText,
-        filterTopicIds
-      })
-    );
+    const fetchDataWhenFilterTopicIdsChange = async () => {
+      await handleGetCertificateCourses({
+        data: {
+          courseName: searchText,
+          filterTopicIds: filterTopicIds,
+          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        }
+      });
+    };
+    fetchDataWhenFilterTopicIdsChange();
   }, [filterTopicIds]);
 
   return (
