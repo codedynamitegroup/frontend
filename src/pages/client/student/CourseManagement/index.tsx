@@ -17,7 +17,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { AppDispatch, RootState } from "store";
-import { fetchAllCourses } from "reduxes/courseService/course";
+import { setCourses } from "reduxes/courseService/course";
+import { CourseService } from "services/courseService/CourseService";
 
 enum EView {
   cardView = 1,
@@ -191,21 +192,37 @@ const StudentCourses = () => {
   const dispatch = useDispatch<AppDispatch>();
   const courseState = useSelector((state: RootState) => state.course);
 
-  const searchHandle = useCallback((searchText: string) => {
+  const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
-  }, []);
+  };
 
-  const courseList: CourseEntity[] = useMemo(() => {
-    return courseState.courses;
-  }, [courseState.courses]);
+  const handleGetCourses = async ({
+    search = searchText,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getCourseResponse = await CourseService.getCourses({
+        search,
+        pageNo,
+        pageSize
+      });
+      dispatch(setCourses(getCourseResponse));
+    } catch (error) {
+      console.error("Failed to fetch courses", error);
+    }
+  };
 
   useEffect(() => {
-    dispatch(fetchAllCourses({ search: searchText, pageNo: 0, pageSize: 10 }));
-  }, [dispatch, searchText]);
-
-  courseList.forEach((course) => {
-    console.log(course.name);
-  });
+    const featchInitialCourses = async () => {
+      await handleGetCourses({ search: searchText });
+    };
+    featchInitialCourses();
+  }, [searchText]);
 
   const [viewType, setViewType] = useState(EView.listView);
 
@@ -253,13 +270,14 @@ const StudentCourses = () => {
       {viewType === EView.cardView ? (
         <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
           <Grid container spacing={2}>
-            {tempCourse.map((course, index) => (
+            {courseState.courses.map((course, index) => (
               <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
                 <CourseCard
-                  courseAvatarUrl={course.avatarUrl}
-                  courseCategory={course.category}
+                  courseId={course.id}
+                  courseAvatarUrl={"https://picsum.photos/200"}
+                  courseCategory={course.name}
                   courseName={course.name}
-                  teacherList={course.teacherList}
+                  teacherList={tempTeacher2}
                 />
               </Grid>
             ))}
@@ -268,9 +286,10 @@ const StudentCourses = () => {
       ) : (
         <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
           <Grid container spacing={4}>
-            {courseList.map((course) => (
+            {courseState.courses.map((course) => (
               <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
                 <CourseList
+                  courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
                   courseCategory={course.name}
                   courseName={course.name}
