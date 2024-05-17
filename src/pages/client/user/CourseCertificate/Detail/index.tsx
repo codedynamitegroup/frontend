@@ -18,65 +18,23 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
-import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import { ChapterService } from "services/coreService/ChapterService";
+import { AppDispatch, RootState } from "store";
+import { useDispatch, useSelector } from "react-redux";
+import { setCertificateCourseDetails } from "reduxes/coreService/CertificateCourse";
+import { setChapters } from "reduxes/coreService/Chapter";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
 
-  const [course, setCourse] = useState<CertificateCourseEntity>({
-    certificateCourseId: "",
-    name: "",
-    description: "",
-    skillLevel: SkillLevelEnum.BASIC,
-    avgRating: 0,
-    startTime: "",
-    endTime: "",
-    topic: {
-      topicId: "",
-      name: "",
-      description: "",
-      programmingLanguages: [],
-      numOfCertificateCourses: 0,
-      thumbnailUrl: "",
-      createdBy: {
-        userId: "",
-        email: "",
-        firstName: "",
-        lastName: ""
-      },
-      createdAt: "",
-      updatedAt: "",
-      updatedBy: {
-        userId: "",
-        email: "",
-        firstName: "",
-        lastName: ""
-      }
-    },
-    numOfStudents: 0,
-    numOfQuestions: 0,
-    numOfCompletedQuestions: 0,
-    numOfReviews: 0,
-    isRegistered: false,
-    createdBy: {
-      userId: "",
-      email: "",
-      firstName: "",
-      lastName: ""
-    },
-    createdAt: "",
-    updatedAt: "",
-    updatedBy: {
-      userId: "",
-      email: "",
-      firstName: "",
-      lastName: ""
-    }
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const certificateCourseDetails = useSelector(
+    (state: RootState) => state.certifcateCourse.certificateCourseDetails
+  );
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
     if (courseId) navigate(tabs[newTab].replace(":courseId", courseId));
@@ -111,9 +69,24 @@ const CourseCertificateDetail = () => {
     try {
       const getCertificateCourseByIdResponse =
         await CertificateCourseService.getCertificateCourseById(id);
-      setCourse(getCertificateCourseByIdResponse);
+      dispatch(setCertificateCourseDetails(getCertificateCourseByIdResponse));
     } catch (error: any) {
       console.error("Failed to fetch certificate course by id", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  const handleGetChaptersByCertificateCourseId = async (id: string) => {
+    try {
+      const getChaptersByCertificateCourseIdResponse =
+        await ChapterService.getChaptersByCertificateCourseIdResponse(id);
+      dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch chapters by certificate course id", {
         code: error.response?.code || 503,
         status: error.response?.status || "Service Unavailable",
         message: error.response?.message || error.message
@@ -126,10 +99,13 @@ const CourseCertificateDetail = () => {
     const fetchInitialData = async () => {
       if (courseId) {
         await handleGetCertificateCourseById(courseId);
+        await handleGetChaptersByCertificateCourseId(courseId);
       }
     };
     fetchInitialData();
   }, []);
+
+  if (!certificateCourseDetails) return null;
 
   return (
     <Container id={classes.container}>
@@ -145,15 +121,15 @@ const CourseCertificateDetail = () => {
               {t("certificate_detail_breadcrump")}
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>{course.name}</ParagraphSmall>
+            <ParagraphSmall colorname='--blue-500'>{certificateCourseDetails.name}</ParagraphSmall>
           </Box>
           <Divider />
           <Box id={classes.courseInfoWrapper}>
             <Box id={classes.courseTitle}>
               <Box className={classes.imgCourseRecommend}>
-                <img src={course.topic.thumbnailUrl} alt='img course recommend' />
+                <img src={certificateCourseDetails.topic.thumbnailUrl} alt='img course recommend' />
               </Box>
-              <Heading2>{course.name}</Heading2>
+              <Heading2>{certificateCourseDetails.name}</Heading2>
             </Box>
             <Grid container>
               <Grid item xs={12} md={6} id={classes.courseDetails} container>
@@ -164,7 +140,9 @@ const CourseCertificateDetail = () => {
                   className={classes.courseDetailsWrapper}
                 >
                   <Box id={classes.userRating}>
-                    <ParagraphBody fontWeight={"600"}>{course.avgRating.toFixed(1)}</ParagraphBody>
+                    <ParagraphBody fontWeight={"600"}>
+                      {certificateCourseDetails.avgRating.toFixed(1)}
+                    </ParagraphBody>
                     <StarIcon id={classes.icStar} />
                   </Box>
                   <Box id={classes.userReviews}>
@@ -172,7 +150,7 @@ const CourseCertificateDetail = () => {
                       colorname='--gray-60'
                       translation-key='certificate_detail_rating'
                     >
-                      {course.numOfReviews} {t("certificate_detail_rating")}
+                      {certificateCourseDetails.numOfReviews} {t("certificate_detail_rating")}
                     </ParagraphBody>
                   </Box>
                 </Grid>
@@ -184,7 +162,8 @@ const CourseCertificateDetail = () => {
                 >
                   <Box id={classes.numberLesson}>
                     <ParagraphBody fontWeight={"600"} translation-key='certificate_detail_lesson'>
-                      {course.numOfQuestions} {t("certificate_detail_lesson", { count: 2 })}
+                      {certificateCourseDetails.numOfQuestions}{" "}
+                      {t("certificate_detail_lesson", { count: 2 })}
                     </ParagraphBody>
                   </Box>
                   <Box id={classes.courseLevel}>
@@ -193,9 +172,9 @@ const CourseCertificateDetail = () => {
                       translation-key={["common_easy", "common_level"]}
                     >
                       {t("common_level", { count: 1 })}:{" "}
-                      {course.skillLevel === SkillLevelEnum.BASIC
+                      {certificateCourseDetails.skillLevel === SkillLevelEnum.BASIC
                         ? t("common_easy")
-                        : course.skillLevel === SkillLevelEnum.INTERMEDIATE
+                        : certificateCourseDetails.skillLevel === SkillLevelEnum.INTERMEDIATE
                           ? t("common_medium")
                           : t("common_hard")}
                     </ParagraphBody>
@@ -203,7 +182,9 @@ const CourseCertificateDetail = () => {
                 </Grid>
                 <Grid item xs={4} className={classes.courseDetailsWrapper}>
                   <Box id={classes.numberLearner}>
-                    <ParagraphBody fontWeight={"600"}>{course.numOfStudents}</ParagraphBody>
+                    <ParagraphBody fontWeight={"600"}>
+                      {certificateCourseDetails.numOfStudents}
+                    </ParagraphBody>
                   </Box>
                   <Box>
                     <ParagraphBody
@@ -223,8 +204,8 @@ const CourseCertificateDetail = () => {
                     <ParagraphBody colorname='--gray-80' translation-key={"common_progress"}>
                       {i18next.format(t("common_progress"), "firstUppercase")}:{" "}
                       {calcCertificateCourseProgress(
-                        course.numOfCompletedQuestions || 0,
-                        course.numOfQuestions
+                        certificateCourseDetails.numOfCompletedQuestions || 0,
+                        certificateCourseDetails.numOfQuestions
                       )}
                       %
                     </ParagraphBody>
@@ -233,8 +214,8 @@ const CourseCertificateDetail = () => {
                   <LinearProgress
                     determinate
                     value={calcCertificateCourseProgress(
-                      course.numOfCompletedQuestions || 0,
-                      course.numOfQuestions
+                      certificateCourseDetails.numOfCompletedQuestions || 0,
+                      certificateCourseDetails.numOfQuestions
                     )}
                   />
                 </Box>
@@ -244,7 +225,13 @@ const CourseCertificateDetail = () => {
                 <Button
                   startIcon={<SchoolIcon id={classes.icSchool} />}
                   btnType={BtnType.Primary}
-                  translation-key='certificate_detail_start_button'
+                  translation-key={
+                    certificateCourseDetails.isRegistered === true
+                      ? (certificateCourseDetails.numOfCompletedQuestions || 0) > 0
+                        ? "certificate_detail_continue_button"
+                        : "certificate_detail_start_button"
+                      : "certificate_detail_register_button"
+                  }
                   onClick={() => {
                     // navigate(
                     //   routes.user.course_certificate.detail.lesson.description
@@ -253,8 +240,8 @@ const CourseCertificateDetail = () => {
                     // );
                   }}
                 >
-                  {course.isRegistered === true
-                    ? (course.numOfCompletedQuestions || 0) > 0
+                  {certificateCourseDetails.isRegistered === true
+                    ? (certificateCourseDetails.numOfCompletedQuestions || 0) > 0
                       ? t("certificate_detail_continue_button")
                       : t("certificate_detail_start_button")
                     : t("certificate_detail_register_button")}
@@ -302,7 +289,11 @@ const CourseCertificateDetail = () => {
                 <Route path={"lesson"} element={<CourseCertificateLesson />} />
                 <Route
                   path={"introduction"}
-                  element={<CourseCertificateIntroduction description={course.description} />}
+                  element={
+                    <CourseCertificateIntroduction
+                      description={certificateCourseDetails.description}
+                    />
+                  }
                 />
                 <Route path={"certificate"} element={<CertificateDetails />} />
               </Routes>

@@ -20,7 +20,7 @@ export class CertificateCourseService {
         }
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", error);
@@ -38,10 +38,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to fetch certificate course by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -56,10 +56,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate courses", error);
+      console.error("Failed to create certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -74,10 +74,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to register certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -92,10 +92,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to update certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -110,10 +110,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DELETE_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to delete certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

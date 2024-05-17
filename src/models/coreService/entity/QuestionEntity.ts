@@ -12,6 +12,7 @@ export interface QuestionEntity {
   questionText: string;
   generalFeedback: string;
   defaultMark: number;
+  pass?: boolean;
   createdBy: UserEntity;
   updatedBy: UserEntity;
   qtype: QuestionTypeEnum;

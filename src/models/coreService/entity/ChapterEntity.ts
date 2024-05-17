@@ -1,3 +1,4 @@
+import { QuestionEntity } from "./QuestionEntity";
 import { UserEntity } from "./UserEntity";
 
 export interface ChapterEntity {
@@ -6,7 +7,7 @@ export interface ChapterEntity {
   no: number;
   title: string;
   description: string;
-  questions: [];
+  questions: QuestionEntity[];
   createdBy: UserEntity;
   createdAt: string;
   updatedAt: string;

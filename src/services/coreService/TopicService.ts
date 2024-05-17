@@ -4,7 +4,6 @@ import { API } from "constants/API";
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class TopicService {
-  // Role: Anonymous
   static async getTopics({
     pageNo = 0,
     pageSize = 10,
@@ -23,7 +22,7 @@ export class TopicService {
         }
       });
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
       console.error("Failed to fetch topics", error);
@@ -42,10 +41,10 @@ export class TopicService {
         `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch topic", error);
+      console.error("Failed to fetch topic by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -61,10 +60,10 @@ export class TopicService {
         `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch topic", error);
+      console.error("Failed to update topic by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -80,10 +79,10 @@ export class TopicService {
         `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch topic", error);
+      console.error("Failed to delete topic by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
