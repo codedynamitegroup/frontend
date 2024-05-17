@@ -9,6 +9,8 @@ import topicReducer from "reduxes/coreService/Topic/index";
 import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/Algorithm";
+import courseReducer from "reduxes/courseService/course/index";
+import examReducer from "reduxes/courseService/exam/index";
 
 const store = configureStore({
   reducer: {
@@ -21,7 +23,9 @@ const store = configureStore({
     topic: topicReducer,
     certifcateCourse: certificateCourseReducer,
     chapter: chapterReducer,
-    algorithmnTag: algorithmTagReducer
+    algorithmnTag: algorithmTagReducer,
+    course: courseReducer,
+    exam: examReducer
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

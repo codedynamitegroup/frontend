@@ -5,17 +5,40 @@ import MenuPopup from "components/common/menu/MenuPopup";
 import SearchBar from "components/common/search/SearchBar";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import AssignmentResource, { ResourceType } from "./components/Resource";
 import classes from "./styles.module.scss";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReusedCourseResourceDialog from "./components/ReuseResourceDialog/CourseDialog";
 import ReusedResourceDialog from "./components/ReuseResourceDialog/ResourceDialog";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { ExamService } from "services/courseService/ExamService";
+import { setExams } from "reduxes/courseService/exam";
 
 const LecturerCourseAssignment = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const examState = useSelector((state: RootState) => state.exam);
+
+  const { courseId } = useParams<{ courseId: string }>();
+
+  const handleGetExams = async (id: string) => {
+    try {
+      const response = await ExamService.getExamsByCourseId(id);
+      dispatch(setExams(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExams(courseId ?? "");
+    console.log("examState", examState.exams);
+  }, []);
+
   const { t } = useTranslation();
   const searchHandle = (searchVal: string) => {
     console.log(searchVal);
@@ -110,16 +133,14 @@ const LecturerCourseAssignment = () => {
           </Box>
           <Box className={classes.topic}>
             <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
-            <AssignmentResource
-              resourceTitle='Bài kiểm tra 1'
-              resourceEndedDate='12/12/2022'
-              type={ResourceType.exam}
-            />
-            <AssignmentResource
-              resourceTitle='Bài kiểm tra 2'
-              resourceEndedDate='12/12/2023'
-              type={ResourceType.exam}
-            />
+            {examState.exams.map((exam) => (
+              <AssignmentResource
+                resourceTitle={exam.name}
+                resourceEndedDate={exam.timeClose}
+                intro={exam.intro}
+                type={ResourceType.exam}
+              />
+            ))}
           </Box>
         </Box>
       </Box>

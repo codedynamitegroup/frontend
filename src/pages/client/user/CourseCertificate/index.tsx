@@ -2,7 +2,7 @@ import { Box, Checkbox, Container, FormControlLabel, Grid } from "@mui/material"
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import BasicSelect from "components/common/select/BasicSelect";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
@@ -37,29 +37,32 @@ const CourseCertificates = () => {
   }, [topicState.topicsFilter]);
 
   const searchHandle = async (searchText: string) => {
-    // const getCertificateCoursesResponse = CertificateCourseService.getCertificateCourses({
-    //   courseName: searchText,
-    //   filterTopicIds: filterTopicIds,
-    //   isRegisteredFilter: IsRegisteredFilterEnum.ALL
-    // });
-    // dispatch(setCertificateCourses(getCertificateCoursesResponse));
+    const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+      courseName: searchText,
+      filterTopicIds: filterTopicIds,
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+    });
+    dispatch(setCertificateCourses(getCertificateCoursesResponse));
   };
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
   const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
       (course) => course.skillLevel === SkillLevelEnum.BASIC
     );
   }, [certificateCourseState.certificateCourses]);
 
   const intermediateCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
       (course) => course.skillLevel === SkillLevelEnum.INTERMEDIATE
     );
   }, [certificateCourseState.certificateCourses]);
 
   const advancedCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
+    if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
       (course) => course.skillLevel === SkillLevelEnum.ADVANCED
     );
@@ -115,13 +118,12 @@ const CourseCertificates = () => {
       await handleGetTopics();
       await handleGetCertificateCourses({
         data: {
-          courseName: searchText,
+          courseName: "",
           filterTopicIds: filterTopicIds,
           isRegisteredFilter: IsRegisteredFilterEnum.ALL
         }
       });
     };
-
     fetchInitialData();
   }, []);
 

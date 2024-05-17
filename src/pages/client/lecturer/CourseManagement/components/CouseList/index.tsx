@@ -17,6 +17,7 @@ import { Box } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 interface ListProps {
+  courseId: string;
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
@@ -34,7 +35,7 @@ const CourseList = (props: ListProps) => {
                 underline='hover'
                 color='inherit'
                 component={RouterLink}
-                to={routes.lecturer.course.information.replace(":courseId", "1")}
+                to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
               >
                 <Heading4 gutterBottom variant='subtitle1' colorname='--blue-600'>
                   {props.courseName}
