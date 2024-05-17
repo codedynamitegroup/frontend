@@ -8,6 +8,7 @@ import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
 import topicReducer from "reduxes/coreService/Topic/index";
 import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
+import algorithmTagReducer from "reduxes/CodeAssessmentService/Algorithm";
 
 const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
     rubricCriteriaConfigDialog: rubricCriteriaConfigDialog,
     topic: topicReducer,
     certifcateCourse: certificateCourseReducer,
-    chapter: chapterReducer
+    chapter: chapterReducer,
+    algorithmnTag: algorithmTagReducer
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

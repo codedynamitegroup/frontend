@@ -269,10 +269,10 @@ II. SYSTEM_INSTRUCTIONS:
 B. Feedback Language: Use **${language}** to write feedback messages for users.
 `;
 
-//   const prompt = `
-//   ${AI_ROLE}
+  //   const prompt = `
+  //   ${AI_ROLE}
 
-//   ${SYSTEM_INSTRUCTIONS}`;
+  //   ${SYSTEM_INSTRUCTIONS}`;
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   try {
     // // const splittedPrompt = splitPrompt(prompt, 5000).map((part) => part.content);

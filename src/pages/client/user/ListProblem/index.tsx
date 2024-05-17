@@ -1,6 +1,6 @@
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
@@ -11,11 +11,20 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
 import { useTranslation } from "react-i18next";
+import { useAppSelector, useAppDispatch } from "hooks";
+import { setLoading, setAlgorithmTagList } from "reduxes/CodeAssessmentService/Algorithm";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
   const { t } = useTranslation();
+
+  const algorithmTag = useAppSelector((state) => state.algorithmnTag);
+  const dispatch = useAppDispatch();
+  console.log(algorithmTag);
+  useEffect(() => {
+    // dispatch(setLoading(true));
+  }, []);
 
   const algorithms = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (

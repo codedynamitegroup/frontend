@@ -14,5 +14,10 @@ export const API = {
       UPDATE_BY_ID: "/core/topics/:id",
       DELETE_BY_ID: "/core/topics/:id"
     }
+  },
+  CODE_ASSESSMENT: {
+    TAG: {
+      GET: "/code-assessment/tag"
+    }
   }
 };
