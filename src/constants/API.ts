@@ -29,7 +29,10 @@ export const API = {
   },
   CODE_ASSESSMENT: {
     TAG: {
-      GET: "/code-assessment/tag"
+      DEFAULT: "/code-assessment/tag"
+    },
+    CODE_QUESTION: {
+      DEFAULT: "/code-assessment/code-question"
     }
   }
 };

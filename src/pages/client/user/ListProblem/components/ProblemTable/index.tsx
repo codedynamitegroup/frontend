@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
 
@@ -17,10 +17,39 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Heading2 from "components/text/Heading2";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "hooks";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { PaginationList } from "models/codeAssessmentService/entity/PaginationList";
 
 export default function ProblemTable() {
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
+
+  const algorithmTag = useAppSelector((state) => state.algorithmnTag);
+
+  useEffect(() => {
+    CodeQuestionService.getCodeQuestion(
+      {
+        tag: algorithmTag.filter.length > 0 ? algorithmTag.filter : null,
+        search: null,
+        difficulty: null,
+        solved: null
+      },
+      {
+        pageNum: 0,
+        pageSize: 10
+      },
+      null
+    )
+      .then((data: PaginationList<CodeQuestionEntity>) => {
+        console.log(data);
+      })
+      .catch((reason) => console.log(reason));
+  }, [algorithmTag.filter]);
+
   const renderStatus = (status: number) => {
     if (status === 1) {
       return <CheckCircleIcon className={classes.iconCheck} />;
