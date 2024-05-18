@@ -1,5 +1,5 @@
 export interface ErrorMessage {
   code: number;
   status: string;
-  message: string;
+  message: string | string[];
 }

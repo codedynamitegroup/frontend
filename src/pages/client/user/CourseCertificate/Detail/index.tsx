@@ -6,7 +6,7 @@ import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "r
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading2 from "components/text/Heading2";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
@@ -17,11 +17,66 @@ import CourseCertificateLesson from "./components/Lesson";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 
 const CourseCertificateDetail = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
+
+  const [course, setCourse] = useState<CertificateCourseEntity>({
+    certificateCourseId: "",
+    name: "",
+    description: "",
+    skillLevel: SkillLevelEnum.BASIC,
+    avgRating: 0,
+    startTime: "",
+    endTime: "",
+    topic: {
+      topicId: "",
+      name: "",
+      description: "",
+      programmingLanguages: [],
+      numOfCertificateCourses: 0,
+      thumbnailUrl: "",
+      createdBy: {
+        userId: "",
+        email: "",
+        firstName: "",
+        lastName: ""
+      },
+      createdAt: "",
+      updatedAt: "",
+      updatedBy: {
+        userId: "",
+        email: "",
+        firstName: "",
+        lastName: ""
+      }
+    },
+    numOfStudents: 0,
+    numOfQuestions: 0,
+    numOfCompletedQuestions: 0,
+    numOfReviews: 0,
+    isRegistered: false,
+    createdBy: {
+      userId: "",
+      email: "",
+      firstName: "",
+      lastName: ""
+    },
+    createdAt: "",
+    updatedAt: "",
+    updatedBy: {
+      userId: "",
+      email: "",
+      firstName: "",
+      lastName: ""
+    }
+  });
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
     if (courseId) navigate(tabs[newTab].replace(":courseId", courseId));
@@ -52,6 +107,30 @@ const CourseCertificateDetail = () => {
 
   const { t } = useTranslation();
 
+  const handleGetCertificateCourseById = async (id: string) => {
+    try {
+      const getCertificateCourseByIdResponse =
+        await CertificateCourseService.getCertificateCourseById(id);
+      setCourse(getCertificateCourseByIdResponse);
+    } catch (error: any) {
+      console.error("Failed to fetch certificate course by id", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (courseId) {
+        await handleGetCertificateCourseById(courseId);
+      }
+    };
+    fetchInitialData();
+  }, []);
+
   return (
     <Container id={classes.container}>
       <Grid container id={classes.bodyWrapper}>
@@ -66,18 +145,15 @@ const CourseCertificateDetail = () => {
               {t("certificate_detail_breadcrump")}
             </ParagraphSmall>
             <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>Học C++ cơ bản</ParagraphSmall>
+            <ParagraphSmall colorname='--blue-500'>{course.name}</ParagraphSmall>
           </Box>
           <Divider />
           <Box id={classes.courseInfoWrapper}>
             <Box id={classes.courseTitle}>
               <Box className={classes.imgCourseRecommend}>
-                <img
-                  src={"https://cdn.codechef.com/images/self-learning/icons/cpp.svg"}
-                  alt='img course recommend'
-                />
+                <img src={course.topic.thumbnailUrl} alt='img course recommend' />
               </Box>
-              <Heading2>Học C++ cơ bản</Heading2>
+              <Heading2>{course.name}</Heading2>
             </Box>
             <Grid container>
               <Grid item xs={12} md={6} id={classes.courseDetails} container>
@@ -88,7 +164,7 @@ const CourseCertificateDetail = () => {
                   className={classes.courseDetailsWrapper}
                 >
                   <Box id={classes.userRating}>
-                    <ParagraphBody fontWeight={"600"}>4.4</ParagraphBody>
+                    <ParagraphBody fontWeight={"600"}>{course.avgRating.toFixed(1)}</ParagraphBody>
                     <StarIcon id={classes.icStar} />
                   </Box>
                   <Box id={classes.userReviews}>
@@ -96,7 +172,7 @@ const CourseCertificateDetail = () => {
                       colorname='--gray-60'
                       translation-key='certificate_detail_rating'
                     >
-                      10 {t("certificate_detail_rating")}
+                      {course.numOfReviews} {t("certificate_detail_rating")}
                     </ParagraphBody>
                   </Box>
                 </Grid>
@@ -108,7 +184,7 @@ const CourseCertificateDetail = () => {
                 >
                   <Box id={classes.numberLesson}>
                     <ParagraphBody fontWeight={"600"} translation-key='certificate_detail_lesson'>
-                      20 {t("certificate_detail_lesson", { count: 2 })}
+                      {course.numOfQuestions} {t("certificate_detail_lesson", { count: 2 })}
                     </ParagraphBody>
                   </Box>
                   <Box id={classes.courseLevel}>
@@ -116,13 +192,18 @@ const CourseCertificateDetail = () => {
                       colorname='--gray-60'
                       translation-key={["common_easy", "common_level"]}
                     >
-                      {t("common_level", { count: 1 })}: {t("common_easy")}
+                      {t("common_level", { count: 1 })}:{" "}
+                      {course.skillLevel === SkillLevelEnum.BASIC
+                        ? t("common_easy")
+                        : course.skillLevel === SkillLevelEnum.INTERMEDIATE
+                          ? t("common_medium")
+                          : t("common_hard")}
                     </ParagraphBody>
                   </Box>
                 </Grid>
                 <Grid item xs={4} className={classes.courseDetailsWrapper}>
                   <Box id={classes.numberLearner}>
-                    <ParagraphBody fontWeight={"600"}>100</ParagraphBody>
+                    <ParagraphBody fontWeight={"600"}>{course.numOfStudents}</ParagraphBody>
                   </Box>
                   <Box>
                     <ParagraphBody
@@ -140,11 +221,22 @@ const CourseCertificateDetail = () => {
                 <Box id={classes.courseProgress}>
                   <Box id={classes.progressTitle}>
                     <ParagraphBody colorname='--gray-80' translation-key={"common_progress"}>
-                      {i18next.format(t("common_progress"), "firstUppercase")}: 38%
+                      {i18next.format(t("common_progress"), "firstUppercase")}:{" "}
+                      {calcCertificateCourseProgress(
+                        course.numOfCompletedQuestions || 0,
+                        course.numOfQuestions
+                      )}
+                      %
                     </ParagraphBody>
                     <FlagIcon id={classes.icFlag} />
                   </Box>
-                  <LinearProgress determinate value={38} />
+                  <LinearProgress
+                    determinate
+                    value={calcCertificateCourseProgress(
+                      course.numOfCompletedQuestions || 0,
+                      course.numOfQuestions
+                    )}
+                  />
                 </Box>
               </Grid>
               <Grid item md={1}></Grid>
@@ -154,14 +246,18 @@ const CourseCertificateDetail = () => {
                   btnType={BtnType.Primary}
                   translation-key='certificate_detail_start_button'
                   onClick={() => {
-                    navigate(
-                      routes.user.course_certificate.detail.lesson.description
-                        .replace(":courseId", "1")
-                        .replace(":lessonId", "1")
-                    );
+                    // navigate(
+                    //   routes.user.course_certificate.detail.lesson.description
+                    //     .replace(":courseId", "1")
+                    //     .replace(":lessonId", "1")
+                    // );
                   }}
                 >
-                  {t("certificate_detail_start_button")}
+                  {course.isRegistered === true
+                    ? (course.numOfCompletedQuestions || 0) > 0
+                      ? t("certificate_detail_continue_button")
+                      : t("certificate_detail_start_button")
+                    : t("certificate_detail_register_button")}
                 </Button>
               </Grid>
             </Grid>
@@ -204,7 +300,10 @@ const CourseCertificateDetail = () => {
             <Box>
               <Routes>
                 <Route path={"lesson"} element={<CourseCertificateLesson />} />
-                <Route path={"introduction"} element={<CourseCertificateIntroduction />} />
+                <Route
+                  path={"introduction"}
+                  element={<CourseCertificateIntroduction description={course.description} />}
+                />
                 <Route path={"certificate"} element={<CertificateDetails />} />
               </Routes>
             </Box>

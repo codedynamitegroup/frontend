@@ -1,6 +1,6 @@
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
@@ -11,13 +11,40 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import BasicSelect from "components/common/select/BasicSelect";
 import { useTranslation } from "react-i18next";
+import { useAppSelector, useAppDispatch } from "hooks";
+import {
+  setLoading as setLoadingAlgorithm,
+  setFilter as setFilterAlgorithm,
+  setAlgorithmTagList
+} from "reduxes/CodeAssessmentService/Algorithm";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
   const { t } = useTranslation();
 
-  const algorithms = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
+  const algorithmTag = useAppSelector((state) => state.algorithmnTag);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setLoadingAlgorithm(true));
+    TagService.getAlgorithmTag(true)
+      .then((data: TagEntity[]) => {
+        dispatch(setAlgorithmTagList(data));
+        dispatch(setLoadingAlgorithm(false));
+      })
+      .catch((reason) => console.log(reason));
+  }, [dispatch]);
+
+  const handleFilterAlgorithm = (algorithm: TagEntity) => {
+    const tags: TagEntity[] = [];
+    if (algorithmTag.filter.length < 1) tags.push(algorithm);
+    dispatch(setFilterAlgorithm(tags));
+  };
+
+  // const algorithmTag = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
     <>
       <Box
@@ -113,12 +140,27 @@ const ListProblem = () => {
                     {t("list_problem_type_of_algorithm")}:
                   </Heading3>
                   <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
-                    {algorithms.map((algorithm, index) => (
-                      <Box className={classes.algorithmItem} key={index}>
-                        <ParagraphBody>{algorithm}</ParagraphBody>
-                        <Chip label={index} size='small' className={classes.chip} />
-                      </Box>
-                    ))}
+                    {!algorithmTag.isLoading &&
+                      (algorithmTag.filter.length > 0
+                        ? algorithmTag.filter
+                        : algorithmTag.tagList
+                      ).map((algorithm, index) => (
+                        <Box
+                          onClick={() => {
+                            if (algorithm.id != null) handleFilterAlgorithm(algorithm);
+                          }}
+                          className={classes.algorithmItem}
+                          key={index}
+                          id={algorithm.id}
+                        >
+                          <ParagraphBody>{algorithm.name}</ParagraphBody>
+                          <Chip
+                            label={algorithm.numOfCodeQuestion}
+                            size='small'
+                            className={classes.chip}
+                          />
+                        </Box>
+                      ))}
                   </Box>
                 </Box>
               </Grid>
