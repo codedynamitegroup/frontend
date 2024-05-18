@@ -67,7 +67,13 @@ const LecturerCoursesManagement = (props: Props) => {
                   return (
                     <Route
                       path={value.path}
-                      element={<QuestionCreated qtype={value.code} insideCrumb={true} />}
+                      element={
+                        <QuestionCreated
+                          courseName='courseName'
+                          qtype={value.code}
+                          insideCrumb={true}
+                        />
+                      }
                       key={index}
                     />
                   );

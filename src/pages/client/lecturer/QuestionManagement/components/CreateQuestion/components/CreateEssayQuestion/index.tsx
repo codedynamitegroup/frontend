@@ -37,6 +37,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Heading2 from "components/text/Heading2";
 
 interface Props {
+  courseId?: string;
+  courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
 }
@@ -236,7 +238,7 @@ const CreateEssayQuestion = (props: Props) => {
                   navigate(routes.lecturer.course.information.replace(":courseId", "1"))
                 }
               >
-                CS202 - Nhập môn lập trình
+                {props.courseName}
               </span>{" "}
               {"> "}
               <span onClick={() => navigate(routes.lecturer.course.assignment)}>

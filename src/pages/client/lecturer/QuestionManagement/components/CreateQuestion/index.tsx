@@ -5,6 +5,8 @@ import CreateEssayQuestion from "./components/CreateEssayQuestion";
 import CreateTrueFalseQuestion from "./components/CreateTrueFalseQuestion";
 
 interface Props {
+  courseId?: string;
+  courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
 }
