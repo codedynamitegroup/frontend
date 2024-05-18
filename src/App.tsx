@@ -1,7 +1,6 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
-import QuestionCreated from "pages/client/lecturer/QuestionManagement/components/CreateQuestion";
 import {
   Route,
   RouterProvider,
@@ -36,6 +35,10 @@ import LecturerSourceCodePlagiarismFileSubmissionDetails from "pages/client/lect
 import LecturerSourceCodePlagiarismClusters from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters";
 import LecturerSourceCodePlagiarismClustersDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails";
 import GradingConfig from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig";
+import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
+import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
+import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
+import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -105,19 +108,19 @@ const router = createHashRouter(
       />
       <Route
         path={routes.lecturer.question.essay.create}
-        element={<QuestionCreated qtype={qtype.essay.code} />}
+        element={<CreateEssayQuestion qtype={qtype.essay.code} />}
       />
       <Route
         path={routes.lecturer.question.multiple_choice.create}
-        element={<QuestionCreated qtype={qtype.multiple_choice.code} />}
+        element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
       />
       <Route
         path={routes.lecturer.question.short_answer.create}
-        element={<QuestionCreated qtype={qtype.short_answer.code} />}
+        element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
       />
       <Route
         path={routes.lecturer.question.true_false.create}
-        element={<QuestionCreated qtype={qtype.true_false.code} />}
+        element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
       />
 
       <Route

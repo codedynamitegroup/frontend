@@ -5,7 +5,6 @@ import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
-import ErrorMessage from "components/text/ErrorMessage";
 
 declare global {
   interface Window {
@@ -138,7 +137,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
         ref={reactQuillRef}
         theme={readOnly ? "bubble" : "snow"}
         readOnly={readOnly}
-        value={value || ""}
+        value={convertQuillValue(value)}
         modules={modules}
         formats={formats}
         onChange={onChange}
@@ -159,3 +158,10 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
 };
 
 export default TextEditor;
+
+function convertQuillValue(value: string | undefined) {
+  if (typeof value === "undefined" || value?.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+    return "";
+  }
+  return value;
+}

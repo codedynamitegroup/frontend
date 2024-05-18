@@ -2,7 +2,7 @@ import { Box, Checkbox, Container, FormControlLabel, Grid } from "@mui/material"
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import BasicSelect from "components/common/select/BasicSelect";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading3 from "components/text/Heading3";
 import images from "config/images";
@@ -36,14 +36,13 @@ const CourseCertificates = () => {
       .map((topicFilter) => topicFilter.topic.topicId);
   }, [topicState.topicsFilter]);
 
-  const searchHandle = async (searchText: string) => {
-    const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+  const searchHandle = useCallback((searchText: string) => {
+    handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: filterTopicIds,
       isRegisteredFilter: IsRegisteredFilterEnum.ALL
     });
-    dispatch(setCertificateCourses(getCertificateCoursesResponse));
-  };
+  }, []);
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
@@ -88,13 +87,13 @@ const CourseCertificates = () => {
   };
 
   const handleGetCertificateCourses = async ({
-    data: { courseName, filterTopicIds, isRegisteredFilter }
+    courseName,
+    filterTopicIds,
+    isRegisteredFilter
   }: {
-    data: {
-      courseName: string;
-      filterTopicIds: string[];
-      isRegisteredFilter: IsRegisteredFilterEnum;
-    };
+    courseName: string;
+    filterTopicIds: string[];
+    isRegisteredFilter: IsRegisteredFilterEnum;
   }) => {
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
@@ -114,30 +113,20 @@ const CourseCertificates = () => {
   };
 
   useEffect(() => {
-    const fetchInitialData = async () => {
-      await handleGetTopics();
-      await handleGetCertificateCourses({
-        data: {
-          courseName: "",
-          filterTopicIds: filterTopicIds,
-          isRegisteredFilter: IsRegisteredFilterEnum.ALL
-        }
-      });
-    };
-    fetchInitialData();
+    handleGetTopics();
+    handleGetCertificateCourses({
+      courseName: searchText,
+      filterTopicIds,
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+    });
   }, []);
 
   useEffect(() => {
-    const fetchDataWhenFilterTopicIdsChange = async () => {
-      await handleGetCertificateCourses({
-        data: {
-          courseName: searchText,
-          filterTopicIds: filterTopicIds,
-          isRegisteredFilter: IsRegisteredFilterEnum.ALL
-        }
-      });
-    };
-    fetchDataWhenFilterTopicIdsChange();
+    handleGetCertificateCourses({
+      courseName: searchText,
+      filterTopicIds,
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+    });
   }, [filterTopicIds]);
 
   return (

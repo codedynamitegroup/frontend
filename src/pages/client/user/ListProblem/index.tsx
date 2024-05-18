@@ -16,9 +16,15 @@ import {
   setLoading as setLoadingAlgorithm,
   setFilter as setFilterAlgorithm,
   setAlgorithmTagList
-} from "reduxes/CodeAssessmentService/Algorithm";
+} from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
+
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TagService } from "services/codeAssessmentService/TagService";
+import {
+  setDifficulty,
+  setSolved
+} from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
@@ -26,6 +32,7 @@ const ListProblem = () => {
   const { t } = useTranslation();
 
   const algorithmTag = useAppSelector((state) => state.algorithmnTag);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,6 +49,22 @@ const ListProblem = () => {
     const tags: TagEntity[] = [];
     if (algorithmTag.filter.length < 1) tags.push(algorithm);
     dispatch(setFilterAlgorithm(tags));
+  };
+
+  const handleChangeSolved = (value: string) => {
+    setstatusProblem(value);
+    let newValue: boolean | null = null;
+    if (value === "1") newValue = true;
+    if (value === "2") newValue = false;
+    dispatch(setSolved(newValue));
+  };
+  const handleChangeDifficulty = (value: string) => {
+    setstatusProblem(value);
+    let newValue: QuestionDifficultyEnum | null = null;
+    if (value === "1") newValue = QuestionDifficultyEnum.EASY;
+    if (value === "2") newValue = QuestionDifficultyEnum.MEDIUM;
+    if (value === "3") newValue = QuestionDifficultyEnum.HARD;
+    dispatch(setDifficulty(newValue));
   };
 
   // const algorithmTag = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
@@ -77,7 +100,7 @@ const ListProblem = () => {
               <BasicSelect
                 labelId='select-assignment-section-label'
                 value={statusProblem}
-                onHandleChange={(value) => setstatusProblem(value)}
+                onHandleChange={(value) => handleChangeSolved(value)}
                 sx={{ maxWidth: "200px" }}
                 translation-key={[
                   "common_all",
@@ -103,7 +126,7 @@ const ListProblem = () => {
               <BasicSelect
                 labelId='select-assignment-section-label'
                 value={levelProblem}
-                onHandleChange={(value) => setlevelProblem(value)}
+                onHandleChange={(value) => handleChangeDifficulty(value)}
                 sx={{ maxWidth: "200px" }}
                 translation-key={["common_all", "common_easy", "common_medium", "common_hard"]}
                 items={[

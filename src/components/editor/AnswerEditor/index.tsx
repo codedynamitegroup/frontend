@@ -1,13 +1,4 @@
-import {
-  Grid,
-  Select,
-  MenuItem,
-  createTheme,
-  TextField,
-  Badge,
-  BadgeProps,
-  styled
-} from "@mui/material";
+import { Grid, Select, MenuItem, createTheme, TextField } from "@mui/material";
 import Button from "@mui/joy/Button";
 import TextEditor from "../TextEditor";
 import AnswerPoint from "utils/AnswerPoint";
@@ -26,9 +17,6 @@ interface AnswerEditorProps {
   remove: any;
   errors: any;
 }
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
-  "& .MuiBadge-badge": {}
-}));
 
 const AnswerEditor = (props: AnswerEditorProps) => {
   const { control, index, field, remove, errors } = props;
@@ -67,10 +55,17 @@ const AnswerEditor = (props: AnswerEditorProps) => {
         sx={{ height: props.qtype === qtype.multiple_choice.code ? "200px" : "auto" }}
       >
         {props.qtype === qtype.multiple_choice.code && (
-          <TextEditor
-            translation-key='question_management_enter_content'
-            placeholder={`${t("question_management_enter_content")}...`}
-            value={""}
+          <Controller
+            control={control}
+            name={`answers.${index}.answer`}
+            render={({ field }) => (
+              <TextEditor
+                error={errors?.answers?.[index]?.answer}
+                translation-key='question_management_enter_content'
+                placeholder={`${t("question_management_enter_content")}...`}
+                {...field}
+              />
+            )}
           />
         )}
         {props.qtype === qtype.short_answer.code && (
