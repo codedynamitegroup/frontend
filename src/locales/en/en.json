@@ -143,6 +143,8 @@
   "common_agree": "Agree",
   "common_default": "Default",
   "common_custom": "Custom",
+  "common_ended": "Ended",
+  "common_starts_in": "Starts in",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -185,6 +187,7 @@
   "contest_title": "COMPETITIVE PROGRAMMING",
   "contest_total_num": "CONTESTS",
   "contest_list_title": "Contest list",
+  "contest_all_button": "All",
   "contest_upcoming_button": "Upcoming",
   "contest_happening_button": "Happening",
   "contest_ended_button": "Ended",

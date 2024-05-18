@@ -1,59 +1,81 @@
-import React, { useRef } from "react";
-import classes from "./styles.module.scss";
 import { Box, Container, Grid, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import TrendingContestCard from "./components/TrendingContestCard";
-import SearchBar from "components/common/search/SearchBar";
-import ContestContentCard from "./components/ContestContentCard";
-import ContestFilter from "./components/ContestFilter";
+import CustomPagination from "components/common/pagination/CustomPagination";
+import AutoSearchBar from "components/common/search/AutoSearchBar";
 import images from "config/images";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import i18next from "i18next";
+import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
+import { setContests, setMostPopularContests } from "reduxes/coreService/Contest";
+import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch, RootState } from "store";
 import "swiper/css";
 import "swiper/css/navigation";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/pagination";
 import "swiper/scss/scrollbar";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-
-const filterObject = ["C++", "Java", "Python", "C#", "Javascript", "Ruby", "PHP"];
-
-const trendingItem = [
-  {
-    name: "FPT Tech day",
-    startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest1,
-    contestId: 1
-  },
-  {
-    name: "Sasuke code war",
-    startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest2,
-    contestId: 2
-  },
-  {
-    name: "Code challenger 2024",
-    startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest3,
-    contestId: 3
-  },
-  {
-    name: "Batch the code",
-    startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest4,
-    contestId: 1
-  },
-  {
-    name: "Hesang Biweekly",
-    startDate: "Chủ nhật 27/02/2024 9:30 AM GMT+7",
-    image: images.temp.contest.tempContest5,
-    contestId: 2
-  }
-];
+import { standardlizeNumber } from "utils/number";
+import ContestContentCard from "./components/ContestContentCard";
+import TrendingContestCard from "./components/TrendingContestCard";
+import classes from "./styles.module.scss";
+import { routes } from "routes/routes";
 
 const ContestList = () => {
-  const onSearchClick = () => {};
-  const [contestListButtonGroup, setContestListButtonGroup] = React.useState("happening");
+  const navigate = useNavigate();
+
+  const [searchText, setSearchText] = useState("");
+  const [contestListButtonGroup, setContestListButtonGroup] = React.useState("all");
+  const dispatch = useDispatch<AppDispatch>();
+  const contestState = useSelector((state: RootState) => state.contest);
+  const [searchParams] = useSearchParams();
+  const pageSize = 10;
+  const pageNo = useMemo(
+    () =>
+      Number.isNaN(parseInt(searchParams.get("page") || "1"))
+        ? 1
+        : parseInt(searchParams.get("page") || "1"),
+    [searchParams]
+  );
+
+  if (Number.isNaN(parseInt(searchParams.get("page") || "1"))) {
+    navigate({
+      pathname: routes.user.contest.root,
+      search: createSearchParams({
+        page: "1"
+      }).toString()
+    });
+  }
+
+  const startTimeFilter = useMemo(() => {
+    return contestListButtonGroup === "upcoming"
+      ? ContestStartTimeFilterEnum.UPCOMING
+      : contestListButtonGroup === "happening"
+        ? ContestStartTimeFilterEnum.HAPPENING
+        : contestListButtonGroup === "ended"
+          ? ContestStartTimeFilterEnum.ENDED
+          : ContestStartTimeFilterEnum.ALL;
+  }, [contestListButtonGroup]);
+
+  const searchHandle = useCallback((searchText: string) => {
+    handleGetContests({
+      searchName: searchText,
+      startTimeFilter,
+      pageNo: pageNo - 1,
+      pageSize
+    });
+  }, []);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    navigate({
+      pathname: routes.user.contest.root,
+      search: createSearchParams({
+        page: value.toString()
+      }).toString()
+    });
+  };
 
   const handleButtonGroupChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -61,13 +83,77 @@ const ContestList = () => {
   ) => {
     setContestListButtonGroup(newContestState);
   };
-  const control = {
-    value: contestListButtonGroup,
-    onChange: handleButtonGroupChange,
-    exclusive: true
-  };
 
   const { t } = useTranslation();
+
+  const handleGetContests = async ({
+    searchName = "",
+    startTimeFilter = ContestStartTimeFilterEnum.ALL,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    searchName?: string;
+    startTimeFilter?: ContestStartTimeFilterEnum;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getContestsResponse = await ContestService.getContests({
+        searchName: searchName,
+        startTimeFilter: startTimeFilter,
+        pageNo: pageNo,
+        pageSize: pageSize
+      });
+      dispatch(setContests(getContestsResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch contests", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  const handleGetMostPopularContests = async () => {
+    try {
+      const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
+      dispatch(setMostPopularContests(getMostPopularContestsResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch most popular contests", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  useEffect(() => {
+    handleGetMostPopularContests();
+    handleGetContests({
+      pageNo: pageNo - 1,
+      pageSize
+    });
+  }, []);
+
+  useEffect(() => {
+    handleGetContests({
+      searchName: searchText,
+      startTimeFilter,
+      pageNo: pageNo - 1,
+      pageSize
+    });
+  }, [contestListButtonGroup]);
+
+  useEffect(() => {
+    handleGetContests({
+      searchName: searchText,
+      startTimeFilter,
+      pageNo: pageNo - 1,
+      pageSize
+    });
+  }, [pageNo]);
 
   return (
     <>
@@ -107,7 +193,8 @@ const ContestList = () => {
                     lineHeight={"38px"}
                     color={"var(--white)"}
                   >
-                    926
+                    {/* 926 */}
+                    {standardlizeNumber(contestState.mostPopularContests.numOfContests)}
                   </Typography>
                   <Typography
                     lineHeight={"18px"}
@@ -127,7 +214,8 @@ const ContestList = () => {
                     lineHeight={"38px"}
                     color={"var(--white)"}
                   >
-                    300.000
+                    {/* 300.000 */}
+                    {standardlizeNumber(contestState.mostPopularContests.numOfParticipants)}
                   </Typography>
                   <Typography
                     lineHeight={"18px"}
@@ -147,16 +235,17 @@ const ContestList = () => {
                   modules={[Autoplay, Pagination]}
                   autoplay={{ delay: 5000 }}
                   pagination={{ el: ".swiper-pagination", type: "bullets", clickable: true }}
-                  onSlideChange={() => console.log("slide change")}
+                  onSlideChange={() => {}}
                   onSwiper={(swiper: any) => {}}
                 >
-                  {trendingItem.map((item, index) => (
+                  {contestState.mostPopularContests.mostPopularContests.map((item, index) => (
                     <SwiperSlide key={index}>
                       <TrendingContestCard
                         key={index.toString()}
                         name={item.name}
-                        startDate={item.startDate}
-                        avtImage={item.image}
+                        startTime={item.startTime}
+                        endTime={item.endTime}
+                        avtImage={item.thumbnailUrl}
                         contestId={item.contestId}
                       />
                     </SwiperSlide>
@@ -195,11 +284,27 @@ const ContestList = () => {
                 </Typography>
               </Grid>
               <Grid item xs={12} md={10} lg={8}>
-                <SearchBar onSearchClick={onSearchClick} />
+                <AutoSearchBar
+                  value={searchText}
+                  setValue={setSearchText}
+                  onHandleChange={searchHandle}
+                />
               </Grid>
               <Grid item xs={12} md={10} lg={8}>
                 <Box className={classes.contestListButtonGroup}>
-                  <ToggleButtonGroup {...control}>
+                  <ToggleButtonGroup
+                    value={contestListButtonGroup}
+                    exclusive
+                    onChange={handleButtonGroupChange}
+                  >
+                    <ToggleButton
+                      key='all'
+                      value='all'
+                      className={classes.listStateButton}
+                      translation-key='contest_all_button'
+                    >
+                      {t("contest_all_button")}
+                    </ToggleButton>
                     <ToggleButton
                       key='upcoming'
                       value='upcoming'
@@ -225,37 +330,32 @@ const ContestList = () => {
             </Grid>
             <Box marginTop={"15px"}>
               <Grid container spacing={2} alignItems={"flex-start"}>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='Sasuke war 11'
-                    description='The weekly coding contest for people who love programming on CodeLearn'
-                    avtImage={images.temp.contest.tempContest1}
-                    contestId={1}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='Batch the code'
-                    description='Thử thách thi vui thưởng thật dành cho các bạn trẻ đam mê công nghệ, thích khám phá và làm chủ ngôn ngữ số.'
-                    avtImage={images.temp.contest.tempContest2}
-                    contestId={2}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='FPT Tech day'
-                    description='Bảng thi giành cho mọi đối tượng đam mê lập trình, yêu thích công nghệ
-Đăng ký tham gia vui lòng truy cập: https://techday2021.fpt.com.vn/vi/code-war'
-                    avtImage={images.temp.contest.tempContest3}
-                    contestId={3}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='CSS 11'
-                    description='Nurture Your Software DNA_Mini code challenge'
-                    avtImage={images.temp.contest.tempContest4}
-                    contestId={1}
+                {contestState.contests.contests.map((item, index) => (
+                  <Grid item xs={12} key={index.toString()}>
+                    <ContestContentCard
+                      name={item.name}
+                      avtImage={item.thumbnailUrl}
+                      contestId={item.contestId}
+                      startTime={item.startTime}
+                      endTime={item.endTime}
+                    />
+                  </Grid>
+                ))}
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <CustomPagination
+                    count={contestState.contests.totalPages}
+                    page={pageNo}
+                    handlePageChange={handlePageChange}
+                    showFirstButton
+                    showLastButton
+                    size={"large"}
                   />
                 </Grid>
               </Grid>

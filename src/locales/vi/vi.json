@@ -133,6 +133,8 @@
   "common_agree": "Đồng ý",
   "common_default": "Mặc định",
   "common_custom": "Tùy chỉnh",
+  "common_ended": "Đã kết thúc",
+  "common_starts_in": "Bắt đầu trong",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -188,6 +190,7 @@
   "contest_total_num": "CUỘC THI",
   "contest_participant_num": "THÍ SINH THAM GIA",
   "contest_list_title": "Danh sách cuộc thi",
+  "contest_all_button": "Tất cả",
   "contest_upcoming_button": "Sắp diễn ra",
   "contest_happening_button": "Đang diễn ra",
   "contest_ended_button": "Đã kết thúc",

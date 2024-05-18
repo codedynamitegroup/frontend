@@ -5,7 +5,11 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class CertificateCourseService {
-  static async getCertificateCourses(data: {
+  static async getCertificateCourses({
+    courseName = "",
+    filterTopicIds = [],
+    isRegisteredFilter = IsRegisteredFilterEnum.ALL
+  }: {
     courseName: string;
     filterTopicIds: string[];
     isRegisteredFilter: IsRegisteredFilterEnum;
@@ -14,9 +18,9 @@ export class CertificateCourseService {
       const response = await axios.post(
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`,
         {
-          courseName: data.courseName,
-          filterTopicIds: data.filterTopicIds,
-          isRegisteredFilter: data.isRegisteredFilter
+          courseName: courseName,
+          filterTopicIds: filterTopicIds,
+          isRegisteredFilter: isRegisteredFilter
         }
       );
       if (response.status === 200) {

@@ -1,15 +1,12 @@
-const millisToHoursAndMinutesString = (examLimit: number) => {
-  let result = "";
-  if (examLimit > 0) {
-    const hours = Math.floor((examLimit % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((examLimit % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((examLimit % (1000 * 60)) / 1000);
-    result =
-      (hours > 0 ? hours + " giờ " : "") +
-      (minutes > 0 ? minutes + " phút " : "") +
-      (seconds > 0 ? seconds + " giây" : "");
+const millisToHoursAndMinutesString = (millis: number, currentLang = "en") => {
+  const hours = Math.floor(millis / 3600000);
+  const minutes = Math.floor((millis % 3600000) / 60000);
+  const remainingSeconds = Math.floor((millis % 60000) / 1000);
+
+  if (currentLang === "vi") {
+    return `${hours} giờ ${minutes} phút ${remainingSeconds} giây`;
   }
-  return result;
+  return `${hours}h ${minutes}m ${remainingSeconds}s`;
 };
 
 export { millisToHoursAndMinutesString };

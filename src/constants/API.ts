@@ -24,7 +24,8 @@ export const API = {
       GET_BY_ID: "/core/contests/:id",
       UPDATE_BY_ID: "/core/contests/:id",
       DELETE_BY_ID: "/core/contests/:id",
-      REGISTER_BY_ID: "/core/contests/:id/register"
+      REGISTER_BY_ID: "/core/contests/:id/register",
+      MOST_POPULAR: "/core/contests/popular"
     }
   }
 };
