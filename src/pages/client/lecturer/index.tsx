@@ -32,7 +32,10 @@ const LecturerCoursesManagement = (props: Props) => {
               <Route path={"courses/:courseId/*"} element={<LecturerCourseDetail />} />
               <Route path={"code-questions"} element={<LecturerCodeQuestionManagement />} />
               <Route path={"code-questions/create"} element={<LecturerCodeQuestionCreation />} />
-              <Route path={"code-questions/edit/:id/*"} element={<LecturerCodeQuestionDetails />} />
+              <Route
+                path={"code-questions/edit/:questionId/*"}
+                element={<LecturerCodeQuestionDetails />}
+              />
               <Route path={"calendar"} element={<LecturerEventCalendar />} />
               <Route
                 path={"question-bank-management"}
