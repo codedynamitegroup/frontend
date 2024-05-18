@@ -7,8 +7,6 @@ import {
   Divider,
   Grid,
   ListItemButton,
-  MenuItem,
-  Select,
   Stack
 } from "@mui/material";
 import Header from "components/Header";
@@ -19,7 +17,7 @@ import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useOutletContext, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -41,13 +39,12 @@ interface Props {
 }
 
 interface FormData {
-  topic?: string;
   questionName: string;
   questionDescription: string;
   defaultScore: number;
   generalDescription?: string;
   caseSensitive?: boolean;
-  answers?: { answer: string; feedback: string; fraction: number }[];
+  answers: { answer: string; feedback: string; fraction: number }[];
 }
 
 const CreateShortAnswerQuestion = (props: Props) => {
@@ -71,16 +68,16 @@ const CreateShortAnswerQuestion = (props: Props) => {
     ref: headerRef
   });
   if (props.insideCrumb) headerHeight = 0;
-  const [initialized, setInitialized] = useState(true);
-  let outletContext: any = useOutletContext();
-  let outletTab = outletContext?.value;
-  useEffect(() => {
-    if (initialized) {
-      setInitialized(false);
-    } else {
-      navigate("/lecturer/question-bank-management");
-    }
-  }, [outletTab]);
+  // const [initialized, setInitialized] = useState(true);
+  // let outletContext: any = useOutletContext();
+  // let outletTab = outletContext?.value;
+  // useEffect(() => {
+  //   if (initialized) {
+  //     setInitialized(false);
+  //   } else {
+  //     navigate("/lecturer/question-bank-management");
+  //   }
+  // }, [outletTab]);
 
   const urlParams = useParams();
 
@@ -91,22 +88,25 @@ const CreateShortAnswerQuestion = (props: Props) => {
   //  Form handler
   const schema = useMemo(() => {
     return yup.object().shape({
-      topic: yup.string(),
       questionName: yup.string().required(t("question_name_required")),
       questionDescription: yup.string().required(t("question_description_required")),
       defaultScore: yup
         .number()
         .required(t("question_default_score_required"))
-        .moreThan(0, t("question_default_score_invalid")),
+        .min(0, t("question_default_score_invalid")),
       generalDescription: yup.string(),
       caseSensitive: yup.boolean(),
-      answers: yup.array().of(
-        yup.object().shape({
-          answer: yup.string().required(t("question_answer_content_required")),
-          feedback: yup.string().required(t("common_required")),
-          fraction: yup.number().required(t("question_feedback_answer_required"))
-        })
-      )
+      answers: yup
+        .array()
+        .min(1, t("min_answer_required", { answerNum: 1 }))
+        .required(t("min_answer_required", { answerNum: 1 }))
+        .of(
+          yup.object().shape({
+            answer: yup.string().required(t("question_answer_content_required")),
+            feedback: yup.string().required(t("common_required")),
+            fraction: yup.number().required(t("question_feedback_answer_required"))
+          })
+        )
     });
   }, [t]);
   const {
@@ -117,7 +117,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   });
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: "answers" // unique name for your Field Array
   });
@@ -194,26 +194,8 @@ const CreateShortAnswerQuestion = (props: Props) => {
                 ? i18next.format(en_name, "lowercase")
                 : i18next.format(vi_name, "lowercase")}
             </Heading1>
-            <Grid container spacing={1} columns={12}>
-              <Grid item xs={12} md={3}>
-                <TextTitle translation-key='common_topic'>{t("common_topic")}</TextTitle>
-              </Grid>
-              <Grid item xs={12} md={9}>
-                <Select
-                  defaultValue={10}
-                  fullWidth={true}
-                  size='small'
-                  required
-                  {...register("topic")}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </Grid>
-            </Grid>
-
             <Controller
+              defaultValue=''
               control={control}
               name='questionName'
               render={({ field }) => (
@@ -334,6 +316,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
                     >
                       {t("question_management_answer")}
                     </Heading2>
+                    {Boolean(errors?.answers) && (
+                      <ErrorMessage>{errors.answers?.message}</ErrorMessage>
+                    )}
                   </Grid>
                   <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>
                     {answerOpen ? <ExpandLess /> : <ExpandMore />}

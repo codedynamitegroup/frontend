@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import course from "reduxes/courseService/course";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -33,6 +34,7 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 interface CardProps {
+  courseId: string;
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
@@ -57,7 +59,7 @@ const CourseCard = (props: CardProps) => {
       <Divider className={classes.cardDivider} />
       <Link
         component={RouterLink}
-        to={routes.lecturer.course.information.replace(":courseId", "1")}
+        to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
         underline='hover'
         color='inherit'
       >

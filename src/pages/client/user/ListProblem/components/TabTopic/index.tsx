@@ -44,7 +44,7 @@ export default function LabTabs() {
   return (
     <Box className={classes.container}>
       <TabContext value={value}>
-        <Box>
+        {/* <Box>
           <StyledTabList
             onChange={handleChange}
             aria-label='lab API tabs example'
@@ -55,7 +55,7 @@ export default function LabTabs() {
               <Tab sx={{ fontSize: "12px" }} key={index} label={topic} value={index.toString()} />
             ))}
           </StyledTabList>
-        </Box>
+        </Box> */}
         <TabPanel value='0' className={classes.tabPanel}>
           <Stack spacing={spacingInTabPanel}>
             <RecommendedProblem />

@@ -27,5 +27,13 @@ export const API = {
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular"
     }
+  },
+  CODE_ASSESSMENT: {
+    TAG: {
+      DEFAULT: "/code-assessment/tag"
+    },
+    CODE_QUESTION: {
+      DEFAULT: "/code-assessment/code-question"
+    }
   }
 };

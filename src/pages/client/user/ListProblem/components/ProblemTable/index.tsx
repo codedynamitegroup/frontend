@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import classes from "./styles.module.scss";
 
@@ -17,10 +17,50 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Heading2 from "components/text/Heading2";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "hooks";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { PaginationList } from "models/codeAssessmentService/entity/PaginationList";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 export default function ProblemTable() {
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
+
+  const algorithmTag = useAppSelector((state) => state.algorithmnTag);
+
+  const [codeQuestionList, setCodeQuestionList] = useState<PaginationList<CodeQuestionEntity>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    codeQuestions: []
+  });
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  // console.log("page", page, "row perpage", rowsPerPage);
+
+  useEffect(() => {
+    CodeQuestionService.getCodeQuestion(
+      {
+        tag: algorithmTag.filter.length > 0 ? algorithmTag.filter : null,
+        search: null,
+        difficulty: null,
+        solved: null
+      },
+      {
+        pageNum: page,
+        pageSize: rowsPerPage
+      },
+      null
+    )
+      .then((data: PaginationList<CodeQuestionEntity>) => {
+        setCodeQuestionList(data);
+      })
+      .catch((reason) => console.log(reason));
+  }, [algorithmTag.filter, page, rowsPerPage]);
+
   const renderStatus = (status: number) => {
     if (status === 1) {
       return <CheckCircleIcon className={classes.iconCheck} />;
@@ -28,15 +68,15 @@ export default function ProblemTable() {
     return "";
   };
 
-  const renderLevel = (level: number) => {
-    if (level === 0) {
+  const renderLevel = (level: QuestionDifficultyEnum) => {
+    if (level === QuestionDifficultyEnum.EASY) {
       return (
         <ParagraphBody fontWeight={700} colorname={"--blue-500"}>
           Dễ
         </ParagraphBody>
       );
     }
-    if (level === 1) {
+    if (level === QuestionDifficultyEnum.MEDIUM) {
       return (
         <ParagraphBody fontWeight={700} colorname={"--warning"}>
           Trung bình
@@ -49,70 +89,75 @@ export default function ProblemTable() {
       </ParagraphBody>
     );
   };
-  const data = [
-    {
-      id: 1,
-      status: renderStatus(0),
-      name: "Tổng 2 số",
-      level: renderLevel(0)
-    },
-    {
-      id: 2,
-      status: renderStatus(1),
-      name: "Trung bình cộng",
-      level: renderLevel(1)
-    },
-    {
-      id: 3,
-      status: renderStatus(0),
-      name: "Phân số tối giản",
-      level: renderLevel(1)
-    },
-    {
-      id: 4,
-      status: renderStatus(0),
-      name: "Sắp xếp mảng tăng dần",
-      level: renderLevel(2)
-    },
-    {
-      id: 5,
-      status: renderStatus(1),
-      name: "Kiểm tra số nguyên tố",
-      level: renderLevel(2)
-    },
-    {
-      id: 6,
-      status: renderStatus(1),
-      name: "Đảo chuỗi",
-      level: renderLevel(2)
-    },
-    {
-      id: 7,
-      status: renderStatus(0),
-      name: "Tìm phần tử lớn nhất trong mảng",
-      level: renderLevel(2)
-    },
-    {
-      id: 8,
-      status: renderStatus(1),
-      name: "Số Fibonacci",
-      level: renderLevel(0)
-    },
-    {
-      id: 9,
-      status: renderStatus(0),
-      name: "Thuật toán tìm kiếm nhị phân",
-      level: renderLevel(2)
-    },
-    {
-      id: 10,
-      status: renderStatus(0),
-      name: "Đếm số lần xuất hiện của phần tử trong mảng",
-      level: renderLevel(1)
-    }
-  ];
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  const data = codeQuestionList.codeQuestions.map((value) => ({
+    id: value.id,
+    name: value.name,
+    status: renderStatus(value.done === true ? 1 : 0),
+    level: renderLevel(value.difficulty)
+  }));
+  // = [
+  //   {
+  //     id: 1,
+  //     status: renderStatus(0),
+  //     name: "Tổng 2 số",
+  //     level: renderLevel(0)
+  //   },
+  //   {
+  //     id: 2,
+  //     status: renderStatus(1),
+  //     name: "Trung bình cộng",
+  //     level: renderLevel(1)
+  //   },
+  //   {
+  //     id: 3,
+  //     status: renderStatus(0),
+  //     name: "Phân số tối giản",
+  //     level: renderLevel(1)
+  //   },
+  //   {
+  //     id: 4,
+  //     status: renderStatus(0),
+  //     name: "Sắp xếp mảng tăng dần",
+  //     level: renderLevel(2)
+  //   },
+  //   {
+  //     id: 5,
+  //     status: renderStatus(1),
+  //     name: "Kiểm tra số nguyên tố",
+  //     level: renderLevel(2)
+  //   },
+  //   {
+  //     id: 6,
+  //     status: renderStatus(1),
+  //     name: "Đảo chuỗi",
+  //     level: renderLevel(2)
+  //   },
+  //   {
+  //     id: 7,
+  //     status: renderStatus(0),
+  //     name: "Tìm phần tử lớn nhất trong mảng",
+  //     level: renderLevel(2)
+  //   },
+  //   {
+  //     id: 8,
+  //     status: renderStatus(1),
+  //     name: "Số Fibonacci",
+  //     level: renderLevel(0)
+  //   },
+  //   {
+  //     id: 9,
+  //     status: renderStatus(0),
+  //     name: "Thuật toán tìm kiếm nhị phân",
+  //     level: renderLevel(2)
+  //   },
+  //   {
+  //     id: 10,
+  //     status: renderStatus(0),
+  //     name: "Đếm số lần xuất hiện của phần tử trong mảng",
+  //     level: renderLevel(1)
+  //   }
+  // ];
+
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
@@ -184,7 +229,7 @@ export default function ProblemTable() {
         <TablePagination
           component='div'
           rowsPerPageOptions={[5, 10, 25, 100]}
-          count={data.length}
+          count={codeQuestionList.totalItems}
           page={Number(page)}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

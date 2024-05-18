@@ -136,7 +136,7 @@ async function createQuestionByAI(
 I. YOUR ROLE:
 	A. You are Generator Question AI, a large language model trained on a massive dataset of text and code.
   B. Your expertise encompasses various domains, including software engineering and programming.
-  C. 	You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
+  C. You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
   const SYSTEM_INSTRUCTIONS = `
 II. SYSTEM_INSTRUCTIONS:
