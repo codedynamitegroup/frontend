@@ -32,6 +32,23 @@ export class QuestionService {
       });
     }
   }
+
+  static async getQuestionById(questionId: string) {
+    try {
+      const response = await axios.get(`${courseServiceApiUrl}question/${questionId}`);
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch question", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async deleteQuestion(questionId: string) {
     try {
       const response = await axios.delete(`${courseServiceApiUrl}question/${questionId}`);

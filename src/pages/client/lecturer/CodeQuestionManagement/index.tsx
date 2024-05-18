@@ -82,12 +82,11 @@ const LecturerCodeQuestionManagement = () => {
   const customColumns = ["questionId", "name", "difficulty", "updatedAt"];
   const navigate = useNavigate();
   const onEdit = (id: number) => {
-    navigate(routes.lecturer.code_question.information.replace(":id", id.toString()));
+    navigate(routes.lecturer.code_question.information.replace(":questionId", id.toString()));
   };
   const onDelete = (id: number) => {
     handleDeleteQuestion(id.toString());
-   };
-  
+  };
 
   return (
     <Box id={classes.codequestionsBody}>
