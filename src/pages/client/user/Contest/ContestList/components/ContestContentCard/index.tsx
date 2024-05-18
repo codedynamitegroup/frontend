@@ -36,11 +36,11 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
 
   const contestStatusChipLabel = useMemo(() => {
     if (startTime && moment().utc().isBefore(startTime)) {
-      return "Upcoming";
+      return t("common_upcoming");
     } else if (endTime && moment().utc().isAfter(endTime)) {
-      return "Ended";
+      return t("common_ended");
     } else {
-      return "In Progress";
+      return t("common_in_progress");
     }
   }, [startTime, endTime]);
 
