@@ -60,17 +60,43 @@ const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: 
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Box sx={{ position: "relative" }}>
-            <ParagraphBody
-              sx={{
-                position: "absolute",
-                bottom: "10px",
-                left: "10px",
-                color: "var(--white)"
-              }}
-              translate-key='common_starts_in'
-            >
-              {t("common_starts_in")} {millisToHoursAndMinutesString(countdown, currentLang)}
-            </ParagraphBody>
+            {countdown > 0 ? (
+              <ParagraphBody
+                sx={{
+                  position: "absolute",
+                  bottom: "10px",
+                  left: "10px",
+                  color: "var(--white)"
+                }}
+                translate-key='common_starts_in'
+              >
+                {t("common_starts_in")} {millisToHoursAndMinutesString(countdown, currentLang)}
+              </ParagraphBody>
+            ) : endTime && moment().utc().isAfter(endTime) ? (
+              <ParagraphBody
+                sx={{
+                  position: "absolute",
+                  bottom: "10px",
+                  left: "10px",
+                  color: "var(--white)"
+                }}
+                translate-key='common_ended'
+              >
+                {t("common_ended")}
+              </ParagraphBody>
+            ) : (
+              <ParagraphBody
+                sx={{
+                  position: "absolute",
+                  bottom: "10px",
+                  left: "10px",
+                  color: "var(--white)"
+                }}
+                translate-key='common_in_progress'
+              >
+                {t("common_in_progress")}
+              </ParagraphBody>
+            )}
             <Paper
               sx={{
                 width: "100%",
@@ -90,7 +116,7 @@ const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: 
             {endTime && moment().utc().isAfter(endTime) ? (
               <>
                 <ClockIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
-                <TextTitle margin='10px 0 10px 5px'>{t("common_ended")}</TextTitle>
+                <TextTitle margin='10px 5px 10px 5px'>{t("common_ended")}</TextTitle>
                 <Heading6 colorname={"--gray-80"} fontWeight={300}>
                   {standardlizeUTCStringToLocaleString(endTime, currentLang)}
                 </Heading6>
