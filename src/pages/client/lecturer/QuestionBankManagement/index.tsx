@@ -10,7 +10,7 @@ import {
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -26,6 +26,10 @@ import ParagraphBody from "components/text/ParagraphBody";
 import classes from "./styles.module.scss";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import { AppDispatch, RootState } from "store";
+import { useDispatch, useSelector } from "react-redux";
+import { setQuestionBankCategories } from "reduxes/courseService/questionBankCategory";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 
 const rows = [
   {
@@ -61,6 +65,57 @@ const rows = [
 ];
 
 const QuestionBankManagement = () => {
+  const [searchText, setSearchText] = useState("");
+  const dispath = useDispatch<AppDispatch>();
+  const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
+  const searchHandle = async (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const handleGetQuestionBankCategories = async ({
+    search = searchText,
+    pageNo = page,
+    pageSize = rowsPerPage
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getQuestionBankCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategories({
+          search,
+          pageNo,
+          pageSize
+        });
+      dispath(setQuestionBankCategories(getQuestionBankCategoryResponse));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialQuestionBankCategories = async () => {
+      await handleGetQuestionBankCategories({ search: searchText });
+    };
+    fetchInitialQuestionBankCategories();
+  }, [searchText]);
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    handleGetQuestionBankCategories({
+      search: searchText,
+      pageNo: 0,
+      pageSize: +event.target.value
+    });
+  };
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: false,

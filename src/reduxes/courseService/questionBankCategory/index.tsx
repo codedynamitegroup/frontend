@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
+import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 
 interface InitialState {
   isLoading: boolean;
-  questions: QuestionEntity[];
+  questionBankCategories: QuestionBankCategoryEntity[];
   currentPage: number;
   totalItems: number;
   totalPages: number;
@@ -11,21 +11,21 @@ interface InitialState {
 
 const initialState: InitialState = {
   isLoading: false,
-  questions: [],
+  questionBankCategories: [],
   currentPage: 0,
   totalItems: 0,
   totalPages: 0
 };
 
-const questionSlice = createSlice({
-  name: "question",
+const questionBankCategorySlice = createSlice({
+  name: "questionBankCategory",
   initialState: initialState,
   reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload.isLoading;
     },
-    setQuestions: (state, action) => {
-      state.questions = action.payload.questions;
+    setQuestionBankCategories: (state, action) => {
+      state.questionBankCategories = action.payload.questionBankCategories;
       state.currentPage = action.payload.currentPage;
       state.totalItems = action.payload.totalItems;
       state.totalPages = action.payload.totalPages;
@@ -33,6 +33,6 @@ const questionSlice = createSlice({
   }
 });
 
-export const { setLoading, setQuestions } = questionSlice.actions;
+export const { setLoading, setQuestionBankCategories } = questionBankCategorySlice.actions;
 
-export default questionSlice.reducer;
+export default questionBankCategorySlice.reducer;
