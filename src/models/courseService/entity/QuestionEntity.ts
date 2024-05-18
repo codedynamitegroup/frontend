@@ -6,5 +6,7 @@ export interface QuestionEntity {
   questionText: string;
   generalFeedback: string;
   defaultMark: number;
+  createdAt: string;
+  updatedAt: string;
   message: string;
 }
