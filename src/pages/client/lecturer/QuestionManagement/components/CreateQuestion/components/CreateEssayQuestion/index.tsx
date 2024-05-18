@@ -1,31 +1,15 @@
-import {
-  Box,
-  Checkbox,
-  Collapse,
-  Container,
-  Divider,
-  Grid,
-  ListItemButton,
-  MenuItem,
-  Select,
-  Stack
-} from "@mui/material";
+import { Box, Container, Grid, MenuItem, Select } from "@mui/material";
 import Header from "components/Header";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import Button, { BtnType } from "components/common/buttons/Button";
-import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
@@ -33,6 +17,8 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 
 interface Props {
+  courseId?: string;
+  courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
 }
@@ -114,7 +100,7 @@ const CreateEssayQuestion = (props: Props) => {
                   navigate(routes.lecturer.course.information.replace(":courseId", "1"))
                 }
               >
-                CS202 - Nhập môn lập trình
+                {props.courseName}
               </span>{" "}
               {"> "}
               <span onClick={() => navigate(routes.lecturer.course.assignment)}>
