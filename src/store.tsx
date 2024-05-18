@@ -11,6 +11,7 @@ import chapterReducer from "reduxes/coreService/Chapter/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import examReducer from "reduxes/courseService/exam/index";
+import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 
 const store = configureStore({
   reducer: {
@@ -25,7 +26,8 @@ const store = configureStore({
     chapter: chapterReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
-    exam: examReducer
+    exam: examReducer,
+    difficultyAndSolved: SearchAndDifficultyAndSolved
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true
