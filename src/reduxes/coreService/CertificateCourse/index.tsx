@@ -5,12 +5,14 @@ interface InitialState {
   isLoading: boolean;
   mostEnrolledCertificateCourses: CertificateCourseEntity[];
   certificateCourses: CertificateCourseEntity[];
+  certificateCourseDetails: CertificateCourseEntity | null;
 }
 
 const initState: InitialState = {
   isLoading: false,
   mostEnrolledCertificateCourses: [],
-  certificateCourses: []
+  certificateCourses: [],
+  certificateCourseDetails: null
 };
 
 const certificateCourseSlice = createSlice({
@@ -23,10 +25,14 @@ const certificateCourseSlice = createSlice({
     setCertificateCourses: (state, action) => {
       state.certificateCourses = action.payload.certificateCourses;
       state.mostEnrolledCertificateCourses = action.payload.mostEnrolledCertificateCourses;
+    },
+    setCertificateCourseDetails: (state, action) => {
+      state.certificateCourseDetails = action.payload;
     }
   }
 });
 
-export const { setLoading, setCertificateCourses } = certificateCourseSlice.actions;
+export const { setLoading, setCertificateCourses, setCertificateCourseDetails } =
+  certificateCourseSlice.actions;
 
 export default certificateCourseSlice.reducer;

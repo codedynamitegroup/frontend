@@ -1,29 +1,42 @@
-import React from "react";
-import classes from "./styles.module.scss";
-import { Box, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
-import Heading6 from "components/text/Heading6";
-import Heading3 from "components/text/Heading3";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { Box, Grid, Paper, Stack } from "@mui/material";
+import Heading3 from "components/text/Heading3";
+import Heading6 from "components/text/Heading6";
+import i18next from "i18next";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import classes from "./styles.module.scss";
+import { ClockIcon } from "@mui/x-date-pickers";
+import TextTitle from "components/text/TextTitle";
+import { useTranslation } from "react-i18next";
+import moment from "moment";
 
 interface PropsData {
   name: string;
-  description: string;
   avtImage: any;
-  contestId: number;
+  contestId: string;
+  startTime: string;
+  endTime: string;
 }
-const ContestContentCard = (props: PropsData) => {
-  const { name, description, avtImage, contestId } = props;
+const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: PropsData) => {
   const navigate = useNavigate();
   const clickHandler = () => {
     navigate(routes.user.contest.detail.replace(":contestId", contestId.toString()));
   };
+  const { t } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
 
-  const chipClickHandle = () => {};
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+  }, [i18next.language]);
+
   return (
     <Paper className={classes.container} onClick={clickHandler}>
-      <Grid container alignItems='center' spacing={2}>
+      <Grid container alignItems='center' spacing={1}>
         <Grid item xs={10}>
           <Box className={classes.contestInfo}>
             <Grid container>
@@ -38,21 +51,20 @@ const ContestContentCard = (props: PropsData) => {
                 <Heading3 sx={{ color: "inherit" }}>{name}</Heading3>
               </Grid>
               <Grid item xs={12}>
-                <Typography
-                  fontFamily='Roboto,Helvetica,Arial,sans-serif'
-                  fontWeight={400}
-                  fontSize='16px'
-                  color='#2a2a2a'
-                >
-                  {description}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
                 <Stack direction={"row"} alignItems={"center"}>
-                  <DateRangeIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
-                  <Heading6 colorname={"--gray-80"} fontWeight={40} margin='10px 0 10px 5px'>
-                    Chủ nhật 27/02/2024 9:30 AM GMT+7
-                  </Heading6>
+                  {endTime && moment().utc().isAfter(endTime) ? (
+                    <>
+                      <ClockIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
+                      <TextTitle margin='10px 0 10px 5px'>{t("common_ended")}</TextTitle>
+                      <Heading6 colorname={"--gray-80"} fontWeight={300}>
+                        {standardlizeUTCStringToLocaleString(endTime, currentLang)}
+                      </Heading6>
+                    </>
+                  ) : (
+                    <Heading6 colorname={"--gray-80"} fontWeight={300}>
+                      {standardlizeUTCStringToLocaleString(startTime, currentLang)}
+                    </Heading6>
+                  )}
                 </Stack>
               </Grid>
             </Grid>
