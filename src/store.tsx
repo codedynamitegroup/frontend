@@ -8,7 +8,7 @@ import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
 import topicReducer from "reduxes/coreService/Topic/index";
 import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
-import algorithmTagReducer from "reduxes/CodeAssessmentService/Algorithm";
+import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import examReducer from "reduxes/courseService/exam/index";
 

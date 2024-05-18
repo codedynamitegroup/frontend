@@ -16,7 +16,7 @@ import {
   setLoading as setLoadingAlgorithm,
   setFilter as setFilterAlgorithm,
   setAlgorithmTagList
-} from "reduxes/CodeAssessmentService/Algorithm";
+} from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TagService } from "services/codeAssessmentService/TagService";
 
