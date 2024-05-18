@@ -1,9 +1,9 @@
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import { Box, Grid, Paper, Stack } from "@mui/material";
+import { Box, Chip, Grid, Paper, Stack } from "@mui/material";
 import Heading3 from "components/text/Heading3";
 import Heading6 from "components/text/Heading6";
 import i18next from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -34,19 +34,27 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
     setCurrentLang(i18next.language);
   }, [i18next.language]);
 
+  const contestStatusChipLabel = useMemo(() => {
+    if (startTime && moment().utc().isBefore(startTime)) {
+      return "Upcoming";
+    } else if (endTime && moment().utc().isAfter(endTime)) {
+      return "Ended";
+    } else {
+      return "In Progress";
+    }
+  }, [startTime, endTime]);
+
   return (
     <Paper className={classes.container} onClick={clickHandler}>
       <Grid container alignItems='center' spacing={1}>
         <Grid item xs={10}>
           <Box className={classes.contestInfo}>
             <Grid container>
-              {/* <Grid item xs={12}>
+              <Grid item xs={12}>
                 <Stack className={classes.contestTypeContainer} direction='row' spacing={0.5}>
-                  <Chip size='small' label='DSA' variant='outlined' onClick={chipClickHandle} />
-                  <Chip size='small' label='OOP' variant='outlined' onClick={chipClickHandle} />
-                  <Chip size='small' label='Java' variant='outlined' onClick={chipClickHandle} />
+                  <Chip size='small' label={contestStatusChipLabel} variant='outlined' />
                 </Stack>
-              </Grid> */}
+              </Grid>
               <Grid item xs={12}>
                 <Heading3 sx={{ color: "inherit" }}>{name}</Heading3>
               </Grid>
@@ -55,7 +63,7 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
                   {endTime && moment().utc().isAfter(endTime) ? (
                     <>
                       <ClockIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
-                      <TextTitle margin='10px 0 10px 5px'>{t("common_ended")}</TextTitle>
+                      <TextTitle margin='10px 5px 10px 5px'>{t("common_ended")}</TextTitle>
                       <Heading6 colorname={"--gray-80"} fontWeight={300}>
                         {standardlizeUTCStringToLocaleString(endTime, currentLang)}
                       </Heading6>

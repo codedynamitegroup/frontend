@@ -1,4 +1,7 @@
 const millisToHoursAndMinutesString = (millis: number, currentLang = "en") => {
+  if (millis < 0) {
+    return "0h 0m 0s";
+  }
   const hours = Math.floor(millis / 3600000);
   const minutes = Math.floor((millis % 3600000) / 60000);
   const remainingSeconds = Math.floor((millis % 60000) / 1000);
