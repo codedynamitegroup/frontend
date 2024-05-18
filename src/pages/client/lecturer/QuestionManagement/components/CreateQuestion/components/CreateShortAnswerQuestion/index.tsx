@@ -7,8 +7,6 @@ import {
   Divider,
   Grid,
   ListItemButton,
-  MenuItem,
-  Select,
   Stack
 } from "@mui/material";
 import Header from "components/Header";
@@ -19,7 +17,7 @@ import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useOutletContext, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -95,13 +93,13 @@ const CreateShortAnswerQuestion = (props: Props) => {
       defaultScore: yup
         .number()
         .required(t("question_default_score_required"))
-        .moreThan(0, t("question_default_score_invalid")),
+        .min(0, t("question_default_score_invalid")),
       generalDescription: yup.string(),
       caseSensitive: yup.boolean(),
       answers: yup
         .array()
-        .min(1, t("min_answer_required"))
-        .required(t("min_answer_required"))
+        .min(1, t("min_answer_required", { answerNum: 1 }))
+        .required(t("min_answer_required", { answerNum: 1 }))
         .of(
           yup.object().shape({
             answer: yup.string().required(t("question_answer_content_required")),
@@ -119,7 +117,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   });
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: "answers" // unique name for your Field Array
   });
@@ -197,6 +195,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
                 : i18next.format(vi_name, "lowercase")}
             </Heading1>
             <Controller
+              defaultValue=''
               control={control}
               name='questionName'
               render={({ field }) => (
