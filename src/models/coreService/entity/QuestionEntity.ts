@@ -21,3 +21,51 @@ export interface QuestionEntity {
   createdAt: Date;
   updatedAt: Date;
 }
+
+interface PostAnswer {
+  feedback: string;
+  fraction: number;
+  answer: string;
+}
+
+export interface PostShortAnswerQuestion {
+  organizationId: string;
+  createdBy: string;
+  updatedBy: string;
+  difficulty: string;
+  name: string;
+  questionText: string;
+  generalFeedback: string | null | undefined;
+  defaultMark: number;
+  qType: string;
+
+  answers: PostAnswer[];
+
+  caseSensitive: boolean;
+}
+
+export interface PostEssayQuestion {
+  organizationId: string;
+  createdBy: string;
+  updatedBy: string;
+  difficulty: string;
+  name: string;
+  questionText: string;
+  generalFeedback: string | null | undefined;
+  defaultMark: number;
+  qType: string;
+
+  responseFormat: string;
+  responseRequired?: number;
+  responseFieldLines: number;
+  attachments: number;
+  attachmentsRequired?: number;
+  graderInfo?: string;
+  graderInfoFormat?: number;
+  responseTemplate?: string;
+  responseTemplateFormat?: number;
+  fileTypesList?: string;
+  minWordLimit: number;
+  maxWordLimit: number;
+  maxBytes?: number;
+}

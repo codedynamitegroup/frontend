@@ -32,6 +32,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
+import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface Props {
   qtype: String;
@@ -123,6 +125,28 @@ const CreateShortAnswerQuestion = (props: Props) => {
   });
   const submitHandler = async (data: any) => {
     console.log(data);
+    const formSubmittedData: FormData = { ...data };
+    const newQuestion: PostShortAnswerQuestion = {
+      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      difficulty: "EASY",
+      name: formSubmittedData.questionName,
+      questionText: formSubmittedData.questionDescription,
+      generalFeedback: formSubmittedData?.generalDescription,
+      defaultMark: formSubmittedData?.defaultScore,
+      qType: "SHORT_ANSWER",
+      answers: formSubmittedData.answers,
+
+      caseSensitive: Boolean(formSubmittedData?.caseSensitive)
+    };
+    QuestionService.createShortAnswerQuestion(newQuestion)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });

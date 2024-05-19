@@ -35,6 +35,8 @@ import ErrorMessage from "components/text/ErrorMessage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Heading2 from "components/text/Heading2";
+import { PostEssayQuestion } from "models/coreService/entity/QuestionEntity";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface Props {
   qtype: String;
@@ -59,6 +61,7 @@ interface FormData {
   fileTypesList?: string[];
   minWord: number;
   maxWord: number;
+  maxBytes?: number;
 }
 
 const fileTypes = [
@@ -83,6 +86,7 @@ const fileTypes = [
     description: ".aac .aif .aiff .aifc .au .flac .m3u .mp3 .m4a .oga .ogg .ra .ram .rm .wav .wma"
   }
 ];
+const maxBytesList = [10, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 40000];
 
 const CreateEssayQuestion = (props: Props) => {
   const { t } = useTranslation();
@@ -171,7 +175,20 @@ const CreateEssayQuestion = (props: Props) => {
         .number()
         .required(t("max_word_required"))
         .typeError(t("invalid_type", { name: t("essay_max_word"), type: t("type_number") }))
-        .min(-1, t("max_word_invalid"))
+        .min(-1, t("max_word_invalid")),
+      maxBytes: yup
+        .number()
+        .typeError(
+          t("invalid_type", {
+            name: t("question_management_default_score"),
+            type: t("type_number")
+          })
+        )
+        .when("attachments", ([attachments], schema) => {
+          return Number(attachments) !== 0
+            ? schema.required(t("max_bytes_required"))
+            : schema.notRequired();
+        })
     });
   }, [t]);
   const {
@@ -186,7 +203,41 @@ const CreateEssayQuestion = (props: Props) => {
   console.log(selectedFileTypes);
 
   const submitHandler = async (data: any) => {
-    console.log(data);
+    const formSubmittedData: FormData = { ...data };
+    const newEssayQuestion: PostEssayQuestion = {
+      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      difficulty: "EASY",
+      name: formSubmittedData.questionName,
+      questionText: formSubmittedData.questionDescription,
+      generalFeedback: formSubmittedData?.generalDescription,
+      defaultMark: formSubmittedData?.defaultScore,
+      qType: "ESSAY",
+
+      responseFormat: formSubmittedData.responseFormat,
+      responseRequired: formSubmittedData.responseRequired,
+      responseFieldLines: formSubmittedData.responseFieldLines,
+      attachments: formSubmittedData.attachments,
+      attachmentsRequired: formSubmittedData.attachmentsRequired,
+      graderInfo: formSubmittedData.graderInfo,
+      responseTemplate: formSubmittedData.responseTemplate,
+      minWordLimit: formSubmittedData?.minWord,
+      maxWordLimit: formSubmittedData?.maxWord,
+      maxBytes: formSubmittedData.maxBytes,
+      fileTypesList: formSubmittedData.fileTypesList
+        ? formSubmittedData.fileTypesList.join(",").toString()
+        : "all"
+    };
+    console.log(newEssayQuestion);
+
+    QuestionService.createEssayQuestion(newEssayQuestion)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleFileTypeChange = (event: SelectChangeEvent<typeof selectedFileTypes>) => {
     const {
@@ -630,6 +681,7 @@ const CreateEssayQuestion = (props: Props) => {
                         </Grid>
                         <Grid item xs={12} md={9}>
                           <Controller
+                            defaultValue={selectedFileTypes}
                             name='fileTypesList'
                             control={control}
                             render={({ field }) => (
@@ -638,8 +690,10 @@ const CreateEssayQuestion = (props: Props) => {
                                 fullWidth={true}
                                 size='small'
                                 {...field}
-                                value={selectedFileTypes}
-                                onChange={handleFileTypeChange}
+                                onChange={(e) => {
+                                  handleFileTypeChange(e);
+                                  field.onChange(e);
+                                }}
                                 error={Boolean(errors?.fileTypesList)}
                                 renderValue={(selected) => selected.join(", ")}
                               >
@@ -677,6 +731,32 @@ const CreateEssayQuestion = (props: Props) => {
                           {Boolean(errors?.fileTypesList) && (
                             <ErrorMessage>{errors.fileTypesList?.message}</ErrorMessage>
                           )}
+                        </Grid>
+                      </Grid>
+
+                      <Grid container spacing={1} columns={12}>
+                        <Grid item xs={12} md={3}>
+                          <TextTitle translation-key='max_byte_title'>
+                            {t("max_byte_title")}
+                          </TextTitle>
+                        </Grid>
+                        <Grid item xs={12} md={9}>
+                          <Select
+                            defaultValue={1000}
+                            fullWidth={true}
+                            size='small'
+                            required
+                            {...register("maxBytes")}
+                            onChange={(e) => {
+                              setAttachments(Number(e.target.value));
+                            }}
+                          >
+                            {maxBytesList.map((maxByte: number) => (
+                              <MenuItem key={maxByte} value={maxByte}>
+                                {maxByte / 1000 < 1 ? `${maxByte} KB` : `${maxByte / 1000} MB`}
+                              </MenuItem>
+                            ))}
+                          </Select>
                         </Grid>
                       </Grid>
                     </>
@@ -809,6 +889,7 @@ const CreateEssayQuestion = (props: Props) => {
                 </Stack>
               </Collapse>
             </div>
+
             <Box className={classes.stickyFooterContainer}>
               <Box className={classes.phantom} />
               <Box className={classes.stickyFooterItem}>

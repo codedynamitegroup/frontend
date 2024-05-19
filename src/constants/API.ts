@@ -26,6 +26,22 @@ export const API = {
       DELETE_BY_ID: "/core/contests/:id",
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular"
+    },
+    QUESTION: {
+      DEFAULT: "/core/questions",
+      GET_BY_ID: "/core/questions/:id",
+      UPDATE_BY_ID: "/core/questions/:id",
+      DELETE_BY_ID: "/core/questions/:id",
+      SHORT_ANSWER_QUESTION: {
+        CREATE: "questions/shortanswer-question/create",
+        GET_BY_ID: "/core/questions/shortanswer-question/:id",
+        GET_ALL: "/core/questions/shortanswer-question"
+      },
+      ESSAY_QUESTION: {
+        CREATE: "questions/essay-question/create",
+        GET_BY_ID: "/core/questions/essay-question/:id",
+        GET_ALL: "/core/questions/essay-question"
+      }
     }
   },
   CODE_ASSESSMENT: {
