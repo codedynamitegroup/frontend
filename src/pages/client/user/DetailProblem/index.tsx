@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import classes from "./styles.module.scss";
 import {
   Button,
@@ -31,6 +31,12 @@ import Result from "./components/Result";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
 import { useTranslation } from "react-i18next";
+import { useAppSelector, useAppDispatch } from "hooks";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { UUID } from "crypto";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+
 enum ELanguage {
   JAVA = "java",
   CPP = "cpp",
@@ -42,7 +48,27 @@ interface QCodeStub {
 }
 
 export default function DetailProblem() {
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: UUID;
+    courseId: string;
+    lessonId: string;
+  }>();
+  const { pathname } = useLocation();
+
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+
+  const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
+  useEffect(() => {
+    if (problemId !== undefined)
+      CodeQuestionService.getDetailCodeQuestion(problemId, null)
+        .then((data: CodeQuestionEntity) => {
+          dispatch(setCodeQuestion(data));
+        })
+        .catch((err) => console.log(err));
+  }, [dispatch]);
+
   const codeStubs: QCodeStub[] = [
     {
       language: ELanguage.JAVA,
@@ -107,13 +133,6 @@ int reverse(int x) {
       setSelectedCodeStub(selectedStub);
     }
   };
-
-  const { problemId, courseId, lessonId } = useParams<{
-    problemId: string;
-    courseId: string;
-    lessonId: string;
-  }>();
-  const { pathname } = useLocation();
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
     if (problemId) navigate(tabs[newTab].replace(":problemId", problemId));
@@ -223,7 +242,7 @@ int reverse(int x) {
                 {t("list_problem")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Reverse Integer</ParagraphSmall>
+              <ParagraphSmall colorname='--blue-500'>{codeQuestion?.name}</ParagraphSmall>
             </Box>
           )}
           {courseId && lessonId && (

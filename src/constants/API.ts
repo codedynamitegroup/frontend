@@ -49,7 +49,8 @@ export const API = {
       DEFAULT: "/code-assessment/tag"
     },
     CODE_QUESTION: {
-      DEFAULT: "/code-assessment/code-question"
+      DEFAULT: "/code-assessment/code-question",
+      GET_BY_ID: "/code-assessment/code-question/:id"
     }
   }
 };
