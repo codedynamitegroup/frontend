@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import "config/i18n";
 import { LinearProgress } from "@mui/material";
+import "moment/locale/vi";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(

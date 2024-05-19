@@ -20,13 +20,22 @@ export enum ResourceType {
 }
 
 interface Props {
+  courseId?: string;
+  examId?: string;
   resourceTitle: string;
   resourceEndedDate: Date | string;
   intro?: string;
   type?: ResourceType;
 }
 
-const AssignmentResource = ({ resourceTitle, resourceEndedDate, intro, type }: Props) => {
+const AssignmentResource = ({
+  resourceTitle,
+  resourceEndedDate,
+  courseId,
+  examId,
+  intro,
+  type
+}: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   type = type || ResourceType.assignment;
@@ -37,7 +46,12 @@ const AssignmentResource = ({ resourceTitle, resourceEndedDate, intro, type }: P
 
   const onDetailClick = () => {
     if (type === ResourceType.assignment) navigate(routes.lecturer.assignment.detail);
-    else navigate(routes.lecturer.exam.detail);
+    else
+      navigate(
+        routes.lecturer.exam.detail
+          .replace(":courseId", courseId ?? "")
+          .replace(":examId", examId ?? "")
+      );
   };
 
   return (

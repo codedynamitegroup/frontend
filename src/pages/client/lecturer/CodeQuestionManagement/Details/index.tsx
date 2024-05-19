@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import CodeQuestionInformation from "./components/Information";
@@ -11,17 +11,48 @@ import CodeQuestionCodeStubs from "./components/CodeStubs";
 import CodeQuestionLanguages from "./components/Languages";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
+import { QuestionService } from "services/courseService/QuestionService";
+import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
 
 interface Props {}
 
 const LecturerCodeQuestionDetails = memo((props: Props) => {
+  const { questionId } = useParams<{ questionId: string }>();
+  const [question, setQuestion] = useState<QuestionEntity>({
+    id: "",
+    organizationId: "",
+    difficulty: "",
+    name: "",
+    questionText: "",
+    generalFeedback: "",
+    defaultMark: 0,
+    createdAt: "",
+    updatedAt: "",
+    message: ""
+  });
+
+  const handleGetQuestionById = async (id: string) => {
+    try {
+      const response = await QuestionService.getQuestionById(id);
+      setQuestion(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetQuestionById(questionId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const { pathname } = useLocation();
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
-    if (id) navigate(tabs[newTab].replace(":id", id));
+    if (questionId) navigate(tabs[newTab].replace(":questionId", questionId));
   };
 
   const tabs: string[] = useMemo(() => {
@@ -40,8 +71,8 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
   };
 
   const activeTab = useMemo(() => {
-    if (id) {
-      const index = tabs.findIndex((it) => activeRoute(it.replace(":id", id)));
+    if (questionId) {
+      const index = tabs.findIndex((it) => activeRoute(it.replace(":questionId", questionId)));
       if (index === -1) return 0;
       return index;
     }
@@ -62,16 +93,16 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
             {">"}
             <span
               onClick={() => {
-                if (id) navigate(pathname);
+                if (questionId) navigate(pathname);
               }}
             >
-              Tổng 2 số
+              {question.name}
             </span>
           </ParagraphBody>
         </Box>
 
         <Box className={classes.body}>
-          <Heading1 fontWeight={"500"}>Tổng 2 số</Heading1>
+          <Heading1 fontWeight={"500"}>{question.name}</Heading1>
           <Box sx={{ border: 1, borderColor: "divider" }}>
             <Tabs
               value={activeTab}
@@ -113,7 +144,10 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
           </Box>
           <Box id={classes.codeQuestionDetailBody}>
             <Routes>
-              <Route path={"information"} element={<CodeQuestionInformation />} />
+              <Route
+                path={"information"}
+                element={<CodeQuestionInformation question={question} />}
+              />
               <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
               <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
               <Route path={"languages"} element={<CodeQuestionLanguages />} />

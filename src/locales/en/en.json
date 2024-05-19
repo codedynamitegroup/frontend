@@ -143,6 +143,10 @@
   "common_agree": "Agree",
   "common_default": "Default",
   "common_custom": "Custom",
+  "common_ended": "Ended",
+  "common_starts_in": "Starts in",
+  "common_in_progress": "In progress",
+  "common_upcoming": "Upcoming",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -185,6 +189,7 @@
   "contest_title": "COMPETITIVE PROGRAMMING",
   "contest_total_num": "CONTESTS",
   "contest_list_title": "Contest list",
+  "contest_all_button": "All",
   "contest_upcoming_button": "Upcoming",
   "contest_happening_button": "Happening",
   "contest_ended_button": "Ended",
@@ -235,6 +240,7 @@
   "certificate_detail_certification_title": "Course certification",
   "certificate_detail_certification_description": "You will receive a course certificate when you complete at least 85% of the course content",
   "certificate_detail_breadcrump": "Course list",
+  "not_registered_certificate_course_message": "You have not registered for this course yet",
 
   "dashboard_continue_title": "Continue your course",
   "dashboard_happening_contest": "Happening contests",
@@ -437,6 +443,7 @@
 
   "question_bank_category_find_by_category": "Find by category",
   "question_bank_create_category": "Create category",
+  "question_bank_edit_category": "Edit category",
   "question_bank_create_category_info": "Category infomation",
   "question_bank_create_category_name": "Category name",
 

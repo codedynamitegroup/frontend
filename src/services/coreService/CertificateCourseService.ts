@@ -5,7 +5,11 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class CertificateCourseService {
-  static async getCertificateCourses(data: {
+  static async getCertificateCourses({
+    courseName = "",
+    filterTopicIds = [],
+    isRegisteredFilter = IsRegisteredFilterEnum.ALL
+  }: {
     courseName: string;
     filterTopicIds: string[];
     isRegisteredFilter: IsRegisteredFilterEnum;
@@ -14,13 +18,13 @@ export class CertificateCourseService {
       const response = await axios.post(
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`,
         {
-          courseName: data.courseName,
-          filterTopicIds: data.filterTopicIds,
-          isRegisteredFilter: data.isRegisteredFilter
+          courseName: courseName,
+          filterTopicIds: filterTopicIds,
+          isRegisteredFilter: isRegisteredFilter
         }
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", error);
@@ -38,10 +42,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to fetch certificate course by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -56,10 +60,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate courses", error);
+      console.error("Failed to create certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -74,10 +78,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to register certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -92,10 +96,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to update certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -110,10 +114,10 @@ export class CertificateCourseService {
         `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DELETE_BY_ID.replace(":id", id)}`
       );
       if (response.status === 200) {
-        Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch certificate course", error);
+      console.error("Failed to delete certificate course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

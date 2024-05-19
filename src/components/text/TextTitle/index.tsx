@@ -7,6 +7,7 @@ interface TextTitleProps {
   overflow?: string;
   textOverflow?: string;
   fontWeight?: string;
+  margin?: string;
 }
 
 const TextTitle = styled(Typography)<TextTitleProps>`
@@ -19,6 +20,6 @@ const TextTitle = styled(Typography)<TextTitleProps>`
   font-family: "Inter";
   letter-spacing: 0.015em;
   line-height: normal;
-  margin: 0;
+  margin: ${(props) => props.margin || "0"};
 `;
 export default TextTitle;

@@ -8,9 +8,12 @@ import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
 import topicReducer from "reduxes/coreService/Topic/index";
 import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
+import contestReducer from "reduxes/coreService/Contest/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import examReducer from "reduxes/courseService/exam/index";
+import questionReducer from "reduxes/courseService/question/index";
+import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 
 const store = configureStore({
@@ -24,10 +27,13 @@ const store = configureStore({
     topic: topicReducer,
     certifcateCourse: certificateCourseReducer,
     chapter: chapterReducer,
+    contest: contestReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     exam: examReducer,
-    searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved
+    searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
+    question: questionReducer,
+    questionBankCategory: questionBankCategory
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

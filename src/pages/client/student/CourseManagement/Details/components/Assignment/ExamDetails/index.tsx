@@ -8,17 +8,52 @@ import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToHoursAndMinutesString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
+import { useEffect, useState } from "react";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ExamService } from "services/courseService/ExamService";
 
 const StudentCourseExamDetails = () => {
+  const { examId } = useParams<{ examId: string }>();
+  const [exam, setExam] = useState<ExamEntity>({
+    id: "",
+    courseId: "",
+    name: "",
+    scores: 0,
+    maxScores: 0,
+    timeOpen: new Date(),
+    timeClose: new Date(),
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    maxAttempts: 0,
+    shuffleAnswers: false,
+    gradeMethod: "",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+  const handleGetExamById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamById(id);
+      setExam(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetExamById(examId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const navigate = useNavigate();
-  const examOpenTime = dayjs();
-  const examCloseTime = dayjs();
-  const examLimitTimeInMillis = 1000000;
   const examDescriptionRawHTML = `
     <div>
     <p>Đây là mô tả bài kiểm tra</p>
@@ -43,7 +78,7 @@ const StudentCourseExamDetails = () => {
       >
         <ParagraphBody>Quay lại</ParagraphBody>
       </Button>
-      <Heading1>Bài kiểm tra 1</Heading1>
+      <Heading1>{exam.name}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -57,7 +92,7 @@ const StudentCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {examOpenTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              <ParagraphBody> {dayjs(exam.timeOpen).format("DD/MM/YYYY HH:mm")} </ParagraphBody>
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -67,7 +102,7 @@ const StudentCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {examCloseTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              <ParagraphBody>{dayjs(exam.timeClose).format("DD/MM/YYYY HH:mm")}</ParagraphBody>
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -76,7 +111,7 @@ const StudentCourseExamDetails = () => {
             <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>{millisToHoursAndMinutesString(examLimitTimeInMillis)}</ParagraphBody>
+            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
           </Grid>
         </Grid>
         <Divider
@@ -86,9 +121,9 @@ const StudentCourseExamDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: examDescriptionRawHTML }}></div>
+          <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b>Điểm cao nhất</b>
+            Cách thức tính điểm: <b> {exam.gradeMethod} </b>
           </ParagraphBody>
           <CustomFileList
             files={[

@@ -133,6 +133,10 @@
   "common_agree": "Đồng ý",
   "common_default": "Mặc định",
   "common_custom": "Tùy chỉnh",
+  "common_ended": "Đã kết thúc",
+  "common_starts_in": "Bắt đầu trong",
+  "common_in_progress": "Đang diễn ra",
+  "common_upcoming": "Sắp diễn ra",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -188,6 +192,7 @@
   "contest_total_num": "CUỘC THI",
   "contest_participant_num": "THÍ SINH THAM GIA",
   "contest_list_title": "Danh sách cuộc thi",
+  "contest_all_button": "Tất cả",
   "contest_upcoming_button": "Sắp diễn ra",
   "contest_happening_button": "Đang diễn ra",
   "contest_ended_button": "Đã kết thúc",
@@ -235,6 +240,7 @@
   "certificate_detail_certification_title": "Chứng chỉ khóa học",
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
+  "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",
 
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
   "dashboard_happening_contest": "Cuộc thi đang diễn ra",
@@ -430,6 +436,7 @@
   "quesion_bank_access_share": "Chia sẻ",
   "question_bank_category_find_by_category": "Tìm kiếm theo danh mục",
   "question_bank_create_category": "Tạo danh mục",
+  "question_bank_edit_category": "Chỉnh sửa danh mục",
   "question_bank_create_category_info": "Thông tin danh mục",
   "question_bank_create_category_name": "Tên danh mục",
 
