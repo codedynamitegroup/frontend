@@ -41,7 +41,12 @@ export const API = {
         CREATE: "questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
-      }
+      },
+      MULTIPLE_CHOICE_QUESTION: {
+        CREATE: "questions/multichoice-question/create",
+        GET_BY_ID: "/core/questions/multichoice-question/:id",
+        GET_ALL: "/core/questions/multichoice-question"
+      },
     }
   },
   CODE_ASSESSMENT: {

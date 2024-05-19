@@ -69,3 +69,31 @@ export interface PostEssayQuestion {
   maxWordLimit: number;
   maxBytes?: number;
 }
+
+export interface PostMultipleChoiceQuestion {
+  organizationId: string;
+  createdBy: string;
+  updatedBy: string;
+  difficulty: string;
+  name: string;
+  questionText: string;
+  generalFeedback: string | null | undefined;
+  defaultMark: number;
+  qType: string;
+
+  answers: PostAnswer[];
+  single: boolean;
+  shuffleAnswers: boolean;
+  correctFeedback?: string;
+  partiallyCorrectFeedback?: string;
+  incorrectFeedback?: string;
+  answerNumbering: string;
+  showNumCorrect?: number;
+  showStandardInstructions?: string;
+}
+
+export enum MultichocieNumbering {
+  abc = 1,
+  ABC = 2,
+  n123 = 3
+}

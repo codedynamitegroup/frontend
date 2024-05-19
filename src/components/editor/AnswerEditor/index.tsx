@@ -106,7 +106,10 @@ const AnswerEditor = (props: AnswerEditorProps) => {
             <Select defaultValue={-1} size='small' {...field}>
               <MenuItem value={-1}>None</MenuItem>
               {AnswerPoint.map((item, i) => (
-                <MenuItem key={i} value={i}>{`${item.percentNumber * 100}%`}</MenuItem>
+                <MenuItem
+                  key={i}
+                  value={item.percentNumber}
+                >{`${item.percentNumber * 100}%`}</MenuItem>
               ))}
             </Select>
           )}
