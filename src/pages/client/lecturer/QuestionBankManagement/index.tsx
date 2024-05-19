@@ -11,9 +11,7 @@ import {
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
-
 import EditIcon from "@mui/icons-material/Edit";
-
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
@@ -63,6 +61,29 @@ const QuestionBankManagement = () => {
     }
   };
 
+  const handleEdit = async () => {
+    try {
+      console.log(dataEdit?.id, dataEdit?.name, dataEdit?.description);
+      await QuestionBankCategoryService.updateQuestionBankCategory({
+        id: selectedRowData?.id || "",
+        name: dataEdit?.name || "",
+        description: dataEdit?.description || ""
+      });
+      handleGetQuestionBankCategories({ search: searchText });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      await QuestionBankCategoryService.deleteQuestionBankCategory(id);
+      handleGetQuestionBankCategories({ search: searchText });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchInitialQuestionBankCategories = async () => {
       await handleGetQuestionBankCategories({ search: searchText });
@@ -93,7 +114,14 @@ const QuestionBankManagement = () => {
     page: page,
     pageSize: rowsPerPage
   });
+
+  const [selectedRowData, setSelectedRowData] = useState<QuestionBankCategoryEntity>();
+  const [dataEdit, setDataEdit] = useState<QuestionBankCategoryEntity>(
+    {} as QuestionBankCategoryEntity
+  );
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
   const columnsProps: GridColDef[] = [
     {
       field: "stt",
@@ -153,15 +181,22 @@ const QuestionBankManagement = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              //set the edit value
-              setOpenCreateDialog(true);
+              const selectedCategory = questionBankCategoriesState.questionBankCategories.find(
+                (item) => item.id === id
+              );
+              if (selectedCategory) {
+                setSelectedRowData(selectedCategory);
+                setOpenEditDialog(true);
+              }
             }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label='Cancel'
             className='textPrimary'
-            onClick={() => null}
+            onClick={() => {
+              handleDeleteCategory(id as string);
+            }}
             sx={{
               color: red[500]
             }}
@@ -197,6 +232,8 @@ const QuestionBankManagement = () => {
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
+
+  const [categoryName, setCategoryName] = useState();
 
   return (
     <div>
@@ -376,6 +413,64 @@ const QuestionBankManagement = () => {
         <DialogActions>
           <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
             <ParagraphBody translation-key='common_save'> {t("common_save")}</ParagraphBody>
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        aria-labelledby='customized-dialog-title-edit'
+        open={openEditDialog}
+        onClose={() => {
+          setOpenEditDialog(false);
+        }}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle
+          sx={{ m: 0, p: 2 }}
+          id='customized-dialog-title-edit'
+          translation-key='question_bank_edit_category'
+        >
+          {t("question_bank_edit_category")}
+        </DialogTitle>
+        <IconButton
+          aria-label='close'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+          onClick={() => setOpenEditDialog(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Stack spacing={1}>
+            <Textarea
+              translation-key='question_bank_create_category_name'
+              name='Outlined'
+              defaultValue={selectedRowData?.name || ""}
+              onChange={(e) => {
+                setDataEdit({ ...dataEdit, name: e.target.value });
+              }}
+              variant='outlined'
+              minRows={1}
+            />
+            <Textarea
+              transaltion-key='question_bank_create_category_info'
+              name='Outlined'
+              value={selectedRowData?.description || ""}
+              variant='outlined'
+              minRows={4}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenEditDialog(false)}>
+            <ParagraphBody translation-key='common_save' onClick={handleEdit}>
+              {" "}
+              {t("common_save")}
+            </ParagraphBody>
           </Button>
         </DialogActions>
       </Dialog>
