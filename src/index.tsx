@@ -7,14 +7,25 @@ import store from "./store";
 import "config/i18n";
 import { LinearProgress } from "@mui/material";
 import "moment/locale/vi";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { MsalProvider } from "@azure/msal-react";
+import { msalConfig } from "services/authService/azure.config";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+const pca = new PublicClientApplication(msalConfig);
+
 root.render(
   <Provider store={store}>
     <React.StrictMode>
-      <React.Suspense fallback={<LinearProgress />}>
-        <App />
-      </React.Suspense>
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <MsalProvider instance={pca}>
+          <React.Suspense fallback={<LinearProgress />}>
+            <App />
+          </React.Suspense>
+        </MsalProvider>
+      </GoogleOAuthProvider>
     </React.StrictMode>
   </Provider>
 );

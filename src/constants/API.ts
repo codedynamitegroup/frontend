@@ -52,5 +52,10 @@ export const API = {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id"
     }
+  },
+  AUTH: {
+    SOCIAL_LOGIN: "/auth/users/social-login",
+    LOGIN: "/auth/users/login",
+    REGISTER: "/auth/users/register"
   }
 };
