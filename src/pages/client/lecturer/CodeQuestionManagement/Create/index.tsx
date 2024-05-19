@@ -18,7 +18,7 @@ interface Props {}
 const LecturerCodeQuestionCreation = memo((props: Props) => {
   const { questionId } = useParams<{ questionId: string }>();
   const [question, setQuestion] = useState<QuestionEntity>({
-    questionId: "",
+    id: "",
     organizationId: "",
     difficulty: "",
     name: "",

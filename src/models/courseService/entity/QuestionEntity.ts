@@ -1,5 +1,5 @@
 export interface QuestionEntity {
-  questionId: string;
+  id: string;
   organizationId: string;
   difficulty: string;
   name: string;
