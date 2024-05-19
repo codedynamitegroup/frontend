@@ -6,15 +6,16 @@ import { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Heading5 from "components/text/Heading5";
 import { useTranslation } from "react-i18next";
+import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
 
-type Props = {};
+type Props = { question: QuestionEntity };
 
 enum EDifficulty {
   EASY = "EASY",
   MEDIUM = "MEDIUM",
   HARD = "HARD"
 }
-const CodeQuestionInformation = memo((props: Props) => {
+const CodeQuestionInformation = memo(({ question }: Props) => {
   const { t } = useTranslation();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
@@ -44,7 +45,7 @@ const CodeQuestionInformation = memo((props: Props) => {
       <InputTextField
         title={t("exam_management_create_question_name")}
         type='text'
-        value={questionName}
+        value={question.name}
         translation-key='exam_management_create_question_name'
       />
       <FormControl>
@@ -55,7 +56,7 @@ const CodeQuestionInformation = memo((props: Props) => {
             </TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <Select value={difficulty} onChange={handleChange} sx={{ width: "200px" }}>
+            <Select value={question.difficulty} onChange={handleChange} sx={{ width: "200px" }}>
               <MenuItem value={EDifficulty.EASY} translation-key='common_easy'>
                 {t("common_easy")}
               </MenuItem>
@@ -77,7 +78,7 @@ const CodeQuestionInformation = memo((props: Props) => {
             </TextTitle>
           </Grid>
           <Grid item xs={9} className={classes.textEditor}>
-            <TextEditor value={problemDescription} onChange={setProblemDescription} />
+            <TextEditor value={question.questionText} onChange={setProblemDescription} />
           </Grid>
         </Grid>
       </FormControl>

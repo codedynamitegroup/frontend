@@ -15,11 +15,11 @@ export const routes = {
     code_question: {
       management: "/lecturer/code-questions",
       create: "/lecturer/code-questions/create",
-      detail: "/lecturer/code-questions/edit/:id/*",
-      information: "/lecturer/code-questions/edit/:id/information",
-      test_cases: "/lecturer/code-questions/edit/:id/test-cases",
-      code_stubs: "/lecturer/code-questions/edit/:id/code-stubs",
-      languages: "/lecturer/code-questions/edit/:id/languages"
+      detail: "/lecturer/code-questions/edit/:questionId/*",
+      information: "/lecturer/code-questions/edit/:questionId/information",
+      test_cases: "/lecturer/code-questions/edit/:questionId/test-cases",
+      code_stubs: "/lecturer/code-questions/edit/:questionId/code-stubs",
+      languages: "/lecturer/code-questions/edit/:questionId/languages"
     },
     assignment: {
       detail: "/lecturer/courses/:courseId/assignments/:assignmentId",

@@ -10,10 +10,8 @@ import {
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
@@ -26,50 +24,104 @@ import ParagraphBody from "components/text/ParagraphBody";
 import classes from "./styles.module.scss";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-
-const rows = [
-  {
-    id: "abc",
-    category: "Học thuật toán",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc2",
-    category: "Java",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc3",
-    category: "Mảng 1 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc4",
-    category: "Mảng 2 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc5",
-    category: "Con trỏ",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  }
-];
+import { AppDispatch, RootState } from "store";
+import { useDispatch, useSelector } from "react-redux";
+import { setQuestionBankCategories } from "reduxes/courseService/questionBankCategory";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+import dayjs from "dayjs";
+import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 
 const QuestionBankManagement = () => {
+  const [searchText, setSearchText] = useState("");
+  const dispath = useDispatch<AppDispatch>();
+  const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
+  const searchHandle = async (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const handleGetQuestionBankCategories = async ({
+    search = searchText,
+    pageNo = page,
+    pageSize = rowsPerPage
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getQuestionBankCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategories({
+          search,
+          pageNo,
+          pageSize
+        });
+      dispath(setQuestionBankCategories(getQuestionBankCategoryResponse));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEdit = async () => {
+    try {
+      console.log(dataEdit?.id, dataEdit?.name, dataEdit?.description);
+      await QuestionBankCategoryService.updateQuestionBankCategory({
+        id: selectedRowData?.id || "",
+        name: dataEdit?.name || "",
+        description: dataEdit?.description || ""
+      });
+      handleGetQuestionBankCategories({ search: searchText });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      await QuestionBankCategoryService.deleteQuestionBankCategory(id);
+      handleGetQuestionBankCategories({ search: searchText });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialQuestionBankCategories = async () => {
+      await handleGetQuestionBankCategories({ search: searchText });
+    };
+    fetchInitialQuestionBankCategories();
+  }, [searchText]);
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    handleGetQuestionBankCategories({
+      search: searchText,
+      pageNo: 0,
+      pageSize: +event.target.value
+    });
+  };
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
-    isLoading: false,
-    data: rows,
-    total: 0,
-    page: 1,
-    pageSize: 5
+    isLoading: questionBankCategoriesState.isLoading,
+    data: questionBankCategoriesState.questionBankCategories,
+    total: questionBankCategoriesState.totalItems,
+    page: page,
+    pageSize: rowsPerPage
   });
+
+  const [selectedRowData, setSelectedRowData] = useState<QuestionBankCategoryEntity>();
+  const [dataEdit, setDataEdit] = useState<QuestionBankCategoryEntity>(
+    {} as QuestionBankCategoryEntity
+  );
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
   const columnsProps: GridColDef[] = [
     {
       field: "stt",
@@ -87,7 +139,7 @@ const QuestionBankManagement = () => {
       flex: 3,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
-        return <ParagraphBody>{params.row.category}</ParagraphBody>;
+        return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
@@ -96,8 +148,8 @@ const QuestionBankManagement = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
-          <div>{params.row.createdAtBy.time}</div>
+          <ParagraphBody>{params.row.createdByName}</ParagraphBody>
+          <div>{dayjs(params.row.createdAt).format("DD/MM/YYYY HH:mm")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -108,8 +160,8 @@ const QuestionBankManagement = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
-          <div>{params.row.updatedAtBy.time}</div>
+          <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
+          <div>{dayjs(params.row.updatedAt).format("DD/MM/YYYY HH:mm")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -129,15 +181,22 @@ const QuestionBankManagement = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              //set the edit value
-              setOpenCreateDialog(true);
+              const selectedCategory = questionBankCategoriesState.questionBankCategories.find(
+                (item) => item.id === id
+              );
+              if (selectedCategory) {
+                setSelectedRowData(selectedCategory);
+                setOpenEditDialog(true);
+              }
             }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label='Cancel'
             className='textPrimary'
-            onClick={() => null}
+            onClick={() => {
+              handleDeleteCategory(id as string);
+            }}
             sx={{
               color: red[500]
             }}
@@ -174,6 +233,8 @@ const QuestionBankManagement = () => {
     navigate(`${params.row.id}`);
   };
 
+  const [categoryName, setCategoryName] = useState();
+
   return (
     <div>
       <TabPanel value='1' className={classes["tab-panel"]}>
@@ -191,7 +252,7 @@ const QuestionBankManagement = () => {
             </Stack>
 
             <SearchBar
-              onSearchClick={() => null}
+              onSearchClick={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
             />
@@ -206,10 +267,16 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              rows={questionBankCategoriesState.questionBankCategories.map((item, index) => ({
+                stt: index + 1,
+                ...item
+              }))}
+              rowCount={questionBankCategoriesState.totalItems}
+              loading={questionBankCategoriesState.isLoading}
+              paginationModel={{
+                page: questionBankCategoriesState.currentPage,
+                pageSize: questionBankCategoriesState.totalPages
+              }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
               }}
@@ -263,10 +330,18 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              rows={questionBankCategoriesState.questionBankCategories.map(
+                (item: QuestionBankCategoryEntity, index: number) => ({
+                  stt: index + 1,
+                  ...item
+                })
+              )}
+              rowCount={questionBankCategoriesState.totalItems}
+              loading={questionBankCategoriesState.isLoading}
+              paginationModel={{
+                page: questionBankCategoriesState.currentPage,
+                pageSize: questionBankCategoriesState.totalPages
+              }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
               }}
@@ -338,6 +413,64 @@ const QuestionBankManagement = () => {
         <DialogActions>
           <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
             <ParagraphBody translation-key='common_save'> {t("common_save")}</ParagraphBody>
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        aria-labelledby='customized-dialog-title-edit'
+        open={openEditDialog}
+        onClose={() => {
+          setOpenEditDialog(false);
+        }}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle
+          sx={{ m: 0, p: 2 }}
+          id='customized-dialog-title-edit'
+          translation-key='question_bank_edit_category'
+        >
+          {t("question_bank_edit_category")}
+        </DialogTitle>
+        <IconButton
+          aria-label='close'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+          onClick={() => setOpenEditDialog(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Stack spacing={1}>
+            <Textarea
+              translation-key='question_bank_create_category_name'
+              name='Outlined'
+              defaultValue={selectedRowData?.name || ""}
+              onChange={(e) => {
+                setDataEdit({ ...dataEdit, name: e.target.value });
+              }}
+              variant='outlined'
+              minRows={1}
+            />
+            <Textarea
+              transaltion-key='question_bank_create_category_info'
+              name='Outlined'
+              value={selectedRowData?.description || ""}
+              variant='outlined'
+              minRows={4}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button btnType={BtnType.Primary} onClick={() => setOpenEditDialog(false)}>
+            <ParagraphBody translation-key='common_save' onClick={handleEdit}>
+              {" "}
+              {t("common_save")}
+            </ParagraphBody>
           </Button>
         </DialogActions>
       </Dialog>

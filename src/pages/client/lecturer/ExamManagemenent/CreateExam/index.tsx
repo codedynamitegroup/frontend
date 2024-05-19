@@ -43,7 +43,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -86,6 +86,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }));
 
 interface AppBarProps extends MuiAppBarProps {
+  
   open?: boolean;
 }
 

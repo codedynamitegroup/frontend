@@ -32,7 +32,10 @@ const LecturerCoursesManagement = (props: Props) => {
               <Route path={"courses/:courseId/*"} element={<LecturerCourseDetail />} />
               <Route path={"code-questions"} element={<LecturerCodeQuestionManagement />} />
               <Route path={"code-questions/create"} element={<LecturerCodeQuestionCreation />} />
-              <Route path={"code-questions/edit/:id/*"} element={<LecturerCodeQuestionDetails />} />
+              <Route
+                path={"code-questions/edit/:questionId/*"}
+                element={<LecturerCodeQuestionDetails />}
+              />
               <Route path={"calendar"} element={<LecturerEventCalendar />} />
               <Route
                 path={"question-bank-management"}
@@ -67,7 +70,13 @@ const LecturerCoursesManagement = (props: Props) => {
                   return (
                     <Route
                       path={value.path}
-                      element={<QuestionCreated qtype={value.code} insideCrumb={true} />}
+                      element={
+                        <QuestionCreated
+                          courseName='courseName'
+                          qtype={value.code}
+                          insideCrumb={true}
+                        />
+                      }
                       key={index}
                     />
                   );

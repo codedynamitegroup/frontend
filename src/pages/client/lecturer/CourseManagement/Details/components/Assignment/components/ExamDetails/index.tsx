@@ -8,7 +8,7 @@ import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToHoursAndMinutesString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
@@ -16,18 +16,48 @@ import GradingExamTable from "./components/GradingExamTable";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { ExamService } from "services/courseService/ExamService";
+import { useEffect, useState } from "react";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
 
 const LecturerCourseExamDetails = () => {
+  const { examId } = useParams<{ examId: string }>();
+  const [exam, setExam] = useState<ExamEntity>({
+    id: "",
+    courseId: "",
+    name: "",
+    scores: 0,
+    maxScores: 0,
+    timeOpen: new Date(),
+    timeClose: new Date(),
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    maxAttempts: 0,
+    shuffleAnswers: false,
+    gradeMethod: "",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+  const handleGetExamById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamById(id);
+      setExam(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetExamById(examId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const examOpenTime = dayjs();
-  const examCloseTime = dayjs();
-  const examLimitTimeInMillis = 1000000;
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
 
   return (
     <Box className={classes.assignmentBody}>
@@ -47,7 +77,7 @@ const LecturerCourseExamDetails = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>Bài kiểm tra 1</Heading1>
+      <Heading1>{exam.name}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -62,9 +92,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>
-              {examOpenTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-            </ParagraphBody>
+            <ParagraphBody> {dayjs(exam.timeOpen).format("DD/MM/YYYY HH:mm")} </ParagraphBody>
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
@@ -77,9 +105,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>
-              {examCloseTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-            </ParagraphBody>
+            <ParagraphBody>{dayjs(exam.timeClose).format("DD/MM/YYYY HH:mm")}</ParagraphBody>
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
@@ -89,7 +115,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>{millisToHoursAndMinutesString(examLimitTimeInMillis)}</ParagraphBody>
+            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
           </Grid>
         </Grid>
         <Divider
@@ -99,9 +125,9 @@ const LecturerCourseExamDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: examDescriptionRawHTML }}></div>
+          <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b>Điểm cao nhất</b>
+            Cách thức tính điểm: <b> {exam.gradeMethod} </b>
           </ParagraphBody>
           <CustomFileList
             files={[
@@ -138,8 +164,8 @@ const LecturerCourseExamDetails = () => {
           onClick={() => {
             navigate(
               routes.lecturer.exam.submissions
-                .replace(":assignmentId", "1")
-                .replace(":courseId", "1")
+                .replace(":courseId", exam.courseId)
+                .replace(":examId", exam.id ?? "")
             );
           }}
         >

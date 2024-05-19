@@ -39,6 +39,8 @@ import { PostEssayQuestion } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 
 interface Props {
+  courseId?: string;
+  courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
 }
@@ -287,7 +289,7 @@ const CreateEssayQuestion = (props: Props) => {
                   navigate(routes.lecturer.course.information.replace(":courseId", "1"))
                 }
               >
-                CS202 - Nhập môn lập trình
+                {props.courseName}
               </span>{" "}
               {"> "}
               <span onClick={() => navigate(routes.lecturer.course.assignment)}>

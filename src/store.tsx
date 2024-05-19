@@ -12,6 +12,8 @@ import contestReducer from "reduxes/coreService/Contest/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import examReducer from "reduxes/courseService/exam/index";
+import questionReducer from "reduxes/courseService/question/index";
+import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 
 const store = configureStore({
@@ -29,6 +31,8 @@ const store = configureStore({
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     exam: examReducer,
+    question: questionReducer,
+    questionBankCategory: questionBankCategory,
     difficultyAndSolved: SearchAndDifficultyAndSolved
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
