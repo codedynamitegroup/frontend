@@ -79,13 +79,15 @@ const LecturerCodeQuestionManagement = () => {
     t("common_difficult_level"),
     t("common_edit_date")
   ];
-  const customColumns = ["questionId", "name", "difficulty", "updatedAt"];
+  const customColumns = ["id", "name", "difficulty", "updatedAt"];
   const navigate = useNavigate();
-  const onEdit = (id: number) => {
-    navigate(routes.lecturer.code_question.information.replace(":questionId", id.toString()));
+  const onEdit = (questionId: number) => {
+    navigate(
+      routes.lecturer.code_question.information.replace(":questionId", questionId.toString())
+    );
   };
-  const onDelete = (id: number) => {
-    handleDeleteQuestion(id.toString());
+  const onDelete = (questionId: number) => {
+    handleDeleteQuestion(questionId.toString());
   };
 
   return (

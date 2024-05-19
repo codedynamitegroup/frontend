@@ -1,9 +1,11 @@
 export interface QuestionBankCategoryEntity {
-  questionBankCategoryId: string;
+  id: string;
   name: string;
   description: string;
   createdBy: string;
+  createdByName: string;
   updatedBy: string;
-  createdAt: string;
-  updatedAt: string;
+  updatedByName: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

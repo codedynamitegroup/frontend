@@ -18,9 +18,8 @@ interface Props {}
 
 const LecturerCodeQuestionDetails = memo((props: Props) => {
   const { questionId } = useParams<{ questionId: string }>();
-  console.log("questionId", questionId);
   const [question, setQuestion] = useState<QuestionEntity>({
-    questionId: "",
+    id: "",
     organizationId: "",
     difficulty: "",
     name: "",
@@ -35,7 +34,6 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
   const handleGetQuestionById = async (id: string) => {
     try {
       const response = await QuestionService.getQuestionById(id);
-      console.log(response);
       setQuestion(response);
     } catch (error) {
       console.log(error);

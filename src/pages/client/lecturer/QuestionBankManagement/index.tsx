@@ -30,39 +30,8 @@ import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestionBankCategories } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
-
-const rows = [
-  {
-    id: "abc",
-    category: "Học thuật toán",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc2",
-    category: "Java",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc3",
-    category: "Mảng 1 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc4",
-    category: "Mảng 2 chiều",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  },
-  {
-    id: "abc5",
-    category: "Con trỏ",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" }
-  }
-];
+import dayjs from "dayjs";
+import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -118,11 +87,11 @@ const QuestionBankManagement = () => {
 
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
-    isLoading: false,
-    data: rows,
-    total: 0,
-    page: 1,
-    pageSize: 5
+    isLoading: questionBankCategoriesState.isLoading,
+    data: questionBankCategoriesState.questionBankCategories,
+    total: questionBankCategoriesState.totalItems,
+    page: page,
+    pageSize: rowsPerPage
   });
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const columnsProps: GridColDef[] = [
@@ -142,7 +111,7 @@ const QuestionBankManagement = () => {
       flex: 3,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
-        return <ParagraphBody>{params.row.category}</ParagraphBody>;
+        return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
@@ -151,8 +120,8 @@ const QuestionBankManagement = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
-          <div>{params.row.createdAtBy.time}</div>
+          <ParagraphBody>{params.row.createdByName}</ParagraphBody>
+          <div>{dayjs(params.row.createdAt).format("DD/MM/YYYY HH:mm")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -163,8 +132,8 @@ const QuestionBankManagement = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
-          <div>{params.row.updatedAtBy.time}</div>
+          <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
+          <div>{dayjs(params.row.updatedAt).format("DD/MM/YYYY HH:mm")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -246,7 +215,7 @@ const QuestionBankManagement = () => {
             </Stack>
 
             <SearchBar
-              onSearchClick={() => null}
+              onSearchClick={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
             />
@@ -261,10 +230,16 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              rows={questionBankCategoriesState.questionBankCategories.map((item, index) => ({
+                stt: index + 1,
+                ...item
+              }))}
+              rowCount={questionBankCategoriesState.totalItems}
+              loading={questionBankCategoriesState.isLoading}
+              paginationModel={{
+                page: questionBankCategoriesState.currentPage,
+                pageSize: questionBankCategoriesState.totalPages
+              }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
               }}
@@ -318,10 +293,18 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
+              rows={questionBankCategoriesState.questionBankCategories.map(
+                (item: QuestionBankCategoryEntity, index: number) => ({
+                  stt: index + 1,
+                  ...item
+                })
+              )}
+              rowCount={questionBankCategoriesState.totalItems}
+              loading={questionBankCategoriesState.isLoading}
+              paginationModel={{
+                page: questionBankCategoriesState.currentPage,
+                pageSize: questionBankCategoriesState.totalPages
+              }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
               }}
