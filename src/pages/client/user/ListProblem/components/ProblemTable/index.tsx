@@ -30,7 +30,9 @@ export default function ProblemTable() {
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
 
   const algorithmTag = useAppSelector((state) => state.algorithmnTag);
-
+  const searchAndDifficultyAndSolved = useAppSelector(
+    (state) => state.searchAndDifficultyAndSolved
+  );
   const [codeQuestionList, setCodeQuestionList] = useState<PaginationList<CodeQuestionEntity>>({
     currentPage: 0,
     totalItems: 0,
@@ -45,9 +47,9 @@ export default function ProblemTable() {
     CodeQuestionService.getCodeQuestion(
       {
         tag: algorithmTag.filter.length > 0 ? algorithmTag.filter : null,
-        search: null,
-        difficulty: null,
-        solved: null
+        search: searchAndDifficultyAndSolved.searchKey,
+        difficulty: searchAndDifficultyAndSolved.difficulty,
+        solved: searchAndDifficultyAndSolved.solved
       },
       {
         pageNum: page,
@@ -59,7 +61,7 @@ export default function ProblemTable() {
         setCodeQuestionList(data);
       })
       .catch((reason) => console.log(reason));
-  }, [algorithmTag.filter, page, rowsPerPage]);
+  }, [algorithmTag.filter, page, rowsPerPage, searchAndDifficultyAndSolved]);
 
   const renderStatus = (status: number) => {
     if (status === 1) {
@@ -203,7 +205,7 @@ export default function ProblemTable() {
                     className={rowIndex % 2 === 0 ? classes.row : classes.row1}
                     key={rowIndex}
                     onClick={() =>
-                      navigate(routes.user.problem.detail.description.replace(":problemId", "1"))
+                      navigate(routes.user.problem.detail.description.replace(":problemId", row.id))
                     }
                   >
                     <TableCell align='center'>{row.status}</TableCell>

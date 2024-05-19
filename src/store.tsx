@@ -27,7 +27,7 @@ const store = configureStore({
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     exam: examReducer,
-    difficultyAndSolved: SearchAndDifficultyAndSolved
+    searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

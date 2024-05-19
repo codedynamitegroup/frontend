@@ -28,7 +28,10 @@ export class CodeQuestionService {
             pageNo: pagination.pageNum,
             pageSize: pagination.pageSize,
             tagIds: filter.tag?.map((value) => value.id).join(", "),
-            userId: userId
+            userId: userId,
+            search: filter.search,
+            difficulty: filter.difficulty,
+            solved: filter.solved
           }
         }
       );

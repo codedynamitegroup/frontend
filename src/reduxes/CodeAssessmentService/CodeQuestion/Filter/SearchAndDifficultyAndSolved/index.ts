@@ -14,7 +14,7 @@ const initialState: InitialState = {
 };
 
 export const searchAndDifficultyAndSolvedSlice = createSlice({
-  name: "difficultyAndSolved",
+  name: "searchAndDifficultyAndSolved",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
