@@ -20,7 +20,6 @@ import courseUser from "reduxes/courseService/courseUser";
 import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 
-
 const store = configureStore({
   reducer: {
     selected: selectedReducer,
@@ -40,7 +39,7 @@ const store = configureStore({
     question: questionReducer,
     questionBankCategory: questionBankCategory,
     detailCodeQuestion: detailCodeQuestion,
-    courseUser: courseUser
+    courseUser: courseUser,
     auth: auth,
     loading: loading
   },
