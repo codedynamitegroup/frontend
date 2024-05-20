@@ -48,7 +48,7 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
 
   const { t } = useTranslation();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
-  const [problemStatement, setProblemStatement] = useState<string>("Tính tổnfsdfdsfg 2 số");
+  const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>("");
   const [outputFormat, setOutputFormat] = useState<string>(
     "Là một số nguyên cho biết tổng của a và b"
@@ -106,7 +106,7 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
           <Grid container spacing={1} columns={12}>
             <Grid item xs={3}>
               <TextTitle translation-key='code_management_create_input_format'>
-                {t("code_management_create_input_format")}sfsaf
+                {t("code_management_create_input_format")}
               </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>

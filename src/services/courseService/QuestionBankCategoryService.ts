@@ -67,30 +67,33 @@ export class QuestionBankCategoryService {
       });
     }
   }
-  // static async createQuestionBankCategory({
-  //   name,
-  //   description
-  // }: {
-  //   name: string;
-  //   description: string;
-  // }) {
-  //   try {
-  //     const response = await axios.post(`${courseServiceApiUrl}question/bank/category`, {
-  //       name,
-  //       description
-  //     });
-  //     if (response.status === 201) {
-  //       return Promise.resolve(response.data);
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Failed to create question bank category", error);
-  //     return Promise.reject({
-  //       code: error.response?.data?.code || 503,
-  //       status: error.response?.data?.status || "Service Unavailable",
-  //       message: error.response?.data?.message || error.message
-  //     });
-  //   }
-  // }
+  static async createQuestionBankCategory({
+    name,
+    description,
+    createdBy
+  }: {
+    name: string;
+    description: string;
+    createdBy: string;
+  }) {
+    try {
+      const response = await axios.post(`${courseServiceApiUrl}question/bank/category/create`, {
+        name,
+        description,
+        createdBy
+      });
+      if (response.status === 201) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to create question bank category", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async updateQuestionBankCategory({
     id,
     name,
