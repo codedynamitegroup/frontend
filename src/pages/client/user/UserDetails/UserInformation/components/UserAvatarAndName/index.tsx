@@ -1,15 +1,16 @@
 import { Avatar, Skeleton } from "@mui/material";
 import TextTitle from "components/text/TextTitle";
 import classes from "./styles.module.scss";
+import images from "config/images";
 
 interface UserAvatarAndNameProps {
   loading?: boolean;
   avatarUrl?: string;
+  displayName?: string;
 }
 
 const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
-  const { loading = false } = props;
-
+  const { loading = false, displayName } = props;
   return (
     <>
       {loading ? (
@@ -18,16 +19,14 @@ const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
         <Avatar
           sx={{ width: 150, height: 150 }}
           variant='circular'
-          src={props.avatarUrl || "https://www.w3schools.com/howto/img_avatar.png"}
+          src={props.avatarUrl ? props.avatarUrl : images.avatar.avatarBoyDefault}
         />
       )}
-      <TextTitle className={classes.userFullName}>
-        {loading ? (
-          <Skeleton animation='wave' width={"200px"} height={"30px"} />
-        ) : (
-          "Nguyễn Đinh Quang Khánh"
-        )}
-      </TextTitle>
+      {displayName && (
+        <TextTitle className={classes.userFullName}>
+          {loading ? <Skeleton animation='wave' width={"200px"} height={"30px"} /> : displayName}
+        </TextTitle>
+      )}
     </>
   );
 };

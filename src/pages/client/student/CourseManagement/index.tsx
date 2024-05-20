@@ -112,7 +112,7 @@ const StudentCourses = () => {
                 <CourseCard
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
                   teacherList={course.teachers}
                 />
@@ -128,7 +128,7 @@ const StudentCourses = () => {
                 <CourseList
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
                   teacherList={course.teachers}
                 />
