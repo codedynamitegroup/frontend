@@ -13,13 +13,14 @@ import Heading4 from "components/text/Heading4";
 import { routes } from "routes/routes";
 import { Box } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 
 interface ListProps {
   courseId: string;
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
-  teacherList: Array<User>;
+  teacherList: Array<UserCourseEntity>;
 }
 
 const CourseList = (props: ListProps) => {
@@ -45,13 +46,9 @@ const CourseList = (props: ListProps) => {
           </Grid>
           <Grid item xs className={classes.teacherListGridContainer}>
             {props.teacherList.map((teacher) => (
-              <ListItem key={teacher.id}>
+              <ListItem key={teacher.userId}>
                 <ListItemAvatar className={classes.teacherAvatarContainer}>
-                  <Avatar
-                    className={classes.teacherAvatar}
-                    alt={teacher.firstName}
-                    src={teacher.avatarUrl}
-                  />
+                  <Avatar className={classes.teacherAvatar} alt={teacher.firstName} src={""} />
                 </ListItemAvatar>
                 <ListItemText
                   classes={{

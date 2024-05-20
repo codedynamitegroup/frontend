@@ -28,8 +28,33 @@ export class CodeQuestionService {
             pageNo: pagination.pageNum,
             pageSize: pagination.pageSize,
             tagIds: filter.tag?.map((value) => value.id).join(", "),
-            userId: userId
+            userId: userId,
+            search: filter.search,
+            difficulty: filter.difficulty,
+            solved: filter.solved
           }
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch algorithm tags", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getDetailCodeQuestion(codeQuestionId: UUID, userId: UUID | null) {
+    try {
+      const response = await axios.get(
+        `${codeAssessmentServiceApiUrl}${API.CODE_ASSESSMENT.CODE_QUESTION.GET_BY_ID.replace(":id", codeQuestionId)}`,
+        {
+          params: { userId }
         }
       );
 

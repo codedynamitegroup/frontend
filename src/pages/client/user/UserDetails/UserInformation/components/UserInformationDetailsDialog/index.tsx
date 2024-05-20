@@ -21,6 +21,8 @@ interface UserInformationDetailsDialogProps extends DialogProps {
     gender: string;
     email: string;
     dob: string;
+    is_linked_with_google: boolean;
+    is_linked_with_microsoft: boolean;
   };
   title?: string;
   handleClose: () => void;

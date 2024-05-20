@@ -81,6 +81,7 @@ const LecturerCourses = () => {
         pageNo,
         pageSize
       });
+      console.log(getCourseResponse);
       dispatch(setCourses(getCourseResponse));
     } catch (error) {
       console.error("Failed to fetch courses", error);
@@ -145,9 +146,9 @@ const LecturerCourses = () => {
                 <CourseCard
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
-                  teacherList={tempTeacher2}
+                  teacherList={course.teachers}
                 />
               </Grid>
             ))}
@@ -161,9 +162,9 @@ const LecturerCourses = () => {
                 <CourseList
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
-                  teacherList={tempTeacher2}
+                  teacherList={course.teachers}
                 />
               </Grid>
             ))}

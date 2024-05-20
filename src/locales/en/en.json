@@ -165,6 +165,7 @@
 
   "language_us": "English",
   "language_vn": "Vietnamese",
+  "last_name": "Last name",
 
   "header_explore_course": "Explore",
   "header_contest": "Contest",
@@ -369,6 +370,9 @@
   "exam_management_create_new_question": "Create new question",
   "exam_management_create_from_bank": "Get question from question bank",
   "exam_management_create_from_bank_choose_topic": "Choose topic",
+
+  "email_required": "Email is required",
+  "email_invalid": "Email is invalid",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
@@ -667,6 +671,7 @@
   "file_type_document": "Document",
   "file_type_audio": "Audio",
   "file_type_video": "Video",
+  "first_name": "First name",
   "require_enter_text": "Text is required to enter manually by attendant",
   "optional_enter_text": "Enter text manually by attendant is optional",
   "HTML_editor": "HTML editor",
@@ -681,5 +686,14 @@
   "question_multiple_show_num_correct": "Show number of correct answers",
 
 
-  "type_number": "number"
+  "type_number": "number",
+
+  "password_required": "Password is required",
+  "password_confirm_required": "Confirmed password is required",
+  "password_confirm_not_match": "Confirmed password does not match with password",
+  "password_confirm_min_length": "Length of password confirm must be at least {{lengthNum}} characters",
+  "password_min_length": "Length of password must be at least {{lengthNum}} characters",
+
+  "first_name_required": "First name is required",
+  "last_name_required": "Last name is required"
 }

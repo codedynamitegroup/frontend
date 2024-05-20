@@ -39,17 +39,23 @@ import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/compon
 import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
 import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
 import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
+import PersistLogin from "components/common/PersistLogin";
+import { useSelector } from "react-redux";
+import { selectedLoading } from "reduxes/Loading";
+import LoadingScreen from "components/common/LoadingScreen";
 
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route path={routes.grading_pdf} element={<CustomPdfViewer />} />
 
-      <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
-      <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
-      <Route path={routes.user.homepage.root} element={<UserHomepage />} />
-      <Route path={routes.user.root} element={<UserHomepage />} />
-      <Route path={routes.user.information} element={<UserInformation />} />
+      <Route element={<PersistLogin />}>
+        <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
+        <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
+        <Route path={routes.user.homepage.root} element={<UserHomepage />} />
+        <Route path={routes.user.root} element={<UserHomepage />} />
+        <Route path={routes.user.information} element={<UserInformation />} />
+      </Route>
 
       <Route
         path={routes.user.course_certificate.detail.lesson.detail}
@@ -138,7 +144,13 @@ const router = createHashRouter(
   )
 );
 function App() {
-  return <RouterProvider router={router} />;
+  const isLoading = useSelector(selectedLoading);
+  return (
+    <>
+      {isLoading && <LoadingScreen />}
+      <RouterProvider router={router} />;
+    </>
+  );
 }
 
 export default App;
