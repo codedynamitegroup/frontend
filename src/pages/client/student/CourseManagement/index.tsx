@@ -1,12 +1,9 @@
 import Grid from "@mui/material/Grid";
 import SearchBar from "components/common/search/SearchBar";
 import CourseCard from "./components/CourseCard";
-import { User } from "models/courseService/user";
-
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
@@ -15,10 +12,10 @@ import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import Heading1 from "components/text/Heading1";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { AppDispatch, RootState } from "store";
 import { setCourses } from "reduxes/courseService/course";
 import { CourseService } from "services/courseService/CourseService";
+import { useEffect, useState } from "react";
 
 enum EView {
   cardView = 1,
@@ -26,166 +23,6 @@ enum EView {
 }
 
 const StudentCourses = () => {
-  const tempTeacher: Array<User> = [
-    {
-      id: 1,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn A",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 2,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn B",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 3,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Yên",
-      lastName: "Nguyễn Bình",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    }
-  ];
-  const tempTeacher2: Array<User> = [
-    {
-      id: 1,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn A",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "https://picsum.photos/200",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 2,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn B",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    }
-  ];
-  const tempCourse = [
-    {
-      id: 1,
-      avatarUrl: "https://picsum.photos/200",
-      category: "Chất lượng cao",
-      name: "Kỹ thuật lập trình",
-      teacherList: tempTeacher
-    },
-    {
-      id: 2,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Cấu trúc dữ liệu và giải thuật",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 3,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 4,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 5,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 6,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 7,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 8,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 9,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 10,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    },
-    {
-      id: 11,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher
-    },
-    {
-      id: 12,
-      avatarUrl: "abcd",
-      category: "Chất lượng cao",
-      name: "Lập trình hướng đối tượng",
-      teacherList: tempTeacher2
-    }
-  ];
   const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
 
   const [searchText, setSearchText] = useState("");
@@ -277,7 +114,7 @@ const StudentCourses = () => {
                   courseAvatarUrl={"https://picsum.photos/200"}
                   courseCategory={course.name}
                   courseName={course.name}
-                  teacherList={tempTeacher2}
+                  teacherList={course.teachers}
                 />
               </Grid>
             ))}
@@ -293,7 +130,7 @@ const StudentCourses = () => {
                   courseAvatarUrl={"https://picsum.photos/200"}
                   courseCategory={course.name}
                   courseName={course.name}
-                  teacherList={tempTeacher2}
+                  teacherList={course.teachers}
                 />
               </Grid>
             ))}

@@ -19,6 +19,7 @@ import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
+import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -37,7 +38,7 @@ interface CardProps {
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
-  teacherList: Array<User>;
+  teacherList: Array<UserCourseEntity>;
 }
 
 const CourseCard = (props: CardProps) => {
@@ -66,9 +67,9 @@ const CourseCard = (props: CardProps) => {
       </Link>
       <List>
         {props.teacherList.slice(0, 2).map((teacher) => (
-          <ListItem key={teacher.id}>
+          <ListItem key={teacher.userId}>
             <ListItemAvatar>
-              <Avatar alt={teacher.firstName} src={teacher.avatarUrl} />
+              <Avatar alt={teacher.firstName} src={""} />
             </ListItemAvatar>
             <ListItemText
               primary={
@@ -88,9 +89,9 @@ const CourseCard = (props: CardProps) => {
           title={
             <List>
               {props.teacherList.map((teacher) => (
-                <ListItem key={teacher.id} className={classes.tooltipTeacherList}>
+                <ListItem key={teacher.userId} className={classes.tooltipTeacherList}>
                   <ListItemAvatar>
-                    <Avatar alt={teacher.firstName} src={teacher.avatarUrl} />
+                    <Avatar alt={teacher.firstName} src={""} />
                   </ListItemAvatar>
                   <ListItemText
                     primary={

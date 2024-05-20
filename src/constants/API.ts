@@ -52,7 +52,14 @@ export const API = {
     },
     EXAM: {
       DEFAULT: "/:courseId/exam",
-      GET_BY_ID: "/exam/:id"
+      GET_BY_ID: "/exam/:id",
+      CREATE: "/exam"
+    },
+    QUESTION: {
+      DEFAULT: "/question",
+      GET_BY_ID: "/question/:id",
+      UPDATE_BY_ID: "/question/:id",
+      DELETE_BY_ID: "/question/:id"
     },
     QUESTION_BANK_CATEGORY: {
       DEFAULT: "/question/bank/category",
@@ -60,7 +67,7 @@ export const API = {
       UPDATE_BY_ID: "/question/bank/category/:id",
       DELETE_BY_ID: "/question/bank/category/:id",
       CREATE: "/question/bank/category/create"
-    },
+    }
   },
   CODE_ASSESSMENT: {
     TAG: {
