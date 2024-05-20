@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
+import ParagraphBody from "components/text/ParagraphBody";
 
 const UserInformation = () => {
   const { t } = useTranslation();
@@ -30,8 +31,10 @@ const UserInformation = () => {
       name: user?.firstName + " " + user?.lastName,
       gender: "0",
       email: user?.email,
-      dob: "30/06/2002",
-      avatar_url: "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
+      dob: "01/01/2000",
+      avatar_url: user?.avatarUrl,
+      is_linked_with_google: user?.isLinkedWithGoogle,
+      is_linked_with_microsoft: user?.isLinkedWithMicrosoft
     }
   });
 
@@ -70,6 +73,7 @@ const UserInformation = () => {
           direction='row'
           justifyContent={"center"}
           gap={3}
+          paddingTop={3}
           sx={{
             height: "100%",
             marginTop: `${headerHeight}px`
@@ -112,7 +116,7 @@ const UserInformation = () => {
                     <TextTitle translation-key='common_fullname'>{t("common_fullname")}</TextTitle>
                   </Grid>
                   <Grid item xs={12}>
-                    {data.userInfo.name}
+                    <ParagraphBody>{data.userInfo.name}</ParagraphBody>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1} columns={12}>
@@ -135,7 +139,7 @@ const UserInformation = () => {
                     <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
                   </Grid>
                   <Grid item xs={12}>
-                    {data.userInfo.dob}
+                    <ParagraphBody>{data.userInfo.dob}</ParagraphBody>
                   </Grid>
                 </Grid>
               </Box>

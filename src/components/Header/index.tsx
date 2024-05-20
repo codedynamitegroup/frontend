@@ -30,7 +30,6 @@ import HeaderNotification from "./HeaderNotification";
 import { logOut, selectCurrentUser } from "reduxes/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { User } from "models/authService/entity/user";
-import { useMsal } from "@azure/msal-react";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 
 interface ILinkMenu {
@@ -271,7 +270,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 >
                   <img
                     className={classes.imageProfile}
-                    src={"https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"}
+                    src={
+                      loggedUser.avatarUrl ? loggedUser.avatarUrl : images.avatar.avatarBoyDefault
+                    }
                     alt='avatar'
                   ></img>
                   <ParagraphSmall fontWeight={600} colorname='--white'>

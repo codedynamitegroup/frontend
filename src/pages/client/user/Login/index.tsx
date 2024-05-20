@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "components/text/ErrorMessage";
 import { LoginRequest } from "models/authService/entity/user";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface IFormData {
   email: string;
@@ -38,19 +39,21 @@ export default function Login() {
   const isLoggedIn: Boolean = useSelector(selectLoginStatus);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
 
   const schema = useMemo(() => {
     return yup.object().shape({
-      email: yup.string().required("Vui lòng điền email").email("Email không hợp lệ"),
+      email: yup.string().required(t("email_required")).email(t("email_invalid")),
       password: yup
         .string()
-        .required("Vui lòng điền mật khẩu")
-        .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+        .required(t("password_required"))
+        .min(6, t("password_min_length", { lengthNum: 6 }))
     });
-  }, []);
+  }, [t]);
 
   const {
-    control,
     register,
     handleSubmit,
     formState: { errors }
@@ -141,7 +144,7 @@ export default function Login() {
     flow: "implicit"
   });
 
-  const handleLogin = (data: any) => {
+  const handleLogin = (data: IFormData) => {
     const loginData: LoginRequest = {
       email: data.email,
       password: data.password
@@ -154,6 +157,9 @@ export default function Login() {
         navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
+        setOpenSnackbarAlert(true);
+        setAlertContent("Đăng nhập thất bại! Hãy thử lại sau.");
+        setAlertType(AlertType.Error);
         console.error("Failed to login", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -250,6 +256,12 @@ export default function Login() {
                 </Box>
               </form>
             </Box>
+            <SnackbarAlert
+              open={openSnackbarAlert}
+              setOpen={setOpenSnackbarAlert}
+              type={alertType}
+              content={alertContent}
+            />
           </Grid>
         </Grid>
       </Container>

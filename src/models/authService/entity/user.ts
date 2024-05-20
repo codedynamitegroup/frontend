@@ -9,9 +9,18 @@ export interface User {
   avatarUrl: string;
   address: string;
   dob: Date;
+  isLinkedWithGoogle: boolean;
+  isLinkedWithMicrosoft: boolean;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface RegisteredRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
 }
