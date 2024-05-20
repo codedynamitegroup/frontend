@@ -57,6 +57,7 @@ interface FormData {
   single: number;
   shuffleAnswer: boolean;
   showInstructions: boolean;
+  showNumCorrect?: boolean;
 }
 
 const CreateMultichoiceQuestion = (props: Props) => {
@@ -104,6 +105,12 @@ const CreateMultichoiceQuestion = (props: Props) => {
       questionDescription: yup.string().required(t("question_description_required")),
       defaultScore: yup
         .number()
+        .typeError(
+          t("invalid_type", {
+            name: t("question_management_default_score"),
+            type: t("type_number")
+          })
+        )
         .min(0, t("question_default_score_invalid"))
         .required(t("question_default_score_required")),
       generalDescription: yup.string(),
@@ -123,7 +130,8 @@ const CreateMultichoiceQuestion = (props: Props) => {
       numbering: yup.string().required(t("question_numbering_required")),
       single: yup.number().required(t("question_one_or_many_required")),
       shuffleAnswer: yup.boolean().required(t("question_shuffle_answer_required")),
-      showInstructions: yup.boolean().required(t("question_show_instructions_required"))
+      showInstructions: yup.boolean().required(t("question_show_instructions_required")),
+      showNumCorrect: yup.boolean()
     });
   }, [t]);
 
@@ -160,7 +168,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
       correctFeedback: formSubmittedData.correctFeedback,
       incorrectFeedback: formSubmittedData.incorrectFeedback,
       answerNumbering: formSubmittedData.numbering,
-      showNumCorrect: 1
+      showNumCorrect: Number(formSubmittedData.showNumCorrect)
     };
     QuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
@@ -447,6 +455,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
                 </TextTitle>
               </Grid>
               <Checkbox {...register("showInstructions")} />
+            </Grid>
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={3}>
+                <TextTitle translation-key='question_multiple_show_num_correct'>
+                  {t("question_multiple_show_num_correct")}
+                </TextTitle>
+              </Grid>
+              <Checkbox {...register("showNumCorrect")} />
             </Grid>
 
             <div>

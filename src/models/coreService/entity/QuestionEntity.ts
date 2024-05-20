@@ -81,13 +81,13 @@ export interface PostMultipleChoiceQuestion {
   defaultMark: number;
   qType: string;
 
-  answers: PostAnswer[];
+  answers?: PostAnswer[];
   single: boolean;
-  shuffleAnswers: boolean;
+  shuffleAnswers?: boolean;
   correctFeedback?: string;
   partiallyCorrectFeedback?: string;
   incorrectFeedback?: string;
-  answerNumbering: string;
+  answerNumbering?: string;
   showNumCorrect?: number;
   showStandardInstructions?: string;
 }

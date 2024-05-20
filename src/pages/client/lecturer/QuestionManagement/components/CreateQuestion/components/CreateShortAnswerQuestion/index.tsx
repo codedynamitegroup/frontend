@@ -94,6 +94,12 @@ const CreateShortAnswerQuestion = (props: Props) => {
       questionDescription: yup.string().required(t("question_description_required")),
       defaultScore: yup
         .number()
+        .typeError(
+          t("invalid_type", {
+            name: t("question_management_default_score"),
+            type: t("type_number")
+          })
+        )
         .required(t("question_default_score_required"))
         .min(0, t("question_default_score_invalid")),
       generalDescription: yup.string(),

@@ -675,6 +675,7 @@
   "question_essay_grader_info": "Thông tin người chấm điểm",
   "question_essay_enter_grader_info": "Nhập thông tin người chấm điểm",
   "file_types_required": "Loại tệp đính kèm là bắt buộc",
+  "question_multiple_show_num_correct": "Hiển thị số lượng câu trả lời đúng",
 
   "type_number": "số"
 }
