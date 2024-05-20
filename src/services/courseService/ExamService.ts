@@ -17,15 +17,15 @@ export class ExamService {
     // }
   ) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}${courseId}/exam`);
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.EXAM.DEFAULT.replace(":courseId", courseId)}`
+      );
       // params: {
       //   search,
       //   pageNo,
       //   pageSize
       // }
       // });
-
-      console.log("response", response.data);
 
       if (response.status === 200) {
         return Promise.resolve(response.data);
@@ -39,10 +39,12 @@ export class ExamService {
       });
     }
   }
-  
+
   static async getExamById(examId: string) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}exam/${examId}`);
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.EXAM.GET_BY_ID.replace(":id", examId)}`
+      );
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }

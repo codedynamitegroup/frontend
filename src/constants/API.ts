@@ -1,3 +1,5 @@
+import { C } from "@fullcalendar/core/internal-common";
+
 export const API = {
   CORE: {
     CERTIFICATE_COURSE: {
@@ -43,6 +45,22 @@ export const API = {
         GET_ALL: "/core/questions/essay-question"
       }
     }
+  },
+  COURSE: {
+    COURSE: {
+      DEFAULT: "/course"
+    },
+    EXAM: {
+      DEFAULT: "/:courseId/exam",
+      GET_BY_ID: "/exam/:id"
+    },
+    QUESTION_BANK_CATEGORY: {
+      DEFAULT: "/question/bank/category",
+      GET_BY_ID: "/question/bank/category/:id",
+      UPDATE_BY_ID: "/question/bank/category/:id",
+      DELETE_BY_ID: "/question/bank/category/:id",
+      CREATE: "/question/bank/category/create"
+    },
   },
   CODE_ASSESSMENT: {
     TAG: {
