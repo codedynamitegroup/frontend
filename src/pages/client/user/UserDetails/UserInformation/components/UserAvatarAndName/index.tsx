@@ -5,11 +5,11 @@ import classes from "./styles.module.scss";
 interface UserAvatarAndNameProps {
   loading?: boolean;
   avatarUrl?: string;
+  displayName?: string;
 }
 
 const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
-  const { loading = false } = props;
-
+  const { loading = false, displayName } = props;
   return (
     <>
       {loading ? (
@@ -21,13 +21,11 @@ const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
           src={props.avatarUrl || "https://www.w3schools.com/howto/img_avatar.png"}
         />
       )}
-      <TextTitle className={classes.userFullName}>
-        {loading ? (
-          <Skeleton animation='wave' width={"200px"} height={"30px"} />
-        ) : (
-          "Nguyễn Đinh Quang Khánh"
-        )}
-      </TextTitle>
+      {displayName && (
+        <TextTitle className={classes.userFullName}>
+          {loading ? <Skeleton animation='wave' width={"200px"} height={"30px"} /> : displayName}
+        </TextTitle>
+      )}
     </>
   );
 };

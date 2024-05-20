@@ -13,23 +13,41 @@ import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "reduxes/Auth";
+import { User } from "models/authService/entity/user";
 
 const UserInformation = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
+  const user: User = useSelector(selectCurrentUser);
+
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
     isUserPasswordChangeModalOpen: false,
     userInfo: {
-      id: "0",
-      name: "Nguyễn Đinh Quang Khánh",
+      id: user?.userId,
+      name: user?.firstName + " " + user?.lastName,
       gender: "0",
-      email: "khanhndq2002@gmail.com",
+      email: user?.email,
       dob: "30/06/2002",
-      avatar_url:
-        "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+      avatar_url: "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
     }
   });
+
+  useEffect(() => {
+    if (user) {
+      setData({
+        ...data,
+        userInfo: {
+          ...data.userInfo,
+          id: user.userId,
+          name: user.firstName + " " + user.lastName,
+          email: user.email
+        }
+      });
+    }
+  }, [user]);
 
   // fake loading
   useEffect(() => {
@@ -68,7 +86,11 @@ const UserInformation = () => {
                 >
                   {t("user_detail_account_management")}
                 </Heading1>
-                <UserAvatarAndName loading={isLoading} avatarUrl={data.userInfo.avatar_url} />
+                <UserAvatarAndName
+                  displayName={data.userInfo.name}
+                  loading={isLoading}
+                  avatarUrl={data.userInfo.avatar_url}
+                />
                 <Button
                   btnType={BtnType.Outlined}
                   fullWidth
