@@ -27,6 +27,10 @@ import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import HeaderNotification from "./HeaderNotification";
+import { logOut, selectCurrentUser } from "reduxes/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import { User } from "models/authService/entity/user";
+import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 
 interface ILinkMenu {
   name: string;
@@ -111,6 +115,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [listPage, setListPage] = React.useState<ILinkMenu[]>(pages);
+  const dispatch = useDispatch();
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -138,10 +144,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     setAnchorEl(null);
   };
 
-  const [state, setState] = React.useState(() => {
-    const user = localStorage.getItem("user");
-    return !!user; // Convert user to boolean value
-  });
+  const loggedUser: User = useSelector(selectCurrentUser);
 
   const handleClickPage = (page: any) => {
     localStorage.setItem("page", page.name);
@@ -155,35 +158,32 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     }
   };
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    setState(!!user);
-  }, [localStorage.getItem("user")]);
-
-  useEffect(() => {
-    const page = localStorage.getItem("page");
-    const listPageUpdate = listPage.map((item) => {
-      if (item.name === page) {
-        item.isActice = true;
-      } else {
-        item.isActice = false;
-      }
-      return item;
-    });
-    setListPage(listPageUpdate);
-  }, [localStorage.getItem("page")]);
+  // useEffect(() => {
+  //   const page = localStorage.getItem("page");
+  //   const listPageUpdate = listPage.map((item) => {
+  //     if (item.name === page) {
+  //       item.isActice = true;
+  //     } else {
+  //       item.isActice = false;
+  //     }
+  //     return item;
+  //   });
+  //   setListPage(listPageUpdate);
+  // }, [localStorage.getItem("page")]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    localStorage.removeItem("page");
-    setState(false);
+    localStorage.removeItem("accessToken");
+    const provider = localStorage.getItem("provider");
+    if (provider === ESocialLoginProvider.MICROSOFT) {
+      sessionStorage.clear();
+    }
+    localStorage.removeItem("provider");
+    dispatch(logOut());
     navigate(routes.user.homepage.root);
   };
 
   const handleLogo = () => {
-    localStorage.removeItem("page");
-    if (state === true) {
+    if (loggedUser) {
       navigate(routes.user.dashboard.root);
     } else {
       navigate(routes.user.homepage.root);
@@ -234,7 +234,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           <Box>
             <LanguageSelector />
           </Box>
-          {state === false ? (
+          {!loggedUser ? (
             <Box className={classes.navbarAuthItem}>
               {auth.map((page, index) => (
                 <Button
@@ -271,12 +271,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   <img
                     className={classes.imageProfile}
                     src={
-                      "https://icdn.dantri.com.vn/thumb_w/680/2023/06/25/34855533210416990734836827386162909364813774n-edited-1687683216865.jpeg"
+                      loggedUser.avatarUrl ? loggedUser.avatarUrl : images.avatar.avatarBoyDefault
                     }
                     alt='avatar'
                   ></img>
                   <ParagraphSmall fontWeight={600} colorname='--white'>
-                    HieuThuHai
+                    {loggedUser.firstName + " " + loggedUser.lastName}
                   </ParagraphSmall>
                 </Button>
               </Grid>

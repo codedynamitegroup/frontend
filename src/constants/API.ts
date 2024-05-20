@@ -81,6 +81,7 @@ export const API = {
   AUTH: {
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
-    REGISTER: "/auth/users/register"
+    REGISTER: "/auth/users/register",
+    GET_USER_BY_EMAIL: "/auth/users/get-by-email/:email"
   }
 };
