@@ -48,25 +48,26 @@ export const API = {
   },
   COURSE: {
     COURSE: {
-      DEFAULT: "/course/course"
+      DEFAULT: "/course/course",
+      GET_USER_BY_COURSE_ID: "/course/course-user/:id/user"
     },
     EXAM: {
-      DEFAULT: "/:courseId/exam",
-      GET_BY_ID: "/exam/:id",
-      CREATE: "/exam"
+      DEFAULT: "/course/:courseId/exam",
+      GET_BY_ID: "/course/exam/:id",
+      CREATE: "/course/exam"
     },
     QUESTION: {
-      DEFAULT: "/question",
-      GET_BY_ID: "/question/:id",
-      UPDATE_BY_ID: "/question/:id",
-      DELETE_BY_ID: "/question/:id"
+      DEFAULT: "/course/question",
+      GET_BY_ID: "/course/question/:id",
+      UPDATE_BY_ID: "/course/question/:id",
+      DELETE_BY_ID: "/course/question/:id"
     },
     QUESTION_BANK_CATEGORY: {
-      DEFAULT: "/question/bank/category",
-      GET_BY_ID: "/question/bank/category/:id",
-      UPDATE_BY_ID: "/question/bank/category/:id",
-      DELETE_BY_ID: "/question/bank/category/:id",
-      CREATE: "/question/bank/category/create"
+      DEFAULT: "/course/question/bank/category",
+      GET_BY_ID: "/course/question/bank/category/:id",
+      UPDATE_BY_ID: "/course/question/bank/category/:id",
+      DELETE_BY_ID: "/course/question/bank/category/:id",
+      CREATE: "/course/question/bank/category/create"
     }
   },
   CODE_ASSESSMENT: {

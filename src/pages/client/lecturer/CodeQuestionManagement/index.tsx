@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { QuestionService } from "services/courseService/QuestionService";
 import { setQuestions } from "reduxes/courseService/question";
+import dayjs from "dayjs";
 
 const LecturerCodeQuestionManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -79,7 +80,7 @@ const LecturerCodeQuestionManagement = () => {
     t("common_difficult_level"),
     t("common_edit_date")
   ];
-  const customColumns = ["id", "name", "difficulty", "updatedAt"];
+  const customColumns = ["stt", "name", "difficultyText", "updatedAtText"];
   const navigate = useNavigate();
   const onEdit = (questionId: number) => {
     navigate(
@@ -108,7 +109,13 @@ const LecturerCodeQuestionManagement = () => {
         />
       </Box>
       <TableTemplate
-        data={questionState.questions}
+        data={questionState.questions.map((item, index) => ({
+          stt: index + 1,
+          difficultyText:
+            item.difficulty === "EASY" ? "Dễ" : item.difficulty === "MEDIUM" ? "Trung bình" : "Khó",
+          updatedAtText: dayjs(item.updatedAt).format("hh:mm DD/MM/YYYY"),
+          ...item
+        }))}
         customColumns={customColumns}
         customHeading={customHeading}
         isActionColumn={true}
