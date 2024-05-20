@@ -1,42 +1,22 @@
-import {
-  Button,
-  Box,
-  Checkbox,
-  Collapse,
-  Container,
-  Divider,
-  Grid,
-  ListItemButton,
-  MenuItem,
-  Select,
-  Stack
-} from "@mui/material";
+import { Button, Box, Checkbox, Container, Grid, MenuItem, Select } from "@mui/material";
 import Header from "components/Header";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import {
-  MultichocieNumbering,
-  PostMultipleChoiceQuestion
-} from "models/coreService/entity/QuestionEntity";
+import { PostMultipleChoiceQuestion } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ErrorMessage from "components/text/ErrorMessage";
 
@@ -61,7 +41,6 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
-  const [answerOpen, setAnswerOpen] = useState(true);
   const vi_name = useMemo(
     () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
     [props.qtype]
@@ -146,7 +125,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
       answers: undefined,
 
       single: true,
-      shuffleAnswers: undefined,
+      shuffleAnswers: false,
       showStandardInstructions: formSubmittedData.showInstructions.toString(),
       correctFeedback: formSubmittedData.correctFeedback,
       incorrectFeedback: formSubmittedData.incorrectFeedback,
