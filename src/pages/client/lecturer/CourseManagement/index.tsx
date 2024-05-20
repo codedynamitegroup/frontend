@@ -25,36 +25,36 @@ enum EView {
 }
 
 const LecturerCourses = () => {
-  const tempTeacher2: Array<User> = [
-    {
-      id: 1,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn A",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "https://picsum.photos/200",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    },
-    {
-      id: 2,
-      email: "abc",
-      dob: new Date(2000, 0, 1),
-      firstName: "Văn B",
-      lastName: "Nguyễn",
-      phone: "123456789",
-      address: "217 nguyen van cu",
-      avatarUrl: "avc",
-      lastLogin: new Date(2000, 0, 1),
-      isDeleted: false,
-      createdAt: new Date(2000, 0, 1),
-      updatedAt: new Date(2000, 0, 1)
-    }
-  ];
+  // const tempTeacher2: Array<User> = [
+  //   {
+  //     id: 1,
+  //     email: "abc",
+  //     dob: new Date(2000, 0, 1),
+  //     firstName: "Văn A",
+  //     lastName: "Nguyễn",
+  //     phone: "123456789",
+  //     address: "217 nguyen van cu",
+  //     avatarUrl: "https://picsum.photos/200",
+  //     lastLogin: new Date(2000, 0, 1),
+  //     isDeleted: false,
+  //     createdAt: new Date(2000, 0, 1),
+  //     updatedAt: new Date(2000, 0, 1)
+  //   },
+  //   {
+  //     id: 2,
+  //     email: "abc",
+  //     dob: new Date(2000, 0, 1),
+  //     firstName: "Văn B",
+  //     lastName: "Nguyễn",
+  //     phone: "123456789",
+  //     address: "217 nguyen van cu",
+  //     avatarUrl: "avc",
+  //     lastLogin: new Date(2000, 0, 1),
+  //     isDeleted: false,
+  //     createdAt: new Date(2000, 0, 1),
+  //     updatedAt: new Date(2000, 0, 1)
+  //   }
+  // ];
 
   const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
 
@@ -146,7 +146,7 @@ const LecturerCourses = () => {
                 <CourseCard
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
                   teacherList={course.teachers}
                 />
@@ -162,7 +162,7 @@ const LecturerCourses = () => {
                 <CourseList
                   courseId={course.id}
                   courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.name}
+                  courseCategory={course.courseType.name}
                   courseName={course.name}
                   teacherList={course.teachers}
                 />

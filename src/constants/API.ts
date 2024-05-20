@@ -48,7 +48,7 @@ export const API = {
   },
   COURSE: {
     COURSE: {
-      DEFAULT: "/course"
+      DEFAULT: "/course/course"
     },
     EXAM: {
       DEFAULT: "/:courseId/exam",
@@ -60,7 +60,7 @@ export const API = {
       UPDATE_BY_ID: "/question/bank/category/:id",
       DELETE_BY_ID: "/question/bank/category/:id",
       CREATE: "/question/bank/category/create"
-    },
+    }
   },
   CODE_ASSESSMENT: {
     TAG: {
