@@ -65,7 +65,7 @@ const AssignmentResource = ({
         >
           <ParagraphBody>{resourceTitle}</ParagraphBody>
           <ParagraphBody translation-key='course_assignment_deadline'>
-            {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("DD/MM/YYYY")}
+            {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("hh:mm DD/MM/YYYY")}
           </ParagraphBody>
         </AccordionSummary>
         <AccordionDetails>

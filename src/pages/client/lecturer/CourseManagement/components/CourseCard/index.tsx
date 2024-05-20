@@ -19,7 +19,7 @@ import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import course from "reduxes/courseService/course";
+import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -38,7 +38,7 @@ interface CardProps {
   courseAvatarUrl: string;
   courseCategory: string;
   courseName: string;
-  teacherList: Array<User>;
+  teacherList: Array<UserCourseEntity>;
 }
 
 const CourseCard = (props: CardProps) => {
@@ -67,14 +67,14 @@ const CourseCard = (props: CardProps) => {
       </Link>
       <List>
         {props.teacherList.slice(0, 2).map((teacher) => (
-          <ListItem key={teacher.id}>
+          <ListItem key={teacher.userId}>
             <ListItemAvatar>
-              <Avatar alt={teacher.firstName} src={teacher.avatarUrl} />
+              <Avatar alt={teacher.firstName} src={""} />
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Link component={RouterLink} to='#' underline='hover'>
-                  {teacher.lastName} {teacher.firstName}
+                  {teacher.firstName + " " + teacher.lastName}
                 </Link>
               }
               secondary='Giảng viên'
@@ -89,14 +89,14 @@ const CourseCard = (props: CardProps) => {
           title={
             <List>
               {props.teacherList.map((teacher) => (
-                <ListItem key={teacher.id} className={classes.tooltipTeacherList}>
+                <ListItem key={teacher.userId} className={classes.tooltipTeacherList}>
                   <ListItemAvatar>
-                    <Avatar alt={teacher.firstName} src={teacher.avatarUrl} />
+                    <Avatar alt={teacher.firstName} src={""} />
                   </ListItemAvatar>
                   <ListItemText
                     primary={
                       <Link component={RouterLink} to='#' underline='hover'>
-                        {teacher.lastName} {teacher.firstName}
+                        {teacher.firstName + " " + teacher.lastName}
                       </Link>
                     }
                     secondary='Giảng viên'
