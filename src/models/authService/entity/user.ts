@@ -10,3 +10,8 @@ export interface User {
   address: string;
   dob: Date;
 }
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}

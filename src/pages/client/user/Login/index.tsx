@@ -9,7 +9,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
 import { UserService } from "services/authService/UserService";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
@@ -20,15 +20,43 @@ import { useMsal } from "@azure/msal-react";
 import { loginStatus, selectLoginStatus } from "reduxes/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "reduxes/Loading";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorMessage from "components/text/ErrorMessage";
+import { LoginRequest } from "models/authService/entity/user";
+
+interface IFormData {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
   const microsoftClientId = process.env.REACT_APP_MICROSOFT_CLIENT_ID || "";
   const { instance } = useMsal();
   const isLoggedIn: Boolean = useSelector(selectLoginStatus);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      email: yup.string().required("Vui lòng điền email").email("Email không hợp lệ"),
+      password: yup
+        .string()
+        .required("Vui lòng điền mật khẩu")
+        .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+    });
+  }, []);
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<IFormData>({
+    resolver: yupResolver(schema)
+  });
 
   const microsoftLoggedHandler = (error: any, result: any) => {
     signInWithMicrosoft();
@@ -113,6 +141,30 @@ export default function Login() {
     flow: "implicit"
   });
 
+  const handleLogin = (data: any) => {
+    const loginData: LoginRequest = {
+      email: data.email,
+      password: data.password
+    };
+    dispatch(setLoading(true));
+    UserService.login(loginData)
+      .then(async (response) => {
+        localStorage.setItem("accessToken", response.accessToken);
+        dispatch(loginStatus(true));
+        navigate(routes.user.dashboard.root);
+      })
+      .catch((error: any) => {
+        console.error("Failed to login", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+
   return (
     <Box className={classes.container}>
       <Container>
@@ -129,25 +181,25 @@ export default function Login() {
               >
                 {t("header_login_button")}
               </Typography>
-              <form className={classes.formControl}>
+              <form className={classes.formControl} onSubmit={handleSubmit(handleLogin)}>
                 <TextField
                   label='Email'
                   margin='normal'
-                  name='email'
-                  required
                   variant='outlined'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  error={Boolean(errors?.email)}
+                  {...register("email")}
                 />
+                <ErrorMessage>{errors?.email?.message}</ErrorMessage>
                 <TextField
                   label={t("common_password")}
                   margin='normal'
-                  name='password'
-                  required
                   type='password'
                   variant='outlined'
                   translation-key='common_password'
+                  {...register("password")}
+                  error={Boolean(errors?.password)}
                 />
+                <ErrorMessage>{errors?.password?.message}</ErrorMessage>
                 <Button
                   className={classes.submit}
                   color='primary'
