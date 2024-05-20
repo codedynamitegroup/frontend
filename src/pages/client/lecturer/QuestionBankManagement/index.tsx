@@ -63,11 +63,23 @@ const QuestionBankManagement = () => {
 
   const handleEdit = async () => {
     try {
-      console.log(dataEdit?.id, dataEdit?.name, dataEdit?.description);
       await QuestionBankCategoryService.updateQuestionBankCategory({
         id: selectedRowData?.id || "",
         name: dataEdit?.name || "",
         description: dataEdit?.description || ""
+      });
+      handleGetQuestionBankCategories({ search: searchText });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCreate = async () => {
+    try {
+      await QuestionBankCategoryService.createQuestionBankCategory({
+        name: dataCreate?.name || "",
+        description: dataCreate?.description || "",
+        createdBy: "3423de78-27b6-445e-abe6-0a99a964e077"
       });
       handleGetQuestionBankCategories({ search: searchText });
     } catch (error) {
@@ -111,12 +123,15 @@ const QuestionBankManagement = () => {
     isLoading: questionBankCategoriesState.isLoading,
     data: questionBankCategoriesState.questionBankCategories,
     total: questionBankCategoriesState.totalItems,
-    page: page,
+    page: questionBankCategoriesState.currentPage,
     pageSize: rowsPerPage
   });
 
   const [selectedRowData, setSelectedRowData] = useState<QuestionBankCategoryEntity>();
   const [dataEdit, setDataEdit] = useState<QuestionBankCategoryEntity>(
+    {} as QuestionBankCategoryEntity
+  );
+  const [dataCreate, setDataCreate] = useState<QuestionBankCategoryEntity>(
     {} as QuestionBankCategoryEntity
   );
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
@@ -186,6 +201,7 @@ const QuestionBankManagement = () => {
               );
               if (selectedCategory) {
                 setSelectedRowData(selectedCategory);
+                setDataEdit(selectedCategory);
                 setOpenEditDialog(true);
               }
             }}
@@ -225,15 +241,17 @@ const QuestionBankManagement = () => {
   }) as Array<String>;
   const columns = addHeaderNameByLanguage(columnsProps, headerName);
   useEffect(() => {
-    //fetch data
+    handleGetQuestionBankCategories({
+      search: searchText,
+      pageNo: pageState.page,
+      pageSize: pageState.pageSize
+    });
   }, [pageState.page, pageState.pageSize]);
   const navigate = useNavigate();
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     navigate(`${params.row.id}`);
   };
-
-  const [categoryName, setCategoryName] = useState();
 
   return (
     <div>
@@ -398,6 +416,9 @@ const QuestionBankManagement = () => {
               translation-key='question_bank_create_category_name'
               name='Outlined'
               placeholder={t("question_bank_create_category_name")}
+              onChange={(e) => {
+                setDataCreate({ ...dataCreate, name: e.target.value });
+              }}
               variant='outlined'
               minRows={1}
             />
@@ -405,6 +426,9 @@ const QuestionBankManagement = () => {
               transaltion-key='question_bank_create_category_info'
               name='Outlined'
               placeholder={t("question_bank_create_category_info")}
+              onChange={(e) => {
+                setDataCreate({ ...dataCreate, description: e.target.value });
+              }}
               variant='outlined'
               minRows={4}
             />
@@ -412,7 +436,10 @@ const QuestionBankManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
-            <ParagraphBody translation-key='common_save'> {t("common_save")}</ParagraphBody>
+            <ParagraphBody translation-key='common_save' onClick={handleCreate}>
+              {" "}
+              {t("common_save")}
+            </ParagraphBody>
           </Button>
         </DialogActions>
       </Dialog>
@@ -459,7 +486,10 @@ const QuestionBankManagement = () => {
             <Textarea
               transaltion-key='question_bank_create_category_info'
               name='Outlined'
-              value={selectedRowData?.description || ""}
+              defaultValue={selectedRowData?.description || ""}
+              onChange={(e) => {
+                setDataEdit({ ...dataEdit, description: e.target.value });
+              }}
               variant='outlined'
               minRows={4}
             />

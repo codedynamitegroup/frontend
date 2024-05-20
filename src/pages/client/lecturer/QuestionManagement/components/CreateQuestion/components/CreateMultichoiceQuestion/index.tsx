@@ -34,6 +34,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
+import {
+  MultichocieNumbering,
+  PostMultipleChoiceQuestion
+} from "models/coreService/entity/QuestionEntity";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface Props {
   qtype: String;
@@ -48,10 +53,11 @@ interface FormData {
   answers: { answer: string; feedback: string; fraction: number }[];
   correctFeedback?: string;
   incorrectFeedback?: string;
-  numbering: number;
+  numbering: string;
   single: number;
   shuffleAnswer: boolean;
   showInstructions: boolean;
+  showNumCorrect?: boolean;
 }
 
 const CreateMultichoiceQuestion = (props: Props) => {
@@ -99,6 +105,12 @@ const CreateMultichoiceQuestion = (props: Props) => {
       questionDescription: yup.string().required(t("question_description_required")),
       defaultScore: yup
         .number()
+        .typeError(
+          t("invalid_type", {
+            name: t("question_management_default_score"),
+            type: t("type_number")
+          })
+        )
         .min(0, t("question_default_score_invalid"))
         .required(t("question_default_score_required")),
       generalDescription: yup.string(),
@@ -115,10 +127,11 @@ const CreateMultichoiceQuestion = (props: Props) => {
         ),
       correctFeedback: yup.string(),
       incorrectFeedback: yup.string(),
-      numbering: yup.number().required(t("question_numbering_required")),
+      numbering: yup.string().required(t("question_numbering_required")),
       single: yup.number().required(t("question_one_or_many_required")),
       shuffleAnswer: yup.boolean().required(t("question_shuffle_answer_required")),
-      showInstructions: yup.boolean().required(t("question_show_instructions_required"))
+      showInstructions: yup.boolean().required(t("question_show_instructions_required")),
+      showNumCorrect: yup.boolean()
     });
   }, [t]);
 
@@ -135,7 +148,35 @@ const CreateMultichoiceQuestion = (props: Props) => {
     name: "answers"
   });
   const submitHandler = async (data: any) => {
-    console.log(data);
+    const formSubmittedData: FormData = { ...data };
+    const newQuestion: PostMultipleChoiceQuestion = {
+      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      difficulty: "EASY",
+      name: formSubmittedData.questionName,
+      questionText: formSubmittedData.questionDescription,
+      generalFeedback: formSubmittedData?.generalDescription,
+      defaultMark: formSubmittedData?.defaultScore,
+      qType: "MULTIPLE_CHOICE",
+
+      answers: formSubmittedData.answers,
+
+      single: formSubmittedData.single === 1,
+      shuffleAnswers: formSubmittedData.shuffleAnswer,
+      showStandardInstructions: formSubmittedData.showInstructions.toString(),
+      correctFeedback: formSubmittedData.correctFeedback,
+      incorrectFeedback: formSubmittedData.incorrectFeedback,
+      answerNumbering: formSubmittedData.numbering,
+      showNumCorrect: Number(formSubmittedData.showNumCorrect)
+    };
+    QuestionService.createMultichoiceQuestion(newQuestion)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
@@ -371,15 +412,15 @@ const CreateMultichoiceQuestion = (props: Props) => {
               </Grid>
               <Grid item xs={12} md={9}>
                 <Select
-                  defaultValue={1}
+                  defaultValue={"abc"}
                   fullWidth={true}
                   size='small'
                   required
                   {...register("numbering")}
                 >
-                  <MenuItem value={1}>a., b., c.</MenuItem>
-                  <MenuItem value={2}>A., B., C.</MenuItem>
-                  <MenuItem value={3}>1., 2., 3.</MenuItem>
+                  <MenuItem value={"abc"}>a., b., c.</MenuItem>
+                  <MenuItem value={"ABC"}>A., B., C.</MenuItem>
+                  <MenuItem value={"n123"}>1., 2., 3.</MenuItem>
                 </Select>
               </Grid>
             </Grid>
@@ -414,6 +455,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
                 </TextTitle>
               </Grid>
               <Checkbox {...register("showInstructions")} />
+            </Grid>
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={3}>
+                <TextTitle translation-key='question_multiple_show_num_correct'>
+                  {t("question_multiple_show_num_correct")}
+                </TextTitle>
+              </Grid>
+              <Checkbox {...register("showNumCorrect")} />
             </Grid>
 
             <div>

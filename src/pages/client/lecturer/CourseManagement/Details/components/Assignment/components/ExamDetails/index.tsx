@@ -64,7 +64,7 @@ const LecturerCourseExamDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.course.assignment);
+          navigate(routes.lecturer.course.assignment.replace(":courseId", exam.courseId));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -127,9 +127,21 @@ const LecturerCourseExamDetails = () => {
         <Box className={classes.assignmentDescription}>
           <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b> {exam.gradeMethod} </b>
+            Cách thức tính điểm:{" "}
+            <b>
+              {" "}
+              {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
+                ? "Điểm cao nhất"
+                : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
+                  ? "Trung bình cộng"
+                  : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
+                    ? "Lần nộp đầu tiên"
+                    : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
+                      ? "Lần nộp cuối cùng"
+                      : ""}
+            </b>
           </ParagraphBody>
-          <CustomFileList
+          {/* <CustomFileList
             files={[
               {
                 id: "1",
@@ -150,7 +162,7 @@ const LecturerCourseExamDetails = () => {
                   "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
               }
             ]}
-          />
+          /> */}
         </Box>
       </Card>
       <Box
@@ -191,7 +203,7 @@ const LecturerCourseExamDetails = () => {
         rows={[
           {
             header: t("course_lecturer_assignment_hide"),
-            data: "Có"
+            data: "Không"
           },
           {
             header: t("course_lecturer_assignment_student_num"),
@@ -204,11 +216,11 @@ const LecturerCourseExamDetails = () => {
           {
             header: t("course_lecturer_assignment_need_grading"),
             data: "1"
-          },
-          {
-            header: t("common_time_left"),
-            data: "1 ngày 2 giờ"
           }
+          // {
+          //   header: t("common_time_left"),
+          //   data: "1 ngày 2 giờ"
+          // }
         ]}
         translation-key={[
           "course_lecturer_assignment_hide",
@@ -225,7 +237,7 @@ const LecturerCourseExamDetails = () => {
         headers={[
           t("course_management_exam_try_time"),
           t("common_status"),
-          `${t("common_score")} / 20.0`,
+          `${t("common_score")} / ${exam.maxScores}`,
           t("common_see_evaluating")
         ]}
         rows={[
@@ -256,7 +268,8 @@ const LecturerCourseExamDetails = () => {
         ]}
       />
       <Heading2 translation-key='course_management_exam_max_score'>
-        {t("course_management_exam_max_score")}: <span style={{ color: "red" }}>20.0</span>
+        {t("course_management_exam_max_score")}:{" "}
+        <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
       <Button
         btnType={BtnType.Primary}

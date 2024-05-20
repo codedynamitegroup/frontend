@@ -16,3 +16,20 @@ export interface ExamEntity {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ExamCreateRequest {
+  courseId: string;
+  name: string;
+  intro: string;
+  score: number;
+  maxScore: number;
+  timeOpen: Date;
+  timeClose: Date;
+  timeLimit: number;
+  overdueHandling: string;
+  canRedoQuestions: boolean;
+  maxAttempts: number;
+  shuffleQuestions: boolean;
+  gradeMethod: string;
+  questionIds: number[];
+}

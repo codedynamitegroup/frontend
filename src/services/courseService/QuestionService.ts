@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API } from "constants/API";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
@@ -13,7 +14,7 @@ export class QuestionService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}question`, {
+      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.QUESTION.DEFAULT}`, {
         params: {
           search,
           pageNo,
@@ -35,7 +36,9 @@ export class QuestionService {
 
   static async getQuestionById(questionId: string) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}question/${questionId}`);
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.QUESTION.GET_BY_ID.replace(":id", questionId)}`
+      );
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -51,7 +54,9 @@ export class QuestionService {
 
   static async deleteQuestion(questionId: string) {
     try {
-      const response = await axios.delete(`${courseServiceApiUrl}question/${questionId}`);
+      const response = await axios.delete(
+        `${courseServiceApiUrl}${API.COURSE.QUESTION.DELETE_BY_ID.replace(":id", questionId)}`
+      );
       if (response.status === 204) {
         return Promise.resolve();
       }

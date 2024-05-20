@@ -2,7 +2,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -54,18 +53,13 @@ const StudentCourseExamDetails = () => {
   }, []);
 
   const navigate = useNavigate();
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
 
   return (
     <Box className={classes.assignmentBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.course.assignment);
+          navigate(routes.student.course.assignment.replace(":courseId", exam.courseId));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -123,9 +117,21 @@ const StudentCourseExamDetails = () => {
         <Box className={classes.assignmentDescription}>
           <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b> {exam.gradeMethod} </b>
+            Cách thức tính điểm:{" "}
+            <b>
+              {" "}
+              {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
+                ? "Điểm cao nhất"
+                : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
+                  ? "Trung bình cộng"
+                  : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
+                    ? "Lần nộp đầu tiên"
+                    : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
+                      ? "Lần nộp cuối cùng"
+                      : ""}
+            </b>
           </ParagraphBody>
-          <CustomFileList
+          {/* <CustomFileList
             files={[
               {
                 id: "1",
@@ -146,12 +152,12 @@ const StudentCourseExamDetails = () => {
                   "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
               }
             ]}
-          />
+          /> */}
         </Box>
       </Card>
       <Heading2>Tóm tắt những lần làm bài trước</Heading2>
       <ExamAttemptSummaryTable
-        headers={["Lần thử", "Trạng thái", "Điểm / 20.0", "Xem đánh giá"]}
+        headers={["Lần thử", "Trạng thái", "Điểm / 10.0", "Xem đánh giá"]}
         rows={[
           {
             no: "1",
@@ -174,7 +180,7 @@ const StudentCourseExamDetails = () => {
         ]}
       />
       <Heading2>
-        Điểm cao nhất: <span style={{ color: "red" }}>20.0</span>
+        Điểm cao nhất: <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
       <Button
         btnType={BtnType.Primary}

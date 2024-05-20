@@ -14,7 +14,7 @@ export class CourseService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}course`, {
+      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}`, {
         params: {
           search,
           pageNo,

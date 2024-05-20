@@ -1,3 +1,5 @@
+import { C } from "@fullcalendar/core/internal-common";
+
 export const API = {
   CORE: {
     CERTIFICATE_COURSE: {
@@ -41,7 +43,36 @@ export const API = {
         CREATE: "questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
-      }
+      },
+      MULTIPLE_CHOICE_QUESTION: {
+        CREATE: "questions/multichoice-question/create",
+        GET_BY_ID: "/core/questions/multichoice-question/:id",
+        GET_ALL: "/core/questions/multichoice-question"
+      },
+    }
+  },
+  COURSE: {
+    COURSE: {
+      DEFAULT: "/course/course",
+      GET_USER_BY_COURSE_ID: "/course/course-user/:id/user"
+    },
+    EXAM: {
+      DEFAULT: "/course/:courseId/exam",
+      GET_BY_ID: "/course/exam/:id",
+      CREATE: "/course/exam"
+    },
+    QUESTION: {
+      DEFAULT: "/course/question",
+      GET_BY_ID: "/course/question/:id",
+      UPDATE_BY_ID: "/course/question/:id",
+      DELETE_BY_ID: "/course/question/:id"
+    },
+    QUESTION_BANK_CATEGORY: {
+      DEFAULT: "/course/question/bank/category",
+      GET_BY_ID: "/course/question/bank/category/:id",
+      UPDATE_BY_ID: "/course/question/bank/category/:id",
+      DELETE_BY_ID: "/course/question/bank/category/:id",
+      CREATE: "/course/question/bank/category/create"
     }
   },
   CODE_ASSESSMENT: {
@@ -52,5 +83,11 @@ export const API = {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id"
     }
+  },
+  AUTH: {
+    SOCIAL_LOGIN: "/auth/users/social-login",
+    LOGIN: "/auth/users/login",
+    REGISTER: "/auth/users/register",
+    GET_USER_BY_EMAIL: "/auth/users/get-by-email/:email"
   }
 };

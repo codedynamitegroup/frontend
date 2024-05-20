@@ -16,6 +16,9 @@ import questionReducer from "reduxes/courseService/question/index";
 import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 import detailCodeQuestion from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import courseUser from "reduxes/courseService/courseUser";
+import auth from "reduxes/Auth";
+import loading from "reduxes/Loading";
 
 const store = configureStore({
   reducer: {
@@ -35,7 +38,10 @@ const store = configureStore({
     searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
     question: questionReducer,
     questionBankCategory: questionBankCategory,
-    detailCodeQuestion: detailCodeQuestion
+    detailCodeQuestion: detailCodeQuestion,
+    courseUser: courseUser,
+    auth: auth,
+    loading: loading
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true
