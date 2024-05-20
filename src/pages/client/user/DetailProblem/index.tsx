@@ -36,6 +36,7 @@ import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestion
 import { UUID } from "crypto";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 
 enum ELanguage {
   JAVA = "java",
@@ -123,15 +124,25 @@ int reverse(int x) {
 			`
     }
   ];
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(ELanguage.JAVA);
+
+  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>("hi");
+  const initLanguage = codeQuestion?.sourceCodeLanguageId
+    ? codeQuestion.sourceCodeLanguageId
+    : codeQuestion?.languages && codeQuestion.languages.length > 0
+      ? codeQuestion?.languages[0].id
+      : undefined;
+  useEffect(() => {
+    setSelectedLanguage(initLanguage);
+  }, [initLanguage]);
+
   const [selectedCodeStub, setSelectedCodeStub] = useState<QCodeStub>(codeStubs[0]);
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     const selectedLanguage = event.target.value;
     setSelectedLanguage(selectedLanguage);
-    const selectedStub = codeStubs.find((stub) => stub.language === selectedLanguage);
-    if (selectedStub) {
-      setSelectedCodeStub(selectedStub);
-    }
+    // const selectedStub = codeStubs.find((stub) => stub.language === selectedLanguage);
+    // if (selectedStub) {
+    //   setSelectedCodeStub(selectedStub);
+    // }
   };
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
@@ -392,9 +403,9 @@ int reverse(int x) {
                       onChange={handleChangeLanguage}
                       sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                     >
-                      <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                      <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                      <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                      {codeQuestion?.languages.map((value: ProgrammingLanguageEntity) => (
+                        <MenuItem value={value.id}>{value.name}</MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Box>
@@ -404,7 +415,15 @@ int reverse(int x) {
                     overflow: "auto"
                   }}
                 >
-                  <CodeEditor value={selectedCodeStub.codeStubBody} />
+                  <CodeEditor
+                    value={
+                      selectedLanguage === codeQuestion?.sourceCodeLanguageId
+                        ? codeQuestion?.sourceCode !== undefined
+                          ? codeQuestion?.sourceCode
+                          : ""
+                        : ""
+                    }
+                  />
                 </Box>
               </Box>
               <Box className={classes.codeTestcaseContainer}>

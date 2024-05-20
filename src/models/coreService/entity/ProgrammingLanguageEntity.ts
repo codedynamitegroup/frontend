@@ -1,7 +1,10 @@
+import { UUID } from "crypto";
+
 export interface ProgrammingLanguageEntity {
-  programmingLanguageId: string;
+  id: UUID;
   name: string;
-  compilerApiId: number;
+  judge0Id: number;
   timeLimit: number;
   memoryLimit: number;
+  isActived: boolean;
 }
