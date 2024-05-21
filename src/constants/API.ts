@@ -54,6 +54,7 @@ export const API = {
   COURSE: {
     COURSE: {
       DEFAULT: "/course/course",
+      SECTION: "/course/section",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user"
     },
     EXAM: {
