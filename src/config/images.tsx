@@ -40,6 +40,9 @@ import flagVietnam from "assets/img/icon/flag/flag-vietnam.svg";
 import flagUs from "assets/img/icon/flag/flag-us.svg";
 import icAlmostEqualTo from "assets/img/icon/almost_equal_to_icon.svg";
 
+import avatarBoyDefault from "assets/img/avatar/default-avatar-boy.svg";
+import avatarGirlDefault from "assets/img/avatar/default-avatar-girl.svg";
+
 const images = {
   auth: { notFoundError, unAuthorized },
   course: {
@@ -65,7 +68,8 @@ const images = {
   contestTimeBackground,
   temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } },
   flagIcon: { flagVietnam, flagUs },
-  icAlmostEqualTo
+  icAlmostEqualTo,
+  avatar: { avatarBoyDefault, avatarGirlDefault }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
 export { notificaionIcon };

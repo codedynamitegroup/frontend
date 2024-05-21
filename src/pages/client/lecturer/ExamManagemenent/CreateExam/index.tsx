@@ -519,7 +519,9 @@ export default function ExamCreated() {
                 <ParagraphSmall
                   colorname='--blue-500'
                   className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.assignment)}
+                  onClick={() =>
+                    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
+                  }
                   translation-key='course_detail_assignment_list'
                 >
                   {t("course_detail_assignment_list")}
