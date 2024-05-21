@@ -1,8 +1,8 @@
 export enum ECourseResourceType {
-  assignment = 1,
-  file = 2,
-  url = 3,
-  exam = 4
+  assignment = "Assignments",
+  file = "Files",
+  url = "URLs",
+  exam = "Quizzes"
 }
 
 export enum ECourseEventStatus {

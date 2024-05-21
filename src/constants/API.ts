@@ -48,7 +48,8 @@ export const API = {
   },
   COURSE: {
     COURSE: {
-      DEFAULT: "/course/course"
+      DEFAULT: "/course/course",
+      SECTION: "/course/section"
     },
     EXAM: {
       DEFAULT: "/:courseId/exam",

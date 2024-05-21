@@ -2,6 +2,12 @@ import notFoundError from "assets/img/img_notFoundError.png";
 import unAuthorized from "assets/img/img_unAuthorized.png";
 import courseAssignment from "assets/img/icon/course/courseDetail/assignment.svg";
 import courseFile from "assets/img/icon/course/courseDetail/file.svg";
+import courseUrl from "assets/img/icon/course/courseDetail/url.svg";
+import courseImage from "assets/img/icon/course/courseDetail/image.svg";
+import coursePDF from "assets/img/icon/course/courseDetail/pdf.svg";
+import courseDOC from "assets/img/icon/course/courseDetail/doc.svg";
+import courseXLS from "assets/img/icon/course/courseDetail/xls.svg";
+import coursePPT from "assets/img/icon/course/courseDetail/ppt.svg";
 import moodleLogo from "assets/img/logo/moodle_logo.png";
 import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
@@ -36,7 +42,16 @@ import icAlmostEqualTo from "assets/img/icon/almost_equal_to_icon.svg";
 
 const images = {
   auth: { notFoundError, unAuthorized },
-  course: { courseAssignment, courseFile },
+  course: {
+    courseAssignment,
+    courseFile,
+    courseUrl,
+    courseImage,
+    coursePDF,
+    courseDOC,
+    courseXLS,
+    coursePPT
+  },
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },
   logo: { moodleLogo, microsoftLogo, googleLogo, logo },
   null: { mailboxEmpty },
