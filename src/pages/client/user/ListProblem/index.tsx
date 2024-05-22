@@ -1,6 +1,6 @@
 import { Box, Chip, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
@@ -22,7 +22,8 @@ import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TagService } from "services/codeAssessmentService/TagService";
 import {
   setDifficulty,
-  setSolved
+  setSolved,
+  setSearchKey
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
@@ -45,6 +46,19 @@ const ListProblem = () => {
       .catch((reason) => console.log(reason));
   }, [dispatch]);
 
+  const [timer, setTimer] = useState<number | undefined>(undefined);
+
+  const searchChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    clearTimeout(timer);
+
+    const newTimer = window.setTimeout(() => {
+      console.log("changing");
+      dispatch(setSearchKey(e.target.value));
+    }, 1500);
+
+    setTimer(newTimer);
+  };
+
   const handleFilterAlgorithm = (algorithm: TagEntity) => {
     const tags: TagEntity[] = [];
     if (algorithmTag.filter.length < 1) tags.push(algorithm);
@@ -59,7 +73,7 @@ const ListProblem = () => {
     dispatch(setSolved(newValue));
   };
   const handleChangeDifficulty = (value: string) => {
-    setstatusProblem(value);
+    setlevelProblem(value);
     let newValue: QuestionDifficultyEnum | null = null;
     if (value === "1") newValue = QuestionDifficultyEnum.EASY;
     if (value === "2") newValue = QuestionDifficultyEnum.MEDIUM;
@@ -95,6 +109,7 @@ const ListProblem = () => {
                     <SearchIcon className={classes.icon} />
                   </InputAdornment>
                 }
+                onChange={searchChange}
                 className={classes.searchInput}
               />
               <BasicSelect

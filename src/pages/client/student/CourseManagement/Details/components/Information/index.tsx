@@ -11,10 +11,16 @@ import Typography from "@mui/material/Typography";
 import { Accordion, AccordionDetails, AccordionSummary, Divider, List, Paper } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CourseResource from "./components/CourseResource";
 import StudentCourseEvent from "./components/CourseEvent";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { useParams } from "react-router-dom";
+import { CourseService } from "services/courseService/CourseService";
+import { di } from "@fullcalendar/core/internal-common";
+import { setSections } from "reduxes/courseService/section";
 
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
@@ -90,6 +96,42 @@ const StudentCourseInformation = () => {
     }
   };
 
+  const dispatch = useDispatch<AppDispatch>();
+  const sectionState = useSelector((state: RootState) => state.section);
+  const { courseId } = useParams<{ courseId: string }>();
+  const handleGetSections = async () => {
+    try {
+      if (courseId) {
+        const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
+        dispatch(setSections(getSectionsResponse));
+      } else {
+        console.error("courseId is undefined");
+      }
+    } catch (error) {
+      console.error("Failed to fetch sections", error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetSections();
+  }, []);
+
+  const type = (typeModule: string) => {
+    switch (typeModule) {
+      case "Files":
+        return ECourseResourceType.file;
+      case "Assignments":
+        return ECourseResourceType.assignment;
+      case "URLs":
+        return ECourseResourceType.url;
+      case "Quizzes":
+        return ECourseResourceType.exam;
+      default:
+        return ECourseResourceType.file;
+    }
+  };
+  console.log(typeof sectionState.sections);
+
   return (
     <Grid container spacing={2} className={classes.gridContainer}>
       <Grid item xs={12}>
@@ -109,7 +151,7 @@ const StudentCourseInformation = () => {
         <Box margin={1} padding={0}>
           <Grid container className={classes.gridBodyContainer}>
             <Grid item className={classes.topicWrapper} xs={8}>
-              {topicList.map((topic, index) => {
+              {sectionState.sections.map((topic, index) => {
                 const isOpen =
                   isTopicOpen[index] === undefined ? true : Boolean(isTopicOpen[index]);
                 return (
@@ -129,13 +171,18 @@ const StudentCourseInformation = () => {
                         className={classes.resourceSummaryContainer}
                       >
                         <Typography className={classes.resourceSummaryText} align='center'>
-                          {topic.title}
+                          {topic.name}
                         </Typography>
                       </AccordionSummary>
 
                       <AccordionDetails className={classes.accordDetail}>
-                        {topic.resource.map((resource, index) => (
-                          <CourseResource name={resource.name} type={resource.type} key={index} />
+                        {topic.modules.map((resource, index) => (
+                          <CourseResource
+                            name={resource.name}
+                            type={type(resource.typeModule)}
+                            content={resource.content}
+                            key={index}
+                          />
                         ))}
                       </AccordionDetails>
                     </Accordion>

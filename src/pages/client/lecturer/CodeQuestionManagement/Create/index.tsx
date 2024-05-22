@@ -5,21 +5,51 @@ import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
 import TextEditor from "components/editor/TextEditor";
-import { memo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { memo, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
+import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
+import { QuestionService } from "services/courseService/QuestionService";
 
 interface Props {}
 
 const LecturerCodeQuestionCreation = memo((props: Props) => {
+  const { questionId } = useParams<{ questionId: string }>();
+  const [question, setQuestion] = useState<QuestionEntity>({
+    id: "",
+    organizationId: "",
+    difficulty: "",
+    name: "",
+    questionText: "",
+    generalFeedback: "",
+    defaultMark: 0,
+    createdAt: "",
+    updatedAt: "",
+    message: ""
+  });
+
+  const handleGetQuestionById = async (id: string) => {
+    try {
+      const response = await QuestionService.getQuestionById(id);
+      setQuestion(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetQuestionById(questionId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const { t } = useTranslation();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
-  const [inputFormat, setInputFormat] = useState<string>(
-    "Gồm 2 số nguyên a và b cách nhau bởi dấu cách, được nhập từ bàn phím"
-  );
+  const [inputFormat, setInputFormat] = useState<string>("");
   const [outputFormat, setOutputFormat] = useState<string>(
     "Là một số nguyên cho biết tổng của a và b"
   );
@@ -80,7 +110,7 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
               </TextTitle>
             </Grid>
             <Grid item xs={9} className={classes.textEditor}>
-              <TextEditor value={inputFormat} onChange={setInputFormat} />
+              <TextEditor value={question.name} onChange={setInputFormat} />
             </Grid>
           </Grid>
           <Grid container spacing={1} columns={12}>

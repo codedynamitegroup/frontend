@@ -1,6 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
 import Link from "@mui/material/Link";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -14,23 +14,52 @@ import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCourseUser } from "reduxes/courseService/courseUser";
+import { CourseUserService } from "services/courseService/CourseUserService";
+import { AppDispatch, RootState } from "store";
 
 const LecturerCourseParticipant = () => {
+  const [searchText, setSearchText] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const courseUserState = useSelector((state: RootState) => state.courseUser);
+  const searchHandle = async (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { courseId } = useParams<{ courseId: string }>();
+  const handleGetCourseUser = async ({
+    search = searchText,
+    pageNo = currentPage,
+    pageSize = rowsPerPage
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId ?? "", {
+        search,
+        pageNo,
+        pageSize
+      });
+      console.log(getCourseUserResponse);
+      dispatch(setCourseUser(getCourseUserResponse));
+    } catch (error) {
+      console.error("Failed to fetch course user", error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetCourseUser({ search: searchText });
+  }, [searchText]);
+
   const { t } = useTranslation();
-  const participantList = [
-    {
-      id: 4,
-      name: "Trương Gia Tiến",
-      email: "truongtien577@gmail.com",
-      roles: "Giảng viên"
-    },
-    { id: 2, name: "Đặng Ngọc Tiến", email: "dnt@gmail.com", roles: "Giảng viên" },
-    { id: 3, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
-    { id: 1, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
-    { id: 5, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
-    { id: 6, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" },
-    { id: 7, name: "Nguyễn Quốc Tuấn", email: "nqt@gmail.com", roles: "Sinh viên" }
-  ];
+
   const tableHeading: GridColDef[] = [
     { field: "id", headerName: "STT", minWidth: 1 },
     {
@@ -65,11 +94,10 @@ const LecturerCourseParticipant = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
+    setCurrentPage(model.page);
+    setRowsPerPage(model.pageSize);
+    handleGetCourseUser({ search: searchText, pageNo: model.page, pageSize: model.pageSize });
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -85,14 +113,19 @@ const LecturerCourseParticipant = () => {
       </Grid>
       <Grid item xs={12}>
         <CustomDataGrid
-          dataList={participantList}
+          dataList={courseUserState.users.map((user, index) => ({
+            id: user.userId,
+            name: user.firstName + " " + user.lastName,
+            email: user.email,
+            roles: user.role
+          }))}
           tableHeader={tableHeading}
           onSelectData={rowSelectionHandler}
           visibleColumn={visibleColumnList}
           dataGridToolBar={dataGridToolbar}
-          page={page}
-          pageSize={pageSize}
-          totalElement={totalElement}
+          page={currentPage}
+          pageSize={rowsPerPage}
+          totalElement={courseUserState.totalItems}
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={false}
           onClickRow={rowClickHandler}

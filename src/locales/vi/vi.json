@@ -167,6 +167,7 @@
 
   "language_us": "Tiếng Anh",
   "language_vn": "Tiếng Việt",
+  "last_name": "Họ và tên đệm",
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
@@ -363,6 +364,9 @@
   "exam_management_create_from_bank": "Thêm câu hỏi từ ngân hàng câu hỏi",
   "exam_management_create_from_bank_choose_topic": "Chọn danh mục",
 
+  "email_required": "Email không được để trống",
+  "email_invalid": "Email không hợp lệ",
+
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",
   "course_management_exam_preview": "Xem trước bài kiểm tra",
@@ -436,6 +440,7 @@
   "quesion_bank_access_share": "Chia sẻ",
   "question_bank_category_find_by_category": "Tìm kiếm theo danh mục",
   "question_bank_create_category": "Tạo danh mục",
+  "question_bank_edit_category": "Chỉnh sửa danh mục",
   "question_bank_create_category_info": "Thông tin danh mục",
   "question_bank_create_category_name": "Tên danh mục",
 
@@ -663,6 +668,7 @@
   "file_type_document": "Document",
   "file_type_audio": "Audio",
   "file_type_video": "Video",
+  "first_name": "Tên của bạn",
   "require_enter_text": "Văn bản phải được nhập thủ công bởi người làm bài",
   "optional_enter_text": "Nhập văn bản thủ công là tuỳ chọn",
   "HTML_editor": "Chỉnh sửa HTML",
@@ -674,6 +680,16 @@
   "question_essay_grader_info": "Thông tin người chấm điểm",
   "question_essay_enter_grader_info": "Nhập thông tin người chấm điểm",
   "file_types_required": "Loại tệp đính kèm là bắt buộc",
+  "question_multiple_show_num_correct": "Hiển thị số lượng câu trả lời đúng",
 
-  "type_number": "số"
+  "type_number": "số",
+
+  "password_required": "Mật khẩu không được để trống",
+  "password_confirm_required": "Xác nhận mật khẩu không được để trống",
+  "password_confirm_not_match": "Mật khẩu xác nhận không khớp với mật khẩu đã nhập",
+  "password_confirm_min_length": "Mật khẩu xác nhận phải chứa ít nhất {{lengthNum}} ký tự",
+  "password_min_length": "Mật khẩu phải chứa ít nhất {{lengthNum}} ký tự",
+
+  "first_name_required": "Tên không được để trống",
+  "last_name_required": "Họ và tên đệm không được để trống"
 }

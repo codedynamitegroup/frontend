@@ -11,8 +11,15 @@ import chapterReducer from "reduxes/coreService/Chapter/index";
 import contestReducer from "reduxes/coreService/Contest/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
+import sectionReducer from "reduxes/courseService/section/index";
 import examReducer from "reduxes/courseService/exam/index";
+import questionReducer from "reduxes/courseService/question/index";
+import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
+import detailCodeQuestion from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import courseUser from "reduxes/courseService/courseUser";
+import auth from "reduxes/Auth";
+import loading from "reduxes/Loading";
 
 const store = configureStore({
   reducer: {
@@ -28,8 +35,15 @@ const store = configureStore({
     contest: contestReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
+    section: sectionReducer,
     exam: examReducer,
-    difficultyAndSolved: SearchAndDifficultyAndSolved
+    searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
+    question: questionReducer,
+    questionBankCategory: questionBankCategory,
+    detailCodeQuestion: detailCodeQuestion,
+    courseUser: courseUser,
+    auth: auth,
+    loading: loading
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)
   devTools: true

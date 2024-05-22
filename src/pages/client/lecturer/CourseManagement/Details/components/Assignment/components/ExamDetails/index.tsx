@@ -8,7 +8,7 @@ import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
@@ -16,25 +16,55 @@ import GradingExamTable from "./components/GradingExamTable";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { ExamService } from "services/courseService/ExamService";
+import { useEffect, useState } from "react";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
 
 const LecturerCourseExamDetails = () => {
+  const { examId } = useParams<{ examId: string }>();
+  const [exam, setExam] = useState<ExamEntity>({
+    id: "",
+    courseId: "",
+    name: "",
+    scores: 0,
+    maxScores: 0,
+    timeOpen: new Date(),
+    timeClose: new Date(),
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    maxAttempts: 0,
+    shuffleAnswers: false,
+    gradeMethod: "",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+  const handleGetExamById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamById(id);
+      setExam(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetExamById(examId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const examOpenTime = dayjs();
-  const examCloseTime = dayjs();
-  const examLimitTimeInMillis = 1000000;
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
 
   return (
     <Box className={classes.assignmentBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.course.assignment);
+          navigate(routes.lecturer.course.assignment.replace(":courseId", exam.courseId));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -47,7 +77,7 @@ const LecturerCourseExamDetails = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>Bài kiểm tra 1</Heading1>
+      <Heading1>{exam.name}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -62,9 +92,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>
-              {examOpenTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-            </ParagraphBody>
+            <ParagraphBody> {dayjs(exam.timeOpen).format("DD/MM/YYYY HH:mm")} </ParagraphBody>
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
@@ -77,9 +105,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-            <ParagraphBody>
-              {examCloseTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
-            </ParagraphBody>
+            <ParagraphBody>{dayjs(exam.timeClose).format("DD/MM/YYYY HH:mm")}</ParagraphBody>
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='center' gap={1}>
@@ -89,7 +115,11 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
+<<<<<<< HEAD
             <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
+=======
+            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
+>>>>>>> origin/main
           </Grid>
         </Grid>
         <Divider
@@ -99,11 +129,23 @@ const LecturerCourseExamDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: examDescriptionRawHTML }}></div>
+          <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b>Điểm cao nhất</b>
+            Cách thức tính điểm:{" "}
+            <b>
+              {" "}
+              {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
+                ? "Điểm cao nhất"
+                : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
+                  ? "Trung bình cộng"
+                  : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
+                    ? "Lần nộp đầu tiên"
+                    : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
+                      ? "Lần nộp cuối cùng"
+                      : ""}
+            </b>
           </ParagraphBody>
-          <CustomFileList
+          {/* <CustomFileList
             files={[
               {
                 id: "1",
@@ -124,7 +166,7 @@ const LecturerCourseExamDetails = () => {
                   "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
               }
             ]}
-          />
+          /> */}
         </Box>
       </Card>
       <Box
@@ -138,8 +180,8 @@ const LecturerCourseExamDetails = () => {
           onClick={() => {
             navigate(
               routes.lecturer.exam.submissions
-                .replace(":assignmentId", "1")
-                .replace(":courseId", "1")
+                .replace(":courseId", exam.courseId)
+                .replace(":examId", exam.id ?? "")
             );
           }}
         >
@@ -165,7 +207,7 @@ const LecturerCourseExamDetails = () => {
         rows={[
           {
             header: t("course_lecturer_assignment_hide"),
-            data: "Có"
+            data: "Không"
           },
           {
             header: t("course_lecturer_assignment_student_num"),
@@ -178,11 +220,11 @@ const LecturerCourseExamDetails = () => {
           {
             header: t("course_lecturer_assignment_need_grading"),
             data: "1"
-          },
-          {
-            header: t("common_time_left"),
-            data: "1 ngày 2 giờ"
           }
+          // {
+          //   header: t("common_time_left"),
+          //   data: "1 ngày 2 giờ"
+          // }
         ]}
         translation-key={[
           "course_lecturer_assignment_hide",
@@ -199,7 +241,7 @@ const LecturerCourseExamDetails = () => {
         headers={[
           t("course_management_exam_try_time"),
           t("common_status"),
-          `${t("common_score")} / 20.0`,
+          `${t("common_score")} / ${exam.maxScores}`,
           t("common_see_evaluating")
         ]}
         rows={[
@@ -230,7 +272,8 @@ const LecturerCourseExamDetails = () => {
         ]}
       />
       <Heading2 translation-key='course_management_exam_max_score'>
-        {t("course_management_exam_max_score")}: <span style={{ color: "red" }}>20.0</span>
+        {t("course_management_exam_max_score")}:{" "}
+        <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
       <Button
         btnType={BtnType.Primary}

@@ -51,7 +51,7 @@ const LecturerCourseAssignment = () => {
   };
 
   const onCreateNewExam = async (popupState: any) => {
-    navigate(routes.lecturer.exam.create);
+    navigate(routes.lecturer.exam.create.replace(":courseId", courseId?.toString() ?? ""));
     popupState.close();
   };
 
@@ -135,6 +135,8 @@ const LecturerCourseAssignment = () => {
             <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
             {examState.exams.map((exam) => (
               <AssignmentResource
+                courseId={courseId ?? ""}
+                examId={exam.id}
                 resourceTitle={exam.name}
                 resourceEndedDate={exam.timeClose}
                 intro={exam.intro}

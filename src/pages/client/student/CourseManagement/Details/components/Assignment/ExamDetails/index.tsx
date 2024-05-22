@@ -2,35 +2,64 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
+import { useEffect, useState } from "react";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ExamService } from "services/courseService/ExamService";
 
 const StudentCourseExamDetails = () => {
+  const { examId } = useParams<{ examId: string }>();
+  const [exam, setExam] = useState<ExamEntity>({
+    id: "",
+    courseId: "",
+    name: "",
+    scores: 0,
+    maxScores: 0,
+    timeOpen: new Date(),
+    timeClose: new Date(),
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    maxAttempts: 0,
+    shuffleAnswers: false,
+    gradeMethod: "",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+  const handleGetExamById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamById(id);
+      setExam(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await handleGetExamById(examId ?? "");
+    };
+    fetchInitialData();
+  }, []);
+
   const navigate = useNavigate();
-  const examOpenTime = dayjs();
-  const examCloseTime = dayjs();
-  const examLimitTimeInMillis = 1000000;
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
 
   return (
     <Box className={classes.assignmentBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.course.assignment);
+          navigate(routes.student.course.assignment.replace(":courseId", exam.courseId));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -43,7 +72,7 @@ const StudentCourseExamDetails = () => {
       >
         <ParagraphBody>Quay lại</ParagraphBody>
       </Button>
-      <Heading1>Bài kiểm tra 1</Heading1>
+      <Heading1>{exam.name}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -57,7 +86,7 @@ const StudentCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {examOpenTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              <ParagraphBody> {dayjs(exam.timeOpen).format("DD/MM/YYYY HH:mm")} </ParagraphBody>
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -67,7 +96,7 @@ const StudentCourseExamDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {examCloseTime?.toDate().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              <ParagraphBody>{dayjs(exam.timeClose).format("DD/MM/YYYY HH:mm")}</ParagraphBody>
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -76,7 +105,11 @@ const StudentCourseExamDetails = () => {
             <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
           </Grid>
           <Grid item>
+<<<<<<< HEAD
             <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
+=======
+            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
+>>>>>>> origin/main
           </Grid>
         </Grid>
         <Divider
@@ -86,11 +119,23 @@ const StudentCourseExamDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: examDescriptionRawHTML }}></div>
+          <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
           <ParagraphBody>
-            Cách thức tính điểm: <b>Điểm cao nhất</b>
+            Cách thức tính điểm:{" "}
+            <b>
+              {" "}
+              {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
+                ? "Điểm cao nhất"
+                : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
+                  ? "Trung bình cộng"
+                  : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
+                    ? "Lần nộp đầu tiên"
+                    : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
+                      ? "Lần nộp cuối cùng"
+                      : ""}
+            </b>
           </ParagraphBody>
-          <CustomFileList
+          {/* <CustomFileList
             files={[
               {
                 id: "1",
@@ -111,12 +156,12 @@ const StudentCourseExamDetails = () => {
                   "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
               }
             ]}
-          />
+          /> */}
         </Box>
       </Card>
       <Heading2>Tóm tắt những lần làm bài trước</Heading2>
       <ExamAttemptSummaryTable
-        headers={["Lần thử", "Trạng thái", "Điểm / 20.0", "Xem đánh giá"]}
+        headers={["Lần thử", "Trạng thái", "Điểm / 10.0", "Xem đánh giá"]}
         rows={[
           {
             no: "1",
@@ -139,7 +184,7 @@ const StudentCourseExamDetails = () => {
         ]}
       />
       <Heading2>
-        Điểm cao nhất: <span style={{ color: "red" }}>20.0</span>
+        Điểm cao nhất: <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
       <Button
         btnType={BtnType.Primary}

@@ -43,7 +43,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -55,6 +55,9 @@ import { GridRowParams } from "@mui/x-data-grid";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
+import { ExamService } from "services/courseService/ExamService";
 
 const drawerWidth = 400;
 
@@ -122,6 +125,35 @@ export const OVERDUE_HANDLING = {
 };
 
 export default function ExamCreated() {
+  const { courseId } = useParams();
+
+  const submitHandler = (data: any) => {
+    console.log("data");
+    const newExam: ExamCreateRequest = {
+      courseId: courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290",
+      name: examName,
+      intro: examDescription,
+      score: examMaximumGrade,
+      maxScore: examMaximumGrade,
+      timeOpen: examOpenTime ? examOpenTime.toDate() : new Date(),
+      timeClose: examCloseTime ? examCloseTime.toDate() : new Date(),
+      timeLimit: examTimeLimitNumber * 60 * 1000,
+      overdueHandling: overdueHandling.toUpperCase(),
+      canRedoQuestions: true,
+      maxAttempts: maxAttempts,
+      shuffleQuestions: true,
+      gradeMethod: "QUIZ_GRADEHIGHEST",
+      questionIds: []
+    };
+    ExamService.createExam(newExam)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
@@ -129,7 +161,7 @@ export default function ExamCreated() {
   const [open, setOpen] = React.useState(true);
   const [examName, setExamName] = React.useState("");
   const [examDescription, setExamDescription] = React.useState("");
-  const [examMaximumGrade, setExamMaximumGrade] = React.useState(100);
+  const [examMaximumGrade, setExamMaximumGrade] = React.useState(10);
   const [examOpenTime, setExamOpenTime] = React.useState<Dayjs | null>(dayjs());
   const [examCloseTime, setExamCloseTime] = React.useState<Dayjs | null>(dayjs());
   const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("minutes");
@@ -285,7 +317,13 @@ export default function ExamCreated() {
 
   function handleClick() {
     setLoading(true);
-
+    submitHandler({});
+    navigate(
+      routes.lecturer.course.assignment.replace(
+        ":courseId",
+        courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
+      )
+    );
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -470,18 +508,20 @@ export default function ExamCreated() {
                   {t("common_course_management")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
+                {/* <ParagraphSmall
                   colorname='--blue-500'
                   className={classes.cursorPointer}
                   onClick={() => navigate(routes.lecturer.course.information)}
                 >
                   CS202 - Nhập môn lập trình
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                </ParagraphSmall> */}
+                {/* <KeyboardDoubleArrowRightIcon id={classes.icArrow} /> */}
                 <ParagraphSmall
                   colorname='--blue-500'
                   className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.assignment)}
+                  onClick={() =>
+                    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
+                  }
                   translation-key='course_detail_assignment_list'
                 >
                   {t("course_detail_assignment_list")}
