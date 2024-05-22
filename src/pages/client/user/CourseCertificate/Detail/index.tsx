@@ -6,7 +6,7 @@ import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "r
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading2 from "components/text/Heading2";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";

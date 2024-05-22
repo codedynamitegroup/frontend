@@ -12,7 +12,7 @@ import TextTitle from "components/text/TextTitle";
 import { ClockIcon } from "@mui/x-date-pickers";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
-import { millisToHoursAndMinutesString } from "utils/time";
+import { millisToFormatTimeString } from "utils/time";
 
 interface PropsData {
   name: string;
@@ -47,7 +47,7 @@ const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: 
     const interval = setInterval(() => {
       setCountdown((prev) => {
         if (prev > 0) {
-          return prev - 1;
+          return prev - 1000;
         }
         return 0;
       });
@@ -70,7 +70,7 @@ const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: 
                 }}
                 translate-key='common_starts_in'
               >
-                {t("common_starts_in")} {millisToHoursAndMinutesString(countdown, currentLang)}
+                {t("common_starts_in")} {millisToFormatTimeString(countdown, currentLang)}
               </ParagraphBody>
             ) : endTime && moment().utc().isAfter(endTime) ? (
               <ParagraphBody
