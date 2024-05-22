@@ -341,6 +341,42 @@ const ContestList = () => {
                     />
                   </Grid>
                 ))}
+                {/* <Grid item xs={12}>
+                  <ContestContentCard
+                    name='Sasuke war 11'
+                    avtImage={images.temp.contest.tempContest1}
+                    startTime='2021-10-10T00:00:00Z'
+                    endTime='2021-10-10T00:00:00Z'
+                    contestId={"1"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ContestContentCard
+                    name='Batch the code'
+                    avtImage={images.temp.contest.tempContest2}
+                    startTime='2021-10-10T00:00:00Z'
+                    endTime='2021-10-10T00:00:00Z'
+                    contestId={"2"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ContestContentCard
+                    name='FPT Tech day'
+                    avtImage={images.temp.contest.tempContest3}
+                    startTime='2021-10-10T00:00:00Z'
+                    endTime='2021-10-10T00:00:00Z'
+                    contestId={"3"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ContestContentCard
+                    name='CSS 11'
+                    avtImage={images.temp.contest.tempContest4}
+                    startTime='2021-10-10T00:00:00Z'
+                    endTime='2021-10-10T00:00:00Z'
+                    contestId={"1"}
+                  />
+                </Grid> */}
                 <Grid
                   item
                   xs={12}

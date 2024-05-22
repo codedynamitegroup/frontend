@@ -1,14 +1,11 @@
 import Paper from "@mui/material/Paper";
 import React, { useEffect, useRef, useState } from "react";
 import { EContestStatus } from "../..";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
 import CalendarIcon from "@mui/icons-material/DateRange";
-import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import Heading6 from "components/text/Heading6";
 import Heading1 from "components/text/Heading1";
-import Heading4 from "components/text/Heading4";
 import ContestTimeDisplay from "../TimeDisplay";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useNavigate } from "react-router-dom";

@@ -9,7 +9,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import { millisToHoursAndMinutesString } from "utils/time";
+import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
@@ -105,7 +105,11 @@ const StudentCourseExamDetails = () => {
             <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
           </Grid>
           <Grid item>
+<<<<<<< HEAD
+            <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
+=======
             <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
+>>>>>>> origin/main
           </Grid>
         </Grid>
         <Divider

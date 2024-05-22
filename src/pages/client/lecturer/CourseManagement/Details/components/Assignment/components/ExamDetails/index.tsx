@@ -10,7 +10,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import { millisToHoursAndMinutesString } from "utils/time";
+import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import GradingExamTable from "./components/GradingExamTable";
 import classes from "./styles.module.scss";
@@ -115,7 +115,11 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
+<<<<<<< HEAD
+            <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
+=======
             <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
+>>>>>>> origin/main
           </Grid>
         </Grid>
         <Divider
