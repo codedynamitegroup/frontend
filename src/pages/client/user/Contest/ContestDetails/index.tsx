@@ -1,4 +1,15 @@
-import { Box, Container, Divider, Grid, Link, Paper, Stack, Tab, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Link,
+  Paper,
+  Stack,
+  Tab,
+  Typography,
+  Avatar
+} from "@mui/material";
 import classes from "./stytles.module.scss";
 import Heading1 from "components/text/Heading1";
 import ContestTimeInformation from "./components/ContestTimeInformation";
@@ -6,7 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import ContestProblemItem, { EContestProblemDifficulty } from "./components/ContestProblemItem";
+import ContestProblemItem from "./components/ContestProblemItem";
 import ContestLeaderboard from "./components/ContestLeaderboard";
 import Heading4 from "components/text/Heading4";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -19,6 +30,8 @@ import { AppDispatch, RootState } from "store";
 import { setContestDetails, setContestLeaderboard } from "reduxes/coreService/Contest";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
+import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 
 // export enum EContestStatus {
 //   featured,
@@ -93,158 +106,158 @@ import moment from "moment";
 // `
 // };
 
-const problemData = [
-  {
-    name: "Số nguyên tố",
-    maxScore: 5,
-    point: 2,
-    difficulty: EContestProblemDifficulty.easy,
-    maxSubmission: 10,
-    submission: 2
-  },
-  {
-    name: "Mảng đối xứng",
-    maxScore: 3,
-    difficulty: EContestProblemDifficulty.medium,
-    maxSubmission: 5,
-    submission: 0,
-    point: 0
-  },
-  {
-    name: "Ma trận xoay",
-    maxScore: 10,
-    difficulty: EContestProblemDifficulty.advance,
-    maxSubmission: 10,
-    submission: 0
-  },
-  {
-    name: "Ma trận vuông",
-    maxScore: 2,
-    difficulty: EContestProblemDifficulty.easy,
-    maxSubmission: 5,
-    point: 2,
-    submission: 1
-  }
-];
-const problemList = [
-  {
-    name: "Số nguyên tố",
-    maxScore: 5,
-    difficulty: EContestProblemDifficulty.easy,
-    maxSubmission: 10,
-    submission: 2
-  },
-  {
-    name: "Mảng đối xứng",
-    maxScore: 3,
-    difficulty: EContestProblemDifficulty.medium,
-    maxSubmission: 5
-  },
-  {
-    name: "Ma trận xoay",
-    maxScore: 10,
-    difficulty: EContestProblemDifficulty.advance,
-    maxSubmission: 10
-  },
-  {
-    name: "Ma trận vuông",
-    maxScore: 2,
-    difficulty: EContestProblemDifficulty.easy,
-    maxSubmission: 5
-  }
-];
-const rankingList = [
-  {
-    rank: 1,
-    name: "Trương Gia Tiến",
-    problemData: [
-      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  },
-  {
-    rank: 2,
-    name: "Trương Gia Tiến",
-    problemData: [
-      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  },
-  {
-    rank: 3,
-    name: "Trương Gia Tiến",
-    problemData: [
-      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  },
-  {
-    rank: 4,
-    name: "Trương Gia Tiến",
-    problemData: [
-      { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  }
-];
-const currentUserRank = {
-  rank: 1234,
-  name: "Dương Chí Thông",
-  problemData: [
-    { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
-    { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
-    { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
-    { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-  ],
-  totalScore: 14
-};
-const topUserRank: Array<any> = [
-  {
-    rank: 1,
-    name: "Nguyễn Văn A",
-    problemData: [
-      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  },
-  {
-    rank: 2,
-    name: "Nguyễn Văn BCDEF",
-    problemData: [
-      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  },
-  {
-    rank: 3,
-    name: "Nguyễn Văn CEFGHIJ ds",
-    problemData: [
-      { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
-      { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
-      { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
-    ],
-    totalScore: 14
-  }
-];
+// const problemData = [
+//   {
+//     name: "Số nguyên tố",
+//     maxScore: 5,
+//     point: 2,
+//     difficulty: EContestProblemDifficulty.easy,
+//     maxSubmission: 10,
+//     submission: 2
+//   },
+//   {
+//     name: "Mảng đối xứng",
+//     maxScore: 3,
+//     difficulty: EContestProblemDifficulty.medium,
+//     maxSubmission: 5,
+//     submission: 0,
+//     point: 0
+//   },
+//   {
+//     name: "Ma trận xoay",
+//     maxScore: 10,
+//     difficulty: EContestProblemDifficulty.advance,
+//     maxSubmission: 10,
+//     submission: 0
+//   },
+//   {
+//     name: "Ma trận vuông",
+//     maxScore: 2,
+//     difficulty: EContestProblemDifficulty.easy,
+//     maxSubmission: 5,
+//     point: 2,
+//     submission: 1
+//   }
+// ];
+// const problemList = [
+//   {
+//     name: "Số nguyên tố",
+//     maxScore: 5,
+//     difficulty: EContestProblemDifficulty.easy,
+//     maxSubmission: 10,
+//     submission: 2
+//   },
+//   {
+//     name: "Mảng đối xứng",
+//     maxScore: 3,
+//     difficulty: EContestProblemDifficulty.medium,
+//     maxSubmission: 5
+//   },
+//   {
+//     name: "Ma trận xoay",
+//     maxScore: 10,
+//     difficulty: EContestProblemDifficulty.advance,
+//     maxSubmission: 10
+//   },
+//   {
+//     name: "Ma trận vuông",
+//     maxScore: 2,
+//     difficulty: EContestProblemDifficulty.easy,
+//     maxSubmission: 5
+//   }
+// ];
+// const rankingList = [
+//   {
+//     rank: 1,
+//     name: "Trương Gia Tiến",
+//     problemData: [
+//       { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   },
+//   {
+//     rank: 2,
+//     name: "Trương Gia Tiến",
+//     problemData: [
+//       { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   },
+//   {
+//     rank: 3,
+//     name: "Trương Gia Tiến",
+//     problemData: [
+//       { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   },
+//   {
+//     rank: 4,
+//     name: "Trương Gia Tiến",
+//     problemData: [
+//       { point: 5, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 2, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 6, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   }
+// ];
+// const currentUserRank = {
+//   rank: 1234,
+//   name: "Dương Chí Thông",
+//   problemData: [
+//     { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+//     { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+//     { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+//     { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//   ],
+//   totalScore: 14
+// };
+// const topUserRank: Array<any> = [
+//   {
+//     rank: 1,
+//     name: "Nguyễn Văn A",
+//     problemData: [
+//       { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   },
+//   {
+//     rank: 2,
+//     name: "Nguyễn Văn BCDEF",
+//     problemData: [
+//       { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   },
+//   {
+//     rank: 3,
+//     name: "Nguyễn Văn CEFGHIJ ds",
+//     problemData: [
+//       { point: 2, tries: 1, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 5, duration: "2024-3-4 23:59:59" },
+//       { point: 3, tries: 6, duration: "2024-3-4 23:59:59" },
+//       { point: 1, tries: 10, duration: "2024-3-4 23:59:59" }
+//     ],
+//     totalScore: 14
+//   }
+// ];
 const ContestDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
   const contestState = useSelector((state: RootState) => state.contest);
@@ -268,6 +281,13 @@ const ContestDetails = () => {
       return ContestStartTimeFilterEnum.UPCOMING;
     }
   }, [contestDetails]);
+
+  const topUserRank = useMemo(() => {
+    if (contestLeaderboard?.contestLeaderboard) {
+      return contestLeaderboard.contestLeaderboard.slice(0, 3);
+    }
+    return [];
+  }, [contestLeaderboard]);
 
   const [value, setValue] = useState("1");
 
@@ -412,7 +432,7 @@ const ContestDetails = () => {
                     </Grid>
                     {topUserRank && topUserRank.length !== 0 ? (
                       <Stack spacing={1} margin={"10px 0 10px 0"}>
-                        {topUserRank.map((user, index) => (
+                        {topUserRank.map((user: UserContestRankEntity, index: number) => (
                           <Grid item xs={12} key={user.rank}>
                             <Stack alignItems={"center"} direction={"row"}>
                               <EmojiEventsIcon
@@ -423,7 +443,39 @@ const ContestDetails = () => {
                                 }}
                               />
                               <Link component={RouterLink} to='#' underline='none'>
-                                <Typography className={classes.topUserText}>{user.name}</Typography>
+                                {/* <Typography className={classes.topUserText}>
+                                  {user.user.firstName + " " + user.user.lastName}
+                                </Typography> */}
+                                <Stack direction='row' alignItems='center' spacing={1}>
+                                  <Avatar
+                                    sx={{ width: 40, height: 40 }}
+                                    variant='rounded'
+                                    src={user.user.avatarUrl}
+                                  />
+                                  <Stack>
+                                    {/* <Heading6>{generalContent?.generalTitle}</Heading6>
+                                    <Heading6 fontWeight={200}>{props.time}</Heading6>
+                                    <Heading6 fontWeight={100}>{props.content}</Heading6> */}
+                                    <Stack direction='column' alignItems='left'>
+                                      <Typography
+                                        className={classes.topUserText}
+                                      >{`${user.user.firstName} ${user.user.lastName}`}</Typography>
+                                      <Stack
+                                        direction='row'
+                                        alignItems='center'
+                                        justifyContent='space-between'
+                                        gap={1}
+                                      >
+                                        <ParagraphExtraSmall>
+                                          {`${t("common_rank")}: ${user.rank}`}
+                                        </ParagraphExtraSmall>
+                                        <ParagraphExtraSmall>
+                                          {`${t("common_score")}: ${user.totalScore || 0}`}
+                                        </ParagraphExtraSmall>
+                                      </Stack>
+                                    </Stack>
+                                  </Stack>
+                                </Stack>
                               </Link>
                             </Stack>
                           </Grid>
