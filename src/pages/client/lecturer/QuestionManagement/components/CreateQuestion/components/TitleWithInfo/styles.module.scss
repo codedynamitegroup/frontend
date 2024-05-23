@@ -4,12 +4,10 @@
   margin-bottom: 2rem;
   line-height: 14px;
 }
-
-.criteriaOrderText {
-    color: gray;
-    font-size: 15px;
-    font-weight: 600;
+.titleContainer {
+display: flex;
+  align-items: center;
 }
-.errorTextStar {
-    color: red;
+.errorStar {
+  color:red
 }

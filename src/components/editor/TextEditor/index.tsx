@@ -49,9 +49,17 @@ type Props = {
   readOnly?: boolean;
   error?: boolean;
   [key: string]: any;
+  roundedBorder?: boolean;
 };
 
-const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, ...props }) => {
+const TextEditor: React.FC<Props> = ({
+  value,
+  onChange,
+  placeholder,
+  readOnly,
+  roundedBorder,
+  ...props
+}) => {
   const reactQuillRef: any = useRef(null);
   const { error } = props;
   const modules = React.useMemo(
@@ -150,7 +158,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder, readOnly, .
             : error
               ? "text-editor-error"
               : ""
-        }`}
+        } ${roundedBorder ? `rounded-border` : ""}`}
         {...props}
       />
     </>

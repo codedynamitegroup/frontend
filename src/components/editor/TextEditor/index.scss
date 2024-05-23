@@ -44,3 +44,12 @@
     border-color: red;
   }
 }
+
+.rounded-border {
+  .ql-container {
+    border-radius: 0px 0px 12px 12px;
+  }
+  .ql-toolbar {
+    border-radius: 12px 12px 0px 0px;
+  }
+}

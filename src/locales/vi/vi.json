@@ -86,6 +86,7 @@
   "common_final_grade": "Điểm tổng kết",
   "common_question_type_with_question_programming": "Câu hỏi lập trình",
   "common_question_type_with_question_multichoice": "Câu hỏi nhiều lựa chọn",
+  "common_question_type_with_question_shortanswer": "Câu hỏi ngắn",
   "common_question_type_with_question_essay": "Câu hỏi tự luận",
   "common_check_cheating": "Kiểm tra gian lận",
   "common_AI_grading": "Chấm điểm AI",
@@ -378,7 +379,8 @@
   "course_management_exam_preview_prev_page": "Trang trước",
   "course_management_exam_preview_end": "Kết thúc bài làm",
   "course_management_exam_preview_navigate": "Chuyển hướng đến câu hỏi khác",
-  "course_management_exam_preview_multichoice": "Chọn một trong các đáp án sau",
+  "course_management_exam_preview_multichoice": "Chọn một đáp án",
+  "course_management_exam_preview_multichoice_multiple": "Chọn một hoặc nhiều đáp án",
 
   "list_problem_algorithms": [
     "Mảng",
@@ -691,5 +693,10 @@
   "password_min_length": "Mật khẩu phải chứa ít nhất {{lengthNum}} ký tự",
 
   "first_name_required": "Tên không được để trống",
-  "last_name_required": "Họ và tên đệm không được để trống"
+  "last_name_required": "Họ và tên đệm không được để trống",
+
+  "common_flag": "Gắn cờ",
+  "question_answer_add_answer": "Thêm câu trả lời",
+  "question_default_score_description": "Điểm mặc định cho câu hỏi, được sử dụng khi không có tuỳ chỉnh điểm khác (phải lớn hơn hoặc bằng 0)",
+  "common_content": "Nội dung đáp án"
 }

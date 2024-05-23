@@ -1,6 +1,13 @@
 .root {
   flex-direction: column !important;
   background-color: var(--blue-1);
+  min-height: max-content;
+}
+
+.pageTitle {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1d2130 !important;
 }
 
 .container {
@@ -69,4 +76,25 @@
 
 .textEditor {
   height: 200px;
+}
+
+.generalDescription {
+  color: #1d2130;
+  font-size: 12.8px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;
+}
+
+.optionalText {
+  color: #9ca3af;
+  font-size: 12px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;  
+}
+
+.errorTextStar {
+  color: red;
+}
+.infoIcon {
+  font-size: 12px;
 }
