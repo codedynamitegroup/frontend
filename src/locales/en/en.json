@@ -148,6 +148,10 @@
   "common_in_progress": "In progress",
   "common_upcoming": "Upcoming",
   "common_rank": "Rank",
+  "common_catalog": "Catalog",
+  "common_all_courses": "All courses",
+  "common_lesson": "Lesson",
+  "common_learner": "Learner",
 
   "side_bar_dashboard": "Dashboard",
 

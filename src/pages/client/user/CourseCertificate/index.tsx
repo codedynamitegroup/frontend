@@ -1,4 +1,4 @@
-import { Box, Checkbox, Container, FormControlLabel, Grid } from "@mui/material";
+import { Box, Checkbox, Container, FormControlLabel, Grid, ToggleButton } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading2 from "components/text/Heading2";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -22,6 +22,7 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { setCertificateCourses } from "reduxes/coreService/CertificateCourse";
 import { TopicService } from "services/coreService/TopicService";
+import Heading5 from "components/text/Heading5";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -179,12 +180,22 @@ const CourseCertificates = () => {
         <Container className={classes.container}>
           <Grid container>
             <Grid item xs={2.5} id={classes.filter}>
-              <Heading3 translation-key='common_filter_by'>{t("common_filter_by")}</Heading3>
+              <Heading3 translation-key='common_catalog'>{t("common_catalog")}</Heading3>
               <Box className={classes.couseCertificatesByTopic}>
-                <Heading4 translation-key='common_filter_topic'>
+                {/* <ToggleButton
+                  value='all_courses'
+                  selected={true}
+                  onChange={() => {}}
+                  sx={{
+                    textTransform: "lowercase"
+                  }}
+                >
+                  All courses
+                </ToggleButton> */}
+                {/* <Heading4 translation-key='common_filter_topic'>
                   {t("common_filter_topic")}
-                </Heading4>
-                {topicState.topicsFilter.map((topicFilter, index) => (
+                </Heading4> */}
+                {/* {topicState.topicsFilter.map((topicFilter, index) => (
                   <Box className={classes.couseCertificatesByTopicItem} key={index}>
                     <FormControlLabel
                       control={
@@ -207,8 +218,9 @@ const CourseCertificates = () => {
                       }
                     />
                   </Box>
-                ))}
+                ))} */}
               </Box>
+              <Heading5 translation-key='common_filter_topic'>{t("common_filter_topic")}</Heading5>
               <Box className={classes.couseCertificatesByTopic}></Box>
             </Grid>
             <Grid item xs={0.5}></Grid>
