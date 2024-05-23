@@ -38,18 +38,13 @@ const ContestTimeInformation = (props: PropsData) => {
     return status === ContestStartTimeFilterEnum.UPCOMING ? startDate : endDate;
   }, [startDate, endDate, status]);
 
-  const getTimeUntil = (deadline: any) => {
-    if (!deadline) {
+  const getTimeUntil = (inputTime: any) => {
+    if (!inputTime) {
       return;
     }
-    const time = moment(deadline).diff(moment().utc(), "milliseconds");
+    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
     if (time < 0) {
-      setYears(0);
-      setMonths(0);
-      setDays(0);
-      setHours(0);
-      setMinutes(0);
-      setSeconds(0);
+      return;
     } else {
       setYears(Math.floor(time / (1000 * 60 * 60 * 24 * 365)));
       setMonths(Math.floor((time / (1000 * 60 * 60 * 24 * 30)) % 12));
@@ -63,10 +58,17 @@ const ContestTimeInformation = (props: PropsData) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    setInterval(() => getTimeUntil(inputDate), 1000);
+    const interval = setInterval(() => getTimeUntil(inputDate), 1000);
 
-    return () => getTimeUntil(inputDate);
+    return () => clearInterval(interval);
   }, [inputDate]);
+
+  console.log("years", years);
+  console.log("months", months);
+  console.log("days", days);
+  console.log("hours", hours);
+  console.log("minutes", minutes);
+  console.log("seconds", seconds);
 
   return (
     <Paper className={classes.container}>

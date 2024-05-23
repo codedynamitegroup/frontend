@@ -250,6 +250,10 @@ const ContestDetails = () => {
   const contestState = useSelector((state: RootState) => state.contest);
   const { contestId } = useParams<{ contestId: string }>();
   const contestDetails = useMemo(() => contestState.contestDetails, [contestState.contestDetails]);
+  const contestLeaderboard = useMemo(
+    () => contestState.contestLeaderboard,
+    [contestState.contestLeaderboard]
+  );
 
   const contestStatus = useMemo(() => {
     if (contestDetails) {
@@ -386,9 +390,9 @@ const ContestDetails = () => {
                   <TabPanel value='3' translation-key='contest_detail_leaderboard'>
                     <Heading1>{t("contest_detail_leaderboard")}</Heading1>
                     <ContestLeaderboard
-                      currentUserRank={currentUserRank}
-                      rankingList={rankingList}
-                      problemList={problemList}
+                      currentUserRank={contestLeaderboard?.participantRank}
+                      rankingList={contestLeaderboard?.contestLeaderboard || []}
+                      problemList={contestDetails.questions}
                     />
                   </TabPanel>
                 ) : null}
