@@ -63,13 +63,6 @@ const ContestTimeInformation = (props: PropsData) => {
     return () => clearInterval(interval);
   }, [inputDate]);
 
-  console.log("years", years);
-  console.log("months", months);
-  console.log("days", days);
-  console.log("hours", hours);
-  console.log("minutes", minutes);
-  console.log("seconds", seconds);
-
   return (
     <Paper className={classes.container}>
       <Box>
