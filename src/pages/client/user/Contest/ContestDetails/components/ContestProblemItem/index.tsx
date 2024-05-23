@@ -1,15 +1,8 @@
 import { Box, Chip, Divider, Grid, Link, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
 import classes from "./styles.module.scss";
 import clsx from "clsx";
-import { EContestStatus } from "../..";
 import { Link as RouterLink } from "react-router-dom";
-import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-
-const problemEasyStatus = String(i18next.t("contest_detail_problem_easy"));
-const problemMediumStatus = String(i18next.t("contest_detail_problem_medium"));
-const problemAdvanceStatus = String(i18next.t("contest_detail_problem_easy"));
 
 export enum EContestProblemDifficulty {
   easy = "easy",
@@ -85,8 +78,9 @@ const ContestProblemItem = (props: PropsData) => {
               onClick={scoreClickHandler}
             >
               <Typography fontSize={"20px"} className={classes.roundedInfoText}>
-                {submission !== undefined ? `${submission}/` : ""}
-                {maxSubmission}
+                {/* {submission !== undefined ? `${submission}/` : ""}
+                {maxSubmission} */}
+                {submission !== undefined ? `${submission}` : ""}
               </Typography>
               <Typography
                 fontSize={"12px"}

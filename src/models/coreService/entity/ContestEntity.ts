@@ -1,4 +1,4 @@
-import { QuestionEntity } from "./QuestionEntity";
+import { ContestQuestionEntity } from "./ContestQuestionEntity";
 import { UserEntity } from "./UserEntity";
 
 export interface ContestEntity {
@@ -8,7 +8,8 @@ export interface ContestEntity {
   thumbnailUrl: string;
   startTime: string;
   endTime: string;
-  questions: QuestionEntity[];
+  questions: ContestQuestionEntity[];
+  isRegistered?: boolean;
   createdBy: UserEntity;
   createdAt: string;
   updatedAt: string;

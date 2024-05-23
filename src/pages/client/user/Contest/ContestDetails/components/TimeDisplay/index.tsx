@@ -3,7 +3,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import images from "config/images";
 
 interface PropsData {
-  time: number | string;
+  time: number;
   type: string;
 }
 const ContestTimeDisplay = (props: PropsData) => {
