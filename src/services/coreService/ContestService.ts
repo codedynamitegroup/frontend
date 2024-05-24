@@ -53,4 +53,40 @@ export class ContestService {
       });
     }
   }
+
+  static async getContestLeaderboard(contestId: string) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CONTEST.LEADERBOARD.replace(":id", contestId)}`
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch contest leaderboard", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getContestById(id: string) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CONTEST.GET_BY_ID.replace(":id", id)}`
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch contest by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

@@ -115,11 +115,7 @@ const LecturerCourseExamDetails = () => {
             </ParagraphSmall>
           </Grid>
           <Grid item>
-<<<<<<< HEAD
-            <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
-=======
-            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
->>>>>>> origin/main
+            <ParagraphBody>{millisToFormatTimeString(exam.timeLimit ?? 0)}</ParagraphBody>
           </Grid>
         </Grid>
         <Divider

@@ -105,11 +105,7 @@ const StudentCourseExamDetails = () => {
             <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
           </Grid>
           <Grid item>
-<<<<<<< HEAD
-            <ParagraphBody>{millisToFormatTimeString(examLimitTimeInMillis)}</ParagraphBody>
-=======
-            <ParagraphBody>{millisToHoursAndMinutesString(exam.timeLimit ?? 0)}</ParagraphBody>
->>>>>>> origin/main
+            <ParagraphBody>{millisToFormatTimeString(exam.timeLimit ?? 0)}</ParagraphBody>
           </Grid>
         </Grid>
         <Divider

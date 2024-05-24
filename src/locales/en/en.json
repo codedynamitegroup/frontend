@@ -147,6 +147,13 @@
   "common_starts_in": "Starts in",
   "common_in_progress": "In progress",
   "common_upcoming": "Upcoming",
+  "common_rank": "Rank",
+  "common_catalog": "Catalog",
+  "common_all_courses": "All courses",
+  "common_lessons": "Lessons",
+  "common_learners": "Learners",
+  "common_topics": "Topics",
+  "common_view_details": "View details",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -684,7 +691,6 @@
   "question_essay_enter_grader_info": "Enter grader information",
   "file_types_required": "File types are required",
   "question_multiple_show_num_correct": "Show number of correct answers",
-
 
   "type_number": "number",
 

@@ -1,19 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 
-interface FilterByTopic {
-  checked: boolean;
-  topic: TopicEntity;
-}
-
 interface InitialState {
   isLoading: boolean;
-  topicsFilter: FilterByTopic[];
+  topics: TopicEntity[];
 }
 
 const initState: InitialState = {
   isLoading: false,
-  topicsFilter: []
+  topics: []
 };
 
 const topicSlice = createSlice({
@@ -21,25 +16,11 @@ const topicSlice = createSlice({
   initialState: initState,
   reducers: {
     setTopics: (state, action) => {
-      state.topicsFilter = action.payload.topics.map((topic: TopicEntity) => ({
-        checked: false,
-        topic
-      }));
-    },
-    setFilterForTopic: (state, action) => {
-      state.topicsFilter = state.topicsFilter.map((topic) => {
-        if (topic.topic.topicId === action.payload.topicId) {
-          return {
-            ...topic,
-            checked: action.payload.checked
-          };
-        }
-        return topic;
-      });
+      state.topics = action.payload.topics;
     }
   }
 });
 
-export const { setTopics, setFilterForTopic } = topicSlice.actions;
+export const { setTopics } = topicSlice.actions;
 
 export default topicSlice.reducer;

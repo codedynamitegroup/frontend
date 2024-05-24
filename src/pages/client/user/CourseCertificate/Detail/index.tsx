@@ -127,7 +127,15 @@ const CourseCertificateDetail = () => {
           <Box id={classes.courseInfoWrapper}>
             <Box id={classes.courseTitle}>
               <Box className={classes.imgCourseRecommend}>
-                <img src={certificateCourseDetails.topic.thumbnailUrl} alt='img course recommend' />
+                <img
+                  style={{
+                    maxWidth: "70px",
+                    maxHeight: "70px",
+                    borderRadius: "5px"
+                  }}
+                  src={certificateCourseDetails.topic.thumbnailUrl}
+                  alt='img course recommend'
+                />
               </Box>
               <Heading2>{certificateCourseDetails.name}</Heading2>
             </Box>
