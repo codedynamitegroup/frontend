@@ -1,5 +1,4 @@
 import {
-  Button,
   Box,
   Collapse,
   Container,
@@ -7,8 +6,7 @@ import {
   Grid,
   ListItemButton,
   Stack,
-  Typography,
-  Snackbar
+  Typography
 } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
@@ -22,13 +20,12 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller, useFieldArray, set } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
 import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -290,7 +287,8 @@ const CreateShortAnswerQuestion = (props: Props) => {
             </Box>
             <Box className={classes.formBody}>
               <Typography className={classes.pageTitle} translation-key='common_add'>
-                {t("common_add")} {t("common_question_type_with_question_shortanswer")}
+                {t("common_add")}{" "}
+                {t("common_question_type_with_question_shortanswer").toLocaleLowerCase()}
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={12}>

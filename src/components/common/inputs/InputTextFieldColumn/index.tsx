@@ -1,8 +1,7 @@
-import { Box, Grid, OutlinedInput, OutlinedInputProps, Tooltip, Typography } from "@mui/material";
+import { Grid, OutlinedInput, OutlinedInputProps } from "@mui/material";
 import classes from "./styles.module.scss";
 import { memo } from "react";
 import ErrorMessage from "components/text/ErrorMessage";
-import InfoTooltip from "components/common/infoTooltip";
 import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
 
 interface InputsProps extends OutlinedInputProps {

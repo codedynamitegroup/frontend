@@ -702,6 +702,13 @@
   "common_flag": "Flag",
   "question_answer_add_answer": "Add answer",
   "question_default_score_description": "Default score for the question, this will be used if there is no specific score for the question (must be greater than or equal to 0)",
-  "common_content": "Answer content"
+  "common_content": "Answer content",
+
+  "question_management_no_scramble": "Don't scramble",
+  "question_management_scramble_action": "Scramble",
+  "question_management_show_instructions": "Show instructions",
+  "question_management_no_show_instructions": "Hide instructions",
+  "question_management_no_show_num_correct": "Hide number of correct answers",
+  "question_management_show_num_correct": "Show number of correct answers"
 
 }

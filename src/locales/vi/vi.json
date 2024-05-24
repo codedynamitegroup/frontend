@@ -698,5 +698,11 @@
   "common_flag": "Gắn cờ",
   "question_answer_add_answer": "Thêm câu trả lời",
   "question_default_score_description": "Điểm mặc định cho câu hỏi, được sử dụng khi không có tuỳ chỉnh điểm khác (phải lớn hơn hoặc bằng 0)",
-  "common_content": "Nội dung đáp án"
+  "common_content": "Nội dung đáp án",
+  "question_management_no_scramble": "Không xáo trộn",
+  "question_management_scramble_action": "Xáo trộn",
+  "question_management_show_instructions": "Hiện hướng dẫn",
+  "question_management_no_show_instructions": "Ẩn hướng dẫn",
+  "question_management_no_show_num_correct": "Ẩn số lượng",
+  "question_management_show_num_correct": "Hiện số lượng"
 }

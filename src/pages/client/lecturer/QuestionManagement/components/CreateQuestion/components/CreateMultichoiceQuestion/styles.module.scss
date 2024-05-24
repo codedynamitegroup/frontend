@@ -1,6 +1,13 @@
 .root {
   flex-direction: column !important;
   background-color: var(--blue-1);
+  min-height: max-content;
+}
+
+.pageTitle {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1d2130 !important;
 }
 
 .container {
@@ -41,13 +48,12 @@
 }
 .stickyFooterItem {
   background-color: #ffffff;
-  border-top: 1px solid var(--gray-30);
   text-align: center;
-  padding: 20px;
+  padding: 6px;
   position: fixed;
   left: 0;
   bottom: 0;
-  height: 60px;
+  height: 2px;
   width: 100%;
 
   display: flex;
@@ -59,7 +65,7 @@
 
 .phantom {
   display: block;
-  height: 60px;
+  height: 2px;
   width: 100%;
 }
 
