@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
+import "react-resizable/css/styles.css";
+import { IconButton, Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
+import FullscreenIcon from "@mui/icons-material/ZoomOutMap";
+import CloseIcon from "@mui/icons-material/Close";
 
 declare global {
   interface Window {
@@ -50,6 +54,8 @@ type Props = {
   error?: boolean;
   [key: string]: any;
   roundedBorder?: boolean;
+  openDialog?: boolean;
+  title?: string;
 };
 
 const TextEditor: React.FC<Props> = ({
@@ -61,7 +67,7 @@ const TextEditor: React.FC<Props> = ({
   ...props
 }) => {
   const reactQuillRef: any = useRef(null);
-  const { error } = props;
+  const { error, openDialog, title } = props;
   const modules = React.useMemo(
     () => ({
       toolbar: props?.noToolbar
@@ -139,28 +145,114 @@ const TextEditor: React.FC<Props> = ({
     reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
   }, [reactQuillRef, placeholder]);
 
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <>
-      <ReactQuill
-        ref={reactQuillRef}
-        theme={readOnly ? "bubble" : "snow"}
-        readOnly={readOnly}
-        value={convertQuillValue(value)}
-        modules={modules}
-        formats={formats}
-        onChange={onChange}
-        // placeholder={placeholder}
-        className={`text-editor ${
-          props?.noToolbar
-            ? error
-              ? "text-editor-no-toolbar-error"
-              : "text-editor-no-toolbar"
-            : error
-              ? "text-editor-error"
-              : ""
-        } ${roundedBorder ? `rounded-border` : ""}`}
-        {...props}
-      />
+      {openDialog && (
+        <>
+          <div style={{ position: "relative", height: "100%" }}>
+            <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth='xl'>
+              <DialogTitle sx={{ m: 0, p: 2 }}>{title || ""}</DialogTitle>
+              <IconButton
+                aria-label='close'
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500]
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <DialogContent
+                onKeyDown={(event) => event.stopPropagation()}
+                className='dialogContent'
+                dividers
+              >
+                <Grid container>
+                  <Grid item xs={12}>
+                    <ReactQuill
+                      ref={reactQuillRef}
+                      theme={readOnly ? "bubble" : "snow"}
+                      readOnly={readOnly}
+                      value={convertQuillValue(value)}
+                      modules={modules}
+                      formats={formats}
+                      onChange={onChange}
+                      className={`dialog-editor text-editor ${
+                        props?.noToolbar ? "text-editor-no-toolbar" : ""
+                      } ${roundedBorder ? `rounded-border` : ""}`}
+                      {...props}
+                      onKeyDown={(event) => {
+                        if (event.key === " " && reactQuillRef.current) {
+                          const editor = reactQuillRef.current.getEditor();
+                          const { index } = editor.getSelection(true);
+                          if (index === editor.getLength() - 1) {
+                            editor.insertText(index, "\u200B", "user");
+                          }
+                        }
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+            </Dialog>
+            <ReactQuill
+              ref={reactQuillRef}
+              theme={readOnly ? "bubble" : "snow"}
+              readOnly={readOnly}
+              value={convertQuillValue(value)}
+              modules={modules}
+              formats={formats}
+              onChange={onChange}
+              className={`text-editor ${
+                props?.noToolbar
+                  ? error
+                    ? "text-editor-no-toolbar-error"
+                    : "text-editor-no-toolbar"
+                  : error
+                    ? "text-editor-error"
+                    : ""
+              } ${roundedBorder ? `rounded-border` : ""}`}
+              {...props}
+            />
+            <IconButton
+              onClick={() => setOpen(true)}
+              size='small'
+              color='primary'
+              className='zoomIcon'
+            >
+              <FullscreenIcon />
+            </IconButton>
+          </div>
+        </>
+      )}
+      {!openDialog && (
+        <ReactQuill
+          ref={reactQuillRef}
+          theme={readOnly ? "bubble" : "snow"}
+          readOnly={readOnly}
+          value={convertQuillValue(value)}
+          modules={modules}
+          formats={formats}
+          onChange={onChange}
+          // placeholder={placeholder}
+          className={`text-editor ${
+            props?.noToolbar
+              ? error
+                ? "text-editor-no-toolbar-error"
+                : "text-editor-no-toolbar"
+              : error
+                ? "text-editor-error"
+                : ""
+          } ${roundedBorder ? `rounded-border` : ""}`}
+          {...props}
+        />
+      )}
     </>
   );
 };

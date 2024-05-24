@@ -23,6 +23,9 @@ interface InputsProps extends OutlinedInputProps {
   backgroundColor?: string;
   error?: boolean;
   tooltipDescription?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontWeight?: string;
 }
 
 const InputTextFieldColumn = memo((props: InputsProps) => {
@@ -42,7 +45,10 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
     backgroundColor,
     error,
     tooltipDescription,
-    titleRequired
+    titleRequired,
+    fontFamily,
+    fontSize,
+    fontWeight
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -76,7 +82,12 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
             onChange={onChange}
             {...inputProps}
             inputRef={refInput}
-            sx={{ borderRadius: "12px" }}
+            sx={{
+              borderRadius: "12px",
+              fontFamily: fontFamily || "Roboto,sans-serif",
+              fontSize: fontSize || "14px",
+              fontWeight: fontWeight || "400"
+            }}
           />
         </Grid>
         <Grid item xs={title ? 12 : 0} md={0}>
