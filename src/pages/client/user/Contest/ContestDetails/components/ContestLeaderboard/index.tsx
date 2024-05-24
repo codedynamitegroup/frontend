@@ -200,7 +200,11 @@ export default function ContestLeaderboard(props: PropsData) {
                         >
                           {problem.numOfSubmissions || 0} {t("common_submit")}
                         </Typography>
-                        <Typography className={classes.tableSecondaryData}>{"00:02:12"}</Typography>
+                        <Typography className={classes.tableSecondaryData}>
+                          {problem.doTime
+                            ? millisToFormatTimeString(problem.doTime)
+                            : millisToFormatTimeString(0)}
+                        </Typography>
                       </Box>
                     ) : (
                       <Typography>-</Typography>
