@@ -142,7 +142,8 @@ const TextEditor: React.FC<Props> = ({
     []
   );
   useEffect(() => {
-    reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
+    if (reactQuillRef.current)
+      reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
   }, [reactQuillRef, placeholder]);
 
   const [open, setOpen] = useState(false);
@@ -154,6 +155,33 @@ const TextEditor: React.FC<Props> = ({
       {openDialog && (
         <>
           <div style={{ position: "relative", height: "100%" }}>
+            <ReactQuill
+              ref={reactQuillRef}
+              theme={readOnly ? "bubble" : "snow"}
+              readOnly={readOnly}
+              value={convertQuillValue(value)}
+              modules={modules}
+              formats={formats}
+              onChange={onChange}
+              className={`text-editor ${
+                props?.noToolbar
+                  ? error
+                    ? "text-editor-no-toolbar-error"
+                    : "text-editor-no-toolbar"
+                  : error
+                    ? "text-editor-error"
+                    : ""
+              } ${roundedBorder ? `rounded-border` : ""}`}
+              {...props}
+            />
+            <IconButton
+              onClick={() => setOpen(true)}
+              size='small'
+              color='primary'
+              className='zoomIcon'
+            >
+              <FullscreenIcon />
+            </IconButton>
             <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth='xl'>
               <DialogTitle sx={{ m: 0, p: 2 }}>{title || ""}</DialogTitle>
               <IconButton
@@ -188,7 +216,7 @@ const TextEditor: React.FC<Props> = ({
                       } ${roundedBorder ? `rounded-border` : ""}`}
                       {...props}
                       onKeyDown={(event) => {
-                        if (event.key === " " && reactQuillRef.current) {
+                        if (reactQuillRef && event.key === " " && reactQuillRef.current) {
                           const editor = reactQuillRef.current.getEditor();
                           const { index } = editor.getSelection(true);
                           if (index === editor.getLength() - 1) {
@@ -201,33 +229,6 @@ const TextEditor: React.FC<Props> = ({
                 </Grid>
               </DialogContent>
             </Dialog>
-            <ReactQuill
-              ref={reactQuillRef}
-              theme={readOnly ? "bubble" : "snow"}
-              readOnly={readOnly}
-              value={convertQuillValue(value)}
-              modules={modules}
-              formats={formats}
-              onChange={onChange}
-              className={`text-editor ${
-                props?.noToolbar
-                  ? error
-                    ? "text-editor-no-toolbar-error"
-                    : "text-editor-no-toolbar"
-                  : error
-                    ? "text-editor-error"
-                    : ""
-              } ${roundedBorder ? `rounded-border` : ""}`}
-              {...props}
-            />
-            <IconButton
-              onClick={() => setOpen(true)}
-              size='small'
-              color='primary'
-              className='zoomIcon'
-            >
-              <FullscreenIcon />
-            </IconButton>
           </div>
         </>
       )}
