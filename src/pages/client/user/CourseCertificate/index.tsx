@@ -34,6 +34,7 @@ import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import ParagraphBody from "components/text/ParagraphBody";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -216,41 +217,41 @@ const CourseCertificates = () => {
                         );
                       }}
                     >
-                      {/* <Stack
+                      <Stack
                         direction='row'
                         alignItems='space-between'
                         justifyContent='space-between'
                         gap={1}
                         width={"100%"}
-                      > */}
-                      <Stack
-                        direction='row'
-                        alignItems='center'
-                        justifyContent='flex-start'
-                        textAlign={"left"}
-                        gap={1}
                       >
-                        <img
-                          style={{ width: "20px", height: "20px" }}
-                          src={option.topic.thumbnailUrl}
-                          alt={option.name}
-                        />
-                        {option.name}
-                        <Chip
-                          size='small'
-                          label={
-                            option.skillLevel === SkillLevelEnum.BASIC
-                              ? t("common_easy")
-                              : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                ? t("common_medium")
-                                : option?.skillLevel === SkillLevelEnum.ADVANCED
-                                  ? t("common_hard")
-                                  : ""
-                          }
-                          variant='outlined'
-                        />
-                      </Stack>
-                      {/* <Stack
+                        <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='flex-start'
+                          textAlign={"left"}
+                          gap={1}
+                        >
+                          <img
+                            style={{ width: "20px", height: "20px" }}
+                            src={option.topic.thumbnailUrl}
+                            alt={option.name}
+                          />
+                          {option.name}
+                          <Chip
+                            size='small'
+                            label={
+                              option.skillLevel === SkillLevelEnum.BASIC
+                                ? t("common_easy")
+                                : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                  ? t("common_medium")
+                                  : option?.skillLevel === SkillLevelEnum.ADVANCED
+                                    ? t("common_hard")
+                                    : ""
+                            }
+                            variant='outlined'
+                          />
+                        </Stack>
+                        <Stack
                           direction='row'
                           alignItems='center'
                           justifyContent='flex-end'
@@ -259,8 +260,8 @@ const CourseCertificates = () => {
                         >
                           {t("common_view_details")}
                           <ArrowForwardIosIcon />
-                        </Stack> */}
-                      {/* </Stack> */}
+                        </Stack>
+                      </Stack>
                     </Button>
                   </li>
                 );
