@@ -1,4 +1,13 @@
-import { Box, Container, Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  Grid,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup
+} from "@mui/material";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import BasicSelect from "components/common/select/BasicSelect";
 import Heading1 from "components/text/Heading1";
@@ -184,6 +193,78 @@ const CourseCertificates = () => {
               setValue={setSearchText}
               options={certificateCourseState.certificateCourses}
               onHandleChange={searchHandle}
+              renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
+                return (
+                  <li
+                    {...props}
+                    key={option.certificateCourseId}
+                    style={{
+                      paddingLeft: "10px",
+                      paddingRight: "10px"
+                    }}
+                  >
+                    <Button
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        textTransform: "capitalize"
+                      }}
+                      onClick={() => {
+                        navigate(
+                          `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
+                        );
+                      }}
+                    >
+                      {/* <Stack
+                        direction='row'
+                        alignItems='space-between'
+                        justifyContent='space-between'
+                        gap={1}
+                        width={"100%"}
+                      > */}
+                      <Stack
+                        direction='row'
+                        alignItems='center'
+                        justifyContent='flex-start'
+                        textAlign={"left"}
+                        gap={1}
+                      >
+                        <img
+                          style={{ width: "20px", height: "20px" }}
+                          src={option.topic.thumbnailUrl}
+                          alt={option.name}
+                        />
+                        {option.name}
+                        <Chip
+                          size='small'
+                          label={
+                            option.skillLevel === SkillLevelEnum.BASIC
+                              ? t("common_easy")
+                              : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                ? t("common_medium")
+                                : option?.skillLevel === SkillLevelEnum.ADVANCED
+                                  ? t("common_hard")
+                                  : ""
+                          }
+                          variant='outlined'
+                        />
+                      </Stack>
+                      {/* <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='flex-end'
+                          gap={1}
+                          translate-key='common_view_details'
+                        >
+                          {t("common_view_details")}
+                          <ArrowForwardIosIcon />
+                        </Stack> */}
+                      {/* </Stack> */}
+                    </Button>
+                  </li>
+                );
+              }}
             />
             <BasicSelect
               labelId='select-assignment-section-label'

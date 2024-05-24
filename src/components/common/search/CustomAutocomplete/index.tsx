@@ -1,17 +1,14 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Chip, Divider, Grid, InputAdornment, Paper, Stack } from "@mui/material";
+import { Divider, Grid, InputAdornment, Paper } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import classes from "./styles.module.scss";
 import { useSelector } from "react-redux";
-import { RootState } from "store";
 import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
-import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { RootState } from "store";
+import classes from "./styles.module.scss";
 
 interface PropsData {
   value: string;
@@ -21,6 +18,7 @@ interface PropsData {
   placeHolder?: string;
   maxWidth?: string;
   size?: "small" | "medium";
+  renderOption?: (props: any, option: CertificateCourseEntity, { inputValue }: any) => JSX.Element;
 }
 
 export default function CustomAutocomplete({
@@ -30,7 +28,8 @@ export default function CustomAutocomplete({
   onHandleChange,
   placeHolder,
   maxWidth,
-  size = "small"
+  size = "small",
+  renderOption
 }: PropsData) {
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
   const { t } = useTranslation();
@@ -92,78 +91,7 @@ export default function CustomAutocomplete({
                 }}
               />
             )}
-            renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
-              return (
-                <li
-                  {...props}
-                  key={option.certificateCourseId}
-                  style={{
-                    paddingLeft: "10px",
-                    paddingRight: "10px"
-                  }}
-                >
-                  <Button
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      justifyContent: "flex-start",
-                      textTransform: "capitalize"
-                    }}
-                    onClick={() => {
-                      navigate(
-                        `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
-                      );
-                    }}
-                  >
-                    <Stack
-                      direction='row'
-                      alignItems='space-between'
-                      justifyContent='space-between'
-                      gap={1}
-                      width={"100%"}
-                    >
-                      <Stack
-                        direction='row'
-                        alignItems='center'
-                        justifyContent='flex-start'
-                        textAlign={"left"}
-                        gap={1}
-                      >
-                        <img
-                          style={{ width: "20px", height: "20px" }}
-                          src={option.topic.thumbnailUrl}
-                          alt={option.name}
-                        />
-                        {option.name}
-                        <Chip
-                          size='small'
-                          label={
-                            option.skillLevel === SkillLevelEnum.BASIC
-                              ? t("common_easy")
-                              : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                ? t("common_medium")
-                                : option?.skillLevel === SkillLevelEnum.ADVANCED
-                                  ? t("common_hard")
-                                  : ""
-                          }
-                          variant='outlined'
-                        />
-                      </Stack>
-                      <Stack
-                        direction='row'
-                        alignItems='center'
-                        justifyContent='flex-end'
-                        gap={1}
-                        translate-key='common_view_details'
-                      >
-                        {t("common_view_details")}
-                        <ArrowForwardIosIcon />
-                      </Stack>
-                    </Stack>
-                  </Button>
-                </li>
-              );
-            }}
+            renderOption={renderOption}
           />
         </Paper>
       </Grid>
