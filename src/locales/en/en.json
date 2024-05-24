@@ -150,8 +150,10 @@
   "common_rank": "Rank",
   "common_catalog": "Catalog",
   "common_all_courses": "All courses",
-  "common_lessons": "Lesson",
-  "common_learners": "Learner",
+  "common_lessons": "Lessons",
+  "common_learners": "Learners",
+  "common_topics": "Topics",
+  "common_view_details": "View details",
 
   "side_bar_dashboard": "Dashboard",
 
