@@ -85,23 +85,32 @@ const CourseCertificates = () => {
   const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.BASIC
+      (course) =>
+        course.skillLevel === SkillLevelEnum.BASIC &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
 
   const intermediateCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.INTERMEDIATE
+      (course) =>
+        course.skillLevel === SkillLevelEnum.INTERMEDIATE &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
 
   const advancedCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.ADVANCED
+      (course) =>
+        course.skillLevel === SkillLevelEnum.ADVANCED &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
