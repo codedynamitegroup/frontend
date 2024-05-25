@@ -13,6 +13,7 @@ import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filt
 import courseReducer from "reduxes/courseService/course/index";
 import sectionReducer from "reduxes/courseService/section/index";
 import examReducer from "reduxes/courseService/exam/index";
+import assignmentReducer from "reduxes/courseService/assignment/index";
 import questionReducer from "reduxes/courseService/question/index";
 import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
@@ -36,6 +37,7 @@ const store = configureStore({
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     section: sectionReducer,
+    assignment: assignmentReducer,
     exam: examReducer,
     searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
     question: questionReducer,
