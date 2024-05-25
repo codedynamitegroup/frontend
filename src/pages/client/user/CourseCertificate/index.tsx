@@ -25,6 +25,8 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
+import TextTitle from "components/text/TextTitle";
+import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -34,8 +36,6 @@ const CourseCertificates = () => {
   const topicState = useSelector((state: RootState) => state.topic);
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 
-  // const [catalogActive, setCatalogActive] = useState("all");
-
   const catalogActive = useMemo(() => {
     const topicId = searchParams.get("topicId");
     if (topicId && topicState.topics.find((topic) => topic.topicId === topicId)) {
@@ -43,20 +43,6 @@ const CourseCertificates = () => {
     }
     return "all";
   }, [searchParams, topicState.topics]);
-
-  // const filterTopicIds = useMemo(() => {
-  //   return topicState.topicsFilter
-  //     .filter((topicFilter) => topicFilter.checked)
-  //     .map((topicFilter) => topicFilter.topic.topicId);
-  // }, [topicState.topicsFilter]);
-
-  // const filterTopicIds = useMemo(() => {
-  //   const topicId = searchParams.get("topicId");
-  //   if (topicId && topicState.topics.find((topic) => topic.topicId === topicId)) {
-  //     return [topicId];
-  //   }
-  //   return [];
-  // }, [searchParams, topicState.topics]);
 
   const currentTopic = useMemo(() => {
     return topicState.topics.find((topic) => topic.topicId === catalogActive);
@@ -101,6 +87,23 @@ const CourseCertificates = () => {
           (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
   }, [catalogActive, certificateCourseState.certificateCourses]);
+
+  const supportedProgrammingLanguages = useMemo(() => {
+    if (currentTopic) {
+      return currentTopic.programmingLanguages;
+    }
+    return [];
+  }, [currentTopic]);
+
+  const defaultProgrammingLanguage = useMemo(() => {
+    if (supportedProgrammingLanguages.length > 0) {
+      return supportedProgrammingLanguages[0].programmingLanguageId;
+    }
+    return "";
+  }, [supportedProgrammingLanguages]);
+
+  console.log("supportedProgrammingLanguages", supportedProgrammingLanguages);
+  console.log("defaultProgrammingLanguage", defaultProgrammingLanguage);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -183,11 +186,6 @@ const CourseCertificates = () => {
             {t("certificate_description")}
           </Heading3>
           <Box id={classes.bannerSearch}>
-            {/* <AutoSearchBar
-              value={searchText}
-              setValue={setSearchText}
-              onHandleChange={searchHandle}
-            /> */}
             <CustomAutocomplete
               value={searchText}
               setValue={setSearchText}
@@ -390,6 +388,34 @@ const CourseCertificates = () => {
                           ?.description
                       }
                     </ParagraphBody>
+                    {topicState.topics.find((topic) => topic.topicId === catalogActive)
+                      ?.isSingleProgrammingLanguage === false && (
+                      <Stack
+                        direction='row'
+                        spacing={1}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                      >
+                        <TextTitle translation-key='common_multi_language'>
+                          {t("common_update_language")}
+                        </TextTitle>
+                        {supportedProgrammingLanguages.length > 0 && (
+                          <BasicSelect
+                            labelId='select-assignment-section-label'
+                            value={defaultProgrammingLanguage}
+                            onHandleChange={(value) => console.log(value)}
+                            sx={{ width: "fit-content", maxWidth: "600px" }}
+                            items={supportedProgrammingLanguages.map(
+                              (language: ProgrammingLanguageEntity) => ({
+                                value: language.programmingLanguageId,
+                                label: language.name
+                              })
+                            )}
+                            backgroundColor='#FFFFFF'
+                          />
+                        )}
+                      </Stack>
+                    )}
                   </Box>
                 )}
 

@@ -39,8 +39,6 @@ export default function CustomAutocomplete({
     setValue(e.target.value);
   };
 
-  console.log("options", options);
-
   React.useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       onHandleChange(value);

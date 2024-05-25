@@ -129,7 +129,7 @@ int reverse(int x) {
   const initLanguage = codeQuestion?.sourceCodeLanguageId
     ? codeQuestion.sourceCodeLanguageId
     : codeQuestion?.languages && codeQuestion.languages.length > 0
-      ? codeQuestion?.languages[0].id
+      ? codeQuestion?.languages[0].programmingLanguageId
       : undefined;
   useEffect(() => {
     setSelectedLanguage(initLanguage);
@@ -404,7 +404,7 @@ int reverse(int x) {
                       sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                     >
                       {codeQuestion?.languages.map((value: ProgrammingLanguageEntity) => (
-                        <MenuItem value={value.id}>{value.name}</MenuItem>
+                        <MenuItem value={value.programmingLanguageId}>{value.name}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
