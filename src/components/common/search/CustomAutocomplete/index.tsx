@@ -6,7 +6,6 @@ import { CertificateCourseEntity } from "models/coreService/entity/CertificateCo
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { RootState } from "store";
 import classes from "./styles.module.scss";
 
@@ -33,7 +32,6 @@ export default function CustomAutocomplete({
 }: PropsData) {
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const isLoading = React.useMemo(() => certificateCourseState.isLoading, [certificateCourseState]);
 

@@ -1,21 +1,16 @@
-import {
-  Box,
-  Button,
-  Chip,
-  Container,
-  Grid,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup
-} from "@mui/material";
-import AutoSearchBar from "components/common/search/AutoSearchBar";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Box, Button, Chip, Container, Grid, Stack, ToggleButtonGroup } from "@mui/material";
+import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
+import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import BasicSelect from "components/common/select/BasicSelect";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -30,11 +25,6 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
-import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
-import { TopicEntity } from "models/coreService/entity/TopicEntity";
-import ParagraphBody from "components/text/ParagraphBody";
-import CustomAutocomplete from "components/common/search/CustomAutocomplete";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
