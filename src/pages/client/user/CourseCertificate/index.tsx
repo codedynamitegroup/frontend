@@ -1,21 +1,16 @@
-import {
-  Box,
-  Button,
-  Chip,
-  Container,
-  Grid,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup
-} from "@mui/material";
-import AutoSearchBar from "components/common/search/AutoSearchBar";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Box, Button, Chip, Container, Grid, Stack, ToggleButtonGroup } from "@mui/material";
+import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
+import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import BasicSelect from "components/common/select/BasicSelect";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -30,11 +25,8 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
-import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
-import { TopicEntity } from "models/coreService/entity/TopicEntity";
-import ParagraphBody from "components/text/ParagraphBody";
-import CustomAutocomplete from "components/common/search/CustomAutocomplete";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import TextTitle from "components/text/TextTitle";
+import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 
 const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
@@ -44,8 +36,6 @@ const CourseCertificates = () => {
   const topicState = useSelector((state: RootState) => state.topic);
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 
-  // const [catalogActive, setCatalogActive] = useState("all");
-
   const catalogActive = useMemo(() => {
     const topicId = searchParams.get("topicId");
     if (topicId && topicState.topics.find((topic) => topic.topicId === topicId)) {
@@ -53,20 +43,6 @@ const CourseCertificates = () => {
     }
     return "all";
   }, [searchParams, topicState.topics]);
-
-  // const filterTopicIds = useMemo(() => {
-  //   return topicState.topicsFilter
-  //     .filter((topicFilter) => topicFilter.checked)
-  //     .map((topicFilter) => topicFilter.topic.topicId);
-  // }, [topicState.topicsFilter]);
-
-  // const filterTopicIds = useMemo(() => {
-  //   const topicId = searchParams.get("topicId");
-  //   if (topicId && topicState.topics.find((topic) => topic.topicId === topicId)) {
-  //     return [topicId];
-  //   }
-  //   return [];
-  // }, [searchParams, topicState.topics]);
 
   const currentTopic = useMemo(() => {
     return topicState.topics.find((topic) => topic.topicId === catalogActive);
@@ -85,23 +61,49 @@ const CourseCertificates = () => {
   const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.BASIC
+      (course) =>
+        course.skillLevel === SkillLevelEnum.BASIC &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
 
   const intermediateCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.INTERMEDIATE
+      (course) =>
+        course.skillLevel === SkillLevelEnum.INTERMEDIATE &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
 
   const advancedCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
     return certificateCourseState.certificateCourses.filter(
-      (course) => course.skillLevel === SkillLevelEnum.ADVANCED
+      (course) =>
+        course.skillLevel === SkillLevelEnum.ADVANCED &&
+        (catalogActive === "all" ||
+          (catalogActive !== "all" && course.topic.topicId === catalogActive))
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [catalogActive, certificateCourseState.certificateCourses]);
+
+  const supportedProgrammingLanguages = useMemo(() => {
+    if (currentTopic) {
+      return currentTopic.programmingLanguages;
+    }
+    return [];
+  }, [currentTopic]);
+
+  const defaultProgrammingLanguage = useMemo(() => {
+    if (supportedProgrammingLanguages.length > 0) {
+      return supportedProgrammingLanguages[0].programmingLanguageId;
+    }
+    return "";
+  }, [supportedProgrammingLanguages]);
+
+  console.log("supportedProgrammingLanguages", supportedProgrammingLanguages);
+  console.log("defaultProgrammingLanguage", defaultProgrammingLanguage);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -184,11 +186,6 @@ const CourseCertificates = () => {
             {t("certificate_description")}
           </Heading3>
           <Box id={classes.bannerSearch}>
-            {/* <AutoSearchBar
-              value={searchText}
-              setValue={setSearchText}
-              onHandleChange={searchHandle}
-            /> */}
             <CustomAutocomplete
               value={searchText}
               setValue={setSearchText}
@@ -391,6 +388,37 @@ const CourseCertificates = () => {
                           ?.description
                       }
                     </ParagraphBody>
+                    {topicState.topics.find((topic) => topic.topicId === catalogActive)
+                      ?.isSingleProgrammingLanguage === false && (
+                      <Stack
+                        direction='row'
+                        spacing={1}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                      >
+                        <TextTitle
+                          translation-key='common_multi_language'
+                          translate-key='common_update_language'
+                        >
+                          {t("common_update_language")}
+                        </TextTitle>
+                        {supportedProgrammingLanguages.length > 0 && (
+                          <BasicSelect
+                            labelId='select-assignment-section-label'
+                            value={defaultProgrammingLanguage}
+                            onHandleChange={(value) => console.log(value)}
+                            sx={{ width: "fit-content", maxWidth: "600px" }}
+                            items={supportedProgrammingLanguages.map(
+                              (language: ProgrammingLanguageEntity) => ({
+                                value: language.programmingLanguageId,
+                                label: language.name
+                              })
+                            )}
+                            backgroundColor='#FFFFFF'
+                          />
+                        )}
+                      </Stack>
+                    )}
                   </Box>
                 )}
 
