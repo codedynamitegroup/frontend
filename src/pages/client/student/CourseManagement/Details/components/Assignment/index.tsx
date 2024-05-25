@@ -16,11 +16,14 @@ import { ExamService } from "services/courseService/ExamService";
 import { setExams } from "reduxes/courseService/exam";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { setAssignments } from "reduxes/courseService/assignment";
+import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 
 const StudentCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
   const examState = useSelector((state: RootState) => state.exam);
-
+  const assignmentState = useSelector((state: RootState) => state.assignment);
   const { courseId } = useParams<{ courseId: string }>();
 
   const handleGetExams = async (id: string) => {
@@ -32,8 +35,18 @@ const StudentCourseAssignment = () => {
     }
   };
 
+  const handleGetAssignments = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentsByCourseId(id);
+      dispatch(setAssignments(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleGetExams(courseId ?? "");
+    handleGetAssignments(courseId ?? "");
     console.log("examState", examState.exams);
   }, []);
 
@@ -68,8 +81,16 @@ const StudentCourseAssignment = () => {
           <Heading3 translation-key='course_detail_assignment'>
             {t("course_detail_assignment")}
           </Heading3>
-          <AssignmentResource resourceTitle='Bài tập 1' resourceEndedDate='12/12/2022' />
-          <AssignmentResource resourceTitle='Bài tập 2' resourceEndedDate='12/12/2023' />
+          {assignmentState.assignments.map((assignment: AssignmentEntity) => (
+            <AssignmentResource
+              courseId={courseId}
+              examId={assignment.id}
+              resourceTitle={assignment.title}
+              resourceEndedDate={assignment.timeClose}
+              intro={assignment.intro}
+              type={ResourceType.assignment}
+            />
+          ))}
         </Box>
         <Box className={classes.topic}>
           <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>

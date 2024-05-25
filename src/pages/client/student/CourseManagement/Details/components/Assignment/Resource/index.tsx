@@ -42,7 +42,12 @@ const AssignmentResource = ({
   const navigate = useNavigate();
 
   const onDetailClick = () => {
-    if (type === ResourceType.assignment) navigate(routes.student.assignment.detail);
+    if (type === ResourceType.assignment)
+      navigate(
+        routes.student.assignment.detail
+          .replace(":courseId", courseId ?? "")
+          .replace(":assignmentId", examId ?? "")
+      );
     else
       navigate(
         routes.student.exam.detail
