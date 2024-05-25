@@ -396,7 +396,10 @@ const CourseCertificates = () => {
                         justifyContent={"flex-start"}
                         alignItems={"center"}
                       >
-                        <TextTitle translation-key='common_multi_language'>
+                        <TextTitle
+                          translation-key='common_multi_language'
+                          translate-key='common_update_language'
+                        >
                           {t("common_update_language")}
                         </TextTitle>
                         {supportedProgrammingLanguages.length > 0 && (
