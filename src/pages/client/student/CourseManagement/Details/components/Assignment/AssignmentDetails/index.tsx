@@ -10,29 +10,45 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { setAssignmentDetails } from "reduxes/courseService/assignment";
+import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import AssignmentTable from "./components/AssignmentTable";
+import Heading2 from "components/text/Heading2";
 
 const StudentCourseAssignmentDetails = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const assignmentOpenTime = dayjs();
-  const assignmentCloseTime = dayjs();
-  const assignmentDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài tập</p>
-    </div>
-    `;
-  const activityInstructionsRawHTML = `
-    <div>
-    <p>Đây là hướng dẫn bài tập</p>
-    </div>
-    `;
+  const { assignmentId } = useParams<{ assignmentId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
+  const assignmentState = useSelector((state: RootState) => state.assignment);
+  const dispatch = useDispatch();
 
+  const handleGetAssignmentDetails = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentById(id);
+      dispatch(setAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetAssignmentDetails(assignmentId ?? "");
+  }, []);
+
+  console.log("assignmentState", assignmentState.assignmentDetails);
   return (
     <Box className={classes.assignmentBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.course.assignment.replace(":courseId", "1"));
+          navigate(routes.student.course.assignment.replace(":courseId", courseId ?? ""));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -45,7 +61,7 @@ const StudentCourseAssignmentDetails = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>Bài tập 1</Heading1>
+      <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -61,7 +77,7 @@ const StudentCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentOpenTime
+              {dayjs(assignmentState.assignmentDetails?.timeOpen)
                 ?.toDate()
                 .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
             </ParagraphBody>
@@ -78,7 +94,7 @@ const StudentCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentCloseTime
+              {dayjs(assignmentState.assignmentDetails?.timeClose)
                 ?.toDate()
                 .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
             </ParagraphBody>
@@ -91,19 +107,76 @@ const StudentCourseAssignmentDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: assignmentDescriptionRawHTML }}></div>
+          <div
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.intro || `` }}
+          ></div>
+          {assignmentState.assignmentDetails?.introFiles?.map((file) => {
+            return (
+              <a href={file} target='_blank' rel='noreferrer' key={file}>
+                {file.split("/").pop()}
+              </a>
+            );
+          })}
           <div
             style={{
               marginBottom: "10px"
             }}
-            dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
           ></div>
+          {assignmentState.assignmentDetails?.introAttachments?.map((attachment) => {
+            // Lấy tên file từ URL
+            const filename = attachment.split("/").pop();
+            const filenameFinal = decodeURIComponent(filename || "");
+            return (
+              <a href={attachment} target='_blank' rel='noreferrer' key={attachment}>
+                {filenameFinal}
+              </a>
+            );
+          })}
         </Box>
       </Card>
+      <Heading2 translation-key={["course_student_assignment_submission_status"]}>
+        {t("course_student_assignment_submission_status")}
+      </Heading2>
+      <AssignmentTable
+        rows={[
+          {
+            header: t("course_student_assignment_submission_status"),
+            data: t("course_student_assignment_submission_status_not_submitted")
+          },
+          {
+            header: t("course_student_assignment_grading_status"),
+            data: t("course_student_assignment_submission_status_not_grading")
+          },
+          {
+            header: t("course_student_assignment_time_remaining"),
+            data: "3 days 13 hours remaining"
+          },
+          {
+            header: t("course_student_assignment_last_modified"),
+            data: "-"
+          },
+          {
+            header: t("course_student_assignment_file_submission"),
+            data: "hehe.jpg"
+          }
+        ]}
+        translation-key={[
+          "course_student_assignment_submission_status",
+          "course_student_assignment_grading_status",
+          "course_student_assignment_time_remaining",
+          "course_student_assignment_last_modified",
+          "course_student_assignment_file_submission"
+        ]}
+      />
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.assignment.submit);
+          navigate(
+            routes.student.assignment.submit
+              .replace(":assignmentId", assignmentId ?? "")
+              .replace(":courseId", courseId ?? "")
+          );
         }}
         width='fit-content'
       >
