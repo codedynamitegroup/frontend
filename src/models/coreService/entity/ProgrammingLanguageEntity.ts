@@ -7,4 +7,7 @@ export interface ProgrammingLanguageEntity {
   timeLimit: number;
   memoryLimit: number;
   isActived: boolean;
+  headCode: string;
+  bodyCode: string;
+  tailCode: string;
 }

@@ -37,6 +37,7 @@ import { UUID } from "crypto";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
+import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
 
 enum ELanguage {
   JAVA = "java",
@@ -61,88 +62,54 @@ export default function DetailProblem() {
   const dispatch = useAppDispatch();
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
+
+  const updateLanguageBodyCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
+    const submissinMapWithLangIdKeyAndBodyCodeValue = new Map<UUID, string>();
+    data.codeSubmissions?.forEach((value) => {
+      submissinMapWithLangIdKeyAndBodyCodeValue.set(value.languageId, value.bodyCode);
+    });
+    data.languages = data.languages.map((value) => {
+      const bodyCode: string | undefined = submissinMapWithLangIdKeyAndBodyCodeValue.get(value.id);
+      if (bodyCode !== undefined) value.bodyCode = bodyCode;
+      return value;
+    });
+    return data;
+  };
+
+  const mapLanguages = new Map<string, ProgrammingLanguageEntity>();
+  codeQuestion?.languages.forEach((value) => {
+    mapLanguages.set(value.id, value);
+  });
+
   useEffect(() => {
     if (problemId !== undefined)
-      CodeQuestionService.getDetailCodeQuestion(problemId, null)
+      CodeQuestionService.getDetailCodeQuestion(problemId, "9ba179ed-d26d-4828-a0f6-8836c2063992")
         .then((data: CodeQuestionEntity) => {
-          dispatch(setCodeQuestion(data));
+          dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
         .catch((err) => console.log(err));
   }, [dispatch]);
 
-  const codeStubs: QCodeStub[] = [
-    {
-      language: ELanguage.JAVA,
-      codeStubBody: `class Solution {
-	public int reverse(int x) {
-		long result = 0;
+  const [selectedLanguage, setSelectedLanguage] = useState<{ id: string; bodyCode: string }>({
+    id: "",
+    bodyCode: ""
+  });
 
-		while (x != 0) {
-			result = result*10 + x%10;
-			x /= 10;
-				if(result > Integer.MAX_VALUE || result < Integer.MIN_VALUE)
-					return 0;
-		}
-
-		return (int) result;
-	}
-}
-			`
-    },
-    {
-      language: ELanguage.JAVASCRIPT,
-      codeStubBody: `
-/*
- * Complete the 'sumOfTwoIntegers' function below.
- *
- * The function is expected to return an INTEGER.
- * The function accepts following parameters:
- *  1. INTEGER a
- *  2. INTEGER b
- */
-
-function reverse(int x) {
-    // Write your code here
-
-}`
-    },
-    {
-      language: ELanguage.CPP,
-      codeStubBody: `
-			/*
- * Complete the 'sumOfTwoIntegers' function below.
- *
- * The function is expected to return an INTEGER.
- * The function accepts following parameters:
- *  1. INTEGER a
- *  2. INTEGER b
- */
-
-int reverse(int x) {
-
-}
-			`
-    }
-  ];
-
-  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>("hi");
-  const initLanguage = codeQuestion?.sourceCodeLanguageId
-    ? codeQuestion.sourceCodeLanguageId
-    : codeQuestion?.languages && codeQuestion.languages.length > 0
-      ? codeQuestion?.languages[0].id
-      : undefined;
   useEffect(() => {
-    setSelectedLanguage(initLanguage);
-  }, [initLanguage]);
+    setSelectedLanguage(
+      codeQuestion?.languages !== undefined && codeQuestion?.languages.length > 0
+        ? { id: codeQuestion?.languages[0].id, bodyCode: codeQuestion?.languages[0].bodyCode }
+        : { id: "", bodyCode: "" }
+    );
+  }, [codeQuestion?.languages]);
 
-  const [selectedCodeStub, setSelectedCodeStub] = useState<QCodeStub>(codeStubs[0]);
   const handleChangeLanguage = (event: SelectChangeEvent) => {
-    const selectedLanguage = event.target.value;
-    setSelectedLanguage(selectedLanguage);
-    // const selectedStub = codeStubs.find((stub) => stub.language === selectedLanguage);
-    // if (selectedStub) {
-    //   setSelectedCodeStub(selectedStub);
-    // }
+    const selectedLanguageId = event.target.value;
+    const language = mapLanguages.get(selectedLanguageId);
+    setSelectedLanguage({
+      id: selectedLanguageId,
+      bodyCode: language?.bodyCode !== undefined ? language.bodyCode : ""
+    });
   };
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
@@ -399,7 +366,7 @@ int reverse(int x) {
                   <CodeIcon />
                   <FormControl>
                     <Select
-                      value={selectedLanguage}
+                      value={selectedLanguage.id}
                       onChange={handleChangeLanguage}
                       sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                     >
@@ -415,15 +382,7 @@ int reverse(int x) {
                     overflow: "auto"
                   }}
                 >
-                  <CodeEditor
-                    value={
-                      selectedLanguage === codeQuestion?.sourceCodeLanguageId
-                        ? codeQuestion?.sourceCode !== undefined
-                          ? codeQuestion?.sourceCode
-                          : ""
-                        : ""
-                    }
-                  />
+                  <CodeEditor value={selectedLanguage.bodyCode} />
                 </Box>
               </Box>
               <Box className={classes.codeTestcaseContainer}>
