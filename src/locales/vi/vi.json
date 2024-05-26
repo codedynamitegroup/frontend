@@ -87,6 +87,7 @@
   "common_question_type_with_question_programming": "Câu hỏi lập trình",
   "common_question_type_with_question_multichoice": "Câu hỏi trắc nghiệm",
   "common_question_type_with_question_shortanswer": "Câu hỏi ngắn",
+  "common_question_type_with_question_truefalse": "Câu hỏi đúng/sai",
   "common_question_type_with_question_essay": "Câu hỏi tự luận",
   "common_check_cheating": "Kiểm tra gian lận",
   "common_AI_grading": "Chấm điểm AI",
@@ -704,5 +705,9 @@
   "question_management_show_instructions": "Hiện hướng dẫn",
   "question_management_no_show_instructions": "Ẩn hướng dẫn",
   "question_management_no_show_num_correct": "Ẩn số lượng",
-  "question_management_show_num_correct": "Hiện số lượng"
+  "question_management_show_num_correct": "Hiện số lượng",
+  "question_management_correct_answer_description": "Sử dụng trường này để xác định câu trả lời đúng cho câu hỏi đúng/sai. Nếu câu nêu trong câu hỏi là đúng, hãy chọn 'Đúng'. Nếu câu nêu là sai, hãy chọn 'Sai'.",
+  "max_byte_title": "Kích thước tối đa của tệp đính kèm",
+  "question_attachments_setting": "Cài đặt tệp đính kèm"
+
 }

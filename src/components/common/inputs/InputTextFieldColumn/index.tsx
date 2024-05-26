@@ -1,5 +1,4 @@
 import { Grid, OutlinedInput, OutlinedInputProps } from "@mui/material";
-import classes from "./styles.module.scss";
 import { memo } from "react";
 import ErrorMessage from "components/text/ErrorMessage";
 import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
@@ -85,7 +84,8 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
               borderRadius: "12px",
               fontFamily: fontFamily || "Roboto,sans-serif",
               fontSize: fontSize || "14px",
-              fontWeight: fontWeight || "400"
+              fontWeight: fontWeight || "400",
+              boxShadow: "0px 1px 2px 0px rgba(21, 21, 21, 0.08)"
             }}
           />
         </Grid>

@@ -23,7 +23,7 @@ const JoySelect = (props: PropsData) => {
       onChange={(event, newValue: any) => onChange(newValue)}
       sx={{
         borderRadius: borderRadius || "12px",
-        height: height || "40px",
+        height: height || "38px",
         fontFamily: fontFamily || "Roboto,sans-serif",
         fontSize: fontSize || "14px",
         fontWeight: fontWeight || "400"

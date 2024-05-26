@@ -219,10 +219,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
         <form onSubmit={handleSubmit(submitHandler)}>
           <AlertDialog isBlocking={isDirty} />
-          <Container
-            style={{ marginTop: `${headerHeight}px`, marginBottom: "100px" }}
-            className={classes.container}
-          >
+          <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
               {props.insideCrumb ? (
                 <ParagraphBody
@@ -527,6 +524,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
         </form>
         <Footer />
       </Grid>
+      <Box className={classes.stickyFooterContainer}>
+        <Box className={classes.stickyFooterItem}></Box>
+      </Box>
     </>
   );
 };

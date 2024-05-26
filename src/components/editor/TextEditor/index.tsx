@@ -5,7 +5,6 @@ import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
-import "react-resizable/css/styles.css";
 import { IconButton, Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/ZoomOutMap";
 import CloseIcon from "@mui/icons-material/Close";

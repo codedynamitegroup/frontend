@@ -1,5 +1,4 @@
 import {
-  Button,
   Box,
   Collapse,
   Container,
@@ -585,22 +584,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_management_one_or_many")} />
-                      <Controller
-                        name='single'
-                        control={control}
-                        defaultValue={"1"}
-                        render={({ field: { onChange, value } }) => (
-                          <JoySelect value={value} onChange={onChange} options={singleOptions} />
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12} md={12}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
                       <TitleWithInfoTip title={t("question_management_scramble")} />
                       <Controller
                         name='shuffleAnswer'
@@ -614,6 +597,17 @@ const CreateMultichoiceQuestion = (props: Props) => {
                             orientation='horizontal'
                             size='md'
                           />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TitleWithInfoTip title={t("question_management_one_or_many")} />
+                      <Controller
+                        name='single'
+                        control={control}
+                        defaultValue={"1"}
+                        render={({ field: { onChange, value } }) => (
+                          <JoySelect value={value} onChange={onChange} options={singleOptions} />
                         )}
                       />
                     </Grid>
@@ -634,6 +628,8 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         )}
                       />
                     </Grid>
+                    <Grid item xs={12} md={6} />
+
                     <Grid item xs={12} md={6}>
                       <TitleWithInfoTip title={t("question_multiple_show_num_correct")} />
                       <Controller
@@ -716,15 +712,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
                   {t("common_cancel")}
                 </JoyButton>
               </Stack>
-              <Box className={classes.stickyFooterContainer}>
-                <Box className={classes.phantom} />
-                <Box className={classes.stickyFooterItem}></Box>
-              </Box>
             </Box>
           </Container>
         </form>
+        <Footer />
       </Grid>
-      <Footer />
+      <Box className={classes.stickyFooterContainer}>
+        <Box className={classes.stickyFooterItem}></Box>
+      </Box>
     </>
   );
 };
