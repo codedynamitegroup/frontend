@@ -1,4 +1,4 @@
-import { Box, Divider, Grid } from "@mui/material";
+import { Box, Divider, Grid, Rating, Stack } from "@mui/material";
 import React from "react";
 import classes from "./styles.module.scss";
 import Heading3 from "components/text/Heading3";
@@ -36,11 +36,29 @@ const CourseCertificateCard = ({ course }: Props) => {
         </Grid>
         <Divider />
         <Grid item xs={2}>
+          <Box
+            className={classes.iconCourse}
+            sx={{
+              marginTop: "-5px",
+              marginBottom: "10px"
+            }}
+          >
+            <Stack direction='row' spacing={1} alignItems={"center"}>
+              <Rating name='read-only' value={course?.avgRating || 0} readOnly size='small' />
+              <ParagraphBody>{course?.avgRating || 0}</ParagraphBody>
+              <ParagraphBody>({course?.numOfReviews || 0})</ParagraphBody>
+            </Stack>
+          </Box>
           <Box className={classes.iconCourse}>
             <FontAwesomeIcon icon={faBook} className={classes.fileIcon} />
-            <ParagraphBody>
-              {course?.numOfQuestions || 0} bài học • {course?.numOfStudents || 0} người học
-            </ParagraphBody>
+            <Stack direction='row' spacing={1} alignItems={"center"}>
+              <ParagraphBody fontWeight={550}>
+                {course?.numOfQuestions || 0} {t("common_lessons").toLowerCase()} {" • "}
+              </ParagraphBody>
+              <ParagraphBody>
+                {course?.numOfStudents || 0} {t("common_learners").toLowerCase()}
+              </ParagraphBody>
+            </Stack>
           </Box>
           <Box className={classes.iconCourse}>
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />

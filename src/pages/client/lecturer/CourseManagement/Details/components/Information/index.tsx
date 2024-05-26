@@ -18,6 +18,11 @@ import CourseResource from "./components/CourseResource";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseResourceType } from "models/courseService/course";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { CourseService } from "services/courseService/CourseService";
+import { setSections } from "reduxes/courseService/section";
+import { useParams } from "react-router-dom";
 
 const LecturerCourseInformation = () => {
   const topicList = [
@@ -82,6 +87,21 @@ const LecturerCourseInformation = () => {
     }
   };
 
+  const dispatch = useDispatch<AppDispatch>();
+  const sectionState = useSelector((state: RootState) => state.section);
+  //how to get id course by url http://localhost:3456/frontend#/student/courses/833f28cd-2502-44f0-ac88-ad547ff64449/information
+  const courseId = useParams<{ courseId: string }>().courseId;
+  console.log(courseId);
+  console.log("HEHE");
+
+  // const handleGetSections = async () => {
+  //   try {
+  //     const getSectionsResponse = await CourseService.getSectionsByCourseId({});
+  //     dispatch(setSections(getSectionsResponse));
+  //   } catch (error) {
+  //     console.error("Failed to fetch sections", error);
+  //   }
+  // };
   return (
     <Box className={classes.informationBody}>
       <Grid item xs={12}>

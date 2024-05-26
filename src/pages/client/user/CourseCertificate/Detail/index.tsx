@@ -6,7 +6,7 @@ import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "r
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading2 from "components/text/Heading2";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import CourseCertificateIntroduction from "./components/Introduction";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
@@ -127,7 +127,15 @@ const CourseCertificateDetail = () => {
           <Box id={classes.courseInfoWrapper}>
             <Box id={classes.courseTitle}>
               <Box className={classes.imgCourseRecommend}>
-                <img src={certificateCourseDetails.topic.thumbnailUrl} alt='img course recommend' />
+                <img
+                  style={{
+                    maxWidth: "70px",
+                    maxHeight: "70px",
+                    borderRadius: "5px"
+                  }}
+                  src={certificateCourseDetails.topic.thumbnailUrl}
+                  alt='img course recommend'
+                />
               </Box>
               <Heading2>{certificateCourseDetails.name}</Heading2>
             </Box>

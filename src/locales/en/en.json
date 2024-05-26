@@ -147,6 +147,14 @@
   "common_starts_in": "Starts in",
   "common_in_progress": "In progress",
   "common_upcoming": "Upcoming",
+  "common_rank": "Rank",
+  "common_catalog": "Catalog",
+  "common_all_courses": "All courses",
+  "common_lessons": "Lessons",
+  "common_learners": "Learners",
+  "common_topics": "Topics",
+  "common_view_details": "View details",
+  "common_update_language": "Update language",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -308,6 +316,17 @@
   "course_grade_response": "Response",
 
   "course_participant_title": "Participant list",
+
+  "course_student_assignment_submission_status": "Submission status",
+  "course_student_assignment_grading_status": "Grading status",
+  "course_student_assignment_time_remaining": "Time remaining",
+  "course_student_assignment_last_modified": "Last modified",
+  "course_student_assignment_file_submission": "File submission",
+
+  "course_student_assignment_submission_status_not_submitted": "No submissions have been made yet",
+  "course_student_assignment_submission_status_submitted": "Submitted for grading",
+  "course_student_assignment_submission_status_graded": "Graded",
+  "course_student_assignment_submission_status_not_grading": "Not graded",
 
   "course_lecturer_add_announcement": "Post new announcement",
   "course_lecturer_announcement_title": "Announcement title",
@@ -684,7 +703,6 @@
   "question_essay_enter_grader_info": "Enter grader information",
   "file_types_required": "File types are required",
   "question_multiple_show_num_correct": "Show number of correct answers",
-
 
   "type_number": "number",
 

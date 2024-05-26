@@ -3,29 +3,17 @@ import { API } from "constants/API";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
-export class CourseService {
-  static async getCourses({
-    search = "",
-    pageNo = 0,
-    pageSize = 10
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) {
+export class AssignmentService {
+  static async getAssignmentsByCourseId(courseId: string) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}`, {
-        params: {
-          search,
-          pageNo,
-          pageSize
-        }
+      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.DEFAULT}`, {
+        params: { courseId }
       });
       if (response.status === 200) {
-        return Promise.resolve(response.data);
+        return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch courses", error);
+      console.error("Failed to fetch assignments by course id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -34,16 +22,17 @@ export class CourseService {
     }
   }
 
-  static async getSectionsByCourseId(courseId: string) {
+  static async getAssignmentById(id: string) {
     try {
       const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE.SECTION}/${courseId}`
+        `${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.GET_BY_ID}`.replace(":id", id)
       );
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch sections by course id", error);
+      console.error("Failed to fetch assignment by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

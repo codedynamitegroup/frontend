@@ -64,7 +64,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import { millisToHoursAndMinutesString } from "utils/time";
+import { millisToFormatTimeString } from "utils/time";
 import classes from "./styles.module.scss";
 import BasicSelect from "components/common/select/BasicSelect";
 import { grey } from "@mui/material/colors";
@@ -603,7 +603,7 @@ export default function GradingExam() {
                     </Grid>
                     <Grid item>
                       <ParagraphBody>
-                        {millisToHoursAndMinutesString(examLimitTimeInMillis)}
+                        {millisToFormatTimeString(examLimitTimeInMillis)}
                       </ParagraphBody>
                     </Grid>
                   </Grid>
