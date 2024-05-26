@@ -30,12 +30,15 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller, useFieldArray, set } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
 import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import AlertDialog from "../BlockingDialog";
 import { Helmet } from "react-helmet";
+import { useDispatch } from "react-redux";
+import { setQuestionCreate } from "reduxes/coreService/questionCreate";
+import question from "reduxes/courseService/question";
 
 interface Props {
   qtype: String;
@@ -114,6 +117,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
         )
     });
   }, [t]);
+
   const {
     control,
     register,
@@ -135,13 +139,18 @@ const CreateShortAnswerQuestion = (props: Props) => {
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: "answers" // unique name for your Field Array,
   });
+
+  const dispatch = useDispatch();
+
+  const [openAlertDiaglog, setOpenAlertDiaglog] = useState(true);
+
   const submitHandler = async (data: any) => {
-    console.log(data);
+    setOpenAlertDiaglog(false);
     const formSubmittedData: FormData = { ...data };
     const newQuestion: PostShortAnswerQuestion = {
-      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      organizationId: "08b65a39-394f-4977-a5fa-3fe145b620f8",
+      createdBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7",
+      updatedBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7",
       difficulty: "EASY",
       name: formSubmittedData.questionName,
       questionText: formSubmittedData.questionDescription,
@@ -154,12 +163,26 @@ const CreateShortAnswerQuestion = (props: Props) => {
     };
     QuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
-        console.log(res);
+        getQuestionByQuestionId(res.questionId);
+        navigate(routes.lecturer.exam.create);
+      })
+      .finally(() => {
+        console.log("finally");
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  const getQuestionByQuestionId = async (questionId: string) => {
+    try {
+      const response = await QuestionService.getQuestionsByQuestionId(questionId);
+      dispatch(setQuestionCreate(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
@@ -174,7 +197,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
         <Header ref={headerRef} />
 
         <form onSubmit={handleSubmit(submitHandler)}>
-          <AlertDialog isBlocking={isDirty} />
+          <AlertDialog isBlocking={openAlertDiaglog} />
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
               {props.insideCrumb ? (
