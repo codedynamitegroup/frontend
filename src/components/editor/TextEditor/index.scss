@@ -3,6 +3,7 @@
 
   .ql-container {
     height: calc(100% - 42px) !important;
+    box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08);
 
     .ql-editor {
       height: 100%;
@@ -43,4 +44,52 @@
   .ql-toolbar {
     border-color: red;
   }
+}
+
+.dialog-editor {
+  min-height: 700px;
+  max-height: inherit;
+  padding-bottom: 10px;
+}
+
+.rounded-border {
+  .ql-container {
+    border-radius: 0px 0px 12px 12px;
+
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 15px;
+      margin-bottom: 7px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 30px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+      cursor: default;
+    }
+  }
+  .ql-toolbar {
+    border-radius: 12px 12px 0px 0px;
+  }
+  
+}
+
+.dialogContent {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+}
+
+.zoomIcon {
+  position: absolute !important;
+  top: 0px !important;
+  right: 0px !important;
 }

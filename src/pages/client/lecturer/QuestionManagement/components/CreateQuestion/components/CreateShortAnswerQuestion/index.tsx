@@ -1,21 +1,17 @@
 import {
-  Button,
   Box,
-  Checkbox,
   Collapse,
   Container,
   Divider,
   Grid,
   ListItemButton,
-  Stack
+  Stack,
+  Typography
 } from "@mui/material";
 import Header from "components/Header";
-import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
-import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
-import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
@@ -24,7 +20,6 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -36,6 +31,15 @@ import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntit
 import { QuestionService } from "services/coreService/QuestionService";
 import AlertDialog from "../BlockingDialog";
 import { Helmet } from "react-helmet";
+import isQuillEmpty from "utils/coreService/isQuillEmpty";
+import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import JoyButton from "@mui/joy/Button";
+import Footer from "components/Footer";
+import TitleWithInfoTip from "../TitleWithInfo";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface Props {
   qtype: String;
@@ -45,28 +49,26 @@ interface Props {
 interface FormData {
   questionName: string;
   questionDescription: string;
-  defaultScore: number;
+  defaultScore: string;
   generalDescription?: string;
-  caseSensitive?: boolean;
+  caseSensitive?: number;
   answers: { answer: string; feedback: string; fraction: number }[];
 }
 
 const CreateShortAnswerQuestion = (props: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
   const [answerOpen, setAnswerOpen] = useState(true);
-  const vi_name = useMemo(
-    () => Object.values(qtype).find((value) => value.code === props.qtype)?.vi_name,
-    [props.qtype]
-  );
-  const en_name = useMemo(
-    () => Object.values(qtype).find((value) => value.code === props.qtype)?.en_name,
-    [props.qtype]
-  );
   const navigate = useNavigate();
+
+  // submit animation
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
+  const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   const headerRef = useRef<HTMLDivElement>(null);
   let { height: headerHeight } = useBoxDimensions({
@@ -86,21 +88,28 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
   const urlParams = useParams();
 
-  useEffect(() => {
-    setCurrentLang(i18next.language);
-  }, [i18next.language]);
-
   //  Form handler
   const schema = useMemo(() => {
     return yup.object().shape({
-      questionName: yup.string().required(t("question_name_required")),
-      questionDescription: yup.string().required(t("question_description_required")),
+      questionName: yup.string().required(t("question_name_required")).trim(),
+      questionDescription: yup
+        .string()
+        .required(t("question_description_required"))
+        .trim("")
+        .test("isQuillEmpty", t("question_description_required"), (value) => !isQuillEmpty(value)),
       defaultScore: yup
-        .number()
+        .string()
         .required(t("question_default_score_required"))
-        .min(0, t("question_default_score_invalid")),
-      generalDescription: yup.string(),
-      caseSensitive: yup.boolean(),
+        .test(
+          "is-decimal",
+          "Invalid number, default score must be a number greater than or equal 0",
+          (value) => isValidDecimal(value)
+        )
+        .transform((value) => value.replace(",", ".")),
+      generalDescription: yup.string().trim(""),
+
+      caseSensitive: yup.number(),
+
       answers: yup
         .array()
         .min(1, t("min_answer_required", { answerNum: 1 }))
@@ -108,7 +117,14 @@ const CreateShortAnswerQuestion = (props: Props) => {
         .of(
           yup.object().shape({
             answer: yup.string().required(t("question_answer_content_required")),
-            feedback: yup.string().required(t("common_required")),
+            feedback: yup
+              .string()
+              .required(t("common_required"))
+              .test(
+                "isQuillEmpty",
+                t("question_description_required"),
+                (value) => !isQuillEmpty(value)
+              ),
             fraction: yup.number().required(t("question_feedback_answer_required"))
           })
         )
@@ -116,16 +132,15 @@ const CreateShortAnswerQuestion = (props: Props) => {
   }, [t]);
   const {
     control,
-    register,
     handleSubmit,
-    watch,
+    trigger,
     formState: { errors, isDirty }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       answers: [],
-      caseSensitive: true,
-      defaultScore: 0,
+      caseSensitive: 1,
+      defaultScore: "0",
       generalDescription: "",
       questionDescription: "",
       questionName: ""
@@ -136,7 +151,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
     name: "answers" // unique name for your Field Array,
   });
   const submitHandler = async (data: any) => {
-    console.log(data);
+    setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
     const newQuestion: PostShortAnswerQuestion = {
       organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
@@ -146,31 +161,60 @@ const CreateShortAnswerQuestion = (props: Props) => {
       name: formSubmittedData.questionName,
       questionText: formSubmittedData.questionDescription,
       generalFeedback: formSubmittedData?.generalDescription,
-      defaultMark: formSubmittedData?.defaultScore,
+      defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "SHORT_ANSWER",
       answers: formSubmittedData.answers,
 
       caseSensitive: Boolean(formSubmittedData?.caseSensitive)
     };
+    console.log(newQuestion);
     QuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
-        console.log(res);
+        setSnackbarType(AlertType.Success);
+        setSnackbarContent(
+          t("question_management_create_question_success", {
+            questionType: t("common_question_type_short")
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
+        setSnackbarType(AlertType.Error);
+        setSnackbarContent(
+          t("question_management_create_question_failed", {
+            questionType: t("common_question_type_short")
+          })
+        );
+      })
+      .finally(() => {
+        setSubmitLoading(false);
+        setOpenSnackbar(true);
       });
   };
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
 
+  useEffect(() => {
+    if (i18n.language !== currentLang && errors?.questionName) {
+      console.log("triggered");
+      trigger();
+      setCurrentLang(i18n.language);
+    }
+  }, [i18n.language]);
+
   return (
     <>
-      <Helmet>
-        <title>Create short answer question</title>
-      </Helmet>
-
       <Grid className={classes.root}>
+        <SnackbarAlert
+          open={openSnackbar}
+          setOpen={setOpenSnackbar}
+          type={snackbarType}
+          content={snackbarContent}
+        />
+        <Helmet>
+          <title>Create short answer question</title>
+        </Helmet>
         <Header ref={headerRef} />
 
         <form onSubmit={handleSubmit(submitHandler)}>
@@ -239,121 +283,177 @@ const CreateShortAnswerQuestion = (props: Props) => {
               )}
             </Box>
             <Box className={classes.formBody}>
-              <Heading1 fontWeight={"500"} translation-key='common_add'>
+              <Typography className={classes.pageTitle} translation-key='common_add'>
                 {t("common_add")}{" "}
-                {currentLang === "en"
-                  ? i18next.format(en_name, "lowercase")
-                  : i18next.format(vi_name, "lowercase")}
-              </Heading1>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='questionName'
-                render={({ field }) => (
-                  <InputTextField
-                    error={Boolean(errors?.questionName)}
-                    errorMessage={errors.questionName?.message}
-                    title={`${t("exam_management_create_question_name")} *`}
-                    type='text'
-                    placeholder={t("exam_management_create_question_name")}
-                    required
-                    translation-key='exam_management_create_question_name'
-                    {...field}
-                  />
-                )}
-              />
-
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={12} md={3}>
-                  <TextTitle translation-key='exam_management_create_question_description'>
-                    {t("exam_management_create_question_description")} *
-                  </TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9} className={classes.textEditor}>
-                  <Controller
-                    defaultValue=''
-                    control={control}
-                    name='questionDescription'
-                    render={({ field }) => (
-                      <TextEditor
-                        error={Boolean(errors?.questionDescription)}
-                        placeholder={`${t("question_management_enter_question_description")}...`}
-                        required
-                        translation-key='question_management_enter_question_description'
-                        {...field}
+                {t("common_question_type_with_question_shortanswer").toLocaleLowerCase()}
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={12}>
+                  <Grid container spacing={3}>
+                    {/* Question name */}
+                    <Grid item xs={6} md={6}>
+                      <Controller
+                        defaultValue=''
+                        control={control}
+                        name='questionName'
+                        render={({ field }) => (
+                          <InputTextFieldColumn
+                            error={Boolean(errors?.questionName)}
+                            errorMessage={errors.questionName?.message}
+                            title={`${t("exam_management_create_question_name")}`}
+                            type='text'
+                            placeholder={t("exam_management_create_question_name")}
+                            titleRequired={true}
+                            translation-key='exam_management_create_question_name'
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <></>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  {Boolean(errors?.questionDescription) && (
-                    <ErrorMessage marginBottom={"10px"}>
-                      {errors.questionDescription?.message}
-                    </ErrorMessage>
-                  )}
-                </Grid>
-              </Grid>
+                    </Grid>
 
-              <Controller
-                defaultValue={0}
-                control={control}
-                name='defaultScore'
-                render={({ field }) => (
-                  <InputTextField
-                    error={Boolean(errors?.defaultScore)}
-                    errorMessage={errors.defaultScore?.message}
-                    title={`${t("question_management_default_score")} *`}
-                    type='text'
-                    placeholder={t("question_management_default_score")}
-                    required
-                    translation-key='question_management_default_score'
-                    {...field}
-                  />
-                )}
-              />
-
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={12} md={3}>
-                  <TextTitle translation-key='question_management_general_comment'>
-                    {t("question_management_general_comment")}
-                  </TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9} className={classes.textEditor}>
-                  <Controller
-                    defaultValue=''
-                    control={control}
-                    name='generalDescription'
-                    render={({ field }) => (
-                      <TextEditor
-                        placeholder={`${t("question_management_enter_general_comment")}...`}
-                        translation-key='question_management_enter_general_comment'
-                        {...field}
+                    {/* Default Score */}
+                    <Grid item xs={6} md={6}>
+                      <Controller
+                        defaultValue={"0"}
+                        control={control}
+                        name='defaultScore'
+                        render={({ field }) => (
+                          <InputTextFieldColumn
+                            titleRequired={true}
+                            error={Boolean(errors?.defaultScore)}
+                            errorMessage={errors.defaultScore?.message}
+                            title={`${t("question_management_default_score")}`}
+                            type='text'
+                            placeholder={t("question_management_default_score")}
+                            required
+                            translation-key={[
+                              "question_management_default_score",
+                              "question_default_score_description"
+                            ]}
+                            tooltipDescription={t("question_default_score_description")}
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={3}>
-                  <></>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  {Boolean(errors?.generalDescription) && (
-                    <ErrorMessage marginBottom={"10px"}>
-                      {errors.generalDescription?.message}
-                    </ErrorMessage>
-                  )}
-                </Grid>
-              </Grid>
+                <Grid item xs={12} md={12}>
+                  <Grid container spacing={3}>
+                    {/* Question description */}
+                    <Grid item xs={6} md={6}>
+                      <Typography
+                        translation-key='exam_management_create_question_description'
+                        className={classes.generalDescription}
+                      >
+                        {t("exam_management_create_question_description")}{" "}
+                        <span className={classes.errorTextStar}>*</span>
+                      </Typography>
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} md={12} className={classes.textEditor}>
+                          <Controller
+                            defaultValue=''
+                            control={control}
+                            name='questionDescription'
+                            render={({ field }) => (
+                              <TextEditor
+                                roundedBorder={true}
+                                error={Boolean(errors?.questionDescription)}
+                                placeholder={`${t("question_management_enter_question_description")}...`}
+                                required
+                                translation-key='question_management_enter_question_description'
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                          <></>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                          <></>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                          {Boolean(errors?.questionDescription) && (
+                            <ErrorMessage>{errors.questionDescription?.message}</ErrorMessage>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
 
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={3}>
-                  <TextTitle translation-key='question_management_distinguish_lettercase'>
-                    {t("question_management_distinguish_lettercase")}
-                  </TextTitle>
+                    {/* General feedback */}
+                    <Grid item xs={6} md={6}>
+                      <Typography
+                        className={classes.generalDescription}
+                        translation-key='question_management_general_comment'
+                      >
+                        {`${t("question_management_general_comment")} `}
+                        <span
+                          className={classes.optionalText}
+                          translation-key='grading_config_optional'
+                        >{`(${t("grading_config_optional")})`}</span>
+                      </Typography>
+
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} md={12} className={classes.textEditor}>
+                          <Controller
+                            defaultValue=''
+                            control={control}
+                            name='generalDescription'
+                            render={({ field }) => (
+                              <TextEditor
+                                error={Boolean(errors?.generalDescription)}
+                                roundedBorder={true}
+                                placeholder={`${t("question_management_enter_general_comment")}...`}
+                                translation-key='question_management_enter_general_comment'
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                          <></>
+                        </Grid>
+                        <Grid item xs={12} md={12}></Grid>
+                        <Grid item xs={12} md={12}>
+                          {Boolean(errors?.generalDescription) && (
+                            <ErrorMessage marginBottom={"10px"}>
+                              {errors.generalDescription?.message}
+                            </ErrorMessage>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Checkbox defaultChecked {...register("caseSensitive")} />
+                <Grid item xs={12}>
+                  {/* Case sensitive */}
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <TitleWithInfoTip
+                        title={t("question_management_distinguish_lettercase")}
+                        tooltipDescription={t("case_sensitive_tooltip_description")}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                      <Controller
+                        name='caseSensitive'
+                        control={control}
+                        defaultValue={1}
+                        render={({ field: { onChange, value } }) => (
+                          <Select
+                            value={value}
+                            onChange={(event, newValue) => onChange(newValue)}
+                            sx={{ borderRadius: "12px", height: "40px" }}
+                          >
+                            <Option value={1}>Phân biệt</Option>
+                            <Option value={0}>Không phân biệt</Option>
+                          </Select>
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
 
               {/* Answer list */}
@@ -378,44 +478,55 @@ const CreateShortAnswerQuestion = (props: Props) => {
                 </ListItemButton>
 
                 <Collapse in={answerOpen} timeout='auto' unmountOnExit>
-                  <Stack spacing={{ xs: 4 }} useFlexGap>
+                  <Stack spacing={{ xs: 3 }} useFlexGap sx={{ marginBottom: "20px" }}>
                     <Divider />
                     {fields.map((field, index) => (
-                      <AnswerEditor
-                        key={field.id}
-                        answerNumber={index}
-                        qtype={props.qtype}
-                        {...{ control, index, field, remove, errors }}
-                      />
+                      <>
+                        <AnswerEditor
+                          key={field.id}
+                          answerNumber={index}
+                          qtype={props.qtype}
+                          {...{ control, index, field, remove, errors }}
+                        />
+                      </>
                     ))}
 
                     <Grid container justifyContent={"center"}>
-                      <Button onClick={addAnswer}>
-                        <AddIcon />
-                      </Button>
+                      <JoyButton
+                        translation-key='question_answer_add_answer'
+                        onClick={addAnswer}
+                        variant='soft'
+                        startDecorator={<AddIcon />}
+                        sx={{ width: "300px" }}
+                      >
+                        {t("question_answer_add_answer")}
+                      </JoyButton>
                     </Grid>
-
-                    <Divider />
                   </Stack>
                 </Collapse>
+                <Divider />
               </div>
-
-              <Box className={classes.stickyFooterContainer}>
-                <Box className={classes.phantom} />
-                <Box className={classes.stickyFooterItem}>
-                  <Button
-                    variant='contained'
-                    type='submit'
-                    translation-key='question_management_create_question'
-                  >
-                    {t("question_management_create_question")}
-                  </Button>
-                </Box>
-              </Box>
+              <Stack spacing={{ xs: 2 }} direction={"row"} justifyContent={"center"}>
+                <JoyButton
+                  loading={submitLoading}
+                  variant='solid'
+                  type='submit'
+                  translation-key='question_management_create_question'
+                >
+                  {t("question_management_create_question")}
+                </JoyButton>
+                <JoyButton variant='outlined' translation-key='common_cancel'>
+                  {t("common_cancel")}
+                </JoyButton>
+              </Stack>
             </Box>
           </Container>
         </form>
+        <Footer />
       </Grid>
+      <Box className={classes.stickyFooterContainer}>
+        <Box className={classes.stickyFooterItem}></Box>
+      </Box>
     </>
   );
 };

@@ -1,6 +1,13 @@
 .root {
   flex-direction: column !important;
   background-color: var(--blue-1);
+  min-height: max-content;
+}
+
+.pageTitle {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1d2130 !important;
 }
 
 .container {
@@ -11,6 +18,7 @@
   padding-left: 0px !important;
   padding-right: 0px !important;
   height: 100%;
+  margin-bottom: 50px;
 }
 
 .tabWrapper {
@@ -41,13 +49,12 @@
 }
 .stickyFooterItem {
   background-color: #ffffff;
-  border-top: 1px solid var(--gray-30);
   text-align: center;
-  padding: 20px;
+  padding: 4px;
   position: fixed;
   left: 0;
   bottom: 0;
-  height: 60px;
+  height: 4px;
   width: 100%;
 
   display: flex;
@@ -69,4 +76,25 @@
 
 .textEditor {
   height: 200px;
+}
+
+.generalDescription {
+  color: #1d2130;
+  font-size: 12.8px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;
+}
+
+.optionalText {
+  color: #9ca3af;
+  font-size: 12px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;  
+}
+
+.errorTextStar {
+  color: red;
+}
+.infoIcon {
+  font-size: 12px;
 }

@@ -100,17 +100,25 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start"
 }));
 
+interface FormData {
+  response: { content: string }[];
+}
+
 export default function TakeExam() {
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
-  const questionPageIndex = parseInt(searchParams.get("page") || "0");
+  let questionPageIndex = Number(searchParams.get("page"));
+  if (isNaN(questionPageIndex) || questionPageIndex < 0) {
+    questionPageIndex = 0;
+  }
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
   const [questions, setQuestions] = React.useState([
     {
       id: "0",
+      questionId: "",
       type: qtype.essay,
       title: "1. Ai là cha của SE? Nêu những thành tựu nổi bật",
       done: true
@@ -487,13 +495,13 @@ export default function TakeExam() {
                 </Grid>
               </Grid>
               {questions[questionPageIndex].type === qtype.essay ? (
-                <EssayExamQuestion />
+                <EssayExamQuestion page={questionPageIndex} />
               ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                <ShortAnswerExamQuestion />
+                <ShortAnswerExamQuestion page={questionPageIndex} />
               ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                <MultipleChoiceExamQuestion />
+                <MultipleChoiceExamQuestion page={questionPageIndex} />
               ) : questions[questionPageIndex].type === qtype.true_false ? (
-                <TrueFalseExamQuestion />
+                <TrueFalseExamQuestion page={questionPageIndex} />
               ) : null}
               <Grid container spacing={1}>
                 <Grid item xs={6}>
