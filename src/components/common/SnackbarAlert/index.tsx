@@ -24,7 +24,7 @@ export default function SnackbarAlert({ open, setOpen, content, type }: Snackbar
 
     setOpen(false);
   };
-  const vertical = "bottom";
+  const vertical = "top";
   const horizontal = "right";
 
   return (

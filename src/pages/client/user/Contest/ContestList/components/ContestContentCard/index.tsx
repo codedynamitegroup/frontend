@@ -1,4 +1,3 @@
-import DateRangeIcon from "@mui/icons-material/DateRange";
 import { Box, Chip, Grid, Paper, Stack } from "@mui/material";
 import Heading3 from "components/text/Heading3";
 import Heading6 from "components/text/Heading6";
@@ -42,7 +41,7 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
     } else {
       return t("common_in_progress");
     }
-  }, [startTime, endTime]);
+  }, [startTime, endTime, t]);
 
   return (
     <Paper className={classes.container} onClick={clickHandler}>

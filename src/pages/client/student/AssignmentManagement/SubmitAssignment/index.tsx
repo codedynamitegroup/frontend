@@ -21,6 +21,12 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { useParams } from "react-router-dom";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import assignment, { setAssignmentDetails } from "reduxes/courseService/assignment";
+import { useEffect } from "react";
 
 const drawerWidth = 450;
 
@@ -83,6 +89,24 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function SubmitAssignment() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { assignmentId } = useParams<{ assignmentId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
+  const assignmentState = useSelector((state: RootState) => state.assignment);
+  const dispatch = useDispatch();
+
+  const handleGetAssignmentDetails = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentById(id);
+      dispatch(setAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetAssignmentDetails(assignmentId ?? "");
+  }, []);
+
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
   const assignmentDescriptionRawHTML = `
@@ -130,7 +154,7 @@ export default function SubmitAssignment() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
+                onClick={() => navigate(routes.student.course.management)}
               >
                 Quản lý khoá học
               </ParagraphSmall>
@@ -138,7 +162,7 @@ export default function SubmitAssignment() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
+                onClick={() => navigate(routes.student.course.information)}
               >
                 CS202 - Nhập môn lập trình
               </ParagraphSmall>
@@ -146,7 +170,9 @@ export default function SubmitAssignment() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
+                onClick={() =>
+                  navigate(routes.student.course.assignment.replace(":courseId", courseId ?? ""))
+                }
               >
                 Danh sách bài tập
               </ParagraphSmall>
@@ -154,9 +180,15 @@ export default function SubmitAssignment() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.assignment.detail)}
+                onClick={() =>
+                  navigate(
+                    routes.student.assignment.detail
+                      .replace(":assignmentId", assignmentId ?? "")
+                      .replace(":courseId", courseId ?? "")
+                  )
+                }
               >
-                Bài tập 1
+                {assignmentState.assignmentDetails?.title}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall colorname='--blue-500'>Nộp bài làm</ParagraphSmall>
@@ -219,7 +251,7 @@ export default function SubmitAssignment() {
                   </Grid>
                   <Grid item>
                     <ParagraphBody>
-                      {assignmentOpenTime
+                      {dayjs(assignmentState.assignmentDetails?.timeOpen)
                         ?.toDate()
                         .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
                     </ParagraphBody>
@@ -236,7 +268,7 @@ export default function SubmitAssignment() {
                   </Grid>
                   <Grid item>
                     <ParagraphBody>
-                      {assignmentCloseTime
+                      {dayjs(assignmentState.assignmentDetails?.timeClose)
                         ?.toDate()
                         .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
                     </ParagraphBody>
@@ -249,34 +281,45 @@ export default function SubmitAssignment() {
                   }}
                 />
                 <Box className={classes.assignmentDescription}>
-                  <div dangerouslySetInnerHTML={{ __html: assignmentDescriptionRawHTML }}></div>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: assignmentState.assignmentDetails?.intro || ``
+                    }}
+                  ></div>
+                  {assignmentState.assignmentDetails?.introFiles?.map((file) => {
+                    return (
+                      <a href={file} target='_blank' rel='noreferrer' key={file}>
+                        {file.split("/").pop()}
+                      </a>
+                    );
+                  })}
                   <div
                     style={{
                       marginBottom: "10px"
                     }}
-                    dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
+                    dangerouslySetInnerHTML={{
+                      __html: assignmentState.assignmentDetails?.activity || ``
+                    }}
                   ></div>
+                  {assignmentState.assignmentDetails?.activityAttachments?.map((attachment) => {
+                    // Lấy tên file từ URL
+                    const filename = attachment.split("/").pop();
+                    const filenameFinal = decodeURIComponent(filename || "");
+                    return (
+                      <a href={attachment} target='_blank' rel='noreferrer' key={attachment}>
+                        {filenameFinal}
+                      </a>
+                    );
+                  })}
                   <CustomFileList
-                    files={[
-                      {
-                        id: "1",
-                        name: "test1.jpg",
-                        size: 1024,
-                        type: "image/jpg",
-                        uploadStatus: "success",
-                        downloadUrl:
-                          "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
-                      },
-                      {
-                        id: "2",
-                        name: "dummy.pdf",
-                        size: 1024,
-                        type: "application/pdf",
-                        uploadStatus: "success",
-                        downloadUrl:
-                          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                      }
-                    ]}
+                    files={
+                      assignmentState.assignmentDetails?.introAttachments.map((attachment) => {
+                        return {
+                          name: decodeURIComponent(attachment.split("/").pop() || ""),
+                          downloadUrl: attachment
+                        };
+                      }) || []
+                    }
                   />
                 </Box>
               </Card>
@@ -295,8 +338,8 @@ export default function SubmitAssignment() {
                   </Grid>
                   <Grid container spacing={1} columns={12}>
                     <Grid item xs={3}>
-                      <TextTitle translation-key='course_lecturer_assignment_submit_file'>
-                        {t("course_lecturer_assignment_submit_file")}
+                      <TextTitle translation-key='course_student_assignment_submit_file'>
+                        {t("course_student_assignment_submit_file")}
                       </TextTitle>
                     </Grid>
                     <Grid item xs={9}>

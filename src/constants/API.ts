@@ -1,5 +1,3 @@
-import { C } from "@fullcalendar/core/internal-common";
-
 export const API = {
   CORE: {
     CERTIFICATE_COURSE: {
@@ -27,7 +25,8 @@ export const API = {
       UPDATE_BY_ID: "/core/contests/:id",
       DELETE_BY_ID: "/core/contests/:id",
       REGISTER_BY_ID: "/core/contests/:id/register",
-      MOST_POPULAR: "/core/contests/popular"
+      MOST_POPULAR: "/core/contests/popular",
+      LEADERBOARD: "/core/contests/:id/leaderboard"
     },
     QUESTION: {
       DEFAULT: "/core/questions",
@@ -48,13 +47,21 @@ export const API = {
         CREATE: "questions/multichoice-question/create",
         GET_BY_ID: "/core/questions/multichoice-question/:id",
         GET_ALL: "/core/questions/multichoice-question"
-      },
+      }
     }
   },
   COURSE: {
     COURSE: {
       DEFAULT: "/course/course",
+      SECTION: "/course/section",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user"
+    },
+    ASSIGNMENT: {
+      DEFAULT: "/course/assignment",
+      GET_BY_ID: "/course/assignment/:id",
+      CREATE: "/course/assignment",
+      UPDATE_BY_ID: "/course/assignment/:id",
+      DELETE_BY_ID: "/course/assignment/:id"
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",

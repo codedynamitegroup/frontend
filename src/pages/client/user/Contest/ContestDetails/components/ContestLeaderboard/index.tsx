@@ -13,11 +13,14 @@ import TablePagination from "@mui/material/TablePagination";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
+import { millisToFormatTimeString } from "utils/time";
 
 interface PropsData {
-  problemList: any;
-  rankingList: any;
-  currentUserRank: any;
+  problemList: ContestQuestionEntity[];
+  rankingList: UserContestRankEntity[];
+  currentUserRank?: UserContestRankEntity;
 }
 
 export default function ContestLeaderboard(props: PropsData) {
@@ -76,18 +79,18 @@ export default function ContestLeaderboard(props: PropsData) {
               </TableCell>
             </TableRow>
             <TableRow>
-              {problemList.map((problem: any, index: any) => (
+              {problemList.map((problem: ContestQuestionEntity, index: any) => (
                 <TableCell key={problem.name} align='center' className={clsx(classes.tableCell)}>
                   <Typography fontSize={"15px"}>{problem.name}</Typography>
                   <Typography fontSize={"13px"} translation-key='common_score'>
-                    ({problem.maxScore} {t("common_score")})
+                    ({problem.maxGrade} {t("common_score")})
                   </Typography>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {!isCurrentUserInTable ? (
+            {!isCurrentUserInTable && currentUserRank ? (
               <>
                 <TableRow sx={{ backgroundColor: "var(--green-50)" }}>
                   <TableCell className={clsx(classes.tableCell)} align='center'>
@@ -101,37 +104,49 @@ export default function ContestLeaderboard(props: PropsData) {
                       className={classes.participantInfo}
                       translation-key='common_you'
                     >
-                      {currentUserRank.name} ({t("common_you")})
+                      {currentUserRank.user.firstName + " " + currentUserRank.user.lastName} (
+                      {t("common_you")})
                     </Link>
                   </TableCell>
                   <TableCell align='center' className={clsx(classes.tableCell)}>
-                    <Typography color={"var(--orange-1)"}>{"00:50:20"}</Typography>
+                    <Typography color={"var(--orange-1)"}>
+                      {currentUserRank.totalTime
+                        ? millisToFormatTimeString(currentUserRank.totalTime)
+                        : millisToFormatTimeString(0)}
+                    </Typography>
                   </TableCell>
                   <TableCell align='center' className={clsx(classes.tableCell)}>
-                    <Typography color={"var(--orange-1)"}>{currentUserRank.totalScore}</Typography>
+                    <Typography color={"var(--orange-1)"}>
+                      {currentUserRank.totalScore || 0}
+                    </Typography>
                   </TableCell>
-                  {currentUserRank.problemData.map((problem: any, index: number) => (
-                    <TableCell key={index} align='center' className={clsx(classes.tableCell)}>
-                      {problem.tries > 0 ? (
-                        <Box>
-                          <Typography fontSize={"18px"} fontWeight={600}>
-                            {problem.point}
-                          </Typography>
-                          <Typography
-                            className={classes.tableSecondaryData}
-                            translation-key='common_submit'
-                          >
-                            {problem.tries} {t("common_submit")}
-                          </Typography>
-                          <Typography className={classes.tableSecondaryData}>
-                            {"00:02:12"}
-                          </Typography>
-                        </Box>
-                      ) : (
-                        <Typography>-</Typography>
-                      )}
-                    </TableCell>
-                  ))}
+                  {currentUserRank.contestQuestions.map(
+                    (problem: ContestQuestionEntity, index: number) => (
+                      <TableCell key={index} align='center' className={clsx(classes.tableCell)}>
+                        {problem.numOfSubmissions > 0 ? (
+                          <Box>
+                            <Typography fontSize={"18px"} fontWeight={600}>
+                              {problem.grade || 0}
+                            </Typography>
+                            <Typography
+                              className={classes.tableSecondaryData}
+                              translation-key='common_submit'
+                            >
+                              {problem.numOfSubmissions || 0} {t("common_submit")}
+                            </Typography>
+                            <Typography className={classes.tableSecondaryData}>
+                              {/* {"00:02:12"} */}
+                              {problem.doTime
+                                ? millisToFormatTimeString(problem.doTime)
+                                : millisToFormatTimeString(0)}
+                            </Typography>
+                          </Box>
+                        ) : (
+                          <Typography>-</Typography>
+                        )}
+                      </TableCell>
+                    )
+                  )}
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={1000} className={classes.tableCell} align='center'>
@@ -141,7 +156,7 @@ export default function ContestLeaderboard(props: PropsData) {
               </>
             ) : null}
 
-            {rankingList.map((row: any, index: number) => (
+            {rankingList.map((row: UserContestRankEntity, index: number) => (
               <TableRow key={index} className={index % 2 === 0 ? classes.grayTableRow : null}>
                 <TableCell className={clsx(classes.tableCell)} align='center'>
                   {row.rank}
@@ -153,35 +168,43 @@ export default function ContestLeaderboard(props: PropsData) {
                     underline='none'
                     className={classes.participantInfo}
                   >
-                    {row.name}
+                    {row.user.firstName + " " + row.user.lastName}
                   </Link>
                 </TableCell>
-                <TableCell align='center' className={clsx(classes.tableCell)}>
+                <TableCell
+                  align='center'
+                  className={clsx(classes.tableCell)}
+                  sx={{
+                    minWidth: "100px"
+                  }}
+                >
                   <Typography color={"var(--orange-1)"}>
-                    {/* {row.problemData.reduce(
-                    (currentValue: any, problem: any) => problem.point + currentValue,
-                    0
-                  )} */}
-                    {"00:50:20"}
+                    {row.totalTime
+                      ? millisToFormatTimeString(row.totalTime)
+                      : millisToFormatTimeString(0)}
                   </Typography>
                 </TableCell>
                 <TableCell align='center' className={clsx(classes.tableCell)}>
-                  <Typography color={"var(--orange-1)"}>{row.totalScore}</Typography>
+                  <Typography color={"var(--orange-1)"}>{row.totalScore || 0}</Typography>
                 </TableCell>
-                {row.problemData.map((problem: any, index: any) => (
+                {row.contestQuestions.map((problem: ContestQuestionEntity, index: any) => (
                   <TableCell align='center' className={clsx(classes.tableCell)} key={index}>
-                    {problem.tries > 0 ? (
+                    {problem.numOfSubmissions > 0 ? (
                       <Box>
                         <Typography fontSize={"18px"} fontWeight={600}>
-                          {problem.point}
+                          {problem.grade || 0}
                         </Typography>
                         <Typography
                           className={classes.tableSecondaryData}
                           translation-key='common_submit'
                         >
-                          {problem.tries} {t("common_submit")}
+                          {problem.numOfSubmissions || 0} {t("common_submit")}
                         </Typography>
-                        <Typography className={classes.tableSecondaryData}>{"00:02:12"}</Typography>
+                        <Typography className={classes.tableSecondaryData}>
+                          {problem.doTime
+                            ? millisToFormatTimeString(problem.doTime)
+                            : millisToFormatTimeString(0)}
+                        </Typography>
                       </Box>
                     ) : (
                       <Typography>-</Typography>
