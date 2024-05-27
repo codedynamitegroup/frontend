@@ -42,6 +42,7 @@ import ModeIcon from "@mui/icons-material/Mode";
 
 import { useTranslation } from "react-i18next";
 import { green, grey, yellow } from "@mui/material/colors";
+import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 
 const drawerWidth = 400;
 
@@ -73,6 +74,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }));
 
 interface AppBarProps extends MuiAppBarProps {
+  question?: QuestionEntity;
   open?: boolean;
 }
 
