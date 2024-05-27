@@ -63,6 +63,14 @@ export const API = {
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id"
     },
+    SUBMISSION_ASSIGNMENT: {
+      DEFAULT: "/course/submission-assignment",
+      GET_BY_USER_ID_ASSIGNMENT_ID: "/course/submission-assignment/user",
+      GET_BY_ID: "/course/submission-assignment/:id",
+      CREATE: "/course/submission-assignment",
+      UPDATE_BY_ID: "/course/submission-assignment/:id",
+      DELETE_BY_ID: "/course/submission-assignment/:id"
+    },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       GET_BY_ID: "/course/exam/:id",

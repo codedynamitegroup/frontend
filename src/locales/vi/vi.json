@@ -313,11 +313,17 @@
   "course_student_assignment_time_remaining": "Thời gian còn lại",
   "course_student_assignment_last_modified": "Lần chỉnh sửa cuối",
   "course_student_assignment_file_submission": "Tệp bài nộp",
+  "course_student_assignment_online_text_submission": "Nội dung bài nộp",
 
   "course_student_assignment_submission_status_not_submitted": "Chưa nộp",
   "course_student_assignment_submission_status_submitted": "Đã nộp",
   "course_student_assignment_submission_status_graded": "Đã chấm điểm",
   "course_student_assignment_submission_status_not_grading": "Chưa chấm điểm",
+
+  "days": "ngày",
+  "hours": "giờ",
+  "minutes": "phút",
+  "seconds": "giây",
 
   "course_lecturer_add_announcement": "Đăng thông báo mới",
   "course_lecturer_announcement_title": "Tiêu đề thông báo",

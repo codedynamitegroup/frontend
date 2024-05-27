@@ -1,16 +1,19 @@
+import { AssignmentResourceEntity } from "./AssignmentResourceEntity";
+
 export interface AssignmentEntity {
   id: string;
+  moodleId: number;
   title: string;
-  intro: string;
-  introFiles: string[];
-  introAttachments: string[];
-  activity: string;
-  activityAttachments: string[];
+  intro?: string;
+  introFiles: AssignmentResourceEntity[];
+  introAttachments: AssignmentResourceEntity[];
+  activity?: string;
+  activityAttachments: AssignmentResourceEntity[];
   score: number;
   maxScore: number;
-  timeOpen: string;
-  timeClose: string;
-  timeLimit: string;
+  timeOpen: Date;
+  timeClose: Date;
+  timeLimit: Date;
   type: string;
   visible: boolean;
 }

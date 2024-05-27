@@ -15,11 +15,21 @@ import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import { setAssignmentDetails } from "reduxes/courseService/assignment";
-import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import AssignmentTable from "./components/AssignmentTable";
 import Heading2 from "components/text/Heading2";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
+import { SubmissionAssignmentService } from "services/courseService/SubmissionAssignmentService";
+import {
+  setSubmissionAssignmentDetails,
+  setSubmissionAssignments
+} from "reduxes/courseService/submission_assignment";
+
+type Column = {
+  header: string;
+  data: string | JSX.Element;
+};
 
 const StudentCourseAssignmentDetails = () => {
   const { t } = useTranslation();
@@ -27,6 +37,7 @@ const StudentCourseAssignmentDetails = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const { courseId } = useParams<{ courseId: string }>();
   const assignmentState = useSelector((state: RootState) => state.assignment);
+  const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const dispatch = useDispatch();
 
   const handleGetAssignmentDetails = async (id: string) => {
@@ -38,11 +49,154 @@ const StudentCourseAssignmentDetails = () => {
     }
   };
 
+  const handleGetSubmissionAssignment = async (userId: string, assignmentId: string) => {
+    try {
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
+        userId,
+        assignmentId
+      );
+      dispatch(setSubmissionAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log("assignmentState", submissionAssignmentState.submissionAssignmentDetails);
+
   useEffect(() => {
-    handleGetAssignmentDetails(assignmentId ?? "");
+    const fetchAssignmentDetails = async () => {
+      await handleGetAssignmentDetails(assignmentId ?? "");
+    };
+
+    fetchAssignmentDetails();
+    handleGetSubmissionAssignment("e931c5c8-9d98-41ea-ad33-1c0b0483e676", assignmentId ?? "");
   }, []);
 
-  console.log("assignmentState", assignmentState.assignmentDetails);
+  function calculateTimeDifference(
+    date1: Date,
+    date2: Date
+  ): {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  } {
+    // Tạo đối tượng Date cho giờ hiện tại
+
+    // Tính toán khoảng thời gian giữa giờ đã cho và giờ hiện tại (mili giây)
+    const diffInMs = date1.getTime() - date2.getTime();
+
+    // Kiểm tra nếu giờ đã cho là trước giờ hiện tại
+
+    // Tính số ngày, số giờ, số phút và số giây từ khoảng thời gian này
+    const msInADay = 24 * 60 * 60 * 1000; // Mili giây trong một ngày
+    const msInAnHour = 60 * 60 * 1000; // Mili giây trong một giờ
+    const msInAMinute = 60 * 1000; // Mili giây trong một phút
+    const msInASecond = 1000; // Mili giây trong một giây
+
+    const days = Math.floor(diffInMs / msInADay);
+    const hours = Math.floor((diffInMs % msInADay) / msInAnHour);
+    const minutes = Math.floor((diffInMs % msInAnHour) / msInAMinute);
+    const seconds = Math.floor((diffInMs % msInAMinute) / msInASecond);
+
+    return {
+      days: Math.abs(days),
+      hours: Math.abs(hours),
+      minutes: Math.abs(minutes),
+      seconds: Math.abs(seconds)
+    };
+  }
+
+  const timeCloseDate = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+  const timeRemaining = calculateTimeDifference(timeCloseDate, new Date());
+  const submitTimeDate = new Date(
+    submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
+  );
+  const submitTime = calculateTimeDifference(timeCloseDate, submitTimeDate);
+  const formatTime = (time: { days: number; hours: number; minutes: number; seconds: number }) => {
+    if (time.days > 0) {
+      return time.days + " " + t("days") + " " + time.hours + " " + t("hours");
+    } else if (time.hours > 0) {
+      return time.hours + " " + t("hours") + " " + time.minutes + " " + t("minutes");
+    } else {
+      return time.minutes + " " + t("minutes") + " " + time.seconds + " " + t("seconds");
+    }
+  };
+
+  let columns: Column[] = [
+    {
+      header: t("course_student_assignment_submission_status"),
+      data: submissionAssignmentState.submissionAssignmentDetails?.submitTime
+        ? t("course_student_assignment_submission_status_submitted")
+        : t("course_student_assignment_submission_status_not_submitted")
+    },
+    {
+      header: t("course_student_assignment_grading_status"),
+      data: submissionAssignmentState.submissionAssignmentDetails?.isGraded
+        ? t("course_student_assignment_submission_status_graded")
+        : t("course_student_assignment_submission_status_not_grading")
+    },
+    {
+      header: t("course_student_assignment_time_remaining"),
+      data: submissionAssignmentState.submissionAssignmentDetails?.submitTime
+        ? "Assignment was submitted " + formatTime(submitTime) + " ago"
+        : timeRemaining.days === 0 &&
+            timeRemaining.hours === 0 &&
+            timeRemaining.minutes === 0 &&
+            timeRemaining.seconds === 0
+          ? "Assignment has ended"
+          : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
+            ? "Assignment is overdue by: " + formatTime(timeRemaining)
+            : formatTime(timeRemaining)
+    },
+    {
+      header: t("course_student_assignment_last_modified"),
+      data: submissionAssignmentState.submissionAssignmentDetails?.timemodefied
+        ? dayjs(submissionAssignmentState.submissionAssignmentDetails?.timemodefied).format(
+            "DD/MM/YYYY hh:mm:ss A"
+          )
+        : "-"
+    }
+  ];
+
+  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFile) {
+    columns.push({
+      header: t("course_student_assignment_file_submission"),
+      data: (
+        <CustomFileList
+          files={
+            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFile.files.map(
+              (attachment) => ({
+                id: attachment.id,
+                name: attachment.fileName,
+                downloadUrl: attachment.fileUrl,
+                size: attachment.fileSize,
+                type: attachment.mimetype,
+                lastModified: new Date(attachment.timemodified).toLocaleString("en-US", {
+                  timeZone: "Asia/Ho_Chi_Minh"
+                })
+              })
+            ) ?? [] // provide an empty array if introAttachments is undefined
+          }
+          treeView={false}
+        />
+      )
+    });
+  }
+  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentOnlineText) {
+    columns.push({
+      header: t("course_student_assignment_online_text_submission"),
+      data: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentOnlineText
+                .content || ``
+          }}
+        ></div>
+      )
+    });
+  }
+
   return (
     <Box className={classes.assignmentBody}>
       <Button
@@ -59,7 +213,7 @@ const StudentCourseAssignmentDetails = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
+        <ParagraphBody translation-key='common_backk'>{t("common_back")}</ParagraphBody>
       </Button>
       <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
       <Card
@@ -77,9 +231,7 @@ const StudentCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {dayjs(assignmentState.assignmentDetails?.timeOpen)
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {dayjs(assignmentState.assignmentDetails?.timeOpen)?.format("DD/MM/YYYY hh:mm:ss A")}
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -94,9 +246,7 @@ const StudentCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {dayjs(assignmentState.assignmentDetails?.timeClose)
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {dayjs(assignmentState.assignmentDetails?.timeClose)?.format("DD/MM/YYYY hh:mm:ss A")}
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -110,57 +260,37 @@ const StudentCourseAssignmentDetails = () => {
           <div
             dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.intro || `` }}
           ></div>
-          {assignmentState.assignmentDetails?.introFiles?.map((file) => {
-            return (
-              <a href={file} target='_blank' rel='noreferrer' key={file}>
-                {file.split("/").pop()}
-              </a>
-            );
-          })}
           <div
             style={{
               marginBottom: "10px"
             }}
             dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
           ></div>
-          {assignmentState.assignmentDetails?.introAttachments?.map((attachment) => {
-            // Lấy tên file từ URL
-            const filename = attachment.split("/").pop();
-            const filenameFinal = decodeURIComponent(filename || "");
-            return (
-              <a href={attachment} target='_blank' rel='noreferrer' key={attachment}>
-                {filenameFinal}
-              </a>
-            );
-          })}
+          <div
+            style={{
+              marginBottom: "10px"
+            }}
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
+          ></div>
+          <CustomFileList
+            files={assignmentState.assignmentDetails?.introAttachments?.map((attachment: any) => ({
+              id: attachment.id,
+              name: attachment.fileName,
+              downloadUrl: attachment.fileUrl,
+              size: attachment.fileSize,
+              type: attachment.mimetype,
+              lastModified: new Date(attachment.timemodified).toLocaleString("en-US", {
+                timeZone: "Asia/Ho_Chi_Minh"
+              })
+            }))}
+          />
         </Box>
       </Card>
       <Heading2 translation-key={["course_student_assignment_submission_status"]}>
         {t("course_student_assignment_submission_status")}
       </Heading2>
       <AssignmentTable
-        rows={[
-          {
-            header: t("course_student_assignment_submission_status"),
-            data: t("course_student_assignment_submission_status_not_submitted")
-          },
-          {
-            header: t("course_student_assignment_grading_status"),
-            data: t("course_student_assignment_submission_status_not_grading")
-          },
-          {
-            header: t("course_student_assignment_time_remaining"),
-            data: "3 days 13 hours remaining"
-          },
-          {
-            header: t("course_student_assignment_last_modified"),
-            data: "-"
-          },
-          {
-            header: t("course_student_assignment_file_submission"),
-            data: "hehe.jpg"
-          }
-        ]}
+        rows={columns}
         translation-key={[
           "course_student_assignment_submission_status",
           "course_student_assignment_grading_status",
