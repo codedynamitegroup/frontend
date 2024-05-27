@@ -324,11 +324,17 @@
   "course_student_assignment_time_remaining": "Time remaining",
   "course_student_assignment_last_modified": "Last modified",
   "course_student_assignment_file_submission": "File submission",
+  "course_student_assignment_online_text_submission": "Online text submission",
 
   "course_student_assignment_submission_status_not_submitted": "No submissions have been made yet",
   "course_student_assignment_submission_status_submitted": "Submitted for grading",
   "course_student_assignment_submission_status_graded": "Graded",
   "course_student_assignment_submission_status_not_grading": "Not graded",
+
+  "days": "days",
+  "hours": "hours",
+  "minutes": "minutes",
+  "seconds": "seconds",
 
   "course_lecturer_add_announcement": "Post new announcement",
   "course_lecturer_announcement_title": "Announcement title",
