@@ -163,6 +163,7 @@
   "home_learn_to_code": "Learn to code",
   "home_data_structures_and_algorithms": "Data structures and Algorithms",
   "common_all_courses_catalog": "All courses catalog",
+  "common_loading_search": "Searching...",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -745,5 +746,4 @@
   "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
   "max_byte_title": "Maxium size of attachment",
   "question_attachments_setting": "Attachments settings"
-
 }

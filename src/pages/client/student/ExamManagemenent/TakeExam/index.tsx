@@ -494,7 +494,7 @@ export default function TakeExam() {
                   </Button>
                 </Grid>
               </Grid>
-              {questions[questionPageIndex].type === qtype.essay ? (
+              {/* {questions[questionPageIndex].type === qtype.essay ? (
                 <EssayExamQuestion page={questionPageIndex} />
               ) : questions[questionPageIndex].type === qtype.short_answer ? (
                 <ShortAnswerExamQuestion page={questionPageIndex} />
@@ -502,7 +502,7 @@ export default function TakeExam() {
                 <MultipleChoiceExamQuestion page={questionPageIndex} />
               ) : questions[questionPageIndex].type === qtype.true_false ? (
                 <TrueFalseExamQuestion page={questionPageIndex} />
-              ) : null}
+              ) : null} */}
               <Grid container spacing={1}>
                 <Grid item xs={6}>
                   {questionPageIndex !== 0 && (

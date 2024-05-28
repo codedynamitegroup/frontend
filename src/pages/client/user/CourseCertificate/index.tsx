@@ -1,5 +1,15 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Box, Button, Card, Chip, Container, Grid, Stack, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  ToggleButtonGroup
+} from "@mui/material";
 import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -16,7 +26,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { setCertificateCourses, setLoading } from "reduxes/coreService/CertificateCourse";
+import {
+  setCertificateCourses,
+  setLoading,
+  setMostEnrolledCertificateCourses
+} from "reduxes/coreService/CertificateCourse";
 import { setTopics } from "reduxes/coreService/Topic";
 import { routes } from "routes/routes";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
@@ -126,11 +140,13 @@ const CourseCertificates = () => {
   const handleGetCertificateCourses = async ({
     courseName,
     filterTopicIds,
-    isRegisteredFilter
+    isRegisteredFilter,
+    fetchMostEnrolled = false
   }: {
     courseName: string;
     filterTopicIds: string[];
     isRegisteredFilter: IsRegisteredFilterEnum;
+    fetchMostEnrolled?: boolean;
   }) => {
     dispatch(setLoading({ isLoading: true }));
     try {
@@ -139,8 +155,17 @@ const CourseCertificates = () => {
         filterTopicIds,
         isRegisteredFilter
       });
-      dispatch(setCertificateCourses(getCertificateCoursesResponse));
-      dispatch(setLoading({ isLoading: false }));
+      setTimeout(() => {
+        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
+        if (fetchMostEnrolled) {
+          dispatch(
+            setMostEnrolledCertificateCourses(
+              getCertificateCoursesResponse.mostEnrolledCertificateCourses
+            )
+          );
+        }
+        dispatch(setLoading({ isLoading: false }));
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.response?.code || 503,
@@ -162,18 +187,15 @@ const CourseCertificates = () => {
 
   useEffect(() => {
     handleGetTopics();
-    handleGetCertificateCourses({
-      courseName: searchText,
-      filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: IsRegisteredFilterEnum.ALL
-    });
   }, []);
 
   useEffect(() => {
+    if (certificateCourseState.isLoading) return;
     handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL,
+      fetchMostEnrolled: true
     });
   }, [currentTopic?.topicId]);
 
@@ -240,6 +262,37 @@ const CourseCertificates = () => {
               <Box id={classes.couseCertificatesWrapper}>
                 {catalogActive === "all" && (
                   <Box className={classes.couseCertificatesByTopic}>
+                    <Card className={classes.recommendedCertificateCoursesWrapper}>
+                      <Heading2
+                        translation-key='certificate_hot_recommend'
+                        sx={{
+                          marginBottom: "10px"
+                        }}
+                      >
+                        {t("certificate_hot_recommend")}
+                      </Heading2>
+                      <Grid container spacing={3}>
+                        {certificateCourseState.mostEnrolledCertificateCourses
+                          .slice(0, 3)
+                          .map((course, index) => (
+                            <Grid
+                              item
+                              xs={4}
+                              key={index}
+                              onClick={() =>
+                                navigate(
+                                  routes.user.course_certificate.detail.lesson.root.replace(
+                                    ":courseId",
+                                    course.certificateCourseId
+                                  )
+                                )
+                              }
+                            >
+                              <CourseCertificateCard course={course} />
+                            </Grid>
+                          ))}
+                      </Grid>
+                    </Card>
                     <Heading1 translation-key='common_all_courses_catalog'>
                       {t("common_all_courses_catalog")}
                     </Heading1>
@@ -349,37 +402,6 @@ const CourseCertificates = () => {
                         ]}
                       />
                     </Box>
-                    <Card className={classes.recommendedCertificateCoursesWrapper}>
-                      <Heading2
-                        translation-key='certificate_hot_recommend'
-                        sx={{
-                          marginBottom: "10px"
-                        }}
-                      >
-                        {t("certificate_hot_recommend")}
-                      </Heading2>
-                      <Grid container spacing={3}>
-                        {certificateCourseState.mostEnrolledCertificateCourses
-                          .slice(0, 3)
-                          .map((course, index) => (
-                            <Grid
-                              item
-                              xs={4}
-                              key={index}
-                              onClick={() =>
-                                navigate(
-                                  routes.user.course_certificate.detail.lesson.root.replace(
-                                    ":courseId",
-                                    course.certificateCourseId
-                                  )
-                                )
-                              }
-                            >
-                              <CourseCertificateCard course={course} />
-                            </Grid>
-                          ))}
-                      </Grid>
-                    </Card>
                   </Box>
                 )}
 
@@ -534,14 +556,80 @@ const CourseCertificates = () => {
                     )}
                   </Box>
                 )}
-
+                {/* <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%"
+                  }}
+                >
+                  <CircularProgress />
+                </Box> */}
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading3 translation-key='certificate_basic'>
                     {t("certificate_basic")} ({basicCertificateCourses.length})
                   </Heading3>
-                  <Grid container spacing={3}>
-                    {basicCertificateCourses.map(
-                      (course: CertificateCourseEntity, index: number) => (
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {basicCertificateCourses.map(
+                        (course: CertificateCourseEntity, index: number) => (
+                          <Grid
+                            item
+                            xs={4}
+                            key={index}
+                            onClick={() =>
+                              navigate(
+                                routes.user.course_certificate.detail.lesson.root.replace(
+                                  ":courseId",
+                                  course.certificateCourseId
+                                )
+                              )
+                            }
+                          >
+                            <CourseCertificateCard course={course} />
+                          </Grid>
+                        )
+                      )}
+                    </Grid>
+                  )}
+                </Box>
+                <Box className={classes.couseCertificatesByTopic}>
+                  <Heading3 translation-key='certificate_intermediate'>
+                    {t("certificate_intermediate")} ({intermediateCertificateCourses.length})
+                  </Heading3>
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {intermediateCertificateCourses.map((course, index) => (
                         <Grid
                           item
                           xs={4}
@@ -557,57 +645,49 @@ const CourseCertificates = () => {
                         >
                           <CourseCertificateCard course={course} />
                         </Grid>
-                      )
-                    )}
-                  </Grid>
-                </Box>
-                <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_intermediate'>
-                    {t("certificate_intermediate")} ({intermediateCertificateCourses.length})
-                  </Heading3>
-                  <Grid container spacing={3}>
-                    {intermediateCertificateCourses.map((course, index) => (
-                      <Grid
-                        item
-                        xs={4}
-                        key={index}
-                        onClick={() =>
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.root.replace(
-                              ":courseId",
-                              course.certificateCourseId
-                            )
-                          )
-                        }
-                      >
-                        <CourseCertificateCard course={course} />
-                      </Grid>
-                    ))}
-                  </Grid>
+                      ))}
+                    </Grid>
+                  )}
                 </Box>
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading3 translation-key='certificate_advance'>
                     {t("certificate_advance")} ({advancedCertificateCourses.length})
                   </Heading3>
-                  <Grid container spacing={3}>
-                    {advancedCertificateCourses.map((course, index) => (
-                      <Grid
-                        item
-                        xs={4}
-                        key={index}
-                        onClick={() =>
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.root.replace(
-                              ":courseId",
-                              course.certificateCourseId
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {advancedCertificateCourses.map((course, index) => (
+                        <Grid
+                          item
+                          xs={4}
+                          key={index}
+                          onClick={() =>
+                            navigate(
+                              routes.user.course_certificate.detail.lesson.root.replace(
+                                ":courseId",
+                                course.certificateCourseId
+                              )
                             )
-                          )
-                        }
-                      >
-                        <CourseCertificateCard course={course} />
-                      </Grid>
-                    ))}
-                  </Grid>
+                          }
+                        >
+                          <CourseCertificateCard course={course} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
                 </Box>
               </Box>
             </Grid>
