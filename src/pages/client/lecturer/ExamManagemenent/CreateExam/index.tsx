@@ -38,7 +38,6 @@ import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
 import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
@@ -55,9 +54,11 @@ import { GridRowParams } from "@mui/x-data-grid";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 
 const drawerWidth = 400;
 
@@ -126,6 +127,7 @@ export const OVERDUE_HANDLING = {
 
 export default function ExamCreated() {
   const { courseId } = useParams();
+  const questionCreate = useSelector((state: RootState) => state.questionCreate);
 
   const submitHandler = (data: any) => {
     console.log("data");
@@ -181,49 +183,9 @@ export default function ExamCreated() {
     React.useState(false);
   const [openPreviewEssay, setOpenPreviewEssay] = React.useState(false);
   const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
+  const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
-  const questionList = [
-    {
-      id: 4,
-      name: "Trắc nghiệm lập trình C++",
-      description: "Hãy cho biết con trỏ trong C++ là gì?",
-      max_grade: 10,
-      type: {
-        value: qtype.multiple_choice.code,
-        label: "Trắc nghiệm"
-      }
-    },
-    {
-      id: 2,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "Who is the father of Software Engineering?",
-      max_grade: 10,
-      type: {
-        value: qtype.essay.code,
-        label: "Tự luận"
-      }
-    },
-    {
-      id: 3,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "What is the full form of HTML?",
-      max_grade: 10,
-      type: {
-        value: qtype.short_answer.code,
-        label: "Trả lời ngắn"
-      }
-    },
-    {
-      id: 1,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "HTML stands for Hyper Text Markup Language",
-      max_grade: 10,
-      type: {
-        value: qtype.true_false.code,
-        label: "Đúng/Sai"
-      }
-    }
-  ];
+
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
       { field: "id", headerName: "STT", minWidth: 1 },
@@ -234,12 +196,13 @@ export default function ExamCreated() {
         // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
-        field: "description",
+        field: "questionText",
         headerName: t("exam_management_create_question_description"),
+        renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
         minWidth: 500
       },
       {
-        field: "max_grade",
+        field: "defaultMark",
         headerName: t("assignment_management_max_score"),
         minWidth: 50,
         renderCell: (params) => (
@@ -254,10 +217,10 @@ export default function ExamCreated() {
         )
       },
       {
-        field: "type",
+        field: "qtypeText",
         headerName: t("exam_management_create_question_type"),
-        minWidth: 150,
-        renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+        minWidth: 150
+        // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
       {
         field: "action",
@@ -268,17 +231,18 @@ export default function ExamCreated() {
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
           <GridActionsCellItem
             onClick={() => {
-              switch (params.row.type.value) {
-                case qtype.multiple_choice.code:
+              switch (params.row.qtype) {
+                case "MULTIPLE_CHOICE":
                   setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
                   break;
-                case qtype.essay.code:
+                case "ESSAY":
                   setOpenPreviewEssay(!openPreviewEssay);
                   break;
-                case qtype.short_answer.code:
+                case "SHORT_ANSWER":
+                  setQuestionPreview(params.row);
                   setOpenPreviewShortAnswer(!openPreviewShortAnswer);
                   break;
-                case qtype.true_false.code:
+                case "TRUE_FALSE":
                   setOpenPreviewTrueFalse(!openPreviewTrueFalse);
                   break;
               }
@@ -294,7 +258,8 @@ export default function ExamCreated() {
       openPreviewEssay,
       openPreviewMultipleChoiceDialog,
       openPreviewShortAnswer,
-      openPreviewTrueFalse
+      openPreviewTrueFalse,
+      t
     ]
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
@@ -436,6 +401,7 @@ export default function ExamCreated() {
       />
       <PreviewShortAnswer
         open={openPreviewShortAnswer}
+        question={questionPreview}
         setOpen={setOpenPreviewShortAnswer}
         aria-labelledby={"customized-dialog-title3"}
         maxWidth='md'
@@ -628,14 +594,18 @@ export default function ExamCreated() {
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
-                      dataList={questionList}
+                      dataList={questionCreate.questionCreate.map((item, index) => ({
+                        stt: index + 1,
+                        qtypeText: item.qtype,
+                        ...item
+                      }))}
                       tableHeader={tableHeading}
                       onSelectData={rowSelectionHandler}
                       visibleColumn={visibleColumnList}
                       dataGridToolBar={dataGridToolbar}
-                      page={page}
-                      pageSize={pageSize}
-                      totalElement={totalElement}
+                      page={1}
+                      pageSize={5}
+                      totalElement={questionCreate.questionCreate.length}
                       onPaginationModelChange={pageChangeHandler}
                       showVerticalCellBorder={false}
                       onClickRow={rowClickHandler}

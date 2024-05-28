@@ -1,7 +1,8 @@
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
+import { ReactNode } from "react";
 
-export default function TableRowHead({ rows }: { rows: { header: string; data: string }[] }) {
+export default function TableRowHead({ rows }: { rows: { header: string; data: ReactNode }[] }) {
   return (
     <Sheet variant='outlined'>
       <Table variant='soft' borderAxis='bothBetween' hoverRow>

@@ -228,7 +228,7 @@ export default function GradingExam() {
   const tableHeading: GridColDef[] = React.useMemo(
     () =>
       [
-        { field: "id", headerName: "STT", minWidth: 1 },
+        { field: "stt", headerName: "STT", minWidth: 1 },
         {
           field: "name",
           headerName: t("exam_management_create_question_name"),
@@ -625,7 +625,10 @@ export default function GradingExam() {
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
-                      dataList={questionList}
+                      dataList={questionList.map((item, index) => ({
+                        ...item,
+                        stt: index + 1
+                      }))}
                       tableHeader={tableHeading}
                       onSelectData={rowSelectionHandler}
                       visibleColumn={visibleColumnList}

@@ -99,7 +99,7 @@ const CourseCertificates = () => {
 
   const defaultProgrammingLanguage = useMemo(() => {
     if (supportedProgrammingLanguages.length > 0) {
-      return supportedProgrammingLanguages[0].programmingLanguageId;
+      return supportedProgrammingLanguages[0].id;
     }
     return "";
   }, [supportedProgrammingLanguages]);
@@ -523,7 +523,7 @@ const CourseCertificates = () => {
                             sx={{ width: "fit-content", maxWidth: "600px" }}
                             items={supportedProgrammingLanguages.map(
                               (language: ProgrammingLanguageEntity) => ({
-                                value: language.programmingLanguageId,
+                                value: language.id,
                                 label: language.name
                               })
                             )}

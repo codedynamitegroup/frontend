@@ -23,6 +23,7 @@ interface InputsProps extends OutlinedInputProps {
   fullWidth?: boolean;
   maxWith?: string;
   error?: boolean;
+  infoComponent?: React.ReactNode;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -42,7 +43,8 @@ const InputTextField = memo((props: InputsProps) => {
     backgroundColor,
     fullWidth,
     maxWith,
-    error
+    error,
+    infoComponent
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -56,7 +58,12 @@ const InputTextField = memo((props: InputsProps) => {
       >
         <Grid container spacing={1} columns={12}>
           <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
-            {title && <TextTitle>{title}</TextTitle>}
+            {title && (
+              <>
+                <TextTitle>{title}</TextTitle>
+                {infoComponent && infoComponent}
+              </>
+            )}
           </Grid>
           <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
             <OutlinedInput

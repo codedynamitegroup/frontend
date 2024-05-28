@@ -34,17 +34,17 @@ export const API = {
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
       SHORT_ANSWER_QUESTION: {
-        CREATE: "questions/shortanswer-question/create",
+        CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
         GET_ALL: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
-        CREATE: "questions/essay-question/create",
+        CREATE: "/core/questions/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
       },
       MULTIPLE_CHOICE_QUESTION: {
-        CREATE: "questions/multichoice-question/create",
+        CREATE: "/core/questions/questions/multichoice-question/create",
         GET_BY_ID: "/core/questions/multichoice-question/:id",
         GET_ALL: "/core/questions/multichoice-question"
       }
@@ -62,6 +62,14 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id"
+    },
+    SUBMISSION_ASSIGNMENT: {
+      DEFAULT: "/course/submission-assignment",
+      GET_BY_USER_ID_ASSIGNMENT_ID: "/course/submission-assignment/user",
+      GET_BY_ID: "/course/submission-assignment/:id",
+      CREATE: "/course/submission-assignment",
+      UPDATE_BY_ID: "/course/submission-assignment/:id",
+      DELETE_BY_ID: "/course/submission-assignment/:id"
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",

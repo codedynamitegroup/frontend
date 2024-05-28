@@ -85,7 +85,9 @@
   "common_preview": "Xem trước",
   "common_final_grade": "Điểm tổng kết",
   "common_question_type_with_question_programming": "Câu hỏi lập trình",
-  "common_question_type_with_question_multichoice": "Câu hỏi nhiều lựa chọn",
+  "common_question_type_with_question_multichoice": "Câu hỏi trắc nghiệm",
+  "common_question_type_with_question_shortanswer": "Câu hỏi ngắn",
+  "common_question_type_with_question_truefalse": "Câu hỏi đúng/sai",
   "common_question_type_with_question_essay": "Câu hỏi tự luận",
   "common_check_cheating": "Kiểm tra gian lận",
   "common_AI_grading": "Chấm điểm AI",
@@ -321,11 +323,17 @@
   "course_student_assignment_time_remaining": "Thời gian còn lại",
   "course_student_assignment_last_modified": "Lần chỉnh sửa cuối",
   "course_student_assignment_file_submission": "Tệp bài nộp",
+  "course_student_assignment_online_text_submission": "Nội dung bài nộp",
 
   "course_student_assignment_submission_status_not_submitted": "Chưa nộp",
   "course_student_assignment_submission_status_submitted": "Đã nộp",
   "course_student_assignment_submission_status_graded": "Đã chấm điểm",
   "course_student_assignment_submission_status_not_grading": "Chưa chấm điểm",
+
+  "days": "ngày",
+  "hours": "giờ",
+  "minutes": "phút",
+  "seconds": "giây",
 
   "course_lecturer_add_announcement": "Đăng thông báo mới",
   "course_lecturer_announcement_title": "Tiêu đề thông báo",
@@ -404,7 +412,8 @@
   "course_management_exam_preview_prev_page": "Trang trước",
   "course_management_exam_preview_end": "Kết thúc bài làm",
   "course_management_exam_preview_navigate": "Chuyển hướng đến câu hỏi khác",
-  "course_management_exam_preview_multichoice": "Chọn một trong các đáp án sau",
+  "course_management_exam_preview_multichoice": "Chọn một đáp án",
+  "course_management_exam_preview_multichoice_multiple": "Chọn một hoặc nhiều đáp án",
 
   "list_problem_algorithms": [
     "Mảng",
@@ -717,5 +726,20 @@
   "password_min_length": "Mật khẩu phải chứa ít nhất {{lengthNum}} ký tự",
 
   "first_name_required": "Tên không được để trống",
-  "last_name_required": "Họ và tên đệm không được để trống"
+  "last_name_required": "Họ và tên đệm không được để trống",
+
+  "common_flag": "Gắn cờ",
+  "question_answer_add_answer": "Thêm câu trả lời",
+  "question_default_score_description": "Điểm mặc định cho câu hỏi, được sử dụng khi không có tuỳ chỉnh điểm khác (phải lớn hơn hoặc bằng 0)",
+  "common_content": "Nội dung đáp án",
+  "question_management_no_scramble": "Không xáo trộn",
+  "question_management_scramble_action": "Xáo trộn",
+  "question_management_show_instructions": "Hiện hướng dẫn",
+  "question_management_no_show_instructions": "Ẩn hướng dẫn",
+  "question_management_no_show_num_correct": "Ẩn số lượng",
+  "question_management_show_num_correct": "Hiện số lượng",
+  "question_management_correct_answer_description": "Sử dụng trường này để xác định câu trả lời đúng cho câu hỏi đúng/sai. Nếu câu nêu trong câu hỏi là đúng, hãy chọn 'Đúng'. Nếu câu nêu là sai, hãy chọn 'Sai'.",
+  "max_byte_title": "Kích thước tối đa của tệp đính kèm",
+  "question_attachments_setting": "Cài đặt tệp đính kèm"
+
 }

@@ -91,6 +91,8 @@
   "common_final_grade": "Final grade",
   "common_question_type_with_question_programming": "Programming question",
   "common_question_type_with_question_multichoice": "Multiple choice question",
+  "common_question_type_with_question_shortanswer": "Short answer question",
+  "common_question_type_with_question_truefalse": "True/False question",
   "common_question_type_with_question_essay": "Essay question",
   "common_check_cheating": "Checking cheat",
   "common_AI_grading": "AI grading",
@@ -329,11 +331,17 @@
   "course_student_assignment_time_remaining": "Time remaining",
   "course_student_assignment_last_modified": "Last modified",
   "course_student_assignment_file_submission": "File submission",
+  "course_student_assignment_online_text_submission": "Online text submission",
 
   "course_student_assignment_submission_status_not_submitted": "No submissions have been made yet",
   "course_student_assignment_submission_status_submitted": "Submitted for grading",
   "course_student_assignment_submission_status_graded": "Graded",
   "course_student_assignment_submission_status_not_grading": "Not graded",
+
+  "days": "days",
+  "hours": "hours",
+  "minutes": "minutes",
+  "seconds": "seconds",
 
   "course_lecturer_add_announcement": "Post new announcement",
   "course_lecturer_announcement_title": "Announcement title",
@@ -411,7 +419,8 @@
   "course_management_exam_preview_prev_page": "Previous page",
   "course_management_exam_preview_end": "End current exam",
   "course_management_exam_preview_navigate": "Navigate to other questions",
-  "course_management_exam_preview_multichoice": "Choose one of the following answers",
+  "course_management_exam_preview_multichoice": "Choose one  answer",
+  "course_management_exam_preview_multichoice_multiple": "Choose one or more answers",
 
   "list_problem_algorithms": [
     "Array",
@@ -720,5 +729,21 @@
   "password_min_length": "Length of password must be at least {{lengthNum}} characters",
 
   "first_name_required": "First name is required",
-  "last_name_required": "Last name is required"
+  "last_name_required": "Last name is required",
+
+  "common_flag": "Flag",
+  "question_answer_add_answer": "Add answer",
+  "question_default_score_description": "Default score for the question, this will be used if there is no specific score for the question (must be greater than or equal to 0)",
+  "common_content": "Answer content",
+
+  "question_management_no_scramble": "Don't scramble",
+  "question_management_scramble_action": "Scramble",
+  "question_management_show_instructions": "Show instructions",
+  "question_management_no_show_instructions": "Hide instructions",
+  "question_management_no_show_num_correct": "Hide number of correct answers",
+  "question_management_show_num_correct": "Show number of correct answers",
+  "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
+  "max_byte_title": "Maxium size of attachment",
+  "question_attachments_setting": "Attachments settings"
+
 }

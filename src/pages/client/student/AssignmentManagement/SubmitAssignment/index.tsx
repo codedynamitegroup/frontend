@@ -24,9 +24,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { useParams } from "react-router-dom";
-import { AssignmentService } from "services/courseService/AssignmentService";
-import assignment, { setAssignmentDetails } from "reduxes/courseService/assignment";
 import { useEffect } from "react";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { setAssignmentDetails } from "reduxes/courseService/assignment";
 
 const drawerWidth = 450;
 
@@ -286,13 +286,6 @@ export default function SubmitAssignment() {
                       __html: assignmentState.assignmentDetails?.intro || ``
                     }}
                   ></div>
-                  {assignmentState.assignmentDetails?.introFiles?.map((file) => {
-                    return (
-                      <a href={file} target='_blank' rel='noreferrer' key={file}>
-                        {file.split("/").pop()}
-                      </a>
-                    );
-                  })}
                   <div
                     style={{
                       marginBottom: "10px"
@@ -301,28 +294,13 @@ export default function SubmitAssignment() {
                       __html: assignmentState.assignmentDetails?.activity || ``
                     }}
                   ></div>
-                  {assignmentState.assignmentDetails?.activityAttachments?.map((attachment) => {
-                    // Lấy tên file từ URL
-                    const filename = attachment.split("/").pop();
-                    const filenameFinal = decodeURIComponent(filename || "");
-                    return (
-                      <a href={attachment} target='_blank' rel='noreferrer' key={attachment}>
-                        {filenameFinal}
-                      </a>
-                    );
-                  })}
-                  <CustomFileList
+                  {/* <CustomFileList
                     files={
-                      assignmentState.assignmentDetails?.introAttachments.map((attachment) => {
-                        return {
-                          name: decodeURIComponent(attachment.split("/").pop() || ""),
-                          downloadUrl: attachment
-                        };
-                      }) || []
                     }
-                  />
+                  /> */}
                 </Box>
               </Card>
+
               <BasicAccordion
                 title={t("course_assignment_detail_submit")}
                 translation-key='course_assignment_detail_submit'
