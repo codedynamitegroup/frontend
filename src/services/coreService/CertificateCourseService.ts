@@ -1,5 +1,7 @@
+import { UpdateCertificateCourseCommand } from "./../../models/coreService/update/UpdateCertificateCourseCommand";
 import axios from "axios";
 import { API } from "constants/API";
+import { CreateCertificateCourseCommand } from "models/coreService/create/CreateCertificateCourseCommand";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
@@ -54,12 +56,13 @@ export class CertificateCourseService {
     }
   }
 
-  static async createCertificateCourse(data: any) {
+  static async createCertificateCourse(data: CreateCertificateCourseCommand) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`
+      const response = await axios.post(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`,
+        data
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {
@@ -74,10 +77,13 @@ export class CertificateCourseService {
 
   static async registerCertificateCourseById(id: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
+      const response = await axios.post(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.REGISTER_BY_ID.replace(":id", id)}`,
+        {
+          userId: "9ba179ed-d26d-4828-a0f6-8836c2063992"
+        }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {
@@ -90,10 +96,11 @@ export class CertificateCourseService {
     }
   }
 
-  static async updateCertificateCourseById(id: string, data: any) {
+  static async updateCertificateCourseById(id: string, data: UpdateCertificateCourseCommand) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`
+      const response = await axios.put(
+        `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`,
+        data
       );
       if (response.status === 200) {
         return response.data;

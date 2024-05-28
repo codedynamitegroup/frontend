@@ -1,6 +1,5 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
-import Header from "components/Header";
+import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -23,6 +22,10 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -33,6 +36,16 @@ interface CourseCertificate {
 }
 export default function UserDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
+    CertificateCourseEntity[]
+  >([]);
+
+  const [unregisteredCertificateCourses, setUnregisteredCertificateCourses] = React.useState<
+    CertificateCourseEntity[]
+  >([]);
+
   const courses = [
     {
       id: 1,
@@ -59,7 +72,6 @@ export default function UserDashboard() {
       currentLesson: "Đọc ghi file"
     }
   ];
-  const { t } = useTranslation();
 
   const courseCertificatesBasic: CourseCertificate[] = [
     {
@@ -87,24 +99,86 @@ export default function UserDashboard() {
       level: t("common_easy")
     }
   ];
+
+  const handleGetCertificateCourses = async ({
+    courseName,
+    filterTopicIds,
+    isRegisteredFilter
+  }: {
+    courseName: string;
+    filterTopicIds: string[];
+    isRegisteredFilter: IsRegisteredFilterEnum;
+  }) => {
+    try {
+      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+        courseName: courseName,
+        filterTopicIds: filterTopicIds,
+        isRegisteredFilter: isRegisteredFilter
+      });
+      return getCertificateCoursesResponse;
+    } catch (error: any) {
+      console.error("Failed to fetch certificate courses", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const getRegisteredCertificateCoursesResponse = await handleGetCertificateCourses({
+        courseName: "",
+        filterTopicIds: [],
+        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
+      });
+      if (getRegisteredCertificateCoursesResponse) {
+        setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.data);
+      }
+
+      const getUnregisteredCertificateCoursesResponse = await handleGetCertificateCourses({
+        courseName: "",
+        filterTopicIds: [],
+        isRegisteredFilter: IsRegisteredFilterEnum.NOT_REGISTERED
+      });
+      if (getUnregisteredCertificateCoursesResponse) {
+        setUnregisteredCertificateCourses(getUnregisteredCertificateCoursesResponse.data);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
   return (
     <Container className={classes.container}>
       <Grid container className={classes.sectionContentImage}>
         <Grid item sm={12} md={7} className={classes.sectionContent}>
           <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
-            <Heading2>{t("dashboard_continue_title")}</Heading2>
+            {/* <Heading2>{t("dashboard_continue_title")}</Heading2> */}
+            <Heading2>Let's start learning, Khánh</Heading2>
             <Box className={classes.courseLearningList}>
-              {courses.map((course, index) => (
+              {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
                 <Grid className={classes.courseLearningItem} key={index}>
                   <Box className={classes.titleContainer}>
-                    <img src={course.image} alt='course' className={classes.imageCourse} />
+                    <img
+                      src={course.topic.thumbnailUrl}
+                      alt='course'
+                      className={classes.imageCourse}
+                    />
                     <Box className={classes.courseLearningItemContent}>
                       <Heading3>{course.name}</Heading3>
                       <Box className={classes.processBar} style={{ width: "100%" }}>
-                        <LinearProgress determinate value={course.process} />
+                        <LinearProgress
+                          determinate
+                          value={calcCertificateCourseProgress(
+                            course.numOfCompletedQuestions || 0,
+                            course.numOfQuestions
+                          )}
+                        />
                       </Box>
                       <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                        {t("dashboard_current_lesson")}: {course.currentLesson}
+                        {t("dashboard_current_lesson")}: {"course.currentLesson"}
                       </ParagraphExtraSmall>
                     </Box>
                   </Box>
@@ -122,8 +196,8 @@ export default function UserDashboard() {
               <Heading2 translation-key='dashboard_other_course'>
                 {t("dashboard_other_course")}
               </Heading2>
-              <Button variant='outlined' color='primary' translation-key='home_more_button'>
-                {t("home_more_button")}
+              <Button variant='outlined' color='primary' translation-key='home_view_all_courses'>
+                {t("home_view_all_courses")}
               </Button>
             </Box>
             <Box className={classes.couseCertificatesByTopic}>

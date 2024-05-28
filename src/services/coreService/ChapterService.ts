@@ -6,9 +6,9 @@ const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 export class ChapterService {
   static async getChaptersByCertificateCourseIdResponse(id: string) {
     try {
-      const response = await axios.get(`${coreServiceApiUrl}${API.CORE.CHAPTER.DEFAULT}`, {
-        params: { certificateCourseId: id }
-      });
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.CHAPTER.DEFAULT.replace(":certificateCourseId", id)}`
+      );
       if (response.status === 200) {
         return response.data;
       }
