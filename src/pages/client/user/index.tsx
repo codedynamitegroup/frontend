@@ -24,17 +24,17 @@ const UserHomepage = (props: Props) => {
     ref: headerRef
   });
   return (
-    <Grid className={classes.root}>
+    <Grid id={classes.userPageRoot}>
       <Header ref={headerRef} />
       <main
-        id={classes.main}
+        id={classes.userPageMain}
         style={{
           marginTop: `${headerHeight}px`,
           height: `calc(100% - ${headerHeight}px)`,
           overflow: "auto"
         }}
       >
-        <Box className={classes.body}>
+        <Box id={classes.userPageBody}>
           <Routes>
             <Route path={""} element={<HomePage />} />
             <Route path={"course-certificates"} element={<CourseCertificates />} />

@@ -101,11 +101,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "var(--blue-1)"
-      }}
-    >
+    <Box id={classes.homePageRoot}>
       <Container className={classes.container}>
         <Grid container columnSpacing={5} className={classes.sectionContentImage}>
           <Grid item xs={12} sm={12} md={6} className={classes.sectionContent}>

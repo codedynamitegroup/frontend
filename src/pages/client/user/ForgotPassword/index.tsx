@@ -10,9 +10,9 @@ import { useTranslation } from "react-i18next";
 export default function ForgotPassword() {
   const { t } = useTranslation();
   return (
-    <Box className={classes.container}>
+    <Box id={classes.forgotPasswordRoot}>
       <Container>
-        <Grid container className={classes.loginContainer}>
+        <Grid container className={classes.forgotPasswordContainer}>
           <Grid item xs={12} md={6}>
             <img src={images.forgotpassword} alt='forgot' className={classes.imageLogin} />
           </Grid>
@@ -51,6 +51,7 @@ export default function ForgotPassword() {
                 component={RouterLink}
                 to={routes.user.login.root}
                 translation-key='forget_password_back_link'
+                className={classes.textLink}
               >{`< ${t("forget_password_back_link")}`}</Link>
             </Box>
           </Grid>

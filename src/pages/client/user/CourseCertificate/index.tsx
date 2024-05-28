@@ -179,7 +179,7 @@ const CourseCertificates = () => {
 
   return (
     <>
-      <Box mt={"40px"}>
+      <Box id={classes.courseCertificatesRoot}>
         <Container className={classes.container}>
           <Grid container>
             <Grid item xs={2.5} id={classes.filter}>

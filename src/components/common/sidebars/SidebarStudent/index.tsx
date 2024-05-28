@@ -66,7 +66,7 @@ export default function SidebarStudent({ children }: any) {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
-            marginTop: `${headerHeight}px`
+            marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'

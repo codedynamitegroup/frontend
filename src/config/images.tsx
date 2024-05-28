@@ -13,7 +13,7 @@ import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
 import icLevel from "assets/img/icon/skill-level-advanced.svg";
 import googleLogo from "assets/img/logo/google_logo.svg";
-import logo from "assets/img/logo/logo.svg";
+import appLogo from "assets/img/logo/logo.svg";
 import login from "assets/img/login.png";
 import forgotpassword from "assets/img/forgotpassword.png";
 import contestListBackground from "assets/img/background/contest-list-background.png";
@@ -56,7 +56,7 @@ const images = {
     coursePPT
   },
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },
-  logo: { moodleLogo, microsoftLogo, googleLogo, logo },
+  logo: { moodleLogo, microsoftLogo, googleLogo, appLogo },
   null: { mailboxEmpty },
   login,
   home,

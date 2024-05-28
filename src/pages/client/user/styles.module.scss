@@ -1,13 +1,8 @@
-.root {
+.userPageRoot {
   position: relative;
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  height: 100%;
   display: flex;
   flex-direction: column !important;
   background-color: var(--white);
-}
-
-.body {
-  margin-bottom: 40px;
 }
