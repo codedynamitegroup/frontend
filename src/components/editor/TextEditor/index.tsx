@@ -55,6 +55,7 @@ type Props = {
   roundedBorder?: boolean;
   openDialog?: boolean;
   title?: string;
+  submitCount?: number;
 };
 
 const TextEditor: React.FC<Props> = ({
@@ -66,7 +67,8 @@ const TextEditor: React.FC<Props> = ({
   ...props
 }) => {
   const reactQuillRef: any = useRef(null);
-  const { error, openDialog, title } = props;
+  const dialogQuillRef: any = useRef(null);
+  const { error, openDialog, title, submitCount } = props;
   const modules = React.useMemo(
     () => ({
       toolbar: props?.noToolbar
@@ -145,10 +147,22 @@ const TextEditor: React.FC<Props> = ({
       reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
   }, [reactQuillRef, placeholder]);
 
+  useEffect(() => {
+    if (dialogQuillRef.current)
+      dialogQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
+  }, [dialogQuillRef, placeholder]);
+
+  useEffect(() => {
+    if (error && reactQuillRef.current) {
+      reactQuillRef.current.focus();
+    }
+  }, [error, reactQuillRef, submitCount]);
+
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
     <>
       {openDialog && (
@@ -203,7 +217,7 @@ const TextEditor: React.FC<Props> = ({
                 <Grid container>
                   <Grid item xs={12}>
                     <ReactQuill
-                      ref={reactQuillRef}
+                      ref={dialogQuillRef}
                       theme={readOnly ? "bubble" : "snow"}
                       readOnly={readOnly}
                       value={convertQuillValue(value)}
@@ -215,8 +229,8 @@ const TextEditor: React.FC<Props> = ({
                       } ${roundedBorder ? `rounded-border` : ""}`}
                       {...props}
                       onKeyDown={(event) => {
-                        if (reactQuillRef && event.key === " " && reactQuillRef.current) {
-                          const editor = reactQuillRef.current.getEditor();
+                        if (dialogQuillRef && event.key === " " && dialogQuillRef.current) {
+                          const editor = dialogQuillRef.current.getEditor();
                           const { index } = editor.getSelection(true);
                           if (index === editor.getLength() - 1) {
                             editor.insertText(index, "\u200B", "user");

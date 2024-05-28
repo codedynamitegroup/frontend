@@ -105,6 +105,7 @@ const CreateEssayQuestion = (props: Props) => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
+  const [submitCount, setSubmitCount] = useState(0);
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -172,12 +173,14 @@ const CreateEssayQuestion = (props: Props) => {
         .number()
         .required(t("min_word_required"))
         .typeError(t("invalid_type", { name: t("essay_min_word"), type: t("type_number") }))
-        .min(-1, t("min_word_invalid")),
+        .min(-1, t("min_word_invalid"))
+        .integer(t("min_word_invalid")),
       maxWord: yup
         .number()
         .required(t("max_word_required"))
         .typeError(t("invalid_type", { name: t("essay_max_word"), type: t("type_number") }))
-        .min(-1, t("max_word_invalid")),
+        .min(-1, t("max_word_invalid"))
+        .integer(t("max_word_invalid")),
       maxBytes: yup
         .string()
         .required(t("max_bytes_required"))
@@ -202,7 +205,7 @@ const CreateEssayQuestion = (props: Props) => {
     defaultValues: {
       questionName: "",
       questionDescription: "",
-      defaultScore: "",
+      defaultScore: "0",
       generalDescription: "",
       responseFormat: "editor",
       responseRequired: "0",
@@ -287,6 +290,11 @@ const CreateEssayQuestion = (props: Props) => {
       setCurrentLang(i18n.language);
     }
   }, [i18n.language]);
+
+  // useEffect(() => {
+  //   console.log("focus");
+  //   setFocus("questionDescription");
+  // }, [errors.questionDescription]);
 
   useEffect(() => {
     setResponseFormat(watchResponseFormat);
@@ -463,12 +471,6 @@ const CreateEssayQuestion = (props: Props) => {
 
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        type={snackbarType}
-        content={snackbarContent}
-      />
       <Helmet>
         <title>Create essay question</title>
       </Helmet>
@@ -529,7 +531,7 @@ const CreateEssayQuestion = (props: Props) => {
               </ParagraphBody>
             )}
           </Box>
-          <form onSubmit={handleSubmit(submitHandler)}>
+          <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
             <Box className={classes.formBody}>
               <Typography
                 className={classes.pageTitle}
@@ -547,7 +549,8 @@ const CreateEssayQuestion = (props: Props) => {
                       defaultValue=''
                       control={control}
                       name='questionName'
-                      render={({ field }) => (
+                      rules={{ required: true }}
+                      render={({ field: { ref, ...field } }) => (
                         <InputTextFieldColumn
                           error={Boolean(errors?.questionName)}
                           errorMessage={errors.questionName?.message}
@@ -556,6 +559,7 @@ const CreateEssayQuestion = (props: Props) => {
                           placeholder={t("exam_management_create_question_name")}
                           titleRequired={true}
                           translation-key='exam_management_create_question_name'
+                          inputRef={ref}
                           {...field}
                         />
                       )}
@@ -568,7 +572,7 @@ const CreateEssayQuestion = (props: Props) => {
                       defaultValue={"0"}
                       control={control}
                       name='defaultScore'
-                      render={({ field }) => (
+                      render={({ field: { ref, ...field } }) => (
                         <InputTextFieldColumn
                           titleRequired={true}
                           error={Boolean(errors?.defaultScore)}
@@ -583,6 +587,7 @@ const CreateEssayQuestion = (props: Props) => {
                           ]}
                           tooltipDescription={t("question_default_score_description")}
                           {...field}
+                          inputRef={ref}
                         />
                       )}
                     />
@@ -604,16 +609,17 @@ const CreateEssayQuestion = (props: Props) => {
                           defaultValue=''
                           control={control}
                           name='questionDescription'
-                          render={({ field }) => (
+                          render={({ field: { ref, ...field } }) => (
                             <TextEditor
                               title={t("exam_management_create_question_description")}
                               openDialog
-                              roundedBorder={true}
+                              roundedBorder
                               error={Boolean(errors?.questionDescription)}
                               placeholder={`${t("question_management_enter_question_description")}...`}
                               required
                               translation-key='question_management_enter_question_description'
                               {...field}
+                              submitCount={submitCount}
                             />
                           )}
                         />
@@ -769,7 +775,7 @@ const CreateEssayQuestion = (props: Props) => {
                                   defaultValue={-1}
                                   control={control}
                                   name='minWord'
-                                  render={({ field }) => (
+                                  render={({ field: { ref, ...field } }) => (
                                     <InputTextFieldColumn
                                       error={Boolean(errors?.minWord)}
                                       errorMessage={errors.minWord?.message}
@@ -779,6 +785,7 @@ const CreateEssayQuestion = (props: Props) => {
                                       required
                                       translation-key='essay_min_word'
                                       {...field}
+                                      inputRef={ref}
                                     />
                                   )}
                                 />
@@ -789,7 +796,7 @@ const CreateEssayQuestion = (props: Props) => {
                                   defaultValue={-1}
                                   control={control}
                                   name='maxWord'
-                                  render={({ field }) => (
+                                  render={({ field: { ref, ...field } }) => (
                                     <InputTextFieldColumn
                                       error={Boolean(errors?.maxWord)}
                                       errorMessage={errors.maxWord?.message}
@@ -799,6 +806,7 @@ const CreateEssayQuestion = (props: Props) => {
                                       required
                                       translation-key={["essay_max_word", "essay_max_word"]}
                                       {...field}
+                                      inputRef={ref}
                                     />
                                   )}
                                 />
@@ -983,6 +991,7 @@ const CreateEssayQuestion = (props: Props) => {
                     <Grid container spacing={1} columns={12}>
                       <Grid item xs={12} md={12} className={classes.textEditor}>
                         <TitleWithInfoTip
+                          optional
                           translation-key='question_response_template'
                           title={t("question_response_template")}
                         />
@@ -1047,6 +1056,7 @@ const CreateEssayQuestion = (props: Props) => {
                     <Grid container spacing={1} columns={12}>
                       <Grid item xs={12} md={12} className={classes.textEditor}>
                         <TitleWithInfoTip
+                          optional
                           translation-key='question_essay_grader_info'
                           title={t("question_essay_grader_info")}
                         />{" "}
@@ -1071,13 +1081,6 @@ const CreateEssayQuestion = (props: Props) => {
                       <Grid item xs={12} md={3}>
                         <></>
                       </Grid>
-                      <Grid item xs={12} md={9}>
-                        {/* {Boolean(errors?.questionDescription) && (
-                        <ErrorMessage marginBottom={"10px"}>
-                          {errors.questionDescription?.message}
-                        </ErrorMessage>
-                      )} */}
-                      </Grid>
                     </Grid>
 
                     <Divider />
@@ -1099,12 +1102,21 @@ const CreateEssayQuestion = (props: Props) => {
               </Stack>
             </Box>
           </form>
+
+          <SnackbarAlert
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            open={openSnackbar}
+            setOpen={setOpenSnackbar}
+            type={snackbarType}
+            content={snackbarContent}
+          />
         </Container>
+
         <Footer />
       </Grid>
-      <Box className={classes.stickyFooterContainer}>
+      {/* <Box className={classes.stickyFooterContainer}>
         <Box className={classes.stickyFooterItem} />
-      </Box>
+      </Box> */}
     </>
   );
 };

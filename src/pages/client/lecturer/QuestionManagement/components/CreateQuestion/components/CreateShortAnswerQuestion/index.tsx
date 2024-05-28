@@ -63,6 +63,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   });
   const [answerOpen, setAnswerOpen] = useState(true);
   const navigate = useNavigate();
+  const [submitCount, setSubmitCount] = useState(0);
 
   // submit animation
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -197,16 +198,18 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.questionName) {
-      console.log("triggered");
       trigger();
       setCurrentLang(i18n.language);
     }
   }, [i18n.language]);
 
+  console.log("error: ", errors);
+
   return (
     <>
       <Grid className={classes.root}>
         <SnackbarAlert
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           open={openSnackbar}
           setOpen={setOpenSnackbar}
           type={snackbarType}
@@ -217,7 +220,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
         </Helmet>
         <Header ref={headerRef} />
 
-        <form onSubmit={handleSubmit(submitHandler)}>
+        <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <AlertDialog isBlocking={isDirty} />
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
@@ -296,8 +299,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
                         defaultValue=''
                         control={control}
                         name='questionName'
-                        render={({ field }) => (
+                        rules={{ required: true }}
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            inputRef={ref}
                             error={Boolean(errors?.questionName)}
                             errorMessage={errors.questionName?.message}
                             title={`${t("exam_management_create_question_name")}`}
@@ -317,8 +322,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
                         defaultValue={"0"}
                         control={control}
                         name='defaultScore'
-                        render={({ field }) => (
+                        rules={{ required: true }}
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
                             errorMessage={errors.defaultScore?.message}
@@ -342,13 +349,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
                   <Grid container spacing={3}>
                     {/* Question description */}
                     <Grid item xs={6} md={6}>
-                      <Typography
-                        translation-key='exam_management_create_question_description'
-                        className={classes.generalDescription}
-                      >
-                        {t("exam_management_create_question_description")}{" "}
-                        <span className={classes.errorTextStar}>*</span>
-                      </Typography>
+                      <TitleWithInfoTip
+                        title={t("exam_management_create_question_description")}
+                        titleRequired
+                      />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
                           <Controller
@@ -357,12 +361,15 @@ const CreateShortAnswerQuestion = (props: Props) => {
                             name='questionDescription'
                             render={({ field }) => (
                               <TextEditor
+                                openDialog
+                                title={t("exam_management_create_question_description")}
                                 roundedBorder={true}
                                 error={Boolean(errors?.questionDescription)}
                                 placeholder={`${t("question_management_enter_question_description")}...`}
                                 required
                                 translation-key='question_management_enter_question_description'
                                 {...field}
+                                submitCount={submitCount}
                               />
                             )}
                           />
@@ -383,16 +390,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
                     {/* General feedback */}
                     <Grid item xs={6} md={6}>
-                      <Typography
-                        className={classes.generalDescription}
-                        translation-key='question_management_general_comment'
-                      >
-                        {`${t("question_management_general_comment")} `}
-                        <span
-                          className={classes.optionalText}
-                          translation-key='grading_config_optional'
-                        >{`(${t("grading_config_optional")})`}</span>
-                      </Typography>
+                      <TitleWithInfoTip title={t("question_management_general_comment")} optional />
 
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -402,6 +400,8 @@ const CreateShortAnswerQuestion = (props: Props) => {
                             name='generalDescription'
                             render={({ field }) => (
                               <TextEditor
+                                openDialog
+                                title={t("question_management_general_comment")}
                                 error={Boolean(errors?.generalDescription)}
                                 roundedBorder={true}
                                 placeholder={`${t("question_management_enter_general_comment")}...`}
@@ -468,7 +468,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
                         {t("question_management_answer")}
                       </Heading2>
                       {Boolean(errors?.answers) && (
-                        <ErrorMessage>{errors.answers?.message}</ErrorMessage>
+                        <ErrorMessage>
+                          {errors.answers?.message || errors.answers?.root?.message}
+                        </ErrorMessage>
                       )}
                     </Grid>
                     <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>

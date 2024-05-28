@@ -15,8 +15,18 @@ interface SnackbarAlertProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   content?: string;
   type?: AlertType;
+  anchorOrigin?: {
+    vertical: "top" | "bottom";
+    horizontal: "left" | "center" | "right";
+  };
 }
-export default function SnackbarAlert({ open, setOpen, content, type }: SnackbarAlertProps) {
+export default function SnackbarAlert({
+  open,
+  setOpen,
+  content,
+  type,
+  anchorOrigin
+}: SnackbarAlertProps) {
   const handleClose = (reason: any) => {
     if (reason === "clickaway") {
       return;
@@ -33,7 +43,7 @@ export default function SnackbarAlert({ open, setOpen, content, type }: Snackbar
         open={open}
         autoHideDuration={3000}
         onClose={handleClose}
-        anchorOrigin={{ vertical, horizontal }}
+        anchorOrigin={anchorOrigin || { vertical, horizontal }}
         key={vertical + horizontal}
       >
         <Alert onClose={handleClose} severity={type}>
