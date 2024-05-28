@@ -147,6 +147,12 @@
   "common_topics": "Chủ đề",
   "common_view_details": "Xem chi tiết",
   "common_update_language": "Cập nhật ngôn ngữ",
+  "register_certificate_course_success": "Đăng ký khóa học chứng chỉ {{courseName}} thành công",
+  "register_certificate_course_fail": "Đăng ký khóa học chứng chỉ {{courseName}} thất bại",
+  "common_view_this_course": "Xem khóa học này",
+  "home_learn_to_code": "Học lập trình",
+  "home_data_structures_and_algorithms": "Cấu trúc dữ liệu và giải thuật",
+  "common_all_courses_catalog": "Tất cả khoá học",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -198,6 +204,7 @@
   "home_subtitle": "CodeDynamite là nơi bạn có thể học lập trình một cách dễ dàng và hiệu quả",
   "home_create_account_button": "Tạo tài khoản",
   "home_more_button": "Xem tất cả",
+  "home_view_all_courses": "Xem tất cả khóa học",
 
   "contest_title": "LẬP TRÌNH THI ĐẤU",
   "contest_total_num": "CUỘC THI",
@@ -239,7 +246,7 @@
   "certificate_intermediate": "Kiến thức trung cấp",
   "certificate_advance": "Kiến thức nâng cao",
   "certificate_empty": "Không có khóa học nào",
-  "certificate_hot_recommend": "Chứng chỉ mà mọi người đang học",
+  "certificate_hot_recommend": "Khóa học chứng chỉ nổi bật",
 
   "certificate_detail_rating": "Đánh giá",
   "certificate_detail_lesson": "Bài học",

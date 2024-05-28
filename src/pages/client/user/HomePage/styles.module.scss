@@ -59,10 +59,17 @@
       margin-bottom: 15px;
     }
 
+    .courseDescription {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
     .courseCard {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 10px;
 
       .centerContainer {
         display: flex;

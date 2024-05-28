@@ -5,7 +5,7 @@ export const API = {
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
-      REGISTER_BY_ID: "/core/certificate-courses/register"
+      REGISTER_BY_ID: "/core/certificate-courses/:id/register"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
@@ -14,7 +14,7 @@ export const API = {
       DELETE_BY_ID: "/core/topics/:id"
     },
     CHAPTER: {
-      DEFAULT: "/core/chapters",
+      DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
       UPDATE_BY_ID: "/core/chapters/:id",
       DELETE_BY_ID: "/core/chapters/:id"

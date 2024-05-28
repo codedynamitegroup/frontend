@@ -157,6 +157,12 @@
   "common_topics": "Topics",
   "common_view_details": "View details",
   "common_update_language": "Update language",
+  "register_certificate_course_success": "Register certificate course {{courseName}} successfully",
+  "register_certificate_course_fail": "Register certificate course {{courseName}} fail",
+  "common_view_this_course": "View this course",
+  "home_learn_to_code": "Learn to code",
+  "home_data_structures_and_algorithms": "Data structures and Algorithms",
+  "common_all_courses_catalog": "All courses catalog",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -196,6 +202,7 @@
   "home_subtitle": "CodeDynamite is where you can learn programming easily and effectively",
   "home_create_account_button": "Create account",
   "home_more_button": "See all",
+  "home_view_all_courses": "View all courses",
 
   "contest_title": "COMPETITIVE PROGRAMMING",
   "contest_total_num": "CONTESTS",
@@ -238,7 +245,7 @@
   "certificate_intermediate": "Intermediate knowledge",
   "certificate_advance": "Advance knowledge",
   "certificate_empty": "No courses available",
-  "certificate_hot_recommend": "The course certificate everyone is learning",
+  "certificate_hot_recommend": "Recommended Practice Certificate Courses",
 
   "certificate_detail_rating": "Ratings",
   "certificate_detail_lesson": "Lesson",
