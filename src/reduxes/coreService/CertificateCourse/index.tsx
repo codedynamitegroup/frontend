@@ -23,8 +23,11 @@ const certificateCourseSlice = createSlice({
       state.isLoading = action.payload.isLoading;
     },
     setCertificateCourses: (state, action) => {
-      state.certificateCourses = action.payload.certificateCourses;
-      state.mostEnrolledCertificateCourses = action.payload.mostEnrolledCertificateCourses;
+      state.certificateCourses = action.payload;
+      // state.mostEnrolledCertificateCourses = action.payload.mostEnrolledCertificateCourses;
+    },
+    setMostEnrolledCertificateCourses: (state, action) => {
+      state.mostEnrolledCertificateCourses = action.payload;
     },
     setCertificateCourseDetails: (state, action) => {
       state.certificateCourseDetails = action.payload;
@@ -32,7 +35,11 @@ const certificateCourseSlice = createSlice({
   }
 });
 
-export const { setLoading, setCertificateCourses, setCertificateCourseDetails } =
-  certificateCourseSlice.actions;
+export const {
+  setLoading,
+  setCertificateCourses,
+  setCertificateCourseDetails,
+  setMostEnrolledCertificateCourses
+} = certificateCourseSlice.actions;
 
 export default certificateCourseSlice.reducer;
