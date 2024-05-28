@@ -79,7 +79,7 @@ export default function HomePage() {
         filterTopicIds: filterTopicIds,
         isRegisteredFilter: isRegisteredFilter
       });
-      dispatch(setCertificateCourses(getCertificateCoursesResponse));
+      dispatch(setCertificateCourses(getCertificateCoursesResponse.certifcateCourses));
       dispatch(setLoading({ isLoading: false }));
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
