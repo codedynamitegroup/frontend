@@ -1,8 +1,11 @@
+import { Box } from "@mui/material";
+import Heading1 from "components/text/Heading1";
+
 const ContestManagement = () => {
   return (
-    <div>
-      <h1>Contest List</h1>
-    </div>
+    <Box>
+      <Heading1>Contest Management</Heading1>
+    </Box>
   );
 };
 

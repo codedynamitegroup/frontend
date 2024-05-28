@@ -115,7 +115,7 @@ export default function UserDashboard() {
         filterTopicIds: filterTopicIds,
         isRegisteredFilter: isRegisteredFilter
       });
-      return getCertificateCoursesResponse;
+      return getCertificateCoursesResponse.data;
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.response?.code || 503,
@@ -134,7 +134,7 @@ export default function UserDashboard() {
         isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
       });
       if (getRegisteredCertificateCoursesResponse) {
-        setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.data);
+        setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.certificateCourses);
       }
 
       const getUnregisteredCertificateCoursesResponse = await handleGetCertificateCourses({
@@ -143,7 +143,9 @@ export default function UserDashboard() {
         isRegisteredFilter: IsRegisteredFilterEnum.NOT_REGISTERED
       });
       if (getUnregisteredCertificateCoursesResponse) {
-        setUnregisteredCertificateCourses(getUnregisteredCertificateCoursesResponse.data);
+        setUnregisteredCertificateCourses(
+          getUnregisteredCertificateCoursesResponse.certificateCourses
+        );
       }
     };
 

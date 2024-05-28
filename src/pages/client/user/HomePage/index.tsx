@@ -27,6 +27,9 @@ export default function HomePage() {
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 
   const singleBasicProgrammingLanguageCertificateCourses = useMemo(() => {
+    if (!certificateCourseState.certificateCourses) {
+      return [];
+    }
     const certificateCourses = certificateCourseState.certificateCourses.filter(
       (certificateCourse) => certificateCourse.topic.isSingleProgrammingLanguage === true
     );
@@ -53,15 +56,16 @@ export default function HomePage() {
     return certificateCourses;
   }, [certificateCourseState.certificateCourses]);
 
-  const dsaProgrammingLanguageCertificateCourses = useMemo(
-    () =>
-      certificateCourseState.certificateCourses.filter(
-        (certificateCourse) =>
-          certificateCourse.topic.isSingleProgrammingLanguage !== true &&
-          certificateCourse.topic.name === "Data structures and Algorithms"
-      ),
-    [certificateCourseState.certificateCourses]
-  );
+  const dsaProgrammingLanguageCertificateCourses = useMemo(() => {
+    if (!certificateCourseState.certificateCourses) {
+      return [];
+    }
+    return certificateCourseState.certificateCourses.filter(
+      (certificateCourse) =>
+        certificateCourse.topic.isSingleProgrammingLanguage !== true &&
+        certificateCourse.topic.name === "Data structures and Algorithms"
+    );
+  }, [certificateCourseState.certificateCourses]);
 
   const handleGetCertificateCourses = async ({
     courseName,
@@ -79,7 +83,7 @@ export default function HomePage() {
         filterTopicIds: filterTopicIds,
         isRegisteredFilter: isRegisteredFilter
       });
-      dispatch(setCertificateCourses(getCertificateCoursesResponse.certifcateCourses));
+      dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
       dispatch(setLoading({ isLoading: false }));
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
