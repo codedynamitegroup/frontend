@@ -35,7 +35,7 @@ const PersistLogin = () => {
         return;
       }
 
-      const accessToken = localStorage.getItem("accessToken");
+      const accessToken = localStorage.getItem("access_token");
       const provider = localStorage.getItem("provider");
       if (!accessToken) {
         return;
