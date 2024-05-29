@@ -29,6 +29,7 @@ const PersistLogin = () => {
       return true;
     }
   };
+
   useEffect(() => {
     const getUser = async () => {
       if (selectedloginStatus && selectedToken && selectedUser) {
@@ -36,8 +37,9 @@ const PersistLogin = () => {
       }
 
       const accessToken = localStorage.getItem("access_token");
+      const refreshToken = localStorage.getItem("refresh_token");
       const provider = localStorage.getItem("provider");
-      if (!accessToken) {
+      if (!accessToken || !refreshToken) {
         return;
       }
       const isExpired: boolean = isTokenExpired(accessToken);
@@ -54,6 +56,39 @@ const PersistLogin = () => {
           })
           .catch((error) => {
             console.error("Failed to get user by email", error);
+          });
+      } else {
+        UserService.refreshToken(accessToken, refreshToken)
+          .then((res) => {
+            localStorage.setItem("access_token", res.accessToken);
+            localStorage.setItem("refresh_token", res.refreshToken);
+
+            const decodedToken: any = jwtDecode(res.accessToken);
+            UserService.getUserByEmail(decodedToken.email, res.accessToken)
+              .then((response) => {
+                const user: User = response;
+                dispatch(
+                  setLogin({
+                    user: user,
+                    token: res.accessToken,
+                    provider: provider ? provider : null
+                  })
+                );
+                dispatch(loginStatus(true));
+              })
+              .catch((error) => {
+                console.error("Failed to get user by email", error);
+              });
+          })
+          .catch((error: any) => {
+            // if status Please authenticate
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            console.error("Failed to get token", {
+              code: error.response?.code || 503,
+              status: error.response?.status || "Service Unavailable",
+              message: error.response?.message || error.message
+            });
           });
       }
     };

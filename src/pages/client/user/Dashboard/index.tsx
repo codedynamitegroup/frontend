@@ -2,7 +2,6 @@ import { Container, Grid } from "@mui/material";
 import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Heading2 from "components/text/Heading2";
 import { LinearProgress } from "@mui/joy";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
@@ -26,6 +25,7 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import CustomButton, { BtnType } from "components/common/buttons/Button";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -158,8 +158,7 @@ export default function UserDashboard() {
         <Grid container className={classes.sectionContentImage}>
           <Grid item sm={12} md={7} className={classes.sectionContent}>
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
-              {/* <Heading2>{t("dashboard_continue_title")}</Heading2> */}
-              <Heading2>Let's start learning, Khánh</Heading2>
+              <Heading2>{t("dashboard_continue_title")}</Heading2>
               <Box className={classes.courseLearningList}>
                 {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
                   <Grid className={classes.courseLearningItem} key={index}>
@@ -186,9 +185,9 @@ export default function UserDashboard() {
                       </Box>
                     </Box>
                     <Box className={classes.learnBtn}>
-                      <Button variant='contained' color='primary' translation-key='common_continue'>
+                      <CustomButton btnType={BtnType.Primary} translation-key='common_continue'>
                         {i18next.format(t("common_continue"), "firstUppercase")}
-                      </Button>
+                      </CustomButton>
                     </Box>
                   </Grid>
                 ))}
@@ -199,9 +198,9 @@ export default function UserDashboard() {
                 <Heading2 translation-key='dashboard_other_course'>
                   {t("dashboard_other_course")}
                 </Heading2>
-                <Button variant='outlined' color='primary' translation-key='home_view_all_courses'>
+                <CustomButton btnType={BtnType.Primary} translation-key='home_view_all_courses'>
                   {t("home_view_all_courses")}
-                </Button>
+                </CustomButton>
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
                 <Grid container spacing={3}>
@@ -290,13 +289,12 @@ export default function UserDashboard() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    size='large'
-                    variant='contained'
+                  <CustomButton
+                    btnType={BtnType.Primary}
                     translation-key='contest_detail_join_button'
                   >
                     {t("contest_detail_join_button")}
-                  </Button>
+                  </CustomButton>
                 </CardActions>
               </Card>
             </Box>
