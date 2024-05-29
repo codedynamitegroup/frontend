@@ -344,7 +344,10 @@
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",
-  "ago": " ago",
+  "assignment_submitted_late": "Assignment was submitted ",
+
+  "early": " early",
+  "late": " late",
 
   "days": "days",
   "hours": "hours",

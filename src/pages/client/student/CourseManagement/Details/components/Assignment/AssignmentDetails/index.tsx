@@ -26,6 +26,8 @@ import {
   setSubmissionAssignments
 } from "reduxes/courseService/submission_assignment";
 
+import images from "config/images";
+
 type Column = {
   header: string;
   data: string | JSX.Element;
@@ -123,17 +125,24 @@ const StudentCourseAssignmentDetails = () => {
     }
   };
 
-  const checkTimeSubmission = (): Boolean => {
-    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return false;
+  const checkTimeSubmission = (): number => {
+    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return 0;
     let submitTime = new Date(
       submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
     );
     let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
     if (submitTime < timeClose) {
-      return true;
+      return 1;
     }
-    return false;
+    return 2;
   };
+  console.log(submissionAssignmentState.submissionAssignmentDetails);
+  let date1 = new Date(
+    submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
+  );
+  let date2 = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+  console.log(checkTimeSubmission());
+  console.log(date1, date2);
 
   let columns: Column[] = [
     {
@@ -141,28 +150,26 @@ const StudentCourseAssignmentDetails = () => {
       data: submissionAssignmentState.submissionAssignmentDetails?.submitTime
         ? t("course_student_assignment_submission_status_submitted")
         : t("course_student_assignment_submission_status_not_submitted"),
-      status: submissionAssignmentState.submissionAssignmentDetails?.submitTime ? 1 : 0
+      status: submissionAssignmentState.submissionAssignmentDetails?.submitTime ? 1 : 3
     },
     {
       header: t("course_student_assignment_grading_status"),
       data: submissionAssignmentState.submissionAssignmentDetails?.isGraded
         ? t("course_student_assignment_submission_status_graded")
         : t("course_student_assignment_submission_status_not_grading"),
-      status: submissionAssignmentState.submissionAssignmentDetails?.isGraded ? 1 : 0
+      status: submissionAssignmentState.submissionAssignmentDetails?.isGraded ? 1 : 3
     },
     {
       header: t("course_student_assignment_time_remaining"),
-      data: checkTimeSubmission()
-        ? t("assignment_submitted") + formatTime(submitTime) + t("ago")
-        : timeRemaining.days === 0 &&
-            timeRemaining.hours === 0 &&
-            timeRemaining.minutes === 0 &&
-            timeRemaining.seconds === 0
-          ? formatTime(timeRemaining)
-          : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
-            ? t("assignment_overdue") + formatTime(timeRemaining)
-            : formatTime(timeRemaining),
-      status: checkTimeSubmission() ? 1 : 2
+      data:
+        checkTimeSubmission() === 1
+          ? t("assignment_submitted") + formatTime(submitTime) + t("early")
+          : checkTimeSubmission() === 2
+            ? t("assignment_submitted_late") + formatTime(timeRemaining) + t("late")
+            : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
+              ? t("assignment_overdue") + formatTime(timeRemaining)
+              : formatTime(timeRemaining),
+      status: checkTimeSubmission()
     },
     {
       header: t("course_student_assignment_last_modified"),
@@ -251,7 +258,14 @@ const StudentCourseAssignmentDetails = () => {
       >
         <ParagraphBody translation-key='common_backk'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
+      <Box className={classes.assignmentTitle}>
+        <img
+          className={classes.assignmentIcon}
+          src={images.course.courseAssignment}
+          alt='assignment'
+        />
+        <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
+      </Box>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -335,7 +349,9 @@ const StudentCourseAssignmentDetails = () => {
           "course_student_assignment_file_submission",
           "assignment_submitted",
           "assignment_overdue",
-          "ago"
+          "assignment_submitted_late",
+          "late",
+          "early"
         ]}
       />
       {submissionAssignmentState.submissionAssignmentDetails?.isGraded && (

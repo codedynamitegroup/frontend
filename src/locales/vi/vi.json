@@ -336,7 +336,10 @@
 
   "assignment_submitted": "Bài tập được nộp ",
   "assignment_overdue": "Bài tập đã quá hạn ",
-  "ago": " trước",
+  "assignment_submitted_late": "Bài tập đã nộp trễ ",
+
+  "late": "",
+  "early": "",
 
   "days": "ngày",
   "hours": "tiếng",
