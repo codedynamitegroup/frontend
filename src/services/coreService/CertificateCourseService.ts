@@ -57,10 +57,6 @@ export class CertificateCourseService {
 
   static async createCertificateCourse(data: CreateCertificateCourseCommand) {
     try {
-      // const response = await axios.post(
-      //   `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DEFAULT}`,
-      //   data
-      // );
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
@@ -80,12 +76,6 @@ export class CertificateCourseService {
 
   static async registerCertificateCourseById(id: string) {
     try {
-      // const response = await axios.post(
-      //   `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.REGISTER_BY_ID.replace(":id", id)}`,
-      //   {
-      //     userId: "9ba179ed-d26d-4828-a0f6-8836c2063992"
-      //   }
-      // );
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
@@ -107,10 +97,6 @@ export class CertificateCourseService {
 
   static async updateCertificateCourseById(id: string, data: UpdateCertificateCourseCommand) {
     try {
-      // const response = await axios.put(
-      //   `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.GET_BY_ID.replace(":id", id)}`,
-      //   data
-      // );
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
@@ -130,9 +116,6 @@ export class CertificateCourseService {
 
   static async deleteCertificateCourseById(id: string) {
     try {
-      // const response = await axios.delete(
-      //   `${coreServiceApiUrl}${API.CORE.CERTIFICATE_COURSE.DELETE_BY_ID.replace(":id", id)}`
-      // );
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
