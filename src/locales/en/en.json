@@ -164,6 +164,13 @@
   "home_data_structures_and_algorithms": "Data structures and Algorithms",
   "common_all_courses_catalog": "All courses catalog",
   "common_loading_search": "Searching...",
+  "common_created_by": "Created by",
+  "common_start_time": "Start time",
+  "common_end_time": "End time",
+  "common_limit_time": "Limit time",
+  "common_num_of_participants": "Participants",
+  "common_created_at": "Created at",
+  "common_contest_management": "Contest Management",
 
   "side_bar_dashboard": "Dashboard",
 
