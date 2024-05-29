@@ -204,7 +204,14 @@ const CourseCertificates = () => {
       <Box id={classes.courseCertificatesRoot}>
         <Container className={classes.container}>
           <Grid container>
-            <Grid item xs={2.5} id={classes.filter}>
+            <Grid
+              item
+              xs={2.5}
+              id={classes.filter}
+              sx={{
+                marginTop: "-20px"
+              }}
+            >
               <Heading3 translation-key='common_catalog'>{t("common_catalog")}</Heading3>
               <Box className={classes.couseCertificatesByTopic}>
                 <ToggleButtonGroup
@@ -217,7 +224,7 @@ const CourseCertificates = () => {
                   fullWidth
                 >
                   <AnimatedToggleButton value='all' isActive={catalogActive === "all"}>
-                    {t("common_all_courses")}
+                    <ParagraphBody>{t("common_all_courses")}</ParagraphBody>
                   </AnimatedToggleButton>
                 </ToggleButtonGroup>
               </Box>
@@ -250,7 +257,9 @@ const CourseCertificates = () => {
                           src={topic.thumbnailUrl}
                           alt={topic.name}
                         />
-                        {topic.name}
+                        <ParagraphBody>
+                          {topic.name} ({topic.numOfCertificateCourses})
+                        </ParagraphBody>
                       </Stack>
                     </AnimatedToggleButton>
                   ))}
