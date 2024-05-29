@@ -87,7 +87,7 @@ const LecturerCourseParticipant = () => {
       ]
     }
   ];
-  const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
+  const visibleColumnList = { id: false, name: true, email: true, role: true, action: false };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,

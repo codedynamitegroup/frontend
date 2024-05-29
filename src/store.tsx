@@ -22,6 +22,7 @@ import detailCodeQuestion from "reduxes/CodeAssessmentService/CodeQuestion/Detai
 import courseUser from "reduxes/courseService/courseUser";
 import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
+import questionCreate from "reduxes/coreService/questionCreate/index";
 
 const store = configureStore({
   reducer: {
@@ -47,6 +48,7 @@ const store = configureStore({
     detailCodeQuestion: detailCodeQuestion,
     courseUser: courseUser,
     auth: auth,
+    questionCreate: questionCreate,
     loading: loading
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)

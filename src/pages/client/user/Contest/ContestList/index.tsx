@@ -156,7 +156,7 @@ const ContestList = () => {
   }, [pageNo]);
 
   return (
-    <>
+    <Box id={classes.contestListRoot}>
       <Grid item xs={12} md={12} xl={12} lg={12}>
         <Box
           sx={{
@@ -399,7 +399,7 @@ const ContestList = () => {
           </Grid>
         </Grid>
       </Container>
-    </>
+    </Box>
   );
 };
 

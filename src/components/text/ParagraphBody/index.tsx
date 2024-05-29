@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ParagraphBody = styled(Typography)<Props>`
-  font-family: "Inter";
+  font-family: "Montserrat";
   font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 400};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};

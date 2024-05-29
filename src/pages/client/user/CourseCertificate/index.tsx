@@ -1,5 +1,15 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Box, Button, Chip, Container, Grid, Stack, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  ToggleButtonGroup
+} from "@mui/material";
 import AnimatedToggleButton from "components/common/buttons/AnimatedToggleButton";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -8,7 +18,6 @@ import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
-import images from "config/images";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
@@ -17,7 +26,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { setCertificateCourses, setLoading } from "reduxes/coreService/CertificateCourse";
+import {
+  setCertificateCourses,
+  setLoading,
+  setMostEnrolledCertificateCourses
+} from "reduxes/coreService/CertificateCourse";
 import { setTopics } from "reduxes/coreService/Topic";
 import { routes } from "routes/routes";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
@@ -48,13 +61,16 @@ const CourseCertificates = () => {
     return topicState.topics.find((topic) => topic.topicId === catalogActive);
   }, [catalogActive, topicState.topics]);
 
-  const searchHandle = useCallback((searchText: string) => {
-    handleGetCertificateCourses({
-      courseName: searchText,
-      filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: IsRegisteredFilterEnum.ALL
-    });
-  }, []);
+  const searchHandle = useCallback(
+    (searchText: string) => {
+      handleGetCertificateCourses({
+        courseName: searchText,
+        filterTopicIds: [currentTopic?.topicId || ""],
+        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      });
+    },
+    [currentTopic?.topicId]
+  );
 
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
@@ -102,9 +118,6 @@ const CourseCertificates = () => {
     return "";
   }, [supportedProgrammingLanguages]);
 
-  console.log("supportedProgrammingLanguages", supportedProgrammingLanguages);
-  console.log("defaultProgrammingLanguage", defaultProgrammingLanguage);
-
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -127,21 +140,32 @@ const CourseCertificates = () => {
   const handleGetCertificateCourses = async ({
     courseName,
     filterTopicIds,
-    isRegisteredFilter
+    isRegisteredFilter,
+    fetchMostEnrolled = false
   }: {
     courseName: string;
     filterTopicIds: string[];
     isRegisteredFilter: IsRegisteredFilterEnum;
+    fetchMostEnrolled?: boolean;
   }) => {
     dispatch(setLoading({ isLoading: true }));
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName: courseName,
-        filterTopicIds: filterTopicIds,
-        isRegisteredFilter: isRegisteredFilter
+        courseName,
+        filterTopicIds,
+        isRegisteredFilter
       });
-      dispatch(setCertificateCourses(getCertificateCoursesResponse));
-      dispatch(setLoading({ isLoading: false }));
+      setTimeout(() => {
+        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
+        if (fetchMostEnrolled) {
+          dispatch(
+            setMostEnrolledCertificateCourses(
+              getCertificateCoursesResponse.mostEnrolledCertificateCourses
+            )
+          );
+        }
+        dispatch(setLoading({ isLoading: false }));
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.response?.code || 503,
@@ -153,146 +177,41 @@ const CourseCertificates = () => {
     }
   };
 
-  const handleChangeCatalog = (value: string) => {
+  const handleChangeCatalog = useCallback((value: string) => {
     if (value === "all") {
       navigate(routes.user.course_certificate.root);
     } else {
       navigate(`${routes.user.course_certificate.root}?topicId=${value}`);
     }
-  };
+  }, []);
 
   useEffect(() => {
     handleGetTopics();
+  }, []);
+
+  useEffect(() => {
+    if (certificateCourseState.isLoading) return;
     handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      isRegisteredFilter: IsRegisteredFilterEnum.ALL,
+      fetchMostEnrolled: true
     });
-  }, []);
+  }, [currentTopic?.topicId]);
 
   return (
     <>
-      <Box
-        id={classes.banner}
-        sx={{
-          backgroundImage: `url(${images.background.courseCertificatesBackground})`
-        }}
-      >
-        <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorname={"--white"} translation-key='certificate_title'>
-            {t("certificate_title")}
-          </Heading1>
-          <Heading3 colorname={"--white"} translation-key='certificate_description'>
-            {t("certificate_description")}
-          </Heading3>
-          <Box id={classes.bannerSearch}>
-            <CustomAutocomplete
-              value={searchText}
-              setValue={setSearchText}
-              options={certificateCourseState.certificateCourses}
-              onHandleChange={searchHandle}
-              renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
-                return (
-                  <li
-                    {...props}
-                    key={option.certificateCourseId}
-                    style={{
-                      paddingLeft: "10px",
-                      paddingRight: "10px"
-                    }}
-                  >
-                    <Button
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        justifyContent: "flex-start",
-                        textTransform: "capitalize"
-                      }}
-                      onClick={() => {
-                        navigate(
-                          `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
-                        );
-                      }}
-                    >
-                      <Stack
-                        direction='row'
-                        alignItems='space-between'
-                        justifyContent='space-between'
-                        gap={1}
-                        width={"100%"}
-                      >
-                        <Stack
-                          direction='row'
-                          alignItems='center'
-                          justifyContent='flex-start'
-                          textAlign={"left"}
-                          gap={1}
-                        >
-                          <img
-                            style={{ width: "20px", height: "20px" }}
-                            src={option.topic.thumbnailUrl}
-                            alt={option.name}
-                          />
-                          {option.name}
-                          <Chip
-                            size='small'
-                            label={
-                              option.skillLevel === SkillLevelEnum.BASIC
-                                ? t("common_easy")
-                                : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                  ? t("common_medium")
-                                  : option?.skillLevel === SkillLevelEnum.ADVANCED
-                                    ? t("common_hard")
-                                    : ""
-                            }
-                            variant='outlined'
-                          />
-                        </Stack>
-                        <Stack
-                          direction='row'
-                          alignItems='center'
-                          justifyContent='flex-end'
-                          gap={1}
-                          translate-key='common_view_details'
-                        >
-                          {t("common_view_details")}
-                          <ArrowForwardIosIcon />
-                        </Stack>
-                      </Stack>
-                    </Button>
-                  </li>
-                );
-              }}
-            />
-            <BasicSelect
-              labelId='select-assignment-section-label'
-              value={assignmentSection}
-              onHandleChange={(value) => setAssignmentSection(value)}
-              sx={{ maxWidth: "200px" }}
-              items={[
-                {
-                  value: "0",
-                  label: t("common_all")
-                },
-                {
-                  value: "1",
-                  label: t("common_registered")
-                },
-                {
-                  value: "2",
-                  label: t("common_not_registered")
-                }
-              ]}
-              backgroundColor='#FFFFFF'
-              translation-key={["common_all", "common_registered", "common_not_registered"]}
-            />
-          </Box>
-        </Container>
-      </Box>
-      <Box mt={"40px"}>
+      <Box id={classes.courseCertificatesRoot}>
         <Container className={classes.container}>
           <Grid container>
-            <Grid item xs={2.5} id={classes.filter}>
+            <Grid
+              item
+              xs={2.5}
+              id={classes.filter}
+              sx={{
+                marginTop: "-20px"
+              }}
+            >
               <Heading3 translation-key='common_catalog'>{t("common_catalog")}</Heading3>
               <Box className={classes.couseCertificatesByTopic}>
                 <ToggleButtonGroup
@@ -305,7 +224,7 @@ const CourseCertificates = () => {
                   fullWidth
                 >
                   <AnimatedToggleButton value='all' isActive={catalogActive === "all"}>
-                    {t("common_all_courses")}
+                    <ParagraphBody>{t("common_all_courses")}</ParagraphBody>
                   </AnimatedToggleButton>
                 </ToggleButtonGroup>
               </Box>
@@ -338,7 +257,9 @@ const CourseCertificates = () => {
                           src={topic.thumbnailUrl}
                           alt={topic.name}
                         />
-                        {topic.name}
+                        <ParagraphBody>
+                          {topic.name} ({topic.numOfCertificateCourses})
+                        </ParagraphBody>
                       </Stack>
                     </AnimatedToggleButton>
                   ))}
@@ -350,30 +271,146 @@ const CourseCertificates = () => {
               <Box id={classes.couseCertificatesWrapper}>
                 {catalogActive === "all" && (
                   <Box className={classes.couseCertificatesByTopic}>
-                    <Heading2 translation-key='certificate_hot_recommend'>
-                      {t("certificate_hot_recommend")}
-                    </Heading2>
-                    <Grid container spacing={3}>
-                      {certificateCourseState.mostEnrolledCertificateCourses.map(
-                        (course, index) => (
-                          <Grid
-                            item
-                            xs={4}
-                            key={index}
-                            onClick={() =>
-                              navigate(
-                                routes.user.course_certificate.detail.lesson.root.replace(
-                                  ":courseId",
-                                  course.certificateCourseId
+                    <Card className={classes.recommendedCertificateCoursesWrapper}>
+                      <Heading2
+                        translation-key='certificate_hot_recommend'
+                        sx={{
+                          marginBottom: "10px"
+                        }}
+                      >
+                        {t("certificate_hot_recommend")}
+                      </Heading2>
+                      <Grid container spacing={3}>
+                        {certificateCourseState.mostEnrolledCertificateCourses
+                          .slice(0, 3)
+                          .map((course, index) => (
+                            <Grid
+                              item
+                              xs={4}
+                              key={index}
+                              onClick={() =>
+                                navigate(
+                                  routes.user.course_certificate.detail.lesson.root.replace(
+                                    ":courseId",
+                                    course.certificateCourseId
+                                  )
                                 )
-                              )
-                            }
-                          >
-                            <CourseCertificateCard course={course} />
-                          </Grid>
-                        )
-                      )}
-                    </Grid>
+                              }
+                            >
+                              <CourseCertificateCard course={course} />
+                            </Grid>
+                          ))}
+                      </Grid>
+                    </Card>
+                    <Heading1 translation-key='common_all_courses_catalog'>
+                      {t("common_all_courses_catalog")}
+                    </Heading1>
+                    <Box className={classes.autocompleteWrapper}>
+                      <CustomAutocomplete
+                        value={searchText}
+                        setValue={setSearchText}
+                        options={certificateCourseState.certificateCourses}
+                        onHandleChange={searchHandle}
+                        renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
+                          return (
+                            <li
+                              {...props}
+                              key={option.certificateCourseId}
+                              style={{
+                                paddingLeft: "10px",
+                                paddingRight: "10px"
+                              }}
+                            >
+                              <Button
+                                sx={{
+                                  display: "flex",
+                                  width: "100%",
+                                  justifyContent: "flex-start",
+                                  textTransform: "capitalize"
+                                }}
+                                onClick={() => {
+                                  navigate(
+                                    `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
+                                  );
+                                }}
+                              >
+                                <Stack
+                                  direction='row'
+                                  alignItems='space-between'
+                                  justifyContent='space-between'
+                                  gap={1}
+                                  width={"100%"}
+                                >
+                                  <Stack
+                                    direction='row'
+                                    alignItems='center'
+                                    justifyContent='flex-start'
+                                    textAlign={"left"}
+                                    gap={1}
+                                  >
+                                    <img
+                                      style={{ width: "20px", height: "20px" }}
+                                      src={option.topic.thumbnailUrl}
+                                      alt={option.name}
+                                    />
+                                    {option.name}
+                                    <Chip
+                                      size='small'
+                                      label={
+                                        option.skillLevel === SkillLevelEnum.BASIC
+                                          ? t("common_easy")
+                                          : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                            ? t("common_medium")
+                                            : option?.skillLevel === SkillLevelEnum.ADVANCED
+                                              ? t("common_hard")
+                                              : ""
+                                      }
+                                      variant='outlined'
+                                    />
+                                  </Stack>
+                                  <Stack
+                                    direction='row'
+                                    alignItems='center'
+                                    justifyContent='flex-end'
+                                    gap={1}
+                                    translate-key='common_view_details'
+                                  >
+                                    {t("common_view_details")}
+                                    <ArrowForwardIosIcon />
+                                  </Stack>
+                                </Stack>
+                              </Button>
+                            </li>
+                          );
+                        }}
+                      />
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        value={assignmentSection}
+                        onHandleChange={(value) => setAssignmentSection(value)}
+                        sx={{ maxWidth: "200px" }}
+                        items={[
+                          {
+                            value: "0",
+                            label: t("common_all")
+                          },
+                          {
+                            value: "1",
+                            label: t("common_registered")
+                          },
+                          {
+                            value: "2",
+                            label: t("common_not_registered")
+                          }
+                        ]}
+                        backgroundColor='#FFFFFF'
+                        translation-key={[
+                          "common_all",
+                          "common_registered",
+                          "common_not_registered"
+                        ]}
+                      />
+                    </Box>
                   </Box>
                 )}
 
@@ -388,6 +425,113 @@ const CourseCertificates = () => {
                           ?.description
                       }
                     </ParagraphBody>
+                    <Box className={classes.autocompleteWrapper}>
+                      <CustomAutocomplete
+                        value={searchText}
+                        setValue={setSearchText}
+                        options={certificateCourseState.certificateCourses}
+                        onHandleChange={searchHandle}
+                        renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
+                          return (
+                            <li
+                              {...props}
+                              key={option.certificateCourseId}
+                              style={{
+                                paddingLeft: "10px",
+                                paddingRight: "10px"
+                              }}
+                            >
+                              <Button
+                                sx={{
+                                  display: "flex",
+                                  width: "100%",
+                                  justifyContent: "flex-start",
+                                  textTransform: "capitalize"
+                                }}
+                                onClick={() => {
+                                  navigate(
+                                    `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
+                                  );
+                                }}
+                              >
+                                <Stack
+                                  direction='row'
+                                  alignItems='space-between'
+                                  justifyContent='space-between'
+                                  gap={1}
+                                  width={"100%"}
+                                >
+                                  <Stack
+                                    direction='row'
+                                    alignItems='center'
+                                    justifyContent='flex-start'
+                                    textAlign={"left"}
+                                    gap={1}
+                                  >
+                                    <img
+                                      style={{ width: "20px", height: "20px" }}
+                                      src={option.topic.thumbnailUrl}
+                                      alt={option.name}
+                                    />
+                                    {option.name}
+                                    <Chip
+                                      size='small'
+                                      label={
+                                        option.skillLevel === SkillLevelEnum.BASIC
+                                          ? t("common_easy")
+                                          : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                            ? t("common_medium")
+                                            : option?.skillLevel === SkillLevelEnum.ADVANCED
+                                              ? t("common_hard")
+                                              : ""
+                                      }
+                                      variant='outlined'
+                                    />
+                                  </Stack>
+                                  <Stack
+                                    direction='row'
+                                    alignItems='center'
+                                    justifyContent='flex-end'
+                                    gap={1}
+                                    translate-key='common_view_details'
+                                  >
+                                    {t("common_view_details")}
+                                    <ArrowForwardIosIcon />
+                                  </Stack>
+                                </Stack>
+                              </Button>
+                            </li>
+                          );
+                        }}
+                      />
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        value={assignmentSection}
+                        onHandleChange={(value) => setAssignmentSection(value)}
+                        sx={{ maxWidth: "200px" }}
+                        items={[
+                          {
+                            value: "0",
+                            label: t("common_all")
+                          },
+                          {
+                            value: "1",
+                            label: t("common_registered")
+                          },
+                          {
+                            value: "2",
+                            label: t("common_not_registered")
+                          }
+                        ]}
+                        backgroundColor='#FFFFFF'
+                        translation-key={[
+                          "common_all",
+                          "common_registered",
+                          "common_not_registered"
+                        ]}
+                      />
+                    </Box>
+
                     {topicState.topics.find((topic) => topic.topicId === catalogActive)
                       ?.isSingleProgrammingLanguage === false && (
                       <Stack
@@ -421,14 +565,80 @@ const CourseCertificates = () => {
                     )}
                   </Box>
                 )}
-
+                {/* <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%"
+                  }}
+                >
+                  <CircularProgress />
+                </Box> */}
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading3 translation-key='certificate_basic'>
                     {t("certificate_basic")} ({basicCertificateCourses.length})
                   </Heading3>
-                  <Grid container spacing={3}>
-                    {basicCertificateCourses.map(
-                      (course: CertificateCourseEntity, index: number) => (
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {basicCertificateCourses.map(
+                        (course: CertificateCourseEntity, index: number) => (
+                          <Grid
+                            item
+                            xs={4}
+                            key={index}
+                            onClick={() =>
+                              navigate(
+                                routes.user.course_certificate.detail.lesson.root.replace(
+                                  ":courseId",
+                                  course.certificateCourseId
+                                )
+                              )
+                            }
+                          >
+                            <CourseCertificateCard course={course} />
+                          </Grid>
+                        )
+                      )}
+                    </Grid>
+                  )}
+                </Box>
+                <Box className={classes.couseCertificatesByTopic}>
+                  <Heading3 translation-key='certificate_intermediate'>
+                    {t("certificate_intermediate")} ({intermediateCertificateCourses.length})
+                  </Heading3>
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {intermediateCertificateCourses.map((course, index) => (
                         <Grid
                           item
                           xs={4}
@@ -444,57 +654,49 @@ const CourseCertificates = () => {
                         >
                           <CourseCertificateCard course={course} />
                         </Grid>
-                      )
-                    )}
-                  </Grid>
-                </Box>
-                <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_intermediate'>
-                    {t("certificate_intermediate")} ({intermediateCertificateCourses.length})
-                  </Heading3>
-                  <Grid container spacing={3}>
-                    {intermediateCertificateCourses.map((course, index) => (
-                      <Grid
-                        item
-                        xs={4}
-                        key={index}
-                        onClick={() =>
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.root.replace(
-                              ":courseId",
-                              course.certificateCourseId
-                            )
-                          )
-                        }
-                      >
-                        <CourseCertificateCard course={course} />
-                      </Grid>
-                    ))}
-                  </Grid>
+                      ))}
+                    </Grid>
+                  )}
                 </Box>
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading3 translation-key='certificate_advance'>
                     {t("certificate_advance")} ({advancedCertificateCourses.length})
                   </Heading3>
-                  <Grid container spacing={3}>
-                    {advancedCertificateCourses.map((course, index) => (
-                      <Grid
-                        item
-                        xs={4}
-                        key={index}
-                        onClick={() =>
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.root.replace(
-                              ":courseId",
-                              course.certificateCourseId
+                  {certificateCourseState.isLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    <Grid container spacing={3}>
+                      {advancedCertificateCourses.map((course, index) => (
+                        <Grid
+                          item
+                          xs={4}
+                          key={index}
+                          onClick={() =>
+                            navigate(
+                              routes.user.course_certificate.detail.lesson.root.replace(
+                                ":courseId",
+                                course.certificateCourseId
+                              )
                             )
-                          )
-                        }
-                      >
-                        <CourseCertificateCard course={course} />
-                      </Grid>
-                    ))}
-                  </Grid>
+                          }
+                        >
+                          <CourseCertificateCard course={course} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
                 </Box>
               </Box>
             </Grid>

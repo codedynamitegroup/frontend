@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ParagraphExtraSmall = styled(Typography)<Props>`
-  font-family: "Inter";
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: ${(props) => props.fontWeight || 400};
   font-size: 12px;

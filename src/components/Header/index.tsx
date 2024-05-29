@@ -204,12 +204,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   mr: 2
                 }}
               >
-                <MenuIcon sx={{ color: "white" }} />
+                <MenuIcon />
               </IconButton>
             )}
 
             <Box className={classes.logo} onClick={handleLogo}>
-              <img src={images.logo.logo} alt='logo' />
+              <img src={images.logo.appLogo} alt='logo' />
             </Box>
           </Box>
           <Box className={classes.navbarItem}>
@@ -222,7 +222,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               >
                 <ParagraphSmall
                   className={page.isActice ? classes.actice : ""}
-                  colorname={"--white"}
                   fontWeight={600}
                   translation-key={page.name}
                 >
@@ -243,11 +242,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   className={classes.item}
                   onClick={() => navigate(page.path)}
                 >
-                  <ParagraphSmall
-                    colorname={"--white"}
-                    fontWeight={600}
-                    translation-key={page.name}
-                  >
+                  <ParagraphSmall fontWeight={600} translation-key={page.name}>
                     {t(page.name)}
                   </ParagraphSmall>
                 </Button>
@@ -275,7 +270,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     }
                     alt='avatar'
                   ></img>
-                  <ParagraphSmall fontWeight={600} colorname='--white'>
+                  <ParagraphSmall fontWeight={600}>
                     {loggedUser.firstName + " " + loggedUser.lastName}
                   </ParagraphSmall>
                 </Button>

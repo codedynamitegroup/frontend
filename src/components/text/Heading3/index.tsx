@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Heading3 = styled(Typography)<Props>`
-  font-family: "Inter";
+  font-family: "Montserrat";
   font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 600};
   font-size: 22px;

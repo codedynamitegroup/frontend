@@ -1,6 +1,6 @@
-import axios from "axios";
 import { API } from "constants/API";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
+import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
@@ -17,7 +17,9 @@ export class ContestService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(`${coreServiceApiUrl}${API.CORE.CONTEST.DEFAULT}`, {
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CONTEST.DEFAULT}`, {
         params: {
           searchName,
           startTimeFilter,
@@ -40,7 +42,9 @@ export class ContestService {
 
   static async getMostPopularContests() {
     try {
-      const response = await axios.get(`${coreServiceApiUrl}${API.CORE.CONTEST.MOST_POPULAR}`);
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CONTEST.MOST_POPULAR}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -56,9 +60,9 @@ export class ContestService {
 
   static async getContestLeaderboard(contestId: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.CONTEST.LEADERBOARD.replace(":id", contestId)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CONTEST.LEADERBOARD.replace(":id", contestId)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -74,9 +78,9 @@ export class ContestService {
 
   static async getContestById(id: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.CONTEST.GET_BY_ID.replace(":id", id)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CONTEST.GET_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }

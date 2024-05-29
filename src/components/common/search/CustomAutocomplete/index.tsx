@@ -1,6 +1,9 @@
+import RemoveIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import { Divider, Grid, InputAdornment, Paper } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import Icon from "@mui/material/Icon";
+import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import * as React from "react";
@@ -39,6 +42,10 @@ export default function CustomAutocomplete({
     setValue(e.target.value);
   };
 
+  const handleRemoveAllTextButton = () => {
+    setValue("");
+  };
+
   React.useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       onHandleChange(value);
@@ -62,6 +69,7 @@ export default function CustomAutocomplete({
             sx={{
               width: "100%"
             }}
+            value={value}
             size={size}
             loading={isLoading}
             options={options}
@@ -82,6 +90,26 @@ export default function CustomAutocomplete({
                     <InputAdornment position='start'>
                       <SearchIcon />
                       <Divider className={classes.searchDivider} orientation='vertical' />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      {value === null || value === "" ? (
+                        <IconButton className={classes.button} disabled edge='end'>
+                          <Icon />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          onClick={handleRemoveAllTextButton}
+                          className={classes.button}
+                          edge='end'
+                          sx={{
+                            marginRight: "-30px"
+                          }}
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                      )}
                     </InputAdornment>
                   )
                 }}
