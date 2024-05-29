@@ -3,19 +3,17 @@ import axios from "axios";
 const AUTH_SERVICE_API_URL = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
 const createInstance = ({
-  apiUrl,
-  isAuthorization = false,
-  callback
+  baseURL,
+  isAuthorization = false
 }: {
-  apiUrl: string;
+  baseURL: string;
   isAuthorization?: boolean;
-  callback: (error: any) => void;
 }) => {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
 
   const instance = axios.create({
-    baseURL: apiUrl,
+    baseURL,
     headers: {
       "Content-Type": "application/json",
       "Access-Token": accessToken
@@ -36,12 +34,14 @@ const createInstance = ({
     instance.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response && error.response.status === 400) {
-          console.error("error.response.data", error.response.data);
-          return Promise.resolve(error.response.data);
-        }
+        // if (error.response && error.response.status === 400) {
+        //   console.error("error.response.data", error.response.data);
+        //   return Promise.resolve(error.response.data);
+        // }
         const originalRequest = error.config;
         console.log("refreshToken", refreshToken);
+
+        // Handle 401 Unauthorized
         if (
           error.response &&
           error.response.status === 401 &&
@@ -64,20 +64,29 @@ const createInstance = ({
                 return instance(originalRequest);
               }
             })
-            .catch((err) => {
+            .catch((err: any) => {
               // if status Please authenticate
               if (err.response.status === 401 || err.response.status === 403) {
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
-                callback(err);
               }
+              return Promise.reject({
+                code: err.response?.data?.code || 503,
+                status: err.response?.data?.status || "Service Unavailable",
+                message: err.response?.data?.message || err.message
+              });
             });
         }
 
-        return Promise.reject(error);
+        return Promise.reject({
+          code: error.response?.data?.code || 503,
+          status: error.response?.data?.status || "Service Unavailable",
+          message: error.response?.data?.message || error.message
+        });
       }
     );
   }
+  return instance;
 };
 
 export default createInstance;
