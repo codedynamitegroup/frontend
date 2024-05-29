@@ -331,6 +331,13 @@
   "course_student_assignment_submission_status_graded": "Graded",
   "course_student_assignment_submission_status_not_grading": "Not graded",
 
+  "course_student_assignment_grade": "Grade",
+  "course_student_assignment_feedback": "Feedback",
+
+  "assignment_submitted": "Assignment was submitted ",
+  "assignment_overdue": "Assignment is overdue by ",
+  "ago": " ago",
+
   "days": "days",
   "hours": "hours",
   "minutes": "minutes",
@@ -738,5 +745,4 @@
   "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
   "max_byte_title": "Maxium size of attachment",
   "question_attachments_setting": "Attachments settings"
-
 }

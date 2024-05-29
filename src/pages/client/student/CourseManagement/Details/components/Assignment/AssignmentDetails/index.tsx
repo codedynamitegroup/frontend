@@ -29,6 +29,7 @@ import {
 type Column = {
   header: string;
   data: string | JSX.Element;
+  status?: number;
 };
 
 const StudentCourseAssignmentDetails = () => {
@@ -68,7 +69,7 @@ const StudentCourseAssignmentDetails = () => {
     };
 
     fetchAssignmentDetails();
-    handleGetSubmissionAssignment("e931c5c8-9d98-41ea-ad33-1c0b0483e676", assignmentId ?? "");
+    handleGetSubmissionAssignment("9090d7b2-3b20-46a8-9700-6ea8699c7696", assignmentId ?? "");
   }, []);
 
   function calculateTimeDifference(
@@ -122,31 +123,46 @@ const StudentCourseAssignmentDetails = () => {
     }
   };
 
+  const checkTimeSubmission = (): Boolean => {
+    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return false;
+    let submitTime = new Date(
+      submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
+    );
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+    if (submitTime < timeClose) {
+      return true;
+    }
+    return false;
+  };
+
   let columns: Column[] = [
     {
       header: t("course_student_assignment_submission_status"),
       data: submissionAssignmentState.submissionAssignmentDetails?.submitTime
         ? t("course_student_assignment_submission_status_submitted")
-        : t("course_student_assignment_submission_status_not_submitted")
+        : t("course_student_assignment_submission_status_not_submitted"),
+      status: submissionAssignmentState.submissionAssignmentDetails?.submitTime ? 1 : 0
     },
     {
       header: t("course_student_assignment_grading_status"),
       data: submissionAssignmentState.submissionAssignmentDetails?.isGraded
         ? t("course_student_assignment_submission_status_graded")
-        : t("course_student_assignment_submission_status_not_grading")
+        : t("course_student_assignment_submission_status_not_grading"),
+      status: submissionAssignmentState.submissionAssignmentDetails?.isGraded ? 1 : 0
     },
     {
       header: t("course_student_assignment_time_remaining"),
-      data: submissionAssignmentState.submissionAssignmentDetails?.submitTime
-        ? "Assignment was submitted " + formatTime(submitTime) + " ago"
+      data: checkTimeSubmission()
+        ? t("assignment_submitted") + formatTime(submitTime) + t("ago")
         : timeRemaining.days === 0 &&
             timeRemaining.hours === 0 &&
             timeRemaining.minutes === 0 &&
             timeRemaining.seconds === 0
-          ? "Assignment has ended"
+          ? formatTime(timeRemaining)
           : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
-            ? "Assignment is overdue by: " + formatTime(timeRemaining)
-            : formatTime(timeRemaining)
+            ? t("assignment_overdue") + formatTime(timeRemaining)
+            : formatTime(timeRemaining),
+      status: checkTimeSubmission() ? 1 : 2
     },
     {
       header: t("course_student_assignment_last_modified"),
@@ -196,6 +212,26 @@ const StudentCourseAssignmentDetails = () => {
       )
     });
   }
+
+  let gradeColumn: Column[] = [
+    {
+      header: t("course_student_assignment_grade"),
+      data:
+        (submissionAssignmentState.submissionAssignmentDetails?.isGraded &&
+          submissionAssignmentState.submissionAssignmentDetails?.grade.toFixed(2)) ||
+        "-"
+    },
+    {
+      header: t("course_student_assignment_feedback"),
+      data: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: submissionAssignmentState.submissionAssignmentDetails?.content || ``
+          }}
+        ></div>
+      )
+    }
+  ];
 
   return (
     <Box className={classes.assignmentBody}>
@@ -296,24 +332,43 @@ const StudentCourseAssignmentDetails = () => {
           "course_student_assignment_grading_status",
           "course_student_assignment_time_remaining",
           "course_student_assignment_last_modified",
-          "course_student_assignment_file_submission"
+          "course_student_assignment_file_submission",
+          "assignment_submitted",
+          "assignment_overdue",
+          "ago"
         ]}
       />
-      <Button
-        btnType={BtnType.Primary}
-        onClick={() => {
-          navigate(
-            routes.student.assignment.submit
-              .replace(":assignmentId", assignmentId ?? "")
-              .replace(":courseId", courseId ?? "")
-          );
-        }}
-        width='fit-content'
-      >
-        <ParagraphBody translation-key='course_assignment_detail_submit'>
-          {t("course_assignment_detail_submit")}
-        </ParagraphBody>
-      </Button>
+      {submissionAssignmentState.submissionAssignmentDetails?.isGraded && (
+        <>
+          <Heading2 translation-key={["course_student_assignment_grade"]}>
+            {t("course_student_assignment_grade")}
+          </Heading2>
+          <AssignmentTable
+            rows={gradeColumn}
+            translation-key={[
+              "course_student_assignment_grade",
+              "course_student_assignment_feedback"
+            ]}
+          />
+        </>
+      )}
+      {!assignmentState.assignmentDetails?.moodleId && (
+        <Button
+          btnType={BtnType.Primary}
+          onClick={() => {
+            navigate(
+              routes.student.assignment.submit
+                .replace(":assignmentId", assignmentId ?? "")
+                .replace(":courseId", courseId ?? "")
+            );
+          }}
+          width='fit-content'
+        >
+          <ParagraphBody translation-key='course_assignment_detail_submit'>
+            {t("course_assignment_detail_submit")}
+          </ParagraphBody>
+        </Button>
+      )}
     </Box>
   );
 };
