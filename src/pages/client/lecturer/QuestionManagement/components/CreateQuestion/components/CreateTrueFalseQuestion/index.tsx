@@ -25,7 +25,6 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
-import { count } from "node:console";
 
 interface Props {
   qtype: String;

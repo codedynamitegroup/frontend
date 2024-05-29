@@ -45,7 +45,8 @@ export const API = {
       },
       MULTIPLE_CHOICE_QUESTION: {
         CREATE: "questions/multichoice-question/create",
-        GET_BY_ID: "/core/questions/multichoice-question/:id",
+        GET_BY_ID: "questions/multichoice-question/:id",
+        GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
         GET_ALL: "/core/questions/multichoice-question"
       }
     }

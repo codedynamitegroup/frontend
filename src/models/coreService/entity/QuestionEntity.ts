@@ -97,3 +97,16 @@ export enum MultichocieNumbering {
   ABC = 2,
   n123 = 3
 }
+
+export interface MultiChoiceQuestion {
+  id: string;
+  single: boolean;
+  question: QuestionEntity;
+  shuffleAnswers?: boolean | null | undefined;
+  correctFeedback?: string | null | undefined;
+  partiallyCorrectFeedback?: string | null | undefined;
+  incorrectFeedback?: string | null | undefined;
+  answerNumbering?: MultichocieNumbering | null | undefined;
+  showNumCorrect?: number | null | undefined;
+  showStandardInstructions?: string | null | undefined;
+}

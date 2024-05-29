@@ -198,8 +198,7 @@ const CreateEssayQuestion = (props: Props) => {
     watch,
     formState: { errors },
     trigger,
-    setValue,
-    setFocus
+    setValue
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {

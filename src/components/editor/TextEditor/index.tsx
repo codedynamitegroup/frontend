@@ -56,6 +56,7 @@ type Props = {
   openDialog?: boolean;
   title?: string;
   submitCount?: number;
+  maxLines?: number;
 };
 
 const TextEditor: React.FC<Props> = ({
@@ -68,7 +69,7 @@ const TextEditor: React.FC<Props> = ({
 }) => {
   const reactQuillRef: any = useRef(null);
   const dialogQuillRef: any = useRef(null);
-  const { error, openDialog, title, submitCount } = props;
+  const { error, openDialog, title, submitCount, maxLines } = props;
   const modules = React.useMemo(
     () => ({
       toolbar: props?.noToolbar
@@ -169,6 +170,9 @@ const TextEditor: React.FC<Props> = ({
         <>
           <div style={{ position: "relative", height: "100%" }}>
             <ReactQuill
+              style={{
+                height: maxLines ? `${maxLines * 24}px` : "auto" // Maximum height equivalent to maxRows
+              }}
               ref={reactQuillRef}
               theme={readOnly ? "bubble" : "snow"}
               readOnly={readOnly}
@@ -247,6 +251,9 @@ const TextEditor: React.FC<Props> = ({
       )}
       {!openDialog && (
         <ReactQuill
+          style={{
+            height: maxLines ? `${maxLines * 24}px` : "auto" // Maximum height equivalent to maxRows
+          }}
           ref={reactQuillRef}
           theme={readOnly ? "bubble" : "snow"}
           readOnly={readOnly}

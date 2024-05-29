@@ -2,31 +2,21 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FlagIcon from "@mui/icons-material/Flag";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import MenuIcon from "@mui/icons-material/Menu";
 import ModeIcon from "@mui/icons-material/Mode";
 import {
   Autocomplete,
-  Badge,
   Box,
-  Card,
   CssBaseline,
-  Divider,
   Drawer,
+  Fab,
   Grid,
-  IconButton,
   Pagination,
-  TextField,
-  Toolbar
+  TextField
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { grey, yellow } from "@mui/material/colors";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -40,8 +30,15 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
+import Button from "@mui/joy/Button";
+import { useTranslation } from "react-i18next";
+import MenuIcon from "@mui/icons-material/MenuOpen";
+import IconButton from "@mui/joy/IconButton";
+import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
+import Badge from "@mui/joy/Badge";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
-const drawerWidth = 400;
+const drawerWidth = 340;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -109,10 +106,12 @@ export default function TakeExam() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
+  const { t } = useTranslation();
   let questionPageIndex = Number(searchParams.get("page"));
   if (isNaN(questionPageIndex) || questionPageIndex < 0) {
     questionPageIndex = 0;
   }
+
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
   const [questions, setQuestions] = React.useState([
@@ -332,6 +331,9 @@ export default function TakeExam() {
       done: false
     }
   ]);
+  const [drawerVariant, setDrawerVariant] = React.useState<
+    "temporary" | "permanent" | "persistent"
+  >(width < 1080 ? "temporary" : "permanent");
 
   const [hours, setHours] = React.useState(0);
   const [minutes, setMinutes] = React.useState(0);
@@ -350,11 +352,11 @@ export default function TakeExam() {
     }
   }, [timeLimit]);
 
-  React.useEffect(() => {
-    const interval = setInterval(() => getTime(), 1000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => getTime(), 1000);
 
-    return () => clearInterval(interval);
-  }, [getTime, hours, minutes, seconds, timeLimit]);
+  //   return () => clearInterval(interval);
+  // }, [getTime, hours, minutes, seconds, timeLimit]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -367,9 +369,9 @@ export default function TakeExam() {
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {
     if (width < 1080) {
-      setOpen(false);
+      setDrawerVariant("temporary");
     } else {
-      setOpen(true);
+      setDrawerVariant("persistent");
     }
   }, [width]);
 
@@ -379,290 +381,415 @@ export default function TakeExam() {
   });
 
   return (
-    <Grid className={classes.root}>
-      <Header ref={headerRef} />
-      <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
-        <CssBaseline />
-        <AppBar
-          position='fixed'
-          sx={{
-            // margin top to avoid appbar overlap with content
-            marginTop: `${headerHeight}px`,
-            backgroundColor: "white"
-          }}
-          open={open}
-        >
-          <Toolbar>
-            <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.management)}
+    <>
+      <Grid className={classes.root}>
+        <Header ref={headerRef} />
+        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+          <CssBaseline />
+          {/* <AppBar
+            position='fixed'
+            sx={{
+              // margin top to avoid appbar overlap with content
+              marginTop: `${headerHeight}px`,
+              backgroundColor: "white"
+            }}
+            open={open}
+          >
+            <Toolbar>
+              <Box id={classes.breadcumpWrapper}>
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.student.course.management)}
+                >
+                  Quản lý khoá học
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.student.course.information)}
+                >
+                  CS202 - Nhập môn lập trình
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.student.course.assignment)}
+                >
+                  Danh sách bài tập
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.student.exam.detail)}
+                >
+                  Bài kiểm tra 1
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
+              </Box>
+              <IconButton
+                color='inherit'
+                aria-label='open drawer'
+                edge='end'
+                onClick={handleDrawerOpen}
+                sx={{ ...(open && { display: "none" }) }}
               >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.exam.detail)}
-              >
-                Bài kiểm tra 1
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
-            </Box>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              edge='end'
-              onClick={handleDrawerOpen}
-              sx={{ ...(open && { display: "none" }) }}
+                <MenuIcon color='action' />
+              </IconButton>
+            </Toolbar>
+          </AppBar> */}
+          {/* <DrawerHeader /> */}
+          <Button
+            // aria-label='open drawer'
+            onClick={handleDrawerOpen}
+            sx={{
+              ...(open && { display: "none" }),
+              position: "fixed",
+              top: `${headerHeight + 10}px`,
+              right: 0,
+              height: "44px",
+              width: "49px"
+            }}
+            size='sm'
+            endDecorator={<MenuIcon color='action' />}
+            variant='soft'
+          />
+
+          <Box className={classes.formBody} width={"100%"}>
+            <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
+            <Button
+              onClick={() => {
+                navigate(routes.student.exam.detail);
+              }}
+              startDecorator={<ChevronLeftIcon fontSize='small' />}
+              color='neutral'
+              variant='soft'
+              size='md'
+              sx={{ width: "fit-content" }}
             >
-              <MenuIcon color='action' />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Main open={open} className={classes.mainContent}>
-          <DrawerHeader />
-          <Card>
-            <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
-              <Button
-                btnType={BtnType.Primary}
-                onClick={() => {
-                  navigate(routes.student.exam.detail);
+              {t("common_back")}
+            </Button>
+            <Box
+              sx={{
+                position: "sticky",
+                top: "74px",
+                zIndex: "1020"
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center"
                 }}
-                startIcon={
-                  <ChevronLeftIcon
-                    sx={{
-                      color: "white"
-                    }}
-                  />
-                }
-                width='fit-content'
               >
-                <ParagraphBody>Quay lại</ParagraphBody>
-              </Button>
-              <Grid container spacing={1}>
-                <Grid item xs={6}></Grid>
-                <Grid
-                  item
-                  xs={6}
+                <Box
                   sx={{
+                    padding: "8px 9px 8px 10px",
+                    borderRadius: "40px",
                     display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center"
+                    alignItems: "center",
+                    color: "#005742",
+                    backgroundColor: "#EAF4DD",
+                    fontWeight: "500",
+                    position: "sticky",
+                    top: "0"
                   }}
                 >
-                  <TimeLeftTextField
-                    value={`${
-                      isShowTimeLeft
-                        ? `Còn lại: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
-                            seconds < 10 ? `0${seconds}` : seconds
-                          }`
-                        : `Thời gian còn lại`
-                    }`}
-                    readOnly
+                  <AccessTimeOutlinedIcon
+                    fontSize='medium'
+                    sx={{ marginRight: "0.5rem !important" }}
                   />
+                  {isShowTimeLeft
+                    ? `Còn lại: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
+                        seconds < 10 ? `0${seconds}` : seconds
+                      }`
+                    : `Thời gian còn lại`}
+
                   <Button
-                    btnType={BtnType.Primary}
                     onClick={() => {
                       setIsShowTimeLeft(!isShowTimeLeft);
                     }}
-                    width='fit-content'
-                    height='fit-content'
-                    margin='8px 0 0 3px'
+                    variant='soft'
+                    color='neutral'
+                    sx={{
+                      borderRadius: "40px",
+                      marginLeft: "16px",
+                      border: "1px solid #bce3da"
+                    }}
                   >
-                    <ParagraphBody>{isShowTimeLeft ? "Ẩn" : "Hiện"}</ParagraphBody>
+                    {isShowTimeLeft ? "Ẩn" : "Hiện"}
                   </Button>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                borderRadius: "5px",
+                border: "1px solid #E1E1E1",
+                padding: "20px"
+              }}
+            >
+              <Grid container spacing={10}>
+                <Grid item xs={12}>
+                  {questions[questionPageIndex].type === qtype.essay ? (
+                    <EssayExamQuestion
+                      page={questionPageIndex}
+                      isFlagged
+                      responseFormat='editor'
+                      responseFieldLines={10}
+                      fileSize={40000}
+                      fileTypes='archive'
+                    />
+                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
+                    <ShortAnswerExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
+                    <MultipleChoiceExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.true_false ? (
+                    <TrueFalseExamQuestion page={questionPageIndex} />
+                  ) : null}
                 </Grid>
-              </Grid>
-              {questions[questionPageIndex].type === qtype.essay ? (
-                <EssayExamQuestion page={questionPageIndex} />
-              ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                <ShortAnswerExamQuestion page={questionPageIndex} />
-              ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                <MultipleChoiceExamQuestion page={questionPageIndex} />
-              ) : questions[questionPageIndex].type === qtype.true_false ? (
-                <TrueFalseExamQuestion page={questionPageIndex} />
-              ) : null}
-              <Grid container spacing={1}>
-                <Grid item xs={6}>
-                  {questionPageIndex !== 0 && (
-                    <Link
-                      to={{
-                        pathname: routes.student.exam.take,
-                        search: `?page=${questionPageIndex - 1}`
-                      }}
-                    >
-                      Trang trước
-                    </Link>
-                  )}
+                <Grid item xs={12}>
+                  {questions[questionPageIndex].type === qtype.essay ? (
+                    <EssayExamQuestion page={questionPageIndex} isFlagged />
+                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
+                    <ShortAnswerExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
+                    <MultipleChoiceExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.true_false ? (
+                    <TrueFalseExamQuestion page={questionPageIndex} />
+                  ) : null}
                 </Grid>
-                <Grid
-                  item
-                  xs={6}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end"
-                  }}
-                >
-                  {questionPageIndex !== questions.length - 1 ? (
-                    <Link
-                      to={{
-                        pathname: routes.student.exam.take,
-                        search: `?page=${questionPageIndex + 1}`
-                      }}
-                    >
-                      Trang sau
-                    </Link>
-                  ) : (
-                    <Button btnType={BtnType.Text} onClick={() => {}} padding='0'>
-                      <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
-                    </Button>
-                  )}
+                <Grid item xs={12}>
+                  {questions[questionPageIndex].type === qtype.essay ? (
+                    <EssayExamQuestion page={questionPageIndex} isFlagged />
+                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
+                    <ShortAnswerExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
+                    <MultipleChoiceExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.true_false ? (
+                    <TrueFalseExamQuestion page={questionPageIndex} />
+                  ) : null}
+                </Grid>
+                <Grid item xs={12}>
+                  {questions[questionPageIndex].type === qtype.essay ? (
+                    <EssayExamQuestion page={questionPageIndex} isFlagged />
+                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
+                    <ShortAnswerExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
+                    <MultipleChoiceExamQuestion page={questionPageIndex} />
+                  ) : questions[questionPageIndex].type === qtype.true_false ? (
+                    <TrueFalseExamQuestion page={questionPageIndex} />
+                  ) : null}
                 </Grid>
               </Grid>
             </Box>
-          </Card>
-        </Main>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              position: "fixed",
-              top: `${headerHeight}px`
-            }
-          }}
-          variant='persistent'
-          anchor='right'
-          open={open}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <Box className={classes.drawerBody}>
-            <Box className={classes.drawerFieldContainer}>
-              <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
-                <Grid item xs={12}>
-                  <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
-                  <Autocomplete
-                    fullWidth
-                    size='small'
-                    options={questions.filter((value) => value.title)}
-                    getOptionLabel={(params) => (params.title ? params.title : "")}
-                    sx={{ marginBottom: "16px" }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder='Nhập câu hỏi'
-                        size='small'
-                        // InputProps={{
-                        //   endAdornment: (
-                        //     <InputAdornment position='end'>
-                        //       <IconButton>
-                        //         <KeyboardReturnIcon />
-                        //       </IconButton>
-                        //     </InputAdornment>
-                        //   )
-                        // }}
-                      />
-                    )}
-                  />
-                  <Autocomplete
-                    disablePortal
-                    fullWidth
-                    multiple
-                    size='small'
-                    options={[
-                      { label: "Tự luận" },
-                      { label: "Trắc nghiệm" },
-                      { label: "Câu hỏi được đánh dấu" }
-                    ]}
-                    renderInput={(params) => <TextField {...params} label='Lọc câu hỏi' />}
-                    sx={{ marginBottom: "16px" }}
-                  />
-                  <Grid
-                    container
-                    spacing={1}
-                    marginBottom={"10px"}
-                    sx={{ overflow: "auto", maxHeight: "40dvh" }}
+
+            {/* <Grid container spacing={1}>
+              <Grid item xs={6}>
+                {questionPageIndex !== 0 && (
+                  <Link
+                    to={{
+                      pathname: routes.student.exam.take,
+                      search: `?page=${questionPageIndex - 1}`
+                    }}
                   >
-                    {questions.map((question, index) => (
-                      <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
-                        <Badge
-                          badgeContent={
-                            question.type.code === qtype.essay.code ||
-                            question.type.code === qtype.short_answer.code ? (
-                              <ModeIcon sx={{ width: "10px", height: "10x" }} />
-                            ) : (
-                              <FormatListBulletedIcon sx={{ width: "10px", height: "10x" }} />
-                            )
-                          }
-                          color='secondary'
-                        >
-                          <Button
-                            btnType={questionPageIndex === index ? BtnType.Outlined : undefined}
-                            sx={{
-                              backgroundColor: question.done ? yellow[200] : grey[100]
-                            }}
-                            onClick={() => {
-                              navigate(`${routes.student.exam.take}?page=${index}`, {
-                                replace: true
-                              });
-                            }}
-                            endIcon={
-                              index === 0 ? (
-                                <FlagIcon sx={{ width: "20px", height: "20px", color: "red" }} />
-                              ) : null
-                            }
-                          >
-                            <ParagraphBody>{index + 1}</ParagraphBody>
-                          </Button>
-                        </Badge>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container justifyContent={"flex-end"}>
-                    <Grid container justifyContent={"center"}>
-                      <Pagination count={10} showFirstButton showLastButton size='small' />
-                    </Grid>
-                    <Grid item>
-                      <Button btnType={BtnType.Primary} onClick={() => {}} sx={{ marginY: "10px" }}>
-                        <ParagraphBody>Kết thúc bài làm...</ParagraphBody>
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
+                    Trang trước
+                  </Link>
+                )}
               </Grid>
-            </Box>
+              <Grid
+                item
+                xs={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end"
+                }}
+              >
+                {questionPageIndex !== questions.length - 1 ? (
+                  <Link
+                    to={{
+                      pathname: routes.student.exam.take,
+                      search: `?page=${questionPageIndex + 1}`
+                    }}
+                  >
+                    Trang sau
+                  </Link>
+                ) : (
+                  <Button onClick={() => {}}>Kết thúc bài làm...</Button>
+                )}
+              </Grid>
+            </Grid> */}
           </Box>
-        </Drawer>
-      </Box>
-    </Grid>
+
+          <Drawer
+            sx={{
+              display: open ? "block" : "none",
+              width: drawerWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                top: `${headerHeight}px`
+              }
+            }}
+            variant={drawerVariant}
+            anchor='right'
+            open={open}
+            ModalProps={{
+              BackdropComponent: () => null // Disable the backdrop
+            }}
+          >
+            <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
+              <IconButton onClick={handleDrawerClose} variant='soft'>
+                {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            </Box>
+
+            <Box className={classes.drawerBody}>
+              <Box className={classes.drawerFieldContainer}>
+                <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
+                  <Grid item xs={12}>
+                    <TextTitle className={classes.drawerTextTitle}>
+                      {t("take_exam_question_navigation_title")}
+                    </TextTitle>
+
+                    <TitleWithInfoTip title={t("take_exam_question_name")} />
+                    <Autocomplete
+                      fullWidth
+                      size='small'
+                      options={questions.filter((value) => value.title)}
+                      getOptionLabel={(params) => (params.title ? params.title : "")}
+                      sx={{
+                        marginBottom: "16px",
+                        borderRadius: "12px",
+                        "& .MuiOutlinedInput-root": { borderRadius: "12px" }
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder='Nhập câu hỏi'
+                          size='small'
+                          sx={{ borderRadius: "12px" }}
+                        />
+                      )}
+                    />
+                    <TitleWithInfoTip title={t("take_exam_question_sort_question")} />
+                    <Autocomplete
+                      disablePortal
+                      fullWidth
+                      multiple
+                      size='small'
+                      options={[
+                        { label: "Tự luận" },
+                        { label: "Trắc nghiệm" },
+                        { label: "Câu hỏi được đánh dấu" }
+                      ]}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder='Lọc câu hỏi'
+                          sx={{ borderRadius: "12px" }}
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      )}
+                      sx={{
+                        marginBottom: "16px",
+                        borderRadius: "12px",
+                        "& .MuiOutlinedInput-root": { borderRadius: "12px" }
+                      }}
+                    />
+                    <Grid
+                      container
+                      spacing={1}
+                      marginBottom={"10px"}
+                      sx={{ overflow: "auto", maxHeight: "30dvh" }}
+                    >
+                      {questions.map((question, index) => (
+                        <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
+                          <Badge
+                            color='neutral'
+                            variant='outlined'
+                            badgeContent={
+                              question.type.code === qtype.essay.code ||
+                              question.type.code === qtype.short_answer.code ? (
+                                <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                              ) : (
+                                <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
+                              )
+                            }
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "right"
+                            }}
+                          >
+                            <Badge
+                              color='neutral'
+                              variant='outlined'
+                              badgeContent={
+                                <FlagIcon
+                                  sx={{
+                                    width: "10px",
+                                    height: "15px",
+                                    color: "red"
+                                  }}
+                                />
+                              }
+                              anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "right"
+                              }}
+                            >
+                              <Button
+                                variant={
+                                  questionPageIndex === index
+                                    ? "solid"
+                                    : question.done
+                                      ? "soft"
+                                      : "outlined"
+                                }
+                                sx={{
+                                  backgroundColor: questionPageIndex === index ? "#077aefb3" : null,
+                                  borderRadius: "1000px",
+                                  width: "40px",
+                                  height: "40px"
+                                }}
+                                onClick={() => {
+                                  navigate(`${routes.student.exam.take}?page=${index}`, {
+                                    replace: true
+                                  });
+                                }}
+                              >
+                                {index + 1}
+                              </Button>
+                            </Badge>
+                          </Badge>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid container spacing={1}>
+                      <Grid item justifyContent={"center"}>
+                        <Pagination count={99} />
+                      </Grid>
+                      <Grid item justifyContent={"center"} xs={12}>
+                        <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
+                          Kết thúc bài làm...
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Drawer>
+        </Box>
+      </Grid>
+    </>
   );
 }
