@@ -9,6 +9,7 @@ export interface ContestEntity {
   startTime: string;
   endTime: string;
   questions: ContestQuestionEntity[];
+  numOfParticipants: number;
   isRegistered?: boolean;
   createdBy: UserEntity;
   createdAt: string;

@@ -171,5 +171,16 @@ export const routes = {
       root: "/forgot-password"
     }
   },
+  admin: {
+    contest: {
+      root: "/admin/contests",
+      detail: "/admin/contests/:contestId",
+      create: "/admin/contests/create",
+      problems: "/admin/contests/:contestId/problems",
+      moderators: "/admin/contests/:contestId/moderators",
+      signups: "/admin/contests/:contestId/signups",
+      statictics: "/admin/contests/:contestId/statictics"
+    }
+  },
   grading_pdf: "/grading-pdf"
 };

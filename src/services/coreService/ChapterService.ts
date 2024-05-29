@@ -1,14 +1,14 @@
-import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class ChapterService {
   static async getChaptersByCertificateCourseIdResponse(id: string) {
     try {
-      const response = await axios.get(`${coreServiceApiUrl}${API.CORE.CHAPTER.DEFAULT}`, {
-        params: { certificateCourseId: id }
-      });
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CHAPTER.DEFAULT.replace(":certificateCourseId", id)}`);
       if (response.status === 200) {
         return response.data;
       }

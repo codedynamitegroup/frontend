@@ -1,13 +1,11 @@
 import { langs } from "@uiw/codemirror-extensions-langs";
 import { githubLight } from "@uiw/codemirror-theme-github";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import CodeMirror, { ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { useCallback, useMemo } from "react";
 import classes from "./styles.module.scss";
 import { zebraStripes } from "@uiw/codemirror-extensions-zebra-stripes";
 
-interface CodeEditorProps {
-  value: string;
-  readOnly?: boolean;
+interface CodeEditorProps extends ReactCodeMirrorProps {
   highlightActiveLine?: boolean;
   fragments?: {
     id: number;
@@ -27,15 +25,13 @@ export const supportedLanguagesExtensions = [
   langs.html()
 ];
 
-const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEditorProps) => {
-  const onChange = useCallback(
-    () => (value: string, viewUpdate: ViewUpdate) => {
-      // setValue(value);
-      // console.log(value);
-    },
-    []
-  );
-
+const CodeEditor = ({
+  value,
+  readOnly,
+  highlightActiveLine,
+  fragments,
+  ...rest
+}: CodeEditorProps) => {
   const lineNumber = useMemo(() => {
     if (!fragments) return undefined;
     const lineNumbers: number[] = [];
@@ -73,7 +69,7 @@ const CodeEditor = ({ value, readOnly, highlightActiveLine, fragments }: CodeEdi
       id={classes.codeEditor}
       value={value}
       theme={githubLight}
-      onChange={onChange}
+      onChange={rest.onChange}
       readOnly={readOnly}
       basicSetup={{
         autocompletion: true,

@@ -157,6 +157,20 @@
   "common_topics": "Topics",
   "common_view_details": "View details",
   "common_update_language": "Update language",
+  "register_certificate_course_success": "Register certificate course {{courseName}} successfully",
+  "register_certificate_course_fail": "Register certificate course {{courseName}} fail",
+  "common_view_this_course": "View this course",
+  "home_learn_to_code": "Learn to code",
+  "home_data_structures_and_algorithms": "Data structures and Algorithms",
+  "common_all_courses_catalog": "All courses catalog",
+  "common_loading_search": "Searching...",
+  "common_created_by": "Created by",
+  "common_start_time": "Start time",
+  "common_end_time": "End time",
+  "common_limit_time": "Limit time",
+  "common_num_of_participants": "Participants",
+  "common_created_at": "Created at",
+  "common_contest_management": "Contest Management",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -196,6 +210,7 @@
   "home_subtitle": "CodeDynamite is where you can learn programming easily and effectively",
   "home_create_account_button": "Create account",
   "home_more_button": "See all",
+  "home_view_all_courses": "View all courses",
 
   "contest_title": "COMPETITIVE PROGRAMMING",
   "contest_total_num": "CONTESTS",
@@ -238,7 +253,7 @@
   "certificate_intermediate": "Intermediate knowledge",
   "certificate_advance": "Advance knowledge",
   "certificate_empty": "No courses available",
-  "certificate_hot_recommend": "The course certificate everyone is learning",
+  "certificate_hot_recommend": "Recommended Practice Certificate Courses",
 
   "certificate_detail_rating": "Ratings",
   "certificate_detail_lesson": "Lesson",
@@ -324,11 +339,27 @@
   "course_student_assignment_time_remaining": "Time remaining",
   "course_student_assignment_last_modified": "Last modified",
   "course_student_assignment_file_submission": "File submission",
+  "course_student_assignment_online_text_submission": "Online text submission",
 
   "course_student_assignment_submission_status_not_submitted": "No submissions have been made yet",
   "course_student_assignment_submission_status_submitted": "Submitted for grading",
   "course_student_assignment_submission_status_graded": "Graded",
   "course_student_assignment_submission_status_not_grading": "Not graded",
+
+  "course_student_assignment_grade": "Grade",
+  "course_student_assignment_feedback": "Feedback",
+
+  "assignment_submitted": "Assignment was submitted ",
+  "assignment_overdue": "Assignment is overdue by ",
+  "assignment_submitted_late": "Assignment was submitted ",
+
+  "early": " early",
+  "late": " late",
+
+  "days": "days",
+  "hours": "hours",
+  "minutes": "minutes",
+  "seconds": "seconds",
 
   "course_lecturer_add_announcement": "Post new announcement",
   "course_lecturer_announcement_title": "Announcement title",
@@ -732,6 +763,7 @@
   "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
   "max_byte_title": "Maxium size of attachment",
   "question_attachments_setting": "Attachments settings",
+  
   "take_exam_question_navigation_title": "Question navigation",
   "take_exam_question_name": "Question",
   "take_exam_question_sort_question": "Filter question"

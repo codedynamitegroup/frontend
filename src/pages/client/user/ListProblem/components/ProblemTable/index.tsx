@@ -26,6 +26,8 @@ import { PaginationList } from "models/codeAssessmentService/entity/PaginationLi
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 export default function ProblemTable() {
+  const userId = null;
+
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
 
@@ -55,7 +57,7 @@ export default function ProblemTable() {
         pageNum: page,
         pageSize: rowsPerPage
       },
-      null
+      userId
     )
       .then((data: PaginationList<CodeQuestionEntity>) => {
         setCodeQuestionList(data);

@@ -94,15 +94,7 @@ const CourseResource = (props: PropsData) => {
           className={classes.linkContainer}
         >
           <Grid item>
-            <Box
-              className={
-                props.type === ECourseResourceType.assignment
-                  ? classes.imageContainerAssignment
-                  : classes.imageContainer
-              }
-            >
-              <img className={classes.imageResourse} src={resourceImage} alt='Resource' />
-            </Box>
+            <img className={classes.imageResourse} src={resourceImage} alt='Resource' />
           </Grid>
           <Grid item>
             <Typography color={"#0f6cbf"} className={classes.resourceName}>

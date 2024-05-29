@@ -22,6 +22,7 @@ import { setExams } from "reduxes/courseService/exam";
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
   const examState = useSelector((state: RootState) => state.exam);
+  const questionCreate = useSelector((state: RootState) => state.questionCreate);
 
   const { courseId } = useParams<{ courseId: string }>();
 

@@ -5,7 +5,7 @@ export const API = {
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
-      REGISTER_BY_ID: "/core/certificate-courses/register"
+      REGISTER_BY_ID: "/core/certificate-courses/:id/register"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
@@ -14,7 +14,7 @@ export const API = {
       DELETE_BY_ID: "/core/topics/:id"
     },
     CHAPTER: {
-      DEFAULT: "/core/chapters",
+      DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
       UPDATE_BY_ID: "/core/chapters/:id",
       DELETE_BY_ID: "/core/chapters/:id"
@@ -34,12 +34,12 @@ export const API = {
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
       SHORT_ANSWER_QUESTION: {
-        CREATE: "questions/shortanswer-question/create",
+        CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
         GET_ALL: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
-        CREATE: "questions/essay-question/create",
+        CREATE: "/core/questions/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
       },
@@ -63,6 +63,14 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id"
+    },
+    SUBMISSION_ASSIGNMENT: {
+      DEFAULT: "/course/submission-assignment",
+      GET_BY_USER_ID_ASSIGNMENT_ID: "/course/submission-assignment/user",
+      GET_BY_ID: "/course/submission-assignment/:id",
+      CREATE: "/course/submission-assignment",
+      UPDATE_BY_ID: "/course/submission-assignment/:id",
+      DELETE_BY_ID: "/course/submission-assignment/:id"
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",

@@ -43,6 +43,7 @@ import PersistLogin from "components/common/PersistLogin";
 import { useSelector } from "react-redux";
 import { selectedLoading } from "reduxes/Loading";
 import LoadingScreen from "components/common/LoadingScreen";
+import ContestManagement from "pages/client/admin/ContestManagement/ContestManagement";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -140,15 +141,18 @@ const router = createHashRouter(
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
       <Route path={routes.student.exam.take} element={<TakeExam />} />
       <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
+
+      <Route path={routes.admin.contest.root} element={<ContestManagement />} />
     </Route>
   )
 );
+
 function App() {
   const isLoading = useSelector(selectedLoading);
   return (
     <>
       {isLoading && <LoadingScreen />}
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </>
   );
 }

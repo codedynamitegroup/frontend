@@ -79,7 +79,7 @@ const QuestionBankManagement = () => {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
-        createdBy: "3423de78-27b6-445e-abe6-0a99a964e077"
+        createdBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7"
       });
       handleGetQuestionBankCategories({ search: searchText });
     } catch (error) {

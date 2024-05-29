@@ -9,9 +9,10 @@ import { saveAs } from "file-saver";
 
 interface CustomFileListProps {
   files?: ExtFile[];
+  treeView?: boolean;
 }
 
-export default function CustomFileList({ files = [] }: CustomFileListProps) {
+export default function CustomFileList({ files = [], treeView = true }: CustomFileListProps) {
   const handleDownload = async (fileId: string | number | undefined) => {
     if (fileId === undefined) return;
     const file = files.find((f) => f.id === fileId);
@@ -26,31 +27,53 @@ export default function CustomFileList({ files = [] }: CustomFileListProps) {
   };
   return (
     <Box sx={{ flexGrow: 1, maxWidth: 300 }}>
-      <TreeView
-        aria-label='file system navigator'
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-      >
-        <TreeItem nodeId='root' label='Files'>
+      {treeView ? (
+        <TreeView
+          aria-label='file system navigator'
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+        >
+          {files.length != 0 && (
+            <TreeItem nodeId='root' label='Files'>
+              {files.map((file, index) => (
+                <div className='thumbnail' key={index}>
+                  <a
+                    key={file.id}
+                    href={file.downloadUrl}
+                    style={{
+                      display: "block"
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDownload(file.id);
+                    }}
+                  >
+                    {file.name}
+                  </a>
+                </div>
+              ))}
+            </TreeItem>
+          )}
+        </TreeView>
+      ) : (
+        <div className='thumbnail'>
           {files.map((file, index) => (
-            <div className='thumbnail' key={index}>
-              <a
-                key={file.id}
-                href={file.downloadUrl}
-                style={{
-                  display: "block"
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleDownload(file.id);
-                }}
-              >
-                {file.name}
-              </a>
-            </div>
+            <a
+              key={file.id}
+              href={file.downloadUrl}
+              style={{
+                display: "block"
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDownload(file.id);
+              }}
+            >
+              {file.name}
+            </a>
           ))}
-        </TreeItem>
-      </TreeView>
+        </div>
+      )}
     </Box>
   );
 }

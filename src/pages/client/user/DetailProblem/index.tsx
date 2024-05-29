@@ -37,7 +37,7 @@ import { UUID } from "crypto";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
+import cloneDeep from "lodash/cloneDeep";
 
 enum ELanguage {
   JAVA = "java",
@@ -50,6 +50,8 @@ interface QCodeStub {
 }
 
 export default function DetailProblem() {
+  const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
+
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -76,14 +78,17 @@ export default function DetailProblem() {
     return data;
   };
 
-  const mapLanguages = new Map<string, ProgrammingLanguageEntity>();
-  codeQuestion?.languages.forEach((value) => {
-    mapLanguages.set(value.id, value);
+  const mapLanguages = new Map<string, { pLanguage: ProgrammingLanguageEntity; index: number }>();
+
+  let [languageList, setLanguageList] = useState(cloneDeep(codeQuestion?.languages));
+
+  languageList?.forEach((value, index) => {
+    mapLanguages.set(value.id, { pLanguage: value, index });
   });
 
   useEffect(() => {
     if (problemId !== undefined)
-      CodeQuestionService.getDetailCodeQuestion(problemId, "9ba179ed-d26d-4828-a0f6-8836c2063992")
+      CodeQuestionService.getDetailCodeQuestion(problemId, userId)
         .then((data: CodeQuestionEntity) => {
           dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
@@ -101,15 +106,29 @@ export default function DetailProblem() {
         ? { id: codeQuestion?.languages[0].id, bodyCode: codeQuestion?.languages[0].bodyCode }
         : { id: "", bodyCode: "" }
     );
+    setLanguageList(codeQuestion?.languages);
   }, [codeQuestion?.languages]);
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
-    const selectedLanguageId = event.target.value;
-    const language = mapLanguages.get(selectedLanguageId);
+    const newSelectedLanguageId = event.target.value;
+    const oldLanguage = mapLanguages.get(selectedLanguage.id);
+    if (oldLanguage !== undefined && languageList !== undefined) {
+      console.log(selectedLanguage.bodyCode);
+      let newLangList = languageList.map((value, index) => {
+        if (index === oldLanguage.index) return { ...value, bodyCode: selectedLanguage.bodyCode };
+        return value;
+      });
+      setLanguageList(newLangList);
+    }
+
+    const newLanguage = mapLanguages.get(newSelectedLanguageId);
     setSelectedLanguage({
-      id: selectedLanguageId,
-      bodyCode: language?.bodyCode !== undefined ? language.bodyCode : ""
+      id: newSelectedLanguageId,
+      bodyCode: newLanguage?.pLanguage.bodyCode !== undefined ? newLanguage?.pLanguage.bodyCode : ""
     });
+  };
+  const onBodyCodeChange = (value: string) => {
+    setSelectedLanguage({ id: selectedLanguage.id, bodyCode: value });
   };
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
@@ -382,7 +401,7 @@ export default function DetailProblem() {
                     overflow: "auto"
                   }}
                 >
-                  <CodeEditor value={selectedLanguage.bodyCode} />
+                  <CodeEditor value={selectedLanguage.bodyCode} onChange={onBodyCodeChange} />
                 </Box>
               </Box>
               <Box className={classes.codeTestcaseContainer}>

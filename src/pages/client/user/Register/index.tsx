@@ -89,9 +89,9 @@ export default function Register() {
   };
 
   return (
-    <Box className={classes.container}>
+    <Box id={classes.registerRoot}>
       <Container>
-        <Grid container className={classes.loginContainer}>
+        <Grid container className={classes.registerContainer}>
           <Grid item xs={12} md={6}>
             <img src={images.login} alt='login' className={classes.imageLogin} />
           </Grid>
@@ -167,6 +167,7 @@ export default function Register() {
                   to={routes.user.login.root}
                   variant='body2'
                   translation-key='register_have_account'
+                  className={classes.textLink}
                 >
                   {t("register_have_account")}
                 </Link>

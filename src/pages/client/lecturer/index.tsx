@@ -13,7 +13,7 @@ import QuestionBankManagement from "./QuestionBankManagement";
 import { routes } from "routes/routes";
 import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse";
 import AIQuestionCreated from "./QuestionManagement/components/AICreateQuestion";
-import QuestionCreated from "./QuestionManagement/components/CreateQuestion";
+// import QuestionCreated from "./QuestionManagement/components/CreateQuestion";
 
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
@@ -50,7 +50,7 @@ const LecturerCoursesManagement = (props: Props) => {
                   path={routes.lecturer.question_bank.questions_list_of_category.path}
                   element={<QuestionListOfCourse />}
                 />
-                {routes.lecturer.question_bank.create_question.paths.map((value, index) => {
+                {/* {routes.lecturer.question_bank.create_question.paths.map((value, index) => {
                   return (
                     <Route
                       path={value.path}
@@ -80,7 +80,7 @@ const LecturerCoursesManagement = (props: Props) => {
                       key={index}
                     />
                   );
-                })}
+                })} */}
               </Route>
             </Routes>
           </Box>

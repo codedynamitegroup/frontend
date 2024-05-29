@@ -1,5 +1,5 @@
-import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
@@ -14,7 +14,9 @@ export class TopicService {
     fetchAll: boolean;
   }) {
     try {
-      const response = await axios.get(`${coreServiceApiUrl}${API.CORE.TOPIC.DEFAULT}`, {
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.TOPIC.DEFAULT}`, {
         params: {
           pageNo,
           pageSize,
@@ -37,9 +39,9 @@ export class TopicService {
   // Role: User
   static async getTopicById(id: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -56,9 +58,10 @@ export class TopicService {
   // Role: Admin
   static async updateTopicById(id: string, data: any) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`, data);
       if (response.status === 200) {
         return response.data;
       }
@@ -75,9 +78,10 @@ export class TopicService {
   // Role: Admin
   static async deleteTopicById(id: string) {
     try {
-      const response = await axios.delete(
-        `${coreServiceApiUrl}${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.CORE.TOPIC.GET_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }

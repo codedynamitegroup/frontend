@@ -83,7 +83,7 @@ const ListProblem = () => {
 
   // const algorithmTag = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
-    <>
+    <Box id={classes.listProblemRoot}>
       <Box
         id={classes.banner}
         sx={{
@@ -212,7 +212,7 @@ const ListProblem = () => {
           </Box>
         </Container>
       </Box>
-    </>
+    </Box>
   );
 };
 
