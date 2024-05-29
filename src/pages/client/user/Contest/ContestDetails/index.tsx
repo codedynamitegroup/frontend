@@ -340,7 +340,7 @@ const ContestDetails = () => {
   }
 
   return (
-    <>
+    <Box id={classes.contestDetailsRoot}>
       <ContestTimeInformation
         status={contestStatus}
         startDate={contestDetails.startTime}
@@ -496,7 +496,7 @@ const ContestDetails = () => {
           ) : null}
         </Grid>
       </Container>
-    </>
+    </Box>
   );
 };
 

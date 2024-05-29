@@ -190,11 +190,7 @@ const CourseCertificateDetail = () => {
   if (!courseId || !certificateCourseDetails) return null;
 
   return (
-    <Box
-      sx={{
-        backgroundColor: `var(--blue-1)`
-      }}
-    >
+    <Box id={classes.courseCertificateDetailRoot}>
       <SnackbarAlert
         open={openSnackbarAlert}
         setOpen={setOpenSnackbarAlert}

@@ -1,11 +1,12 @@
 .imageLogin {
   width: 100%;
 }
-.container {
+#loginRoot {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 40px;
+  padding: 40px 0px;
+  background-color: var(--blue-1);
 }
 .loginContainer {
   background-color: white !important;
@@ -25,6 +26,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+
+      .textLink {
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
   .social {

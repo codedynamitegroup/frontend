@@ -172,7 +172,7 @@ export default function Login() {
   };
 
   return (
-    <Box className={classes.container}>
+    <Box id={classes.loginRoot}>
       <Container>
         <Grid container className={classes.loginContainer}>
           <Grid item xs={12} md={6}>
@@ -220,6 +220,7 @@ export default function Login() {
                     component={RouterLink}
                     to={routes.user.register.root}
                     variant='body2'
+                    className={classes.textLink}
                     translation-key='login_register_account'
                   >
                     {t("login_register_account")}
@@ -229,6 +230,7 @@ export default function Login() {
                     to={routes.user.forgot_password.root}
                     variant='body2'
                     translation-key='common_forget_password'
+                    className={classes.textLink}
                   >
                     {t("common_forget_password")}
                   </Link>

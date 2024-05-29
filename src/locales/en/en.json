@@ -346,6 +346,13 @@
   "course_student_assignment_submission_status_graded": "Graded",
   "course_student_assignment_submission_status_not_grading": "Not graded",
 
+  "course_student_assignment_grade": "Grade",
+  "course_student_assignment_feedback": "Feedback",
+
+  "assignment_submitted": "Assignment was submitted ",
+  "assignment_overdue": "Assignment is overdue by ",
+  "ago": " ago",
+
   "days": "days",
   "hours": "hours",
   "minutes": "minutes",

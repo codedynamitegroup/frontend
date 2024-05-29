@@ -152,7 +152,7 @@ function App() {
   return (
     <>
       {isLoading && <LoadingScreen />}
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </>
   );
 }
