@@ -14,7 +14,6 @@ import {
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ParagraphBody from "components/text/ParagraphBody";
 import { ContestService } from "services/coreService/ContestService";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import { useEffect } from "react";
