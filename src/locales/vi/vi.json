@@ -331,8 +331,15 @@
   "course_student_assignment_submission_status_graded": "Đã chấm điểm",
   "course_student_assignment_submission_status_not_grading": "Chưa chấm điểm",
 
+  "course_student_assignment_grade": "Điểm số",
+  "course_student_assignment_feedback": "Nhận xét",
+
+  "assignment_submitted": "Bài tập được nộp ",
+  "assignment_overdue": "Bài tập đã quá hạn ",
+  "ago": " trước",
+
   "days": "ngày",
-  "hours": "giờ",
+  "hours": "tiếng",
   "minutes": "phút",
   "seconds": "giây",
 
