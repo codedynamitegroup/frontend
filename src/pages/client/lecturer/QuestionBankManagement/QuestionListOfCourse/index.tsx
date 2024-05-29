@@ -34,6 +34,10 @@ import Heading5 from "components/text/Heading5";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 import PickQuestionTypeToAddDialog from "../../ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { QuestionService } from "services/coreService/QuestionService";
+import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 
 const rows = [
   {
@@ -52,6 +56,50 @@ const rows = [
   }
 ];
 const QuestionListOfCourse = () => {
+  const [searchText, setSearchText] = useState("");
+  const dispath = useDispatch<AppDispatch>();
+  const questionState = useSelector((state: RootState) => state.question);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const searchHandle = async (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const handleGetQuestions = async (
+    categoryId: string,
+    {
+      search = searchText,
+      pageNo = page,
+      pageSize = rowsPerPage
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) => {
+    try {
+      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId(categoryId, {
+        search,
+        pageNo,
+        pageSize
+      });
+      dispath(setQuestionsCategory(getQuestionResponse));
+      console.log(getQuestionResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("fetching data" + questionState.questions);
+    const fetchInitialQuestions = async () => {
+      await handleGetQuestions("e6354740-c3f5-4f76-be0b-ea8bb16aa51e", { search: searchText });
+    };
+    fetchInitialQuestions();
+  }, [searchText]);
+
+
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: false,

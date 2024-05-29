@@ -102,4 +102,40 @@ export class QuestionService {
       });
     }
   }
+
+  static async getQuestionsByCategoryId(
+    categoryId: string,
+    {
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`,
+        {
+          params: {
+            search,
+            pageNo,
+            pageSize
+          }
+        }
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch questions by category id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }
