@@ -154,6 +154,13 @@
   "home_data_structures_and_algorithms": "Cấu trúc dữ liệu và giải thuật",
   "common_all_courses_catalog": "Tất cả khoá học",
   "common_loading_search": "Đang tìm kiếm...",
+  "common_created_by": "Tạo bởi",
+  "common_start_time": "Ngày bắt đầu",
+  "common_end_time": "Ngày kết thúc",
+  "common_limit_time": "Thời gian làm bài",
+  "common_num_of_participants": "Số người tham gia",
+  "common_created_at": "Ngày tạo",
+  "common_contest_management": "Quản lý cuộc thi",
 
   "side_bar_dashboard": "Trang chủ",
 

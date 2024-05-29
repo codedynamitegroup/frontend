@@ -177,13 +177,13 @@ const CourseCertificates = () => {
     }
   };
 
-  const handleChangeCatalog = (value: string) => {
+  const handleChangeCatalog = useCallback((value: string) => {
     if (value === "all") {
       navigate(routes.user.course_certificate.root);
     } else {
       navigate(`${routes.user.course_certificate.root}?topicId=${value}`);
     }
-  };
+  }, []);
 
   useEffect(() => {
     handleGetTopics();
