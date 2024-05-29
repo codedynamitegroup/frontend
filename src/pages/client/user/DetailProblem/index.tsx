@@ -50,6 +50,8 @@ interface QCodeStub {
 }
 
 export default function DetailProblem() {
+  const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
+
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -86,7 +88,7 @@ export default function DetailProblem() {
 
   useEffect(() => {
     if (problemId !== undefined)
-      CodeQuestionService.getDetailCodeQuestion(problemId, "9ba179ed-d26d-4828-a0f6-8836c2063992")
+      CodeQuestionService.getDetailCodeQuestion(problemId, userId)
         .then((data: CodeQuestionEntity) => {
           dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
