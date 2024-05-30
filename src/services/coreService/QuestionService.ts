@@ -67,6 +67,24 @@ export class QuestionService {
     }
   }
 
+  static async getMultiChoiceQuestionByQuestionId(questionId: string) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.GET_BY_QUESTION_ID.replace(":questionId", questionId)}`
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to get multiple choice question by question id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getQuestionsByQuestionId(questionId: string) {
     try {
       const response = await axios.get(

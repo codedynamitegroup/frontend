@@ -351,7 +351,10 @@
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",
-  "ago": " ago",
+  "assignment_submitted_late": "Assignment was submitted ",
+
+  "early": " early",
+  "late": " late",
 
   "days": "days",
   "hours": "hours",
@@ -706,8 +709,8 @@
   "question_essay_response_field_lines": "Number of textfield lines",
   "essay_enter_minword": "Enter minimum word",
   "essay_enter_maxword": "Enter maximum word",
-  "min_word_invalid": "Minimum word must be a number equal to -1 or greater than or equal to 0",
-  "max_word_invalid": "Maximum word must be a number equal to -1 or greater than or equal to 0",
+  "min_word_invalid": "Minimum word must be an integer number equal to -1 or greater than or equal to 0",
+  "max_word_invalid": "Maximum word must be an integer number equal to -1 or greater than or equal to 0",
   "question_allow_attachments": "Allow attachments",
   "num_attachment": "{{num}} attachment(s)",
   "no_attachments": "No attachment",
@@ -759,5 +762,9 @@
   "question_management_show_num_correct": "Show number of correct answers",
   "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
   "max_byte_title": "Maxium size of attachment",
-  "question_attachments_setting": "Attachments settings"
+  "question_attachments_setting": "Attachments settings",
+  
+  "take_exam_question_navigation_title": "Question navigation",
+  "take_exam_question_name": "Question",
+  "take_exam_question_sort_question": "Filter question"
 }

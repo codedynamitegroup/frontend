@@ -4,7 +4,14 @@ import { blue, grey } from "@mui/material/colors";
 import FlagIcon from "@mui/icons-material/Flag";
 
 import ParagraphBody from "components/text/ParagraphBody";
-const ShortAnswerExamQuestion = () => {
+
+interface Props {
+  page: number;
+}
+
+const ShortAnswerExamQuestion = (props: Props) => {
+  const { page } = props;
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={2}>

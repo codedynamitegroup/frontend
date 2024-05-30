@@ -79,7 +79,7 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
             autoComplete={autoComplete}
             onChange={onChange}
             {...inputProps}
-            inputRef={refInput}
+            inputRef={inputRef}
             sx={{
               borderRadius: "12px",
               fontFamily: fontFamily || "Roboto,sans-serif",
