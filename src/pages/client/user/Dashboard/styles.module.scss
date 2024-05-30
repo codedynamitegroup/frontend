@@ -1,5 +1,9 @@
-.container {
+#userDashboardRoot {
+  background-color: var(--blue-1);
   padding: 40px 0px;
+}
+
+.container {
   @media (min-width: 1200px) {
     max-width: 1440px !important;
   }

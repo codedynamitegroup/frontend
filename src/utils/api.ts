@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API } from "constants/API";
 
 const AUTH_SERVICE_API_URL = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
@@ -9,8 +10,8 @@ const createInstance = ({
   baseURL: string;
   isAuthorization?: boolean;
 }) => {
-  const accessToken = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = localStorage.getItem("refresh_token");
 
   const instance = axios.create({
     baseURL,
@@ -51,14 +52,14 @@ const createInstance = ({
         ) {
           originalRequest._retry = true;
           return axios
-            .post(AUTH_SERVICE_API_URL + "auth/refresh-tokens", {
+            .post(`${AUTH_SERVICE_API_URL}${API.AUTH.REFRESH_TOKEN}`, {
               accessToken,
               refreshToken
             })
             .then((res) => {
               if (res.status === 200) {
-                localStorage.setItem("accessToken", res.data.accessToken);
-                localStorage.setItem("refreshToken", res.data.refreshToken);
+                localStorage.setItem("access_token", res.data.accessToken);
+                localStorage.setItem("refresh_token", res.data.refreshToken);
 
                 // return axios(originalRequest);
                 return instance(originalRequest);
@@ -67,8 +68,8 @@ const createInstance = ({
             .catch((err: any) => {
               // if status Please authenticate
               if (err.response.status === 401 || err.response.status === 403) {
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
               }
               return Promise.reject({
                 code: err.response?.data?.code || 503,

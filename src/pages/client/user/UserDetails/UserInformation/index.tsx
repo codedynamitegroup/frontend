@@ -1,22 +1,21 @@
 import { Container, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import Header from "components/Header";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import TextTitle from "components/text/TextTitle";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import UserAvatarAndName from "./components/UserAvatarAndName";
 import UserInformationDetailsDialog from "./components/UserInformationDetailsDialog";
 import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
 import ParagraphBody from "components/text/ParagraphBody";
+import { format } from "date-fns";
 
 const UserInformation = () => {
   const { t } = useTranslation();
@@ -31,7 +30,7 @@ const UserInformation = () => {
       name: user?.firstName + " " + user?.lastName,
       gender: "0",
       email: user?.email,
-      dob: "01/01/2000",
+      dob: format(user?.dob, "dd-MM-yyyy"),
       avatar_url: user?.avatarUrl,
       is_linked_with_google: user?.isLinkedWithGoogle,
       is_linked_with_microsoft: user?.isLinkedWithMicrosoft
@@ -59,26 +58,10 @@ const UserInformation = () => {
     }, 1000);
   }, []);
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-
   return (
-    <Box>
-      <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Grid
-          container
-          direction='row'
-          justifyContent={"center"}
-          gap={3}
-          paddingTop={3}
-          sx={{
-            height: "100%",
-            marginTop: `${headerHeight}px`
-          }}
-        >
+    <Grid>
+      <Grid id={classes.userInformationRoot}>
+        <Grid container direction='row' justifyContent={"center"} gap={3}>
           <Grid item xs={3}>
             <Box className={classes.leftContainer}>
               <Box className={classes.leftBody}>
@@ -201,7 +184,7 @@ const UserInformation = () => {
           "user_detail_change_password"
         ]}
       />
-    </Box>
+    </Grid>
   );
 };
 
