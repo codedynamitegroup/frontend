@@ -44,7 +44,7 @@ const EssayExamQuestion = (props: Props) => {
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <Heading4>Câu hỏi {page + 1}</Heading4>
+          <Heading4>{`${t("common_question")} ${page + 1}`}</Heading4>
           <Button
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
