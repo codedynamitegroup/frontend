@@ -174,6 +174,8 @@
   "common_cancel_filter": "Cancel filter",
   "common_apply_filter": "Apply filter",
   "common_get_started": "Get started",
+  "common_enter_answer": "Enter answer",
+  "common_remove_flag": "Remove flag",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -226,6 +228,15 @@
   "contest_medium_difficulty": "Medium",
   "contest_advance_difficulty": "Advance",
   "contest_programming_language_title": "Programming language",
+
+  "contest_name": "Contest name",
+  "contest_create": "Create contest",
+  "contest_description_message_1": "Host your own coding contest on CodeDynamite. You can practice and compete with friends from your organization or school. Create your own contest and invite your friends to join.",
+  "contest_description_message_2": "Get started by providing the initial details for your contest.",
+  "contest_enter_contest_name": "Enter contest name",
+  "contest_start_time": "Contest start time",
+  "contest_end_time": "Contest end time",
+  "this_contest_has_no_end_time": "This contest has no end time",
 
   "contest_detail_joined_feature_status": "You have registerd for this contest",
   "contest_detail_joined_happening_status": "You are joining this contest",
@@ -354,7 +365,10 @@
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",
-  "ago": " ago",
+  "assignment_submitted_late": "Assignment was submitted ",
+
+  "early": " early",
+  "late": " late",
 
   "days": "days",
   "hours": "hours",
@@ -709,8 +723,8 @@
   "question_essay_response_field_lines": "Number of textfield lines",
   "essay_enter_minword": "Enter minimum word",
   "essay_enter_maxword": "Enter maximum word",
-  "min_word_invalid": "Minimum word must be a number equal to -1 or greater than or equal to 0",
-  "max_word_invalid": "Maximum word must be a number equal to -1 or greater than or equal to 0",
+  "min_word_invalid": "Minimum word must be an integer number equal to -1 or greater than or equal to 0",
+  "max_word_invalid": "Maximum word must be an integer number equal to -1 or greater than or equal to 0",
   "question_allow_attachments": "Allow attachments",
   "num_attachment": "{{num}} attachment(s)",
   "no_attachments": "No attachment",
@@ -749,7 +763,7 @@
   "first_name_required": "First name is required",
   "last_name_required": "Last name is required",
 
-  "common_flag": "Flag",
+  "common_flag": "Flag question",
   "question_answer_add_answer": "Add answer",
   "question_default_score_description": "Default score for the question, this will be used if there is no specific score for the question (must be greater than or equal to 0)",
   "common_content": "Answer content",
@@ -762,5 +776,9 @@
   "question_management_show_num_correct": "Show number of correct answers",
   "question_management_correct_answer_description": "Use this field to define the correct answer for the true/false question. If the statement in the question is correct or true, select 'True'. If the statement is incorrect or false, select 'False'.",
   "max_byte_title": "Maxium size of attachment",
-  "question_attachments_setting": "Attachments settings"
+  "question_attachments_setting": "Attachments settings",
+
+  "take_exam_question_navigation_title": "Question navigation",
+  "take_exam_question_name": "Question",
+  "take_exam_question_sort_question": "Filter question"
 }

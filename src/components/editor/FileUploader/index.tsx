@@ -12,7 +12,14 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { uploadToCloudinary } from "utils/uploadToCloudinary";
 
-export default function AdvancedDropzoneDemo() {
+interface PropsData {
+  maxFiles?: number;
+  maxFileSize?: number;
+  accept?: string;
+}
+
+export default function AdvancedDropzoneDemo(props: PropsData) {
+  const { maxFiles, maxFileSize, accept } = props;
   const { t } = useTranslation();
   const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
   const [imageSrc, setImageSrc] = React.useState<File | string | undefined>(undefined);
@@ -109,10 +116,12 @@ export default function AdvancedDropzoneDemo() {
   return (
     <>
       <Dropzone
+        accept={accept}
         minHeight='195px'
         value={extFiles}
         // maxFiles={3}
-        maxFileSize={2998000 * 20}
+        maxFileSize={maxFileSize ? maxFileSize : 2998000 * 20}
+        maxFiles={maxFiles === -1 ? undefined : maxFiles}
         label={t("drag_drop_file_placeholder")}
         // accept=".png,image/*, video/*"
         // uploadConfig={{

@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import classes from "./styles.module.scss";
 
 import TablePagination from "@mui/material/TablePagination";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { routes } from "routes/routes";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -19,6 +20,7 @@ import Heading2 from "components/text/Heading2";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "hooks";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { styled } from "@mui/material";
 import { TagService } from "services/codeAssessmentService/TagService";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
@@ -67,7 +69,11 @@ export default function ProblemTable() {
 
   const renderStatus = (status: number) => {
     if (status === 1) {
-      return <CheckCircleIcon className={classes.iconCheck} />;
+      return (
+        <Tooltip title={t("common_finish")}>
+          <CheckCircleIcon className={classes.iconCheck} />
+        </Tooltip>
+      );
     }
     return "";
   };
@@ -75,21 +81,21 @@ export default function ProblemTable() {
   const renderLevel = (level: QuestionDifficultyEnum) => {
     if (level === QuestionDifficultyEnum.EASY) {
       return (
-        <ParagraphBody fontWeight={700} colorname={"--blue-500"}>
-          Dễ
+        <ParagraphBody fontWeight={700} colorname={"--green-easy"}>
+          {t("common_easy")}
         </ParagraphBody>
       );
     }
     if (level === QuestionDifficultyEnum.MEDIUM) {
       return (
-        <ParagraphBody fontWeight={700} colorname={"--warning"}>
-          Trung bình
+        <ParagraphBody fontWeight={700} colorname={"--orange-medium"}>
+          {t("common_medium")}
         </ParagraphBody>
       );
     }
     return (
-      <ParagraphBody fontWeight={700} colorname={"--red-error"}>
-        Khó
+      <ParagraphBody fontWeight={700} colorname={"--red-hard"}>
+        {t("common_hard")}
       </ParagraphBody>
     );
   };
@@ -174,9 +180,18 @@ export default function ProblemTable() {
   };
   const navigate = useNavigate();
 
+  const StyledLink = styled(Link)`
+    text-decoration: none;
+    color: black;
+    &:hover,
+    &:active {
+      color: blue;
+    }
+  `;
+
   return (
     <Box className={classes.container}>
-      <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2>
+      {/* <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2> */}
       <Box className={classes.table}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label='custom table'>
@@ -199,6 +214,7 @@ export default function ProblemTable() {
                 </TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {data &&
                 data.length > 0 &&
@@ -206,12 +222,18 @@ export default function ProblemTable() {
                   <TableRow
                     className={rowIndex % 2 === 0 ? classes.row : classes.row1}
                     key={rowIndex}
-                    onClick={() =>
-                      navigate(routes.user.problem.detail.description.replace(":problemId", row.id))
-                    }
+                    // onClick={() =>
+                    //   navigate(routes.user.problem.detail.description.replace(":problemId", row.id))
+                    // }
                   >
                     <TableCell align='center'>{row.status}</TableCell>
-                    <TableCell className={classes.tableCell}>{row.name}</TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <StyledLink
+                        to={routes.user.problem.detail.description.replace(":problemId", row.id)}
+                      >
+                        {row.name}
+                      </StyledLink>
+                    </TableCell>
                     <TableCell>{row.level}</TableCell>
                   </TableRow>
                 ))}

@@ -15,6 +15,7 @@ import ContestDetails from "./Contest/ContestDetails";
 import Login from "./Login";
 import Register from "./Register";
 import ForgotPassword from "./ForgotPassword";
+import UserInformation from "./UserDetails/UserInformation";
 
 type Props = {};
 
@@ -46,6 +47,7 @@ const UserHomepage = (props: Props) => {
             <Route path={"login"} element={<Login />} />
             <Route path={"register"} element={<Register />} />
             <Route path={"forgot-password"} element={<ForgotPassword />} />
+            <Route path={"user/information"} element={<UserInformation />} />
           </Routes>
         </Box>
         <Footer />

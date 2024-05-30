@@ -8,6 +8,8 @@ import coursePDF from "assets/img/icon/course/courseDetail/pdf.svg";
 import courseDOC from "assets/img/icon/course/courseDetail/doc.svg";
 import courseXLS from "assets/img/icon/course/courseDetail/xls.svg";
 import coursePPT from "assets/img/icon/course/courseDetail/ppt.svg";
+import assignmentIcon from "assets/img/icon/course/courseDetail/assignment/assignment.svg";
+import quizIcon from "assets/img/icon/course/courseDetail/quiz.svg";
 import moodleLogo from "assets/img/logo/moodle_logo.png";
 import microsoftLogo from "assets/img/logo/microsoft_logo.png";
 import mailboxEmpty from "assets/img/mailbox_empty.svg";
@@ -53,8 +55,11 @@ const images = {
     coursePDF,
     courseDOC,
     courseXLS,
-    coursePPT
+    coursePPT,
+    assignmentIcon,
+    quizIcon
   },
+
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },
   logo: { moodleLogo, microsoftLogo, googleLogo, appLogo },
   null: { mailboxEmpty },

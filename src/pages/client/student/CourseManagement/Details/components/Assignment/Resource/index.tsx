@@ -14,6 +14,7 @@ import { routes } from "routes/routes";
 import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import { useTranslation } from "react-i18next";
 import { string } from "yup";
+import images from "config/images";
 import dayjs from "dayjs";
 
 interface Props {
@@ -65,7 +66,18 @@ const AssignmentResource = ({
             setResourceExpansion(true);
           }}
         >
-          <ParagraphBody>{resourceTitle}</ParagraphBody>
+          <Box className={classes.titleContainer}>
+            <img
+              src={
+                type == ResourceType.assignment
+                  ? images.course.assignmentIcon
+                  : images.course.quizIcon
+              }
+              className={classes.imageResource}
+              alt='assignment'
+            />
+            <ParagraphBody>{resourceTitle}</ParagraphBody>
+          </Box>
           <ParagraphBody translation-key='course_assignment_deadline'>
             {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("DD/MM/YYYY")}
           </ParagraphBody>

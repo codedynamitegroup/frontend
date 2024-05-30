@@ -1,4 +1,4 @@
-import { Card, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
+import { Box, Card, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
 import Button, { BtnType } from "components/common/buttons/Button";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
@@ -8,12 +8,13 @@ import TextTitle from "components/text/TextTitle";
 import moment, { Moment } from "moment";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import classes from "./styles.module.scss";
 
 const CreateContest = () => {
   const { t } = useTranslation();
   const [contestName, setContestName] = useState("");
   const [contestStartTime, setContestStartTime] = useState<Moment>(moment().utc());
-  const [contestEndTime, setContestEndTime] = useState<Moment>(moment().utc());
+  const [contestEndTime, setContestEndTime] = useState<Moment>(moment().utc().add(1, "hour"));
   const [isNoEndTime, setIsNoEndTime] = useState<boolean>(false);
 
   return (
@@ -27,7 +28,7 @@ const CreateContest = () => {
         }
       }}
     >
-      <Heading1>Create Contest</Heading1>
+      <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
       <Stack
         direction='column'
         gap={2}
@@ -35,32 +36,26 @@ const CreateContest = () => {
           marginTop: "20px"
         }}
       >
-        <ParagraphBody fontStyle='italic'>
-          Host your own coding contest on CodeDynamite. You can practice and compete with friends
-          from your organization or school. Create your own contest and invite your friends to join.
+        <ParagraphBody fontStyle='italic' translate-key='contest_description_message_1'>
+          {t("contest_description_message_1")}
         </ParagraphBody>
-        <ParagraphBody fontStyle={"italic"}>
-          Get started by providing the initial details for your contest.
+        <ParagraphBody fontStyle={"italic"} translate-key='contest_description_message_2'>
+          {t("contest_description_message_2")}
         </ParagraphBody>
       </Stack>
-      <Grid
-        container
-        gap={2}
-        sx={{
-          marginTop: "40px"
-        }}
-      >
+      <Box component='form' className={classes.formBody}>
         <InputTextField
           type='text'
-          title='Contest Name'
+          title={t("contest_name")}
           value={contestName}
           onChange={(e) => setContestName(e.target.value)}
-          placeholder={"Enter contest name"}
+          translate-key={["contest_enter_contest_name", "contest_enter_contest_name"]}
+          placeholder={t("contest_enter_contest_name")}
           fullWidth
         />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Contest Start Time</TextTitle>
+            <TextTitle translate-key='contest_start_time'>{t("contest_start_time")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <CustomDateTimePicker
@@ -75,7 +70,7 @@ const CreateContest = () => {
         </Grid>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle>Contest End Time</TextTitle>
+            <TextTitle translate-key='contest_end_time'>{t("contest_end_time")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
             <CustomDateTimePicker
@@ -98,7 +93,8 @@ const CreateContest = () => {
               sx={{
                 marginTop: "5px"
               }}
-              label='This contest has no end time.'
+              translate-key='this_contest_has_no_end_time'
+              label={t("this_contest_has_no_end_time")}
             />
           </Grid>
         </Grid>
@@ -113,7 +109,7 @@ const CreateContest = () => {
             {t("common_get_started")}
           </Button>
         </Grid>
-      </Grid>
+      </Box>
     </Card>
   );
 };

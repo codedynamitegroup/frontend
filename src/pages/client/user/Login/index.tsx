@@ -103,7 +103,8 @@ export default function Login() {
     dispatch(setLoading(true));
     UserService.singleSignOn(accessToken, ESocialLoginProvider.MICROSOFT)
       .then((response) => {
-        localStorage.setItem("accessToken", response.accessToken);
+        localStorage.setItem("access_token", response.accessToken);
+        localStorage.setItem("refresh_token", response.refreshToken);
         localStorage.setItem("provider", ESocialLoginProvider.MICROSOFT);
         dispatch(loginStatus(true));
         navigate(routes.user.dashboard.root);
@@ -125,7 +126,8 @@ export default function Login() {
       dispatch(setLoading(true));
       UserService.singleSignOn(tokenResponse.access_token, ESocialLoginProvider.GOOGLE)
         .then((response) => {
-          localStorage.setItem("accessToken", response.accessToken);
+          localStorage.setItem("access_token", response.accessToken);
+          localStorage.setItem("refresh_token", response.refreshToken);
           localStorage.setItem("provider", ESocialLoginProvider.GOOGLE);
           dispatch(loginStatus(true));
           navigate(routes.user.dashboard.root);
@@ -152,7 +154,8 @@ export default function Login() {
     dispatch(setLoading(true));
     UserService.login(loginData)
       .then(async (response) => {
-        localStorage.setItem("accessToken", response.accessToken);
+        localStorage.setItem("access_token", response.accessToken);
+        localStorage.setItem("refresh_token", response.refreshToken);
         dispatch(loginStatus(true));
         navigate(routes.user.dashboard.root);
       })

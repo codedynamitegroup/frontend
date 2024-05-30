@@ -51,6 +51,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
+  const [submitCount, setSubmitCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -191,6 +192,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   return (
     <>
       <SnackbarAlert
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={openSnackbar}
         setOpen={setOpenSnackbar}
         type={snackbarType}
@@ -202,7 +204,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
 
       <Grid className={classes.root}>
         <Header ref={headerRef} />
-        <form onSubmit={handleSubmit(submitHandler)}>
+        <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
               {props.insideCrumb ? (
@@ -284,8 +286,9 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         defaultValue=''
                         control={control}
                         name='questionName'
-                        render={({ field }) => (
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            inputRef={ref}
                             error={Boolean(errors?.questionName)}
                             errorMessage={errors.questionName?.message}
                             title={`${t("exam_management_create_question_name")}`}
@@ -305,8 +308,9 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         defaultValue={"0"}
                         control={control}
                         name='defaultScore'
-                        render={({ field }) => (
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
                             errorMessage={errors.defaultScore?.message}
@@ -343,6 +347,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
                             name='questionDescription'
                             render={({ field }) => (
                               <TextEditor
+                                submitCount={submitCount}
                                 title={t("exam_management_create_question_description")}
                                 openDialog
                                 roundedBorder={true}

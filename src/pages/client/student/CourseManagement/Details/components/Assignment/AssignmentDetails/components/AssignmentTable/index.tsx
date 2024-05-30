@@ -21,9 +21,11 @@ export default function TableRowHead({ rows }: TableRowHeadProps) {
                 className={
                   row.status === 1
                     ? classes.successColor
-                    : row.status === 2
+                    : row.status === 0
                       ? classes.errorColor
-                      : ""
+                      : row.status === 2
+                        ? classes.dangerBackground
+                        : ""
                 }
               >
                 {row.data}

@@ -72,6 +72,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
+  const [submitCount, setSubmitCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -240,6 +241,20 @@ const CreateMultichoiceQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
+  const questionAnswerRef = useRef<HTMLElement>(null);
+  console.log(errors);
+  useEffect(() => {
+    if (
+      !errors.questionName &&
+      !errors.defaultScore &&
+      !errors.questionDescription &&
+      errors.answers &&
+      questionAnswerRef.current
+    ) {
+      questionAnswerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [errors.answers]);
+
   const numberingOptions = [
     { value: "abc", label: "a., b., c." },
     { value: "ABC", label: "A., B., C." },
@@ -269,6 +284,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   return (
     <>
       <SnackbarAlert
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={openSnackbar}
         setOpen={setOpenSnackbar}
         type={snackbarType}
@@ -280,7 +296,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
 
       <Grid className={classes.root}>
         <Header ref={headerRef} />
-        <form onSubmit={handleSubmit(submitHandler)}>
+        <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
               {props.insideCrumb ? (
@@ -362,7 +378,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         defaultValue=''
                         control={control}
                         name='questionName'
-                        render={({ field }) => (
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
                             error={Boolean(errors?.questionName)}
                             errorMessage={errors.questionName?.message}
@@ -371,6 +387,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                             placeholder={t("exam_management_create_question_name")}
                             titleRequired={true}
                             translation-key='exam_management_create_question_name'
+                            inputRef={ref}
                             {...field}
                           />
                         )}
@@ -383,8 +400,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         defaultValue={"0"}
                         control={control}
                         name='defaultScore'
-                        render={({ field }) => (
+                        render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
                             errorMessage={errors.defaultScore?.message}
@@ -421,6 +439,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                             name='questionDescription'
                             render={({ field }) => (
                               <TextEditor
+                                submitCount={submitCount}
                                 title={t("exam_management_create_question_description")}
                                 openDialog
                                 roundedBorder={true}
@@ -658,11 +677,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       <Heading2
                         sx={{ display: "inline" }}
                         translation-key='question_management_answer'
+                        ref={questionAnswerRef}
                       >
                         {t("question_management_answer")}
                       </Heading2>
                       {Boolean(errors?.answers) && (
-                        <ErrorMessage>{errors.answers?.message}</ErrorMessage>
+                        <ErrorMessage>
+                          {errors.answers?.message || errors.answers?.root?.message}
+                        </ErrorMessage>
                       )}
                     </Grid>
                     <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>

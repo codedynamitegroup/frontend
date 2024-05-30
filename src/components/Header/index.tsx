@@ -2,7 +2,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -18,7 +17,7 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
 import { Menu, MenuItem, ListItemIcon, Grid } from "@mui/material";
@@ -31,11 +30,13 @@ import { logOut, selectCurrentUser } from "reduxes/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
+import { UserService } from "services/authService/UserService";
 
 interface ILinkMenu {
   name: string;
   path: string;
-  isActice?: boolean;
+  isActive?: boolean;
+  position: "left" | "right";
 }
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
@@ -59,40 +60,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     open?: boolean;
   }
 
-  const pages: ILinkMenu[] = [
-    {
-      name: "header_explore_course",
-      path: routes.user.course_certificate.root,
-      isActice: false
-    },
-    {
-      name: "common_practice",
-      path: routes.user.problem.root,
-      isActice: false
-    },
-    {
-      name: "header_contest",
-      path: routes.user.contest.root,
-      isActice: false
-    },
-    {
-      name: "header_course",
-      path: routes.student.course.management,
-      isActice: false
-    }
-  ];
-
-  const auth: ILinkMenu[] = [
-    {
-      name: "header_login_button",
-      path: routes.user.login.root
-    },
-    {
-      name: "header_register_button",
-      path: routes.user.register.root
-    }
-  ];
-
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open"
   })<AppBarProps>(({ theme, open }) => ({
@@ -114,7 +81,48 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const [listPage, setListPage] = React.useState<ILinkMenu[]>(pages);
+
+  const pagesHeaderDefault: ILinkMenu[] = [
+    {
+      name: "header_explore_course",
+      path: routes.user.course_certificate.root,
+      isActive: false,
+      position: "left"
+    },
+    {
+      name: "common_practice",
+      path: routes.user.problem.root,
+      isActive: false,
+      position: "left"
+    },
+    {
+      name: "header_contest",
+      path: routes.user.contest.root,
+      isActive: false,
+      position: "left"
+    },
+    {
+      name: "header_course",
+      path: routes.student.course.management,
+      isActive: false,
+      position: "left"
+    },
+    {
+      name: "header_login_button",
+      path: routes.user.login.root,
+      isActive: false,
+      position: "right"
+    },
+    {
+      name: "header_register_button",
+      path: routes.user.register.root,
+      isActive: false,
+      position: "right"
+    }
+  ];
+
+  const [pagesHeader, setPagesHeader] = React.useState<ILinkMenu[]>(pagesHeaderDefault);
+
   const dispatch = useDispatch();
 
   const handleDrawerClose = () => {
@@ -147,7 +155,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const loggedUser: User = useSelector(selectCurrentUser);
 
   const handleClickPage = (page: any) => {
-    localStorage.setItem("page", page.name);
     if (
       localStorage.getItem("role") === "lecturer" &&
       page.path === routes.student.course.management
@@ -158,28 +165,56 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     }
   };
 
-  // useEffect(() => {
-  //   const page = localStorage.getItem("page");
-  //   const listPageUpdate = listPage.map((item) => {
-  //     if (item.name === page) {
-  //       item.isActice = true;
-  //     } else {
-  //       item.isActice = false;
-  //     }
-  //     return item;
-  //   });
-  //   setListPage(listPageUpdate);
-  // }, [localStorage.getItem("page")]);
+  const { pathname } = useLocation();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    const provider = localStorage.getItem("provider");
-    if (provider === ESocialLoginProvider.MICROSOFT) {
-      sessionStorage.clear();
+  const activeRoute = (routeName: string) => {
+    const match = matchPath(pathname, routeName);
+    return !!match;
+  };
+
+  useEffect(() => {
+    if (activeRoute(routes.user.homepage.root) || activeRoute(routes.user.dashboard.root)) {
+      setPagesHeader(pagesHeaderDefault);
     }
-    localStorage.removeItem("provider");
-    dispatch(logOut());
-    navigate(routes.user.homepage.root);
+    const headerItem: ILinkMenu | undefined = pagesHeader.find((it: ILinkMenu) =>
+      activeRoute(it.path)
+    );
+
+    if (!headerItem) {
+      return;
+    }
+
+    const pagesHeaderUpdated = pagesHeader.map((item) => {
+      if (item.name === headerItem.name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+      return item;
+    });
+    setPagesHeader(pagesHeaderUpdated);
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    UserService.logout()
+      .then(() => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        const provider = localStorage.getItem("provider");
+        if (provider === ESocialLoginProvider.MICROSOFT) {
+          sessionStorage.clear();
+        }
+        localStorage.removeItem("provider");
+        dispatch(logOut());
+        navigate(routes.user.homepage.root);
+      })
+      .catch((error) => {
+        console.error("Failed to logout", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+      });
   };
 
   const handleLogo = () => {
@@ -213,40 +248,50 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </Box>
           </Box>
           <Box className={classes.navbarItem}>
-            {listPage.map((page, index) => (
-              <Button
-                key={index}
-                sx={{ textTransform: "none", margin: "1rem" }}
-                className={classes.item}
-                onClick={() => handleClickPage(page)}
-              >
-                <ParagraphSmall
-                  className={page.isActice ? classes.actice : ""}
-                  fontWeight={600}
-                  translation-key={page.name}
+            {pagesHeader
+              .filter((page) => page.position === "left")
+              .map((page, index) => (
+                <Button
+                  key={index}
+                  sx={{ textTransform: "none", margin: "1rem" }}
+                  className={classes.item}
+                  onClick={() => handleClickPage(page)}
                 >
-                  {t(page.name)}
-                </ParagraphSmall>
-              </Button>
-            ))}
+                  <ParagraphSmall
+                    className={page.isActive ? classes.isActive : ""}
+                    fontWeight={600}
+                    translation-key={page.name}
+                    colorname={"--gray-60"}
+                  >
+                    {t(page.name)}
+                  </ParagraphSmall>
+                </Button>
+              ))}
           </Box>
           <Box>
             <LanguageSelector />
           </Box>
           {!loggedUser ? (
             <Box className={classes.navbarAuthItem}>
-              {auth.map((page, index) => (
-                <Button
-                  key={index}
-                  sx={{ textTransform: "none", margin: "1rem" }}
-                  className={classes.item}
-                  onClick={() => navigate(page.path)}
-                >
-                  <ParagraphSmall fontWeight={600} translation-key={page.name}>
-                    {t(page.name)}
-                  </ParagraphSmall>
-                </Button>
-              ))}
+              {pagesHeader
+                .filter((page) => page.position === "right")
+                .map((page, index) => (
+                  <Button
+                    key={index}
+                    sx={{ textTransform: "none", margin: "1rem" }}
+                    className={classes.item}
+                    onClick={() => handleClickPage(page)}
+                  >
+                    <ParagraphSmall
+                      className={page.isActive ? classes.isActive : ""}
+                      fontWeight={600}
+                      translation-key={page.name}
+                      colorname={"--gray-60"}
+                    >
+                      {t(page.name)}
+                    </ParagraphSmall>
+                  </Button>
+                ))}
             </Box>
           ) : (
             <Grid container direction='row' width='fit-content'>
@@ -355,23 +400,35 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </IconButton>
           </DrawerHeader>
           <List>
-            {pages.map((item, index) => (
-              <ListItem key={index} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={<Typography align='center'>{item.name}</Typography>} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {pagesHeader
+              .filter((page) => page.position === "left")
+              .map((item, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton>
+                    <ListItemText
+                      primary={
+                        <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
           </List>
           <Divider />
           <List>
-            {auth.map((item, index) => (
-              <ListItem key={index} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={<Typography align='center'>{item.name}</Typography>} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {pagesHeader
+              .filter((page) => page.position === "right")
+              .map((item, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton>
+                    <ListItemText
+                      primary={
+                        <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
           </List>
         </Drawer>
       </Container>

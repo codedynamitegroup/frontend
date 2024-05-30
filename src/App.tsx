@@ -57,7 +57,6 @@ const router = createHashRouter(
         <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
         <Route path={routes.user.homepage.root} element={<UserHomepage />} />
         <Route path={routes.user.root} element={<UserHomepage />} />
-        <Route path={routes.user.information} element={<UserInformation />} />
       </Route>
 
       <Route

@@ -1,12 +1,9 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
+#userInformationRoot {
   gap: 20px;
-  overflow: auto;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--blue-1);
+  background-color: var(--gray-1);
+  padding: 40px 0px;
 }
 
 .leftContainer {
