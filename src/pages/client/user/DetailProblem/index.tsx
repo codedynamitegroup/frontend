@@ -36,18 +36,14 @@ import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestion
 import { UUID } from "crypto";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import {
+  setSourceCode,
+  setLanguageId,
+  setCpuTimeLimit,
+  setMemoryLimit
+} from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash/cloneDeep";
-
-enum ELanguage {
-  JAVA = "java",
-  CPP = "cpp",
-  JAVASCRIPT = "javascript"
-}
-interface QCodeStub {
-  language: ELanguage;
-  codeStubBody: string;
-}
 
 export default function DetailProblem() {
   const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
@@ -62,6 +58,12 @@ export default function DetailProblem() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
+
+  const currentExecuteData = useAppSelector((state) => state.executeData);
+
+  const handleExecuteCode = () => {
+    console.log("current data", currentExecuteData);
+  };
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -108,6 +110,23 @@ export default function DetailProblem() {
     );
     setLanguageList(codeQuestion?.languages);
   }, [codeQuestion?.languages]);
+
+  useEffect(() => {
+    const language = mapLanguages.get(selectedLanguage.id);
+    if (
+      language !== undefined &&
+      language.pLanguage.headCode !== undefined &&
+      language.pLanguage.tailCode != undefined
+    ) {
+      const headCode: string = language.pLanguage.headCode;
+      const bodyCode: string = selectedLanguage.bodyCode;
+      const tailCode: string = language.pLanguage.tailCode;
+      dispatch(setSourceCode(`${headCode}\n${bodyCode}\n${tailCode}`));
+      dispatch(setLanguageId(language.pLanguage.judge0Id));
+      dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
+      dispatch(setMemoryLimit(language.pLanguage.memoryLimit));
+    }
+  }, [selectedLanguage]);
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     const newSelectedLanguageId = event.target.value;
@@ -218,7 +237,7 @@ export default function DetailProblem() {
   const { t } = useTranslation();
   return (
     <Box className={classes.root}>
-      <Header ref={headerRef} />
+      {/* <Header ref={headerRef} /> */}
       <Box
         className={classes.body}
         style={{
@@ -277,6 +296,7 @@ export default function DetailProblem() {
               variant='contained'
               color='primary'
               translation-key='detail_problem_execute'
+              onClick={handleExecuteCode}
             >
               <PlayArrowIcon />
               {t("detail_problem_execute")}

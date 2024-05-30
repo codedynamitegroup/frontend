@@ -104,6 +104,8 @@ export const API = {
   AUTH: {
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
+    REFRESH_TOKEN: "/auth/users/refresh-token",
+    LOGOUT: "/auth/users/logout",
     REGISTER: "/auth/users/register",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email/:email"
   }

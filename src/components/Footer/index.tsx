@@ -1,11 +1,12 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading5 from "components/text/Heading5";
 import { routes } from "routes/routes";
+import images from "config/images";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -14,9 +15,9 @@ export default function Footer() {
     <Grid container id={classes.footerWrapper}>
       <Grid container id={classes.footerTop}>
         <Grid item xs={12} md={5} className={classes.footerListItem}>
-          <Heading5 translation-key='footer_resource_link_title' colorname='--gray-20'>
-            Code Dynamite - Learn to code
-          </Heading5>
+          <Box className={classes.logo}>
+            <img src={images.logo.appLogo} alt='logo' />
+          </Box>
           <ParagraphBody paragraph translation-key='footer_description' colorname='--gray-5'>
             {t("footer_description")}
           </ParagraphBody>
