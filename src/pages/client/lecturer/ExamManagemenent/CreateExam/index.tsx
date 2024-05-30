@@ -59,6 +59,7 @@ import { ExamService } from "services/courseService/ExamService";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
+import moment, { Moment } from "moment";
 
 const drawerWidth = 400;
 
@@ -164,8 +165,8 @@ export default function ExamCreated() {
   const [examName, setExamName] = React.useState("");
   const [examDescription, setExamDescription] = React.useState("");
   const [examMaximumGrade, setExamMaximumGrade] = React.useState(10);
-  const [examOpenTime, setExamOpenTime] = React.useState<Dayjs | null>(dayjs());
-  const [examCloseTime, setExamCloseTime] = React.useState<Dayjs | null>(dayjs());
+  const [examOpenTime, setExamOpenTime] = React.useState<Moment | null>(moment());
+  const [examCloseTime, setExamCloseTime] = React.useState<Moment | null>(moment());
   const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("minutes");
   const [examTimeLimitNumber, setExamTimeLimitNumber] = React.useState(0);
   const [examTimeLimitEnabled, setExamTimeLimitEnabled] = React.useState(false);
