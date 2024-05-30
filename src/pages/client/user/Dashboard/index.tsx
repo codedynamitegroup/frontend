@@ -2,7 +2,6 @@ import { Container, Grid } from "@mui/material";
 import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Heading2 from "components/text/Heading2";
 import { LinearProgress } from "@mui/joy";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
@@ -26,6 +25,7 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import CustomButton, { BtnType } from "components/common/buttons/Button";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -153,154 +153,154 @@ export default function UserDashboard() {
   }, []);
 
   return (
-    <Container className={classes.container}>
-      <Grid container className={classes.sectionContentImage}>
-        <Grid item sm={12} md={7} className={classes.sectionContent}>
-          <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
-            {/* <Heading2>{t("dashboard_continue_title")}</Heading2> */}
-            <Heading2>Let's start learning, Khánh</Heading2>
-            <Box className={classes.courseLearningList}>
-              {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
-                <Grid className={classes.courseLearningItem} key={index}>
-                  <Box className={classes.titleContainer}>
-                    <img
-                      src={course.topic.thumbnailUrl}
-                      alt='course'
-                      className={classes.imageCourse}
-                    />
-                    <Box className={classes.courseLearningItemContent}>
-                      <Heading3>{course.name}</Heading3>
-                      <Box className={classes.processBar} style={{ width: "100%" }}>
-                        <LinearProgress
-                          determinate
-                          value={calcCertificateCourseProgress(
-                            course.numOfCompletedQuestions || 0,
-                            course.numOfQuestions
-                          )}
-                        />
+    <Grid id={classes.userDashboardRoot}>
+      <Container className={classes.container}>
+        <Grid container className={classes.sectionContentImage}>
+          <Grid item sm={12} md={7} className={classes.sectionContent}>
+            <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
+              <Heading2>{t("dashboard_continue_title")}</Heading2>
+              <Box className={classes.courseLearningList}>
+                {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
+                  <Grid className={classes.courseLearningItem} key={index}>
+                    <Box className={classes.titleContainer}>
+                      <img
+                        src={course.topic.thumbnailUrl}
+                        alt='course'
+                        className={classes.imageCourse}
+                      />
+                      <Box className={classes.courseLearningItemContent}>
+                        <Heading3>{course.name}</Heading3>
+                        <Box className={classes.processBar} style={{ width: "100%" }}>
+                          <LinearProgress
+                            determinate
+                            value={calcCertificateCourseProgress(
+                              course.numOfCompletedQuestions || 0,
+                              course.numOfQuestions
+                            )}
+                          />
+                        </Box>
+                        <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                          {t("dashboard_current_lesson")}: {"course.currentLesson"}
+                        </ParagraphExtraSmall>
                       </Box>
-                      <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                        {t("dashboard_current_lesson")}: {"course.currentLesson"}
-                      </ParagraphExtraSmall>
                     </Box>
-                  </Box>
-                  <Box className={classes.learnBtn}>
-                    <Button variant='contained' color='primary' translation-key='common_continue'>
-                      {i18next.format(t("common_continue"), "firstUppercase")}
-                    </Button>
-                  </Box>
-                </Grid>
-              ))}
-            </Box>
-          </Box>
-          <Box className={classes.courseRecommend}>
-            <Box className={classes.wrapperCourseRecommend}>
-              <Heading2 translation-key='dashboard_other_course'>
-                {t("dashboard_other_course")}
-              </Heading2>
-              <Button variant='outlined' color='primary' translation-key='home_view_all_courses'>
-                {t("home_view_all_courses")}
-              </Button>
-            </Box>
-            <Box className={classes.couseCertificatesByTopic}>
-              <Grid container spacing={3}>
-                {courseCertificatesBasic.map((course, index) => (
-                  <Grid item xs={4} key={index}>
-                    <Box
-                      className={classes.courseCerticate}
-                      onClick={() => {
-                        navigate(
-                          routes.user.course_certificate.detail.lesson.root.replace(
-                            ":courseId",
-                            index.toString()
-                          )
-                        );
-                      }}
-                    >
-                      <Grid container direction={"column"} margin={0} gap={2}>
-                        <Grid item container xs={5} className={classes.titleCourse}>
-                          <Grid item xs={3} className={classes.imgCourse}>
-                            <img alt='img course' src={course.imgUrl} />
-                          </Grid>
-                          <Grid item xs={9} className={classes.nameCourse}>
-                            <Heading5>{course.title}</Heading5>
-                          </Grid>
-                        </Grid>
-                        <Divider />
-
-                        <Grid item xs={2}>
-                          <Box className={classes.iconCourse}>
-                            <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                            <ParagraphBody translation-key='certificate_detail_lesson'>
-                              {course.lesson}{" "}
-                              {i18next.format(
-                                t("certificate_detail_lesson", { count: 2 }),
-                                "lowercase"
-                              )}
-                            </ParagraphBody>
-                          </Box>
-                          <Box className={classes.iconCourse}>
-                            <img
-                              src={images.icLevel}
-                              alt='icon level'
-                              className={classes.iconLevel}
-                            />
-                            <ParagraphBody>{course.level}</ParagraphBody>
-                          </Box>
-                        </Grid>
-                      </Grid>
+                    <Box className={classes.learnBtn}>
+                      <CustomButton btnType={BtnType.Primary} translation-key='common_continue'>
+                        {i18next.format(t("common_continue"), "firstUppercase")}
+                      </CustomButton>
                     </Box>
                   </Grid>
                 ))}
-              </Grid>
+              </Box>
             </Box>
-          </Box>
+            <Box className={classes.courseRecommend}>
+              <Box className={classes.wrapperCourseRecommend}>
+                <Heading2 translation-key='dashboard_other_course'>
+                  {t("dashboard_other_course")}
+                </Heading2>
+                <CustomButton btnType={BtnType.Primary} translation-key='home_view_all_courses'>
+                  {t("home_view_all_courses")}
+                </CustomButton>
+              </Box>
+              <Box className={classes.couseCertificatesByTopic}>
+                <Grid container spacing={3}>
+                  {courseCertificatesBasic.map((course, index) => (
+                    <Grid item xs={4} key={index}>
+                      <Box
+                        className={classes.courseCerticate}
+                        onClick={() => {
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.root.replace(
+                              ":courseId",
+                              index.toString()
+                            )
+                          );
+                        }}
+                      >
+                        <Grid container direction={"column"} margin={0} gap={2}>
+                          <Grid item container xs={5} className={classes.titleCourse}>
+                            <Grid item xs={3} className={classes.imgCourse}>
+                              <img alt='img course' src={course.imgUrl} />
+                            </Grid>
+                            <Grid item xs={9} className={classes.nameCourse}>
+                              <Heading5>{course.title}</Heading5>
+                            </Grid>
+                          </Grid>
+                          <Divider />
+
+                          <Grid item xs={2}>
+                            <Box className={classes.iconCourse}>
+                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                              <ParagraphBody translation-key='certificate_detail_lesson'>
+                                {course.lesson}{" "}
+                                {i18next.format(
+                                  t("certificate_detail_lesson", { count: 2 }),
+                                  "lowercase"
+                                )}
+                              </ParagraphBody>
+                            </Box>
+                            <Box className={classes.iconCourse}>
+                              <img
+                                src={images.icLevel}
+                                alt='icon level'
+                                className={classes.iconLevel}
+                              />
+                              <ParagraphBody>{course.level}</ParagraphBody>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item md={1}></Grid>
+          <Grid item sm={12} md={4} className={classes.wrapperContest}>
+            <Heading2 translation-key='dashboard_happening_contest'>
+              {t("dashboard_happening_contest")}
+            </Heading2>
+            <Box className={classes.contest}>
+              <Card>
+                <CardMedia
+                  component='img'
+                  alt='green iguana'
+                  height='140'
+                  image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
+                />
+                <CardContent>
+                  <Typography gutterBottom variant='h5' component='div'>
+                    Cuộc thi lập trình đa vũ trụ
+                  </Typography>
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    translation-key='dashboard_participant_num'
+                  >
+                    {t("dashboard_participant_num", { participantNum: 1000 })}
+                  </Typography>
+                  <Typography
+                    variant='body2'
+                    color='text.primary'
+                    translation-key='dashboard_contest_end'
+                  >
+                    {t("dashboard_contest_end")} 20/04/2024
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <CustomButton
+                    btnType={BtnType.Primary}
+                    translation-key='contest_detail_join_button'
+                  >
+                    {t("contest_detail_join_button")}
+                  </CustomButton>
+                </CardActions>
+              </Card>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item md={1}></Grid>
-        <Grid item sm={12} md={4} className={classes.wrapperContest}>
-          <Heading2 translation-key='dashboard_happening_contest'>
-            {t("dashboard_happening_contest")}
-          </Heading2>
-          <Box className={classes.contest}>
-            <Card>
-              <CardMedia
-                component='img'
-                alt='green iguana'
-                height='140'
-                image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
-              />
-              <CardContent>
-                <Typography gutterBottom variant='h5' component='div'>
-                  Cuộc thi lập trình đa vũ trụ
-                </Typography>
-                <Typography
-                  variant='body2'
-                  color='text.secondary'
-                  translation-key='dashboard_participant_num'
-                >
-                  {t("dashboard_participant_num", { participantNum: 1000 })}
-                </Typography>
-                <Typography
-                  variant='body2'
-                  color='text.primary'
-                  translation-key='dashboard_contest_end'
-                >
-                  {t("dashboard_contest_end")} 20/04/2024
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  size='large'
-                  variant='contained'
-                  translation-key='contest_detail_join_button'
-                >
-                  {t("contest_detail_join_button")}
-                </Button>
-              </CardActions>
-            </Card>
-          </Box>
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </Grid>
   );
 }
