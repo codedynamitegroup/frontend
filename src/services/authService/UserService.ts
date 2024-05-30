@@ -2,6 +2,7 @@ import axios from "axios";
 import { API } from "constants/API";
 import { LoginRequest, RegisteredRequest } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
+import api from "utils/api";
 
 const authServiceApiUrl = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
@@ -48,6 +49,42 @@ export class UserService {
   static async login(loginData: LoginRequest) {
     try {
       const response = await axios.post(`${authServiceApiUrl}${API.AUTH.LOGIN}`, loginData);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to login", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async refreshToken(accessToken: string, refreshToken: string) {
+    try {
+      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.REFRESH_TOKEN}`, {
+        accessToken: accessToken,
+        refreshToken: refreshToken
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to login", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async logout() {
+    try {
+      const response = await await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).post(`${authServiceApiUrl}${API.AUTH.LOGOUT}`);
       if (response.status === 200) {
         return response.data;
       }

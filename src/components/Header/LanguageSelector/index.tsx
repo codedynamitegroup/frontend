@@ -29,19 +29,22 @@ const LanguageSelector = () => {
           <Button
             {...bindTrigger(popupState)}
             sx={{ width: "160px", textTransform: "none" }}
-            className={classes.btnLang}
             fullWidth
           >
             <Box className={classes.currentLangContainer}>
               {currentLang === "vi" ? (
                 <>
                   <img alt='upload' src={images.flagIcon.flagVietnam} className={classes.imgFile} />
-                  <ParagraphSmall fontWeight={600}>{i18n.t("language_vn")}</ParagraphSmall>
+                  <ParagraphSmall colorname='--gray-60' fontWeight={600}>
+                    {i18n.t("language_vn")}
+                  </ParagraphSmall>
                 </>
               ) : (
                 <>
                   <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
-                  <ParagraphSmall fontWeight={600}>{i18n.t("language_us")}</ParagraphSmall>
+                  <ParagraphSmall colorname='--gray-60' fontWeight={600}>
+                    {i18n.t("language_us")}
+                  </ParagraphSmall>
                 </>
               )}
             </Box>

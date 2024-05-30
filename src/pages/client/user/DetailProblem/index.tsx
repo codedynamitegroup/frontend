@@ -39,16 +39,6 @@ import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Deta
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash/cloneDeep";
 
-enum ELanguage {
-  JAVA = "java",
-  CPP = "cpp",
-  JAVASCRIPT = "javascript"
-}
-interface QCodeStub {
-  language: ELanguage;
-  codeStubBody: string;
-}
-
 export default function DetailProblem() {
   const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
 
