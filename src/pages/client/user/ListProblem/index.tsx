@@ -1,4 +1,4 @@
-import { Box, Chip, Container, Grid } from "@mui/material";
+import { Box, Chip, Container, Divider, Grid, Stack } from "@mui/material";
 import classes from "./styles.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
 import LabTabs from "./components/TabTopic";
@@ -26,6 +26,8 @@ import {
   setSearchKey
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import ProblemTable from "./components/ProblemTable";
+import RecommendedProblem from "./components/RecommendedProblem";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
@@ -84,128 +86,151 @@ const ListProblem = () => {
   // const algorithmTag = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
     <Box id={classes.listProblemRoot}>
-      <Box
+      {/* <Box
         id={classes.banner}
         sx={{
           backgroundImage: `url(${images.background.homePageBackground})`
         }}
       >
         <Container id={classes.bannerContainer} className={classes.container}>
-          <Heading1 colorname={"--white"} translation-key='common_practice'>
-            {t("common_practice")}
-          </Heading1>
-          <Heading3 colorname={"--white"} translation-key='list_problem_call_to_action'>
+          <Heading1 translation-key='common_practice'>{t("common_practice")}</Heading1>
+          <Heading3 translation-key='list_problem_call_to_action'>
             {t("list_problem_call_to_action")}
           </Heading3>
-          <Box id={classes.bannerSearch}>
-            <Box className={classes.filterSearch}>
-              <OutlinedInput
-                size='small'
-                fullWidth
-                translation-key='common_search'
-                placeholder={t("common_search")}
-                startAdornment={
-                  <InputAdornment position='start'>
-                    <SearchIcon className={classes.icon} />
-                  </InputAdornment>
-                }
-                onChange={searchChange}
-                className={classes.searchInput}
-              />
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={statusProblem}
-                onHandleChange={(value) => handleChangeSolved(value)}
-                sx={{ maxWidth: "200px" }}
-                translation-key={[
-                  "common_all",
-                  "list_problem_solved_done",
-                  "list_problem_solved_not_done"
-                ]}
-                items={[
-                  {
-                    value: "0",
-                    label: t("common_all")
-                  },
-                  {
-                    value: "1",
-                    label: t("list_problem_solved_done")
-                  },
-                  {
-                    value: "2",
-                    label: t("list_problem_solved_not_done")
-                  }
-                ]}
-                backgroundColor='#FFFFFF'
-              />
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={levelProblem}
-                onHandleChange={(value) => handleChangeDifficulty(value)}
-                sx={{ maxWidth: "200px" }}
-                translation-key={["common_all", "common_easy", "common_medium", "common_hard"]}
-                items={[
-                  {
-                    value: "0",
-                    label: t("common_all")
-                  },
-                  {
-                    value: "1",
-                    label: t("common_easy")
-                  },
-                  {
-                    value: "2",
-                    label: t("common_medium")
-                  },
-                  {
-                    value: "3",
-                    label: t("common_hard")
-                  }
-                ]}
-                backgroundColor='#FFFFFF'
-              />
-            </Box>
-          </Box>
         </Container>
-      </Box>
+      </Box> */}
       <Box>
         <Container className={classes.container}>
           <Box className={classes.boxContent}>
             <Grid container>
               <Grid item xs={2.5}>
-                <Box className={classes.algorithmContainer}>
-                  <Heading3 translation-key='list_problem_type_of_algorithm'>
-                    {t("list_problem_type_of_algorithm")}:
-                  </Heading3>
-                  <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
-                    {!algorithmTag.isLoading &&
-                      (algorithmTag.filter.length > 0
-                        ? algorithmTag.filter
-                        : algorithmTag.tagList
-                      ).map((algorithm, index) => (
-                        <Box
-                          onClick={() => {
-                            if (algorithm.id != null) handleFilterAlgorithm(algorithm);
-                          }}
-                          className={classes.algorithmItem}
-                          key={index}
-                          id={algorithm.id}
-                        >
-                          <ParagraphBody>{algorithm.name}</ParagraphBody>
+                <Stack direction={"row"} spacing={1}>
+                  <Box className={classes.algorithmContainer}>
+                    <Heading3 translation-key='list_problem_type_of_algorithm'>
+                      {t("list_problem_type_of_algorithm")}:
+                    </Heading3>
+
+                    <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
+                      {!algorithmTag.isLoading &&
+                        (algorithmTag.filter.length > 0
+                          ? algorithmTag.filter
+                          : algorithmTag.tagList
+                        ).map((algorithm, index) => (
                           <Chip
-                            label={algorithm.numOfCodeQuestion}
+                            key={index}
+                            id={algorithm.id}
+                            onClick={() => {
+                              if (algorithm.id != null) handleFilterAlgorithm(algorithm);
+                            }}
+                            sx={{
+                              padding: "15px 8px",
+                              backgroundColor: "var(--blue-50)"
+                            }}
+                            // label={algorithm.numOfCodeQuestion}
+                            label={
+                              <Stack direction={"row"} spacing={1}>
+                                <ParagraphBody>{algorithm.name}</ParagraphBody>
+
+                                <Divider orientation='vertical' variant='middle' flexItem />
+                                <ParagraphBody>{algorithm.numOfCodeQuestion}</ParagraphBody>
+                              </Stack>
+                            }
                             size='small'
-                            className={classes.chip}
                           />
-                        </Box>
-                      ))}
+                        ))}
+                    </Box>
                   </Box>
-                </Box>
+                  <Divider orientation='vertical' variant='middle' flexItem />
+                </Stack>
               </Grid>
-              <Grid item xs={0.5}></Grid>
+              <Grid container xs={0.5}></Grid>
               <Grid item xs={9}>
                 <Box className={classes.topic}>
-                  <LabTabs />
+                  <Box
+                    sx={{
+                      backgroundImage:
+                        "linear-gradient(180deg, rgb(255, 204, 128) 48%, rgb(255, 235, 204) 100%)"
+                    }}
+                    borderRadius={2}
+                    paddingX={5}
+                    paddingY={3.125}
+                  >
+                    <RecommendedProblem />
+                  </Box>
+
+                  <Stack direction={"row"} spacing={2} paddingY={2}>
+                    <OutlinedInput
+                      size='small'
+                      fullWidth
+                      translation-key='common_search'
+                      placeholder={t("common_search")}
+                      startAdornment={
+                        <InputAdornment position='start'>
+                          <SearchIcon className={classes.icon} />
+                        </InputAdornment>
+                      }
+                      onChange={searchChange}
+                      className={classes.searchInput}
+                    />
+                    <BasicSelect
+                      labelId='select-assignment-section-label'
+                      value={statusProblem}
+                      onHandleChange={(value) => handleChangeSolved(value)}
+                      sx={{ maxWidth: "200px" }}
+                      translation-key={[
+                        "common_all",
+                        "list_problem_solved_done",
+                        "list_problem_solved_not_done"
+                      ]}
+                      items={[
+                        {
+                          value: "0",
+                          label: t("common_all")
+                        },
+                        {
+                          value: "1",
+                          label: t("list_problem_solved_done")
+                        },
+                        {
+                          value: "2",
+                          label: t("list_problem_solved_not_done")
+                        }
+                      ]}
+                      backgroundColor='#FFFFFF'
+                    />
+                    <BasicSelect
+                      labelId='select-assignment-section-label'
+                      value={levelProblem}
+                      onHandleChange={(value) => handleChangeDifficulty(value)}
+                      sx={{ maxWidth: "200px" }}
+                      translation-key={[
+                        "common_all",
+                        "common_easy",
+                        "common_medium",
+                        "common_hard"
+                      ]}
+                      items={[
+                        {
+                          value: "0",
+                          label: t("common_all")
+                        },
+                        {
+                          value: "1",
+                          label: t("common_easy")
+                        },
+                        {
+                          value: "2",
+                          label: t("common_medium")
+                        },
+                        {
+                          value: "3",
+                          label: t("common_hard")
+                        }
+                      ]}
+                      backgroundColor='#FFFFFF'
+                    />
+                  </Stack>
+                  <ProblemTable />
                 </Box>
               </Grid>
             </Grid>
