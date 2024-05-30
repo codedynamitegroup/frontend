@@ -161,6 +161,8 @@
   "common_num_of_participants": "Số người tham gia",
   "common_created_at": "Ngày tạo",
   "common_contest_management": "Quản lý cuộc thi",
+  "common_enter_answer": "Nhập câu trả lời",
+  "common_remove_flag": "Huỷ gắn cờ",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -746,7 +748,7 @@
   "first_name_required": "Tên không được để trống",
   "last_name_required": "Họ và tên đệm không được để trống",
 
-  "common_flag": "Gắn cờ",
+  "common_flag": "Gắn cờ câu hỏi",
   "question_answer_add_answer": "Thêm câu trả lời",
   "question_default_score_description": "Điểm mặc định cho câu hỏi, được sử dụng khi không có tuỳ chỉnh điểm khác (phải lớn hơn hoặc bằng 0)",
   "common_content": "Nội dung đáp án",

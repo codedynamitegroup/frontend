@@ -171,7 +171,7 @@ const TextEditor: React.FC<Props> = ({
           <div style={{ position: "relative", height: "100%" }}>
             <ReactQuill
               style={{
-                height: maxLines ? `${maxLines * 24}px` : "auto" // Maximum height equivalent to maxRows
+                height: maxLines ? `${maxLines * 24}px` : undefined // Maximum height equivalent to maxRows
               }}
               ref={reactQuillRef}
               theme={readOnly ? "bubble" : "snow"}
@@ -252,7 +252,7 @@ const TextEditor: React.FC<Props> = ({
       {!openDialog && (
         <ReactQuill
           style={{
-            height: maxLines ? `${maxLines * 24}px` : "auto" // Maximum height equivalent to maxRows
+            height: maxLines ? `${maxLines * 24}px` : undefined // Maximum height equivalent to maxRows
           }}
           ref={reactQuillRef}
           theme={readOnly ? "bubble" : "snow"}

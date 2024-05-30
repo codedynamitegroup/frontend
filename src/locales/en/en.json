@@ -171,6 +171,9 @@
   "common_num_of_participants": "Participants",
   "common_created_at": "Created at",
   "common_contest_management": "Contest Management",
+  "common_enter_answer": "Enter answer",
+  "common_remove_flag": "Remove flag",
+
 
   "side_bar_dashboard": "Dashboard",
 
@@ -749,7 +752,7 @@
   "first_name_required": "First name is required",
   "last_name_required": "Last name is required",
 
-  "common_flag": "Flag",
+  "common_flag": "Flag question",
   "question_answer_add_answer": "Add answer",
   "question_default_score_description": "Default score for the question, this will be used if there is no specific score for the question (must be greater than or equal to 0)",
   "common_content": "Answer content",
