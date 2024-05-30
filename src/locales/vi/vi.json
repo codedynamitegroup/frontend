@@ -45,6 +45,7 @@
   "common_grade": "Điểm",
   "common_role": "Vai trò",
   "common_name": "Tên",
+  "common_phone": "Số điện thoại",
   "common_post": "Đăng",
   "common_find_by_col": "Tìm kiếm theo cột",
   "common_classify_category": "Phân loại",
@@ -147,6 +148,7 @@
   "common_topics": "Chủ đề",
   "common_view_details": "Xem chi tiết",
   "common_update_language": "Cập nhật ngôn ngữ",
+  "common_update": "Cập nhật",
   "register_certificate_course_success": "Đăng ký khóa học chứng chỉ {{courseName}} thành công",
   "register_certificate_course_fail": "Đăng ký khóa học chứng chỉ {{courseName}} thất bại",
   "common_view_this_course": "Xem khóa học này",
@@ -418,6 +420,7 @@
 
   "email_required": "Email không được để trống",
   "email_invalid": "Email không hợp lệ",
+  "phone_number_invalid": "Số điện thoại không hợp lệ",
 
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",
@@ -737,7 +740,9 @@
 
   "type_number": "số",
 
+  "password_old_required": "Mật khẩu cũ không được để trống",
   "password_required": "Mật khẩu không được để trống",
+  "password_invalid": "Mật khẩu không hợp lệ",
   "password_confirm_required": "Xác nhận mật khẩu không được để trống",
   "password_confirm_not_match": "Mật khẩu xác nhận không khớp với mật khẩu đã nhập",
   "password_confirm_min_length": "Mật khẩu xác nhận phải chứa ít nhất {{lengthNum}} ký tự",
@@ -763,5 +768,4 @@
   "take_exam_question_navigation_title": "Chuyển hướng đến câu hỏi",
   "take_exam_question_name": "Câu hỏi",
   "take_exam_question_sort_question": "Lọc câu hỏi"
-
 }

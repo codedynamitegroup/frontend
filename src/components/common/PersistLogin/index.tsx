@@ -84,7 +84,8 @@ const PersistLogin = () => {
             // if status Please authenticate
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
-            console.error("Failed to get token", {
+            localStorage.removeItem("provider");
+            console.error("Failed to get refresh token", {
               code: error.response?.code || 503,
               status: error.response?.status || "Service Unavailable",
               message: error.response?.message || error.message

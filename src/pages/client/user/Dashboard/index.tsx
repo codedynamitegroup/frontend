@@ -26,6 +26,9 @@ import { CertificateCourseService } from "services/coreService/CertificateCourse
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
+import { User } from "models/authService/entity/user";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "reduxes/Auth";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -37,6 +40,7 @@ interface CourseCertificate {
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const user: User = useSelector(selectCurrentUser);
 
   const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
     CertificateCourseEntity[]
@@ -45,33 +49,6 @@ export default function UserDashboard() {
   const [unregisteredCertificateCourses, setUnregisteredCertificateCourses] = React.useState<
     CertificateCourseEntity[]
   >([]);
-
-  const courses = [
-    {
-      id: 1,
-      name: "Học Python",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/cf55489ccd434e8c81c61e6fffc9433f.jpg",
-      process: 38,
-      currentLesson: "Sử dụng vòng lặp"
-    },
-    {
-      id: 2,
-      name: "Học C++",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/37a8e25c3ada4cb0bc3b0b32a36881fe.jpg",
-      process: 10,
-      currentLesson: "Câu điều kiện"
-    },
-    {
-      id: 3,
-      name: "Học Java",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/00e74493b80d4dcfadf2e1a59af577e7.jpg",
-      process: 1,
-      currentLesson: "Đọc ghi file"
-    }
-  ];
 
   const courseCertificatesBasic: CourseCertificate[] = [
     {
@@ -158,7 +135,9 @@ export default function UserDashboard() {
         <Grid container className={classes.sectionContentImage}>
           <Grid item sm={12} md={7} className={classes.sectionContent}>
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
-              <Heading2>{t("dashboard_continue_title")}</Heading2>
+              <Heading2>
+                {t("dashboard_continue_title")}, {user?.firstName}
+              </Heading2>
               <Box className={classes.courseLearningList}>
                 {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
                   <Grid className={classes.courseLearningItem} key={index}>

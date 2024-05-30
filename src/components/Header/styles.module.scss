@@ -46,7 +46,8 @@
       height: 100%;
       object-fit: cover;
       margin-top: 5px;
-      filter: invert(39%) sepia(91%) saturate(432%) hue-rotate(173deg) brightness(86%) contrast(79%);
+      filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%)
+        contrast(101%);
     }
     cursor: pointer;
   }
@@ -77,5 +78,5 @@
   }
 }
 .isActive {
-  color: var(--blue-500) !important;
+  color: #060071 !important;
 }

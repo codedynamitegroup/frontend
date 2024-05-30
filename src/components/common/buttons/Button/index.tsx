@@ -19,6 +19,7 @@ interface ButtonProps extends ButtonPropsMUI {
   nowrap?: boolean;
   borderRadius?: string;
   margin?: string;
+  isTypeSubmit?: boolean;
 }
 
 const Button = memo((props: ButtonProps) => {
@@ -32,6 +33,7 @@ const Button = memo((props: ButtonProps) => {
     children,
     nowrap,
     borderRadius,
+    isTypeSubmit,
     sx = {},
     ...rest
   } = props;
@@ -47,7 +49,7 @@ const Button = memo((props: ButtonProps) => {
         },
         className
       )}
-      type='button'
+      type={isTypeSubmit ? "submit" : "button"}
       {...rest}
       sx={{
         ...sx,

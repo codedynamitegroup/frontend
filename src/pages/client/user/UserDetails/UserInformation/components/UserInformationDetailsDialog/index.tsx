@@ -1,7 +1,6 @@
 import { Avatar, DialogProps, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
-import CustomDatePicker from "components/common/datetime/CustomDatePicker";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
@@ -10,20 +9,27 @@ import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import images from "config/images";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
+import { User } from "models/authService/entity/user";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "reduxes/Auth";
+import { format, parse } from "date-fns";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+interface IFormDataUpdateProfileUser {
+  firstName: string;
+  lastName: string;
+  dob?: string;
+  phone?: string;
+}
 
 interface UserInformationDetailsDialogProps extends DialogProps {
-  initialData: {
-    id: string;
-    name: string;
-    gender: string;
-    email: string;
-    dob: string;
-    is_linked_with_google: boolean;
-    is_linked_with_microsoft: boolean;
-  };
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
@@ -35,7 +41,6 @@ interface UserInformationDetailsDialogProps extends DialogProps {
 }
 
 const UserInformationDetailsDialog = ({
-  initialData,
   open,
   title,
   handleClose,
@@ -48,13 +53,56 @@ const UserInformationDetailsDialog = ({
   ...props
 }: UserInformationDetailsDialogProps) => {
   const { t } = useTranslation();
-  const [data, setData] = useState(initialData);
+  const user: User = useSelector(selectCurrentUser);
+  const [data, setData] = useState<User>(user);
 
-  const onHandleChangeGender = (value: string) => {
-    setData((pre) => ({
-      ...pre,
-      gender: value
-    }));
+  // const onHandleChangeGender = (value: string) => {
+  //   setData((pre) => ({
+  //     ...pre,
+  //     gender: value
+  //   }));
+  // };
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      firstName: yup.string().required(t("first_name_required")),
+      // .matches(
+      //   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+      //   t("email_invalid")
+      // ),
+      lastName: yup.string().required(t("last_name_required")),
+      dob: yup.string(),
+      phone: yup.string().matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
+    });
+  }, [t]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors }
+  } = useForm<IFormDataUpdateProfileUser>({
+    resolver: yupResolver(schema)
+  });
+
+  useEffect(() => {
+    if (user) {
+      setData(user);
+      reset({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        dob: format(user.dob, "dd-MM-yyyy")
+      });
+    }
+  }, [user]);
+
+  const handleUpdateProfileUser = (data: IFormDataUpdateProfileUser) => {
+    if (data.dob) {
+      const dob: Date = parse(data.dob, "dd-MM-yyyy", new Date());
+      console.log(dob);
+    }
+    console.log(data);
   };
 
   return (
@@ -64,38 +112,73 @@ const UserInformationDetailsDialog = ({
       title={title}
       cancelText={cancelText}
       confirmText={confirmText}
-      onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm}
+      actionsDisabled
       minWidth='1000px'
       {...props}
     >
-      <Box component='form' className={classes.formBody} autoComplete='off'>
+      <Box
+        component='form'
+        className={classes.formBody}
+        onSubmit={handleSubmit(handleUpdateProfileUser)}
+      >
         <InputTextField
           type='text'
-          title={t("common_fullname")}
-          value={data.name}
-          onChange={(e) => {
-            setData((pre) => ({ ...pre, name: e.target.value }));
-          }}
-          translation-key='common_fullname'
+          title={t("common_name")}
+          inputRef={register("firstName")}
+          translation-key='common_name'
+          errorMessage={errors?.firstName?.message}
+        />
+        <InputTextField
+          type='text'
+          title={t("last_name")}
+          inputRef={register("lastName")}
+          translation-key='last_name'
+          errorMessage={errors?.lastName?.message}
+        />
+        <InputTextField
+          type='text'
+          title={t("common_phone")}
+          inputRef={register("phone")}
+          translation-key='common_phone'
+          errorMessage={errors?.phone?.message}
         />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <CustomDatePicker
-              value={dayjs(data.dob, "DD/MM/YYYY")}
-              onHandleValueChange={(newValue) => {
-                setData((pre) => ({
-                  ...pre,
-                  dob: newValue?.format("DD/MM/YYYY") || ""
-                }));
+            <Controller
+              control={control}
+              name='dob'
+              render={({ field }) => {
+                return (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label={"Date"}
+                      value={dayjs(field.value, "DD/MM/YYYY")}
+                      inputRef={field.ref}
+                      onChange={(date) => {
+                        if (date?.isValid()) {
+                          field.onChange(format(date?.toDate(), "dd-MM-yyyy"));
+                        }
+                      }}
+                    />
+                  </LocalizationProvider>
+                );
               }}
             />
+            {/* <CustomDatePicker
+              value={dayjs(format(data?.dob, "dd-MM-yyyy"), "DD/MM/YYYY")}
+              onHandleValueChange={(newValue) => {
+                // setData((pre) => ({
+                //   ...pre,
+                //   dob: newValue?.format("DD/MM/YYYY") || ""
+                // }));
+              }}
+            /> */}
           </Grid>
         </Grid>
-        <Grid container spacing={1} columns={12}>
+        {/* <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle translation-key='common_sex'>{t("common_sex")}</TextTitle>
           </Grid>
@@ -117,28 +200,26 @@ const UserInformationDetailsDialog = ({
               translation-key={["common_female", "common_male"]}
             />
           </Grid>
-        </Grid>
+        </Grid> */}
         <InputTextField
           type='email'
           title='Email'
-          value={data.email}
+          readOnly
+          value={data?.email}
           onChange={(e) => {
             setData((pre) => ({ ...pre, email: e.target.value }));
           }}
         />
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
-            <TextTitle translation-key='common_password'>{t("common_password")}</TextTitle>
-          </Grid>
+          <Grid item xs={3}></Grid>
           <Grid item xs={9}>
             <Button
-              btnType={BtnType.Text}
-              onClick={() => {
-                onHanldeChangePassword && onHanldeChangePassword();
-              }}
-              translation-key='user_detail_change_password'
+              btnType={BtnType.Primary}
+              isTypeSubmit
+              fullWidth
+              translation-key='common_update'
             >
-              {t("user_detail_change_password")}
+              {t("common_update")}
             </Button>
           </Grid>
         </Grid>

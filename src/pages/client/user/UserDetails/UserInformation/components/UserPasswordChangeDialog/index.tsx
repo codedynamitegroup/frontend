@@ -3,10 +3,20 @@ import Box from "@mui/material/Box";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
 import TextTitle from "components/text/TextTitle";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import images from "config/images";
 import { useTranslation } from "react-i18next";
+import Button, { BtnType } from "components/common/buttons/Button";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+interface IFormDataUpdatePassword {
+  oldPassword: string;
+  newPassword: string;
+  renewPassword: string;
+}
 
 interface UserPasswordChangeDialogProps extends DialogProps {
   title?: string;
@@ -30,11 +40,46 @@ const UserPasswordChangeDialog = ({
   ...props
 }: UserPasswordChangeDialogProps) => {
   const { t } = useTranslation();
-  const [data, setData] = useState({
-    oldPassword: "",
-    newPassword: "",
-    reNewPassword: ""
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      oldPassword: yup
+        .string()
+        .required(t("password_old_required"))
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        ),
+      newPassword: yup
+        .string()
+        .required(t("password_required"))
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        ),
+      renewPassword: yup
+        .string()
+        .required(t("password_confirm_required"))
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        )
+        .oneOf([yup.ref("newPassword")], t("password_confirm_not_match"))
+    });
+  }, [t]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors }
+  } = useForm<IFormDataUpdatePassword>({
+    resolver: yupResolver(schema)
   });
+
+  const handleUpdatePassword = (data: IFormDataUpdatePassword) => {
+    console.log(data);
+  };
 
   return (
     <CustomDialog
@@ -43,12 +88,15 @@ const UserPasswordChangeDialog = ({
       title={title}
       cancelText={cancelText}
       confirmText={confirmText}
-      onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm}
+      actionsDisabled
       minWidth='600px'
       {...props}
     >
-      <Box component='form' className={classes.formBody} autoComplete='off'>
+      <Box
+        component='form'
+        className={classes.formBody}
+        onSubmit={handleSubmit(handleUpdatePassword)}
+      >
         <img
           src={images.changePasswordThumbnail}
           alt='password'
@@ -58,91 +106,35 @@ const UserPasswordChangeDialog = ({
             height: "200px"
           }}
         />
-        <Grid
-          container
-          spacing={1}
-          columns={12}
-          sx={{
-            display: "flex",
-            direction: "row",
-            alignItems: "center"
-          }}
-        >
-          <Grid item xs={3}>
-            <TextTitle translation-key='user_detail_old_password'>
-              {t("user_detail_old_password")}
-            </TextTitle>
-          </Grid>
+        <InputTextField
+          title={t("user_detail_old_password")}
+          type='password'
+          inputRef={register("oldPassword")}
+          errorMessage={errors?.oldPassword?.message}
+        />
+        <InputTextField
+          title={t("user_detail_new_password")}
+          type='password'
+          inputRef={register("newPassword")}
+          errorMessage={errors?.newPassword?.message}
+        />
+        <InputTextField
+          title={t("user_detail_re_enter_new_password")}
+          type='password'
+          inputRef={register("renewPassword")}
+          errorMessage={errors?.renewPassword?.message}
+        />
+        <Grid container spacing={1} columns={12}>
+          <Grid item xs={3}></Grid>
           <Grid item xs={9}>
-            <InputTextField
-              type='password'
-              value={data.oldPassword}
-              onChange={(e) => {
-                setData((pre) => ({
-                  ...pre,
-                  oldPassword: e.target.value
-                }));
-              }}
+            <Button
+              btnType={BtnType.Primary}
+              isTypeSubmit
               fullWidth
-            />
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={1}
-          columns={12}
-          sx={{
-            display: "flex",
-            direction: "row",
-            alignItems: "center"
-          }}
-        >
-          <Grid item xs={3}>
-            <TextTitle translation-key='user_detail_new_password'>
-              {t("user_detail_new_password")}
-            </TextTitle>
-          </Grid>
-          <Grid item xs={9}>
-            <InputTextField
-              type='password'
-              value={data.newPassword}
-              onChange={(e) => {
-                setData((pre) => ({
-                  ...pre,
-                  newPassword: e.target.value
-                }));
-              }}
-              fullWidth
-            />
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={1}
-          columns={12}
-          sx={{
-            display: "flex",
-            direction: "row",
-            alignItems: "center"
-          }}
-        >
-          <Grid item xs={3}>
-            <TextTitle translation-key='user_detail_re_enter_new_password'>
-              {t("user_detail_re_enter_new_password")}
-            </TextTitle>
-          </Grid>
-          <Grid item xs={9}>
-            <InputTextField
-              type='password'
-              value={data.reNewPassword}
-              onChange={(e) => {
-                setData((pre) => ({
-                  ...pre,
-                  reNewPassword: e.target.value
-                }));
-              }}
-              fullWidth
-            />
+              translation-key='user_detail_change_password'
+            >
+              {t("user_detail_change_password")}
+            </Button>
           </Grid>
         </Grid>
       </Box>
