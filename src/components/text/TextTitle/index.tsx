@@ -17,7 +17,7 @@ const TextTitle = styled(Typography)<TextTitleProps>`
   text-overflow: ${(props) => props.textOverflow || "clip"};
   font-size: ${(props) => props.fontSize || "16px"};
   font-weight: ${(props) => props.fontWeight || "600"};
-  font-family: "Inter";
+  font-family: "Montserrat";
   letter-spacing: 0.015em;
   line-height: normal;
   margin: ${(props) => props.margin || "0"};

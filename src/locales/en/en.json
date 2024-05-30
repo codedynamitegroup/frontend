@@ -171,6 +171,9 @@
   "common_num_of_participants": "Participants",
   "common_created_at": "Created at",
   "common_contest_management": "Contest Management",
+  "common_cancel_filter": "Cancel filter",
+  "common_apply_filter": "Apply filter",
+  "common_get_started": "Get started",
 
   "side_bar_dashboard": "Dashboard",
 

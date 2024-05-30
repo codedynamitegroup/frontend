@@ -40,6 +40,9 @@ const contestSlice = createSlice({
   name: "contest",
   initialState: initState,
   reducers: {
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     setContests: (state, action) => {
       state.contests.contests = action.payload.contests;
       state.contests.currentPage = action.payload.currentPage;
@@ -60,7 +63,12 @@ const contestSlice = createSlice({
   }
 });
 
-export const { setContests, setMostPopularContests, setContestDetails, setContestLeaderboard } =
-  contestSlice.actions;
+export const {
+  setLoading,
+  setContests,
+  setMostPopularContests,
+  setContestDetails,
+  setContestLeaderboard
+} = contestSlice.actions;
 
 export default contestSlice.reducer;

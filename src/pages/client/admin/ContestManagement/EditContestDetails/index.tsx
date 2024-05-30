@@ -1,4 +1,4 @@
-const ContestDetails = () => {
+const EditContestDetails = () => {
   return (
     <div>
       <h1>Contest Details</h1>
@@ -6,4 +6,4 @@ const ContestDetails = () => {
   );
 };
 
-export default ContestDetails;
+export default EditContestDetails;

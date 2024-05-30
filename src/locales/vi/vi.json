@@ -161,6 +161,9 @@
   "common_num_of_participants": "Số người tham gia",
   "common_created_at": "Ngày tạo",
   "common_contest_management": "Quản lý cuộc thi",
+  "common_cancel_filter": "Hủy bộ lọc",
+  "common_apply_filter": "Áp dụng bộ lọc",
+  "common_get_started": "Bắt đầu",
 
   "side_bar_dashboard": "Trang chủ",
 
