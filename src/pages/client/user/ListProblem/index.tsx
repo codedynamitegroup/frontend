@@ -145,6 +145,7 @@ const ListProblem = () => {
               </Grid>
               <Grid container xs={0.5}></Grid>
               <Grid item xs={9}>
+                <Heading1>Problem list</Heading1>
                 <Box className={classes.topic}>
                   <Box
                     sx={{

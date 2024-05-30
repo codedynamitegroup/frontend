@@ -23,6 +23,7 @@ import courseUser from "reduxes/courseService/courseUser";
 import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 import questionCreate from "reduxes/coreService/questionCreate/index";
+import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 
 const store = configureStore({
   reducer: {
@@ -47,6 +48,7 @@ const store = configureStore({
     questionBankCategory: questionBankCategory,
     detailCodeQuestion: detailCodeQuestion,
     courseUser: courseUser,
+    executeData: Execute,
     auth: auth,
     questionCreate: questionCreate,
     loading: loading
