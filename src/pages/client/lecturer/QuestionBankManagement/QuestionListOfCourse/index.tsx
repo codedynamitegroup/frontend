@@ -38,6 +38,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { QuestionService } from "services/coreService/QuestionService";
 import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
+import { index } from "d3";
+import dayjs from "dayjs";
 
 const rows = [
   {
@@ -56,15 +61,19 @@ const rows = [
   }
 ];
 const QuestionListOfCourse = () => {
-  const [searchText, setSearchText] = useState("");
   const dispath = useDispatch<AppDispatch>();
-  const questionState = useSelector((state: RootState) => state.question);
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+  const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
+  const { categoryId } = useParams();
+  const [searchText, setSearchText] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
 
   const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
   };
+
+  const [questionList, setQuestionList] = useState<QuestionEntity[]>([]);
 
   const handleGetQuestions = async (
     categoryId: string,
@@ -85,28 +94,42 @@ const QuestionListOfCourse = () => {
         pageSize
       });
       dispath(setQuestionsCategory(getQuestionResponse));
-      console.log(getQuestionResponse);
+      if (getQuestionResponse && getQuestionResponse.questionResponses) {
+        setQuestionList(getQuestionResponse.questionResponses);
+      } else {
+        console.log("No questionResponses in the response");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleGetCategory = async (categoryId: string) => {
+    try {
+      const getCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategoryById(categoryId);
+      dispath(setCategoryDetails(getCategoryResponse));
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    console.log("fetching data" + questionState.questions);
-    const fetchInitialQuestions = async () => {
-      await handleGetQuestions("e6354740-c3f5-4f76-be0b-ea8bb16aa51e", { search: searchText });
+    const fetchInitialCategory = async () => {
+      await handleGetCategory(categoryId || "");
+      await handleGetQuestions(categoryId || "", { search: searchText });
     };
-    fetchInitialQuestions();
-  }, [searchText]);
 
+    fetchInitialCategory();
+  }, [searchText, page, rowsPerPage]);
 
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: false,
-    data: rows,
-    total: 0,
-    page: 1,
-    pageSize: 5
+    data: questionCategoryState.questions,
+    total: questionCategoryState.totalItems,
+    page: page,
+    pageSize: rowsPerPage
   });
   const columnsProps: GridColDef[] = [
     {
@@ -125,7 +148,7 @@ const QuestionListOfCourse = () => {
       flex: 3,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
-        return <ParagraphBody>{params.row.questionName}</ParagraphBody>;
+        return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
@@ -134,8 +157,10 @@ const QuestionListOfCourse = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.createdAtBy.name}</ParagraphBody>
-          <div>{params.row.createdAtBy.time}</div>
+          <ParagraphBody>
+            {params.row.createdBy.firstName} {params.row.createdBy.lastName}
+          </ParagraphBody>
+          <div>{dayjs(params.row.createdAt).format("DD/MM/YYYY")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -146,8 +171,10 @@ const QuestionListOfCourse = () => {
       flex: 3,
       renderCell: (params) => (
         <div>
-          <ParagraphBody>{params.row.updatedAtBy.name}</ParagraphBody>
-          <div>{params.row.updatedAtBy.time}</div>
+          <ParagraphBody>
+            {params.row.updatedBy.firstName} {params.row.updatedBy.lastName}
+          </ParagraphBody>
+          <div>{dayjs(params.row.updatedAt).format("DD/MM/YYYY")}</div>
         </div>
       ),
       headerClassName: classes["table-head"]
@@ -219,9 +246,9 @@ const QuestionListOfCourse = () => {
   }) as Array<String>;
   const columns = addHeaderNameByLanguage(columnsProps, headerName);
 
-  useEffect(() => {
-    //fetch data
-  }, [pageState.page, pageState.pageSize]);
+  // useEffect(() => {
+  //   //fetch data
+  // }, [pageState.page, pageState.pageSize]);
 
   const navigate = useNavigate();
 
@@ -248,13 +275,18 @@ const QuestionListOfCourse = () => {
   const [initialized, setInitialized] = useState(true);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
 
-  useEffect(() => {
-    if (initialized) {
-      setInitialized(false);
-    } else {
-      navigate("/lecturer/question-bank-management");
-    }
-  }, [value]);
+  // useEffect(() => {
+  //   if (initialized) {
+  //     handleGetQuestions(categoryId || "", { search: searchText });
+  //     handleGetCategory(categoryId || "");
+  //     console.log(categoryState.categoryDetails);
+  //     console.log(questionCategoryState.questions);
+  //     console.log("hihihaha");
+  //     setInitialized(false);
+  //   } else {
+  //     navigate("/lecturer/question-bank-management");
+  //   }
+  // }, [value]);
   return (
     <div>
       <PickQuestionTypeToAddDialog
@@ -286,19 +318,20 @@ const QuestionListOfCourse = () => {
               {i18next.format(t("common_question_bank"), "firstUppercase")}
             </span>{" "}
             {"> "}
-            <span onClick={() => navigate(".")}>Học thuật toán</span>
+            <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
           </ParagraphBody>
         </Box>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={500}>Học thuật toán</Heading1>
+            <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
             <Heading5
               fontStyle={"italic"}
               fontWeight={"400"}
               colorname='--gray-50'
               translation-key='question_bank_create_category_info'
             >
-              {t("question_bank_create_category_info")}: các bài tập về OOP
+              {t("question_bank_create_category_info")}:{" "}
+              {categoryState.categoryDetails?.description}
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary}>

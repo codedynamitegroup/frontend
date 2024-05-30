@@ -18,14 +18,14 @@ const initialState: InitialState = {
 };
 
 const questionSlice = createSlice({
-  name: "question",
+  name: "questionResponses",
   initialState: initialState,
   reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload.isLoading;
     },
     setQuestionsCategory: (state, action) => {
-      state.questions = action.payload.questions;
+      state.questions = action.payload.questionResponses;
       state.currentPage = action.payload.currentPage;
       state.totalItems = action.payload.totalItems;
       state.totalPages = action.payload.totalPages;
