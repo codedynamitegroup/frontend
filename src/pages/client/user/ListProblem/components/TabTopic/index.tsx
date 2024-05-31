@@ -59,7 +59,6 @@ export default function LabTabs() {
         <TabPanel value='0' className={classes.tabPanel}>
           <Stack spacing={spacingInTabPanel}>
             <RecommendedProblem />
-            <ProblemTable />
           </Stack>
         </TabPanel>
         <TabPanel value='1' className={classes.tabPanel}>

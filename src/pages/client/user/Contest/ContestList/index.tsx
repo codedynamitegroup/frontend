@@ -59,15 +59,6 @@ const ContestList = () => {
           : ContestStartTimeFilterEnum.ALL;
   }, [contestListButtonGroup]);
 
-  const searchHandle = useCallback((searchText: string) => {
-    handleGetContests({
-      searchName: searchText,
-      startTimeFilter,
-      pageNo: pageNo - 1,
-      pageSize
-    });
-  }, []);
-
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     navigate({
       pathname: routes.user.contest.root,
@@ -86,36 +77,39 @@ const ContestList = () => {
 
   const { t } = useTranslation();
 
-  const handleGetContests = async ({
-    searchName = "",
-    startTimeFilter = ContestStartTimeFilterEnum.ALL,
-    pageNo = 0,
-    pageSize = 10
-  }: {
-    searchName?: string;
-    startTimeFilter?: ContestStartTimeFilterEnum;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    try {
-      const getContestsResponse = await ContestService.getContests({
-        searchName: searchName,
-        startTimeFilter: startTimeFilter,
-        pageNo: pageNo,
-        pageSize: pageSize
-      });
-      dispatch(setContests(getContestsResponse));
-    } catch (error: any) {
-      console.error("Failed to fetch contests", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-    }
-  };
+  const handleGetContests = useCallback(
+    async ({
+      searchName = "",
+      startTimeFilter = ContestStartTimeFilterEnum.ALL,
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      searchName?: string;
+      startTimeFilter?: ContestStartTimeFilterEnum;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      try {
+        const getContestsResponse = await ContestService.getContests({
+          searchName: searchName,
+          startTimeFilter: startTimeFilter,
+          pageNo: pageNo,
+          pageSize: pageSize
+        });
+        dispatch(setContests(getContestsResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch contests", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        // Show snackbar here
+      }
+    },
+    [dispatch]
+  );
 
-  const handleGetMostPopularContests = async () => {
+  const handleGetMostPopularContests = useCallback(async () => {
     try {
       const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
       dispatch(setMostPopularContests(getMostPopularContestsResponse));
@@ -127,7 +121,19 @@ const ContestList = () => {
       });
       // Show snackbar here
     }
-  };
+  }, [dispatch]);
+
+  const searchHandle = useCallback(
+    (searchText: string) => {
+      handleGetContests({
+        searchName: searchText,
+        startTimeFilter,
+        pageNo: pageNo - 1,
+        pageSize
+      });
+    },
+    [handleGetContests, startTimeFilter, pageNo, pageSize]
+  );
 
   useEffect(() => {
     handleGetMostPopularContests();

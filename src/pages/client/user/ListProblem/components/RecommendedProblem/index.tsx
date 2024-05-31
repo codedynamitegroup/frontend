@@ -32,11 +32,6 @@ const RecommendedProblem = () => {
       title: "Phân số tối giản",
       level: 2,
       numberStudiedPeople: 100
-    },
-    {
-      title: "Tìm phần tử lớn nhất trong mảng",
-      level: 3,
-      numberStudiedPeople: 100
     }
   ];
   return (

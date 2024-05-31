@@ -46,6 +46,7 @@
       height: 100%;
       object-fit: cover;
       margin-top: 5px;
+      filter: invert(39%) sepia(91%) saturate(432%) hue-rotate(173deg) brightness(86%) contrast(79%);
     }
     cursor: pointer;
   }
@@ -75,6 +76,6 @@
     }
   }
 }
-.actice {
-  border-bottom: 3px solid;
+.isActive {
+  color: var(--blue-500) !important;
 }

@@ -25,6 +25,7 @@ import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import moment, { Moment } from "moment";
 
 const drawerWidth = 450;
 
@@ -97,9 +98,9 @@ export default function AssignmentCreated() {
   const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận", "Nộp tệp"]);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
   const [assignmentAllowSubmissionFromDate, setAssignmentAllowSubmissionFromDate] =
-    React.useState<Dayjs | null>(dayjs());
+    React.useState<Moment | null>(moment());
   const [assignmentSubmissionDueDate, setAssignmentSubmissionDueDate] =
-    React.useState<Dayjs | null>(dayjs());
+    React.useState<Moment | null>(moment());
   const [assignmentSection, setAssignmentSection] = React.useState("0");
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");

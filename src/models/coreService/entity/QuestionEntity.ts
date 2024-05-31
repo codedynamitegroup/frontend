@@ -17,9 +17,33 @@ export interface QuestionEntity {
   updatedBy: UserEntity;
   qtype: QuestionTypeEnum;
   answers: AnswerOfQuestion[];
-  failureMessages: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface GetOrganization {
+  id: string;
+  name: string;
+}
+interface GetUser {
+  userId: string;
+  firstName: string;
+  lastName: string;
+}
+interface GetQuestion {
+  id: string;
+  organization: GetOrganization;
+  difficulty: string;
+  name: string;
+  questionText: string;
+  generalFeedback: string;
+  defaultMark: number;
+  createdBy: GetUser;
+  updatedBy: GetUser;
+  qtype: string;
+  answers?: AnswerOfQuestion[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface PostAnswer {
@@ -92,8 +116,21 @@ export interface PostMultipleChoiceQuestion {
   showStandardInstructions?: string;
 }
 
-export enum MultichocieNumbering {
+export enum MultichoiceNumbering {
   abc = 1,
   ABC = 2,
   n123 = 3
+}
+
+export interface MultiChoiceQuestion {
+  id: string;
+  single: boolean;
+  question: GetQuestion;
+  shuffleAnswers?: boolean | null | undefined;
+  correctFeedback?: string | null | undefined;
+  partiallyCorrectFeedback?: string | null | undefined;
+  incorrectFeedback?: string | null | undefined;
+  answerNumbering?: string | null | undefined;
+  showNumCorrect?: number | null | undefined;
+  showStandardInstructions?: string | null | undefined;
 }

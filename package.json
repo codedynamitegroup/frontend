@@ -47,6 +47,7 @@
     "@wojtekmaj/react-hooks": "^1.19.0",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

@@ -25,6 +25,7 @@
   background-color: white !important;
 }
 .table-head {
+  background-color: #f7f8fa;
   p {
     color: var(--gray-80);
   }
@@ -37,12 +38,12 @@
   }
 }
 .row {
-  cursor: pointer;
+  // cursor: pointer;
 }
 
 .row1 {
-  cursor: pointer;
-  background-color: #f7f8fa;
+  // cursor: pointer;
+  background-color: var(--gray-2);
 }
 .tableCell {
   &:hover {
