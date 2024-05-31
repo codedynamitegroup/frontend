@@ -165,6 +165,7 @@
   "common_get_started": "Bắt đầu",
   "common_enter_answer": "Nhập câu trả lời",
   "common_remove_flag": "Huỷ gắn cờ",
+  "common_start": "Bắt đầu",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -288,6 +289,8 @@
   "dashboard_current_lesson": "Bài học hiện tại",
   "dashboard_participant_num": "Đang có {{participantNum}} người tham gia",
   "dashboard_contest_end": "Cuộc thi sẽ kết thúc vào ngày",
+  "dashboard_this_certificate_course_has_no_lesson": "Khóa học này hiện chưa có bài học nào",
+  "dashboard_no_ongoing_course": "Không có khóa học nào đang diễn ra. Hãy bắt đầu học ngay",
 
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",

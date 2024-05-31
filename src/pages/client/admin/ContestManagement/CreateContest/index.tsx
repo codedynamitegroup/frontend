@@ -6,7 +6,7 @@ import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import moment, { Moment } from "moment";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import ParagraphSmall from "components/text/ParagraphSmall";
@@ -17,6 +17,8 @@ import { ContestService } from "services/coreService/ContestService";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { convertLocalMomentToUTCMoment } from "utils/moment";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const CreateContest = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -30,6 +32,81 @@ const CreateContest = () => {
   const [contestStartTime, setContestStartTime] = useState<Moment>(moment().utc());
   const [contestEndTime, setContestEndTime] = useState<Moment>(moment().utc().add(1, "hour"));
   const [isNoEndTime, setIsNoEndTime] = useState<boolean>(false);
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      name: yup.string().required(t("contest_name_required")).trim(),
+      description: yup.string().required(t("contest_description_required")).trim(),
+      thumbnailUrl: yup.string().required(t("contest_thumbnail_required")).trim(),
+      startTime: yup.date().required(t("contest_start_time_required")),
+      endTime: yup
+        .date()
+        .test("is-end-time-greater-than-start-time", t("contest_end_time_invalid"), (value) => {
+          // Check if isNoEndTime is true, then return true
+          if (isNoEndTime) {
+            return true;
+          }
+          if (value && contestStartTime) {
+            return moment(value).isAfter(contestStartTime);
+          }
+          return true;
+        })
+      // questionName: yup.string().required(t("question_name_required")).trim(),
+      // questionDescription: yup
+      //   .string()
+      //   .required(t("question_description_required"))
+      //   .trim("")
+      //   .test("isQuillEmpty", t("question_description_required"), (value) => !isQuillEmpty(value)),
+      // defaultScore: yup
+      //   .string()
+      //   .required(t("question_default_score_required"))
+      //   .test(
+      //     "is-decimal",
+      //     "Invalid number, default score must be a number greater than or equal 0",
+      //     (value) => isValidDecimal(value)
+      //   )
+      //   .transform((value) => value.replace(",", ".")),
+      // generalDescription: yup.string().trim(""),
+
+      // responseFormat: yup.string().required(t("response_format_required")),
+      // responseRequired: yup.string().required(t("response_required")),
+      // responseFieldLines: yup.string().required(t("response_field_lines_required")),
+      // attachments: yup.string().required(t("attachments_required")),
+      // attachmentsRequired: yup.string().required(t("attachments_required")),
+      // graderInfo: yup.string(),
+      // graderInfoFormat: yup.number(),
+      // responseTemplate: yup.string(),
+      // responseTemplateFormat: yup.number(),
+      // fileTypesList: yup.array().when("attachments", ([attachments], schema) => {
+      //   return Number(attachments) !== 0
+      //     ? schema.required(t("file_types_required"))
+      //     : schema.notRequired();
+      // }),
+      // minWord: yup
+      //   .number()
+      //   .required(t("min_word_required"))
+      //   .typeError(t("invalid_type", { name: t("essay_min_word"), type: t("type_number") }))
+      //   .min(-1, t("min_word_invalid"))
+      //   .integer(t("min_word_invalid")),
+      // maxWord: yup
+      //   .number()
+      //   .required(t("max_word_required"))
+      //   .typeError(t("invalid_type", { name: t("essay_max_word"), type: t("type_number") }))
+      //   .min(-1, t("max_word_invalid"))
+      //   .integer(t("max_word_invalid")),
+      // maxBytes: yup
+      //   .string()
+      //   .required(t("max_bytes_required"))
+      //   .typeError(
+      //     t("invalid_type", {
+      //       name: t("question_management_default_score"),
+      //       type: t("type_number")
+      //     })
+      //   )
+    });
+  }, [t]);
+
+  // TODO: Apply React Hook Form with yup validation
 
   const handleCreateContest = useCallback(
     async ({ name, description, thumbnailUrl, startTime, endTime }: CreateContestCommand) => {

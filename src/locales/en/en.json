@@ -175,6 +175,7 @@
   "common_get_started": "Get started",
   "common_enter_answer": "Enter answer",
   "common_remove_flag": "Remove flag",
+  "common_start": "Start",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -288,6 +289,8 @@
   "dashboard_current_lesson": "Current lesson",
   "dashboard_participant_num": "There are {{participantNum}} have joined",
   "dashboard_contest_end": "Contest will end on",
+  "dashboard_this_certificate_course_has_no_lesson": "This course has no lesson yet",
+  "dashboard_no_ongoing_course": "There aren't any ongoing courses. Let's start learning now",
 
   "register_have_account": "Have an account ? Login",
   "register_login_alternative": "Or login with",
