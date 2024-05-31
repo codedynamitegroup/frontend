@@ -23,6 +23,7 @@ import courseUser from "reduxes/courseService/courseUser";
 import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 import questionCreate from "reduxes/coreService/questionCreate/index";
+import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 
 const store = configureStore({
@@ -51,6 +52,7 @@ const store = configureStore({
     executeData: Execute,
     auth: auth,
     questionCreate: questionCreate,
+    questionCategory: questionCategory,
     loading: loading
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)

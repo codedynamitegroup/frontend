@@ -26,7 +26,7 @@ import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuestionBankCategories } from "reduxes/courseService/questionBankCategory";
+import { setCategories } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
@@ -55,7 +55,7 @@ const QuestionBankManagement = () => {
           pageNo,
           pageSize
         });
-      dispath(setQuestionBankCategories(getQuestionBankCategoryResponse));
+      dispath(setCategories(getQuestionBankCategoryResponse));
     } catch (error) {
       console.log(error);
     }
@@ -121,9 +121,9 @@ const QuestionBankManagement = () => {
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
     isLoading: questionBankCategoriesState.isLoading,
-    data: questionBankCategoriesState.questionBankCategories,
-    total: questionBankCategoriesState.totalItems,
-    page: questionBankCategoriesState.currentPage,
+    data: questionBankCategoriesState.categories.questionBankCategories,
+    total: questionBankCategoriesState.categories.totalItems,
+    page: questionBankCategoriesState.categories.currentPage,
     pageSize: rowsPerPage
   });
 
@@ -196,9 +196,10 @@ const QuestionBankManagement = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              const selectedCategory = questionBankCategoriesState.questionBankCategories.find(
-                (item) => item.id === id
-              );
+              const selectedCategory =
+                questionBankCategoriesState.categories.questionBankCategories.find(
+                  (item) => item.id === id
+                );
               if (selectedCategory) {
                 setSelectedRowData(selectedCategory);
                 setDataEdit(selectedCategory);
@@ -285,15 +286,17 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={questionBankCategoriesState.questionBankCategories.map((item, index) => ({
-                stt: index + 1,
-                ...item
-              }))}
-              rowCount={questionBankCategoriesState.totalItems}
+              rows={questionBankCategoriesState.categories.questionBankCategories.map(
+                (item, index) => ({
+                  stt: index + 1,
+                  ...item
+                })
+              )}
+              rowCount={questionBankCategoriesState.categories.totalItems}
               loading={questionBankCategoriesState.isLoading}
               paginationModel={{
-                page: questionBankCategoriesState.currentPage,
-                pageSize: questionBankCategoriesState.totalPages
+                page: questionBankCategoriesState.categories.currentPage,
+                pageSize: questionBankCategoriesState.categories.totalPages
               }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
@@ -348,17 +351,17 @@ const QuestionBankManagement = () => {
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
-              rows={questionBankCategoriesState.questionBankCategories.map(
+              rows={questionBankCategoriesState.categories.questionBankCategories.map(
                 (item: QuestionBankCategoryEntity, index: number) => ({
                   stt: index + 1,
                   ...item
                 })
               )}
-              rowCount={questionBankCategoriesState.totalItems}
+              rowCount={questionBankCategoriesState.categories.totalItems}
               loading={questionBankCategoriesState.isLoading}
               paginationModel={{
-                page: questionBankCategoriesState.currentPage,
-                pageSize: questionBankCategoriesState.totalPages
+                page: questionBankCategoriesState.categories.currentPage,
+                pageSize: questionBankCategoriesState.categories.totalPages
               }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
