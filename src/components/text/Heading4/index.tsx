@@ -6,6 +6,7 @@ interface Props {
   $lineHeightMobile?: string;
   fontWeight?: number | string;
   fontStyle?: string;
+  textWrap?: string;
 }
 
 const Heading4 = styled(Typography)<Props>`
@@ -14,6 +15,7 @@ const Heading4 = styled(Typography)<Props>`
   font-weight: ${(props) => props.fontWeight || 600};
   font-size: 18px;
   line-height: 24px;
+  text-wrap: ${(props) => props.textWrap || "wrap"};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
   @media only screen and (max-width: 767px) {
     font-size: ${(props) => props.fontSizeMobile || "14px"};

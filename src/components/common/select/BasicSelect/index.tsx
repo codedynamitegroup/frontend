@@ -6,8 +6,7 @@ import {
   MenuItem,
   Select,
   Autocomplete,
-  TextField,
-  Box
+  TextField
 } from "@mui/material";
 import clsx from "clsx";
 import classes from "./styles.module.scss";
@@ -29,6 +28,7 @@ interface BasicSelectProps extends DefaultComponentProps<FormControlTypeMap<{}, 
   readOnly?: boolean;
   backgroundColor?: string;
   searchAble?: boolean;
+  width?: string;
 }
 
 const BasicSelect = ({
@@ -41,12 +41,13 @@ const BasicSelect = ({
   disabled,
   readOnly,
   backgroundColor,
+  width,
   ...props
 }: BasicSelectProps) => {
   var defaultValue: ItemProps | null = null;
   if (items) defaultValue = items[0];
   return (
-    <FormControl sx={{ minWidth: 120 }} fullWidth size='small' {...props}>
+    <FormControl sx={{ minWidth: 120, width: width || "100%" }} fullWidth size='small' {...props}>
       <InputLabel id={labelId}>{label || ""}</InputLabel>
       {searchAble ? (
         <Autocomplete

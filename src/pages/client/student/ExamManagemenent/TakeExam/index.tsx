@@ -7,13 +7,13 @@ import {
   Autocomplete,
   Box,
   CssBaseline,
+  Divider,
   Drawer,
-  Fab,
   Grid,
   Pagination,
   TextField
 } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
@@ -28,7 +28,6 @@ import EssayExamQuestion from "./components/ExamQuestion/EssayExamQuestion";
 import MultipleChoiceExamQuestion from "./components/ExamQuestion/MultipleChoiceExamQuestion";
 import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQuestion";
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
-import TimeLeftTextField from "./components/TimeLeftTextField";
 import classes from "./styles.module.scss";
 import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
@@ -37,6 +36,8 @@ import IconButton from "@mui/joy/IconButton";
 import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
 import Badge from "@mui/joy/Badge";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
+import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 
 const drawerWidth = 340;
 
@@ -71,35 +72,134 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open"
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: drawerWidth
-  })
-}));
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: (prop) => prop !== "open"
+// })<AppBarProps>(({ theme, open }) => ({
+//   transition: theme.transitions.create(["margin", "width"], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen
+//   }),
+//   ...(open && {
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     transition: theme.transitions.create(["margin", "width"], {
+//       easing: theme.transitions.easing.easeOut,
+//       duration: theme.transitions.duration.enteringScreen
+//     }),
+//     marginRight: drawerWidth
+//   })
+// }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-start"
-}));
+// const DrawerHeader = styled("div")(({ theme }) => ({
+//   display: "flex",
+//   alignItems: "center",
+//   padding: theme.spacing(0, 1),
+//   // necessary for content to be below app bar
+//   ...theme.mixins.toolbar,
+//   justifyContent: "flex-start"
+// }));
 
 interface FormData {
   response: { content: string }[];
 }
+
+const tempMultichoiceQuestion = {
+  question: {
+    id: "b6484e21-6937-489c-b031-b71767994735",
+    organization: {
+      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      name: "Code Dynamite"
+    },
+    difficulty: "HARD",
+    name: "Question haha",
+    questionText:
+      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
+    generalFeedback: "Question Good Job feedback",
+    defaultMark: 1.0,
+    createdBy: {
+      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      firstName: "Tuan",
+      lastName: "Nguyen"
+    },
+    updatedBy: {
+      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      firstName: "Tuan",
+      lastName: "Nguyen"
+    },
+    qtype: "MULTIPLE_CHOICE",
+    answers: [
+      {
+        id: "d215b5f8-0249-4dc5-89a3-51fd148cfe63",
+        questionId: "b6484e21-6937-489c-b031-b71767994735",
+        feedback: "Hihi",
+        answer: "multi 1",
+        fraction: 1.0
+      },
+      {
+        id: "d215b5f8-0249-4dc5-89a3-51fd148cff62",
+        questionId: "b6484e21-6937-489c-b031-b71767994735",
+        feedback: "huhu",
+        answer: "multi 2",
+        fraction: 1.0
+      },
+      {
+        id: "d215b5f8-0249-4dc5-89a3-51fd148cff20",
+        questionId: "b6484e21-6937-489c-b031-b71767994735",
+        feedback: "haha",
+        answer: "multi 3",
+        fraction: 1.0
+      }
+    ],
+    createdAt: "2024-05-30T09:48:04.079618Z",
+    updatedAt: "2024-05-30T09:48:04.079618Z"
+  },
+  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
+  single: true,
+  shuffleAnswers: true,
+  correctFeedback: "Correct",
+  partiallyCorrectFeedback: "Partially correct",
+  incorrectFeedback: "Incorrect",
+  answerNumbering: "none",
+  showNumCorrect: 3,
+  showStandardInstructions: "Show instruction 2"
+};
+const tempTrueFalseQuestion = {
+  question: {
+    id: "b6484e21-6937-489c-b031-b71767994735",
+    organization: {
+      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      name: "Code Dynamite"
+    },
+    difficulty: "HARD",
+    name: "Question haha",
+    questionText:
+      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
+    generalFeedback: "Question Good Job feedback",
+    defaultMark: 1.0,
+    createdBy: {
+      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      firstName: "Tuan",
+      lastName: "Nguyen"
+    },
+    updatedBy: {
+      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      firstName: "Tuan",
+      lastName: "Nguyen"
+    },
+    qtype: "SHORT_ANSWER",
+    answers: [],
+    createdAt: "2024-05-30T09:48:04.079618Z",
+    updatedAt: "2024-05-30T09:48:04.079618Z"
+  },
+  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
+  single: true,
+  shuffleAnswers: true,
+  correctFeedback: "Correct",
+  partiallyCorrectFeedback: "Partially correct",
+  incorrectFeedback: "Incorrect",
+  answerNumbering: "none",
+  showNumCorrect: 3,
+  showStandardInstructions: "Show instruction 2"
+};
 
 export default function TakeExam() {
   const { width } = useWindowDimensions();
@@ -386,6 +486,7 @@ export default function TakeExam() {
         <Header ref={headerRef} />
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
           <CssBaseline />
+
           {/* <AppBar
             position='fixed'
             sx={{
@@ -535,7 +636,7 @@ export default function TakeExam() {
                 padding: "20px"
               }}
             >
-              <Grid container spacing={10}>
+              <Grid container spacing={7}>
                 <Grid item xs={12}>
                   {questions[questionPageIndex].type === qtype.essay ? (
                     <EssayExamQuestion
@@ -549,42 +650,15 @@ export default function TakeExam() {
                   ) : questions[questionPageIndex].type === qtype.short_answer ? (
                     <ShortAnswerExamQuestion page={questionPageIndex} />
                   ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion page={questionPageIndex} />
+                    <MultipleChoiceExamQuestion
+                      page={questionPageIndex}
+                      questionMultiChoice={tempMultichoiceQuestion}
+                    />
                   ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion page={questionPageIndex} />
-                  ) : null}
-                </Grid>
-                <Grid item xs={12}>
-                  {questions[questionPageIndex].type === qtype.essay ? (
-                    <EssayExamQuestion page={questionPageIndex} isFlagged />
-                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                    <ShortAnswerExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion page={questionPageIndex} />
-                  ) : null}
-                </Grid>
-                <Grid item xs={12}>
-                  {questions[questionPageIndex].type === qtype.essay ? (
-                    <EssayExamQuestion page={questionPageIndex} isFlagged />
-                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                    <ShortAnswerExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion page={questionPageIndex} />
-                  ) : null}
-                </Grid>
-                <Grid item xs={12}>
-                  {questions[questionPageIndex].type === qtype.essay ? (
-                    <EssayExamQuestion page={questionPageIndex} isFlagged />
-                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                    <ShortAnswerExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion page={questionPageIndex} />
+                    <TrueFalseExamQuestion
+                      page={questionPageIndex}
+                      questionTrueFalseQuestion={tempTrueFalseQuestion}
+                    />
                   ) : null}
                 </Grid>
               </Grid>
@@ -633,8 +707,10 @@ export default function TakeExam() {
               width: drawerWidth,
               flexShrink: 0,
               "& .MuiDrawer-paper": {
+                borderTop: "1px solid #E1E1E1",
+                borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight}px`
+                top: `${headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}
@@ -715,9 +791,12 @@ export default function TakeExam() {
                             color='neutral'
                             variant='outlined'
                             badgeContent={
-                              question.type.code === qtype.essay.code ||
-                              question.type.code === qtype.short_answer.code ? (
+                              question.type.code === qtype.essay.code ? (
                                 <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                              ) : question.type.code === qtype.short_answer.code ? (
+                                <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                              ) : question.type.code === qtype.true_false.code ? (
+                                <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
                               ) : (
                                 <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
                               )

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import images from "config/images";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -45,7 +46,12 @@ const AssignmentResource = ({
   };
 
   const onDetailClick = () => {
-    if (type === ResourceType.assignment) navigate(routes.lecturer.assignment.detail);
+    if (type === ResourceType.assignment)
+      navigate(
+        routes.lecturer.assignment.detail
+          .replace(":courseId", courseId ?? "")
+          .replace(":assignmentId", examId ?? "")
+      );
     else
       navigate(
         routes.lecturer.exam.detail
@@ -63,7 +69,18 @@ const AssignmentResource = ({
             setResourceExpansion(true);
           }}
         >
-          <ParagraphBody>{resourceTitle}</ParagraphBody>
+          <Box className={classes.titleContainer}>
+            <img
+              src={
+                type == ResourceType.assignment
+                  ? images.course.assignmentIcon
+                  : images.course.quizIcon
+              }
+              className={classes.imageResource}
+              alt='assignment'
+            />
+            <ParagraphBody>{resourceTitle}</ParagraphBody>
+          </Box>
           <ParagraphBody translation-key='course_assignment_deadline'>
             {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("hh:mm DD/MM/YYYY")}
           </ParagraphBody>

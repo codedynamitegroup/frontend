@@ -55,7 +55,8 @@ export const API = {
     COURSE: {
       DEFAULT: "/course/course",
       SECTION: "/course/section",
-      GET_USER_BY_COURSE_ID: "/course/course-user/:id/user"
+      GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
+      COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
     ASSIGNMENT: {
       DEFAULT: "/course/assignment",
@@ -70,7 +71,9 @@ export const API = {
       GET_BY_ID: "/course/submission-assignment/:id",
       CREATE: "/course/submission-assignment",
       UPDATE_BY_ID: "/course/submission-assignment/:id",
-      DELETE_BY_ID: "/course/submission-assignment/:id"
+      DELETE_BY_ID: "/course/submission-assignment/:id",
+      COUNT_TO_GRADE: "/course/submission-assignment/countToGrade",
+      COUNT_ALL: "/course/submission-assignment/countAll"
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",

@@ -133,7 +133,7 @@ const StudentCourseInformation = () => {
   console.log(typeof sectionState.sections);
 
   return (
-    <Grid container spacing={2} className={classes.gridContainer}>
+    <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
         <Card className={classes.courseImgCardContainer}>
           <CardMedia
@@ -150,7 +150,7 @@ const StudentCourseInformation = () => {
       <Grid item xs={12}>
         <Box margin={1} padding={0}>
           <Grid container className={classes.gridBodyContainer}>
-            <Grid item className={classes.topicWrapper} xs={8}>
+            <Grid item className={classes.topicWrapper} xs={12}>
               {sectionState.sections.map((topic, index) => {
                 const isOpen =
                   isTopicOpen[index] === undefined ? true : Boolean(isTopicOpen[index]);
@@ -190,7 +190,7 @@ const StudentCourseInformation = () => {
                 );
               })}
             </Grid>
-            <Grid item xs={0.5}></Grid>
+            {/* <Grid item xs={0.5}></Grid>
             <Grid item xs={3.5}>
               <Paper className={classes.eventContainer}>
                 <Typography
@@ -217,7 +217,7 @@ const StudentCourseInformation = () => {
                   ))}
                 </List>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       </Grid>
