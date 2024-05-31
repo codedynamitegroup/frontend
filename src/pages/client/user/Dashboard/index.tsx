@@ -131,7 +131,6 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return [];
     return registeredCertificateCourses.filter(
       (course) => (course?.numOfCompletedQuestions || 0) > 0
     );
