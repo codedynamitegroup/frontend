@@ -1,31 +1,17 @@
-import { Box, Stack, Grid, Container } from "@mui/material";
-
-import Typography from "@mui/joy/Typography";
-
+import { Box, Stack, Container } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState, useRef } from "react";
-
+import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  DataGrid,
-  GridColDef,
-  GridRowModesModel,
-  GridActionsCellItem,
-  GridEventListener
-} from "@mui/x-data-grid";
-import { Textarea } from "@mui/joy";
-
+import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
-import { red, grey } from "@mui/material/colors";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { red } from "@mui/material/colors";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import qtype from "utils/constant/Qtype";
@@ -40,97 +26,31 @@ import { QuestionService } from "services/coreService/QuestionService";
 import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
-import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
-import { index } from "d3";
 import dayjs from "dayjs";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 
-const rows = [
-  {
-    id: 1,
-    questionName: "Con trỏ là gì?",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
-    qtype: "Tự luận"
-  },
-  {
-    id: 2,
-    questionName: "Stack và Queue là gì?",
-    createdAtBy: { name: "Nguyễn Quốc Tuấn", time: "02/12/2023 10:30AM" },
-    updatedAtBy: { name: "Dương Chí Thông", time: "05/12/2023 10:30PM" },
-    qtype: "Tự luận"
-  }
-];
 const QuestionListOfCourse = () => {
-  const dispath = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
   const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
+  const navigate = useNavigate();
   const { categoryId } = useParams();
-  const [searchText, setSearchText] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const searchHandle = async (searchText: string) => {
-    setSearchText(searchText);
-  };
-
-  const [questionList, setQuestionList] = useState<QuestionEntity[]>([]);
-
-  const handleGetQuestions = async (
-    categoryId: string,
-    {
-      search = searchText,
-      pageNo = page,
-      pageSize = rowsPerPage
-    }: {
-      search?: string;
-      pageNo?: number;
-      pageSize?: number;
-    }
-  ) => {
-    try {
-      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId(categoryId, {
-        search,
-        pageNo,
-        pageSize
-      });
-      dispath(setQuestionsCategory(getQuestionResponse));
-      if (getQuestionResponse && getQuestionResponse.questionResponses) {
-        setQuestionList(getQuestionResponse.questionResponses);
-      } else {
-        console.log("No questionResponses in the response");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleGetCategory = async (categoryId: string) => {
-    try {
-      const getCategoryResponse =
-        await QuestionBankCategoryService.getQuestionBankCategoryById(categoryId);
-      dispath(setCategoryDetails(getCategoryResponse));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchInitialCategory = async () => {
-      await handleGetCategory(categoryId || "");
-      await handleGetQuestions(categoryId || "", { search: searchText });
-    };
-
-    fetchInitialCategory();
-  }, [searchText, page, rowsPerPage]);
-
   const { t } = useTranslation();
+  const [searchText, setSearchText] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
+  const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
+  const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
+  const [openAccessDialog, setOpenAccessDialog] = useState(false);
   const [pageState, setPageState] = useState({
     isLoading: false,
     data: questionCategoryState.questions,
     total: questionCategoryState.totalItems,
-    page: page,
-    pageSize: rowsPerPage
+    page: 0,
+    pageSize: 5
   });
+
   const columnsProps: GridColDef[] = [
     {
       field: "stt",
@@ -246,17 +166,48 @@ const QuestionListOfCourse = () => {
   }) as Array<String>;
   const columns = addHeaderNameByLanguage(columnsProps, headerName);
 
-  // useEffect(() => {
-  //   //fetch data
-  // }, [pageState.page, pageState.pageSize]);
+  const handleSearch = async (searchText: string) => {
+    setSearchText(searchText);
+  };
 
-  const navigate = useNavigate();
+  const handleGetQuestions = async (
+    categoryId: string,
+    {
+      search = searchText,
+      pageNo = page,
+      pageSize = rowsPerPage
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) => {
+    try {
+      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId(categoryId, {
+        search,
+        pageNo,
+        pageSize
+      });
+      dispatch(setQuestionsCategory(getQuestionResponse));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleGetCategory = async (categoryId: string) => {
+    try {
+      const getCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategoryById(categoryId);
+      dispatch(setCategoryDetails(getCategoryResponse));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     console.log(params);
     // navigate(`${params.row.id}`);
   };
-  const urlParams = useParams();
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
     navigate(`create/${typeToCreateNewQuestion}`);
@@ -266,27 +217,56 @@ const QuestionListOfCourse = () => {
     navigate(`ai/create`);
   };
 
-  const [assignmentTypes, setAssignmentTypes] = useState(["Tự luận", "Nộp tệp"]);
+  useEffect(() => {
+    const fetchInitialCategory = async () => {
+      if (categoryId) {
+        await handleGetQuestions(categoryId, {
+          search: searchText,
+          pageNo: page,
+          pageSize: rowsPerPage
+        });
+        await handleGetCategory(categoryId);
+      }
+    };
+    fetchInitialCategory();
+  }, [categoryId, searchText, page, rowsPerPage]);
 
-  const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
-  const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
-  const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
-  const { value, setValue }: any = useOutletContext();
-  const [initialized, setInitialized] = useState(true);
-  const [openAccessDialog, setOpenAccessDialog] = useState(false);
+  useEffect(() => {
+    setRowsPerPage(pageState.pageSize);
+    setPage(pageState.page);
+    if (categoryId) {
+      handleGetQuestions(categoryId, { search: searchText, pageNo: page, pageSize: rowsPerPage });
+      handleGetCategory(categoryId);
+    }
+    setPageState((old) => ({
+      ...old,
+      data: questionCategoryState.questions,
+      total: questionCategoryState.totalItems
+    }));
+  }, [pageState.page, pageState.pageSize]);
 
-  // useEffect(() => {
-  //   if (initialized) {
-  //     handleGetQuestions(categoryId || "", { search: searchText });
-  //     handleGetCategory(categoryId || "");
-  //     console.log(categoryState.categoryDetails);
-  //     console.log(questionCategoryState.questions);
-  //     console.log("hihihaha");
-  //     setInitialized(false);
-  //   } else {
-  //     navigate("/lecturer/question-bank-management");
-  //   }
-  // }, [value]);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (categoryId) {
+        await handleGetQuestions(categoryId, {
+          search: searchText,
+          pageNo: page,
+          pageSize: rowsPerPage
+        });
+        await handleGetCategory(categoryId);
+      }
+      setPageState(() => ({
+        isLoading: false,
+        data: questionCategoryState.questions,
+        total: questionCategoryState.totalItems,
+        page: page,
+        pageSize: rowsPerPage
+      }));
+    };
+
+    fetchInitialData();
+  }, [categoryId, searchText]);
+
   return (
     <div>
       <PickQuestionTypeToAddDialog
@@ -356,7 +336,7 @@ const QuestionListOfCourse = () => {
             </Stack>
 
             <SearchBar
-              onSearchClick={() => null}
+              onSearchClick={handleSearch}
               translation-key='question_bank_category_question_list_enter_question_name'
               placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
             />
@@ -371,7 +351,24 @@ const QuestionListOfCourse = () => {
               loading={pageState.isLoading}
               paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
               onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                setPageState((old) => ({
+                  ...old,
+                  data: pageState.data.map((item, index) => ({
+                    stt: index + 1,
+                    qtypeText:
+                      item.qtype === QuestionTypeEnum.ESSAY
+                        ? "Câu hỏi tự luận"
+                        : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                          ? "Câu hỏi nhiều đáp án"
+                          : item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                            ? "Câu hỏi ngắn"
+                            : "Code",
+                    ...item
+                  })),
+                  total: pageState.total,
+                  page: model.page,
+                  pageSize: model.pageSize
+                }));
               }}
               columns={columns}
               pageSizeOptions={[5, 10, 30, 50]}
@@ -396,19 +393,20 @@ const QuestionListOfCourse = () => {
               {i18next.format(t("common_question_bank"), "firstUppercase")}
             </span>{" "}
             {"> "}
-            <span onClick={() => navigate(".")}>Học OOP</span>
+            <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
           </ParagraphBody>
         </Box>
         <Container>
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={500}>Học OOP</Heading1>
+            <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
             <Heading5
               fontStyle={"italic"}
               fontWeight={"400"}
               colorname='--gray-50'
               translation-key='question_bank_create_category_info'
             >
-              {t("question_bank_create_category_info")}: các bài tập về OOP
+              {t("question_bank_create_category_info")}:{" "}
+              {categoryState.categoryDetails?.description}
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               <Button btnType={BtnType.Primary}>
