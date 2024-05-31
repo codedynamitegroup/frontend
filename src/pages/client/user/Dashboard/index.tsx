@@ -26,15 +26,8 @@ import { CertificateCourseService } from "services/coreService/CertificateCourse
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
-import TextTitle from "components/text/TextTitle";
+import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 
-interface CourseCertificate {
-  imgUrl: string;
-  title: string;
-  description: string;
-  lesson: number;
-  level: string;
-}
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -43,63 +36,61 @@ export default function UserDashboard() {
     CertificateCourseEntity[]
   >([]);
 
-  const [unregisteredCertificateCourses, setUnregisteredCertificateCourses] = React.useState<
-    CertificateCourseEntity[]
-  >([]);
+  const [certificateCourses, setCertificateCourses] = React.useState<CertificateCourseEntity[]>([]);
 
-  const courses = [
-    {
-      id: 1,
-      name: "Học Python",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/cf55489ccd434e8c81c61e6fffc9433f.jpg",
-      process: 38,
-      currentLesson: "Sử dụng vòng lặp"
-    },
-    {
-      id: 2,
-      name: "Học C++",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/37a8e25c3ada4cb0bc3b0b32a36881fe.jpg",
-      process: 10,
-      currentLesson: "Câu điều kiện"
-    },
-    {
-      id: 3,
-      name: "Học Java",
-      image:
-        "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/00e74493b80d4dcfadf2e1a59af577e7.jpg",
-      process: 1,
-      currentLesson: "Đọc ghi file"
-    }
-  ];
+  // const courses = [
+  //   {
+  //     id: 1,
+  //     name: "Học Python",
+  //     image:
+  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/cf55489ccd434e8c81c61e6fffc9433f.jpg",
+  //     process: 38,
+  //     currentLesson: "Sử dụng vòng lặp"
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Học C++",
+  //     image:
+  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/37a8e25c3ada4cb0bc3b0b32a36881fe.jpg",
+  //     process: 10,
+  //     currentLesson: "Câu điều kiện"
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Học Java",
+  //     image:
+  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/00e74493b80d4dcfadf2e1a59af577e7.jpg",
+  //     process: 1,
+  //     currentLesson: "Đọc ghi file"
+  //   }
+  // ];
 
-  const courseCertificatesBasic: CourseCertificate[] = [
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-      title: "Học C++ cơ bản",
-      description:
-        "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-      lesson: 10,
-      level: t("common_easy")
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-      title: "Học Python cơ bản",
-      description:
-        "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-      lesson: 30,
-      level: t("common_easy")
-    },
-    {
-      imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-      title: "Học Go cơ bản",
-      description:
-        "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-      lesson: 35,
-      level: t("common_easy")
-    }
-  ];
+  // const courseCertificatesBasic: CourseCertificate[] = [
+  //   {
+  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
+  //     title: "Học C++ cơ bản",
+  //     description:
+  //       "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
+  //     lesson: 10,
+  //     level: t("common_easy")
+  //   },
+  //   {
+  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
+  //     title: "Học Python cơ bản",
+  //     description:
+  //       "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
+  //     lesson: 30,
+  //     level: t("common_easy")
+  //   },
+  //   {
+  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
+  //     title: "Học Go cơ bản",
+  //     description:
+  //       "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
+  //     lesson: 35,
+  //     level: t("common_easy")
+  //   }
+  // ];
 
   const handleGetCertificateCourses = async ({
     courseName,
@@ -131,10 +122,26 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return registeredCertificateCourses.filter(
-      (course) => (course?.numOfCompletedQuestions || 0) > 0
-    );
+    return registeredCertificateCourses
+      .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
+      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
+      .slice(0, 4);
   }, [registeredCertificateCourses]);
+
+  const otherCertificateCourses = useMemo(() => {
+    if (!certificateCourses) {
+      return [];
+    }
+    return certificateCourses
+      .filter(
+        (course) =>
+          !ongoingRegisteredCourses.find(
+            (ongoingCourse) => ongoingCourse.certificateCourseId === course.certificateCourseId
+          )
+      )
+      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
+      .slice(0, 3);
+  }, [certificateCourses, ongoingRegisteredCourses]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -147,15 +154,13 @@ export default function UserDashboard() {
         setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.certificateCourses);
       }
 
-      const getUnregisteredCertificateCoursesResponse = await handleGetCertificateCourses({
+      const getAllCertificateCoursesResponse = await handleGetCertificateCourses({
         courseName: "",
         filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.NOT_REGISTERED
+        isRegisteredFilter: IsRegisteredFilterEnum.ALL
       });
-      if (getUnregisteredCertificateCoursesResponse) {
-        setUnregisteredCertificateCourses(
-          getUnregisteredCertificateCoursesResponse.certificateCourses
-        );
+      if (getAllCertificateCoursesResponse) {
+        setCertificateCourses(getAllCertificateCoursesResponse.certificateCourses);
       }
     };
 
@@ -177,49 +182,54 @@ export default function UserDashboard() {
                     </ParagraphBody>
                   </Box>
                 ) : (
-                  ongoingRegisteredCourses
-                    .sort(
-                      (a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0)
-                    )
-                    .slice(0, 4)
-                    .map((course: CertificateCourseEntity, index) => (
-                      <Grid className={classes.courseLearningItem} key={index}>
-                        <Box className={classes.titleContainer}>
-                          <img
-                            src={course.topic.thumbnailUrl}
-                            alt='course'
-                            className={classes.imageCourse}
-                          />
-                          <Box className={classes.courseLearningItemContent}>
-                            <Heading3>{course.name}</Heading3>
-                            <Box className={classes.processBar} style={{ width: "100%" }}>
-                              <LinearProgress
-                                determinate
-                                value={calcCertificateCourseProgress(
-                                  course.numOfCompletedQuestions || 0,
-                                  course.numOfQuestions
-                                )}
-                              />
-                            </Box>
-                            {course.numOfQuestions ? (
-                              <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                                {t("dashboard_current_lesson")}:{" "}
-                                {course.currentQuestion?.name || ""}
-                              </ParagraphExtraSmall>
-                            ) : (
-                              <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
-                                {t("dashboard_this_certificate_course_has_no_lesson")}
-                              </ParagraphExtraSmall>
-                            )}
+                  ongoingRegisteredCourses.map((course: CertificateCourseEntity, index) => (
+                    <Grid className={classes.courseLearningItem} key={index}>
+                      <Box className={classes.titleContainer}>
+                        <img
+                          src={course.topic.thumbnailUrl}
+                          alt='course'
+                          className={classes.imageCourse}
+                        />
+                        <Box className={classes.courseLearningItemContent}>
+                          <Heading3>{course.name}</Heading3>
+                          <Box className={classes.processBar} style={{ width: "100%" }}>
+                            <LinearProgress
+                              determinate
+                              value={calcCertificateCourseProgress(
+                                course.numOfCompletedQuestions || 0,
+                                course.numOfQuestions
+                              )}
+                            />
                           </Box>
+                          {course.numOfQuestions ? (
+                            <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                              {t("dashboard_current_lesson")}: {course.currentQuestion?.name || ""}
+                            </ParagraphExtraSmall>
+                          ) : (
+                            <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
+                              {t("dashboard_this_certificate_course_has_no_lesson")}
+                            </ParagraphExtraSmall>
+                          )}
                         </Box>
-                        <Box className={classes.learnBtn}>
-                          <CustomButton btnType={BtnType.Primary} translation-key='common_continue'>
-                            {i18next.format(t("common_continue"), "firstUppercase")}
-                          </CustomButton>
-                        </Box>
-                      </Grid>
-                    ))
+                      </Box>
+                      <Box className={classes.learnBtn}>
+                        <CustomButton
+                          btnType={BtnType.Primary}
+                          translation-key='common_continue'
+                          onClick={() => {
+                            navigate(
+                              routes.user.course_certificate.detail.lesson.root.replace(
+                                ":courseId",
+                                course.certificateCourseId.toString()
+                              )
+                            );
+                          }}
+                        >
+                          {i18next.format(t("common_continue"), "firstUppercase")}
+                        </CustomButton>
+                      </Box>
+                    </Grid>
+                  ))
                 )}
               </Box>
             </Box>
@@ -228,13 +238,19 @@ export default function UserDashboard() {
                 <Heading2 translation-key='dashboard_other_course'>
                   {t("dashboard_other_course")}
                 </Heading2>
-                <CustomButton btnType={BtnType.Primary} translation-key='home_view_all_courses'>
+                <CustomButton
+                  btnType={BtnType.Primary}
+                  translation-key='home_view_all_courses'
+                  onClick={() => {
+                    navigate(routes.user.course_certificate.root);
+                  }}
+                >
                   {t("home_view_all_courses")}
                 </CustomButton>
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
                 <Grid container spacing={3}>
-                  {courseCertificatesBasic.map((course, index) => (
+                  {otherCertificateCourses.map((course, index) => (
                     <Grid item xs={4} key={index}>
                       <Box
                         className={classes.courseCerticate}
@@ -242,7 +258,7 @@ export default function UserDashboard() {
                           navigate(
                             routes.user.course_certificate.detail.lesson.root.replace(
                               ":courseId",
-                              index.toString()
+                              course.certificateCourseId.toString()
                             )
                           );
                         }}
@@ -250,10 +266,10 @@ export default function UserDashboard() {
                         <Grid container direction={"column"} margin={0} gap={2}>
                           <Grid item container xs={5} className={classes.titleCourse}>
                             <Grid item xs={3} className={classes.imgCourse}>
-                              <img alt='img course' src={course.imgUrl} />
+                              <img alt='img course' src={course.topic.thumbnailUrl} />
                             </Grid>
                             <Grid item xs={9} className={classes.nameCourse}>
-                              <Heading5>{course.title}</Heading5>
+                              <Heading5>{course.name}</Heading5>
                             </Grid>
                           </Grid>
                           <Divider />
@@ -262,7 +278,7 @@ export default function UserDashboard() {
                             <Box className={classes.iconCourse}>
                               <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
                               <ParagraphBody translation-key='certificate_detail_lesson'>
-                                {course.lesson}{" "}
+                                {course.numOfQuestions}{" "}
                                 {i18next.format(
                                   t("certificate_detail_lesson", { count: 2 }),
                                   "lowercase"
@@ -275,7 +291,13 @@ export default function UserDashboard() {
                                 alt='icon level'
                                 className={classes.iconLevel}
                               />
-                              <ParagraphBody>{course.level}</ParagraphBody>
+                              <ParagraphBody>
+                                {course.skillLevel === SkillLevelEnum.BASIC
+                                  ? t("common_easy")
+                                  : course.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                    ? t("common_medium")
+                                    : t("common_hard")}
+                              </ParagraphBody>
                             </Box>
                           </Grid>
                         </Grid>
