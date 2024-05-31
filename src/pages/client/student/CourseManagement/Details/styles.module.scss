@@ -20,6 +20,19 @@
 #courseDetailBody {
   display: flex;
   flex-direction: column;
-  padding: 20px 40px;
+  padding: 20px 20px;
   gap: 15px;
+}
+.eventContainer {
+  align-items: start;
+  margin: 0 38px;
+  .eventTitle {
+    padding: 10px;
+  }
+  .eventList {
+    padding: 0;
+    li {
+      padding: 0;
+    }
+  }
 }
