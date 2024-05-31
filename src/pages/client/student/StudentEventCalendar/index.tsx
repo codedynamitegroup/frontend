@@ -1,6 +1,6 @@
 import { DateSelectArg } from "@fullcalendar/core";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Grid } from "@mui/material";
 import CustomFullCalendar from "components/calendar/CustomFullCalendar";
 import { createEventId } from "components/calendar/CustomFullCalendar/event-utils";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -11,9 +11,13 @@ import { useCallback, useState } from "react";
 import AddEventDialog from "./components/AddEventDialog";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const StudentEventCalendar = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [data, setData] = useState<{
     isExpanded: boolean;
     durationRadioIndex: string;
@@ -160,53 +164,63 @@ const StudentEventCalendar = () => {
       <Box id={classes.calendarBody}>
         <Heading1 translation-key='calendar_title'>{t("calendar_title")}</Heading1>
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            direction: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "10px"
-          }}
-        >
-          <BasicSelect
-            labelId='select-assignment-section-label'
-            value={data.filterCourse}
-            onHandleChange={(value) => {
-              setData((pre) => {
-                return {
-                  ...pre,
-                  filterCourse: value
-                };
-              });
-            }}
-            sx={{ maxWidth: "200px" }}
-            items={[
-              {
-                value: "0",
-                label: t("calendar_all_course")
-              },
-              {
-                value: "1",
-                label: "Nhập môn lập trình"
-              },
-              {
-                value: "2",
-                label: "Lập trình hướng đối tượng"
-              }
-            ]}
-            translation-key='calendar_all_course'
-          />
-          <Button
-            btnType={BtnType.Outlined}
-            onClick={() => {
-              openAddEventDialog();
-            }}
-            startIcon={<AddIcon />}
-            translation-key='calendar_add_event'
+        <Box sx={{ marginBottom: "10px" }}>
+          <Grid
+            container
+            spacing={2}
+            alignItems='center'
+            direction={isSmallScreen ? "column" : "row"}
           >
-            {t("calendar_add_event")}
-          </Button>
+            <Grid item xs={12} sm={12} md={6}>
+              <BasicSelect
+                labelId='select-assignment-section-label'
+                value={data.filterCourse}
+                onHandleChange={(value) => {
+                  setData((pre) => {
+                    return {
+                      ...pre,
+                      filterCourse: value
+                    };
+                  });
+                }}
+                sx={{ width: "100%" }}
+                items={[
+                  {
+                    value: "0",
+                    label: t("calendar_all_course")
+                  },
+                  {
+                    value: "1",
+                    label: "Nhập môn lập trình"
+                  },
+                  {
+                    value: "2",
+                    label: "Lập trình hướng đối tượng"
+                  }
+                ]}
+                translation-key='calendar_all_course'
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              container
+              justifyContent={isSmallScreen ? "flex-start" : "flex-end"}
+            >
+              <Button
+                btnType={BtnType.Outlined}
+                onClick={() => {
+                  openAddEventDialog();
+                }}
+                startIcon={<AddIcon />}
+                translation-key='calendar_add_event'
+              >
+                {t("calendar_add_event")}
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
         <Box>
           <CustomFullCalendar events={data.currentEvents} handleDateSelect={handleDateSelect} />
