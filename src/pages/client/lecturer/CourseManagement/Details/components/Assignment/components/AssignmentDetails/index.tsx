@@ -13,29 +13,161 @@ import AssignmentTable from "./components/GradingAssignmentTable";
 import classes from "./styles.module.scss";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import { useTranslation } from "react-i18next";
+import { SubmissionAssignmentService } from "services/courseService/SubmissionAssignmentService";
+import {
+  setAmountSubmission,
+  setAmountSubmissionToGrade,
+  setSubmissionAssignmentDetails,
+  setSubmissionAssignments
+} from "reduxes/courseService/submission_assignment";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { useParams } from "react-router-dom";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { setAssignmentDetails } from "reduxes/courseService/assignment";
+import { useEffect } from "react";
+
+import images from "config/images";
+import { CourseUserService } from "services/courseService/CourseUserService";
+import { setAmountStudent } from "reduxes/courseService/courseUser";
 
 const LecturerCourseAssignmentDetails = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const assignmentOpenTime = dayjs();
-  const assignmentCloseTime = dayjs();
-  const assignmentDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài tập</p>
-    </div>
-    `;
-  const activityInstructionsRawHTML = `
-    <div>
-    <p>Đây là hướng dẫn bài tập</p>
-    </div>
-    `;
+  const { assignmentId } = useParams<{ assignmentId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
+  const assignmentState = useSelector((state: RootState) => state.assignment);
+  const courseUserState = useSelector((state: RootState) => state.courseUser);
+  const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
+  const dispatch = useDispatch();
+
+  const handleGetAssignmentDetails = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentById(id);
+      dispatch(setAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCountStudentInCourse = async (courseId: string) => {
+    try {
+      const response = await CourseUserService.countStudentByCourseId(courseId);
+      console.log(response);
+      dispatch(setAmountStudent({ amountStudent: response }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCountSubmissionToGrade = async (assignmentId: string) => {
+    try {
+      const response = await SubmissionAssignmentService.countSubmissionToGrade(assignmentId);
+      dispatch(setAmountSubmissionToGrade({ amountSubmissionToGrade: response }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleCountSubmission = async (assignmentId: string) => {
+    try {
+      const response = await SubmissionAssignmentService.countAllSubmission(assignmentId);
+      dispatch(setAmountSubmission({ amountSubmission: response }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleGetSubmissionAssignment = async (userId: string, assignmentId: string) => {
+    try {
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
+        userId,
+        assignmentId
+      );
+      dispatch(setSubmissionAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAssignmentDetails = async () => {
+      await handleGetAssignmentDetails(assignmentId ?? "");
+    };
+
+    fetchAssignmentDetails();
+    handleCountStudentInCourse(courseId ?? "");
+    handleCountSubmissionToGrade(assignmentId ?? "");
+    handleCountSubmission(assignmentId ?? "");
+    handleGetSubmissionAssignment("9090d7b2-3b20-46a8-9700-6ea8699c7696", assignmentId ?? "");
+  }, []);
+
+  function calculateTimeDifference(
+    date1: Date,
+    date2: Date
+  ): {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  } {
+    // Tạo đối tượng Date cho giờ hiện tại
+
+    // Tính toán khoảng thời gian giữa giờ đã cho và giờ hiện tại (mili giây)
+    const diffInMs = date1.getTime() - date2.getTime();
+
+    // Kiểm tra nếu giờ đã cho là trước giờ hiện tại
+
+    // Tính số ngày, số giờ, số phút và số giây từ khoảng thời gian này
+    const msInADay = 24 * 60 * 60 * 1000; // Mili giây trong một ngày
+    const msInAnHour = 60 * 60 * 1000; // Mili giây trong một giờ
+    const msInAMinute = 60 * 1000; // Mili giây trong một phút
+    const msInASecond = 1000; // Mili giây trong một giây
+
+    const days = Math.floor(diffInMs / msInADay);
+    const hours = Math.floor((diffInMs % msInADay) / msInAnHour);
+    const minutes = Math.floor((diffInMs % msInAnHour) / msInAMinute);
+    const seconds = Math.floor((diffInMs % msInAMinute) / msInASecond);
+
+    return {
+      days: Math.abs(days),
+      hours: Math.abs(hours),
+      minutes: Math.abs(minutes),
+      seconds: Math.abs(seconds)
+    };
+  }
+
+  const timeCloseDate = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+  const submitTimeDate = new Date(
+    submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
+  );
+  const submitTime = calculateTimeDifference(timeCloseDate, submitTimeDate);
+  const formatTime = (time: { days: number; hours: number; minutes: number; seconds: number }) => {
+    if (time.days > 0) {
+      return time.days + " " + t("days") + " " + time.hours + " " + t("hours");
+    } else if (time.hours > 0) {
+      return time.hours + " " + t("hours") + " " + time.minutes + " " + t("minutes");
+    } else {
+      return time.minutes + " " + t("minutes") + " " + time.seconds + " " + t("seconds");
+    }
+  };
+
+  const checkTimeSubmission = (): number => {
+    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return 0;
+    let submitTime = new Date(
+      submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
+    );
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+    if (submitTime < timeClose) {
+      return 1;
+    }
+    return 2;
+  };
 
   return (
     <Box className={classes.assignmentBody}>
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.lecturer.course.assignment);
+          navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
         }}
         startIcon={
           <ChevronLeftIcon
@@ -48,7 +180,7 @@ const LecturerCourseAssignmentDetails = () => {
       >
         <ParagraphBody translation-key='common_backk'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>Bài tập 1</Heading1>
+      <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
       <Card
         className={classes.pageActivityHeader}
         sx={{
@@ -64,9 +196,7 @@ const LecturerCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentOpenTime
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {dayjs(assignmentState.assignmentDetails?.timeOpen)?.format("DD/MM/YYYY hh:mm:ss A")}
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -81,9 +211,7 @@ const LecturerCourseAssignmentDetails = () => {
           </Grid>
           <Grid item>
             <ParagraphBody>
-              {assignmentCloseTime
-                ?.toDate()
-                .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}
+              {dayjs(assignmentState.assignmentDetails?.timeClose)?.format("DD/MM/YYYY hh:mm:ss A")}
             </ParagraphBody>
           </Grid>
         </Grid>
@@ -94,34 +222,32 @@ const LecturerCourseAssignmentDetails = () => {
           }}
         />
         <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: assignmentDescriptionRawHTML }}></div>
+          <div
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.intro || `` }}
+          ></div>
           <div
             style={{
               marginBottom: "10px"
             }}
-            dangerouslySetInnerHTML={{ __html: activityInstructionsRawHTML }}
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
+          ></div>
+          <div
+            style={{
+              marginBottom: "10px"
+            }}
+            dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
           ></div>
           <CustomFileList
-            files={[
-              {
-                id: "1",
-                name: "test1.jpg",
-                size: 1024,
-                type: "image/jpg",
-                uploadStatus: "success",
-                downloadUrl:
-                  "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
-              },
-              {
-                id: "2",
-                name: "dummy.pdf",
-                size: 1024,
-                type: "application/pdf",
-                uploadStatus: "success",
-                downloadUrl:
-                  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-              }
-            ]}
+            files={assignmentState.assignmentDetails?.introAttachments?.map((attachment: any) => ({
+              id: attachment.id,
+              name: attachment.fileName,
+              downloadUrl: attachment.fileUrl,
+              size: attachment.fileSize,
+              type: attachment.mimetype,
+              lastModified: new Date(attachment.timemodified).toLocaleString("en-US", {
+                timeZone: "Asia/Ho_Chi_Minh"
+              })
+            }))}
           />
         </Box>
       </Card>
@@ -157,36 +283,33 @@ const LecturerCourseAssignmentDetails = () => {
         </Button>
       </Box>
       <Heading2 translation-key={["course_lecturer_assignment_grading", "common_over"]}>
-        {t("common_over")} {t("course_lecturer_assignment_grading")}
+        {t("course_lecturer_assignment_grading")}
       </Heading2>
       <AssignmentTable
         rows={[
           {
-            header: t("course_lecturer_assignment_hide"),
-            data: "Có"
-          },
-          {
             header: t("course_lecturer_assignment_student_num"),
-            data: "1"
+            data: courseUserState.amountStudent.toString()
           },
           {
             header: t("course_lecturer_assignment_submitted"),
-            data: "1"
+            data: submissionAssignmentState.amountSubmission.toString()
           },
           {
             header: t("course_lecturer_assignment_need_grading"),
-            data: "1"
+            data: submissionAssignmentState.amountSubmissionToGrade.toString()
           },
           {
             header: t("common_time_left"),
-            data: "1 ngày 2 giờ"
+            data: checkTimeSubmission() === 1 ? formatTime(submitTime) : "Assignment is due"
           }
         ]}
         translation-key={[
           "course_lecturer_assignment_hide",
           "common_time_left",
           "course_lecturer_assignment_student_num",
-          "course_lecturer_assignment_need_grading"
+          "course_lecturer_assignment_need_grading",
+          "common_over"
         ]}
       />
       <Button

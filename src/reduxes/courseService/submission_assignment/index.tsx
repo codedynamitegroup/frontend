@@ -5,12 +5,16 @@ interface InitialState {
   isLoading: boolean;
   submissionAssignments: SubmissionAssignmentEntity[];
   submissionAssignmentDetails: SubmissionAssignmentEntity | null;
+  amountSubmissionToGrade: number;
+  amountSubmission: number;
 }
 
 const initialState: InitialState = {
   isLoading: false,
   submissionAssignments: [],
-  submissionAssignmentDetails: null
+  submissionAssignmentDetails: null,
+  amountSubmissionToGrade: 0,
+  amountSubmission: 0
 };
 
 const submissionAssignmentSlice = createSlice({
@@ -25,11 +29,22 @@ const submissionAssignmentSlice = createSlice({
     },
     setSubmissionAssignmentDetails: (state, action) => {
       state.submissionAssignmentDetails = action.payload;
+    },
+    setAmountSubmissionToGrade: (state, action) => {
+      state.amountSubmissionToGrade = action.payload.amountSubmissionToGrade;
+    },
+    setAmountSubmission: (state, action) => {
+      state.amountSubmission = action.payload.amountSubmission;
     }
   }
 });
 
-export const { setLoading, setSubmissionAssignments, setSubmissionAssignmentDetails } =
-  submissionAssignmentSlice.actions;
+export const {
+  setLoading,
+  setSubmissionAssignments,
+  setSubmissionAssignmentDetails,
+  setAmountSubmissionToGrade,
+  setAmountSubmission
+} = submissionAssignmentSlice.actions;
 
 export default submissionAssignmentSlice.reducer;

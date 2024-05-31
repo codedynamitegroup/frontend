@@ -18,6 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { ExamService } from "services/courseService/ExamService";
 import { setExams } from "reduxes/courseService/exam";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { setAssignments } from "reduxes/courseService/assignment";
+import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +28,7 @@ const LecturerCourseAssignment = () => {
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
 
   const { courseId } = useParams<{ courseId: string }>();
+  const assignmentState = useSelector((state: RootState) => state.assignment);
 
   const handleGetExams = async (id: string) => {
     try {
@@ -35,8 +39,18 @@ const LecturerCourseAssignment = () => {
     }
   };
 
+  const handleGetAssignments = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentsByCourseId(id);
+      dispatch(setAssignments(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleGetExams(courseId ?? "");
+    handleGetAssignments(courseId ?? "");
     console.log("examState", examState.exams);
   }, []);
 
@@ -129,8 +143,16 @@ const LecturerCourseAssignment = () => {
             <Heading3 translation-key='course_detail_assignment'>
               {t("course_detail_assignment")}
             </Heading3>
-            <AssignmentResource resourceTitle='Bài tập 1' resourceEndedDate='12/12/2022' />
-            <AssignmentResource resourceTitle='Bài tập 2' resourceEndedDate='12/12/2023' />
+            {assignmentState.assignments.map((assignment: AssignmentEntity) => (
+              <AssignmentResource
+                courseId={courseId}
+                examId={assignment.id}
+                resourceTitle={assignment.title}
+                resourceEndedDate={assignment.timeClose}
+                intro={assignment.intro}
+                type={ResourceType.assignment}
+              />
+            ))}
           </Box>
           <Box className={classes.topic}>
             <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
