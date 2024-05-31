@@ -118,9 +118,9 @@ const CourseCertificates = () => {
       dispatch(setTopics(getTopicsResponse));
     } catch (error: any) {
       console.error("Failed to fetch topics", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
       // Show snackbar here
     }
@@ -158,9 +158,9 @@ const CourseCertificates = () => {
         }, 500);
       } catch (error: any) {
         console.error("Failed to fetch certificate courses", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
+          code: error.code || 503,
+          status: error.status || "Service Unavailable",
+          message: error.message
         });
         dispatch(setLoading({ isLoading: false }));
         // Show snackbar here

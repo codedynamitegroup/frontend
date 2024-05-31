@@ -7,6 +7,7 @@ interface InitialState {
   currentPage: number;
   totalItems: number;
   totalPages: number;
+  amountStudent: number;
 }
 
 const initialState: InitialState = {
@@ -14,7 +15,8 @@ const initialState: InitialState = {
   users: [],
   currentPage: 0,
   totalItems: 0,
-  totalPages: 0
+  totalPages: 0,
+  amountStudent: 0
 };
 
 const courseUserSlice = createSlice({
@@ -29,10 +31,13 @@ const courseUserSlice = createSlice({
       state.currentPage = action.payload.currentPage;
       state.totalItems = action.payload.totalItems;
       state.totalPages = action.payload.totalPages;
+    },
+    setAmountStudent: (state, action) => {
+      state.amountStudent = action.payload.amountStudent;
     }
   }
 });
 
-export const { setLoading, setCourseUser } = courseUserSlice.actions;
+export const { setLoading, setCourseUser, setAmountStudent } = courseUserSlice.actions;
 
-export default courseUserSlice.reducer; 
+export default courseUserSlice.reducer;
