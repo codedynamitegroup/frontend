@@ -24,6 +24,7 @@ import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 import questionCreate from "reduxes/coreService/questionCreate/index";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
+import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 
 const store = configureStore({
   reducer: {
@@ -49,6 +50,7 @@ const store = configureStore({
     detailCodeQuestion: detailCodeQuestion,
     courseUser: courseUser,
     executeData: Execute,
+    executeResultData: ExecuteResult,
     auth: auth,
     questionCreate: questionCreate,
     loading: loading

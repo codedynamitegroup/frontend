@@ -100,6 +100,9 @@ export const API = {
       GET_BY_ID: "/code-assessment/code-question/:id"
     }
   },
+  JUDGE0: {
+    SUBMISSION: "/submissions"
+  },
   AUTH: {
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",

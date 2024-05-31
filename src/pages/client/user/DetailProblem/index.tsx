@@ -42,8 +42,14 @@ import {
   setCpuTimeLimit,
   setMemoryLimit
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
+import {
+  setExecuteResultLoading,
+  setResult
+} from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash/cloneDeep";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 
 export default function DetailProblem() {
   const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
@@ -60,10 +66,6 @@ export default function DetailProblem() {
   const dispatch = useAppDispatch();
 
   const currentExecuteData = useAppSelector((state) => state.executeData);
-
-  const handleExecuteCode = () => {
-    console.log("current data", currentExecuteData);
-  };
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -196,6 +198,27 @@ export default function DetailProblem() {
   const [testCaseTab, setTestCaseTab] = useState(0);
   const handleTestCaseChange = (event: any, newValue: any) => {
     setTestCaseTab(newValue);
+  };
+
+  const handleExecuteCode = () => {
+    setTestCaseTab(1);
+    dispatch(setExecuteResultLoading(true));
+    ExecuteService.execute(
+      currentExecuteData.language_id,
+      currentExecuteData.stdin,
+      currentExecuteData.expected_output,
+      currentExecuteData.cpu_time_limit,
+      currentExecuteData.memory_limit,
+      currentExecuteData.source_code
+    )
+      .then((data: Judge0ResponseEntity) => {
+        dispatch(setResult(data));
+        dispatch(setExecuteResultLoading(false));
+
+        // console.log("response data", data);
+      })
+      .catch((err) => console.log(err));
+    // console.log("current data", currentExecuteData);
   };
 
   const breadcumpRef = useRef<HTMLDivElement>(null);

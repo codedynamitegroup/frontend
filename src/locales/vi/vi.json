@@ -506,7 +506,7 @@
   "detail_problem_execute": "Thực thi",
   "detail_problem_submit": "Nộp bài",
   "detail_problem_test_case_success": "Thành công",
-  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms",
+  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}s",
   "detail_problem_input": "Đầu vào",
   "detail_problem_output": "Đầu ra",
   "detail_problem_actual_result": "Kết quả",
@@ -765,5 +765,4 @@
   "take_exam_question_navigation_title": "Chuyển hướng đến câu hỏi",
   "take_exam_question_name": "Câu hỏi",
   "take_exam_question_sort_question": "Lọc câu hỏi"
-
 }
