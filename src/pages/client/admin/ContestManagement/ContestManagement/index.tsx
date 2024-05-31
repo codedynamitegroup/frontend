@@ -23,7 +23,9 @@ import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setContests, setLoading } from "reduxes/coreService/Contest";
+import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -35,6 +37,7 @@ interface ContestManagementProps extends ContestEntity {
 
 const ContestManagement = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -71,9 +74,9 @@ const ContestManagement = () => {
         }, 500);
       } catch (error: any) {
         console.error("Failed to fetch contests", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
+          code: error.code || 503,
+          status: error.status || "Service Unavailable",
+          message: error.message
         });
         dispatch(setLoading(false));
         // Show snackbar here
@@ -349,8 +352,8 @@ const ContestManagement = () => {
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Heading1 translate-key='common_contest_management'>
-            {t("common_contest_management")}
+          <Heading1 translate-key='contest_management_title'>
+            {t("contest_management_title")}
           </Heading1>
         </Grid>
         <Grid item xs={12}>
@@ -359,6 +362,10 @@ const ContestManagement = () => {
             searchValue={searchValue}
             setSearchValue={setSearchValue}
             onHandleChange={handleSearchChange}
+            createBtnText={t("contest_create")}
+            onClickCreate={() => {
+              navigate(routes.admin.contest.create);
+            }}
             numOfResults={totalElement}
             filterKeyList={[
               {

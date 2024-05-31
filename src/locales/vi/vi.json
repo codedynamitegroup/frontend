@@ -160,7 +160,6 @@
   "common_limit_time": "Thời gian làm bài",
   "common_num_of_participants": "Số người tham gia",
   "common_created_at": "Ngày tạo",
-  "common_contest_management": "Quản lý cuộc thi",
   "common_cancel_filter": "Hủy bộ lọc",
   "common_apply_filter": "Áp dụng bộ lọc",
   "common_get_started": "Bắt đầu",
@@ -232,6 +231,7 @@
   "contest_advance_difficulty": "Cao cấp",
   "contest_programming_language_title": "Ngôn ngữ lập trình",
 
+  "contest_management_title": "Quản lý cuộc thi",
   "contest_name": "Tên cuộc thi",
   "contest_create": "Tạo cuộc thi",
   "contest_description_message_1": "Tạo cuộc thi lập trình của riêng bạn trên CodeDynamite. Bạn có thể luyện tập và thi đấu với bạn bè từ tổ chức hoặc trường học của bạn. Tạo cuộc thi của riêng bạn và mời bạn bè tham gia.",

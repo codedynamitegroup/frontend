@@ -14,4 +14,12 @@ const convertUTCMomentToLocalMoment = (utcMoment: moment.Moment, currentLang = "
   return utcMoment.locale(currentLang).tz(timezone.ASIA_HO_CHI_MINH);
 };
 
-export { standardlizeUTCStringToLocaleString, convertUTCMomentToLocalMoment };
+const convertLocalMomentToUTCMoment = (localMoment: moment.Moment) => {
+  return localMoment.clone().utc();
+};
+
+export {
+  standardlizeUTCStringToLocaleString,
+  convertUTCMomentToLocalMoment,
+  convertLocalMomentToUTCMoment
+};

@@ -170,7 +170,6 @@
   "common_limit_time": "Limit time",
   "common_num_of_participants": "Participants",
   "common_created_at": "Created at",
-  "common_contest_management": "Contest Management",
   "common_cancel_filter": "Cancel filter",
   "common_apply_filter": "Apply filter",
   "common_get_started": "Get started",
@@ -229,6 +228,7 @@
   "contest_advance_difficulty": "Advance",
   "contest_programming_language_title": "Programming language",
 
+  "contest_management_title": "Contest Management",
   "contest_name": "Contest name",
   "contest_create": "Create contest",
   "contest_description_message_1": "Host your own coding contest on CodeDynamite. You can practice and compete with friends from your organization or school. Create your own contest and invite your friends to join.",

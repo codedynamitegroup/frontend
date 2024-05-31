@@ -20,7 +20,9 @@ const CustomSearchFeatureBar = ({
   handleFilterKeyChange = (value: string) => {},
   handleFilterValueChange = (value: string) => {},
   onHandleApplyFilter = () => {},
-  onHandleCancelFilter = () => {}
+  onHandleCancelFilter = () => {},
+  createBtnText = "",
+  onClickCreate = () => {}
 }: {
   isLoading: boolean;
   searchValue: string;
@@ -39,6 +41,8 @@ const CustomSearchFeatureBar = ({
   handleFilterValueChange?: (value: string) => void;
   onHandleApplyFilter?: () => void;
   onHandleCancelFilter?: () => void;
+  createBtnText?: string;
+  onClickCreate?: () => void;
 }) => {
   const { t } = useTranslation();
 
@@ -99,12 +103,27 @@ const CustomSearchFeatureBar = ({
       )}
 
       <Box className={classes.searchWrapper}>
-        <AutoSearchBar
-          value={searchValue}
-          setValue={setSearchValue}
-          onHandleChange={onHandleChange}
-          maxWidth='50%'
-        />
+        <Stack direction='row' gap={2}>
+          <AutoSearchBar
+            value={searchValue}
+            setValue={setSearchValue}
+            onHandleChange={onHandleChange}
+            maxWidth='50%'
+          />
+          {onClickCreate && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%"
+              }}
+            >
+              <Button btnType={BtnType.Primary} onClick={onClickCreate}>
+                {createBtnText}
+              </Button>
+            </Box>
+          )}
+        </Stack>
       </Box>
 
       {isLoading ? (
