@@ -1,5 +1,5 @@
 import { Container, Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Heading2 from "components/text/Heading2";
@@ -26,6 +26,7 @@ import { CertificateCourseService } from "services/coreService/CertificateCourse
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
+import TextTitle from "components/text/TextTitle";
 
 interface CourseCertificate {
   imgUrl: string;
@@ -111,20 +112,30 @@ export default function UserDashboard() {
   }) => {
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName: courseName,
-        filterTopicIds: filterTopicIds,
-        isRegisteredFilter: isRegisteredFilter
+        courseName,
+        filterTopicIds,
+        isRegisteredFilter
       });
-      return getCertificateCoursesResponse.data;
+      return getCertificateCoursesResponse;
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
       // Show snackbar here
     }
   };
+
+  const ongoingRegisteredCourses = useMemo(() => {
+    if (!registeredCertificateCourses) {
+      return [];
+    }
+    return [];
+    return registeredCertificateCourses.filter(
+      (course) => (course?.numOfCompletedQuestions || 0) > 0
+    );
+  }, [registeredCertificateCourses]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -160,37 +171,57 @@ export default function UserDashboard() {
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
               <Heading2>{t("dashboard_continue_title")}</Heading2>
               <Box className={classes.courseLearningList}>
-                {registeredCertificateCourses.map((course: CertificateCourseEntity, index) => (
-                  <Grid className={classes.courseLearningItem} key={index}>
-                    <Box className={classes.titleContainer}>
-                      <img
-                        src={course.topic.thumbnailUrl}
-                        alt='course'
-                        className={classes.imageCourse}
-                      />
-                      <Box className={classes.courseLearningItemContent}>
-                        <Heading3>{course.name}</Heading3>
-                        <Box className={classes.processBar} style={{ width: "100%" }}>
-                          <LinearProgress
-                            determinate
-                            value={calcCertificateCourseProgress(
-                              course.numOfCompletedQuestions || 0,
-                              course.numOfQuestions
-                            )}
+                {ongoingRegisteredCourses.length === 0 ? (
+                  <Box className={classes.noCourse}>
+                    <ParagraphBody translation-key='dashboard_no_ongoing_course'>
+                      {t("dashboard_no_ongoing_course")}
+                    </ParagraphBody>
+                  </Box>
+                ) : (
+                  ongoingRegisteredCourses
+                    .sort(
+                      (a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0)
+                    )
+                    .slice(0, 4)
+                    .map((course: CertificateCourseEntity, index) => (
+                      <Grid className={classes.courseLearningItem} key={index}>
+                        <Box className={classes.titleContainer}>
+                          <img
+                            src={course.topic.thumbnailUrl}
+                            alt='course'
+                            className={classes.imageCourse}
                           />
+                          <Box className={classes.courseLearningItemContent}>
+                            <Heading3>{course.name}</Heading3>
+                            <Box className={classes.processBar} style={{ width: "100%" }}>
+                              <LinearProgress
+                                determinate
+                                value={calcCertificateCourseProgress(
+                                  course.numOfCompletedQuestions || 0,
+                                  course.numOfQuestions
+                                )}
+                              />
+                            </Box>
+                            {course.numOfQuestions ? (
+                              <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                                {t("dashboard_current_lesson")}:{" "}
+                                {course.currentQuestion?.name || ""}
+                              </ParagraphExtraSmall>
+                            ) : (
+                              <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
+                                {t("dashboard_this_certificate_course_has_no_lesson")}
+                              </ParagraphExtraSmall>
+                            )}
+                          </Box>
                         </Box>
-                        <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                          {t("dashboard_current_lesson")}: {"course.currentLesson"}
-                        </ParagraphExtraSmall>
-                      </Box>
-                    </Box>
-                    <Box className={classes.learnBtn}>
-                      <CustomButton btnType={BtnType.Primary} translation-key='common_continue'>
-                        {i18next.format(t("common_continue"), "firstUppercase")}
-                      </CustomButton>
-                    </Box>
-                  </Grid>
-                ))}
+                        <Box className={classes.learnBtn}>
+                          <CustomButton btnType={BtnType.Primary} translation-key='common_continue'>
+                            {i18next.format(t("common_continue"), "firstUppercase")}
+                          </CustomButton>
+                        </Box>
+                      </Grid>
+                    ))
+                )}
               </Box>
             </Box>
             <Box className={classes.courseRecommend}>

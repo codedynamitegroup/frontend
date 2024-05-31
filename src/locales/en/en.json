@@ -170,12 +170,12 @@
   "common_limit_time": "Limit time",
   "common_num_of_participants": "Participants",
   "common_created_at": "Created at",
-  "common_contest_management": "Contest Management",
   "common_cancel_filter": "Cancel filter",
   "common_apply_filter": "Apply filter",
   "common_get_started": "Get started",
   "common_enter_answer": "Enter answer",
   "common_remove_flag": "Remove flag",
+  "common_start": "Start",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -229,6 +229,7 @@
   "contest_advance_difficulty": "Advance",
   "contest_programming_language_title": "Programming language",
 
+  "contest_management_title": "Contest Management",
   "contest_name": "Contest name",
   "contest_create": "Create contest",
   "contest_description_message_1": "Host your own coding contest on CodeDynamite. You can practice and compete with friends from your organization or school. Create your own contest and invite your friends to join.",
@@ -288,6 +289,8 @@
   "dashboard_current_lesson": "Current lesson",
   "dashboard_participant_num": "There are {{participantNum}} have joined",
   "dashboard_contest_end": "Contest will end on",
+  "dashboard_this_certificate_course_has_no_lesson": "This course has no lesson yet",
+  "dashboard_no_ongoing_course": "There aren't any ongoing courses. Let's start learning now",
 
   "register_have_account": "Have an account ? Login",
   "register_login_alternative": "Or login with",

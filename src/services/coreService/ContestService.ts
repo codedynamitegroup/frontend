@@ -1,4 +1,5 @@
 import { API } from "constants/API";
+import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import api from "utils/api";
 
@@ -31,11 +32,10 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contests", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -49,11 +49,10 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch most popular contests", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -67,11 +66,10 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contest leaderboard", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -85,11 +83,28 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contest by id", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async createContest(data: CreateContestCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CONTEST.DEFAULT}`, data);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
