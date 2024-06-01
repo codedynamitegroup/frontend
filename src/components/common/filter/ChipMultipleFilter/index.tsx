@@ -35,7 +35,7 @@ const ChipMultipleFilter = (props: ChipFilterPropData) => {
       target: { value }
     } = event;
     setSelectedChipList(typeof value === "string" ? value.split(",") : value);
-    props.onFilterListChangeHandler(selectedChipList);
+    props.onFilterListChangeHandler(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
