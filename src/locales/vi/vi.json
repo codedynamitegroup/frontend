@@ -166,6 +166,12 @@
   "common_enter_answer": "Nhập câu trả lời",
   "common_remove_flag": "Huỷ gắn cờ",
   "common_start": "Bắt đầu",
+  "common_details": "Chi tiết",
+  "common_problems": "Bài toán",
+  "common_moderators": "Người điều hành",
+  "common_signups": "Thí sinh",
+  "common_leaderboard": "Bảng xếp hạng",
+  "common_statistics": "Thống kê",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -234,6 +240,7 @@
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
 
   "contest_management_title": "Quản lý cuộc thi",
+  "contest_details": "Chi tiết cuộc thi",
   "contest_name": "Tên cuộc thi",
   "contest_create": "Tạo cuộc thi",
   "contest_name_required": "Tên cuộc thi không được để trống",

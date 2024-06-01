@@ -1,0 +1,43 @@
+.formBody {
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+    gap: 15px;
+}
+
+.breadcump {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 20px;
+
+    #breadcumpWrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        #icArrow {
+            color: var(--blue-500);
+            width: 20px;
+            height: 15px;
+        }
+        .cursorPointer {
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+.tabs {
+    & [class~="Mui-selected"] {
+        & [class~="MuiTypography-root"] {
+            font-weight: 700;
+            color: var(--blue-500);
+        }
+    }
+
+    & [class~="MuiTabs-indicator"] {
+        background-color: var(--blue-500);
+    }
+}

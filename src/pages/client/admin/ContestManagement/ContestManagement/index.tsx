@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Card, Chip, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Chip, Divider, Grid, Stack } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -20,7 +20,7 @@ import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,7 @@ import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import classes from "./styles.module.scss";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -36,6 +37,7 @@ interface ContestManagementProps extends ContestEntity {
 }
 
 const ContestManagement = () => {
+  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -45,6 +47,8 @@ const ContestManagement = () => {
   const [contestStatusFilter, setContestStatusFilter] = useState<ContestStartTimeFilterEnum>(
     ContestStartTimeFilterEnum.ALL
   );
+
+  const contestState = useSelector((state: RootState) => state.contest);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -89,13 +93,11 @@ const ContestManagement = () => {
     (value: string) => {
       handleGetContests({
         searchName: value,
-        startTimeFilter: ContestStartTimeFilterEnum.ALL
+        startTimeFilter: contestStatusFilter
       });
     },
-    [handleGetContests]
+    [handleGetContests, contestStatusFilter]
   );
-
-  const contestState = useSelector((state: RootState) => state.contest);
 
   const tableHeading: GridColDef[] = [
     {
@@ -249,7 +251,15 @@ const ContestManagement = () => {
       },
       getActions: (params) => {
         return [
-          <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            onClick={() => {
+              navigate(
+                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId)
+              );
+            }}
+          />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
         ];
       }
@@ -320,13 +330,12 @@ const ContestManagement = () => {
   }, [handleGetContests, searchValue, contestStatusFilter]);
 
   const handleCancelFilter = useCallback(() => {
-    setSearchValue("");
     setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
     handleGetContests({
-      searchName: "",
+      searchName: searchValue,
       startTimeFilter: ContestStartTimeFilterEnum.ALL
     });
-  }, [handleGetContests]);
+  }, [handleGetContests, searchValue]);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -343,14 +352,27 @@ const ContestManagement = () => {
     <Card
       sx={{
         margin: "20px",
-        padding: "20px",
         "& .MuiDataGrid-root": {
           border: "1px solid #e0e0e0",
           borderRadius: "4px"
         }
       }}
     >
-      <Grid container spacing={2}>
+      <Box className={classes.breadcump} ref={breadcumpRef}>
+        <Box id={classes.breadcumpWrapper}>
+          <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
+            {t("contest_management_title")}
+          </ParagraphSmall>
+        </Box>
+      </Box>
+      <Divider />
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: "20px"
+        }}
+      >
         <Grid item xs={12}>
           <Heading1 translate-key='contest_management_title'>
             {t("contest_management_title")}

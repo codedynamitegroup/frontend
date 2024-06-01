@@ -145,7 +145,7 @@ const router = createHashRouter(
 
       <Route path={routes.admin.contest.root} element={<ContestManagement />} />
       <Route path={routes.admin.contest.create} element={<CreateContest />} />
-      <Route path={routes.admin.contest.detail} element={<EditContestDetails />} />
+      <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
     </Route>
   )
 );

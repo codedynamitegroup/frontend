@@ -1,4 +1,4 @@
-const ContestProblems = () => {
+const ContestEditProblems = () => {
   return (
     <div>
       <h1>Contest Problems</h1>
@@ -6,4 +6,4 @@ const ContestProblems = () => {
   );
 };
 
-export default ContestProblems;
+export default ContestEditProblems;

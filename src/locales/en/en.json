@@ -176,6 +176,12 @@
   "common_enter_answer": "Enter answer",
   "common_remove_flag": "Remove flag",
   "common_start": "Start",
+  "common_details": "Details",
+  "common_problems": "Problems",
+  "common_moderators": "Moderators",
+  "common_signups": "Thí sinh",
+  "common_leaderboard": "Leaderboard",
+  "common_statistics": "Statistics",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -231,6 +237,7 @@
   "contest_end_time_invalid": "End time must be greater than start time",
 
   "contest_management_title": "Contest Management",
+  "contest_details": "Contest details",
   "contest_name": "Contest name",
   "contest_create": "Create contest",
   "contest_name_required": "Contest name is required",

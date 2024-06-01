@@ -33,7 +33,7 @@ const AutoSearchBar = ({ value, setValue, onHandleChange, placeHolder, maxWidth 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       onHandleChange(value);
-    }, 1000);
+    }, 700);
 
     return () => clearTimeout(delayDebounceFn);
   }, [onHandleChange, value]);
