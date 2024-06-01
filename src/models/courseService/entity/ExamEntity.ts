@@ -33,3 +33,8 @@ export interface ExamCreateRequest {
   gradeMethod: string;
   questionIds: number[];
 }
+
+export interface ExamOverview {
+  numberOfStudents: number;
+  submitted: number;
+}

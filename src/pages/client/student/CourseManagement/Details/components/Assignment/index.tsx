@@ -94,7 +94,7 @@ const StudentCourseAssignment = () => {
         </Box>
         <Box className={classes.topic}>
           <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
-          {examState.exams.map((exam) => (
+          {examState.exams.exams.map((exam) => (
             <AssignmentResource
               courseId={courseId}
               examId={exam.id}
