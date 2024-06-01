@@ -1,5 +1,8 @@
+import { OrganizationEntity } from "./OrganizationEntity";
+
 export interface CourseTypeEntity {
-  id: string;
+  courseTypeId: string;
   moodleId: number;
   name: string;
+  organizationId: string;
 }

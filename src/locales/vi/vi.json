@@ -530,7 +530,7 @@
   "detail_problem_execute": "Thực thi",
   "detail_problem_submit": "Nộp bài",
   "detail_problem_test_case_success": "Thành công",
-  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}ms",
+  "detail_problem_test_case_runtime": "Thời gian: {{runtime}}s",
   "detail_problem_input": "Đầu vào",
   "detail_problem_output": "Đầu ra",
   "detail_problem_actual_result": "Kết quả",

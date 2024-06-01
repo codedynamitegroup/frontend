@@ -1,4 +1,4 @@
-export interface Judge0ResponseEntity {
+export interface ExecuteResultEntity {
   stdout: string | null;
   time: number | null;
   memory: number | null;

@@ -537,7 +537,7 @@
   "detail_problem_execute": "Execute",
   "detail_problem_submit": "Submit",
   "detail_problem_test_case_success": "Success",
-  "detail_problem_test_case_runtime": "Runtime: {{runtime}}ms",
+  "detail_problem_test_case_runtime": "Runtime: {{runtime}}s",
   "detail_problem_input": "Input",
   "detail_problem_output": "Output",
   "detail_problem_actual_result": "Result",

@@ -40,7 +40,7 @@ export class CodeQuestionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch algorithm tags", error);
+      console.error("Failed to fetch code questions", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
