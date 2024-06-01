@@ -2,8 +2,9 @@ import { FormControl, Grid, OutlinedInput, OutlinedInputProps } from "@mui/mater
 import classes from "./styles.module.scss";
 import { memo } from "react";
 import clsx from "clsx";
-import TextTitle from "components/text/TextTitle";
 import ErrorMessage from "components/text/ErrorMessage";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+
 interface InputsProps extends OutlinedInputProps {
   title?: string;
   type?: string;
@@ -23,12 +24,16 @@ interface InputsProps extends OutlinedInputProps {
   fullWidth?: boolean;
   maxWith?: string;
   error?: boolean;
+  tooltipDescription?: string;
   infoComponent?: React.ReactNode;
+  required?: boolean;
+  titleFontSize?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
   const {
     title,
+    titleRequired,
     type,
     placeholder,
     name,
@@ -44,7 +49,8 @@ const InputTextField = memo((props: InputsProps) => {
     fullWidth,
     maxWith,
     error,
-    infoComponent
+    tooltipDescription,
+    titleFontSize
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -59,10 +65,12 @@ const InputTextField = memo((props: InputsProps) => {
         <Grid container spacing={1} columns={12}>
           <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
             {title && (
-              <>
-                <TextTitle>{title}</TextTitle>
-                {infoComponent && infoComponent}
-              </>
+              <TitleWithInfoTip
+                fontSize={titleFontSize}
+                title={title}
+                titleRequired={titleRequired}
+                tooltipDescription={tooltipDescription}
+              />
             )}
           </Grid>
           <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>

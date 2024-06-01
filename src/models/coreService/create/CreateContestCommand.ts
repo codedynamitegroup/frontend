@@ -3,5 +3,5 @@ export interface CreateContestCommand {
   description: string;
   thumbnailUrl: string;
   startTime: string;
-  endTime: string | null;
+  endTime?: string | null;
 }
