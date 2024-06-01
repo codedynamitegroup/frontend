@@ -34,7 +34,7 @@ import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Footer from "components/Footer";
-import TitleWithInfoTip from "../TitleWithInfo";
+import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";

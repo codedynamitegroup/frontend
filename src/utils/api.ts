@@ -70,18 +70,19 @@ const createInstance = ({
               if (err.response.status === 401 || err.response.status === 403) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
-                return Promise.reject({
-                  code: err.response.status,
-                  status: err.response?.statusText || "Unauthorized",
-                  message: "Please authenticate"
-                });
               }
             });
         }
         return Promise.reject({
-          code: error.response?.data?.code || 503,
-          status: error.response?.data?.status || "Service Unavailable",
-          message: error.response?.data?.message || error.message
+          code: error.response?.data?.code || error.response.status || 503,
+          status:
+            error.response.status === 401 || error.response.status === 403
+              ? "Unauthorized"
+              : error.response?.data?.status || "Service Unavailable",
+          message:
+            error.response.status === 401 || error.response.status === 403
+              ? "Please authenticate"
+              : error.response?.data?.message || error.message
         });
       }
     );

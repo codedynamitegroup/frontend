@@ -1,7 +1,7 @@
 import { Grid, OutlinedInput, OutlinedInputProps } from "@mui/material";
 import { memo } from "react";
 import ErrorMessage from "components/text/ErrorMessage";
-import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
 
 interface InputsProps extends OutlinedInputProps {
   title?: string;
