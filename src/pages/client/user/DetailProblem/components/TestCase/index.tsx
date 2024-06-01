@@ -11,9 +11,11 @@ export default function TestCase() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
-    dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
-  }, [codeQuestion?.sampleTestCases[0]]);
+    if (codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0) {
+      dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
+      dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
+    }
+  }, [codeQuestion?.sampleTestCases]);
 
   return (
     <Box id={classes.root}>

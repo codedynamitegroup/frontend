@@ -54,7 +54,6 @@ const ListProblem = () => {
     clearTimeout(timer);
 
     const newTimer = window.setTimeout(() => {
-      console.log("changing");
       dispatch(setSearchKey(e.target.value));
     }, 1500);
 

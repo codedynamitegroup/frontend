@@ -52,8 +52,6 @@ import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 
 export default function DetailProblem() {
-  const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
-
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -92,7 +90,7 @@ export default function DetailProblem() {
 
   useEffect(() => {
     if (problemId !== undefined)
-      CodeQuestionService.getDetailCodeQuestion(problemId, userId)
+      CodeQuestionService.getDetailCodeQuestion(problemId)
         .then((data: CodeQuestionEntity) => {
           dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
