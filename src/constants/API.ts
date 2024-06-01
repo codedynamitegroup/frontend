@@ -83,6 +83,7 @@ export const API = {
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
+      OVERVIEW: "/course/exam/:id/overview",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam"
     },
