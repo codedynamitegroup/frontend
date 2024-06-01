@@ -15,6 +15,7 @@ import sectionReducer from "reduxes/courseService/section/index";
 import submissionAssignmentReducer from "reduxes/courseService/submission_assignment/index";
 import examReducer from "reduxes/courseService/exam/index";
 import assignmentReducer from "reduxes/courseService/assignment/index";
+import courseTypeReducer from "reduxes/courseService/course_type/index";
 import questionReducer from "reduxes/courseService/question/index";
 import questionBankCategory from "reduxes/courseService/questionBankCategory";
 import SearchAndDifficultyAndSolved from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
@@ -23,6 +24,7 @@ import courseUser from "reduxes/courseService/courseUser";
 import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 import questionCreate from "reduxes/coreService/questionCreate/index";
+import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 
@@ -40,6 +42,7 @@ const store = configureStore({
     contest: contestReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
+    courseType: courseTypeReducer,
     section: sectionReducer,
     assignment: assignmentReducer,
     submissionAssignment: submissionAssignmentReducer,
@@ -53,6 +56,7 @@ const store = configureStore({
     executeResultData: ExecuteResult,
     auth: auth,
     questionCreate: questionCreate,
+    questionCategory: questionCategory,
     loading: loading
   },
   // middleware: getDefaultMiddleWare => getDefaultMiddleWare().concat(ap)

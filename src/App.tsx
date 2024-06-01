@@ -44,6 +44,8 @@ import { useSelector } from "react-redux";
 import { selectedLoading } from "reduxes/Loading";
 import LoadingScreen from "components/common/LoadingScreen";
 import ContestManagement from "pages/client/admin/ContestManagement/ContestManagement";
+import CreateContest from "pages/client/admin/ContestManagement/CreateContest";
+import EditContestDetails from "pages/client/admin/ContestManagement/EditContestDetails";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -142,6 +144,8 @@ const router = createHashRouter(
       <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
       <Route path={routes.admin.contest.root} element={<ContestManagement />} />
+      <Route path={routes.admin.contest.create} element={<CreateContest />} />
+      <Route path={routes.admin.contest.detail} element={<EditContestDetails />} />
     </Route>
   )
 );

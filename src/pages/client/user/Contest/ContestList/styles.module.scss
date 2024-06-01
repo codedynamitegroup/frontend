@@ -32,13 +32,13 @@
     & [class~="MuiToggleButtonGroup-root"] {
       & [class~="MuiButtonBase-root"] {
         background-color: rgb(255, 255, 255);
-        border-radius: 20px;
+        border-radius: 12px;
         border: 0;
         margin-right: 10px;
       }
       & [class~="Mui-selected"] {
-        background-color: var(--blue-500);
-        color: white;
+        background-color: #ecf4fd;
+        color: #1976d2;
       }
     }
   }

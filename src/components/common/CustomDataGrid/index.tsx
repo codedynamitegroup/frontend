@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 
 interface DataGridProps {
+  loading?: boolean;
   dataList: Array<any>;
   tableHeader: Array<GridColDef>;
   visibleColumn?: any;
@@ -39,6 +40,7 @@ interface DataGridProps {
 
 const CustomDataGrid = (props: DataGridProps) => {
   const {
+    loading = false,
     dataList,
     tableHeader,
     onSelectData,
@@ -84,6 +86,7 @@ const CustomDataGrid = (props: DataGridProps) => {
   return (
     <Box className={classes.container}>
       <DataGrid
+        loading={loading}
         rows={dataList}
         columns={tableHeader}
         columnVisibilityModel={visibleColumn}

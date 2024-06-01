@@ -70,15 +70,14 @@ const createInstance = ({
               if (err.response.status === 401 || err.response.status === 403) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
+                return Promise.reject({
+                  code: err.response.status,
+                  status: err.response?.statusText || "Unauthorized",
+                  message: "Please authenticate"
+                });
               }
-              return Promise.reject({
-                code: err.response?.data?.code || 503,
-                status: err.response?.data?.status || "Service Unavailable",
-                message: err.response?.data?.message || err.message
-              });
             });
         }
-
         return Promise.reject({
           code: error.response?.data?.code || 503,
           status: error.response?.data?.status || "Service Unavailable",

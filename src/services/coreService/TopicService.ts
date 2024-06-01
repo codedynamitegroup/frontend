@@ -27,11 +27,10 @@ export class TopicService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch topics", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -46,11 +45,10 @@ export class TopicService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch topic by id", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -66,11 +64,10 @@ export class TopicService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to update topic by id", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -86,11 +83,10 @@ export class TopicService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to delete topic by id", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }

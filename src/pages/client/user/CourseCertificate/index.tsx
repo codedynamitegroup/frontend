@@ -61,17 +61,6 @@ const CourseCertificates = () => {
     return topicState.topics.find((topic) => topic.topicId === catalogActive);
   }, [catalogActive, topicState.topics]);
 
-  const searchHandle = useCallback(
-    (searchText: string) => {
-      handleGetCertificateCourses({
-        courseName: searchText,
-        filterTopicIds: [currentTopic?.topicId || ""],
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
-      });
-    },
-    [currentTopic?.topicId]
-  );
-
   const [assignmentSection, setAssignmentSection] = React.useState("0");
 
   const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
@@ -121,7 +110,7 @@ const CourseCertificates = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleGetTopics = async () => {
+  const handleGetTopics = useCallback(async () => {
     try {
       const getTopicsResponse = await TopicService.getTopics({
         fetchAll: true
@@ -129,65 +118,84 @@ const CourseCertificates = () => {
       dispatch(setTopics(getTopicsResponse));
     } catch (error: any) {
       console.error("Failed to fetch topics", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
       // Show snackbar here
     }
-  };
+  }, [dispatch]);
 
-  const handleGetCertificateCourses = async ({
-    courseName,
-    filterTopicIds,
-    isRegisteredFilter,
-    fetchMostEnrolled = false
-  }: {
-    courseName: string;
-    filterTopicIds: string[];
-    isRegisteredFilter: IsRegisteredFilterEnum;
-    fetchMostEnrolled?: boolean;
-  }) => {
-    dispatch(setLoading({ isLoading: true }));
-    try {
-      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName,
-        filterTopicIds,
-        isRegisteredFilter
-      });
-      setTimeout(() => {
-        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-        if (fetchMostEnrolled) {
-          dispatch(
-            setMostEnrolledCertificateCourses(
-              getCertificateCoursesResponse.mostEnrolledCertificateCourses
-            )
-          );
-        }
+  const handleGetCertificateCourses = useCallback(
+    async ({
+      courseName,
+      filterTopicIds,
+      isRegisteredFilter,
+      fetchMostEnrolled = false
+    }: {
+      courseName: string;
+      filterTopicIds: string[];
+      isRegisteredFilter: IsRegisteredFilterEnum;
+      fetchMostEnrolled?: boolean;
+    }) => {
+      dispatch(setLoading({ isLoading: true }));
+      try {
+        const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+          courseName,
+          filterTopicIds,
+          isRegisteredFilter
+        });
+        setTimeout(() => {
+          dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
+          if (fetchMostEnrolled) {
+            dispatch(
+              setMostEnrolledCertificateCourses(
+                getCertificateCoursesResponse.mostEnrolledCertificateCourses
+              )
+            );
+          }
+          dispatch(setLoading({ isLoading: false }));
+        }, 500);
+      } catch (error: any) {
+        console.error("Failed to fetch certificate courses", {
+          code: error.code || 503,
+          status: error.status || "Service Unavailable",
+          message: error.message
+        });
         dispatch(setLoading({ isLoading: false }));
-      }, 500);
-    } catch (error: any) {
-      console.error("Failed to fetch certificate courses", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      dispatch(setLoading({ isLoading: false }));
-      // Show snackbar here
-    }
-  };
+        // Show snackbar here
+      }
+    },
+    [dispatch]
+  );
 
-  const handleChangeCatalog = useCallback((value: string) => {
-    if (value === "all") {
-      navigate(routes.user.course_certificate.root);
-    } else {
-      navigate(`${routes.user.course_certificate.root}?topicId=${value}`);
-    }
-  }, []);
+  const handleChangeCatalog = useCallback(
+    (value: string) => {
+      if (value === "all") {
+        setSearchText("");
+        navigate(routes.user.course_certificate.root);
+      } else {
+        setSearchText("");
+        navigate(`${routes.user.course_certificate.root}?topicId=${value}`);
+      }
+    },
+    [navigate]
+  );
+
+  const searchHandle = useCallback(
+    (searchText: string) => {
+      handleGetCertificateCourses({
+        courseName: searchText,
+        filterTopicIds: [currentTopic?.topicId || ""],
+        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+      });
+    },
+    [currentTopic?.topicId, handleGetCertificateCourses]
+  );
 
   useEffect(() => {
     handleGetTopics();
-  }, []);
+  }, [handleGetTopics]);
 
   useEffect(() => {
     if (certificateCourseState.isLoading) return;
@@ -197,7 +205,7 @@ const CourseCertificates = () => {
       isRegisteredFilter: IsRegisteredFilterEnum.ALL,
       fetchMostEnrolled: true
     });
-  }, [currentTopic?.topicId]);
+  }, [currentTopic?.topicId, handleGetCertificateCourses]);
 
   return (
     <>

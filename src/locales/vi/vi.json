@@ -160,9 +160,12 @@
   "common_limit_time": "Thời gian làm bài",
   "common_num_of_participants": "Số người tham gia",
   "common_created_at": "Ngày tạo",
-  "common_contest_management": "Quản lý cuộc thi",
+  "common_cancel_filter": "Hủy bộ lọc",
+  "common_apply_filter": "Áp dụng bộ lọc",
+  "common_get_started": "Bắt đầu",
   "common_enter_answer": "Nhập câu trả lời",
   "common_remove_flag": "Huỷ gắn cờ",
+  "common_start": "Bắt đầu",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -229,6 +232,16 @@
   "contest_advance_difficulty": "Cao cấp",
   "contest_programming_language_title": "Ngôn ngữ lập trình",
 
+  "contest_management_title": "Quản lý cuộc thi",
+  "contest_name": "Tên cuộc thi",
+  "contest_create": "Tạo cuộc thi",
+  "contest_description_message_1": "Tạo cuộc thi lập trình của riêng bạn trên CodeDynamite. Bạn có thể luyện tập và thi đấu với bạn bè từ tổ chức hoặc trường học của bạn. Tạo cuộc thi của riêng bạn và mời bạn bè tham gia.",
+  "contest_description_message_2": "Bắt đầu bằng cách cung cấp thông tin ban đầu cho cuộc thi của bạn.",
+  "contest_enter_contest_name": "Nhập tên cuộc thi",
+  "contest_start_time": "Thời gian bắt đầu cuộc thi",
+  "contest_end_time": "Thời gian kết thúc cuộc thi",
+  "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
+
   "contest_detail_joined_feature_status": "Bạn đã đăng ký tham gia cuộc thi này",
   "contest_detail_joined_happening_status": "Bạn đang tham gia cuộc thi này",
   "contest_detail_joined_ended_status": "Bạn đã tham gia cuộc thi này",
@@ -263,7 +276,7 @@
   "certificate_detail_participant": "Số người học",
   "certificate_detail_register_button": "Đăng ký ngay",
   "certificate_detail_start_button": "Bắt đầu học ngay",
-  "certificate_detail_continute_button": "Tiếp tục học",
+  "certificate_detail_continue_button": "Tiếp tục học",
   "certificate_detail_lesson_title": "Các bài học ở khóa học",
   "certificate_detail_certification_title": "Chứng chỉ khóa học",
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
@@ -276,6 +289,8 @@
   "dashboard_current_lesson": "Bài học hiện tại",
   "dashboard_participant_num": "Đang có {{participantNum}} người tham gia",
   "dashboard_contest_end": "Cuộc thi sẽ kết thúc vào ngày",
+  "dashboard_this_certificate_course_has_no_lesson": "Khóa học này hiện chưa có bài học nào",
+  "dashboard_no_ongoing_course": "Không có khóa học nào đang diễn ra. Hãy bắt đầu học ngay",
 
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",
