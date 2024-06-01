@@ -96,7 +96,7 @@ export class ContestService {
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
-      }).post(`${API.CORE.CONTEST.DEFAULT}`, data);
+      }).post(`${API.CORE.CONTEST.CREATE}`, data);
       if (response.status === 201) {
         return response.data;
       }

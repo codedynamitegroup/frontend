@@ -41,7 +41,7 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import JoyButton from "@mui/joy/Button";
 import Footer from "components/Footer";
-import TitleWithInfoTip from "../TitleWithInfo";
+import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface Props {
