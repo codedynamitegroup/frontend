@@ -89,6 +89,8 @@ export default function Result() {
                 {": "}
               </ParagraphExtraSmall>
               <TextField
+                multiline
+                InputProps={{ readOnly: true }}
                 fullWidth
                 id='outlined-basic'
                 variant='outlined'
