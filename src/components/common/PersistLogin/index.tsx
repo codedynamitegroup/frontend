@@ -46,7 +46,7 @@ const PersistLogin = () => {
       const decodedToken: any = jwtDecode(accessToken);
 
       if (!isExpired) {
-        UserService.getUserByEmail(decodedToken.email, accessToken)
+        UserService.getUserByEmail(decodedToken.email)
           .then((response) => {
             const user: User = response;
             dispatch(
@@ -64,7 +64,7 @@ const PersistLogin = () => {
             localStorage.setItem("refresh_token", res.refreshToken);
 
             const decodedToken: any = jwtDecode(res.accessToken);
-            UserService.getUserByEmail(decodedToken.email, res.accessToken)
+            UserService.getUserByEmail(decodedToken.email)
               .then((response) => {
                 const user: User = response;
                 dispatch(

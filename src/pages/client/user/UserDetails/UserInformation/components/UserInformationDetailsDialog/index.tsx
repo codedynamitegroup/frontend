@@ -13,14 +13,17 @@ import { useEffect, useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 import { User } from "models/authService/entity/user";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "reduxes/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser, setLogin } from "reduxes/Auth";
 import { format, parse } from "date-fns";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { UserService } from "services/authService/UserService";
+import LoadButton from "components/common/buttons/LoadingButton";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface IFormDataUpdateProfileUser {
   firstName: string;
@@ -55,6 +58,10 @@ const UserInformationDetailsDialog = ({
   const { t } = useTranslation();
   const user: User = useSelector(selectCurrentUser);
   const [data, setData] = useState<User>(user);
+  const [isUpdateProfileLoading, setIsUpdateProfileLoading] = useState(false);
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
 
   // const onHandleChangeGender = (value: string) => {
   //   setData((pre) => ({
@@ -92,23 +99,61 @@ const UserInformationDetailsDialog = ({
       reset({
         firstName: user.firstName,
         lastName: user.lastName,
-        dob: format(user.dob, "dd-MM-yyyy")
+        dob: format(user.dob, "dd-MM-yyyy"),
+        phone: user.phone
       });
     }
   }, [user]);
 
-  const handleUpdateProfileUser = (data: IFormDataUpdateProfileUser) => {
-    if (data.dob) {
-      const dob: Date = parse(data.dob, "dd-MM-yyyy", new Date());
-      console.log(dob);
-    }
-    console.log(data);
+  const dispatch = useDispatch();
+
+  const handleUpdateProfileUser = async (data: IFormDataUpdateProfileUser) => {
+    setIsUpdateProfileLoading(true);
+    UserService.updateProfileUser({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dob: data.dob ? parse(data.dob, "dd-MM-yyyy", new Date()) : undefined,
+      phone: data.phone
+    })
+      .then((res) => {
+        UserService.getUserByEmail(user.email)
+          .then((response) => {
+            const user: User = response;
+            dispatch(
+              setLogin((prevState: any) => ({
+                ...prevState,
+                user: user
+              }))
+            );
+          })
+          .catch((error) => {
+            console.error("Failed to get user by email", error);
+          });
+        setOpenSnackbarAlert(true);
+        setAlertContent("Cập nhật tài khoản thành công");
+        setAlertType(AlertType.Success);
+      })
+      .catch((error) => {
+        setOpenSnackbarAlert(true);
+        setAlertContent("Cập nhật tài khoản thất bại!! Hãy thử lại");
+        setAlertType(AlertType.Error);
+        console.error("Failed to update profile", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+      })
+      .finally(() => {
+        setIsUpdateProfileLoading(false);
+      });
   };
 
   return (
     <CustomDialog
       open={open}
-      handleClose={handleClose}
+      handleClose={() => {
+        handleClose();
+      }}
       title={title}
       cancelText={cancelText}
       confirmText={confirmText}
@@ -213,14 +258,16 @@ const UserInformationDetailsDialog = ({
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}></Grid>
           <Grid item xs={9}>
-            <Button
+            <LoadButton
+              loading={isUpdateProfileLoading}
               btnType={BtnType.Primary}
-              isTypeSubmit
-              fullWidth
+              colorname='--white'
+              autoFocus
               translation-key='common_update'
+              isTypeSubmit
             >
               {t("common_update")}
-            </Button>
+            </LoadButton>
           </Grid>
         </Grid>
 
@@ -258,7 +305,7 @@ const UserInformationDetailsDialog = ({
           </Grid>
           <Grid
             item
-            xs={6}
+            xs={9}
             sx={{
               display: "flex",
               alignItems: "center"
@@ -268,7 +315,7 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_linked")}
             </ParagraphBody>
           </Grid>
-          <Grid
+          {/* <Grid
             item
             xs={3}
             sx={{
@@ -283,7 +330,7 @@ const UserInformationDetailsDialog = ({
             >
               {t("user_detail_dialog_remove_link")}
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Divider />
 
@@ -316,7 +363,7 @@ const UserInformationDetailsDialog = ({
           </Grid>
           <Grid
             item
-            xs={6}
+            xs={9}
             sx={{
               display: "flex",
               alignItems: "center"
@@ -326,7 +373,7 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_not_linked")}
             </ParagraphBody>
           </Grid>
-          <Grid
+          {/* <Grid
             item
             xs={3}
             sx={{
@@ -341,9 +388,15 @@ const UserInformationDetailsDialog = ({
             >
               {t("user_detail_dialog_link")}
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Divider />
+        <SnackbarAlert
+          open={openSnackbarAlert}
+          setOpen={setOpenSnackbarAlert}
+          type={alertType}
+          content={alertContent}
+        />
       </Box>
     </CustomDialog>
   );

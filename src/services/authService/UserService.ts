@@ -1,6 +1,11 @@
 import axios from "axios";
 import { API } from "constants/API";
-import { LoginRequest, RegisteredRequest } from "models/authService/entity/user";
+import {
+  LoginRequest,
+  RegisteredRequest,
+  UpdatePasswordUserRequest,
+  UpdateProfileUserRequest
+} from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import api from "utils/api";
 
@@ -26,23 +31,21 @@ export class UserService {
       });
     }
   }
-  static async getUserByEmail(email: string, accessToken: string) {
+  static async getUserByEmail(email: string) {
     try {
-      const response = await axios.get(
-        `${authServiceApiUrl}${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        }
-      );
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${authServiceApiUrl}${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
       console.error("Failed to get user by email", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -73,15 +76,15 @@ export class UserService {
     } catch (error: any) {
       console.error("Failed to login", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
   static async logout() {
     try {
-      const response = await await api({
+      const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
       }).post(`${authServiceApiUrl}${API.AUTH.LOGOUT}`);
@@ -91,9 +94,9 @@ export class UserService {
     } catch (error: any) {
       console.error("Failed to login", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -110,6 +113,50 @@ export class UserService {
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
         message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async updateProfileUser(updateProfileUserRequest: UpdateProfileUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(`${authServiceApiUrl}${API.AUTH.UPDATE_PROFILE_USER}`, {
+        firstName: updateProfileUserRequest.firstName,
+        lastName: updateProfileUserRequest.lastName,
+        dob: updateProfileUserRequest.dob,
+        phone: updateProfileUserRequest.phone
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to update profile user", error);
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async updatePasswordUser(updatePasswordUserRequest: UpdatePasswordUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).post(`${authServiceApiUrl}${API.AUTH.CHANGE_PASSWORD}`, {
+        oldPassword: updatePasswordUserRequest.oldPassword,
+        newPassword: updatePasswordUserRequest.newPassword
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to changed password", error);
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }

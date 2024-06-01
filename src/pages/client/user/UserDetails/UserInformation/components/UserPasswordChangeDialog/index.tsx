@@ -2,15 +2,17 @@ import { DialogProps, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
-import TextTitle from "components/text/TextTitle";
 import { useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import images from "config/images";
 import { useTranslation } from "react-i18next";
-import Button, { BtnType } from "components/common/buttons/Button";
+import { BtnType } from "components/common/buttons/Button";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { UserService } from "services/authService/UserService";
+import LoadButton from "components/common/buttons/LoadingButton";
 
 interface IFormDataUpdatePassword {
   oldPassword: string;
@@ -71,20 +73,53 @@ const UserPasswordChangeDialog = ({
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors }
   } = useForm<IFormDataUpdatePassword>({
     resolver: yupResolver(schema)
   });
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [alertContent, setAlertContent] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const [isUpdatedPasswordLoading, setIsUpdatedPasswordLoading] = useState(false);
 
   const handleUpdatePassword = (data: IFormDataUpdatePassword) => {
-    console.log(data);
+    setIsUpdatedPasswordLoading(true);
+    UserService.updatePasswordUser({
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword
+    })
+      .then((res) => {
+        console.log(res);
+        setOpenSnackbarAlert(true);
+        setAlertContent("Cập nhật mật khẩu thành công");
+        setAlertType(AlertType.Success);
+      })
+      .catch((error) => {
+        setOpenSnackbarAlert(true);
+        setAlertContent("Cập nhật mật khẩu thất bại!! Hãy thử lại");
+        setAlertType(AlertType.Error);
+        console.error("Failed to update profile", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+      })
+      .finally(() => {
+        setIsUpdatedPasswordLoading(false);
+      });
   };
 
   return (
     <CustomDialog
       open={open}
-      handleClose={handleClose}
+      handleClose={() => {
+        reset({
+          oldPassword: "",
+          newPassword: "",
+          renewPassword: ""
+        });
+        handleClose();
+      }}
       title={title}
       cancelText={cancelText}
       confirmText={confirmText}
@@ -127,16 +162,25 @@ const UserPasswordChangeDialog = ({
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}></Grid>
           <Grid item xs={9}>
-            <Button
+            <LoadButton
+              loading={isUpdatedPasswordLoading}
               btnType={BtnType.Primary}
-              isTypeSubmit
-              fullWidth
+              colorname='--white'
+              autoFocus
               translation-key='user_detail_change_password'
+              fullWidth
+              isTypeSubmit
             >
               {t("user_detail_change_password")}
-            </Button>
+            </LoadButton>
           </Grid>
         </Grid>
+        <SnackbarAlert
+          open={openSnackbarAlert}
+          setOpen={setOpenSnackbarAlert}
+          type={alertType}
+          content={alertContent}
+        />
       </Box>
     </CustomDialog>
   );

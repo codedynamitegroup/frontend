@@ -40,8 +40,6 @@ const createInstance = ({
         //   return Promise.resolve(error.response.data);
         // }
         const originalRequest = error.config;
-        console.log("refreshToken", refreshToken);
-
         // Handle 401 Unauthorized
         if (
           error.response &&
@@ -61,6 +59,7 @@ const createInstance = ({
                 localStorage.setItem("access_token", res.data.accessToken);
                 localStorage.setItem("refresh_token", res.data.refreshToken);
 
+                console.log("Hello");
                 // return axios(originalRequest);
                 return instance(originalRequest);
               }
@@ -70,18 +69,20 @@ const createInstance = ({
               if (err.response.status === 401 || err.response.status === 403) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
-                return Promise.reject({
-                  code: err.response.status,
-                  status: err.response?.statusText || "Unauthorized",
-                  message: "Please authenticate"
-                });
+                localStorage.removeItem("provider");
               }
             });
         }
         return Promise.reject({
-          code: error.response?.data?.code || 503,
-          status: error.response?.data?.status || "Service Unavailable",
-          message: error.response?.data?.message || error.message
+          code: error.response?.data?.code || error.response.status || 503,
+          status:
+            error.response.status === 401 || error.response.status === 403
+              ? "Unauthorized"
+              : error.response?.data?.status || "Service Unavailable",
+          message:
+            error.response.status === 401 || error.response.status === 403
+              ? "Please authenticate"
+              : error.response?.data?.message || error.message
         });
       }
     );

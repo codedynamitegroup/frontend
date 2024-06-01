@@ -315,8 +315,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     }
                     alt='avatar'
                   ></img>
-                  <ParagraphSmall fontWeight={600}>
-                    {loggedUser.firstName + " " + loggedUser.lastName}
+                  <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
+                    {`${loggedUser.firstName} ${loggedUser.lastName}`}
                   </ParagraphSmall>
                 </Button>
               </Grid>
