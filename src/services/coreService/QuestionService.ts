@@ -1,9 +1,9 @@
-import { C } from "@fullcalendar/core/internal-common";
 import axios from "axios";
 import { API } from "constants/API";
 import {
   PostEssayQuestion,
   PostMultipleChoiceQuestion,
+  PostQuestionDetailList,
   PostShortAnswerQuestion
 } from "models/coreService/entity/QuestionEntity";
 
@@ -53,6 +53,25 @@ export class QuestionService {
       const response = await axios.post(
         `${coreServiceApiUrl}${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.CREATE}`,
         multipleChoiceQuestionData
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create multiple choice question", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getQuestionDetail(questionDetailList: PostQuestionDetailList) {
+    try {
+      const response = await axios.post(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.QUESTION_DETAIL}`,
+        questionDetailList
       );
       if (response.status === 200) {
         return response.data;

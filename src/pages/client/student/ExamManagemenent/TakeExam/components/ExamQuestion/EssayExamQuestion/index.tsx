@@ -8,37 +8,48 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
 import AdvancedDropzoneDemo from "components/editor/FileUploader";
+import { EssayQuestion } from "models/coreService/entity/QuestionEntity";
+import { setFlag } from "reduxes/TakeExam";
+import { useDispatch } from "react-redux";
 
 interface Props {
   page: number;
   isFlagged?: boolean;
 
-  responseFormat?: "editor" | "plain" | "no_online";
-  responseFieldLines?: number;
-  minWord?: number;
-  maxWord?: number;
-  attachments?: number;
-  fileSize?: number;
-  fileTypes?: string;
+  // responseFormat?: "editor" | "plain" | "no_online";
+  // responseFieldLines?: number;
+  // minWord?: number;
+  // maxWord?: number;
+  // attachments?: number;
+  // fileSize?: number;
+  // fileTypes?: string;
+
+  questionEssayQuestion: EssayQuestion;
 }
 
 const EssayExamQuestion = (props: Props) => {
-  const { page, isFlagged, responseFormat, responseFieldLines, attachments, fileSize, fileTypes } =
-    props;
+  const { page, isFlagged, questionEssayQuestion } = props;
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const fileTypeList =
-    fileTypes === "archive"
+    questionEssayQuestion.fileTypesList === "archive"
       ? ".7z .bdoc .cdoc .ddoc .gtar .tgz .gz .gzip .hqx .rar .sit .tar .zip"
-      : fileTypes === "document"
+      : questionEssayQuestion.fileTypesList === "document"
         ? ".doc .docx .epub .gdoc .odt .ott .oth .pdf .rtf"
-        : fileTypes === "image"
+        : questionEssayQuestion.fileTypesList === "image"
           ? ".bmp .gif .jpeg .jpg .png .svg .tif .tiff"
-          : fileTypes === "video"
+          : questionEssayQuestion.fileTypesList === "video"
             ? ".3g2 .3gp .avi .flv .h264 .m4v .mkv .mov .mp4 .mpg .mpeg .rm .swf .vob .wmv"
-            : fileTypes === "audio"
+            : questionEssayQuestion.fileTypesList === "audio"
               ? ".aif .cda .mid .midi .mp3 .mpa .ogg .wav .wma"
               : "";
-  const convertedFileSize = fileSize ? (fileSize / 1000) * 1024 * 1024 : undefined;
+  const convertedFileSize = questionEssayQuestion.maxBytes
+    ? (questionEssayQuestion.maxBytes / 1000) * 1024 * 1024
+    : undefined;
+
+  const flagQuestionHandle = () => {
+    dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+  };
 
   return (
     <Grid container spacing={1}>
@@ -49,6 +60,7 @@ const EssayExamQuestion = (props: Props) => {
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
+            onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
           </Button>
@@ -81,7 +93,7 @@ const EssayExamQuestion = (props: Props) => {
             color={"#212121"}
             lineHeight={"1.5"}
           >
-            Ai là cha của SE? Nêu những thành tựu nổi bật
+            {questionEssayQuestion.question.questionText}
           </ParagraphBody>
           <ParagraphBody
             fontSize={".875rem"}
@@ -91,19 +103,26 @@ const EssayExamQuestion = (props: Props) => {
           >
             {t("common_answer")}
           </ParagraphBody>
-          {responseFormat === "editor" && (
-            <TextEditor value='' roundedBorder maxLines={responseFieldLines} />
+          {questionEssayQuestion.responseFormat === "editor" && (
+            <TextEditor
+              value=''
+              roundedBorder
+              maxLines={questionEssayQuestion.responseFieldLines}
+            />
           )}
-          {responseFormat === "plain" && <Textarea minRows={"10"} maxRows={responseFieldLines} />}
+          {questionEssayQuestion.responseFormat === "plain" && (
+            <Textarea minRows={"10"} maxRows={questionEssayQuestion.responseFieldLines} />
+          )}
         </Box>
       </Grid>
 
-      {(responseFormat === "no_online" || attachments !== 0) && (
+      {(questionEssayQuestion.responseFormat === "no_online" ||
+        questionEssayQuestion.attachments !== 0) && (
         <Grid item xs={12}>
           <AdvancedDropzoneDemo
             maxFileSize={convertedFileSize}
             accept={fileTypeList}
-            maxFiles={attachments}
+            maxFiles={questionEssayQuestion.attachments}
           />
         </Grid>
       )}

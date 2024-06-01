@@ -134,3 +134,37 @@ export interface MultiChoiceQuestion {
   showNumCorrect?: number | null | undefined;
   showStandardInstructions?: string | null | undefined;
 }
+
+export interface ShortAnswerQuestion {
+  id: string;
+  question: GetQuestion;
+  caseSensitive: boolean;
+}
+
+export interface EssayQuestion {
+  id: string;
+  question: GetQuestion;
+
+  responseFormat: string;
+  responseRequired?: number;
+  responseFieldLines: number;
+  attachments: number;
+  attachmentsRequired?: number;
+  graderInfo?: string;
+  graderInfoFormat?: number;
+  responseTemplate?: string;
+  responseTemplateFormat?: number;
+  fileTypesList?: string;
+  minWordLimit: number;
+  maxWordLimit: number;
+  maxBytes?: number;
+}
+
+export interface PostQuestionDetail {
+  questionId: string;
+  qtype: string;
+}
+
+export interface PostQuestionDetailList {
+  questionCommands: PostQuestionDetail[];
+}

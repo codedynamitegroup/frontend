@@ -1,17 +1,17 @@
 const qtype = {
-  essay: { code: "essay", vi_name: "Câu hỏi tự luận", en_name: "Essay question" },
+  essay: { code: "ESSAY", vi_name: "Câu hỏi tự luận", en_name: "Essay question" },
   short_answer: {
-    code: "short-answer",
+    code: "SHORT_ANSWER",
     vi_name: "Câu hỏi trả lời ngắn",
     en_name: "Short answer question"
   },
   multiple_choice: {
-    code: "multiple-choice",
+    code: "MULTIPLE_CHOICE",
     vi_name: "Câu hỏi nhiều lựa chọn",
     en_name: "Multiple choice question"
   },
   true_false: {
-    code: "true-false",
+    code: "TRUE_FALSE",
     vi_name: "Câu hỏi đúng sai",
     en_name: "Yes / No question"
   },

@@ -9,24 +9,62 @@ import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import Sheet from "@mui/joy/Sheet";
 import { Checkbox } from "@mui/joy";
+import { setAnswered, setFlag } from "reduxes/TakeExam";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 interface Props {
   page: number;
 
-  isFlagged?: boolean;
-
   questionMultiChoice: MultiChoiceQuestion;
+  questionState: any;
 }
 
 const MultipleChoiceExamQuestion = (props: Props) => {
   const { t } = useTranslation();
-  const { page, isFlagged, questionMultiChoice } = props;
+  const { page, questionState, questionMultiChoice } = props;
+  const dispatch = useDispatch();
+  const isFlagged = questionState.flag;
 
-  let answerList = questionMultiChoice.question.answers?.map((answer: any) => ({
-    value: answer.id,
-    label: answer.answer
-  }));
-  if (questionMultiChoice.shuffleAnswers) answerList = shuffleArray(answerList);
+  // convert answer got from API to JoyRadioGroup format
+  // value is answer ID, label is answer content aka answer
+  const [answerList, setAnswerList] = useState<{ value: string; label: string }[] | undefined>(
+    questionMultiChoice.question.answers?.map((answer: any) => ({
+      value: answer.id,
+      label: answer.answer
+    }))
+  );
+
+  const flagQuestionHandle = () => {
+    dispatch(setFlag({ id: questionMultiChoice.question.id, flag: !isFlagged }));
+  };
+
+  const handleRadioChange = (value: string) => {
+    dispatch(setAnswered({ id: questionMultiChoice.question.id, content: value, answered: true }));
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedList: string[] = questionState.content.split(", ");
+    selectedList = selectedList.filter((uuid) => uuid !== "" && uuid !== "null");
+
+    if (event.target.checked) {
+      selectedList.push(event.target.value);
+    } else {
+      selectedList = selectedList.filter((uuid) => uuid !== event.target.value);
+    }
+
+    const updatedContent = selectedList.join(", ");
+
+    dispatch(
+      setAnswered({ id: questionMultiChoice.question.id, content: updatedContent, answered: true })
+    );
+
+    console.log(selectedList);
+  };
+
+  useEffect(() => {
+    if (questionMultiChoice.shuffleAnswers) setAnswerList(shuffleArray(answerList));
+  }, []);
 
   return (
     <Grid container spacing={1}>
@@ -37,6 +75,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
+            onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
           </Button>
@@ -44,14 +83,20 @@ const MultipleChoiceExamQuestion = (props: Props) => {
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
-          <Box sx={{ backgroundColor: "#FDF6EA" }} borderRadius={1} padding={".35rem 1rem"}>
+          <Box
+            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            borderRadius={1}
+            padding={".35rem 1rem"}
+          >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Chưa trả lời
+              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm có thể đạt được: 2
+              {t("common_score_can_achieve")}
+              {": "}
+              {questionMultiChoice.question.defaultMark}
             </ParagraphBody>
           </Box>
         </Stack>
@@ -95,8 +140,8 @@ const MultipleChoiceExamQuestion = (props: Props) => {
         {Boolean(questionMultiChoice.single) ? (
           <JoyRadioGroup
             color='primary'
-            value={""}
-            onChange={() => {}}
+            value={questionState.content}
+            onChange={handleRadioChange}
             values={answerList}
             orientation='vertical'
             size='md'
@@ -114,9 +159,13 @@ const MultipleChoiceExamQuestion = (props: Props) => {
               "& > div": { p: 1, borderRadius: "12px", display: "flex" }
             }}
           >
+            {/* Value is ID */}
             {answerList?.map((answer) => (
               <Sheet variant='outlined' key={answer.value}>
                 <Checkbox
+                  onChange={handleCheckboxChange}
+                  value={answer.value}
+                  checked={questionState.content.includes(answer.value)}
                   size='sm'
                   overlay
                   label={

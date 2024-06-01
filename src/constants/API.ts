@@ -33,6 +33,7 @@ export const API = {
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
+      QUESTION_DETAIL: "/core/questions/detail",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
