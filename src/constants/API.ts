@@ -21,6 +21,7 @@ export const API = {
     },
     CONTEST: {
       DEFAULT: "/core/contests",
+      CONTEST_MANAGEMENT_FOR_ADMIN: "/core/contests/admin",
       CREATE: "/core/contests/create",
       GET_BY_ID: "/core/contests/:id",
       UPDATE_BY_ID: "/core/contests/:id",

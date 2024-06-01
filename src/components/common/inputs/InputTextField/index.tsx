@@ -28,6 +28,7 @@ interface InputsProps extends OutlinedInputProps {
   infoComponent?: React.ReactNode;
   required?: boolean;
   titleFontSize?: string;
+  width?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -50,7 +51,8 @@ const InputTextField = memo((props: InputsProps) => {
     maxWith,
     error,
     tooltipDescription,
-    titleFontSize
+    titleFontSize,
+    width
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -90,7 +92,8 @@ const InputTextField = memo((props: InputsProps) => {
               }}
               style={{
                 backgroundColor: backgroundColor || "white",
-                maxWidth: maxWith || "none"
+                maxWidth: maxWith || "none",
+                width: width || "auto"
               }}
               defaultValue={defaultValue}
               value={value}

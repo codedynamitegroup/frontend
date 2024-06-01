@@ -10,6 +10,7 @@ interface BasicDateTimePickerProps {
   onHandleValueChange?: (value: Moment | null) => void;
   backgroundColor?: string;
   disabled?: boolean;
+  width?: string;
 }
 
 const CustomDateTimePicker = ({
@@ -17,7 +18,8 @@ const CustomDateTimePicker = ({
   value,
   onHandleValueChange,
   backgroundColor,
-  disabled = false
+  disabled = false,
+  width
 }: BasicDateTimePickerProps) => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -41,10 +43,10 @@ const CustomDateTimePicker = ({
         format={currentLang === "vi" ? "dddd DD/MM/YYYY hh:mm A" : "dddd MM/DD/YYYY hh:mm A"}
         slotProps={{
           textField: {
-            fullWidth: true,
             size: "small",
             sx: {
-              backgroundColor: backgroundColor || "white"
+              backgroundColor: backgroundColor || "white",
+              width: width || "100%"
             }
           }
         }}
