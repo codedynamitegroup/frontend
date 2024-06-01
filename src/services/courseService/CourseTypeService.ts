@@ -1,38 +1,20 @@
 import axios from "axios";
 import { API } from "constants/API";
-import qs from "qs";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
-export class CourseService {
-  static async getCourses({
-    search = "",
-    courseType = [],
-    pageNo = 0,
-    pageSize = 10
-  }: {
-    search?: string;
-    courseType?: string[];
-    pageNo?: number;
-    pageSize?: number;
-  }) {
+export class CourseTypeService {
+  static async getCourseTypes() {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}`, {
-        params: {
-          search,
-          courseType,
-          pageNo,
-          pageSize
-        },
-        paramsSerializer: (params) => {
-          return qs.stringify(params, { arrayFormat: "repeat" });
-        }
-      });
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.COURSE_TYPE.DEFAULT}`,
+        {}
+      );
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
     } catch (error: any) {
-      console.error("Failed to fetch courses", error);
+      console.error("Failed to fetch course types", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -41,16 +23,17 @@ export class CourseService {
     }
   }
 
-  static async getSectionsByCourseId(courseId: string) {
+  static async getCourseTypeById(id: string) {
     try {
       const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE.SECTION}/${courseId}`
+        `${courseServiceApiUrl}${API.COURSE.COURSE_TYPE.GET_BY_ORGANIZATION_ID}`.replace(":id", id)
       );
+
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch sections by course id", error);
+      console.error("Failed to fetch course type by organization id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

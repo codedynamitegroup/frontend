@@ -58,6 +58,10 @@ export const API = {
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
+    COURSE_TYPE: {
+      DEFAULT: "/course/course-type",
+      GET_BY_ORGANIZATION_ID: "/course/course-type/:id"
+    },
     ASSIGNMENT: {
       DEFAULT: "/course/assignment",
       GET_BY_ID: "/course/assignment/:id",
