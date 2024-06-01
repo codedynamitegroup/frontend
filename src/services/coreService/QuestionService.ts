@@ -122,18 +122,17 @@ export class QuestionService {
     }
   }
 
-  static async getQuestionsByCategoryId(
-    categoryId: string,
-    {
-      search = "",
-      pageNo = 0,
-      pageSize = 10
-    }: {
-      search?: string;
-      pageNo?: number;
-      pageSize?: number;
-    }
-  ) {
+  static async getQuestionsByCategoryId({
+    categoryId,
+    search = "",
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    categoryId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
     try {
       const response = await axios.get(
         `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`,

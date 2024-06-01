@@ -840,7 +840,7 @@ export default function ExamCreated() {
                   ]}
                 />
               </Box>
-              <Box className={classes.drawerFieldContainer}>
+              {/* <Box className={classes.drawerFieldContainer}>
                 <TextTitle
                   className={classes.drawerTextTitle}
                   translation-key='common_filter_topic'
@@ -867,7 +867,7 @@ export default function ExamCreated() {
                   ]}
                   backgroundColor='#D9E2ED'
                 />
-              </Box>
+              </Box> */}
               <LoadButton
                 btnType={BtnType.Outlined}
                 fullWidth
