@@ -156,4 +156,22 @@ export class QuestionService {
       });
     }
   }
+
+  static async deleteQuestionById(questionId: string) {
+    try {
+      const response = await axios.delete(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.DELETE_BY_ID.replace(":id", questionId)}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to delete question by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

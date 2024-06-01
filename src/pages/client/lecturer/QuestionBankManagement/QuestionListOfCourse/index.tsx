@@ -138,7 +138,7 @@ const QuestionListOfCourse = () => {
             icon={<DeleteIcon />}
             label='Delete'
             className='textPrimary'
-            onClick={() => null}
+            onClick={handleDeleteQuestion.bind(null, id.toString())}
             sx={{
               color: red[500]
             }}
@@ -203,6 +203,22 @@ const QuestionListOfCourse = () => {
       console.log(questionCategoryState.questions, "questionCategoryState.questions");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleDeleteQuestion = async (questionId: string) => {
+    try {
+      const deleteQuestionResponse = await QuestionService.deleteQuestionById(questionId);
+      if (deleteQuestionResponse) {
+        handleGetQuestions({
+          categoryId: categoryId || "",
+          search: searchText,
+          pageNo: page,
+          pageSize: rowsPerPage
+        });
+      }
+    } catch (error) {
+      console.error("Failed to delete question", error);
     }
   };
 
