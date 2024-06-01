@@ -235,6 +235,7 @@
   "contest_advance_difficulty": "Advance",
   "contest_programming_language_title": "Programming language",
   "contest_end_time_invalid": "End time must be greater than start time",
+  "contest_preview_contest_details_page": "Preview contest details page",
 
   "contest_management_title": "Contest Management",
   "contest_details": "Contest details",

@@ -363,8 +363,8 @@ const ContestDetails = () => {
                       translation-key='contest_detail_description'
                       value='1'
                     />
-                    {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
-                      //&&  contestDetails.isRegistered === true
+                    {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                    contestDetails.isRegistered === true ? (
                       <Tab
                         label={t("contest_detail_problems")}
                         translation-key='contest_detail_problems'
@@ -386,8 +386,8 @@ const ContestDetails = () => {
                     dangerouslySetInnerHTML={{ __html: contestDetails.description || "" }}
                   ></div>
                 </TabPanel>
-                {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
-                  // && contestDetails.isRegistered === true
+                {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                contestDetails.isRegistered === true ? (
                   <TabPanel value='2'>
                     <Grid container spacing={3}>
                       {contestDetails.questions.map((problem) => (
@@ -443,9 +443,6 @@ const ContestDetails = () => {
                                 }}
                               />
                               <Link component={RouterLink} to='#' underline='none'>
-                                {/* <Typography className={classes.topUserText}>
-                                  {user.user.firstName + " " + user.user.lastName}
-                                </Typography> */}
                                 <Stack direction='row' alignItems='center' spacing={1}>
                                   <Avatar
                                     sx={{ width: 40, height: 40 }}
@@ -453,9 +450,6 @@ const ContestDetails = () => {
                                     src={user.user.avatarUrl}
                                   />
                                   <Stack>
-                                    {/* <Heading6>{generalContent?.generalTitle}</Heading6>
-                                    <Heading6 fontWeight={200}>{props.time}</Heading6>
-                                    <Heading6 fontWeight={100}>{props.content}</Heading6> */}
                                     <Stack direction='column' alignItems='left'>
                                       <Typography
                                         className={classes.topUserText}
