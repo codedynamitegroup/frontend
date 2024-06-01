@@ -77,6 +77,9 @@ export const API = {
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam"
     },
+    EXAM_QUESTION: {
+      DEFAULT: "/course/exam/:examId/question"
+    },
     QUESTION: {
       DEFAULT: "/course/question",
       GET_BY_ID: "/course/question/:id",
