@@ -19,16 +19,14 @@ import TableContainer from "@mui/material/TableContainer";
 import Heading2 from "components/text/Heading2";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "hooks";
-import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { styled } from "@mui/material";
-import { TagService } from "services/codeAssessmentService/TagService";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { PaginationList } from "models/codeAssessmentService/entity/PaginationList";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 export default function ProblemTable() {
-  const userId = null;
+  const accessToken = localStorage.getItem("access_token");
 
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
@@ -58,8 +56,7 @@ export default function ProblemTable() {
       {
         pageNum: page,
         pageSize: rowsPerPage
-      },
-      userId
+      }
     )
       .then((data: PaginationList<CodeQuestionEntity>) => {
         setCodeQuestionList(data);
@@ -230,6 +227,7 @@ export default function ProblemTable() {
                     <TableCell className={classes.tableCell}>
                       <StyledLink
                         to={routes.user.problem.detail.description.replace(":problemId", row.id)}
+                        style={{ pointerEvents: accessToken === null ? "none" : "auto" }}
                       >
                         {row.name}
                       </StyledLink>

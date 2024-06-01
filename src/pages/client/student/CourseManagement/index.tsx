@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import SearchBar from "components/common/search/SearchBar";
 import CourseCard from "./components/CourseCard";
@@ -13,9 +14,12 @@ import Heading1 from "components/text/Heading1";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { setCourses } from "reduxes/courseService/course";
+import { setCourses, setLoading } from "reduxes/courseService/course";
 import { CourseService } from "services/courseService/CourseService";
-import { useEffect, useState } from "react";
+import { CourseTypeService } from "services/courseService/CourseTypeService";
+import { setCourseTypes } from "reduxes/courseService/course_type";
+import { CircularProgress } from "@mui/material";
+import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
 
 enum EView {
   cardView = 1,
@@ -23,52 +27,81 @@ enum EView {
 }
 
 const StudentCourses = () => {
-  const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
-
   const [searchText, setSearchText] = useState("");
+  const [courseTypes, setCourseTypesState] = useState<CourseTypeEntity[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const courseState = useSelector((state: RootState) => state.course);
+  const courseTypeState = useSelector((state: RootState) => state.courseType);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const searchHandle = async (searchText: string) => {
+  const searchHandle = useCallback(async (searchText: string) => {
     setSearchText(searchText);
-  };
+  }, []);
 
-  const handleGetCourses = async ({
-    search = searchText,
-    pageNo = 0,
-    pageSize = 10
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
+  const handleGetCourseTypes = useCallback(async () => {
+    dispatch(setLoading({ isLoading: true }));
+
     try {
-      const getCourseResponse = await CourseService.getCourses({
-        search,
-        pageNo,
-        pageSize
-      });
-      dispatch(setCourses(getCourseResponse));
+      const getCourseTypeResponse = await CourseTypeService.getCourseTypes();
+      setCourseTypesState(getCourseTypeResponse.courseTypes);
+      dispatch(setCourseTypes(getCourseTypeResponse));
+      dispatch(setLoading({ isLoading: false }));
     } catch (error) {
-      console.error("Failed to fetch courses", error);
+      console.error("Failed to fetch course types", error);
+      dispatch(setLoading({ isLoading: false }));
     }
-  };
+  }, [dispatch]);
+
+  const handleGetCourses = useCallback(
+    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
+      dispatch(setLoading({ isLoading: true }));
+
+      try {
+        const getCourseResponse = await CourseService.getCourses({
+          search,
+          courseType,
+          pageNo,
+          pageSize
+        });
+        dispatch(setCourses(getCourseResponse));
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
+      } finally {
+        dispatch(setLoading({ isLoading: false }));
+      }
+    },
+    [dispatch, searchText, selectedCategories]
+  );
 
   useEffect(() => {
-    const featchInitialCourses = async () => {
-      await handleGetCourses({ search: searchText });
-    };
-    featchInitialCourses();
-  }, [searchText]);
+    handleGetCourseTypes();
+  }, [handleGetCourseTypes]);
+
+  useEffect(() => {
+    handleGetCourses({ search: searchText, courseType: selectedCategories });
+  }, [handleGetCourses, searchText, selectedCategories]);
+
+  const tempCategories = useMemo(
+    () => courseTypes.map((courseType) => courseType.name),
+    [courseTypes]
+  );
+  console.log(tempCategories);
+  console.log(selectedCategories);
 
   const [viewType, setViewType] = useState(EView.listView);
 
-  const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
+  const handleViewChange = useCallback((event: React.MouseEvent<HTMLElement>, nextView: number) => {
     setViewType(nextView);
-  };
-  const handleCategoryFilterChange = (selectedCategoryList: Array<string>) => {
-    console.log(selectedCategoryList);
-  };
+  }, []);
+
+  const handleCategoryFilterChange = useCallback(
+    (selectedCategoryList: Array<string>) => {
+      setSelectedCategories(selectedCategoryList);
+      handleGetCourses({ search: searchText, courseType: selectedCategoryList });
+    },
+    [handleGetCourses, searchText]
+  );
+
   const { t } = useTranslation();
 
   return (
@@ -77,33 +110,46 @@ const StudentCourses = () => {
         {t("course_list_title")}
       </Heading1>
       <SearchBar onSearchClick={searchHandle} />
-
-      <Box className={classes.featureGroup}>
-        <Box className={classes.filterContainer}>
-          <ChipMultipleFilter
-            label={t("course_filter")}
-            defaultChipList={[]}
-            filterList={tempCategories}
-            onFilterListChangeHandler={handleCategoryFilterChange}
-            translation-key='course_filter'
-          />
-        </Box>
-
-        <ToggleButtonGroup
-          className={classes.changeViewButtonGroup}
-          value={viewType}
-          exclusive
-          onChange={handleViewChange}
+      {courseState.isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
         >
-          <ToggleButton value={EView.listView} aria-label='list'>
-            <ViewListIcon />
-          </ToggleButton>
-          <ToggleButton value={EView.cardView} aria-label='module'>
-            <ViewCardIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box className={classes.featureGroup}>
+          <Box className={classes.filterContainer}>
+            <ChipMultipleFilter
+              label={t("course_filter")}
+              defaultChipList={courseTypeState.courseTypes.map((courseType) => courseType.name)}
+              filterList={selectedCategories}
+              onFilterListChangeHandler={handleCategoryFilterChange}
+              translation-key='course_filter'
+            />
+          </Box>
 
+          <ToggleButtonGroup
+            className={classes.changeViewButtonGroup}
+            value={viewType}
+            exclusive
+            onChange={handleViewChange}
+          >
+            <ToggleButton value={EView.listView} aria-label='list'>
+              <ViewListIcon />
+            </ToggleButton>
+            <ToggleButton value={EView.cardView} aria-label='module'>
+              <ViewCardIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      )}
       {viewType === EView.cardView ? (
         <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
           <Grid container spacing={2}>

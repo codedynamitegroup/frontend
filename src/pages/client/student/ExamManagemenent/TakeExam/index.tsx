@@ -33,7 +33,7 @@ import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import MenuIcon from "@mui/icons-material/MenuOpen";
 import IconButton from "@mui/joy/IconButton";
-import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
 import Badge from "@mui/joy/Badge";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import RuleRoundedIcon from "@mui/icons-material/RuleRounded";

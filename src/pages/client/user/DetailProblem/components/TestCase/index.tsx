@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 import { Box, Container, TextField } from "@mui/material";
 import Heading5 from "components/text/Heading5";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import { useAppSelector } from "hooks";
+import { useAppSelector, useAppDispatch } from "hooks";
+import { setStdin, setExpectedOutput } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 
 export default function TestCase() {
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0) {
+      dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
+      dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
+    }
+  }, [codeQuestion?.sampleTestCases]);
 
   return (
     <Box id={classes.root}>

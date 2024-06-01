@@ -12,7 +12,8 @@ import viLocale from "@fullcalendar/core/locales/vi";
 import enLocale from "@fullcalendar/core/locales/en-gb";
 import i18next from "i18next";
 import { useEffect, useState } from "react";
-
+import { months } from "moment";
+import { LocaleInput } from "@fullcalendar/core";
 interface CustomFullCalendarProps {
   events: any[];
   handleDateSelect?: (selectInfo: DateSelectArg) => void;
@@ -38,9 +39,8 @@ export default function CustomFullCalendar({
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay"
+            right: "prev,next today",
+            left: "title"
           }}
           initialView='dayGridMonth'
           editable={editable || false}
@@ -52,6 +52,7 @@ export default function CustomFullCalendar({
           eventClick={function () {}}
           events={events}
           locale={currentLang === "en" ? enLocale : viLocale}
+
           // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
           /* you can update a remote database when these fire:
             eventAdd={function(){}}
@@ -69,20 +70,40 @@ function renderEventContent(eventContent: EventContentArg) {
     <Tooltip title={eventContent.event.title} placement='top-start'>
       <Box
         sx={{
-          padding: "5px"
+          padding: "5px",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          "@media (max-width: 600px)": {
+            fontSize: "10px",
+            padding: "3px"
+          }
         }}
       >
-        <ParagraphExtraSmall fontSize={"12px"}>{eventContent.timeText}</ParagraphExtraSmall>
+        <ParagraphExtraSmall
+          sx={{ fontSize: "12px", "@media (max-width: 600px)": { fontSize: "10px" } }}
+        >
+          {eventContent.timeText}
+        </ParagraphExtraSmall>
         <TextTitle
-          color='white'
-          textWrap='nowrap'
-          overflow='hidden'
-          textOverflow='ellipsis'
-          fontSize='13px'
+          sx={{
+            color: "white",
+            textWrap: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            fontSize: "13px",
+            "@media (max-width: 600px)": { fontSize: "11px" }
+          }}
         >
           {eventContent.event.title}
         </TextTitle>
-        <ParagraphBody fontSize={"12px"} colorname='grey'>
+        <ParagraphBody
+          sx={{
+            fontSize: "12px",
+            color: "grey",
+            "@media (max-width: 600px)": { fontSize: "10px" }
+          }}
+        >
           {eventContent.event.extendedProps.description || "No description"}
         </ParagraphBody>
       </Box>

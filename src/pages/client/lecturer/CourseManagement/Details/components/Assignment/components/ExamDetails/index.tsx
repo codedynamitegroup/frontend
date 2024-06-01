@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { ExamService } from "services/courseService/ExamService";
 import { useEffect, useState } from "react";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ExamEntity, ExamOverview } from "models/courseService/entity/ExamEntity";
 
 const LecturerCourseExamDetails = () => {
   const { examId } = useParams<{ examId: string }>();
@@ -40,6 +40,12 @@ const LecturerCourseExamDetails = () => {
     createdAt: new Date(),
     updatedAt: new Date()
   });
+
+  const [examOverviews, setExamOverviews] = useState<ExamOverview>({
+    numberOfStudents: 0,
+    submitted: 0
+  });
+
   const handleGetExamById = async (id: string) => {
     try {
       const response = await ExamService.getExamById(id);
@@ -49,9 +55,19 @@ const LecturerCourseExamDetails = () => {
     }
   };
 
+  const handleGetOverviews = async (id: string) => {
+    try {
+      const response = await ExamService.getOverviewsByExamId(id);
+      setExamOverviews(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const fetchInitialData = async () => {
       await handleGetExamById(examId ?? "");
+      await handleGetOverviews(examId ?? "");
     };
     fetchInitialData();
   }, []);
@@ -201,21 +217,21 @@ const LecturerCourseExamDetails = () => {
       </Heading2>
       <GradingExamTable
         rows={[
-          {
-            header: t("course_lecturer_assignment_hide"),
-            data: "Không"
-          },
+          // {
+          //   header: t("course_lecturer_assignment_hide"),
+          //   data: "Không"
+          // },
           {
             header: t("course_lecturer_assignment_student_num"),
-            data: "1"
+            data: examOverviews.numberOfStudents.toString()
           },
           {
             header: t("course_lecturer_assignment_submitted"),
-            data: "1"
+            data: examOverviews.submitted.toString()
           },
           {
             header: t("course_lecturer_assignment_need_grading"),
-            data: "1"
+            data: (examOverviews.numberOfStudents - examOverviews.submitted).toString()
           }
           // {
           //   header: t("common_time_left"),

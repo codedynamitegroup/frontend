@@ -36,12 +36,22 @@ import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestion
 import { UUID } from "crypto";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import {
+  setSourceCode,
+  setLanguageId,
+  setCpuTimeLimit,
+  setMemoryLimit
+} from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
+import {
+  setExecuteResultLoading,
+  setResult
+} from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash/cloneDeep";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 
 export default function DetailProblem() {
-  const userId = "9ba179ed-d26d-4828-a0f6-8836c2063992";
-
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -52,6 +62,8 @@ export default function DetailProblem() {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
+
+  const currentExecuteData = useAppSelector((state) => state.executeData);
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -78,7 +90,7 @@ export default function DetailProblem() {
 
   useEffect(() => {
     if (problemId !== undefined)
-      CodeQuestionService.getDetailCodeQuestion(problemId, userId)
+      CodeQuestionService.getDetailCodeQuestion(problemId)
         .then((data: CodeQuestionEntity) => {
           dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
@@ -98,6 +110,23 @@ export default function DetailProblem() {
     );
     setLanguageList(codeQuestion?.languages);
   }, [codeQuestion?.languages]);
+
+  useEffect(() => {
+    const language = mapLanguages.get(selectedLanguage.id);
+    if (
+      language !== undefined &&
+      language.pLanguage.headCode !== undefined &&
+      language.pLanguage.tailCode != undefined
+    ) {
+      const headCode: string = language.pLanguage.headCode;
+      const bodyCode: string = selectedLanguage.bodyCode;
+      const tailCode: string = language.pLanguage.tailCode;
+      dispatch(setSourceCode(`${headCode}\n${bodyCode}\n${tailCode}`));
+      dispatch(setLanguageId(language.pLanguage.judge0Id));
+      dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
+      dispatch(setMemoryLimit(language.pLanguage.memoryLimit));
+    }
+  }, [selectedLanguage]);
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     const newSelectedLanguageId = event.target.value;
@@ -169,6 +198,27 @@ export default function DetailProblem() {
     setTestCaseTab(newValue);
   };
 
+  const handleExecuteCode = () => {
+    setTestCaseTab(1);
+    dispatch(setExecuteResultLoading(true));
+    ExecuteService.execute(
+      currentExecuteData.language_id,
+      currentExecuteData.stdin,
+      currentExecuteData.expected_output,
+      currentExecuteData.cpu_time_limit,
+      currentExecuteData.memory_limit,
+      currentExecuteData.source_code
+    )
+      .then((data: Judge0ResponseEntity) => {
+        dispatch(setResult(data));
+        dispatch(setExecuteResultLoading(false));
+
+        // console.log("response data", data);
+      })
+      .catch((err) => console.log(err));
+    // console.log("current data", currentExecuteData);
+  };
+
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { height: breadcrumbHeight } = useBoxDimensions({
     ref: breadcumpRef
@@ -208,7 +258,7 @@ export default function DetailProblem() {
   const { t } = useTranslation();
   return (
     <Box className={classes.root}>
-      <Header ref={headerRef} />
+      {/* <Header ref={headerRef} /> */}
       <Box
         className={classes.body}
         style={{
@@ -267,6 +317,7 @@ export default function DetailProblem() {
               variant='contained'
               color='primary'
               translation-key='detail_problem_execute'
+              onClick={handleExecuteCode}
             >
               <PlayArrowIcon />
               {t("detail_problem_execute")}

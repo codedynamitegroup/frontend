@@ -11,6 +11,7 @@ import { useCallback } from "react";
 import classes from "./styles.module.scss";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
 
 interface AddEventDialogProps extends DialogProps {
   data: {
@@ -108,7 +109,7 @@ const AddEventDialog = ({
           </Grid>
           <Grid item xs={9}>
             <CustomDateTimePicker
-              value={dayjs(data.start)}
+              value={moment(data.start)}
               onHandleValueChange={(newValue) => {
                 handleChangData({
                   isExpanded: data.isExpanded,
@@ -220,7 +221,7 @@ const AddEventDialog = ({
                   translation-key='calendar_event_name_time_till'
                 />
                 <CustomDateTimePicker
-                  value={dayjs(data.end)}
+                  value={moment(data.end)}
                   onHandleValueChange={(newValue) => {
                     handleChangData({
                       isExpanded: data.isExpanded,

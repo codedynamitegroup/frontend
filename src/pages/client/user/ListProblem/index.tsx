@@ -1,4 +1,4 @@
-import { Box, Chip, Container, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Chip, Container, Divider, Grid, Stack } from "@mui/material";
 import classes from "./styles.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
 import LabTabs from "./components/TabTopic";
@@ -54,7 +54,6 @@ const ListProblem = () => {
     clearTimeout(timer);
 
     const newTimer = window.setTimeout(() => {
-      console.log("changing");
       dispatch(setSearchKey(e.target.value));
     }, 1500);
 
@@ -104,44 +103,45 @@ const ListProblem = () => {
           <Box className={classes.boxContent}>
             <Grid container>
               <Grid item xs={2.5}>
-                <Stack direction={"row"} spacing={1}>
-                  <Box className={classes.algorithmContainer}>
-                    <Heading3 translation-key='list_problem_type_of_algorithm'>
-                      {t("list_problem_type_of_algorithm")}:
-                    </Heading3>
+                <Box className={classes.algorithmContainer}>
+                  <Heading3 translation-key='list_problem_type_of_algorithm'>
+                    {t("list_problem_type_of_algorithm")}:
+                  </Heading3>
 
-                    <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
-                      {!algorithmTag.isLoading &&
-                        (algorithmTag.filter.length > 0
-                          ? algorithmTag.filter
-                          : algorithmTag.tagList
-                        ).map((algorithm, index) => (
-                          <Chip
-                            key={index}
-                            id={algorithm.id}
-                            onClick={() => {
-                              if (algorithm.id != null) handleFilterAlgorithm(algorithm);
-                            }}
-                            sx={{
-                              padding: "15px 8px",
-                              backgroundColor: "var(--blue-50)"
-                            }}
-                            // label={algorithm.numOfCodeQuestion}
-                            label={
-                              <Stack direction={"row"} spacing={1}>
-                                <ParagraphBody>{algorithm.name}</ParagraphBody>
-
-                                <Divider orientation='vertical' variant='middle' flexItem />
-                                <ParagraphBody>{algorithm.numOfCodeQuestion}</ParagraphBody>
-                              </Stack>
-                            }
-                            size='small'
-                          />
-                        ))}
-                    </Box>
+                  <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
+                    {!algorithmTag.isLoading &&
+                      (algorithmTag.filter.length > 0
+                        ? algorithmTag.filter
+                        : algorithmTag.tagList
+                      ).map((algorithm, index) => (
+                        <Chip
+                          key={index}
+                          id={algorithm.id}
+                          onClick={() => {
+                            if (algorithm.id != null) handleFilterAlgorithm(algorithm);
+                          }}
+                          sx={{
+                            padding: "15px 8px",
+                            backgroundColor: "var(--blue-50)",
+                            fontFamily: "Montserrat"
+                          }}
+                          // label={algorithm.numOfCodeQuestion}
+                          label={algorithm.name}
+                          avatar={
+                            <Avatar
+                              sx={{
+                                bgcolor: "var(--blue-50)",
+                                border: 1
+                              }}
+                            >
+                              {algorithm.numOfCodeQuestion}
+                            </Avatar>
+                          }
+                          size='small'
+                        />
+                      ))}
                   </Box>
-                  <Divider orientation='vertical' variant='middle' flexItem />
-                </Stack>
+                </Box>
               </Grid>
               <Grid container xs={0.5}></Grid>
               <Grid item xs={9}>
@@ -157,6 +157,7 @@ const ListProblem = () => {
                   >
                     <RecommendedProblem />
                   </Box>
+                  <Heading1>Problem list</Heading1>
 
                   <Stack direction={"row"} spacing={2} paddingY={2}>
                     <OutlinedInput

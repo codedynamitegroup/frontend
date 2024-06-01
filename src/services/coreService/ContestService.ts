@@ -1,5 +1,7 @@
 import { API } from "constants/API";
+import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
+import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
 import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
@@ -31,11 +33,45 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contests", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async getContestsForAdmin({
+    searchName,
+    startTimeFilter = ContestStartTimeFilterEnum.ALL,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    searchName?: string;
+    startTimeFilter?: ContestStartTimeFilterEnum;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CONTEST.CONTEST_MANAGEMENT_FOR_ADMIN}`, {
+        params: {
+          searchName,
+          startTimeFilter,
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -49,11 +85,10 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch most popular contests", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -67,11 +102,10 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contest leaderboard", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
@@ -85,11 +119,46 @@ export class ContestService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch contest by id", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async createContest(data: CreateContestCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CONTEST.CREATE}`, data);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async updateContest(id: string, data: UpdateContestCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.CORE.CONTEST.UPDATE_BY_ID.replace(":id", id)}`, data);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
