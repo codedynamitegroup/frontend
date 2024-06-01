@@ -1,11 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, Card, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
+import { Box, Card, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import moment from "moment";
@@ -134,7 +133,7 @@ const CreateContest = () => {
       <Card
         sx={{
           margin: "20px",
-          padding: "20px",
+          // padding: "20px",
           "& .MuiDataGrid-root": {
             border: "1px solid #e0e0e0",
             borderRadius: "4px"
@@ -158,9 +157,10 @@ const CreateContest = () => {
             </ParagraphSmall>
           </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
-            marginTop: "20px"
+            padding: "20px"
           }}
         >
           <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
@@ -171,12 +171,12 @@ const CreateContest = () => {
               marginTop: "20px"
             }}
           >
-            <ParagraphBody fontStyle='italic' translate-key='contest_description_message_1'>
+            <ParagraphSmall fontStyle='italic' translate-key='contest_description_message_1'>
               {t("contest_description_message_1")}
-            </ParagraphBody>
-            <ParagraphBody fontStyle={"italic"} translate-key='contest_description_message_2'>
+            </ParagraphSmall>
+            <ParagraphSmall fontStyle={"italic"} translate-key='contest_description_message_2'>
               {t("contest_description_message_2")}
-            </ParagraphBody>
+            </ParagraphSmall>
           </Stack>
           <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
             {/* Contest name */}
