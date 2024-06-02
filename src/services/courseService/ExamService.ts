@@ -59,6 +59,25 @@ export class ExamService {
     }
   }
 
+  static async getExamQuestionById(examId: string, currentPage: number | null) {
+    try {
+      const tempPage = currentPage !== null ? currentPage : "";
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.EXAM_QUESTION.DEFAULT.replace(":examId", examId)}?currentPage=${tempPage}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getOverviewsByExamId(examId: string) {
     try {
       const response = await axios.get(
