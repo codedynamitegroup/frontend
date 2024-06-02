@@ -25,6 +25,9 @@ import { RootState } from "store";
 
 const LecturerCourseExamDetails = () => {
   const { examId } = useParams<{ examId: string }>();
+  const dispatch = useDispatch();
+  const examState = useSelector((state: RootState) => state.exam);
+
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
     courseId: "",
@@ -58,8 +61,6 @@ const LecturerCourseExamDetails = () => {
       console.log(error);
     }
   };
-  const dispatch = useDispatch();
-  const examState = useSelector((state: RootState) => state.exam);
 
   const handleGetOverviews = async (id: string) => {
     try {
@@ -73,8 +74,8 @@ const LecturerCourseExamDetails = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      await handleGetExamById(examId ?? "");
-      await handleGetOverviews(examId ?? "");
+      await handleGetExamById(examId ?? examState.examDetail.id);
+      await handleGetOverviews(examId ?? examState.examDetail.id);
     };
     fetchInitialData();
   }, []);
@@ -202,7 +203,7 @@ const LecturerCourseExamDetails = () => {
             navigate(
               routes.lecturer.exam.submissions
                 .replace(":courseId", exam.courseId)
-                .replace(":examId", exam.id ?? "")
+                .replace(":examId", exam.id)
             );
           }}
         >
