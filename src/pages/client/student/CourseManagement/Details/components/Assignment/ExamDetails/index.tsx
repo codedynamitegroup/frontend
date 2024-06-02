@@ -178,7 +178,7 @@ const StudentCourseExamDetails = () => {
           {
             no: "1",
             state: "Đã nộp",
-            grade: "20.0",
+            grade: "10.0",
             submitted_at: dayjs().toString()
           },
           {
