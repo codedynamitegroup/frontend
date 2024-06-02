@@ -13,7 +13,7 @@ import TextEditor from "components/editor/TextEditor";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -59,6 +59,9 @@ interface FormData {
 }
 
 const CreateShortAnswerQuestion = (props: Props) => {
+  const location = useLocation();
+  const courseId = location.state?.courseId;
+
   const { t, i18n } = useTranslation();
 
   const [currentLang, setCurrentLang] = useState(() => {
@@ -182,7 +185,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
     QuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
         getQuestionByQuestionId(res.questionId);
-        navigate(routes.lecturer.exam.create);
+        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       })
       .finally(() => {
         console.log("finally");
@@ -285,20 +288,22 @@ const CreateShortAnswerQuestion = (props: Props) => {
                     {t("common_course_management")}
                   </span>{" "}
                   {"> "}
-                  <span
+                  {/* <span
                     onClick={() =>
-                      navigate(routes.lecturer.course.information.replace(":courseId", "1"))
+                      navigate(routes.lecturer.course.information.replace(":courseId", courseId))
                     }
                   >
                     CS202 - Nhập môn lập trình
                   </span>{" "}
-                  {"> "}
+                  {"> "} */}
                   <span onClick={() => navigate(routes.lecturer.course.assignment)}>
                     Xem bài tập
                   </span>{" "}
                   {"> "}
                   <span
-                    onClick={() => navigate(routes.lecturer.exam.create)}
+                    onClick={() =>
+                      navigate(routes.lecturer.exam.create.replace(":courseId", courseId))
+                    }
                     translation-key='course_lecturer_assignment_create_exam'
                   >
                     {t("course_lecturer_assignment_create_exam")}

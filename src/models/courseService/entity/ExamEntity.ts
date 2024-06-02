@@ -31,7 +31,12 @@ export interface ExamCreateRequest {
   maxAttempts: number;
   shuffleQuestions: boolean;
   gradeMethod: string;
-  questionIds: number[];
+  questionIds: ExamQuestion[];
+}
+
+export interface ExamQuestion {
+  questionId: string;
+  page: number;
 }
 
 export interface ExamOverview {
