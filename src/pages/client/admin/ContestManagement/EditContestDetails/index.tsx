@@ -32,7 +32,7 @@ export interface IFormDataType {
   description?: string;
   prizes?: string;
   rules?: string;
-  scoring: string;
+  scoring?: string;
   isPublic: boolean;
 }
 
@@ -41,22 +41,21 @@ const EditContestDetails = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const location = useLocation();
 
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [type, setType] = useState<AlertType>(AlertType.INFO);
   const [content, setContent] = useState("");
 
-  const defaultContestName = useMemo(() => location.state?.contestName || "", [location]);
-
   const { contestId } = useParams<{ contestId: string }>();
   const [submitLoading, setSubmitLoading] = useState(false);
+
+  const [defaultContestName, setDefaultContestName] = useState("");
 
   const tabs: string[] = useMemo(() => {
     return [
       routes.admin.contest.edit.details,
       routes.admin.contest.edit.problems,
-      routes.admin.contest.edit.moderators,
+      // routes.admin.contest.edit.moderators,
       routes.admin.contest.edit.signups,
       routes.admin.contest.edit.leaderboard,
       routes.admin.contest.edit.statistics
@@ -112,7 +111,7 @@ const EditContestDetails = () => {
       description: yup.string().trim(""),
       prizes: yup.string().trim(""),
       rules: yup.string().trim(""),
-      scoring: yup.string().required(t("contest_scoring_required")).trim(""),
+      scoring: yup.string().trim(""),
       isPublic: yup.boolean().required(t("contest_is_public_required"))
     });
   }, [t]);
@@ -127,14 +126,14 @@ const EditContestDetails = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       isNoEndTime: false,
-      name: defaultContestName,
+      name: "",
       startTime: moment.utc().add(30, "minute").toISOString(),
       endTime: moment.utc().add(1, "hour").toISOString(),
       thumbnailUrl: "",
       description: "",
       prizes: "",
       rules: "",
-      scoring: `<div class="CodeMirror-code" role="presentation"><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-2">- Each challenge has a pre-determined score.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-2">- A participant’s score depends on the number of test cases a participant’s code submission successfully passes.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-2">- If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved. In a game challenge, the participant's score will reflect the last code submission.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-2">- Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score</span></span></pre></div></div>`,
+      scoring: "",
       isPublic: false
     }
   });
@@ -145,6 +144,7 @@ const EditContestDetails = () => {
         const contest = await ContestService.getContestById(id);
         if (contest) {
           setValue("name", contest.name);
+          setDefaultContestName(contest.name);
           setValue("startTime", contest.startTime);
           if (!contest.endTime) {
             setValue("isNoEndTime", true);
@@ -154,10 +154,28 @@ const EditContestDetails = () => {
             setValue("endTime", contest.endTime);
           }
           setValue("thumbnailUrl", contest.thumbnailUrl);
-          setValue("description", contest.description);
-          setValue("prizes", contest.prizes);
-          setValue("rules", contest.rules);
-          setValue("scoring", contest.scoring);
+          const description = contest.description
+            ? contest.description
+            : `Please provide a short description of your contest here!`;
+          setValue("description", description);
+          const prizes =
+            contest.prizes && contest.prizes !== ""
+              ? contest.prizes
+              : `- Prizes are optional. You may add any prizes that you would like to offer here.`;
+          setValue("prizes", prizes);
+          const rules =
+            contest.rules && contest.rules !== ""
+              ? contest.rules
+              : `- Please provide any rules for your contest here.`;
+          setValue("rules", rules);
+          const scoring =
+            contest.scoring && contest.scoring !== ""
+              ? contest.scoring
+              : `- Each challenge has a pre-determined score.
+          - A participant’s score depends on the number of test cases a participant’s code submission successfully passes.
+          - If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved.
+          - Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score`;
+          setValue("scoring", scoring);
           setValue("isPublic", contest.isPublic);
         }
       } catch (error: any) {
@@ -273,7 +291,7 @@ const EditContestDetails = () => {
                 }
                 value={1}
               />
-              <Tab
+              {/* <Tab
                 sx={{ textTransform: "none" }}
                 label={
                   <ParagraphBody translate-key='common_moderators'>
@@ -281,7 +299,7 @@ const EditContestDetails = () => {
                   </ParagraphBody>
                 }
                 value={2}
-              />
+              /> */}
               <Tab
                 sx={{ textTransform: "none" }}
                 label={
@@ -289,7 +307,7 @@ const EditContestDetails = () => {
                     {t("common_signups")}
                   </ParagraphBody>
                 }
-                value={3}
+                value={2}
               />
               <Tab
                 sx={{ textTransform: "none" }}
@@ -298,7 +316,7 @@ const EditContestDetails = () => {
                     {t("common_leaderboard")}
                   </ParagraphBody>
                 }
-                value={4}
+                value={3}
               />
               <Tab
                 sx={{ textTransform: "none" }}
@@ -307,7 +325,7 @@ const EditContestDetails = () => {
                     {t("common_statistics")}
                   </ParagraphBody>
                 }
-                value={5}
+                value={4}
               />
             </Tabs>
           </Box>
@@ -324,7 +342,7 @@ const EditContestDetails = () => {
               }
             />
             <Route path={"problems"} element={<ContestEditProblems />} />
-            <Route path={"moderators"} element={<ContestEditModerators />} />
+            {/* <Route path={"moderators"} element={<ContestEditModerators />} /> */}
             <Route path={"signups"} element={<ContestEditSignUps />} />
             <Route path={"leaderboard"} element={<ContestEditLeaderboard />} />
             <Route path={"statistics"} element={<ContestEditStatistics />} />

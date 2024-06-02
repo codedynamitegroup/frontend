@@ -172,6 +172,9 @@
   "common_signups": "Thí sinh",
   "common_leaderboard": "Bảng xếp hạng",
   "common_statistics": "Thống kê",
+  "common_prizes": "Giải thưởng",
+  "common_rules": "Quy tắc",
+  "common_scoring": "Cách tính điểm",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -254,10 +257,16 @@
   "contest_description_message_2": "Bắt đầu bằng cách cung cấp thông tin ban đầu cho cuộc thi của bạn.",
   "contest_enter_contest_name": "Nhập tên cuộc thi",
   "contest_start_time": "Thời gian bắt đầu cuộc thi",
-  "contest_start_time_tooltip": "Thời gian bắt đầu cuộc thi. Bạn không thể chỉnh sửa sau khi cuộc thi bắt đầu",
+  "contest_start_time_tooltip": "Thời gian bắt đầu cuộc thi.",
   "contest_end_time": "Thời gian kết thúc cuộc thi",
-  "contest_end_time_tooltip": "Thời gian kết thúc cuộc thi. Bạn không thể chỉnh sửa sau khi cuộc thi bắt đầu",
+  "contest_end_time_tooltip": "Thời gian kết thúc cuộc thi. Nếu bạn không muốn thiết lập thời gian kết thúc, hãy đánh dấu vào ô bên dưới",
   "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
+  "contest_is_public": "Công khai",
+  "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
+  "contest_metadata_customization": "Tùy chỉnh thông tin",
+  "contest_details_description": "Tùy chỉnh cuộc thi của bạn bằng cách cung cấp thông tin cần thiết để tạo trang chi tiết cuộc thi của bạn.",
+  "contest_metadata_customization_description": "Điền thông tin này để tùy chỉnh trang mô tả cuộc thi của bạn.",
+  "contest_thumbnail": "Ảnh cuộc thi",
 
   "contest_detail_joined_feature_status": "Bạn đã đăng ký tham gia cuộc thi này",
   "contest_detail_joined_happening_status": "Bạn đang tham gia cuộc thi này",

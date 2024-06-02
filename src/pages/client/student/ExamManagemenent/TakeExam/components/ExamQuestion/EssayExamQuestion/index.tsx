@@ -8,6 +8,8 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
 import AdvancedDropzoneDemo from "components/editor/FileUploader";
+import React from "react";
+import { ExtFile } from "@files-ui/react";
 
 interface Props {
   page: number;
@@ -39,6 +41,7 @@ const EssayExamQuestion = (props: Props) => {
               ? ".aif .cda .mid .midi .mp3 .mpa .ogg .wav .wma"
               : "";
   const convertedFileSize = fileSize ? (fileSize / 1000) * 1024 * 1024 : undefined;
+  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
 
   return (
     <Grid container spacing={1}>
@@ -101,6 +104,8 @@ const EssayExamQuestion = (props: Props) => {
       {(responseFormat === "no_online" || attachments !== 0) && (
         <Grid item xs={12}>
           <AdvancedDropzoneDemo
+            extFiles={extFiles}
+            setExtFiles={setExtFiles}
             maxFileSize={convertedFileSize}
             accept={fileTypeList}
             maxFiles={attachments}
