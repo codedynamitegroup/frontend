@@ -13,7 +13,7 @@ import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ExamEntity, ExamOverview } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 
 const StudentCourseExamDetails = () => {
@@ -36,18 +36,34 @@ const StudentCourseExamDetails = () => {
     createdAt: new Date(),
     updatedAt: new Date()
   });
+
+  const [examOverviews, setExamOverviews] = useState<ExamOverview>({
+    numberOfStudents: 0,
+    submitted: 0
+  });
+
   const handleGetExamById = async (id: string) => {
     try {
       const response = await ExamService.getExamById(id);
       setExam(response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  };
+
+  const handleGetOverviews = async (id: string) => {
+    try {
+      const response = await ExamService.getOverviewsByExamId(id);
+      setExamOverviews(response);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   useEffect(() => {
     const fetchInitialData = async () => {
       await handleGetExamById(examId ?? "");
+      await handleGetOverviews(examId ?? "");
     };
     fetchInitialData();
   }, []);
@@ -162,7 +178,7 @@ const StudentCourseExamDetails = () => {
           {
             no: "1",
             state: "Đã nộp",
-            grade: "20.0",
+            grade: "10.0",
             submitted_at: dayjs().toString()
           },
           {

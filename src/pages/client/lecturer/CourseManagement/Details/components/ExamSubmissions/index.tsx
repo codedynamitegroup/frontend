@@ -44,6 +44,8 @@ import ExamSubmissionFeatureBar from "./components/FeatureBar";
 import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -56,6 +58,8 @@ export enum SubmissionStatusGraded {
 }
 
 const LecturerCourseExamSubmissions = () => {
+  const examState = useSelector((state: RootState) => state.exam);
+
   const { t } = useTranslation();
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -69,8 +73,6 @@ const LecturerCourseExamSubmissions = () => {
     isExisted: false
   });
   const navigate = useNavigate();
-  const totalSubmissionCount = 20;
-  const totalStudent = 30;
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -660,7 +662,9 @@ const LecturerCourseExamSubmissions = () => {
         <Button
           btnType={BtnType.Primary}
           onClick={() => {
-            navigate(routes.lecturer.exam.detail);
+            navigate(
+              routes.lecturer.exam.detail.replace(":courseId", examState.examDetail.courseId)
+            );
           }}
           startIcon={
             <ChevronLeftIcon
@@ -673,9 +677,10 @@ const LecturerCourseExamSubmissions = () => {
         >
           <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
         </Button>
-        <Heading1>Bài kiểm tra cuối kỳ</Heading1>
+        <Heading1>{examState.examDetail.name}</Heading1>
         <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
-          {t("course_lecturer_sub_num_of_student")}: {totalSubmissionCount}/{totalStudent}
+          {t("course_lecturer_sub_num_of_student")}: {examState.examOverview.submitted}/
+          {examState.examOverview.numberOfStudents}
         </ParagraphBody>
         <Box
           sx={{

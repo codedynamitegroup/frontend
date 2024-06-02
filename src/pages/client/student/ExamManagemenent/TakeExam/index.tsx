@@ -21,7 +21,7 @@ import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import EssayExamQuestion from "./components/ExamQuestion/EssayExamQuestion";
@@ -38,6 +38,14 @@ import Badge from "@mui/joy/Badge";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
 import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
+import { ExamService } from "services/courseService/ExamService";
+import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
+import { parse as uuidParse } from "uuid";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "hooks";
+import { setExam } from "reduxes/TakeExam";
+import { QuestionService } from "services/coreService/QuestionService";
+import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 
 const drawerWidth = 340;
 
@@ -59,12 +67,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     }),
     marginRight: 0
   }),
-  /**
-   * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-   * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-   * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-   * proper interaction with the underlying content.
-   */
   position: "relative"
 }));
 
@@ -72,365 +74,27 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-// const AppBar = styled(MuiAppBar, {
-//   shouldForwardProp: (prop) => prop !== "open"
-// })<AppBarProps>(({ theme, open }) => ({
-//   transition: theme.transitions.create(["margin", "width"], {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen
-//   }),
-//   ...(open && {
-//     width: `calc(100% - ${drawerWidth}px)`,
-//     transition: theme.transitions.create(["margin", "width"], {
-//       easing: theme.transitions.easing.easeOut,
-//       duration: theme.transitions.duration.enteringScreen
-//     }),
-//     marginRight: drawerWidth
-//   })
-// }));
-
-// const DrawerHeader = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   alignItems: "center",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-//   justifyContent: "flex-start"
-// }));
-
 interface FormData {
   response: { content: string }[];
 }
 
-const tempMultichoiceQuestion = {
-  question: {
-    id: "b6484e21-6937-489c-b031-b71767994735",
-    organization: {
-      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      name: "Code Dynamite"
-    },
-    difficulty: "HARD",
-    name: "Question haha",
-    questionText:
-      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
-    generalFeedback: "Question Good Job feedback",
-    defaultMark: 1.0,
-    createdBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    updatedBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    qtype: "MULTIPLE_CHOICE",
-    answers: [
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cfe63",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "Hihi",
-        answer: "multi 1",
-        fraction: 1.0
-      },
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cff62",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "huhu",
-        answer: "multi 2",
-        fraction: 1.0
-      },
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cff20",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "haha",
-        answer: "multi 3",
-        fraction: 1.0
-      }
-    ],
-    createdAt: "2024-05-30T09:48:04.079618Z",
-    updatedAt: "2024-05-30T09:48:04.079618Z"
-  },
-  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
-  single: true,
-  shuffleAnswers: true,
-  correctFeedback: "Correct",
-  partiallyCorrectFeedback: "Partially correct",
-  incorrectFeedback: "Incorrect",
-  answerNumbering: "none",
-  showNumCorrect: 3,
-  showStandardInstructions: "Show instruction 2"
-};
-const tempTrueFalseQuestion = {
-  question: {
-    id: "b6484e21-6937-489c-b031-b71767994735",
-    organization: {
-      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      name: "Code Dynamite"
-    },
-    difficulty: "HARD",
-    name: "Question haha",
-    questionText:
-      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
-    generalFeedback: "Question Good Job feedback",
-    defaultMark: 1.0,
-    createdBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    updatedBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    qtype: "SHORT_ANSWER",
-    answers: [],
-    createdAt: "2024-05-30T09:48:04.079618Z",
-    updatedAt: "2024-05-30T09:48:04.079618Z"
-  },
-  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
-  single: true,
-  shuffleAnswers: true,
-  correctFeedback: "Correct",
-  partiallyCorrectFeedback: "Partially correct",
-  incorrectFeedback: "Incorrect",
-  answerNumbering: "none",
-  showNumCorrect: 3,
-  showStandardInstructions: "Show instruction 2"
-};
-
 export default function TakeExam() {
+  const examId = "b6484e21-6937-489c-b031-b71767994741";
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
   const { t } = useTranslation();
+  const location = useLocation();
+  const [currentQuestionList, setCurrentQuestionList] = React.useState<any>([]);
   let questionPageIndex = Number(searchParams.get("page"));
   if (isNaN(questionPageIndex) || questionPageIndex < 0) {
     questionPageIndex = 0;
   }
-
+  const dispatch = useDispatch();
+  const questionList = useAppSelector((state) => state.takeExam.questionList);
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
-  const [questions, setQuestions] = React.useState([
-    {
-      id: "0",
-      questionId: "",
-      type: qtype.essay,
-      title: "1. Ai là cha của SE? Nêu những thành tựu nổi bật",
-      done: true
-    },
-    {
-      id: "1",
-      type: qtype.short_answer,
-      title: "2. What is the full form of HTML?",
-      done: true
-    },
-    {
-      id: "2",
-      type: qtype.multiple_choice,
-      title: "3. Con trỏ là gì?",
-      done: true
-    },
-    {
-      id: "3",
-      type: qtype.true_false,
-      title: "4. Ai là cha của SE? Nêu những thành tựu nổi bật",
-      done: false
-    },
-    {
-      id: "4",
-      type: qtype.true_false,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    }
-  ]);
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
   >(width < 1080 ? "temporary" : "permanent");
@@ -452,6 +116,7 @@ export default function TakeExam() {
     }
   }, [timeLimit]);
 
+  // Handle time countdown
   // React.useEffect(() => {
   //   const interval = setInterval(() => getTime(), 1000);
 
@@ -466,7 +131,8 @@ export default function TakeExam() {
     setOpen(false);
   };
 
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
+  // Auto change drawer to temporary when screen width < 1080
+  // and change to persistent when screen width > 1080
   React.useEffect(() => {
     if (width < 1080) {
       setDrawerVariant("temporary");
@@ -479,6 +145,110 @@ export default function TakeExam() {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+
+  // get whole question list if storage is empty (first time load page)
+  React.useEffect(() => {
+    if (questionList === undefined || questionList?.length <= 0)
+      ExamService.getExamQuestionById(examId, null)
+        .then((res) => {
+          console.log(res);
+
+          const questionFromAPI = res.questions.map((question: GetQuestionExam, index: number) => {
+            return {
+              flag: false,
+              answered: false,
+              content: "",
+              questionData: question
+            };
+          });
+          dispatch(
+            setExam({
+              examId: examId,
+              questionList: questionFromAPI
+            })
+          );
+          // dispatch(setExamId(examId));
+          // dispatch(setQuestionList(questionFromAPI));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  }, []);
+
+  // get current page question list
+  React.useEffect(() => {
+    const currentQuestionList = questionList
+      .filter((question) => question.questionData.page === questionPageIndex)
+      .map((question) => ({
+        questionId: question.questionData.id,
+        qtype: question.questionData.qtype
+      }));
+
+    const postQuestionDetailList: PostQuestionDetailList = {
+      questionCommands: currentQuestionList
+    };
+
+    if (currentQuestionList.length === 0) return;
+
+    QuestionService.getQuestionDetail(postQuestionDetailList)
+      .then((res) => {
+        console.log(res);
+        const transformList = res.questionResponses.map((question: any) => {
+          const data = question.qtypeEssayQuestion
+            ? question.qtypeEssayQuestion
+            : question.qtypeShortAnswerQuestion
+              ? question.qtypeShortAnswerQuestion
+              : question.qtypeMultichoiceQuestion
+                ? question.qtypeMultichoiceQuestion
+                : question.qtypeTrueFalseQuestion
+                  ? question.qtypeTrueFalseQuestion
+                  : question.qtypeCodeQuestion;
+          return {
+            data
+          };
+        });
+        setCurrentQuestionList(transformList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [questionPageIndex]);
+
+  // back - forward button
+  const handleQuestionNavigateButton = (questionId: string) => {
+    const index = questionList.find((question) => question.questionData.id === questionId)
+      ?.questionData.page;
+    const slug = convertIdToSlug(questionId);
+
+    if (index === questionPageIndex) {
+      // const element = document.getElementById(slug);
+      // element?.scrollIntoView({ behavior: "smooth" });
+      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
+        replace: true
+      });
+    } else {
+      console.log(`${routes.student.exam.take}?page=${index}#${slug}`);
+      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
+        replace: true
+      });
+    }
+  };
+
+  // Scroll to question
+  React.useEffect(() => {
+    const checkExist = setInterval(function () {
+      const id = location.hash.substring(1); // get the id from the hash
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        clearInterval(checkExist);
+      }
+    }, 100); // check every 100ms
+  }, [location]);
+
+  React.useEffect(() => {
+    console.log(currentQuestionList);
+  }, [currentQuestionList]);
 
   return (
     <>
@@ -637,68 +407,115 @@ export default function TakeExam() {
               }}
             >
               <Grid container spacing={7}>
-                <Grid item xs={12}>
-                  {questions[questionPageIndex].type === qtype.essay ? (
-                    <EssayExamQuestion
-                      page={questionPageIndex}
-                      isFlagged
-                      responseFormat='editor'
-                      responseFieldLines={10}
-                      fileSize={40000}
-                      fileTypes='archive'
-                    />
-                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                    <ShortAnswerExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion
-                      page={questionPageIndex}
-                      questionMultiChoice={tempMultichoiceQuestion}
-                    />
-                  ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion
-                      page={questionPageIndex}
-                      questionTrueFalseQuestion={tempTrueFalseQuestion}
-                    />
-                  ) : null}
+                {currentQuestionList.map((question: any, index: number) => (
+                  <>
+                    <Grid
+                      item
+                      xs={12}
+                      id={convertIdToSlug(question.data.question.id)}
+                      key={question.data.question.id}
+                    >
+                      {question.data.question.qtype === qtype.essay.code ? (
+                        <EssayExamQuestion
+                          page={questionList.findIndex(
+                            (tempQuestion: any) =>
+                              tempQuestion.questionData.id === question.data.question.id
+                          )}
+                          isFlagged={
+                            questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )?.flag
+                          }
+                          questionEssayQuestion={question.data}
+                        />
+                      ) : question.data.question.qtype === qtype.short_answer.code ? (
+                        <ShortAnswerExamQuestion
+                          page={questionList.findIndex(
+                            (tempQuestion: any) =>
+                              tempQuestion.questionData.id === question.data.question.id
+                          )}
+                          questionShortAnswer={question.data}
+                          questionState={questionList.find(
+                            (questionInList) =>
+                              questionInList.questionData.id === question.data.question.id
+                          )}
+                        />
+                      ) : question.data.question.qtype === qtype.multiple_choice.code ? (
+                        <MultipleChoiceExamQuestion
+                          page={questionList.findIndex(
+                            (tempQuestion: any) =>
+                              tempQuestion.questionData.id === question.data.question.id
+                          )}
+                          questionMultiChoice={question.data}
+                          questionState={questionList.find(
+                            (questionInList) =>
+                              questionInList.questionData.id === question.data.question.id
+                          )}
+                        />
+                      ) : question.data.question.qtype === qtype.true_false.code ? (
+                        <TrueFalseExamQuestion
+                          page={questionList.findIndex(
+                            (tempQuestion: any) =>
+                              tempQuestion.questionData.id === question.data.question.id
+                          )}
+                          questionTrueFalseQuestion={question.data}
+                          questionState={questionList.find(
+                            (questionInList) =>
+                              questionInList.questionData.id === question.data.question.id
+                          )}
+                        />
+                      ) : null}
+                    </Grid>
+                    {index !== currentQuestionList.length - 1 && (
+                      <Grid item xs={12} display={"flex"} justifyContent={"center"}>
+                        <Divider
+                          sx={{
+                            width: "100px"
+                          }}
+                        />
+                      </Grid>
+                    )}
+                  </>
+                ))}
+
+                <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>
+                  {questionPageIndex !== 0 ? (
+                    <Link
+                      to={{
+                        pathname: routes.student.exam.take,
+                        search: `?page=${questionPageIndex - 1}`
+                      }}
+                    >
+                      <Button variant='soft' color='neutral'>
+                        Trang trước
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Box></Box>
+                  )}
+                  {questionPageIndex ===
+                  (questionList.length > 0
+                    ? questionList[questionList.length - 1].questionData.page
+                    : -1) ? (
+                    <Button onClick={() => {}} variant='solid' color='primary'>
+                      Kết thúc bài làm...
+                    </Button>
+                  ) : (
+                    <Link
+                      to={{
+                        pathname: routes.student.exam.take,
+                        search: `?page=${questionPageIndex + 1}`
+                      }}
+                    >
+                      <Button onClick={() => {}} variant='solid' color='primary'>
+                        Trang sau
+                      </Button>
+                    </Link>
+                  )}
                 </Grid>
               </Grid>
             </Box>
-
-            {/* <Grid container spacing={1}>
-              <Grid item xs={6}>
-                {questionPageIndex !== 0 && (
-                  <Link
-                    to={{
-                      pathname: routes.student.exam.take,
-                      search: `?page=${questionPageIndex - 1}`
-                    }}
-                  >
-                    Trang trước
-                  </Link>
-                )}
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
-                {questionPageIndex !== questions.length - 1 ? (
-                  <Link
-                    to={{
-                      pathname: routes.student.exam.take,
-                      search: `?page=${questionPageIndex + 1}`
-                    }}
-                  >
-                    Trang sau
-                  </Link>
-                ) : (
-                  <Button onClick={() => {}}>Kết thúc bài làm...</Button>
-                )}
-              </Grid>
-            </Grid> */}
           </Box>
 
           <Drawer
@@ -738,8 +555,10 @@ export default function TakeExam() {
                     <Autocomplete
                       fullWidth
                       size='small'
-                      options={questions.filter((value) => value.title)}
-                      getOptionLabel={(params) => (params.title ? params.title : "")}
+                      options={questionList.filter((value) => value.questionData.name)}
+                      getOptionLabel={(params) =>
+                        params.questionData.name ? params.questionData.name : ""
+                      }
                       sx={{
                         marginBottom: "16px",
                         borderRadius: "12px",
@@ -779,23 +598,18 @@ export default function TakeExam() {
                         "& .MuiOutlinedInput-root": { borderRadius: "12px" }
                       }}
                     />
-                    <Grid
-                      container
-                      spacing={1}
-                      marginBottom={"10px"}
-                      sx={{ overflow: "auto", maxHeight: "30dvh" }}
-                    >
-                      {questions.map((question, index) => (
+                    <Grid container spacing={1} marginBottom={"10px"} sx={{ maxHeight: "30dvh" }}>
+                      {questionList.map((question, index) => (
                         <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
                           <Badge
                             color='neutral'
                             variant='outlined'
                             badgeContent={
-                              question.type.code === qtype.essay.code ? (
+                              question.questionData.qtype === qtype.essay.code ? (
                                 <ModeIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.type.code === qtype.short_answer.code ? (
+                              ) : question.questionData.qtype === qtype.short_answer.code ? (
                                 <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.type.code === qtype.true_false.code ? (
+                              ) : question.questionData.qtype === qtype.true_false.code ? (
                                 <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
                               ) : (
                                 <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
@@ -822,26 +636,32 @@ export default function TakeExam() {
                                 vertical: "top",
                                 horizontal: "right"
                               }}
+                              invisible={!question.flag}
                             >
                               <Button
-                                variant={
-                                  questionPageIndex === index
-                                    ? "solid"
-                                    : question.done
-                                      ? "soft"
-                                      : "outlined"
-                                }
+                                variant={"outlined"}
                                 sx={{
-                                  backgroundColor: questionPageIndex === index ? "#077aefb3" : null,
+                                  border: currentQuestionList.some(
+                                    (questionInList: any) =>
+                                      questionInList.data.question.id === question.questionData.id
+                                  )
+                                    ? "2px solid #002db3"
+                                    : "2px solid #e1e1e1",
                                   borderRadius: "1000px",
                                   width: "40px",
                                   height: "40px"
                                 }}
-                                onClick={() => {
-                                  navigate(`${routes.student.exam.take}?page=${index}`, {
-                                    replace: true
-                                  });
-                                }}
+                                color={
+                                  currentQuestionList.some(
+                                    (questionInList: any) =>
+                                      questionInList.data.question.id === question.questionData.id
+                                  )
+                                    ? "primary"
+                                    : "neutral"
+                                }
+                                onClick={() =>
+                                  handleQuestionNavigateButton(question.questionData.id)
+                                }
                               >
                                 {index + 1}
                               </Button>
@@ -853,9 +673,9 @@ export default function TakeExam() {
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={1}>
-                      <Grid item justifyContent={"center"}>
+                      {/* <Grid item justifyContent={"center"}>
                         <Pagination count={99} />
-                      </Grid>
+                      </Grid> */}
                       <Grid item justifyContent={"center"} xs={12}>
                         <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
                           Kết thúc bài làm...
@@ -871,4 +691,11 @@ export default function TakeExam() {
       </Grid>
     </>
   );
+}
+
+function convertIdToSlug(str: string) {
+  const bytes = Array.from(uuidParse(str));
+  const base64 = btoa(String.fromCharCode.apply(null, bytes));
+  const slug = base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return slug;
 }

@@ -21,6 +21,7 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useTranslation } from "react-i18next";
+import { ExtFile } from "@files-ui/react";
 
 const drawerWidth = 450;
 
@@ -85,6 +86,7 @@ export default function PreviewAssignmentSubmission() {
   const navigate = useNavigate();
   const assignmentOpenTime = dayjs();
   const assignmentCloseTime = dayjs();
+  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
   const assignmentDescriptionRawHTML = `
     <div>
     <p>Đây là mô tả bài tập</p>
@@ -300,7 +302,7 @@ export default function PreviewAssignmentSubmission() {
                       </TextTitle>
                     </Grid>
                     <Grid item xs={9}>
-                      <FileUploader />
+                      <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
                     </Grid>
                   </Grid>
                 </Box>

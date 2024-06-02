@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Card, Chip, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Chip, Divider, Grid, Stack } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -20,7 +20,7 @@ import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,8 @@ import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import classes from "./styles.module.scss";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -36,8 +38,12 @@ interface ContestManagementProps extends ContestEntity {
 }
 
 const ContestManagement = () => {
+  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
+  const [type, setType] = useState<AlertType>(AlertType.INFO);
+  const [content, setContent] = useState("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -45,6 +51,8 @@ const ContestManagement = () => {
   const [contestStatusFilter, setContestStatusFilter] = useState<ContestStartTimeFilterEnum>(
     ContestStartTimeFilterEnum.ALL
   );
+
+  const contestState = useSelector((state: RootState) => state.contest);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -62,7 +70,7 @@ const ContestManagement = () => {
     }) => {
       dispatch(setLoading(true));
       try {
-        const getCertificateCoursesResponse = await ContestService.getContests({
+        const getCertificateCoursesResponse = await ContestService.getContestsForAdmin({
           searchName,
           startTimeFilter,
           pageNo,
@@ -73,11 +81,12 @@ const ContestManagement = () => {
           dispatch(setLoading(false));
         }, 500);
       } catch (error: any) {
-        console.error("Failed to fetch contests", {
-          code: error.code || 503,
-          status: error.status || "Service Unavailable",
-          message: error.message
-        });
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          setOpenSnackbarAlert(true);
+          setType(AlertType.Error);
+          setContent("Please authenticate");
+        }
         dispatch(setLoading(false));
         // Show snackbar here
       }
@@ -89,13 +98,11 @@ const ContestManagement = () => {
     (value: string) => {
       handleGetContests({
         searchName: value,
-        startTimeFilter: ContestStartTimeFilterEnum.ALL
+        startTimeFilter: contestStatusFilter
       });
     },
-    [handleGetContests]
+    [handleGetContests, contestStatusFilter]
   );
-
-  const contestState = useSelector((state: RootState) => state.contest);
 
   const tableHeading: GridColDef[] = [
     {
@@ -249,7 +256,20 @@ const ContestManagement = () => {
       },
       getActions: (params) => {
         return [
-          <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            onClick={() => {
+              navigate(
+                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId),
+                {
+                  state: {
+                    contestName: params.row.name
+                  }
+                }
+              );
+            }}
+          />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
         ];
       }
@@ -278,12 +298,16 @@ const ContestManagement = () => {
           contestId: contest.contestId,
           name: contest.name,
           description: contest.description,
+          prizes: contest.prizes,
+          rules: contest.rules,
+          scoring: contest.scoring,
           thumbnailUrl: contest.thumbnailUrl,
           startTime: contest.startTime,
           endTime: contest.endTime,
           questions: contest.questions,
           numOfParticipants: contest.numOfParticipants,
           status,
+          isPublic: contest.isPublic,
           createdBy: contest.createdBy,
           createdAt: contest.createdAt,
           updatedAt: contest.updatedAt,
@@ -320,13 +344,12 @@ const ContestManagement = () => {
   }, [handleGetContests, searchValue, contestStatusFilter]);
 
   const handleCancelFilter = useCallback(() => {
-    setSearchValue("");
     setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
     handleGetContests({
-      searchName: "",
+      searchName: searchValue,
       startTimeFilter: ContestStartTimeFilterEnum.ALL
     });
-  }, [handleGetContests]);
+  }, [handleGetContests, searchValue]);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -340,99 +363,120 @@ const ContestManagement = () => {
   }, [handleGetContests]);
 
   return (
-    <Card
-      sx={{
-        margin: "20px",
-        padding: "20px",
-        "& .MuiDataGrid-root": {
-          border: "1px solid #e0e0e0",
-          borderRadius: "4px"
-        }
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Heading1 translate-key='contest_management_title'>
-            {t("contest_management_title")}
-          </Heading1>
-        </Grid>
-        <Grid item xs={12}>
-          <CustomSearchFeatureBar
-            isLoading={contestState.isLoading}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-            onHandleChange={handleSearchChange}
-            createBtnText={t("contest_create")}
-            onClickCreate={() => {
-              navigate(routes.admin.contest.create);
-            }}
-            numOfResults={totalElement}
-            filterKeyList={[
-              {
-                label: t("common_status"),
-                value: "Status"
-              }
-            ]}
-            filterValueList={
-              [
+    <>
+      <SnackbarAlert
+        open={openSnackbarAlert}
+        setOpen={setOpenSnackbarAlert}
+        type={type}
+        content={content}
+      />
+      <Card
+        sx={{
+          margin: "20px",
+          "& .MuiDataGrid-root": {
+            border: "1px solid #e0e0e0",
+            borderRadius: "4px"
+          }
+        }}
+      >
+        <Box className={classes.breadcump} ref={breadcumpRef}>
+          <Box id={classes.breadcumpWrapper}>
+            <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
+              {t("contest_management_title")}
+            </ParagraphSmall>
+          </Box>
+        </Box>
+        <Divider />
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            padding: "20px"
+          }}
+        >
+          <Grid item xs={12}>
+            <Heading1 translate-key='contest_management_title'>
+              {t("contest_management_title")}
+            </Heading1>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomSearchFeatureBar
+              isLoading={contestState.isLoading}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              onHandleChange={handleSearchChange}
+              createBtnText={t("contest_create")}
+              onClickCreate={() => {
+                navigate(routes.admin.contest.create);
+              }}
+              numOfResults={totalElement}
+              filterKeyList={[
                 {
-                  label: t("common_all"),
-                  value: ContestStartTimeFilterEnum.ALL
-                },
-                {
-                  label: t("common_upcoming"),
-                  value: ContestStartTimeFilterEnum.UPCOMING
-                },
-                {
-                  label: t("common_in_progress"),
-                  value: ContestStartTimeFilterEnum.HAPPENING
-                },
-                {
-                  label: t("common_ended"),
-                  value: ContestStartTimeFilterEnum.ENDED
+                  label: t("common_status"),
+                  value: "Status"
                 }
-              ] as { label: string; value: string }[]
-            }
-            currentFilterKey='Status'
-            currentFilterValue={contestStatusFilter}
-            handleFilterValueChange={(value) => {
-              setContestStatusFilter(value as ContestStartTimeFilterEnum);
-            }}
-            onHandleApplyFilter={handleApplyFilter}
-            onHandleCancelFilter={handleCancelFilter}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {/* #F5F9FB */}
-          <CustomDataGrid
-            loading={contestState.isLoading}
-            dataList={contestList}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={true}
-            getRowHeight={() => "auto"}
-            onClickRow={rowClickHandler}
-            sx={{
-              "& .MuiDataGrid-cell": {
-                border: "none"
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#f5f9fb"
-              },
-              "& .MuiDataGrid-toolbarContainer": {
-                backgroundColor: "#f5f9fb"
+              ]}
+              filterValueList={
+                [
+                  {
+                    label: t("common_all"),
+                    value: ContestStartTimeFilterEnum.ALL
+                  },
+                  {
+                    label: t("common_upcoming"),
+                    value: ContestStartTimeFilterEnum.UPCOMING
+                  },
+                  {
+                    label: t("common_in_progress"),
+                    value: ContestStartTimeFilterEnum.HAPPENING
+                  },
+                  {
+                    label: t("common_ended"),
+                    value: ContestStartTimeFilterEnum.ENDED
+                  }
+                ] as { label: string; value: string }[]
               }
-            }}
-            personalSx={true}
-          />
+              currentFilterKey='Status'
+              currentFilterValue={contestStatusFilter}
+              handleFilterValueChange={(value) => {
+                setContestStatusFilter(value as ContestStartTimeFilterEnum);
+              }}
+              onHandleApplyFilter={handleApplyFilter}
+              onHandleCancelFilter={handleCancelFilter}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {/* #F5F9FB */}
+            <CustomDataGrid
+              loading={contestState.isLoading}
+              dataList={contestList}
+              tableHeader={tableHeading}
+              onSelectData={rowSelectionHandler}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              getRowHeight={() => "auto"}
+              onClickRow={rowClickHandler}
+              sx={{
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
+                }
+              }}
+              personalSx={true}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Card>
+      </Card>
+    </>
   );
 };
 

@@ -20,10 +20,8 @@ import {
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridActionsCellItem";
-import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import Header from "components/Header";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
@@ -40,11 +38,9 @@ import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
-import dayjs, { Dayjs } from "dayjs";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
@@ -56,10 +52,11 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
+import { clearQuestionCreate } from "reduxes/coreService/questionCreate";
 
 const drawerWidth = 400;
 
@@ -129,9 +126,13 @@ export const OVERDUE_HANDLING = {
 export default function ExamCreated() {
   const { courseId } = useParams();
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
+  const dispatch = useDispatch();
+  const submitHandler = () => {
+    const questionIds = questionCreate.questionCreate.map((item) => ({
+      questionId: item.id,
+      page: 1
+    }));
 
-  const submitHandler = (data: any) => {
-    console.log("data");
     const newExam: ExamCreateRequest = {
       courseId: courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290",
       name: examName,
@@ -146,11 +147,12 @@ export default function ExamCreated() {
       maxAttempts: maxAttempts,
       shuffleQuestions: true,
       gradeMethod: "QUIZ_GRADEHIGHEST",
-      questionIds: []
+      questionIds: questionIds
     };
     ExamService.createExam(newExam)
       .then((response) => {
         console.log(response);
+        dispatch(clearQuestionCreate());
       })
       .catch((error) => {
         console.log(error);
@@ -170,7 +172,6 @@ export default function ExamCreated() {
   const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("minutes");
   const [examTimeLimitNumber, setExamTimeLimitNumber] = React.useState(0);
   const [examTimeLimitEnabled, setExamTimeLimitEnabled] = React.useState(false);
-  const [assignmentSection, setAssignmentSection] = React.useState("0");
   const [overdueHandling, setOverdueHandling] = React.useState<string>(OVERDUE_HANDLING.AUTOSUBMIT);
   const [maxAttempts, setMaxAttempts] = React.useState(0);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = React.useState(false);
@@ -265,17 +266,10 @@ export default function ExamCreated() {
   );
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {};
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+  const rowSelectionHandler = () => {};
+  const pageChangeHandler = (model: GridPaginationModel) => {
     console.log(model);
   };
-
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -283,7 +277,7 @@ export default function ExamCreated() {
 
   function handleClick() {
     setLoading(true);
-    submitHandler({});
+    submitHandler();
     navigate(
       routes.lecturer.course.assignment.replace(
         ":courseId",
@@ -336,16 +330,18 @@ export default function ExamCreated() {
   const onClickConfirmAddNewQuestion = () => {
     switch (questionType) {
       case "essay":
-        navigate(routes.lecturer.question.essay.create);
+        navigate(routes.lecturer.question.essay.create, { state: { courseId: courseId } });
         break;
       case "multiple-choice":
-        navigate(routes.lecturer.question.multiple_choice.create);
+        navigate(routes.lecturer.question.multiple_choice.create, {
+          state: { courseId: courseId }
+        });
         break;
       case "short-answer":
-        navigate(routes.lecturer.question.short_answer.create);
+        navigate(routes.lecturer.question.short_answer.create, { state: { courseId: courseId } });
         break;
       case "true-false":
-        navigate(routes.lecturer.question.true_false.create);
+        navigate(routes.lecturer.question.true_false.create, { state: { courseId: courseId } });
         break;
       default:
         break;
@@ -840,7 +836,7 @@ export default function ExamCreated() {
                   ]}
                 />
               </Box>
-              <Box className={classes.drawerFieldContainer}>
+              {/* <Box className={classes.drawerFieldContainer}>
                 <TextTitle
                   className={classes.drawerTextTitle}
                   translation-key='common_filter_topic'
@@ -867,7 +863,7 @@ export default function ExamCreated() {
                   ]}
                   backgroundColor='#D9E2ED'
                 />
-              </Box>
+              </Box> */}
               <LoadButton
                 btnType={BtnType.Outlined}
                 fullWidth

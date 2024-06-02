@@ -21,6 +21,7 @@ export const API = {
     },
     CONTEST: {
       DEFAULT: "/core/contests",
+      CONTEST_MANAGEMENT_FOR_ADMIN: "/core/contests/admin",
       CREATE: "/core/contests/create",
       GET_BY_ID: "/core/contests/:id",
       UPDATE_BY_ID: "/core/contests/:id",
@@ -35,18 +36,19 @@ export const API = {
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
+      QUESTION_DETAIL: "/core/questions/detail",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
         GET_ALL: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
-        CREATE: "/core/questions/questions/essay-question/create",
+        CREATE: "/core/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
       },
       MULTIPLE_CHOICE_QUESTION: {
-        CREATE: "questions/multichoice-question/create",
+        CREATE: "/core/questions/multichoice-question/create",
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
         GET_ALL: "/core/questions/multichoice-question"
@@ -83,8 +85,12 @@ export const API = {
     },
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
+      OVERVIEW: "/course/exam/:id/overview",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam"
+    },
+    EXAM_QUESTION: {
+      DEFAULT: "/course/exam/:examId/question"
     },
     QUESTION: {
       DEFAULT: "/course/question",

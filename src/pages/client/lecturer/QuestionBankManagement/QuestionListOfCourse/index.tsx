@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
+import {
+  GridColDef,
+  GridActionsCellItem,
+  GridEventListener,
+  GridCallbackDetails,
+  GridRowSelectionModel,
+  GridPaginationModel
+} from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
 import { red } from "@mui/material/colors";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,14 +34,15 @@ import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
-import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
   const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
   const navigate = useNavigate();
-  const { categoryId } = useParams();
+  const { categoryId } = useParams<{ categoryId: string }>();
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -43,13 +51,6 @@ const QuestionListOfCourse = () => {
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
-  const [pageState, setPageState] = useState({
-    isLoading: false,
-    data: questionCategoryState.questions,
-    total: questionCategoryState.totalItems,
-    page: 0,
-    pageSize: 5
-  });
 
   const columnsProps: GridColDef[] = [
     {
@@ -137,7 +138,7 @@ const QuestionListOfCourse = () => {
             icon={<DeleteIcon />}
             label='Delete'
             className='textPrimary'
-            onClick={() => null}
+            onClick={handleDeleteQuestion.bind(null, id.toString())}
             sx={{
               color: red[500]
             }}
@@ -170,27 +171,27 @@ const QuestionListOfCourse = () => {
     setSearchText(searchText);
   };
 
-  const handleGetQuestions = async (
-    categoryId: string,
-    {
-      search = searchText,
-      pageNo = page,
-      pageSize = rowsPerPage
-    }: {
-      search?: string;
-      pageNo?: number;
-      pageSize?: number;
-    }
-  ) => {
+  const handleGetQuestions = async ({
+    categoryId,
+    search = searchText,
+    pageNo = page,
+    pageSize = rowsPerPage
+  }: {
+    categoryId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
     try {
-      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId(categoryId, {
+      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
+        categoryId,
         search,
         pageNo,
         pageSize
       });
       dispatch(setQuestionsCategory(getQuestionResponse));
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch questions by category id", error);
     }
   };
 
@@ -199,8 +200,38 @@ const QuestionListOfCourse = () => {
       const getCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategoryById(categoryId);
       dispatch(setCategoryDetails(getCategoryResponse));
+      console.log(questionCategoryState.questions, "questionCategoryState.questions");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleDeleteQuestion = async (questionId: string) => {
+    try {
+      const deleteQuestionResponse = await QuestionService.deleteQuestionById(questionId);
+      if (deleteQuestionResponse) {
+        handleGetQuestions({
+          categoryId: categoryId || "",
+          search: searchText,
+          pageNo: page,
+          pageSize: rowsPerPage
+        });
+      }
+    } catch (error) {
+      console.error("Failed to delete question", error);
+    }
+  };
+
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {};
+
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    setPage(model.page);
+    setRowsPerPage(model.pageSize);
+    if (categoryId) {
+      handleGetQuestions({ categoryId, search: searchText, pageNo: page, pageSize: rowsPerPage });
     }
   };
 
@@ -218,54 +249,11 @@ const QuestionListOfCourse = () => {
   };
 
   useEffect(() => {
-    const fetchInitialCategory = async () => {
-      if (categoryId) {
-        await handleGetQuestions(categoryId, {
-          search: searchText,
-          pageNo: page,
-          pageSize: rowsPerPage
-        });
-        await handleGetCategory(categoryId);
-      }
-    };
-    fetchInitialCategory();
-  }, [categoryId, searchText, page, rowsPerPage]);
-
-  useEffect(() => {
-    setRowsPerPage(pageState.pageSize);
-    setPage(pageState.page);
     if (categoryId) {
-      handleGetQuestions(categoryId, { search: searchText, pageNo: page, pageSize: rowsPerPage });
       handleGetCategory(categoryId);
+      handleGetQuestions({ categoryId, search: searchText, pageNo: page, pageSize: rowsPerPage });
     }
-    setPageState((old) => ({
-      ...old,
-      data: questionCategoryState.questions,
-      total: questionCategoryState.totalItems
-    }));
-  }, [pageState.page, pageState.pageSize]);
-
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      if (categoryId) {
-        await handleGetQuestions(categoryId, {
-          search: searchText,
-          pageNo: page,
-          pageSize: rowsPerPage
-        });
-        await handleGetCategory(categoryId);
-      }
-      setPageState(() => ({
-        isLoading: false,
-        data: questionCategoryState.questions,
-        total: questionCategoryState.totalItems,
-        page: page,
-        pageSize: rowsPerPage
-      }));
-    };
-
-    fetchInitialData();
-  }, [categoryId, searchText]);
+  }, [categoryId, searchText, page, rowsPerPage]);
 
   return (
     <div>
@@ -335,50 +323,38 @@ const QuestionListOfCourse = () => {
               </Button>
             </Stack>
 
-            <SearchBar
-              onSearchClick={handleSearch}
+            <CustomAutocomplete
               translation-key='question_bank_category_question_list_enter_question_name'
               placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
+              value={searchText}
+              setValue={setSearchText}
+              options={[]}
+              onHandleChange={handleSearch}
             />
-            <DataGrid
+            <CustomDataGrid
               sx={{
                 "& .MuiDataGrid-cell": { padding: "16px" }
               }}
-              autoHeight
-              getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({
-                  ...old,
-                  data: pageState.data.map((item, index) => ({
-                    stt: index + 1,
-                    qtypeText:
-                      item.qtype === QuestionTypeEnum.ESSAY
-                        ? "Câu hỏi tự luận"
-                        : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                          ? "Câu hỏi nhiều đáp án"
-                          : item.qtype === QuestionTypeEnum.SHORT_ANSWER
-                            ? "Câu hỏi ngắn"
-                            : "Code",
-                    ...item
-                  })),
-                  total: pageState.total,
-                  page: model.page,
-                  pageSize: model.pageSize
-                }));
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              hideFooterSelectedRowCount
-              // onRowClick={handleRowClick}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
+              dataList={questionCategoryState.questions.map((item, index) => ({
+                stt: index + 1,
+                // qtypeText:
+                //   item.qtype === QuestionTypeEnum.ESSAY
+                //     ? "Câu hỏi tự luận"
+                //     : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                //       ? "Câu hỏi nhiều đáp án"
+                //       : item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                //         ? "Câu hỏi ngắn"
+                //         : "Code",
+                ...item
+              }))}
+              tableHeader={columns}
+              onSelectData={rowSelectionHandler}
+              page={page}
+              pageSize={rowsPerPage}
+              totalElement={questionCategoryState.totalItems}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={false}
+              onClickRow={handleRowClick}
             />
           </Stack>
         </Container>
@@ -441,28 +417,21 @@ const QuestionListOfCourse = () => {
                 </ParagraphBody>
               </Button>
             </Stack>
-            <DataGrid
+            <CustomDataGrid
               sx={{
                 "& .MuiDataGrid-cell": { padding: "16px" }
               }}
-              autoHeight
-              getRowHeight={() => "auto"}
-              rows={pageState.data.map((item, index) => ({ stt: index + 1, ...item }))}
-              rowCount={pageState.total}
-              loading={pageState.isLoading}
-              paginationModel={{ page: pageState.page, pageSize: pageState.pageSize }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              hideFooterSelectedRowCount
-              // onRowClick={handleRowClick}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
+              dataList={questionCategoryState.questions.map((item, index) => ({
+                stt: index + 1,
+                ...item
+              }))}
+              tableHeader={columns}
+              onSelectData={rowSelectionHandler}
+              pageSize={rowsPerPage}
+              page={page}
+              totalElement={questionCategoryState.totalItems}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={false}
             />
           </Stack>
         </Container>

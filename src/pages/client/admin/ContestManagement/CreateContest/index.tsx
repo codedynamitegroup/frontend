@@ -1,11 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, Card, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
+import { Box, Card, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import moment from "moment";
@@ -109,6 +108,11 @@ const CreateContest = () => {
           setType(AlertType.Success);
           setContent(t("contest_create_success"));
           setSubmitLoading(false);
+          navigate(routes.admin.contest.edit.details, {
+            state: {
+              contestName: name
+            }
+          });
         }
       } catch (error: any) {
         console.error("error", error);
@@ -134,7 +138,7 @@ const CreateContest = () => {
       <Card
         sx={{
           margin: "20px",
-          padding: "20px",
+          // padding: "20px",
           "& .MuiDataGrid-root": {
             border: "1px solid #e0e0e0",
             borderRadius: "4px"
@@ -158,9 +162,10 @@ const CreateContest = () => {
             </ParagraphSmall>
           </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
-            marginTop: "20px"
+            padding: "20px"
           }}
         >
           <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
@@ -171,37 +176,36 @@ const CreateContest = () => {
               marginTop: "20px"
             }}
           >
-            <ParagraphBody fontStyle='italic' translate-key='contest_description_message_1'>
+            <ParagraphSmall fontStyle='italic' translate-key='contest_description_message_1'>
               {t("contest_description_message_1")}
-            </ParagraphBody>
-            <ParagraphBody fontStyle={"italic"} translate-key='contest_description_message_2'>
+            </ParagraphSmall>
+            <ParagraphSmall fontStyle={"italic"} translate-key='contest_description_message_2'>
               {t("contest_description_message_2")}
-            </ParagraphBody>
+            </ParagraphSmall>
           </Stack>
           <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
             {/* Contest name */}
-            <Grid item xs={6} md={6}>
-              <Controller
-                // defaultValue=''
-                control={control}
-                name='name'
-                rules={{ required: true }}
-                render={({ field: { ref, ...field } }) => (
-                  <InputTextField
-                    error={Boolean(errors?.name)}
-                    errorMessage={errors.name?.message}
-                    title={`${t("contest_name")}`}
-                    type='text'
-                    placeholder={t("contest_enter_contest_name")}
-                    titleRequired={true}
-                    translation-key='contest_enter_contest_name'
-                    inputRef={ref}
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
+            <Controller
+              // defaultValue=''
+              control={control}
+              name='name'
+              rules={{ required: true }}
+              render={({ field: { ref, ...field } }) => (
+                <InputTextField
+                  error={Boolean(errors?.name)}
+                  errorMessage={errors.name?.message}
+                  title={`${t("contest_name")}`}
+                  type='text'
+                  placeholder={t("contest_enter_contest_name")}
+                  titleRequired={true}
+                  translation-key='contest_enter_contest_name'
+                  inputRef={ref}
+                  width='350px'
+                  fullWidth
+                  {...field}
+                />
+              )}
+            />
 
             <Grid container spacing={1} columns={12}>
               {/* Contest start time */}
@@ -227,6 +231,7 @@ const CreateContest = () => {
                             setValue("startTime", newValue.toISOString());
                           }
                         }}
+                        width='350px'
                       />
                       {/* Show error */}
                       {errors.startTime && (
@@ -260,36 +265,39 @@ const CreateContest = () => {
                       />
                     </Grid>
                     <Grid item xs={9}>
-                      <CustomDateTimePicker
-                        value={moment(field.value)}
-                        disabled={watch("isNoEndTime")}
-                        onHandleValueChange={(newValue) => {
-                          if (newValue) {
-                            setValue("endTime", newValue.toISOString());
-                          }
-                        }}
-                      />
+                      <Stack direction='column' gap={1}>
+                        <CustomDateTimePicker
+                          value={moment(field.value)}
+                          disabled={watch("isNoEndTime")}
+                          onHandleValueChange={(newValue) => {
+                            if (newValue) {
+                              setValue("endTime", newValue.toISOString());
+                            }
+                          }}
+                          width='350px'
+                        />
 
-                      {/* Is no end time */}
-                      <Controller
-                        control={control}
-                        name='isNoEndTime'
-                        render={({ field: { ref, ...field } }) => (
-                          <FormControlLabel
-                            control={<Checkbox color='primary' {...field} />}
-                            label={t("this_contest_has_no_end_time")}
-                          />
-                        )}
-                      />
-
-                      {/* Show error */}
-                      {errors.endTime && (
-                        <Grid item xs={12}>
-                          {errors.endTime.message && (
-                            <ErrorMessage>{errors.endTime.message || ""}</ErrorMessage>
+                        {/* Is no end time */}
+                        <Controller
+                          control={control}
+                          name='isNoEndTime'
+                          render={({ field: { ref, ...field } }) => (
+                            <FormControlLabel
+                              control={<Checkbox color='primary' {...field} />}
+                              label={t("this_contest_has_no_end_time")}
+                            />
                           )}
-                        </Grid>
-                      )}
+                        />
+
+                        {/* Show error */}
+                        {errors.endTime && (
+                          <Grid item xs={12}>
+                            {errors.endTime.message && (
+                              <ErrorMessage>{errors.endTime.message || ""}</ErrorMessage>
+                            )}
+                          </Grid>
+                        )}
+                      </Stack>
                     </Grid>
                   </Grid>
                 </>
