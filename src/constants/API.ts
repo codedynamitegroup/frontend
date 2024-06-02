@@ -107,6 +107,10 @@ export const API = {
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id"
+    },
+    CODE_SUBMISSION: {
+      DEFAULT: "/code-assessment/code-submission",
+      GET_BY_ID: "/code-assessment/code-submission/:id"
     }
   },
   JUDGE0: {
