@@ -7,6 +7,7 @@ import {
   ImagePreview,
   VideoPreview
 } from "@files-ui/react";
+import { Box } from "@mui/material";
 import { saveAs } from "file-saver";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -16,12 +17,15 @@ interface PropsData {
   maxFiles?: number;
   maxFileSize?: number;
   accept?: string;
+  width?: string;
+  extFiles: ExtFile[];
+  setExtFiles: React.Dispatch<React.SetStateAction<ExtFile[]>>;
 }
 
-export default function AdvancedDropzoneDemo(props: PropsData) {
+export default function AdvancedDropzoneDemo({ extFiles, setExtFiles, ...props }: PropsData) {
   const { maxFiles, maxFileSize, accept } = props;
   const { t } = useTranslation();
-  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
+  // const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
   const [imageSrc, setImageSrc] = React.useState<File | string | undefined>(undefined);
   const [videoSrc, setVideoSrc] = React.useState<File | string | undefined>(undefined);
   const updateFiles = async (incommingFiles: ExtFile[]) => {
@@ -114,7 +118,11 @@ export default function AdvancedDropzoneDemo(props: PropsData) {
   const customFooter = { customMessage: "sds" };
 
   return (
-    <>
+    <Box
+      sx={{
+        width: `${props.width ? props.width : "100%"}`
+      }}
+    >
       <Dropzone
         accept={accept}
         minHeight='195px'
@@ -160,6 +168,6 @@ export default function AdvancedDropzoneDemo(props: PropsData) {
       <FullScreen open={videoSrc !== undefined} onClose={() => setVideoSrc(undefined)}>
         <VideoPreview src={videoSrc} autoPlay controls />
       </FullScreen>
-    </>
+    </Box>
   );
 }

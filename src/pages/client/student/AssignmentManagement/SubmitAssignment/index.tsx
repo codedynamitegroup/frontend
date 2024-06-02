@@ -27,6 +27,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import { setAssignmentDetails } from "reduxes/courseService/assignment";
+import { ExtFile } from "@files-ui/react";
 
 const drawerWidth = 450;
 
@@ -93,6 +94,7 @@ export default function SubmitAssignment() {
   const { courseId } = useParams<{ courseId: string }>();
   const assignmentState = useSelector((state: RootState) => state.assignment);
   const dispatch = useDispatch();
+  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
 
   const handleGetAssignmentDetails = async (id: string) => {
     try {
@@ -321,7 +323,7 @@ export default function SubmitAssignment() {
                       </TextTitle>
                     </Grid>
                     <Grid item xs={9}>
-                      <FileUploader />
+                      <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
                     </Grid>
                   </Grid>
                 </Box>
