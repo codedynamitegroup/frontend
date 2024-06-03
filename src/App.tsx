@@ -1,6 +1,5 @@
 import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import {
   Route,
   RouterProvider,

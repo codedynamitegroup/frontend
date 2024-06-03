@@ -11,6 +11,7 @@ interface TextTitleProps {
 }
 
 const TextTitle = styled(Typography)<TextTitleProps>`
+  font-family: "Montserrat";
   color: ${(props) => props.color || "var(--eerie-black-00)"};
   text-wrap: ${(props) => props.textWrap || "normal"};
   overflow: ${(props) => props.overflow || "visible"};

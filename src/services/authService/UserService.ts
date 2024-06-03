@@ -1,6 +1,12 @@
-import axios from "axios";
 import { API } from "constants/API";
-import { LoginRequest, RegisteredRequest } from "models/authService/entity/user";
+import {
+  LoginRequest,
+  RegisteredRequest,
+  ResetPasswordUserRequest,
+  UpdatePasswordUserRequest,
+  UpdateProfileUserRequest,
+  VerifyOTPUserRequest
+} from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import api from "utils/api";
 
@@ -9,7 +15,9 @@ const authServiceApiUrl = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 export class UserService {
   static async singleSignOn(accessToken: string, provider: ESocialLoginProvider) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.SOCIAL_LOGIN}`, {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.SOCIAL_LOGIN}`, {
         provider: provider,
         accessToken: accessToken
       });
@@ -18,7 +26,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to single sign on", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -26,34 +33,32 @@ export class UserService {
       });
     }
   }
-  static async getUserByEmail(email: string, accessToken: string) {
+  static async getUserByEmail(email: string) {
     try {
-      const response = await axios.get(
-        `${authServiceApiUrl}${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        }
-      );
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to get user by email", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
   static async login(loginData: LoginRequest) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.LOGIN}`, loginData);
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.LOGIN}`, loginData);
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -63,7 +68,9 @@ export class UserService {
   }
   static async refreshToken(accessToken: string, refreshToken: string) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.REFRESH_TOKEN}`, {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.REFRESH_TOKEN}`, {
         accessToken: accessToken,
         refreshToken: refreshToken
       });
@@ -71,45 +78,141 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
   static async logout() {
     try {
-      const response = await await api({
+      const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${authServiceApiUrl}${API.AUTH.LOGOUT}`);
+      }).post(`${API.AUTH.LOGOUT}`);
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }
 
   static async register(registeredData: RegisteredRequest) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.REGISTER}`, registeredData);
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.REGISTER}`, registeredData);
       if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to register", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
         message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async updateProfileUser(updateProfileUserRequest: UpdateProfileUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.AUTH.UPDATE_PROFILE_USER}`, {
+        firstName: updateProfileUserRequest.firstName,
+        lastName: updateProfileUserRequest.lastName,
+        dob: updateProfileUserRequest.dob,
+        phone: updateProfileUserRequest.phone
+      });
+      if (response?.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message
+      });
+    }
+  }
+  static async updatePasswordUser(updatePasswordUserRequest: UpdatePasswordUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+        oldPassword: updatePasswordUserRequest.oldPassword,
+        newPassword: updatePasswordUserRequest.newPassword
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async forgotPassword(email: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).get(`${API.AUTH.FORGOT_PASSWORD.replace(":email", email)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async verifyOTP(verifyOTP: VerifyOTPUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.VERIFY_OTP}`, {
+        email: verifyOTP.email,
+        otp: verifyOTP.otp
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async resetPassword(resetPasswordUserRequest: ResetPasswordUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+        email: resetPasswordUserRequest.email,
+        newPassword: resetPasswordUserRequest.password,
+        otp: resetPasswordUserRequest.otp
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
       });
     }
   }

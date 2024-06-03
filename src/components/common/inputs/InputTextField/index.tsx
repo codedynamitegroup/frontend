@@ -1,10 +1,10 @@
-import { FormControl, Grid, OutlinedInput, OutlinedInputProps } from "@mui/material";
+import { FormControl, Grid, InputLabel, OutlinedInput, OutlinedInputProps } from "@mui/material";
 import classes from "./styles.module.scss";
 import { memo } from "react";
 import clsx from "clsx";
+import TextTitle from "components/text/TextTitle";
 import ErrorMessage from "components/text/ErrorMessage";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
-
 interface InputsProps extends OutlinedInputProps {
   title?: string;
   type?: string;
@@ -26,9 +26,9 @@ interface InputsProps extends OutlinedInputProps {
   error?: boolean;
   tooltipDescription?: string;
   infoComponent?: React.ReactNode;
-  required?: boolean;
   titleFontSize?: string;
   width?: string;
+  label?: string;
 }
 
 const InputTextField = memo((props: InputsProps) => {
@@ -51,10 +51,13 @@ const InputTextField = memo((props: InputsProps) => {
     maxWith,
     error,
     tooltipDescription,
+    infoComponent,
     titleFontSize,
-    width
+    width,
+    label
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
+
   return (
     <>
       <FormControl
@@ -76,9 +79,19 @@ const InputTextField = memo((props: InputsProps) => {
             )}
           </Grid>
           <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
+            {label && (
+              <InputLabel
+                htmlFor='display-name'
+                variant='filled'
+                className={errorMessage && classes.labelError}
+              >
+                {label}
+              </InputLabel>
+            )}
             <OutlinedInput
               placeholder={placeholder}
               fullWidth
+              label={label}
               size='small'
               readOnly={readOnly}
               disabled={disabled}

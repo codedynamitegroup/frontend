@@ -13,10 +13,21 @@ interface ButtonProps extends ButtonPropsMUI {
   loading?: boolean;
   colorname?: string;
   fontWeight?: number | string;
+  isTypeSubmit?: boolean;
 }
 
 const LoadButton = memo((props: ButtonProps) => {
-  const { width, padding, className, btnType, children, nowrap, sx = {}, ...rest } = props;
+  const {
+    width,
+    padding,
+    className,
+    btnType,
+    children,
+    nowrap,
+    isTypeSubmit,
+    sx = {},
+    ...rest
+  } = props;
   return (
     <LoadingButton
       className={clsx(
@@ -30,6 +41,7 @@ const LoadButton = memo((props: ButtonProps) => {
         className
       )}
       loading={props.loading}
+      type={isTypeSubmit ? "submit" : "button"}
       sx={{
         ...sx,
         width: width,
