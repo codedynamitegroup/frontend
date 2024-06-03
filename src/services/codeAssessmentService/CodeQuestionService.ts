@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "constants/API";
 import { UUID } from "crypto";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
@@ -50,8 +49,8 @@ export class CodeQuestionService {
   static async getDetailCodeQuestion(codeQuestionId: UUID) {
     try {
       const response = await api({
-        baseURL: codeAssessmentServiceApiUrl,
-        isAuthorization: true
+        baseURL: codeAssessmentServiceApiUrl
+        // isAuthorization: true
       }).get(`${API.CODE_ASSESSMENT.CODE_QUESTION.GET_BY_ID.replace(":id", codeQuestionId)}`);
 
       if (response.status === 200) {

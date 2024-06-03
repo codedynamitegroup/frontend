@@ -5,8 +5,7 @@ import {
   DialogActions,
   IconButton,
   DialogTitle,
-  Dialog
-} from "@mui/material";
+  Dialog} from "@mui/material";
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
@@ -30,6 +29,7 @@ import { setCategories } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
+import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -115,15 +115,12 @@ const QuestionBankManagement = () => {
     });
   };
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
   const { t } = useTranslation();
   const [pageState, setPageState] = useState({
-    isLoading: questionBankCategoriesState.isLoading,
-    data: questionBankCategoriesState.categories.questionBankCategories,
-    total: questionBankCategoriesState.categories.totalItems,
-    page: questionBankCategoriesState.categories.currentPage,
+    page: page,
     pageSize: rowsPerPage
   });
 
@@ -247,7 +244,7 @@ const QuestionBankManagement = () => {
       pageNo: pageState.page,
       pageSize: pageState.pageSize
     });
-  }, [pageState.page, pageState.pageSize]);
+  }, [pageState.page, pageState.pageSize, searchText]);
   const navigate = useNavigate();
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
@@ -270,10 +267,14 @@ const QuestionBankManagement = () => {
               </Button>
             </Stack>
 
-            <SearchBar
-              onSearchClick={searchHandle}
+            <CustomAutocomplete
+              // ={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
+              value={searchText}
+              setValue={setSearchText}
+              options={[]}
+              onHandleChange={searchHandle}
             />
             <DataGrid
               sx={{
@@ -295,11 +296,13 @@ const QuestionBankManagement = () => {
               rowCount={questionBankCategoriesState.categories.totalItems}
               loading={questionBankCategoriesState.isLoading}
               paginationModel={{
-                page: questionBankCategoriesState.categories.currentPage,
-                pageSize: questionBankCategoriesState.categories.totalPages
+                page: page,
+                pageSize: rowsPerPage
               }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                setPage(model.page);
+                setRowsPerPage(model.pageSize);
               }}
               columns={columns}
               pageSizeOptions={[5, 10, 30, 50]}

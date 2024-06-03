@@ -41,12 +41,14 @@ import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { parse as uuidParse } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector } from "hooks";
 import { setExam } from "reduxes/TakeExam";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import Checkbox from "@mui/joy/Checkbox";
+import { RootState } from "store";
+import Heading2 from "components/text/Heading2";
 
 const drawerWidth = 370;
 
@@ -80,7 +82,10 @@ const drawerWidth = 370;
 // }
 
 export default function TakeExam() {
-  const { examId } = useParams<{ examId: string }>();
+  const examId = useParams<{ examId: string }>().examId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examState = useSelector((state: RootState) => state.exam);
+
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -151,8 +156,8 @@ export default function TakeExam() {
 
   // get whole question list if storage is empty (first time load page)
   React.useEffect(() => {
-    if ((questionList === undefined || questionList?.length <= 0) && examId !== undefined)
-      ExamService.getExamQuestionById(examId, null)
+    if (questionList === undefined || questionList?.length <= 0)
+      ExamService.getExamQuestionById(examId ?? examState.examDetail.id, null)
         .then((res) => {
           console.log(res);
 
@@ -167,7 +172,7 @@ export default function TakeExam() {
           });
           dispatch(
             setExam({
-              examId: examId,
+              examId: examId ?? examState.examDetail.id,
               questionList: questionFromAPI
             })
           );
@@ -225,14 +230,23 @@ export default function TakeExam() {
     if (index === questionPageIndex) {
       // const element = document.getElementById(slug);
       // element?.scrollIntoView({ behavior: "smooth" });
-      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
-        replace: true
-      });
+      navigate(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
     } else {
-      console.log(`${routes.student.exam.take}?page=${index}#${slug}`);
-      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
-        replace: true
-      });
+      console.log(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
     }
   };
 
@@ -364,10 +378,17 @@ export default function TakeExam() {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
+            <Heading1 fontWeight={"500"}>{examState.examDetail.name}</Heading1>
+            <Heading2>
+              <div dangerouslySetInnerHTML={{ __html: examState.examDetail.intro }}></div>
+            </Heading2>
             <Button
               onClick={() => {
-                navigate(routes.student.exam.detail);
+                navigate(
+                  routes.student.exam.detail
+                    .replace(":courseId", examState.examDetail.courseId)
+                    .replace(":examId", examState.examDetail.id)
+                );
               }}
               startDecorator={<ChevronLeftIcon fontSize='small' />}
               color='neutral'
@@ -518,7 +539,9 @@ export default function TakeExam() {
                   {questionPageIndex !== 0 ? (
                     <Link
                       to={{
-                        pathname: routes.student.exam.take,
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
                         search: `?page=${questionPageIndex - 1}`
                       }}
                     >
@@ -539,7 +562,9 @@ export default function TakeExam() {
                   ) : (
                     <Link
                       to={{
-                        pathname: routes.student.exam.take,
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
                         search: `?page=${questionPageIndex + 1}`
                       }}
                     >

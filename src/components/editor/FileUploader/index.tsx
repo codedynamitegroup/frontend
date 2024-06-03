@@ -7,6 +7,7 @@ import {
   ImagePreview,
   VideoPreview
 } from "@files-ui/react";
+import { Box } from "@mui/material";
 import { saveAs } from "file-saver";
 import { random } from "lodash";
 import React from "react";
@@ -27,6 +28,7 @@ interface PropsData {
   relatedRemoveDispatch?: any; // dispatch function for removing file from related object
   filesFromUrl?: { fileUrl: string; fileName: string }[]; // files from redux thats about to be modified (delete, ...)
   relatedRemoveAllDispatch?: any; // dispatch function for removing all files from related object
+  width?: string;
 }
 
 export default function AdvancedDropzoneDemo(props: PropsData) {
@@ -40,7 +42,8 @@ export default function AdvancedDropzoneDemo(props: PropsData) {
     relatedRemoveDispatch,
     relatedId,
     filesFromUrl,
-    relatedRemoveAllDispatch
+    relatedRemoveAllDispatch,
+    width
   } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -196,7 +199,11 @@ export default function AdvancedDropzoneDemo(props: PropsData) {
   }, [extFiles]);
 
   return (
-    <>
+    <Box
+      sx={{
+        width: `${props.width ? props.width : "100%"}`
+      }}
+    >
       <Dropzone
         accept={accept}
         minHeight='195px'
@@ -250,7 +257,7 @@ export default function AdvancedDropzoneDemo(props: PropsData) {
       <FullScreen open={videoSrc !== undefined} onClose={() => setVideoSrc(undefined)}>
         <VideoPreview src={videoSrc} autoPlay controls />
       </FullScreen>
-    </>
+    </Box>
   );
 }
 

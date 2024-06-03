@@ -15,9 +15,15 @@ import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
 import { ExamEntity, ExamOverview } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { setExamDetail, setExamOverview } from "reduxes/courseService/exam";
 
 const StudentCourseExamDetails = () => {
   const { examId } = useParams<{ examId: string }>();
+  const dispatch = useDispatch();
+  const examState = useSelector((state: RootState) => state.exam);
+
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
     courseId: "",
@@ -46,6 +52,7 @@ const StudentCourseExamDetails = () => {
     try {
       const response = await ExamService.getExamById(id);
       setExam(response);
+      dispatch(setExamDetail(response));
     } catch (error) {
       console.error(error);
     }
@@ -55,6 +62,7 @@ const StudentCourseExamDetails = () => {
     try {
       const response = await ExamService.getOverviewsByExamId(id);
       setExamOverviews(response);
+      dispatch(setExamOverview(response));
     } catch (error) {
       console.error(error);
     }
@@ -62,8 +70,8 @@ const StudentCourseExamDetails = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      await handleGetExamById(examId ?? "");
-      await handleGetOverviews(examId ?? "");
+      await handleGetExamById(examId ?? examState.examDetail.id);
+      await handleGetOverviews(examId ?? examState.examDetail.id);
     };
     fetchInitialData();
   }, []);
@@ -75,7 +83,9 @@ const StudentCourseExamDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.course.assignment.replace(":courseId", exam.courseId));
+          navigate(
+            routes.student.course.assignment.replace(":courseId", examState.examDetail.courseId)
+          );
         }}
         startIcon={
           <ChevronLeftIcon
@@ -178,7 +188,7 @@ const StudentCourseExamDetails = () => {
           {
             no: "1",
             state: "Đã nộp",
-            grade: "20.0",
+            grade: "10.0",
             submitted_at: dayjs().toString()
           },
           {
@@ -201,7 +211,11 @@ const StudentCourseExamDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
-          navigate(routes.student.exam.take);
+          navigate(
+            routes.student.exam.take
+              .replace(":courseId", examState.examDetail.courseId)
+              .replace(":examId", examState.examDetail.id)
+          );
         }}
         width='fit-content'
       >

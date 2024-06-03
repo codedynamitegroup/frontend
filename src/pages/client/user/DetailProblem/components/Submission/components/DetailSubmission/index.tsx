@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Container, Grid } from "@mui/material";
-import React from "react";
+import i18next from "i18next";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -18,65 +18,43 @@ import { useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { useAppSelector } from "hooks";
+import { convert } from "html-to-text";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
 
 interface Props {
   handleSubmissionDetail: () => void;
+  languageName: string;
+  codeSubmissionDetail: CodeSubmissionDetailEntity | null;
+  codeQuestion: CodeQuestionEntity;
 }
 
-export default function DetailSolution({ handleSubmissionDetail }: Props) {
+export default function DetailSolution({
+  handleSubmissionDetail,
+  codeSubmissionDetail,
+  languageName,
+  codeQuestion
+}: Props) {
   const { t } = useTranslation();
+
+  const user = useAppSelector((state) => state.auth.currentUser);
+
   const sourceCodeSubmission: ISourceCodeSubmission = {
-    source_code: `
-class Solution {
-	public ListNode removeNthFromEnd(ListNode head, int n) {
-		if (head == null || head.next == null)
-			return null;
-		int numNodes = 0;
-		ListNode temp = head;
-		while(temp != null) {
-			temp = temp.next;
-			numNodes++;
-		}
-		if (numNodes == n) {
-			head = head.next;
-			return  head;
-		}
-		ListNode cur = head.next;
-		ListNode prev = head;
-		int index = 1;
-		while(cur != null) {
-			if (numNodes - index == n) {
-				prev.next = cur.next;
-				cur = cur.next;
-				break;
-			}
-			index++;
-			prev = cur;
-			cur = cur.next;
-		}
-	return head;
-	}
-}
-`,
-    language: "java"
+    source_code: codeSubmissionDetail?.bodyCode ?? "",
+    language: languageName
   };
-  const codeQuestion: ICodeQuestion = {
-    title: "Remove Nth Node From End of List",
-    description: `
-		Given the head of a linked list, remove the n^th node from the end of the list and return its head.
-
-		Example 1:
-			Input: head = [1,2,3,4,5], n = 2
-			Output: [1,2,3,5]
-
-		Example 2:
-			Input: head = [1], n = 1
-			Output: []
-
-		Example 3:
-			Input: head = [1,2], n = 1
-			Output: [1]
-		`
+  const plainDescription = `
+  ProblemStatement: ${convert(codeQuestion.problemStatement ?? "")}
+  InputFormat: ${convert(codeQuestion.inputFormat ?? "")}
+  OutputFormat: ${convert(codeQuestion.outputFormat ?? "")}
+  Constraints: ${convert(codeQuestion.constraints ?? "")}
+  `;
+  console.log(codeSubmissionDetail?.bodyCode);
+  const codeQuestionProblemStatement: ICodeQuestion = {
+    title: codeQuestion.name,
+    description: plainDescription
   };
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
@@ -104,7 +82,10 @@ class Solution {
       let isSugessted = false;
       let isExplainedCode = false;
 
-      for await (const chunk of feedbackCodeByAI(sourceCodeSubmission, codeQuestion)) {
+      for await (const chunk of feedbackCodeByAI(
+        sourceCodeSubmission,
+        codeQuestionProblemStatement
+      )) {
         if (chunk === "feedback_prompt") {
           isFeedback = true;
           isExplainedCode = false;
@@ -141,6 +122,17 @@ class Solution {
     }
   };
 
+  const toDateFormate = (str: string | undefined, format: string) => {
+    try {
+      if (str === undefined) return str;
+
+      return standardlizeUTCStringToLocaleString(str, format);
+    } catch (err) {
+      console.error(err);
+      return str;
+    }
+  };
+
   return (
     <Grid className={classes.root}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
@@ -158,23 +150,32 @@ class Solution {
       >
         <Box className={classes.submissionInfo}>
           <Box className={classes.submissionTitle}>
-            <ParagraphBody
-              colorname='--green-500'
-              fontWeight={"700"}
-              translation-key='detail_problem_submission_accepted'
-            >
-              {t("detail_problem_submission_accepted")}
-            </ParagraphBody>
+            {codeSubmissionDetail && (
+              <ParagraphBody
+                fontWeight={"700"}
+                colorname={
+                  codeSubmissionDetail.gradingStatus === "GRADING"
+                    ? "--orange-4"
+                    : codeSubmissionDetail.description !== "Accepted"
+                      ? "--red-error"
+                      : "--green-600"
+                }
+              >
+                {codeSubmissionDetail.gradingStatus === "GRADING"
+                  ? codeSubmissionDetail.gradingStatus
+                  : codeSubmissionDetail.description}
+              </ParagraphBody>
+            )}
             <Box className={classes.submissionAuthor}>
-              <img
-                src='https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg'
-                alt='avatar'
-                className={classes.avatar}
-              />
-              <ParagraphExtraSmall fontWeight={"700"}>Nguyễn Văn A</ParagraphExtraSmall>
+              <img src={user?.avatarUrl} alt='User' className={classes.avatar} />
+              <ParagraphExtraSmall fontWeight={"700"}>
+                {i18next.language === "vi"
+                  ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`
+                  : `${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
+              </ParagraphExtraSmall>
               <ParagraphExtraSmall translation-key='detail_problem_submission_detail_user_submission_time'>
                 {t("detail_problem_submission_detail_user_submission_time", {
-                  time: `05/03/2024 14:00`,
+                  time: toDateFormate(codeSubmissionDetail?.createdAt, i18next.language) ?? "N/A",
                   interpolation: { escapeValue: false }
                 })}
               </ParagraphExtraSmall>
@@ -201,7 +202,7 @@ class Solution {
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
-                12ms
+                {codeSubmissionDetail?.avgRuntime ?? "N/A"}ms
               </ParagraphBody>
             </Container>
           </Grid>
@@ -218,7 +219,7 @@ class Solution {
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
-                13MB
+                {codeSubmissionDetail?.avgMemory ?? "N/A"}MB
               </ParagraphBody>
             </Container>
           </Grid>
@@ -241,7 +242,7 @@ class Solution {
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
+            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
 

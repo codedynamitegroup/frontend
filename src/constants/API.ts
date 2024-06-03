@@ -43,12 +43,12 @@ export const API = {
         GET_ALL: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
-        CREATE: "/core/questions/questions/essay-question/create",
+        CREATE: "/core/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
         GET_ALL: "/core/questions/essay-question"
       },
       MULTIPLE_CHOICE_QUESTION: {
-        CREATE: "questions/multichoice-question/create",
+        CREATE: "/core/questions/multichoice-question/create",
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
         GET_ALL: "/core/questions/multichoice-question"
@@ -113,6 +113,10 @@ export const API = {
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id"
+    },
+    CODE_SUBMISSION: {
+      DEFAULT: "/code-assessment/code-submission",
+      GET_BY_ID: "/code-assessment/code-submission/:id"
     }
   },
   JUDGE0: {
