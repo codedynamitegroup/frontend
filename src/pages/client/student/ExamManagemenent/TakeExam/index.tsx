@@ -161,7 +161,8 @@ export default function TakeExam() {
               flag: false,
               answered: false,
               content: "",
-              questionData: question
+              questionData: question,
+              files: []
             };
           });
           dispatch(
@@ -567,9 +568,9 @@ export default function TakeExam() {
             variant={drawerVariant}
             anchor='right'
             open={open}
-            ModalProps={{
-              BackdropComponent: () => null // Disable the backdrop
-            }}
+            // ModalProps={{
+            //   BackdropComponent: () => null // Disable the backdrop
+            // }}
           >
             <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
               <IconButton onClick={handleDrawerClose} variant='soft'>
