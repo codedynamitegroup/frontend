@@ -52,6 +52,7 @@
   "common_grade": "Grade",
   "common_role": "Role",
   "common_name": "Name",
+  "common_phone": "Phone number",
   "common_post": "Post",
   "common_title": "Title",
   "common_confirm": "Confirm",
@@ -157,6 +158,7 @@
   "common_topics": "Topics",
   "common_view_details": "View details",
   "common_update_language": "Update language",
+  "common_update": "Update",
   "register_certificate_course_success": "Register certificate course {{courseName}} successfully",
   "register_certificate_course_fail": "Register certificate course {{courseName}} fail",
   "common_view_this_course": "View this course",
@@ -312,7 +314,7 @@
   "certificate_registered": "Registered",
   "certificate_not_registered": "Not registered",
 
-  "dashboard_continue_title": "Continue your course",
+  "dashboard_continue_title": "Let continue your courses",
   "dashboard_happening_contest": "Happening contests",
   "dashboard_other_course": "Other courses",
   "dashboard_current_lesson": "Current lesson",
@@ -471,6 +473,7 @@
 
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
+  "phone_number_invalid": "Phone number is invalid",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
@@ -786,7 +789,9 @@
 
   "type_number": "number",
 
+  "password_old_required": "Old password is required",
   "password_required": "Password is required",
+  "password_invalid": "Password is invalid",
   "password_confirm_required": "Confirmed password is required",
   "password_confirm_not_match": "Confirmed password does not match with password",
   "password_confirm_min_length": "Length of password confirm must be at least {{lengthNum}} characters",

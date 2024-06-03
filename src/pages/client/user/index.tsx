@@ -16,6 +16,8 @@ import Login from "./Login";
 import Register from "./Register";
 import ForgotPassword from "./ForgotPassword";
 import UserInformation from "./UserDetails/UserInformation";
+import VerifyOTP from "./ForgotPassword/components/VerifyOTP";
+import ResetPassword from "./ForgotPassword/components/ResetPassword";
 
 type Props = {};
 
@@ -47,6 +49,8 @@ const UserHomepage = (props: Props) => {
             <Route path={"login"} element={<Login />} />
             <Route path={"register"} element={<Register />} />
             <Route path={"forgot-password"} element={<ForgotPassword />} />
+            <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
+            <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
             <Route path={"user/information"} element={<UserInformation />} />
           </Routes>
         </Box>

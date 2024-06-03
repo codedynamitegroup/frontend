@@ -51,7 +51,7 @@ export default function DetailSolution({
   OutputFormat: ${convert(codeQuestion.outputFormat ?? "")}
   Constraints: ${convert(codeQuestion.constraints ?? "")}
   `;
-  console.log(plainDescription);
+  console.log(codeSubmissionDetail?.bodyCode);
   const codeQuestionProblemStatement: ICodeQuestion = {
     title: codeQuestion.name,
     description: plainDescription
@@ -168,7 +168,11 @@ export default function DetailSolution({
             )}
             <Box className={classes.submissionAuthor}>
               <img src={user?.avatarUrl} alt='User' className={classes.avatar} />
-              <ParagraphExtraSmall fontWeight={"700"}>{user?.lastName}</ParagraphExtraSmall>
+              <ParagraphExtraSmall fontWeight={"700"}>
+                {i18next.language === "vi"
+                  ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`
+                  : `${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
+              </ParagraphExtraSmall>
               <ParagraphExtraSmall translation-key='detail_problem_submission_detail_user_submission_time'>
                 {t("detail_problem_submission_detail_user_submission_time", {
                   time: toDateFormate(codeSubmissionDetail?.createdAt, i18next.language) ?? "N/A",
@@ -238,7 +242,7 @@ export default function DetailSolution({
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java" + sourceCodeSubmission.source_code} />
+            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
 

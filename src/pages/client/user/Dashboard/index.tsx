@@ -27,10 +27,14 @@ import { CertificateCourseEntity } from "models/coreService/entity/CertificateCo
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import { User } from "models/authService/entity/user";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "reduxes/Auth";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const user: User = useSelector(selectCurrentUser);
 
   const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
     CertificateCourseEntity[]
@@ -173,7 +177,9 @@ export default function UserDashboard() {
         <Grid container className={classes.sectionContentImage}>
           <Grid item sm={12} md={7} className={classes.sectionContent}>
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
-              <Heading2>{t("dashboard_continue_title")}</Heading2>
+              <Heading2>
+                {t("dashboard_continue_title")}, {user?.firstName}
+              </Heading2>
               <Box className={classes.courseLearningList}>
                 {ongoingRegisteredCourses.length === 0 ? (
                   <Box className={classes.noCourse}>

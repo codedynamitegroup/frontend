@@ -1,6 +1,6 @@
 import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
-import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, Link } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -17,15 +17,17 @@ import MicrosoftLogin from "react-microsoft-login";
 import { loginRequest } from "services/authService/azure.config";
 import { AuthenticationResult } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { loginStatus, selectLoginStatus } from "reduxes/Auth";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "reduxes/Loading";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ErrorMessage from "components/text/ErrorMessage";
-import { LoginRequest } from "models/authService/entity/user";
+import { LoginRequest, User } from "models/authService/entity/user";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import Heading1 from "components/text/Heading1";
+import InputTextField from "components/common/inputs/InputTextField";
+import LoadButton from "components/common/buttons/LoadingButton";
+import { BtnType } from "components/common/buttons/Button";
+import { loginStatus, selectCurrentUser } from "reduxes/Auth";
 
 interface IFormData {
   email: string;
@@ -36,12 +38,13 @@ export default function Login() {
   const { t } = useTranslation();
   const microsoftClientId = process.env.REACT_APP_MICROSOFT_CLIENT_ID || "";
   const { instance } = useMsal();
-  const isLoggedIn: Boolean = useSelector(selectLoginStatus);
+  const userLogged: User = useSelector(selectCurrentUser);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const [isLoggedLoading, setIsLoggedLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -50,6 +53,10 @@ export default function Login() {
         .string()
         .required(t("password_required"))
         .min(6, t("password_min_length", { lengthNum: 6 }))
+      // .matches(
+      //   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+      //   t("password_invalid")
+      // )
     });
   }, [t]);
 
@@ -66,10 +73,10 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (userLogged) {
       navigate(routes.user.dashboard.root);
     }
-  }, [isLoggedIn, navigate]);
+  }, [userLogged, navigate]);
 
   const signInWithMicrosoft = async () => {
     const accounts = instance.getAllAccounts();
@@ -83,7 +90,7 @@ export default function Login() {
       account: accounts[0]
     };
 
-    dispatch(setLoading(true));
+    setIsLoggedLoading(true);
     const accessToken = await instance
       .acquireTokenSilent(request)
       .then((response: AuthenticationResult) => {
@@ -93,14 +100,14 @@ export default function Login() {
         console.error(error);
       })
       .finally(() => {
-        dispatch(setLoading(false));
+        setIsLoggedLoading(false);
       });
 
     if (!accessToken) {
       return;
     }
 
-    dispatch(setLoading(true));
+    setIsLoggedLoading(true);
     UserService.singleSignOn(accessToken, ESocialLoginProvider.MICROSOFT)
       .then((response) => {
         localStorage.setItem("access_token", response.accessToken);
@@ -117,13 +124,13 @@ export default function Login() {
         });
       })
       .finally(() => {
-        dispatch(setLoading(false));
+        setIsLoggedLoading(false);
       });
   };
 
   const signInWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse: TokenResponse) => {
-      dispatch(setLoading(true));
+      setIsLoggedLoading(true);
       UserService.singleSignOn(tokenResponse.access_token, ESocialLoginProvider.GOOGLE)
         .then((response) => {
           localStorage.setItem("access_token", response.accessToken);
@@ -140,7 +147,7 @@ export default function Login() {
           });
         })
         .finally(() => {
-          dispatch(setLoading(false));
+          setIsLoggedLoading(false);
         });
     },
     flow: "implicit"
@@ -151,7 +158,7 @@ export default function Login() {
       email: data.email,
       password: data.password
     };
-    dispatch(setLoading(true));
+    setIsLoggedLoading(true);
     UserService.login(loginData)
       .then(async (response) => {
         localStorage.setItem("access_token", response.accessToken);
@@ -161,7 +168,7 @@ export default function Login() {
       })
       .catch((error: any) => {
         setOpenSnackbarAlert(true);
-        setAlertContent("Đăng nhập thất bại! Hãy thử lại sau.");
+        setAlertContent("Đăng nhập thất bại! Kiểm tra lại thông tin email và mật khẩu.");
         setAlertType(AlertType.Error);
         console.error("Failed to login", {
           code: error.response?.code || 503,
@@ -170,7 +177,7 @@ export default function Login() {
         });
       })
       .finally(() => {
-        dispatch(setLoading(false));
+        setIsLoggedLoading(false);
       });
   };
 
@@ -183,41 +190,32 @@ export default function Login() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.form}>
-              <Typography
-                variant='h4'
-                className={classes.title}
-                translation-key='header_login_button'
-              >
-                {t("header_login_button")}
-              </Typography>
+              <Heading1 translation-key='header_login_button'>{t("header_login_button")}</Heading1>
               <form className={classes.formControl} onSubmit={handleSubmit(handleLogin)}>
-                <TextField
-                  label='Email'
-                  margin='normal'
-                  variant='outlined'
-                  error={Boolean(errors?.email)}
-                  {...register("email")}
+                <InputTextField
+                  label={t("Email")}
+                  type='text'
+                  inputRef={register("email")}
+                  width='100%'
+                  errorMessage={errors?.email?.message}
                 />
-                <ErrorMessage>{errors?.email?.message}</ErrorMessage>
-                <TextField
+                <InputTextField
                   label={t("common_password")}
-                  margin='normal'
                   type='password'
-                  variant='outlined'
-                  translation-key='common_password'
-                  {...register("password")}
-                  error={Boolean(errors?.password)}
+                  inputRef={register("password")}
+                  width='100%'
+                  errorMessage={errors?.password?.message}
                 />
-                <ErrorMessage>{errors?.password?.message}</ErrorMessage>
-                <Button
-                  className={classes.submit}
-                  color='primary'
-                  type='submit'
-                  variant='contained'
+                <LoadButton
+                  loading={isLoggedLoading}
+                  btnType={BtnType.Primary}
+                  colorname='--white'
+                  autoFocus
                   translation-key='header_login_button'
+                  isTypeSubmit
                 >
                   {t("header_login_button")}
-                </Button>
+                </LoadButton>
                 <Box className={classes.option}>
                   <Link
                     component={RouterLink}

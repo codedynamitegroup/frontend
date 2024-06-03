@@ -19,44 +19,30 @@ import { format } from "date-fns";
 
 const UserInformation = () => {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
   const user: User = useSelector(selectCurrentUser);
 
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
     isUserPasswordChangeModalOpen: false,
-    userInfo: {
-      id: user?.userId,
-      name: user?.firstName + " " + user?.lastName,
-      gender: "0",
-      email: user?.email,
-      dob: format(user?.dob, "dd-MM-yyyy"),
-      avatar_url: user?.avatarUrl,
-      is_linked_with_google: user?.isLinkedWithGoogle,
-      is_linked_with_microsoft: user?.isLinkedWithMicrosoft
-    }
+    userInfo: user
   });
 
   useEffect(() => {
     if (user) {
       setData({
         ...data,
-        userInfo: {
-          ...data.userInfo,
-          id: user.userId,
-          name: user.firstName + " " + user.lastName,
-          email: user.email
-        }
+        userInfo: user
       });
     }
   }, [user]);
 
-  // fake loading
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+  const onHanldeChangePassword = () => {
+    setData((pre) => ({
+      ...pre,
+      isUserInformationDetailsModalOpen: false,
+      isUserPasswordChangeModalOpen: true
+    }));
+  };
 
   return (
     <Grid>
@@ -73,11 +59,13 @@ const UserInformation = () => {
                 >
                   {t("user_detail_account_management")}
                 </Heading1>
-                <UserAvatarAndName
-                  displayName={data.userInfo.name}
-                  loading={isLoading}
-                  avatarUrl={data.userInfo.avatar_url}
-                />
+                {data.userInfo?.firstName && data.userInfo?.lastName && (
+                  <UserAvatarAndName
+                    displayName={`${data.userInfo?.firstName} ${data.userInfo?.lastName}`}
+                    avatarUrl={data.userInfo?.avatarUrl}
+                  />
+                )}
+
                 <Button
                   btnType={BtnType.Outlined}
                   fullWidth
@@ -91,40 +79,56 @@ const UserInformation = () => {
                 >
                   {t("user_detail_edit_account")}
                 </Button>
+                <Button
+                  btnType={BtnType.Primary}
+                  fullWidth
+                  onClick={onHanldeChangePassword}
+                  translation-key='user_detail_change_password'
+                >
+                  {t("user_detail_change_password")}
+                </Button>
               </Box>
               <Box className={classes.userGeneralInfo}>
                 <Heading2 translation-key='user_detail'>{t("user_detail")}</Heading2>
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={12}>
-                    <TextTitle translation-key='common_fullname'>{t("common_fullname")}</TextTitle>
+                {data.userInfo?.firstName && data.userInfo?.lastName && (
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={12}>
+                      <TextTitle translation-key='common_fullname'>
+                        {t("common_fullname")}
+                      </TextTitle>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ParagraphBody>{`${data.userInfo.firstName} ${data.userInfo.lastName}`}</ParagraphBody>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12}>
-                    <ParagraphBody>{data.userInfo.name}</ParagraphBody>
+                )}
+                {data.userInfo?.email && (
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={12}>
+                      <TextTitle>Email</TextTitle>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        btnType={BtnType.Text}
+                        padding='0'
+                        width='fit-content'
+                        href={`mailto:${data.userInfo?.email}`}
+                      >
+                        {data.userInfo?.email}
+                      </Button>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={12}>
-                    <TextTitle>Email</TextTitle>
+                )}
+                {data.userInfo?.dob && (
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={12}>
+                      <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ParagraphBody>{format(data.userInfo.dob, "dd-MM-yyyy")}</ParagraphBody>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      btnType={BtnType.Text}
-                      padding='0'
-                      width='fit-content'
-                      href={`mailto:${data.userInfo.email}`}
-                    >
-                      {data.userInfo.email}
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={12}>
-                    <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <ParagraphBody>{data.userInfo.dob}</ParagraphBody>
-                  </Grid>
-                </Grid>
+                )}
               </Box>
             </Box>
           </Grid>
@@ -143,15 +147,7 @@ const UserInformation = () => {
             isUserInformationDetailsModalOpen: false
           }));
         }}
-        initialData={data.userInfo}
         title={t("user_detail_dialog_title")}
-        onHanldeChangePassword={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserInformationDetailsModalOpen: false,
-            isUserPasswordChangeModalOpen: true
-          }));
-        }}
         translation-key='user_detail_dialog_title'
       />
       <UserPasswordChangeDialog
@@ -168,8 +164,7 @@ const UserInformation = () => {
         onHandleCancel={() => {
           setData((pre) => ({
             ...pre,
-            isUserPasswordChangeModalOpen: false,
-            isUserInformationDetailsModalOpen: true
+            isUserPasswordChangeModalOpen: false
           }));
         }}
         onHanldeConfirm={() => {

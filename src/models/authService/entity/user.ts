@@ -24,3 +24,26 @@ export interface RegisteredRequest {
   firstName: string;
   lastName: string;
 }
+
+export interface UpdateProfileUserRequest {
+  firstName: string;
+  lastName: string;
+  dob?: Date;
+  phone?: string;
+}
+
+export interface UpdatePasswordUserRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface VerifyOTPUserRequest {
+  email: string;
+  otp: string;
+}
+
+export interface ResetPasswordUserRequest {
+  email: string;
+  password: string;
+  otp: string;
+}

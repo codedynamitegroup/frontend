@@ -4,16 +4,16 @@
   padding: 8px 16px !important;
 }
 .btnPrimary {
-  background-color: var(--blue-500) !important;
+  background-color: var(--blue-3) !important;
   border: 1px solid transparent !important;
   p {
     color: #ffffff !important;
   }
   &:hover {
-    background: var(--blue-400) !important;
+    background: var(--blue-4) !important;
   }
   &:active {
-    background: var(--blue-400) !important;
+    background: var(--blue-4) !important;
   }
   &[class~="Mui-disabled"] {
     background: var(--eerie-black-5) !important;
