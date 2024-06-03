@@ -26,7 +26,6 @@ import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
-import PickQuestionTypeToAddDialog from "../../ExamManagemenent/CreateExam/components/PickQuestionTypeToAddDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -36,6 +35,7 @@ import { QuestionBankCategoryService } from "services/courseService/QuestionBank
 import dayjs from "dayjs";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
+import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -241,7 +241,9 @@ const QuestionListOfCourse = () => {
   };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
-    navigate(`create/${typeToCreateNewQuestion}`);
+    navigate(`create/${typeToCreateNewQuestion}`, {
+      state: { isQuestionBank: true, categoryName: categoryState.categoryDetails?.name }
+    });
   };
 
   const handleCreateQuestionAI = () => {

@@ -13,7 +13,7 @@ import TextEditor from "components/editor/TextEditor";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -40,6 +40,8 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoySelect from "components/common/JoySelect";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
+import { useDispatch } from "react-redux";
+import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 
 interface Props {
   qtype: String;
@@ -179,6 +181,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
     control,
     name: "answers"
   });
+
+  const location = useLocation();
+  const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const categoryName = location.state?.categoryName;
+  const categoryId = useParams()["categoryId"];
+
   const submitHandler = async (data: any) => {
     console.log(data);
     setSubmitLoading(true);
@@ -195,7 +204,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
       qType: "MULTIPLE_CHOICE",
 
       answers: formSubmittedData.answers,
-
+      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       single: Number(formSubmittedData.single) === 1,
       shuffleAnswers: Boolean(Number(formSubmittedData.shuffleAnswer)),
       showStandardInstructions: formSubmittedData.showInstructions.toString(),
@@ -208,6 +217,8 @@ const CreateMultichoiceQuestion = (props: Props) => {
 
     QuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
+        console.log(res);
+        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
         setSnackbarType(AlertType.Success);
         setSnackbarContent(
           t("question_management_create_question_success", {
@@ -227,8 +238,22 @@ const CreateMultichoiceQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
+        if (isQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
+
+  const dispatch = useDispatch();
+  const getQuestionByQuestionId = async (questionId: string) => {
+    try {
+      const response = await QuestionService.getQuestionsByQuestionId(questionId);
+      dispatch(setQuestionCreate(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
@@ -299,14 +324,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
-              {props.insideCrumb ? (
+              {isQuestionBank ? (
                 <ParagraphBody
                   className={classes.breadCump}
                   colorname='--gray-50'
                   fontWeight={"600"}
                 >
                   <span
-                    onClick={() => navigate("/lecturer/question-bank-management")}
+                    onClick={() => navigate(routes.lecturer.question_bank.path)}
                     translation-key='common_question_bank'
                   >
                     {i18next.format(t("common_question_bank"), "firstUppercase")}
@@ -317,7 +342,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
                     }
                   >
-                    Học OOP
+                    {categoryName}
                   </span>{" "}
                   {"> "}
                   <span>Tạo câu hỏi</span>

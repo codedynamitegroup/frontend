@@ -52,10 +52,26 @@ export const routes = {
     },
     question_bank: {
       path: "/lecturer/question-bank-management",
+      detail: "/lecturer/question-bank-management/:categoryId",
       questions_list_of_category: {
         path: ":categoryId"
       },
       create_question: {
+        essay: {
+          create: "/lecturer/question-bank-management/:categoryId/create/essay"
+        },
+        multiple_choice: {
+          create: "/lecturer/question-bank-management/:categoryId/create/multiple-choice"
+        },
+        short_answer: {
+          create: "/lecturer/question-bank-management/:categoryId/create/short-answer"
+        },
+        true_false: {
+          create: "/lecturer/question-bank-management/:categoryId/create/true-false"
+        },
+        ai: {
+          create: "/lecturer/question-bank-management/:categoryId/create/ai"
+        },
         paths: Object.values(qtype)
           .map((value) => value.code)
           .map((code) => ({
