@@ -1,6 +1,11 @@
 .imageLogin {
   width: 100%;
 }
+.otpInput {
+  div {
+    justify-content: space-between;
+  }
+}
 #forgotPasswordRoot {
   display: flex;
   justify-content: center;

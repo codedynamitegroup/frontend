@@ -145,18 +145,21 @@ const UserPasswordChangeDialog = ({
           title={t("user_detail_old_password")}
           type='password'
           inputRef={register("oldPassword")}
+          width='100%'
           errorMessage={errors?.oldPassword?.message}
         />
         <InputTextField
           title={t("user_detail_new_password")}
           type='password'
           inputRef={register("newPassword")}
+          width='100%'
           errorMessage={errors?.newPassword?.message}
         />
         <InputTextField
           title={t("user_detail_re_enter_new_password")}
           type='password'
           inputRef={register("renewPassword")}
+          width='100%'
           errorMessage={errors?.renewPassword?.message}
         />
         <Grid container spacing={1} columns={12}>
@@ -168,7 +171,7 @@ const UserPasswordChangeDialog = ({
               colorname='--white'
               autoFocus
               translation-key='user_detail_change_password'
-              fullWidth
+              width='100%'
               isTypeSubmit
             >
               {t("user_detail_change_password")}

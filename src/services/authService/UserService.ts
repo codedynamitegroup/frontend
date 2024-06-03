@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "constants/API";
 import {
   LoginRequest,
@@ -27,7 +26,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to single sign on", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -45,7 +43,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to get user by email", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -62,7 +59,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -82,7 +78,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -100,7 +95,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to login", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -118,7 +112,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to register", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -127,7 +120,6 @@ export class UserService {
     }
   }
   static async updateProfileUser(updateProfileUserRequest: UpdateProfileUserRequest) {
-    console.log("Hello");
     try {
       const response = await api({
         baseURL: authServiceApiUrl,
@@ -142,7 +134,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to update profile user", error);
       return Promise.reject({
         code: error?.code || 503,
         status: error?.status || "Service Unavailable",
@@ -163,7 +154,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to changed password", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -180,7 +170,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to send forgot password", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -200,7 +189,6 @@ export class UserService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to verify OTP", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
@@ -214,13 +202,13 @@ export class UserService {
         baseURL: authServiceApiUrl
       }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
         email: resetPasswordUserRequest.email,
-        newPassword: resetPasswordUserRequest.password
+        newPassword: resetPasswordUserRequest.password,
+        otp: resetPasswordUserRequest.otp
       });
       if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to reset password", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",

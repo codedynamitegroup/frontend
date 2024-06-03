@@ -1,10 +1,10 @@
-import { userCancelled } from "@azure/msal-browser/dist/error/BrowserAuthErrorCodes";
 import { jwtDecode } from "jwt-decode";
 import { User } from "models/authService/entity/user";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
-import { setLogin, selectCurrentUser, selectLoginStatus, loginStatus } from "reduxes/Auth";
+import { Outlet, useNavigate } from "react-router-dom";
+import { setLogin, selectCurrentUser, selectLoginStatus, loginStatus, logOut } from "reduxes/Auth";
+import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 
 const PersistLogin = () => {
@@ -13,7 +13,7 @@ const PersistLogin = () => {
   const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
   const dispatch = useDispatch();
-  console.log("accessToken", accessToken);
+  const navigate = useNavigate();
 
   const isTokenExpired = (token: string) => {
     if (!token) return true;
@@ -49,24 +49,33 @@ const PersistLogin = () => {
             console.error("Failed to get user by email", error);
           });
       } else {
-        const refreshTokenResponse = await UserService.refreshToken(accessToken, refreshToken);
-        localStorage.setItem("access_token", refreshTokenResponse.accessToken);
-        localStorage.setItem("refresh_token", refreshTokenResponse.refreshToken);
+        try {
+          const refreshTokenResponse = await UserService.refreshToken(accessToken, refreshToken);
+          localStorage.setItem("access_token", refreshTokenResponse.accessToken);
+          localStorage.setItem("refresh_token", refreshTokenResponse.refreshToken);
 
-        const newDecodedToken: any = jwtDecode(refreshTokenResponse.accessToken);
-        UserService.getUserByEmail(newDecodedToken.email)
-          .then((response) => {
-            const user: User = response;
-            dispatch(setLogin({ user: user }));
-            dispatch(loginStatus(true));
-          })
-          .catch((error) => {
-            console.error("Failed to get user by email", error);
-          });
+          const newDecodedToken: any = jwtDecode(refreshTokenResponse.accessToken);
+          UserService.getUserByEmail(newDecodedToken.email)
+            .then((response) => {
+              const user: User = response;
+              dispatch(setLogin({ user: user }));
+              dispatch(loginStatus(true));
+            })
+            .catch((error) => {
+              console.error("Failed to get user by email", error);
+            });
+        } catch (error) {
+          console.error("Error refreshing token", error);
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("provider");
+          dispatch(logOut());
+          navigate(routes.user.login.root);
+        }
       }
     };
     getUser();
-  }, [dispatch, refreshToken, selectedUser, accessToken, selectedLoginStatus]);
+  }, [dispatch, refreshToken, selectedUser, accessToken, selectedLoginStatus, navigate]);
 
   return <>{<Outlet />} </>;
 };

@@ -1,12 +1,9 @@
 import React, { useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
-import { Box, Button, Link } from "@mui/material";
+import { Box, Link } from "@mui/material";
 import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
@@ -113,30 +110,35 @@ export default function Register() {
                   type='text'
                   inputRef={register("email")}
                   errorMessage={errors?.email?.message}
+                  width='100%'
                 />
                 <InputTextField
                   label={t("first_name")}
                   type='text'
                   inputRef={register("firstName")}
                   errorMessage={errors?.firstName?.message}
+                  width='100%'
                 />
                 <InputTextField
                   label={t("last_name")}
                   type='text'
                   inputRef={register("lastName")}
                   errorMessage={errors?.lastName?.message}
+                  width='100%'
                 />
                 <InputTextField
                   label={t("common_password")}
                   type='password'
                   inputRef={register("password")}
                   errorMessage={errors?.password?.message}
+                  width='100%'
                 />
                 <InputTextField
                   label={t("common_password_confirm")}
                   type='password'
                   inputRef={register("confirmPassword")}
                   errorMessage={errors?.confirmPassword?.message}
+                  width='100%'
                 />
                 <LoadButton
                   loading={isRegisteredLoading}

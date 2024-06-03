@@ -196,12 +196,14 @@ export default function Login() {
                   label={t("Email")}
                   type='text'
                   inputRef={register("email")}
+                  width='100%'
                   errorMessage={errors?.email?.message}
                 />
                 <InputTextField
                   label={t("common_password")}
                   type='password'
                   inputRef={register("password")}
+                  width='100%'
                   errorMessage={errors?.password?.message}
                 />
                 <LoadButton

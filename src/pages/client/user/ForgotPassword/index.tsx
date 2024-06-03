@@ -83,6 +83,7 @@ export default function ForgotPassword() {
                 type='text'
                 inputRef={register("email")}
                 errorMessage={errors?.email?.message}
+                width='100%'
               />
               <LoadButton
                 loading={isForgotPasswordLoading}

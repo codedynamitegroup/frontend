@@ -165,11 +165,13 @@ const UserInformationDetailsDialog = ({
         className={classes.formBody}
         onSubmit={handleSubmit(handleUpdateProfileUser)}
       >
+        <InputTextField type='email' title='Email' readOnly width='100%' value={data?.email} />
         <InputTextField
           type='text'
           title={t("common_name")}
           inputRef={register("firstName")}
           translation-key='common_name'
+          width='100%'
           errorMessage={errors?.firstName?.message}
         />
         <InputTextField
@@ -177,6 +179,7 @@ const UserInformationDetailsDialog = ({
           title={t("last_name")}
           inputRef={register("lastName")}
           translation-key='last_name'
+          width='100%'
           errorMessage={errors?.lastName?.message}
         />
         <InputTextField
@@ -184,6 +187,7 @@ const UserInformationDetailsDialog = ({
           title={t("common_phone")}
           inputRef={register("phone")}
           translation-key='common_phone'
+          width='100%'
           errorMessage={errors?.phone?.message}
         />
         <Grid container spacing={1} columns={12}>
@@ -245,15 +249,6 @@ const UserInformationDetailsDialog = ({
             />
           </Grid>
         </Grid> */}
-        <InputTextField
-          type='email'
-          title='Email'
-          readOnly
-          value={data?.email}
-          onChange={(e) => {
-            setData((pre) => ({ ...pre, email: e.target.value }));
-          }}
-        />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}></Grid>
           <Grid item xs={9}>
@@ -264,6 +259,7 @@ const UserInformationDetailsDialog = ({
               autoFocus
               translation-key='common_update'
               isTypeSubmit
+              width='100%'
             >
               {t("common_update")}
             </LoadButton>
