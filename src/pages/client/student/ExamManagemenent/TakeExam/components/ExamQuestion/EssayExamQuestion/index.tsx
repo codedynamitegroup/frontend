@@ -7,38 +7,47 @@ import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
-import AdvancedDropzoneDemo from "components/editor/FileUploader";
+import { EssayQuestion } from "models/coreService/entity/QuestionEntity";
+import {
+  addFileToExamQuesiton,
+  removeAllFilesFromExamQuestion,
+  removeFileFromExamQuestion,
+  setFlag
+} from "reduxes/TakeExam";
+import { useDispatch } from "react-redux";
+import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
 
 interface Props {
   page: number;
-  isFlagged?: boolean;
 
-  responseFormat?: "editor" | "plain" | "no_online";
-  responseFieldLines?: number;
-  minWord?: number;
-  maxWord?: number;
-  attachments?: number;
-  fileSize?: number;
-  fileTypes?: string;
+  questionEssayQuestion: EssayQuestion;
+  questionState: any;
 }
 
 const EssayExamQuestion = (props: Props) => {
-  const { page, isFlagged, responseFormat, responseFieldLines, attachments, fileSize, fileTypes } =
-    props;
+  const { page, questionEssayQuestion, questionState } = props;
+  const isFlagged = questionState.flag;
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const fileTypeList =
-    fileTypes === "archive"
-      ? ".7z .bdoc .cdoc .ddoc .gtar .tgz .gz .gzip .hqx .rar .sit .tar .zip"
-      : fileTypes === "document"
-        ? ".doc .docx .epub .gdoc .odt .ott .oth .pdf .rtf"
-        : fileTypes === "image"
-          ? ".bmp .gif .jpeg .jpg .png .svg .tif .tiff"
-          : fileTypes === "video"
-            ? ".3g2 .3gp .avi .flv .h264 .m4v .mkv .mov .mp4 .mpg .mpeg .rm .swf .vob .wmv"
-            : fileTypes === "audio"
-              ? ".aif .cda .mid .midi .mp3 .mpa .ogg .wav .wma"
+    questionEssayQuestion.fileTypesList === "archive"
+      ? ".7z, .bdoc, .cdoc, .ddoc, .gtar, .tgz, .gz, .gzip, .hqx, .rar, .sit, .tar, .zip"
+      : questionEssayQuestion.fileTypesList === "document"
+        ? ".doc, .docx, .epub, .gdoc, .odt, .ott, .oth, .pdf, .rtf"
+        : questionEssayQuestion.fileTypesList === "image"
+          ? ".bmp, .gif, .jpeg, .jpg, .png, .svg, .tif, .tiff"
+          : questionEssayQuestion.fileTypesList === "video"
+            ? ".3g2, .3gp, .avi, .flv, .h264, .m4v, .mkv, .mov, .mp4, .mpg, .mpeg .rm .swf .vob .wmv"
+            : questionEssayQuestion.fileTypesList === "audio"
+              ? ".aif, .cda, .mid, .midi, .mp3, .mpa, .ogg, .wav, .wma"
               : "";
-  const convertedFileSize = fileSize ? (fileSize / 1000) * 1024 * 1024 : undefined;
+  const convertedFileSize = questionEssayQuestion.maxBytes
+    ? (questionEssayQuestion.maxBytes / 1000) * 1024 * 1024
+    : undefined;
+
+  const flagQuestionHandle = () => {
+    dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+  };
 
   return (
     <Grid container spacing={1}>
@@ -49,6 +58,7 @@ const EssayExamQuestion = (props: Props) => {
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
+            onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
           </Button>
@@ -56,14 +66,20 @@ const EssayExamQuestion = (props: Props) => {
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
-          <Box sx={{ backgroundColor: "#FDF6EA" }} borderRadius={1} padding={".35rem 1rem"}>
+          <Box
+            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            borderRadius={1}
+            padding={".35rem 1rem"}
+          >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Chưa trả lời
+              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm có thể đạt được: 2
+              {t("common_score_can_achieve")}
+              {": "}
+              {questionEssayQuestion.question.defaultMark}
             </ParagraphBody>
           </Box>
         </Stack>
@@ -81,7 +97,7 @@ const EssayExamQuestion = (props: Props) => {
             color={"#212121"}
             lineHeight={"1.5"}
           >
-            Ai là cha của SE? Nêu những thành tựu nổi bật
+            {questionEssayQuestion.question.questionText}
           </ParagraphBody>
           <ParagraphBody
             fontSize={".875rem"}
@@ -91,19 +107,33 @@ const EssayExamQuestion = (props: Props) => {
           >
             {t("common_answer")}
           </ParagraphBody>
-          {responseFormat === "editor" && (
-            <TextEditor value='' roundedBorder maxLines={responseFieldLines} />
+          {questionEssayQuestion.responseFormat === "editor" && (
+            <TextEditor
+              value=''
+              roundedBorder
+              maxLines={questionEssayQuestion.responseFieldLines}
+            />
           )}
-          {responseFormat === "plain" && <Textarea minRows={"10"} maxRows={responseFieldLines} />}
+          {questionEssayQuestion.responseFormat === "plain" && (
+            <Textarea minRows={"10"} maxRows={questionEssayQuestion.responseFieldLines} />
+          )}
         </Box>
       </Grid>
 
-      {(responseFormat === "no_online" || attachments !== 0) && (
+      {(questionEssayQuestion.responseFormat === "no_online" ||
+        questionEssayQuestion.attachments !== 0) && (
         <Grid item xs={12}>
-          <AdvancedDropzoneDemo
+          <AdvancedDropzoneForEssayExam
             maxFileSize={convertedFileSize}
             accept={fileTypeList}
-            maxFiles={attachments}
+            maxFiles={questionEssayQuestion.attachments}
+            stopAutoUpload
+            disableDownload
+            relatedId={questionEssayQuestion.question.id}
+            relatedDispatch={addFileToExamQuesiton}
+            relatedRemoveDispatch={removeFileFromExamQuestion}
+            filesFromUrl={questionState.files}
+            relatedRemoveAllDispatch={removeAllFilesFromExamQuestion}
           />
         </Grid>
       )}

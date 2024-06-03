@@ -1,9 +1,9 @@
-import { C } from "@fullcalendar/core/internal-common";
 import axios from "axios";
 import { API } from "constants/API";
 import {
   PostEssayQuestion,
   PostMultipleChoiceQuestion,
+  PostQuestionDetailList,
   PostShortAnswerQuestion
 } from "models/coreService/entity/QuestionEntity";
 
@@ -67,6 +67,25 @@ export class QuestionService {
     }
   }
 
+  static async getQuestionDetail(questionDetailList: PostQuestionDetailList) {
+    try {
+      const response = await axios.post(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.QUESTION_DETAIL}`,
+        questionDetailList
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create multiple choice question", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getMultiChoiceQuestionByQuestionId(questionId: string) {
     try {
       const response = await axios.get(
@@ -95,6 +114,59 @@ export class QuestionService {
       }
     } catch (error: any) {
       console.error("Failed to fetch question", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getQuestionsByCategoryId({
+    categoryId,
+    search = "",
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    categoryId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const response = await axios.get(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`,
+        {
+          params: {
+            search,
+            pageNo,
+            pageSize
+          }
+        }
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch questions by category id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async deleteQuestionById(questionId: string) {
+    try {
+      const response = await axios.delete(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.DELETE_BY_ID.replace(":id", questionId)}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to delete question by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

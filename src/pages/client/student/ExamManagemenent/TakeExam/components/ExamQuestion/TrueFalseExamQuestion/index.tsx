@@ -7,18 +7,18 @@ import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
 import { useTranslation } from "react-i18next";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
+import { useDispatch } from "react-redux";
+import { setAnswered, setFlag } from "reduxes/TakeExam";
 
 interface Props {
   page: number;
-
-  isFlagged?: boolean;
-
   questionTrueFalseQuestion: MultiChoiceQuestion;
+  questionState: any;
 }
 
 const TrueFalseExamQuestion = (props: Props) => {
   const { t } = useTranslation();
-  const { page, isFlagged, questionTrueFalseQuestion } = props;
+  const { page, questionState, questionTrueFalseQuestion } = props;
   const answerList = [
     {
       value: "true",
@@ -29,6 +29,18 @@ const TrueFalseExamQuestion = (props: Props) => {
       label: t("common_false")
     }
   ];
+  const dispatch = useDispatch();
+  const isFlagged = questionState.flag;
+
+  const flagQuestionHandle = () => {
+    dispatch(setFlag({ id: questionTrueFalseQuestion.question.id, flag: !isFlagged }));
+  };
+
+  const handleRadioChange = (value: string) => {
+    dispatch(
+      setAnswered({ id: questionTrueFalseQuestion.question.id, content: value, answered: true })
+    );
+  };
 
   return (
     <Grid container spacing={1}>
@@ -39,6 +51,7 @@ const TrueFalseExamQuestion = (props: Props) => {
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
+            onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
           </Button>
@@ -46,14 +59,20 @@ const TrueFalseExamQuestion = (props: Props) => {
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
-          <Box sx={{ backgroundColor: "#FDF6EA" }} borderRadius={1} padding={".35rem 1rem"}>
+          <Box
+            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            borderRadius={1}
+            padding={".35rem 1rem"}
+          >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Chưa trả lời
+              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm có thể đạt được: 2
+              {t("common_score_can_achieve")}
+              {": "}
+              {questionTrueFalseQuestion.question.defaultMark}
             </ParagraphBody>
           </Box>
         </Stack>
@@ -89,8 +108,8 @@ const TrueFalseExamQuestion = (props: Props) => {
         )}
         <JoyRadioGroup
           color='primary'
-          value={""}
-          onChange={() => {}}
+          value={questionState.content}
+          onChange={handleRadioChange}
           values={answerList}
           orientation='vertical'
           size='md'

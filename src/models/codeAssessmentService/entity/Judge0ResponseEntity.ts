@@ -1,12 +1,12 @@
 export interface Judge0ResponseEntity {
-  stdout: string;
-  time: number;
-  memory: number;
-  stderr: string | undefined;
-  compile_output: string | undefined;
-  message: string | undefined;
+  stdout: string | null;
+  time: number | null;
+  memory: number | null;
+  stderr: string | null;
+  compile_output: string | null;
+  message: string | null;
   status: {
     id: number;
     description: string;
-  };
+  } | null;
 }

@@ -176,12 +176,16 @@ export const routes = {
   admin: {
     contest: {
       root: "/admin/contests",
-      detail: "/admin/contests/:contestId",
+      edit: {
+        root: "/admin/contests/edit/:contestId/*",
+        details: "/admin/contests/edit/:contestId/details",
+        problems: "/admin/contests/edit/:contestId/problems",
+        moderators: "/admin/contests/edit/:contestId/moderators",
+        signups: "/admin/contests/edit/:contestId/signups",
+        leaderboard: "/admin/contests/edit/:contestId/leaderboard",
+        statistics: "/admin/contests/edit/:contestId/statistics"
+      },
       create: "/admin/contests/create"
-      // problems: "/admin/contests/:contestId/problems",
-      // moderators: "/admin/contests/:contestId/moderators",
-      // signups: "/admin/contests/:contestId/signups",
-      // statictics: "/admin/contests/:contestId/statictics"
     }
   },
   grading_pdf: "/grading-pdf"

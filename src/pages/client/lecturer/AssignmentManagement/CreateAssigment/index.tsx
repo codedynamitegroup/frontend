@@ -26,6 +26,7 @@ import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import moment, { Moment } from "moment";
+import { ExtFile } from "@files-ui/react";
 
 const drawerWidth = 450;
 
@@ -104,6 +105,7 @@ export default function AssignmentCreated() {
   const [assignmentSection, setAssignmentSection] = React.useState("0");
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
+  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
 
   function handleClick() {
     setLoading(true);
@@ -256,7 +258,7 @@ export default function AssignmentCreated() {
                   </TextTitle>
                 </Grid>
                 <Grid item xs={9}>
-                  <FileUploader />
+                  <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
                 </Grid>
               </Grid>
             </Box>

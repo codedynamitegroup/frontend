@@ -1,7 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import InfoTooltip from "components/common/infoTooltip";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
+import TextTitle from "../TextTitle";
 
 interface PropsData {
   title: string;
@@ -30,19 +31,21 @@ const TitleWithInfoTip = (props: PropsData) => {
 
   return (
     <Box className={classes.titleContainer}>
-      <Typography
-        className={classes.generalDescription}
-        sx={{
-          fontWeight: fontWeight || "500px",
-          color: color || "#162130bf",
-          fontSize: fontSize || ".8rem"
-        }}
+      <TextTitle
+        // className={classes.generalDescription}
+        // sx={{
+        //   fontWeight: fontWeight || "500px",
+        //   color: color || "#162130bf",
+        //   fontSize: fontSize || ".8rem"
+        // }}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
       >
         {title} {titleRequired && <span className={classes.errorStar}>*</span>}{" "}
         {optional && (
           <span className={classes.optionalText}>{`(${t("grading_config_optional")})`}</span>
         )}
-      </Typography>
+      </TextTitle>
       {tooltipDescription && (
         <InfoTooltip
           tooltipDescription={tooltipDescription}

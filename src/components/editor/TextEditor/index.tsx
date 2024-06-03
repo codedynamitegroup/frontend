@@ -5,7 +5,7 @@ import "./index.scss";
 import ImageResize from "quill-image-resize-module-react";
 import ImageUploader from "quill-image-uploader";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
-import { IconButton, Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { IconButton, Dialog, DialogContent, DialogTitle, Grid, Box } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/ZoomOutMap";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -57,6 +57,7 @@ type Props = {
   title?: string;
   submitCount?: number;
   maxLines?: number;
+  width?: string;
 };
 
 const TextEditor: React.FC<Props> = ({
@@ -65,6 +66,7 @@ const TextEditor: React.FC<Props> = ({
   placeholder,
   readOnly,
   roundedBorder,
+  width,
   ...props
 }) => {
   const reactQuillRef: any = useRef(null);
@@ -250,29 +252,31 @@ const TextEditor: React.FC<Props> = ({
         </>
       )}
       {!openDialog && (
-        <ReactQuill
-          style={{
-            height: maxLines ? `${maxLines * 24}px` : undefined // Maximum height equivalent to maxRows
-          }}
-          ref={reactQuillRef}
-          theme={readOnly ? "bubble" : "snow"}
-          readOnly={readOnly}
-          value={convertQuillValue(value)}
-          modules={modules}
-          formats={formats}
-          onChange={onChange}
-          // placeholder={placeholder}
-          className={`text-editor ${
-            props?.noToolbar
-              ? error
-                ? "text-editor-no-toolbar-error"
-                : "text-editor-no-toolbar"
-              : error
-                ? "text-editor-error"
-                : ""
-          } ${roundedBorder ? `rounded-border` : ""}`}
-          {...props}
-        />
+        <Box width={width || "100%"}>
+          <ReactQuill
+            style={{
+              height: maxLines ? `${maxLines * 24}px` : undefined
+            }}
+            ref={reactQuillRef}
+            theme={readOnly ? "bubble" : "snow"}
+            readOnly={readOnly}
+            value={convertQuillValue(value)}
+            modules={modules}
+            formats={formats}
+            onChange={onChange}
+            // placeholder={placeholder}
+            className={`text-editor ${
+              props?.noToolbar
+                ? error
+                  ? "text-editor-no-toolbar-error"
+                  : "text-editor-no-toolbar"
+                : error
+                  ? "text-editor-error"
+                  : ""
+            } ${roundedBorder ? `rounded-border` : ""}`}
+            {...props}
+          />
+        </Box>
       )}
     </>
   );

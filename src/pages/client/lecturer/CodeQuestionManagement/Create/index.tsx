@@ -27,7 +27,8 @@ const LecturerCodeQuestionCreation = memo((props: Props) => {
     defaultMark: 0,
     createdAt: "",
     updatedAt: "",
-    message: ""
+    message: "",
+    qtype: ""
   });
 
   const handleGetQuestionById = async (id: string) => {

@@ -1,24 +1,31 @@
-import { Box, Card, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
-import Button, { BtnType } from "components/common/buttons/Button";
+import { yupResolver } from "@hookform/resolvers/yup";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { Box, Card, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
-import TextTitle from "components/text/TextTitle";
-import moment, { Moment } from "moment";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import classes from "./styles.module.scss";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
+import moment from "moment";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { ContestService } from "services/coreService/ContestService";
-import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import { convertLocalMomentToUTCMoment } from "utils/moment";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import classes from "./styles.module.scss";
+import JoyButton from "@mui/joy/Button";
+import ErrorMessage from "components/text/ErrorMessage";
+
+interface IFormDataType {
+  isNoEndTime: boolean;
+  name: string;
+  startTime: string;
+  endTime?: string | null;
+}
 
 const CreateContest = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -27,115 +34,97 @@ const CreateContest = () => {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [type, setType] = useState<AlertType>(AlertType.INFO);
   const [content, setContent] = useState("");
-
-  const [contestName, setContestName] = useState("");
-  const [contestStartTime, setContestStartTime] = useState<Moment>(moment().utc());
-  const [contestEndTime, setContestEndTime] = useState<Moment>(moment().utc().add(1, "hour"));
-  const [isNoEndTime, setIsNoEndTime] = useState<boolean>(false);
-
+  const [submitLoading, setSubmitLoading] = useState(false);
   const schema = useMemo(() => {
     return yup.object().shape({
-      name: yup.string().required(t("contest_name_required")).trim(),
-      description: yup.string().required(t("contest_description_required")).trim(),
-      thumbnailUrl: yup.string().required(t("contest_thumbnail_required")).trim(),
-      startTime: yup.date().required(t("contest_start_time_required")),
+      isNoEndTime: yup.boolean().required(t("contest_is_no_end_time_required")),
+      name: yup.string().required(t("contest_name_required")).trim(""),
+      startTime: yup
+        .string()
+        .required(t("contest_start_time_required"))
+        .trim("")
+        .test("startTime", t("contest_start_time_greater_than_current_time"), function (value) {
+          return moment(value).isAfter(moment().utc());
+        }),
       endTime: yup
-        .date()
-        .test("is-end-time-greater-than-start-time", t("contest_end_time_invalid"), (value) => {
-          // Check if isNoEndTime is true, then return true
-          if (isNoEndTime) {
+        .string()
+        .nullable()
+        .test("endTime", t("contest_end_time_required"), function (value) {
+          if (this.parent.isNoEndTime) {
             return true;
           }
-          if (value && contestStartTime) {
-            return moment(value).isAfter(contestStartTime);
-          }
-          return true;
+          return !!value;
         })
-      // questionName: yup.string().required(t("question_name_required")).trim(),
-      // questionDescription: yup
-      //   .string()
-      //   .required(t("question_description_required"))
-      //   .trim("")
-      //   .test("isQuillEmpty", t("question_description_required"), (value) => !isQuillEmpty(value)),
-      // defaultScore: yup
-      //   .string()
-      //   .required(t("question_default_score_required"))
-      //   .test(
-      //     "is-decimal",
-      //     "Invalid number, default score must be a number greater than or equal 0",
-      //     (value) => isValidDecimal(value)
-      //   )
-      //   .transform((value) => value.replace(",", ".")),
-      // generalDescription: yup.string().trim(""),
-
-      // responseFormat: yup.string().required(t("response_format_required")),
-      // responseRequired: yup.string().required(t("response_required")),
-      // responseFieldLines: yup.string().required(t("response_field_lines_required")),
-      // attachments: yup.string().required(t("attachments_required")),
-      // attachmentsRequired: yup.string().required(t("attachments_required")),
-      // graderInfo: yup.string(),
-      // graderInfoFormat: yup.number(),
-      // responseTemplate: yup.string(),
-      // responseTemplateFormat: yup.number(),
-      // fileTypesList: yup.array().when("attachments", ([attachments], schema) => {
-      //   return Number(attachments) !== 0
-      //     ? schema.required(t("file_types_required"))
-      //     : schema.notRequired();
-      // }),
-      // minWord: yup
-      //   .number()
-      //   .required(t("min_word_required"))
-      //   .typeError(t("invalid_type", { name: t("essay_min_word"), type: t("type_number") }))
-      //   .min(-1, t("min_word_invalid"))
-      //   .integer(t("min_word_invalid")),
-      // maxWord: yup
-      //   .number()
-      //   .required(t("max_word_required"))
-      //   .typeError(t("invalid_type", { name: t("essay_max_word"), type: t("type_number") }))
-      //   .min(-1, t("max_word_invalid"))
-      //   .integer(t("max_word_invalid")),
-      // maxBytes: yup
-      //   .string()
-      //   .required(t("max_bytes_required"))
-      //   .typeError(
-      //     t("invalid_type", {
-      //       name: t("question_management_default_score"),
-      //       type: t("type_number")
-      //     })
-      //   )
+        .test("endTime", t("contest_end_time_greater_than_start_time"), function (value) {
+          if (this.parent.isNoEndTime) {
+            return true;
+          }
+          return moment(value).isAfter(this.parent.startTime);
+        })
     });
   }, [t]);
 
-  // TODO: Apply React Hook Form with yup validation
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue
+  } = useForm<IFormDataType>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      isNoEndTime: false,
+      name: "",
+      startTime: moment.utc().add(30, "minute").toISOString(),
+      endTime: moment.utc().add(1, "hour").toISOString()
+    }
+  });
+
+  const submitHandler = async (data: any) => {
+    const formSubmittedData: IFormDataType = { ...data };
+    const { isNoEndTime, name, startTime, endTime } = formSubmittedData;
+    await handleCreateContest({
+      name,
+      description: "",
+      thumbnailUrl: "",
+      startTime,
+      endTime: isNoEndTime ? null : endTime
+    });
+  };
 
   const handleCreateContest = useCallback(
     async ({ name, description, thumbnailUrl, startTime, endTime }: CreateContestCommand) => {
+      setSubmitLoading(true);
       try {
-        const getContestResponse = await ContestService.createContest({
+        const createContestResponse = await ContestService.createContest({
           name,
           description,
           thumbnailUrl,
           startTime,
           endTime
         });
-        console.log("Contest created successfully", getContestResponse);
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Success);
-        setContent("Contest created successfully");
+        if (createContestResponse.name === name) {
+          setOpenSnackbarAlert(true);
+          setType(AlertType.Success);
+          setContent(t("contest_create_success"));
+          setSubmitLoading(false);
+          navigate(routes.admin.contest.edit.details, {
+            state: {
+              contestName: name
+            }
+          });
+        }
       } catch (error: any) {
-        console.error("Failed to create contest", {
-          code: error.code || 503,
-          status: error.status || "Service Unavailable",
-          message: error.message
-        });
+        console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           setOpenSnackbarAlert(true);
           setType(AlertType.Error);
           setContent("Please authenticate");
         }
+        setSubmitLoading(false);
       }
     },
-    []
+    [t]
   );
 
   return (
@@ -149,7 +138,7 @@ const CreateContest = () => {
       <Card
         sx={{
           margin: "20px",
-          padding: "20px",
+          // padding: "20px",
           "& .MuiDataGrid-root": {
             border: "1px solid #e0e0e0",
             borderRadius: "4px"
@@ -173,9 +162,10 @@ const CreateContest = () => {
             </ParagraphSmall>
           </Box>
         </Box>
+        <Divider />
         <Box
           sx={{
-            marginTop: "20px"
+            padding: "20px"
           }}
         >
           <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
@@ -186,89 +176,143 @@ const CreateContest = () => {
               marginTop: "20px"
             }}
           >
-            <ParagraphBody fontStyle='italic' translate-key='contest_description_message_1'>
+            <ParagraphSmall fontStyle='italic' translate-key='contest_description_message_1'>
               {t("contest_description_message_1")}
-            </ParagraphBody>
-            <ParagraphBody fontStyle={"italic"} translate-key='contest_description_message_2'>
+            </ParagraphSmall>
+            <ParagraphSmall fontStyle={"italic"} translate-key='contest_description_message_2'>
               {t("contest_description_message_2")}
-            </ParagraphBody>
+            </ParagraphSmall>
           </Stack>
-          <Box component='form' className={classes.formBody}>
-            <InputTextField
-              type='text'
-              title={t("contest_name")}
-              value={contestName}
-              onChange={(e) => setContestName(e.target.value)}
-              translate-key={["contest_enter_contest_name", "contest_enter_contest_name"]}
-              placeholder={t("contest_enter_contest_name")}
-              fullWidth
+          <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
+            {/* Contest name */}
+            <Controller
+              // defaultValue=''
+              control={control}
+              name='name'
+              rules={{ required: true }}
+              render={({ field: { ref, ...field } }) => (
+                <InputTextField
+                  error={Boolean(errors?.name)}
+                  errorMessage={errors.name?.message}
+                  title={`${t("contest_name")}`}
+                  type='text'
+                  placeholder={t("contest_enter_contest_name")}
+                  titleRequired={true}
+                  translation-key='contest_enter_contest_name'
+                  inputRef={ref}
+                  width='350px'
+                  fullWidth
+                  {...field}
+                />
+              )}
             />
+
             <Grid container spacing={1} columns={12}>
-              <Grid item xs={3}>
-                <TextTitle translate-key='contest_start_time'>{t("contest_start_time")}</TextTitle>
-              </Grid>
-              <Grid item xs={9}>
-                <CustomDateTimePicker
-                  value={moment(contestStartTime.toString())}
-                  onHandleValueChange={(newValue) => {
-                    setContestStartTime(
-                      moment(newValue?.format("YYYY-MM-DDTHH:mm:ssZ") || moment().utc())
-                    );
-                  }}
-                />
-              </Grid>
+              {/* Contest start time */}
+              <Controller
+                control={control}
+                name='startTime'
+                rules={{ required: true }}
+                render={({ field: { ref, ...field } }) => (
+                  <>
+                    <Grid item xs={3}>
+                      <TitleWithInfoTip
+                        translate-key='contest_start_time'
+                        title={t("contest_start_time")}
+                        titleRequired={true}
+                        tooltipDescription={t("contest_start_time_tooltip")}
+                      />
+                    </Grid>
+                    <Grid item xs={9}>
+                      <CustomDateTimePicker
+                        value={moment(field.value)}
+                        onHandleValueChange={(newValue) => {
+                          if (newValue) {
+                            setValue("startTime", newValue.toISOString());
+                          }
+                        }}
+                        width='350px'
+                      />
+                      {/* Show error */}
+                      {errors.startTime && (
+                        <Grid item xs={12}>
+                          {errors.startTime.message && (
+                            <ErrorMessage>{errors.startTime.message || ""}</ErrorMessage>
+                          )}
+                        </Grid>
+                      )}
+                    </Grid>
+                  </>
+                )}
+              />
             </Grid>
-            <Grid container spacing={1} columns={12}>
-              <Grid item xs={3}>
-                <TextTitle translate-key='contest_end_time'>{t("contest_end_time")}</TextTitle>
-              </Grid>
-              <Grid item xs={9}>
-                <CustomDateTimePicker
-                  value={moment(contestEndTime.toString())}
-                  disabled={isNoEndTime}
-                  onHandleValueChange={(newValue) => {
-                    setContestEndTime(
-                      moment(newValue?.format("YYYY-MM-DDTHH:mm:ssZ") || moment().utc())
-                    );
-                  }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      color='primary'
-                      checked={isNoEndTime}
-                      onChange={(e) => setIsNoEndTime(e.target.checked)}
-                    />
-                  }
-                  sx={{
-                    marginTop: "5px"
-                  }}
-                  translate-key='this_contest_has_no_end_time'
-                  label={t("this_contest_has_no_end_time")}
-                />
-              </Grid>
-            </Grid>
+
+            {/*  Contest end time */}
+            <Controller
+              // defaultValue={moment().utc().add(1, "hour").toISOString()}
+              control={control}
+              name='endTime'
+              rules={{ required: true }}
+              render={({ field: { ref, ...field } }) => (
+                <>
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <TitleWithInfoTip
+                        translate-key='contest_end_time'
+                        title={t("contest_end_time")}
+                        titleRequired={true}
+                        tooltipDescription={t("contest_end_time_tooltip")}
+                      />
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Stack direction='column' gap={1}>
+                        <CustomDateTimePicker
+                          value={moment(field.value)}
+                          disabled={watch("isNoEndTime")}
+                          onHandleValueChange={(newValue) => {
+                            if (newValue) {
+                              setValue("endTime", newValue.toISOString());
+                            }
+                          }}
+                          width='350px'
+                        />
+
+                        {/* Is no end time */}
+                        <Controller
+                          control={control}
+                          name='isNoEndTime'
+                          render={({ field: { ref, ...field } }) => (
+                            <FormControlLabel
+                              control={<Checkbox color='primary' {...field} />}
+                              label={t("this_contest_has_no_end_time")}
+                            />
+                          )}
+                        />
+
+                        {/* Show error */}
+                        {errors.endTime && (
+                          <Grid item xs={12}>
+                            {errors.endTime.message && (
+                              <ErrorMessage>{errors.endTime.message || ""}</ErrorMessage>
+                            )}
+                          </Grid>
+                        )}
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </>
+              )}
+            />
+
             <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                onSubmit={() =>
-                  handleCreateContest({
-                    name: contestName,
-                    description: "",
-                    thumbnailUrl: "",
-                    startTime: convertLocalMomentToUTCMoment(contestStartTime).toString(),
-                    endTime: isNoEndTime
-                      ? null
-                      : convertLocalMomentToUTCMoment(contestEndTime).toString()
-                  })
-                }
-                btnType={BtnType.Primary}
+              <JoyButton
+                loading={submitLoading}
+                variant='solid'
+                type='submit'
                 translation-key='common_get_started'
-                sx={{
-                  minWidth: "200px"
-                }}
               >
                 {t("common_get_started")}
-              </Button>
+              </JoyButton>
             </Grid>
           </Box>
         </Box>

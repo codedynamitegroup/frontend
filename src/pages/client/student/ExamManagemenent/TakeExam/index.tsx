@@ -10,7 +10,7 @@ import {
   Divider,
   Drawer,
   Grid,
-  Pagination,
+  Stack,
   TextField
 } from "@mui/material";
 import { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -21,7 +21,7 @@ import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import EssayExamQuestion from "./components/ExamQuestion/EssayExamQuestion";
@@ -33,425 +33,98 @@ import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import MenuIcon from "@mui/icons-material/MenuOpen";
 import IconButton from "@mui/joy/IconButton";
-import TitleWithInfoTip from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/TitleWithInfo";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
 import Badge from "@mui/joy/Badge";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
 import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
+import { ExamService } from "services/courseService/ExamService";
+import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
+import { parse as uuidParse } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { useAppSelector } from "hooks";
+import { setExam } from "reduxes/TakeExam";
+import { QuestionService } from "services/coreService/QuestionService";
+import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
+import Checkbox from "@mui/joy/Checkbox";
+import { RootState } from "store";
+import Heading2 from "components/text/Heading2";
 
-const drawerWidth = 340;
+const drawerWidth = 370;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  width: `calc(100% - ${drawerWidth}px)`,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }),
-  /**
-   * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-   * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-   * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-   * proper interaction with the underlying content.
-   */
-  position: "relative"
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-// const AppBar = styled(MuiAppBar, {
-//   shouldForwardProp: (prop) => prop !== "open"
-// })<AppBarProps>(({ theme, open }) => ({
-//   transition: theme.transitions.create(["margin", "width"], {
+// const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
+//   open?: boolean;
+// }>(({ theme, open }) => ({
+//   flexGrow: 1,
+//   width: `calc(100% - ${drawerWidth}px)`,
+//   padding: theme.spacing(3),
+//   transition: theme.transitions.create("margin", {
 //     easing: theme.transitions.easing.sharp,
 //     duration: theme.transitions.duration.leavingScreen
 //   }),
+//   marginRight: -drawerWidth,
 //   ...(open && {
-//     width: `calc(100% - ${drawerWidth}px)`,
-//     transition: theme.transitions.create(["margin", "width"], {
+//     transition: theme.transitions.create("margin", {
 //       easing: theme.transitions.easing.easeOut,
 //       duration: theme.transitions.duration.enteringScreen
 //     }),
-//     marginRight: drawerWidth
-//   })
+//     marginRight: 0
+//   }),
+//   position: "relative"
 // }));
 
-// const DrawerHeader = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   alignItems: "center",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-//   justifyContent: "flex-start"
-// }));
+// interface AppBarProps extends MuiAppBarProps {
+//   open?: boolean;
+// }
 
-interface FormData {
-  response: { content: string }[];
-}
-
-const tempMultichoiceQuestion = {
-  question: {
-    id: "b6484e21-6937-489c-b031-b71767994735",
-    organization: {
-      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      name: "Code Dynamite"
-    },
-    difficulty: "HARD",
-    name: "Question haha",
-    questionText:
-      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
-    generalFeedback: "Question Good Job feedback",
-    defaultMark: 1.0,
-    createdBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    updatedBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    qtype: "MULTIPLE_CHOICE",
-    answers: [
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cfe63",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "Hihi",
-        answer: "multi 1",
-        fraction: 1.0
-      },
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cff62",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "huhu",
-        answer: "multi 2",
-        fraction: 1.0
-      },
-      {
-        id: "d215b5f8-0249-4dc5-89a3-51fd148cff20",
-        questionId: "b6484e21-6937-489c-b031-b71767994735",
-        feedback: "haha",
-        answer: "multi 3",
-        fraction: 1.0
-      }
-    ],
-    createdAt: "2024-05-30T09:48:04.079618Z",
-    updatedAt: "2024-05-30T09:48:04.079618Z"
-  },
-  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
-  single: true,
-  shuffleAnswers: true,
-  correctFeedback: "Correct",
-  partiallyCorrectFeedback: "Partially correct",
-  incorrectFeedback: "Incorrect",
-  answerNumbering: "none",
-  showNumCorrect: 3,
-  showStandardInstructions: "Show instruction 2"
-};
-const tempTrueFalseQuestion = {
-  question: {
-    id: "b6484e21-6937-489c-b031-b71767994735",
-    organization: {
-      id: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      name: "Code Dynamite"
-    },
-    difficulty: "HARD",
-    name: "Question haha",
-    questionText:
-      "<ol><li>đasada</li><li>l1jh5</li><li>12n5lk12</li><li>jhq4lkj12</li><li>1k2jh5lkj21</li><li>12jkl521hj</li><li>125h1j2l5h21</li><li>12h5io12ho</li><li>125p;o12h5il12</li><li>]12h5io12h5oil21h</li><li>12h5ji12hgo5i12h5o</li><li>12h5iol12h5oui21h5</li><li>sfs</li></ol><p></p>",
-    generalFeedback: "Question Good Job feedback",
-    defaultMark: 1.0,
-    createdBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    updatedBy: {
-      userId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      firstName: "Tuan",
-      lastName: "Nguyen"
-    },
-    qtype: "SHORT_ANSWER",
-    answers: [],
-    createdAt: "2024-05-30T09:48:04.079618Z",
-    updatedAt: "2024-05-30T09:48:04.079618Z"
-  },
-  id: "27549d54-4a3a-4be4-9875-eab03f88ba8f",
-  single: true,
-  shuffleAnswers: true,
-  correctFeedback: "Correct",
-  partiallyCorrectFeedback: "Partially correct",
-  incorrectFeedback: "Incorrect",
-  answerNumbering: "none",
-  showNumCorrect: 3,
-  showStandardInstructions: "Show instruction 2"
-};
+// interface FormData {
+//   response: { content: string }[];
+// }
 
 export default function TakeExam() {
+  const examId = useParams<{ examId: string }>().examId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examState = useSelector((state: RootState) => state.exam);
+
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
   const { t } = useTranslation();
+  const location = useLocation();
+  const [currentQuestionList, setCurrentQuestionList] = React.useState<any>([]);
   let questionPageIndex = Number(searchParams.get("page"));
   if (isNaN(questionPageIndex) || questionPageIndex < 0) {
     questionPageIndex = 0;
   }
-
+  const dispatch = useDispatch();
+  const questionList = useAppSelector((state) => state.takeExam.questionList);
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
-  const [questions, setQuestions] = React.useState([
-    {
-      id: "0",
-      questionId: "",
-      type: qtype.essay,
-      title: "1. Ai là cha của SE? Nêu những thành tựu nổi bật",
-      done: true
-    },
-    {
-      id: "1",
-      type: qtype.short_answer,
-      title: "2. What is the full form of HTML?",
-      done: true
-    },
-    {
-      id: "2",
-      type: qtype.multiple_choice,
-      title: "3. Con trỏ là gì?",
-      done: true
-    },
-    {
-      id: "3",
-      type: qtype.true_false,
-      title: "4. Ai là cha của SE? Nêu những thành tựu nổi bật",
-      done: false
-    },
-    {
-      id: "4",
-      type: qtype.true_false,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice,
-      done: false
-    }
-  ]);
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
   >(width < 1080 ? "temporary" : "permanent");
+  const [selectedQtype, setSelectedQtype] = React.useState<string[]>([]);
+  const [showFlaggedQuestion, setShowFlaggedQuestion] = React.useState(false);
 
   const [hours, setHours] = React.useState(0);
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
-  const [timeLimit, setTimeLimit] = React.useState(new Date().getTime() + 3600000 * 10);
+  // const [timeLimit, setTimeLimit] = React.useState(new Date().getTime() + 3600000 * 10);
 
-  const getTime = React.useCallback(() => {
-    const now = new Date().getTime();
-    const distance = timeLimit - now;
+  // const getTime = React.useCallback(() => {
+  //   const now = new Date().getTime();
+  //   const distance = timeLimit - now;
 
-    if (distance > 0) {
-      setHours(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-      setMinutes(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-      setSeconds(Math.floor((distance % (1000 * 60)) / 1000));
-    }
-  }, [timeLimit]);
+  //   if (distance > 0) {
+  //     setHours(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+  //     setMinutes(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+  //     setSeconds(Math.floor((distance % (1000 * 60)) / 1000));
+  //   }
+  // }, [timeLimit]);
 
+  // Handle time countdown
   // React.useEffect(() => {
   //   const interval = setInterval(() => getTime(), 1000);
 
@@ -466,7 +139,8 @@ export default function TakeExam() {
     setOpen(false);
   };
 
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
+  // Auto change drawer to temporary when screen width < 1080
+  // and change to persistent when screen width > 1080
   React.useEffect(() => {
     if (width < 1080) {
       setDrawerVariant("temporary");
@@ -479,6 +153,149 @@ export default function TakeExam() {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+
+  // get whole question list if storage is empty (first time load page)
+  React.useEffect(() => {
+    if (questionList === undefined || questionList?.length <= 0)
+      ExamService.getExamQuestionById(examId ?? examState.examDetail.id, null)
+        .then((res) => {
+          console.log(res);
+
+          const questionFromAPI = res.questions.map((question: GetQuestionExam, index: number) => {
+            return {
+              flag: false,
+              answered: false,
+              content: "",
+              questionData: question,
+              files: []
+            };
+          });
+          dispatch(
+            setExam({
+              examId: examId ?? examState.examDetail.id,
+              questionList: questionFromAPI
+            })
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  }, []);
+
+  // get current page question list
+  React.useEffect(() => {
+    const currentQuestionList = questionList
+      .filter((question) => question.questionData.page === questionPageIndex)
+      .map((question) => ({
+        questionId: question.questionData.id,
+        qtype: question.questionData.qtype
+      }));
+
+    const postQuestionDetailList: PostQuestionDetailList = {
+      questionCommands: currentQuestionList
+    };
+
+    if (currentQuestionList.length === 0) return;
+
+    QuestionService.getQuestionDetail(postQuestionDetailList)
+      .then((res) => {
+        console.log(res);
+        const transformList = res.questionResponses.map((question: any) => {
+          const data = question.qtypeEssayQuestion
+            ? question.qtypeEssayQuestion
+            : question.qtypeShortAnswerQuestion
+              ? question.qtypeShortAnswerQuestion
+              : question.qtypeMultichoiceQuestion
+                ? question.qtypeMultichoiceQuestion
+                : question.qtypeTrueFalseQuestion
+                  ? question.qtypeTrueFalseQuestion
+                  : question.qtypeCodeQuestion;
+          return {
+            data
+          };
+        });
+        setCurrentQuestionList(transformList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [questionPageIndex]);
+
+  // back - forward button
+  const handleQuestionNavigateButton = (questionId: string) => {
+    const index = questionList.find((question) => question.questionData.id === questionId)
+      ?.questionData.page;
+    const slug = convertIdToSlug(questionId);
+
+    if (index === questionPageIndex) {
+      // const element = document.getElementById(slug);
+      // element?.scrollIntoView({ behavior: "smooth" });
+      navigate(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
+    } else {
+      console.log(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
+    }
+  };
+
+  // Handler for selecting question type autocomplte
+  const selectQtypeHandler = (event: any, value: any) => {
+    console.log(value);
+    if (value.length === 0) {
+      setSelectedQtype([]);
+    } else {
+      const selectedQtype = value.map((autocompleteQuestionType: any) => {
+        if (autocompleteQuestionType.label === t("common_question_type_essay")) {
+          return qtype.essay.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_multi_choice")) {
+          return qtype.multiple_choice.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_yes_no")) {
+          return qtype.true_false.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_short")) {
+          return qtype.short_answer.code;
+        }
+        return "";
+      });
+      setSelectedQtype(selectedQtype);
+    }
+  };
+
+  React.useEffect(() => {
+    const firstFilteredQuestion = questionList
+      .filter((question) => selectedQtype.includes(question.questionData.qtype))
+      .at(0);
+    navigate(`${routes.student.exam.take}?page=${firstFilteredQuestion?.questionData.page || 0}`, {
+      replace: true
+    });
+  }, [selectedQtype]);
+
+  // Scroll to question
+  React.useEffect(() => {
+    const checkExist = setInterval(function () {
+      const id = location.hash.substring(1); // get the id from the hash
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        clearInterval(checkExist);
+      }
+    }, 100); // check every 100ms
+  }, [location]);
+
+  // React.useEffect(() => {
+  //   console.log(currentQuestionList);
+  // }, [currentQuestionList]);
 
   return (
     <>
@@ -561,10 +378,17 @@ export default function TakeExam() {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
+            <Heading1 fontWeight={"500"}>{examState.examDetail.name}</Heading1>
+            <Heading2>
+              <div dangerouslySetInnerHTML={{ __html: examState.examDetail.intro }}></div>
+            </Heading2>
             <Button
               onClick={() => {
-                navigate(routes.student.exam.detail);
+                navigate(
+                  routes.student.exam.detail
+                    .replace(":courseId", examState.examDetail.courseId)
+                    .replace(":examId", examState.examDetail.id)
+                );
               }}
               startDecorator={<ChevronLeftIcon fontSize='small' />}
               color='neutral'
@@ -637,68 +461,121 @@ export default function TakeExam() {
               }}
             >
               <Grid container spacing={7}>
-                <Grid item xs={12}>
-                  {questions[questionPageIndex].type === qtype.essay ? (
-                    <EssayExamQuestion
-                      page={questionPageIndex}
-                      isFlagged
-                      responseFormat='editor'
-                      responseFieldLines={10}
-                      fileSize={40000}
-                      fileTypes='archive'
-                    />
-                  ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                    <ShortAnswerExamQuestion page={questionPageIndex} />
-                  ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                    <MultipleChoiceExamQuestion
-                      page={questionPageIndex}
-                      questionMultiChoice={tempMultichoiceQuestion}
-                    />
-                  ) : questions[questionPageIndex].type === qtype.true_false ? (
-                    <TrueFalseExamQuestion
-                      page={questionPageIndex}
-                      questionTrueFalseQuestion={tempTrueFalseQuestion}
-                    />
-                  ) : null}
+                {currentQuestionList
+                  .filter(
+                    (question: any) =>
+                      selectedQtype.length === 0 ||
+                      selectedQtype.includes(question.data.question.qtype)
+                  )
+                  .map((question: any, index: number) => (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        id={convertIdToSlug(question.data.question.id)}
+                        key={question.data.question.id}
+                      >
+                        {question.data.question.qtype === qtype.essay.code ? (
+                          <EssayExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                            questionEssayQuestion={question.data}
+                          />
+                        ) : question.data.question.qtype === qtype.short_answer.code ? (
+                          <ShortAnswerExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionShortAnswer={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.multiple_choice.code ? (
+                          <MultipleChoiceExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionMultiChoice={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.true_false.code ? (
+                          <TrueFalseExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionTrueFalseQuestion={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : null}
+                      </Grid>
+                      <Grid item xs={12} display={"flex"} justifyContent={"center"}>
+                        <Divider
+                          sx={{
+                            width: "100px"
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  ))}
+
+                <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>
+                  {questionPageIndex !== 0 ? (
+                    <Link
+                      to={{
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
+                        search: `?page=${questionPageIndex - 1}`
+                      }}
+                    >
+                      <Button variant='soft' color='neutral'>
+                        Trang trước
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Box></Box>
+                  )}
+                  {questionPageIndex ===
+                  (questionList.length > 0
+                    ? questionList[questionList.length - 1].questionData.page
+                    : -1) ? (
+                    <Button onClick={() => {}} variant='solid' color='primary'>
+                      Kết thúc bài làm...
+                    </Button>
+                  ) : (
+                    <Link
+                      to={{
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
+                        search: `?page=${questionPageIndex + 1}`
+                      }}
+                    >
+                      <Button onClick={() => {}} variant='solid' color='primary'>
+                        Trang sau
+                      </Button>
+                    </Link>
+                  )}
                 </Grid>
               </Grid>
             </Box>
-
-            {/* <Grid container spacing={1}>
-              <Grid item xs={6}>
-                {questionPageIndex !== 0 && (
-                  <Link
-                    to={{
-                      pathname: routes.student.exam.take,
-                      search: `?page=${questionPageIndex - 1}`
-                    }}
-                  >
-                    Trang trước
-                  </Link>
-                )}
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
-                {questionPageIndex !== questions.length - 1 ? (
-                  <Link
-                    to={{
-                      pathname: routes.student.exam.take,
-                      search: `?page=${questionPageIndex + 1}`
-                    }}
-                  >
-                    Trang sau
-                  </Link>
-                ) : (
-                  <Button onClick={() => {}}>Kết thúc bài làm...</Button>
-                )}
-              </Grid>
-            </Grid> */}
           </Box>
 
           <Drawer
@@ -716,9 +593,9 @@ export default function TakeExam() {
             variant={drawerVariant}
             anchor='right'
             open={open}
-            ModalProps={{
-              BackdropComponent: () => null // Disable the backdrop
-            }}
+            // ModalProps={{
+            //   BackdropComponent: () => null // Disable the backdrop
+            // }}
           >
             <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
               <IconButton onClick={handleDrawerClose} variant='soft'>
@@ -734,12 +611,22 @@ export default function TakeExam() {
                       {t("take_exam_question_navigation_title")}
                     </TextTitle>
 
-                    <TitleWithInfoTip title={t("take_exam_question_name")} />
+                    <TitleWithInfoTip
+                      title={t("take_exam_question_name")}
+                      fontSize='13px'
+                      fontWeight='500'
+                    />
                     <Autocomplete
                       fullWidth
                       size='small'
-                      options={questions.filter((value) => value.title)}
-                      getOptionLabel={(params) => (params.title ? params.title : "")}
+                      options={questionList.filter(
+                        (value) =>
+                          selectedQtype.length === 0 ||
+                          selectedQtype.includes(value.questionData.qtype)
+                      )}
+                      getOptionLabel={(params) =>
+                        params.questionData.name ? `${params.questionData.name}` : ""
+                      }
                       sx={{
                         marginBottom: "16px",
                         borderRadius: "12px",
@@ -753,22 +640,31 @@ export default function TakeExam() {
                           sx={{ borderRadius: "12px" }}
                         />
                       )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.questionData.name === value.questionData.name
+                      }
                     />
-                    <TitleWithInfoTip title={t("take_exam_question_sort_question")} />
+                    <TitleWithInfoTip
+                      title={t("take_exam_question_sort_question")}
+                      fontSize='13px'
+                      fontWeight='500'
+                    />
                     <Autocomplete
                       disablePortal
                       fullWidth
                       multiple
                       size='small'
+                      limitTags={2}
                       options={[
-                        { label: "Tự luận" },
-                        { label: "Trắc nghiệm" },
-                        { label: "Câu hỏi được đánh dấu" }
+                        { label: t("common_question_type_essay") },
+                        { label: t("common_question_type_multi_choice") },
+                        { label: t("common_question_type_yes_no") },
+                        { label: t("common_question_type_short") }
                       ]}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          placeholder='Lọc câu hỏi'
+                          // placeholder={"Lọc câu hỏi"}
                           sx={{ borderRadius: "12px" }}
                           InputLabelProps={{ shrink: true }}
                         />
@@ -778,84 +674,112 @@ export default function TakeExam() {
                         borderRadius: "12px",
                         "& .MuiOutlinedInput-root": { borderRadius: "12px" }
                       }}
+                      onChange={selectQtypeHandler}
+                      isOptionEqualToValue={(option, value) => option.label === value.label}
                     />
-                    <Grid
-                      container
-                      spacing={1}
-                      marginBottom={"10px"}
-                      sx={{ overflow: "auto", maxHeight: "30dvh" }}
-                    >
-                      {questions.map((question, index) => (
-                        <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
-                          <Badge
-                            color='neutral'
-                            variant='outlined'
-                            badgeContent={
-                              question.type.code === qtype.essay.code ? (
-                                <ModeIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.type.code === qtype.short_answer.code ? (
-                                <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.type.code === qtype.true_false.code ? (
-                                <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : (
-                                <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
-                              )
-                            }
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "right"
-                            }}
-                          >
+
+                    <Stack direction='row' spacing={1} marginBottom={"16px"}>
+                      <TitleWithInfoTip
+                        title={t("common_flagged_question")}
+                        fontSize='13px'
+                        fontWeight='500'
+                      />
+                      <Checkbox
+                        onChange={(event) => {
+                          setShowFlaggedQuestion(event.target.checked);
+                        }}
+                      />
+                    </Stack>
+
+                    <Grid container spacing={1} marginBottom={"10px"} sx={{ maxHeight: "30dvh" }}>
+                      {questionList
+                        .filter(
+                          (question) =>
+                            (selectedQtype.length === 0 ||
+                              selectedQtype.includes(question.questionData.qtype)) &&
+                            (showFlaggedQuestion ? question.flag : true)
+                        )
+                        .map((question, index) => (
+                          <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
                             <Badge
                               color='neutral'
                               variant='outlined'
                               badgeContent={
-                                <FlagIcon
-                                  sx={{
-                                    width: "10px",
-                                    height: "15px",
-                                    color: "red"
-                                  }}
-                                />
+                                question.questionData.qtype === qtype.essay.code ? (
+                                  <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : question.questionData.qtype === qtype.short_answer.code ? (
+                                  <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : question.questionData.qtype === qtype.true_false.code ? (
+                                  <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : (
+                                  <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
+                                )
                               }
                               anchorOrigin={{
-                                vertical: "top",
+                                vertical: "bottom",
                                 horizontal: "right"
                               }}
                             >
-                              <Button
-                                variant={
-                                  questionPageIndex === index
-                                    ? "solid"
-                                    : question.done
-                                      ? "soft"
-                                      : "outlined"
+                              <Badge
+                                color='neutral'
+                                variant='outlined'
+                                badgeContent={
+                                  <FlagIcon
+                                    sx={{
+                                      width: "10px",
+                                      height: "15px",
+                                      color: "red"
+                                    }}
+                                  />
                                 }
-                                sx={{
-                                  backgroundColor: questionPageIndex === index ? "#077aefb3" : null,
-                                  borderRadius: "1000px",
-                                  width: "40px",
-                                  height: "40px"
+                                anchorOrigin={{
+                                  vertical: "top",
+                                  horizontal: "right"
                                 }}
-                                onClick={() => {
-                                  navigate(`${routes.student.exam.take}?page=${index}`, {
-                                    replace: true
-                                  });
-                                }}
+                                invisible={!question.flag}
                               >
-                                {index + 1}
-                              </Button>
+                                <Button
+                                  variant={"outlined"}
+                                  sx={{
+                                    border: currentQuestionList.some(
+                                      (questionInList: any) =>
+                                        questionInList.data.question.id === question.questionData.id
+                                    )
+                                      ? "2px solid #002db3"
+                                      : "2px solid #e1e1e1",
+                                    borderRadius: "1000px",
+                                    width: "40px",
+                                    height: "40px",
+                                    backgroundColor: question.answered ? "#e1e1e1" : ""
+                                  }}
+                                  color={
+                                    currentQuestionList.some(
+                                      (questionInList: any) =>
+                                        questionInList.data.question.id === question.questionData.id
+                                    )
+                                      ? "primary"
+                                      : "neutral"
+                                  }
+                                  onClick={() =>
+                                    handleQuestionNavigateButton(question.questionData.id)
+                                  }
+                                >
+                                  {questionList.findIndex(
+                                    (tempQuestion: any) =>
+                                      tempQuestion.questionData.id === question.questionData.id
+                                  ) + 1}
+                                </Button>
+                              </Badge>
                             </Badge>
-                          </Badge>
-                        </Grid>
-                      ))}
+                          </Grid>
+                        ))}
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={1}>
-                      <Grid item justifyContent={"center"}>
+                      {/* <Grid item justifyContent={"center"}>
                         <Pagination count={99} />
-                      </Grid>
+                      </Grid> */}
                       <Grid item justifyContent={"center"} xs={12}>
                         <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
                           Kết thúc bài làm...
@@ -871,4 +795,11 @@ export default function TakeExam() {
       </Grid>
     </>
   );
+}
+
+function convertIdToSlug(str: string) {
+  const bytes = Array.from(uuidParse(str));
+  const base64 = btoa(String.fromCharCode.apply(null, bytes));
+  const slug = base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return slug;
 }

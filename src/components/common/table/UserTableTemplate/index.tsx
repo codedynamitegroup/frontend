@@ -15,7 +15,7 @@ import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 interface TableTemplateProps {
   data: Array<{ [key: string]: any }>;
@@ -25,6 +25,7 @@ interface TableTemplateProps {
   onViewDetailsClick?: (idDetails: number) => void;
   onEditClick?: (idEdit: number) => void;
   onDeleteClick?: (idDelete: number) => void;
+  onScroll?: () => void;
 }
 
 function UserTableTemplate({
@@ -34,7 +35,8 @@ function UserTableTemplate({
   isActionColumn,
   onViewDetailsClick,
   onEditClick,
-  onDeleteClick
+  onDeleteClick,
+  onScroll
 }: TableTemplateProps) {
   const handleViewDetailsClick = (rowId: number) => {
     if (onViewDetailsClick) {

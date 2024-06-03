@@ -1,15 +1,18 @@
 import axios from "axios";
 import { API } from "constants/API";
+import qs from "qs";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
 export class CourseService {
   static async getCourses({
     search = "",
+    courseType = [],
     pageNo = 0,
     pageSize = 10
   }: {
     search?: string;
+    courseType?: string[];
     pageNo?: number;
     pageSize?: number;
   }) {
@@ -17,8 +20,12 @@ export class CourseService {
       const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}`, {
         params: {
           search,
+          courseType,
           pageNo,
           pageSize
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { arrayFormat: "repeat" });
         }
       });
       if (response.status === 200) {
