@@ -18,6 +18,8 @@ import ForgotPassword from "./ForgotPassword";
 import UserInformation from "./UserDetails/UserInformation";
 import VerifyOTP from "./ForgotPassword/components/VerifyOTP";
 import ResetPassword from "./ForgotPassword/components/ResetPassword";
+import ForbiddenPage from "pages/common/ForbiddenPage";
+import NotFoundPage from "pages/common/NotFoundPage";
 
 type Props = {};
 
@@ -52,6 +54,8 @@ const UserHomepage = (props: Props) => {
             <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
             <Route path={"user/information"} element={<UserInformation />} />
+            <Route path={"forbidden"} element={<ForbiddenPage />} />
+            <Route path={"*"} element={<NotFoundPage />} />
           </Routes>
         </Box>
         <Footer />

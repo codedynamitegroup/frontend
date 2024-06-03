@@ -1,4 +1,3 @@
-import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
 import {
   Route,
