@@ -17,17 +17,17 @@ import MicrosoftLogin from "react-microsoft-login";
 import { loginRequest } from "services/authService/azure.config";
 import { AuthenticationResult } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { loginStatus, selectLoginStatus } from "reduxes/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginRequest } from "models/authService/entity/user";
+import { LoginRequest, User } from "models/authService/entity/user";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
+import { loginStatus, selectCurrentUser } from "reduxes/Auth";
 
 interface IFormData {
   email: string;
@@ -38,13 +38,13 @@ export default function Login() {
   const { t } = useTranslation();
   const microsoftClientId = process.env.REACT_APP_MICROSOFT_CLIENT_ID || "";
   const { instance } = useMsal();
-  const isLoggedIn: Boolean = useSelector(selectLoginStatus);
+  const userLogged: User = useSelector(selectCurrentUser);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [isLoggedLoading, setIsLoggedLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -73,10 +73,10 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (userLogged) {
       navigate(routes.user.dashboard.root);
     }
-  }, [isLoggedIn, navigate]);
+  }, [userLogged, navigate]);
 
   const signInWithMicrosoft = async () => {
     const accounts = instance.getAllAccounts();

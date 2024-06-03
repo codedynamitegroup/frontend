@@ -62,6 +62,8 @@ const UserInformationDetailsDialog = ({
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const accessToken = localStorage.getItem("access_token");
+  const provider = localStorage.getItem("provider");
 
   // const onHandleChangeGender = (value: string) => {
   //   setData((pre) => ({
@@ -120,10 +122,7 @@ const UserInformationDetailsDialog = ({
           .then((response) => {
             const user: User = response;
             dispatch(
-              setLogin((prevState: any) => ({
-                ...prevState,
-                user: user
-              }))
+              setLogin({ user: user, token: accessToken, provider: provider ? provider : null })
             );
           })
           .catch((error) => {

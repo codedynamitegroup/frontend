@@ -30,7 +30,7 @@ const HeaderNotification = () => {
         aria-haspopup='true'
         aria-expanded={open ? "true" : undefined}
       >
-        <NotificationsIcon sx={{ color: "white" }} />
+        <NotificationsIcon sx={{ color: "var(--gray-50)" }} />
       </IconButton>
       <Menu
         MenuListProps={{

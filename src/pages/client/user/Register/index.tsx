@@ -160,14 +160,6 @@ export default function Register() {
                 <ParagraphBody translation-key='register_login_alternative'>
                   {t("register_login_alternative")}
                 </ParagraphBody>
-                <Box className={classes.social}>
-                  <Button className={`${classes.socialIconGoogle} ${classes.socialIcon}`}>
-                    <FontAwesomeIcon icon={faGoogle} />
-                  </Button>
-                  <Button className={`${classes.socialIconMicrosoft} ${classes.socialIcon}`}>
-                    <FontAwesomeIcon icon={faMicrosoft} />
-                  </Button>
-                </Box>
               </form>
             </Box>
             <SnackbarAlert

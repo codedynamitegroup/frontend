@@ -36,3 +36,14 @@ export interface UpdatePasswordUserRequest {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface VerifyOTPUserRequest {
+  email: string;
+  otp: string;
+}
+
+export interface ResetPasswordUserRequest {
+  email: string;
+  password: string;
+  otp: string;
+}

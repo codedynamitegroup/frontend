@@ -3,7 +3,7 @@ import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
 import { Box, Link } from "@mui/material";
 import images from "config/images";
-import { Link as RouterLink } from "react-router-dom";
+import { Navigate, Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -16,22 +16,28 @@ import { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import { UserService } from "services/authService/UserService";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { VerifyOTPUserRequest } from "models/authService/entity/user";
 
 interface IFormData {
-  email: string;
+  otp: string;
 }
 
-export default function ForgotPassword() {
+export default function VerifyOTP() {
   const { t } = useTranslation();
-  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
+  const [isVerifyOTPLoading, setIsVerifyOTPLoading] = useState(false);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const location = useLocation();
+  // get params email
+  const searchParams = new URLSearchParams(location.search);
+  const email = searchParams.get("email");
+
   const schema = useMemo(() => {
     return yup.object().shape({
-      email: yup.string().required(t("email_required")).email(t("email_invalid"))
+      otp: yup.string().required("Vui lòng nhập mã otp")
     });
-  }, [t]);
+  }, []);
 
   const {
     register,
@@ -41,17 +47,24 @@ export default function ForgotPassword() {
     resolver: yupResolver(schema)
   });
 
+  const navigate = useNavigate();
+
   const handleForgotPassword = (data: IFormData) => {
-    setIsForgotPasswordLoading(true);
-    UserService.forgotPassword(data.email)
+    const verifyOTPData: VerifyOTPUserRequest = {
+      email: email || "",
+      otp: data.otp
+    };
+    setIsVerifyOTPLoading(true);
+    UserService.verifyOTP(verifyOTPData)
       .then(async (response) => {
         setOpenSnackbarAlert(true);
-        setAlertContent("Gửi email thành công, vui lại kiểm tra email của bạn.");
+        setAlertContent("Xác nhận OTP thành công.");
         setAlertType(AlertType.Success);
+        navigate(`${routes.user.forgot_password.reset_password}?email=${email}&otp=${data.otp}`);
       })
       .catch((error: any) => {
         setOpenSnackbarAlert(true);
-        setAlertContent("Gửi email thất bại! Kiểm tra lại thông tin email.");
+        setAlertContent("Gửi xác nhận OTP thất bại! Kiểm tra lại thông tin OTP.");
         setAlertType(AlertType.Error);
         console.error("Failed to login", {
           code: error.response?.code || 503,
@@ -60,7 +73,7 @@ export default function ForgotPassword() {
         });
       })
       .finally(() => {
-        setIsForgotPasswordLoading(false);
+        setIsVerifyOTPLoading(false);
       });
   };
   return (
@@ -72,36 +85,34 @@ export default function ForgotPassword() {
           </Grid>
           <Grid item xs={12} md={6} className={classes.centerForm}>
             <form className={classes.formControl} onSubmit={handleSubmit(handleForgotPassword)}>
-              <Heading1 translation-key='common_forget_password'>
-                {t("common_forget_password")}
-              </Heading1>
+              <Heading1 translation-key='common_forget_password'>Nhập mã OTP</Heading1>
               <ParagraphBody translation-key='forget_password_description'>
-                {t("forget_password_description")}
+                Vui lòng kiểm tra mã trong email của bạn. Mã này gồm 6 số.
               </ParagraphBody>
               <InputTextField
-                label={t("Email")}
+                label={"OTP"}
                 type='text'
-                inputRef={register("email")}
-                errorMessage={errors?.email?.message}
+                inputRef={register("otp")}
+                errorMessage={errors?.otp?.message}
               />
               <LoadButton
-                loading={isForgotPasswordLoading}
+                loading={isVerifyOTPLoading}
                 btnType={BtnType.Primary}
                 colorname='--white'
                 autoFocus
                 translation-key='common_send'
                 isTypeSubmit
               >
-                {t("common_send")}
+                Tiếp tục
               </LoadButton>
             </form>
             <Box className={classes.back}>
               <Link
                 component={RouterLink}
-                to={routes.user.login.root}
+                to={routes.user.forgot_password.root}
                 translation-key='forget_password_back_link'
                 className={classes.textLink}
-              >{`< ${t("forget_password_back_link")}`}</Link>
+              >{`< Trở về trang quên mật khẩu`}</Link>
             </Box>
           </Grid>
           <SnackbarAlert

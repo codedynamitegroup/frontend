@@ -70,7 +70,11 @@ const InputTextField = memo((props: InputsProps) => {
           </Grid>
           <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
             {label && (
-              <InputLabel htmlFor='display-name' variant='filled'>
+              <InputLabel
+                htmlFor='display-name'
+                variant='filled'
+                className={errorMessage && classes.labelError}
+              >
                 {label}
               </InputLabel>
             )}

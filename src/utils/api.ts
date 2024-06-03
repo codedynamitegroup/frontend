@@ -16,16 +16,17 @@ const createInstance = ({
   const instance = axios.create({
     baseURL,
     headers: {
-      "Content-Type": "application/json",
-      "Access-Token": accessToken
+      "Content-Type": "application/json"
     }
   });
 
   if (isAuthorization === true) {
     instance.interceptors.request.use(
       (config) => {
-        if (accessToken) {
-          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        const newAccessToken = localStorage.getItem("access_token");
+        if (newAccessToken) {
+          config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          config.headers["Access-Token"] = newAccessToken;
         }
         return config;
       },
@@ -35,10 +36,6 @@ const createInstance = ({
     instance.interceptors.response.use(
       (response) => response,
       (error) => {
-        // if (error.response && error.response.status === 400) {
-        //   console.error("error.response.data", error.response.data);
-        //   return Promise.resolve(error.response.data);
-        // }
         const originalRequest = error.config;
         // Handle 401 Unauthorized
         if (
@@ -58,15 +55,12 @@ const createInstance = ({
               if (res.status === 200) {
                 localStorage.setItem("access_token", res.data.accessToken);
                 localStorage.setItem("refresh_token", res.data.refreshToken);
-
-                console.log("Hello");
-                // return axios(originalRequest);
                 return instance(originalRequest);
               }
             })
             .catch((err: any) => {
               // if status Please authenticate
-              if (err.response.status === 401 || err.response.status === 403) {
+              if (err?.code === 401 || err?.code === 403) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
                 localStorage.removeItem("provider");
@@ -74,15 +68,15 @@ const createInstance = ({
             });
         }
         return Promise.reject({
-          code: error.response?.data?.code || error.response.status || 503,
+          code: error?.response?.data?.code || error?.response?.status || 503,
           status:
-            error.response.status === 401 || error.response.status === 403
+            error?.response?.status === 401 || error?.response?.status === 403
               ? "Unauthorized"
               : error.response?.data?.status || "Service Unavailable",
           message:
-            error.response.status === 401 || error.response.status === 403
+            error?.response?.status === 401 || error?.response?.status === 403
               ? "Please authenticate"
-              : error.response?.data?.message || error.message
+              : error?.response?.data?.message || error?.message
         });
       }
     );

@@ -3,8 +3,10 @@ import { API } from "constants/API";
 import {
   LoginRequest,
   RegisteredRequest,
+  ResetPasswordUserRequest,
   UpdatePasswordUserRequest,
-  UpdateProfileUserRequest
+  UpdateProfileUserRequest,
+  VerifyOTPUserRequest
 } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import api from "utils/api";
@@ -14,7 +16,9 @@ const authServiceApiUrl = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 export class UserService {
   static async singleSignOn(accessToken: string, provider: ESocialLoginProvider) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.SOCIAL_LOGIN}`, {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.SOCIAL_LOGIN}`, {
         provider: provider,
         accessToken: accessToken
       });
@@ -36,7 +40,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${authServiceApiUrl}${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
+      }).get(`${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -51,7 +55,9 @@ export class UserService {
   }
   static async login(loginData: LoginRequest) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.LOGIN}`, loginData);
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.LOGIN}`, loginData);
       if (response.status === 200) {
         return response.data;
       }
@@ -66,7 +72,9 @@ export class UserService {
   }
   static async refreshToken(accessToken: string, refreshToken: string) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.REFRESH_TOKEN}`, {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.REFRESH_TOKEN}`, {
         accessToken: accessToken,
         refreshToken: refreshToken
       });
@@ -87,7 +95,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${authServiceApiUrl}${API.AUTH.LOGOUT}`);
+      }).post(`${API.AUTH.LOGOUT}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -103,7 +111,9 @@ export class UserService {
 
   static async register(registeredData: RegisteredRequest) {
     try {
-      const response = await axios.post(`${authServiceApiUrl}${API.AUTH.REGISTER}`, registeredData);
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.REGISTER}`, registeredData);
       if (response.status === 201) {
         return response.data;
       }
@@ -117,25 +127,26 @@ export class UserService {
     }
   }
   static async updateProfileUser(updateProfileUserRequest: UpdateProfileUserRequest) {
+    console.log("Hello");
     try {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).put(`${authServiceApiUrl}${API.AUTH.UPDATE_PROFILE_USER}`, {
+      }).put(`${API.AUTH.UPDATE_PROFILE_USER}`, {
         firstName: updateProfileUserRequest.firstName,
         lastName: updateProfileUserRequest.lastName,
         dob: updateProfileUserRequest.dob,
         phone: updateProfileUserRequest.phone
       });
-      if (response.status === 200) {
+      if (response?.status === 200) {
         return response.data;
       }
     } catch (error: any) {
       console.error("Failed to update profile user", error);
       return Promise.reject({
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message
       });
     }
   }
@@ -144,7 +155,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${authServiceApiUrl}${API.AUTH.CHANGE_PASSWORD}`, {
+      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
         oldPassword: updatePasswordUserRequest.oldPassword,
         newPassword: updatePasswordUserRequest.newPassword
       });
@@ -153,6 +164,63 @@ export class UserService {
       }
     } catch (error: any) {
       console.error("Failed to changed password", error);
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async forgotPassword(email: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).get(`${API.AUTH.FORGOT_PASSWORD.replace(":email", email)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to send forgot password", error);
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async verifyOTP(verifyOTP: VerifyOTPUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.VERIFY_OTP}`, {
+        email: verifyOTP.email,
+        otp: verifyOTP.otp
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to verify OTP", error);
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async resetPassword(resetPasswordUserRequest: ResetPasswordUserRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+        email: resetPasswordUserRequest.email,
+        newPassword: resetPasswordUserRequest.password
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to reset password", error);
       return Promise.reject({
         code: error.code || 503,
         status: error.status || "Service Unavailable",
