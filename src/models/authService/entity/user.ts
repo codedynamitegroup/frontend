@@ -1,4 +1,6 @@
 import { UUID } from "crypto";
+import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
+import { RoleEntity } from "./role";
 
 export interface User {
   userId: UUID;
@@ -11,6 +13,9 @@ export interface User {
   dob: Date;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
+  organization: OrganizationEntity;
+  createdAt: Date;
+  roles: RoleEntity[];
 }
 
 export interface LoginRequest {

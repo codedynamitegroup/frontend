@@ -32,6 +32,7 @@ import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import { UserService } from "services/authService/UserService";
 import clsx from "clsx";
+import { ERoleName } from "models/authService/entity/role";
 
 interface ILinkMenu {
   name: string;
@@ -82,6 +83,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const loggedUser: User = useSelector(selectCurrentUser);
 
   const pagesHeaderDefault: ILinkMenu[] = [
     {
@@ -102,12 +104,13 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       isActive: false,
       position: "left"
     },
-    {
-      name: "header_course",
-      path: routes.student.course.management,
-      isActive: false,
-      position: "left"
-    },
+    // {
+    //   name: "header_course",
+    //   path: routes.student.course.management,
+    //   isActive: false,
+    //   position: "left",
+    //   isVisible: loggedUser ? true : false
+    // },
     {
       name: "header_login_button",
       path: routes.user.login.root,
@@ -130,6 +133,14 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     setOpen(false);
   };
 
+  const isRoleStudentAndLecturer = (): Boolean => {
+    if (!loggedUser) {
+      return false;
+    }
+    return loggedUser.roles.some(
+      (role) => role.name === ERoleName.STUDENT_MOODLE || role.name === ERoleName.TEACHER_MOODLE
+    );
+  };
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 900) {
@@ -152,8 +163,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const loggedUser: User = useSelector(selectCurrentUser);
 
   const { pathname } = useLocation();
 
@@ -183,7 +192,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       return item;
     });
     setPagesHeader(pagesHeaderUpdated);
-  }, [pathname]);
+  }, [pathname, loggedUser]);
 
   const handleLogout = async () => {
     UserService.logout()
@@ -256,6 +265,23 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   </Link>
                 </ParagraphSmall>
               ))}
+            {isRoleStudentAndLecturer() && (
+              <ParagraphSmall
+                className={clsx([classes.item])}
+                fontWeight={600}
+                translation-key='header_course'
+                colorname={"--gray-50"}
+              >
+                <Link
+                  component={RouterLink}
+                  to={routes.student.course.management}
+                  translation-key='header_course'
+                  className={classes.textLink}
+                >
+                  {t("header_course")}
+                </Link>
+              </ParagraphSmall>
+            )}
           </Box>
           <Box>
             <LanguageSelector />

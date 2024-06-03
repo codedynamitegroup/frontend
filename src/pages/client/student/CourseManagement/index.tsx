@@ -85,8 +85,6 @@ const StudentCourses = () => {
     () => courseTypes.map((courseType) => courseType.name),
     [courseTypes]
   );
-  console.log(tempCategories);
-  console.log(selectedCategories);
 
   const [viewType, setViewType] = useState(EView.listView);
 
