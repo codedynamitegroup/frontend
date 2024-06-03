@@ -45,6 +45,7 @@ import LoadingScreen from "components/common/LoadingScreen";
 import ContestManagement from "pages/client/admin/ContestManagement/ContestManagement";
 import CreateContest from "pages/client/admin/ContestManagement/CreateContest";
 import EditContestDetails from "pages/client/admin/ContestManagement/EditContestDetails";
+import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -140,6 +141,8 @@ const router = createHashRouter(
       <Route path={routes.student.root} element={<StudentCoursesManagement />} />
       <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
       <Route path={routes.student.exam.take} element={<TakeExam />} />
+      <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
+
       <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
       <Route path={routes.admin.contest.root} element={<ContestManagement />} />

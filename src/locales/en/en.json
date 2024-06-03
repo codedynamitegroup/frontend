@@ -814,5 +814,11 @@
 
   "take_exam_question_navigation_title": "Question navigation",
   "take_exam_question_name": "Question",
-  "take_exam_question_sort_question": "Filter question"
+  "take_exam_question_sort_question": "Filter question",
+
+  "common_answer_saved": "Answer saved",
+  "common_not_answered": "Not answered",
+  "common_answered": "Answered",
+  "common_score_can_achieve": "Achievable score",
+  "common_flagged_question": "Flagged question"
 }
