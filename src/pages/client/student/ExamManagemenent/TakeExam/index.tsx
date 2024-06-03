@@ -10,7 +10,7 @@ import {
   Divider,
   Drawer,
   Grid,
-  Pagination,
+  Stack,
   TextField
 } from "@mui/material";
 import { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -21,7 +21,7 @@ import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import EssayExamQuestion from "./components/ExamQuestion/EssayExamQuestion";
@@ -41,45 +41,51 @@ import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { parse as uuidParse } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector } from "hooks";
 import { setExam } from "reduxes/TakeExam";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
+import Checkbox from "@mui/joy/Checkbox";
+import { RootState } from "store";
+import Heading2 from "components/text/Heading2";
 
-const drawerWidth = 340;
+const drawerWidth = 370;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  width: `calc(100% - ${drawerWidth}px)`,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }),
-  position: "relative"
-}));
+// const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
+//   open?: boolean;
+// }>(({ theme, open }) => ({
+//   flexGrow: 1,
+//   width: `calc(100% - ${drawerWidth}px)`,
+//   padding: theme.spacing(3),
+//   transition: theme.transitions.create("margin", {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen
+//   }),
+//   marginRight: -drawerWidth,
+//   ...(open && {
+//     transition: theme.transitions.create("margin", {
+//       easing: theme.transitions.easing.easeOut,
+//       duration: theme.transitions.duration.enteringScreen
+//     }),
+//     marginRight: 0
+//   }),
+//   position: "relative"
+// }));
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
+// interface AppBarProps extends MuiAppBarProps {
+//   open?: boolean;
+// }
 
-interface FormData {
-  response: { content: string }[];
-}
+// interface FormData {
+//   response: { content: string }[];
+// }
 
 export default function TakeExam() {
-  const examId = "b6484e21-6937-489c-b031-b71767994741";
+  const examId = useParams<{ examId: string }>().examId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examState = useSelector((state: RootState) => state.exam);
+
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -98,23 +104,25 @@ export default function TakeExam() {
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
   >(width < 1080 ? "temporary" : "permanent");
+  const [selectedQtype, setSelectedQtype] = React.useState<string[]>([]);
+  const [showFlaggedQuestion, setShowFlaggedQuestion] = React.useState(false);
 
   const [hours, setHours] = React.useState(0);
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
-  const [timeLimit, setTimeLimit] = React.useState(new Date().getTime() + 3600000 * 10);
+  // const [timeLimit, setTimeLimit] = React.useState(new Date().getTime() + 3600000 * 10);
 
-  const getTime = React.useCallback(() => {
-    const now = new Date().getTime();
-    const distance = timeLimit - now;
+  // const getTime = React.useCallback(() => {
+  //   const now = new Date().getTime();
+  //   const distance = timeLimit - now;
 
-    if (distance > 0) {
-      setHours(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-      setMinutes(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-      setSeconds(Math.floor((distance % (1000 * 60)) / 1000));
-    }
-  }, [timeLimit]);
+  //   if (distance > 0) {
+  //     setHours(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+  //     setMinutes(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+  //     setSeconds(Math.floor((distance % (1000 * 60)) / 1000));
+  //   }
+  // }, [timeLimit]);
 
   // Handle time countdown
   // React.useEffect(() => {
@@ -149,7 +157,7 @@ export default function TakeExam() {
   // get whole question list if storage is empty (first time load page)
   React.useEffect(() => {
     if (questionList === undefined || questionList?.length <= 0)
-      ExamService.getExamQuestionById(examId, null)
+      ExamService.getExamQuestionById(examId ?? examState.examDetail.id, null)
         .then((res) => {
           console.log(res);
 
@@ -158,17 +166,16 @@ export default function TakeExam() {
               flag: false,
               answered: false,
               content: "",
-              questionData: question
+              questionData: question,
+              files: []
             };
           });
           dispatch(
             setExam({
-              examId: examId,
+              examId: examId ?? examState.examDetail.id,
               questionList: questionFromAPI
             })
           );
-          // dispatch(setExamId(examId));
-          // dispatch(setQuestionList(questionFromAPI));
         })
         .catch((err) => {
           console.log(err);
@@ -223,16 +230,56 @@ export default function TakeExam() {
     if (index === questionPageIndex) {
       // const element = document.getElementById(slug);
       // element?.scrollIntoView({ behavior: "smooth" });
-      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
-        replace: true
-      });
+      navigate(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
     } else {
-      console.log(`${routes.student.exam.take}?page=${index}#${slug}`);
-      navigate(`${routes.student.exam.take}?page=${index}#${slug}`, {
-        replace: true
-      });
+      console.log(
+        `${routes.student.exam.take
+          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+        {
+          replace: true
+        }
+      );
     }
   };
+
+  // Handler for selecting question type autocomplte
+  const selectQtypeHandler = (event: any, value: any) => {
+    console.log(value);
+    if (value.length === 0) {
+      setSelectedQtype([]);
+    } else {
+      const selectedQtype = value.map((autocompleteQuestionType: any) => {
+        if (autocompleteQuestionType.label === t("common_question_type_essay")) {
+          return qtype.essay.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_multi_choice")) {
+          return qtype.multiple_choice.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_yes_no")) {
+          return qtype.true_false.code;
+        } else if (autocompleteQuestionType.label === t("common_question_type_short")) {
+          return qtype.short_answer.code;
+        }
+        return "";
+      });
+      setSelectedQtype(selectedQtype);
+    }
+  };
+
+  React.useEffect(() => {
+    const firstFilteredQuestion = questionList
+      .filter((question) => selectedQtype.includes(question.questionData.qtype))
+      .at(0);
+    navigate(`${routes.student.exam.take}?page=${firstFilteredQuestion?.questionData.page || 0}`, {
+      replace: true
+    });
+  }, [selectedQtype]);
 
   // Scroll to question
   React.useEffect(() => {
@@ -246,9 +293,9 @@ export default function TakeExam() {
     }, 100); // check every 100ms
   }, [location]);
 
-  React.useEffect(() => {
-    console.log(currentQuestionList);
-  }, [currentQuestionList]);
+  // React.useEffect(() => {
+  //   console.log(currentQuestionList);
+  // }, [currentQuestionList]);
 
   return (
     <>
@@ -331,10 +378,17 @@ export default function TakeExam() {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
+            <Heading1 fontWeight={"500"}>{examState.examDetail.name}</Heading1>
+            <Heading2>
+              <div dangerouslySetInnerHTML={{ __html: examState.examDetail.intro }}></div>
+            </Heading2>
             <Button
               onClick={() => {
-                navigate(routes.student.exam.detail);
+                navigate(
+                  routes.student.exam.detail
+                    .replace(":courseId", examState.examDetail.courseId)
+                    .replace(":examId", examState.examDetail.id)
+                );
               }}
               startDecorator={<ChevronLeftIcon fontSize='small' />}
               color='neutral'
@@ -407,67 +461,70 @@ export default function TakeExam() {
               }}
             >
               <Grid container spacing={7}>
-                {currentQuestionList.map((question: any, index: number) => (
-                  <>
-                    <Grid
-                      item
-                      xs={12}
-                      id={convertIdToSlug(question.data.question.id)}
-                      key={question.data.question.id}
-                    >
-                      {question.data.question.qtype === qtype.essay.code ? (
-                        <EssayExamQuestion
-                          page={questionList.findIndex(
-                            (tempQuestion: any) =>
-                              tempQuestion.questionData.id === question.data.question.id
-                          )}
-                          isFlagged={
-                            questionList.find(
+                {currentQuestionList
+                  .filter(
+                    (question: any) =>
+                      selectedQtype.length === 0 ||
+                      selectedQtype.includes(question.data.question.qtype)
+                  )
+                  .map((question: any, index: number) => (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        id={convertIdToSlug(question.data.question.id)}
+                        key={question.data.question.id}
+                      >
+                        {question.data.question.qtype === qtype.essay.code ? (
+                          <EssayExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionState={questionList.find(
                               (questionInList) =>
                                 questionInList.questionData.id === question.data.question.id
-                            )?.flag
-                          }
-                          questionEssayQuestion={question.data}
-                        />
-                      ) : question.data.question.qtype === qtype.short_answer.code ? (
-                        <ShortAnswerExamQuestion
-                          page={questionList.findIndex(
-                            (tempQuestion: any) =>
-                              tempQuestion.questionData.id === question.data.question.id
-                          )}
-                          questionShortAnswer={question.data}
-                          questionState={questionList.find(
-                            (questionInList) =>
-                              questionInList.questionData.id === question.data.question.id
-                          )}
-                        />
-                      ) : question.data.question.qtype === qtype.multiple_choice.code ? (
-                        <MultipleChoiceExamQuestion
-                          page={questionList.findIndex(
-                            (tempQuestion: any) =>
-                              tempQuestion.questionData.id === question.data.question.id
-                          )}
-                          questionMultiChoice={question.data}
-                          questionState={questionList.find(
-                            (questionInList) =>
-                              questionInList.questionData.id === question.data.question.id
-                          )}
-                        />
-                      ) : question.data.question.qtype === qtype.true_false.code ? (
-                        <TrueFalseExamQuestion
-                          page={questionList.findIndex(
-                            (tempQuestion: any) =>
-                              tempQuestion.questionData.id === question.data.question.id
-                          )}
-                          questionTrueFalseQuestion={question.data}
-                          questionState={questionList.find(
-                            (questionInList) =>
-                              questionInList.questionData.id === question.data.question.id
-                          )}
-                        />
-                      ) : null}
-                    </Grid>
-                    {index !== currentQuestionList.length - 1 && (
+                            )}
+                            questionEssayQuestion={question.data}
+                          />
+                        ) : question.data.question.qtype === qtype.short_answer.code ? (
+                          <ShortAnswerExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionShortAnswer={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.multiple_choice.code ? (
+                          <MultipleChoiceExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionMultiChoice={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.true_false.code ? (
+                          <TrueFalseExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionTrueFalseQuestion={question.data}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                          />
+                        ) : null}
+                      </Grid>
                       <Grid item xs={12} display={"flex"} justifyContent={"center"}>
                         <Divider
                           sx={{
@@ -475,15 +532,16 @@ export default function TakeExam() {
                           }}
                         />
                       </Grid>
-                    )}
-                  </>
-                ))}
+                    </>
+                  ))}
 
                 <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>
                   {questionPageIndex !== 0 ? (
                     <Link
                       to={{
-                        pathname: routes.student.exam.take,
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
                         search: `?page=${questionPageIndex - 1}`
                       }}
                     >
@@ -504,7 +562,9 @@ export default function TakeExam() {
                   ) : (
                     <Link
                       to={{
-                        pathname: routes.student.exam.take,
+                        pathname: routes.student.exam.take
+                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
+                          .replace(":examId", examId ?? examState.examDetail.id),
                         search: `?page=${questionPageIndex + 1}`
                       }}
                     >
@@ -533,9 +593,9 @@ export default function TakeExam() {
             variant={drawerVariant}
             anchor='right'
             open={open}
-            ModalProps={{
-              BackdropComponent: () => null // Disable the backdrop
-            }}
+            // ModalProps={{
+            //   BackdropComponent: () => null // Disable the backdrop
+            // }}
           >
             <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
               <IconButton onClick={handleDrawerClose} variant='soft'>
@@ -551,13 +611,21 @@ export default function TakeExam() {
                       {t("take_exam_question_navigation_title")}
                     </TextTitle>
 
-                    <TitleWithInfoTip title={t("take_exam_question_name")} />
+                    <TitleWithInfoTip
+                      title={t("take_exam_question_name")}
+                      fontSize='13px'
+                      fontWeight='500'
+                    />
                     <Autocomplete
                       fullWidth
                       size='small'
-                      options={questionList.filter((value) => value.questionData.name)}
+                      options={questionList.filter(
+                        (value) =>
+                          selectedQtype.length === 0 ||
+                          selectedQtype.includes(value.questionData.qtype)
+                      )}
                       getOptionLabel={(params) =>
-                        params.questionData.name ? params.questionData.name : ""
+                        params.questionData.name ? `${params.questionData.name}` : ""
                       }
                       sx={{
                         marginBottom: "16px",
@@ -572,22 +640,31 @@ export default function TakeExam() {
                           sx={{ borderRadius: "12px" }}
                         />
                       )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.questionData.name === value.questionData.name
+                      }
                     />
-                    <TitleWithInfoTip title={t("take_exam_question_sort_question")} />
+                    <TitleWithInfoTip
+                      title={t("take_exam_question_sort_question")}
+                      fontSize='13px'
+                      fontWeight='500'
+                    />
                     <Autocomplete
                       disablePortal
                       fullWidth
                       multiple
                       size='small'
+                      limitTags={2}
                       options={[
-                        { label: "Tự luận" },
-                        { label: "Trắc nghiệm" },
-                        { label: "Câu hỏi được đánh dấu" }
+                        { label: t("common_question_type_essay") },
+                        { label: t("common_question_type_multi_choice") },
+                        { label: t("common_question_type_yes_no") },
+                        { label: t("common_question_type_short") }
                       ]}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          placeholder='Lọc câu hỏi'
+                          // placeholder={"Lọc câu hỏi"}
                           sx={{ borderRadius: "12px" }}
                           InputLabelProps={{ shrink: true }}
                         />
@@ -597,78 +674,105 @@ export default function TakeExam() {
                         borderRadius: "12px",
                         "& .MuiOutlinedInput-root": { borderRadius: "12px" }
                       }}
+                      onChange={selectQtypeHandler}
+                      isOptionEqualToValue={(option, value) => option.label === value.label}
                     />
+
+                    <Stack direction='row' spacing={1} marginBottom={"16px"}>
+                      <TitleWithInfoTip
+                        title={t("common_flagged_question")}
+                        fontSize='13px'
+                        fontWeight='500'
+                      />
+                      <Checkbox
+                        onChange={(event) => {
+                          setShowFlaggedQuestion(event.target.checked);
+                        }}
+                      />
+                    </Stack>
+
                     <Grid container spacing={1} marginBottom={"10px"} sx={{ maxHeight: "30dvh" }}>
-                      {questionList.map((question, index) => (
-                        <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
-                          <Badge
-                            color='neutral'
-                            variant='outlined'
-                            badgeContent={
-                              question.questionData.qtype === qtype.essay.code ? (
-                                <ModeIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.questionData.qtype === qtype.short_answer.code ? (
-                                <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : question.questionData.qtype === qtype.true_false.code ? (
-                                <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                              ) : (
-                                <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
-                              )
-                            }
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "right"
-                            }}
-                          >
+                      {questionList
+                        .filter(
+                          (question) =>
+                            (selectedQtype.length === 0 ||
+                              selectedQtype.includes(question.questionData.qtype)) &&
+                            (showFlaggedQuestion ? question.flag : true)
+                        )
+                        .map((question, index) => (
+                          <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
                             <Badge
                               color='neutral'
                               variant='outlined'
                               badgeContent={
-                                <FlagIcon
-                                  sx={{
-                                    width: "10px",
-                                    height: "15px",
-                                    color: "red"
-                                  }}
-                                />
+                                question.questionData.qtype === qtype.essay.code ? (
+                                  <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : question.questionData.qtype === qtype.short_answer.code ? (
+                                  <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : question.questionData.qtype === qtype.true_false.code ? (
+                                  <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : (
+                                  <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
+                                )
                               }
                               anchorOrigin={{
-                                vertical: "top",
+                                vertical: "bottom",
                                 horizontal: "right"
                               }}
-                              invisible={!question.flag}
                             >
-                              <Button
-                                variant={"outlined"}
-                                sx={{
-                                  border: currentQuestionList.some(
-                                    (questionInList: any) =>
-                                      questionInList.data.question.id === question.questionData.id
-                                  )
-                                    ? "2px solid #002db3"
-                                    : "2px solid #e1e1e1",
-                                  borderRadius: "1000px",
-                                  width: "40px",
-                                  height: "40px"
+                              <Badge
+                                color='neutral'
+                                variant='outlined'
+                                badgeContent={
+                                  <FlagIcon
+                                    sx={{
+                                      width: "10px",
+                                      height: "15px",
+                                      color: "red"
+                                    }}
+                                  />
+                                }
+                                anchorOrigin={{
+                                  vertical: "top",
+                                  horizontal: "right"
                                 }}
-                                color={
-                                  currentQuestionList.some(
-                                    (questionInList: any) =>
-                                      questionInList.data.question.id === question.questionData.id
-                                  )
-                                    ? "primary"
-                                    : "neutral"
-                                }
-                                onClick={() =>
-                                  handleQuestionNavigateButton(question.questionData.id)
-                                }
+                                invisible={!question.flag}
                               >
-                                {index + 1}
-                              </Button>
+                                <Button
+                                  variant={"outlined"}
+                                  sx={{
+                                    border: currentQuestionList.some(
+                                      (questionInList: any) =>
+                                        questionInList.data.question.id === question.questionData.id
+                                    )
+                                      ? "2px solid #002db3"
+                                      : "2px solid #e1e1e1",
+                                    borderRadius: "1000px",
+                                    width: "40px",
+                                    height: "40px",
+                                    backgroundColor: question.answered ? "#e1e1e1" : ""
+                                  }}
+                                  color={
+                                    currentQuestionList.some(
+                                      (questionInList: any) =>
+                                        questionInList.data.question.id === question.questionData.id
+                                    )
+                                      ? "primary"
+                                      : "neutral"
+                                  }
+                                  onClick={() =>
+                                    handleQuestionNavigateButton(question.questionData.id)
+                                  }
+                                >
+                                  {questionList.findIndex(
+                                    (tempQuestion: any) =>
+                                      tempQuestion.questionData.id === question.questionData.id
+                                  ) + 1}
+                                </Button>
+                              </Badge>
                             </Badge>
-                          </Badge>
-                        </Grid>
-                      ))}
+                          </Grid>
+                        ))}
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>

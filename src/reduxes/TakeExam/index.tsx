@@ -8,6 +8,10 @@ export interface InitialState {
     answered: boolean;
     content: string;
     questionData: GetQuestionExam;
+    files?: {
+      fileUrl: string;
+      fileName: string;
+    }[];
   }[];
 }
 
@@ -57,10 +61,61 @@ const takeExamSlice = createSlice({
         state.questionList[index].content = action.payload.content;
       }
       return state;
+    },
+
+    addFileToExamQuesiton: (
+      state,
+      action: PayloadAction<{ id: string; fileUrl: string; fileName: string }>
+    ) => {
+      const index = state.questionList.findIndex(
+        (question) => question.questionData.id === action.payload.id
+      );
+
+      console.log("index redux", index);
+      console.log("curr files", action.payload.fileUrl);
+
+      if (index !== -1) {
+        state.questionList[index].files?.push({
+          fileUrl: action.payload.fileUrl,
+          fileName: action.payload.fileName
+        });
+      }
+      return state;
+    },
+    removeFileFromExamQuestion: (state, action: PayloadAction<{ id: string; fileUrl: string }>) => {
+      const index = state.questionList.findIndex(
+        (question) => question.questionData.id === action.payload.id
+      );
+
+      if (index !== -1) {
+        state.questionList[index].files = state.questionList[index].files?.filter(
+          (file) => file.fileUrl !== action.payload.fileUrl
+        );
+      }
+      return state;
+    },
+    removeAllFilesFromExamQuestion: (state, action: PayloadAction<string>) => {
+      const index = state.questionList.findIndex(
+        (question) => question.questionData.id === action.payload
+      );
+
+      if (index !== -1) {
+        state.questionList[index].files = [];
+      }
+      return state;
     }
   }
 });
 
-export const { setExamId, setQuestionList, setFlag, setAnswered, setExam } = takeExamSlice.actions;
+export const {
+  setExamId,
+  setQuestionList,
+  setFlag,
+  setAnswered,
+  setExam,
+  addFileToExamQuesiton,
+  removeFileFromExamQuestion,
+  removeAllFilesFromExamQuestion
+} = takeExamSlice.actions;
 
 export default takeExamSlice.reducer;

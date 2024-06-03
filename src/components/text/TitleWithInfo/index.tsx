@@ -32,12 +32,14 @@ const TitleWithInfoTip = (props: PropsData) => {
   return (
     <Box className={classes.titleContainer}>
       <TextTitle
-      // className={classes.generalDescription}
-      // sx={{
-      //   fontWeight: fontWeight || "500px",
-      //   color: color || "#162130bf",
-      //   fontSize: fontSize || ".8rem"
-      // }}
+        // className={classes.generalDescription}
+        // sx={{
+        //   fontWeight: fontWeight || "500px",
+        //   color: color || "#162130bf",
+        //   fontSize: fontSize || ".8rem"
+        // }}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
       >
         {title} {titleRequired && <span className={classes.errorStar}>*</span>}{" "}
         {optional && (

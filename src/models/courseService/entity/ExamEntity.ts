@@ -1,5 +1,5 @@
 export interface ExamEntity {
-  id?: string;
+  id: string;
   courseId: string;
   name: string;
   scores?: number;
