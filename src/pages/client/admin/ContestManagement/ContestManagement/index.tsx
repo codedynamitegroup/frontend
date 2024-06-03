@@ -308,6 +308,8 @@ const ContestManagement = () => {
           numOfParticipants: contest.numOfParticipants,
           status,
           isPublic: contest.isPublic,
+          isRestrictedForum: contest.isRestrictedForum,
+          isDisabledForum: contest.isDisabledForum,
           createdBy: contest.createdBy,
           createdAt: contest.createdAt,
           updatedAt: contest.updatedAt,

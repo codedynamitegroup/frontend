@@ -175,6 +175,7 @@
   "common_prizes": "Giải thưởng",
   "common_rules": "Quy tắc",
   "common_scoring": "Cách tính điểm",
+  "common_advanced_settings": "Cài đặt nâng cao",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -308,6 +309,8 @@
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",
+  "certificate_registered": "Đã đăng ký",
+  "certificate_not_registered": "Chưa đăng ký",
 
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
   "dashboard_happening_contest": "Cuộc thi đang diễn ra",

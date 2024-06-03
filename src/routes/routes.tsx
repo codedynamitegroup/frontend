@@ -178,9 +178,8 @@ export const routes = {
         root: "/admin/contests/edit/:contestId/*",
         details: "/admin/contests/edit/:contestId/details",
         problems: "/admin/contests/edit/:contestId/problems",
-        moderators: "/admin/contests/edit/:contestId/moderators",
+        advanced_settings: "/admin/contests/edit/:contestId/advanced-settings",
         signups: "/admin/contests/edit/:contestId/signups",
-        leaderboard: "/admin/contests/edit/:contestId/leaderboard",
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
       create: "/admin/contests/create"
