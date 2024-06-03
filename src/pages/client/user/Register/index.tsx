@@ -159,9 +159,6 @@ export default function Register() {
                 >
                   {t("register_have_account")}
                 </Link>
-                <ParagraphBody translation-key='register_login_alternative'>
-                  {t("register_login_alternative")}
-                </ParagraphBody>
               </form>
             </Box>
             <SnackbarAlert

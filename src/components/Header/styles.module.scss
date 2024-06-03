@@ -1,6 +1,8 @@
 .navbarItem {
   flex-grow: 1;
-  display: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 
   @media (min-width: 900px) {
     // equivalent to 'md' in Material-UI
@@ -10,7 +12,9 @@
 
 .navbarAuthItem {
   flex-grow: 0;
-  display: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 
   @media (min-width: 900px) {
     // equivalent to 'md' in Material-UI
@@ -30,10 +34,17 @@
   padding: 0 56px;
 }
 .item {
-  display: block;
+  a {
+    padding: 10px;
+    &:hover {
+      background-color: var(--blue-1);
+    }
+  }
 }
 
-.profile {
+.textLink {
+  text-decoration: none !important;
+  color: inherit !important;
 }
 
 .header {

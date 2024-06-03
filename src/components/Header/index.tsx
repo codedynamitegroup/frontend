@@ -17,10 +17,10 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
-import { matchPath, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import { UserService } from "services/authService/UserService";
+import clsx from "clsx";
 
 interface ILinkMenu {
   name: string;
@@ -154,17 +155,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const loggedUser: User = useSelector(selectCurrentUser);
 
-  const handleClickPage = (page: any) => {
-    if (
-      localStorage.getItem("role") === "lecturer" &&
-      page.path === routes.student.course.management
-    ) {
-      navigate(routes.lecturer.course.management);
-    } else {
-      navigate(page.path);
-    }
-  };
-
   const { pathname } = useLocation();
 
   const activeRoute = (routeName: string) => {
@@ -217,14 +207,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       });
   };
 
-  const handleLogo = () => {
-    if (loggedUser) {
-      navigate(routes.user.dashboard.root);
-    } else {
-      navigate(routes.user.homepage.root);
-    }
-  };
-
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -243,29 +225,36 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             )}
 
-            <Box className={classes.logo} onClick={handleLogo}>
-              <img src={images.logo.appLogo} alt='logo' />
+            <Box className={classes.logo}>
+              <Link
+                component={RouterLink}
+                to={loggedUser ? routes.user.dashboard.root : routes.user.homepage.root}
+                className={classes.textLink}
+              >
+                <img src={images.logo.appLogo} alt='logo' />
+              </Link>
             </Box>
           </Box>
-          <Box className={classes.navbarItem}>
+          <Box className={classes.navbarItem} ml={2}>
             {pagesHeader
               .filter((page) => page.position === "left")
               .map((page, index) => (
-                <Button
+                <ParagraphSmall
                   key={index}
-                  sx={{ textTransform: "none", margin: "1rem" }}
-                  className={classes.item}
-                  onClick={() => handleClickPage(page)}
+                  className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                  fontWeight={600}
+                  translation-key={page.name}
+                  colorname={"--gray-50"}
                 >
-                  <ParagraphSmall
-                    className={page.isActive ? classes.isActive : ""}
-                    fontWeight={600}
+                  <Link
+                    component={RouterLink}
+                    to={page.path}
                     translation-key={page.name}
-                    colorname={"--gray-50"}
+                    className={classes.textLink}
                   >
                     {t(page.name)}
-                  </ParagraphSmall>
-                </Button>
+                  </Link>
+                </ParagraphSmall>
               ))}
           </Box>
           <Box>
@@ -276,21 +265,22 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {pagesHeader
                 .filter((page) => page.position === "right")
                 .map((page, index) => (
-                  <Button
+                  <ParagraphSmall
                     key={index}
-                    sx={{ textTransform: "none", margin: "1rem" }}
-                    className={classes.item}
-                    onClick={() => handleClickPage(page)}
+                    className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                    fontWeight={600}
+                    translation-key={page.name}
+                    colorname={"--gray-50"}
                   >
-                    <ParagraphSmall
-                      className={page.isActive ? classes.isActive : ""}
-                      fontWeight={600}
+                    <Link
+                      component={RouterLink}
+                      to={page.path}
                       translation-key={page.name}
-                      colorname={"--gray-50"}
+                      className={classes.textLink}
                     >
                       {t(page.name)}
-                    </ParagraphSmall>
-                  </Button>
+                    </Link>
+                  </ParagraphSmall>
                 ))}
             </Box>
           ) : (

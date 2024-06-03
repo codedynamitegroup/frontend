@@ -16,8 +16,8 @@ import Login from "./Login";
 import Register from "./Register";
 import ForgotPassword from "./ForgotPassword";
 import UserInformation from "./UserDetails/UserInformation";
-import VerifyOTP from "./VerifyOTP";
-import ResetPassword from "./ResetPassword";
+import VerifyOTP from "./ForgotPassword/components/VerifyOTP";
+import ResetPassword from "./ForgotPassword/components/ResetPassword";
 
 type Props = {};
 

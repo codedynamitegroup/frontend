@@ -96,7 +96,7 @@ export default function ForgotPassword() {
                 {t("common_send")}
               </LoadButton>
             </form>
-            <Box className={classes.back}>
+            <Box className={classes.back} mt={2}>
               <Link
                 component={RouterLink}
                 to={routes.user.login.root}
