@@ -56,7 +56,11 @@ const MultipleChoiceExamQuestion = (props: Props) => {
     const updatedContent = selectedList.join(", ");
 
     dispatch(
-      setAnswered({ id: questionMultiChoice.question.id, content: updatedContent, answered: true })
+      setAnswered({
+        id: questionMultiChoice.question.id,
+        content: updatedContent,
+        answered: selectedList.length > 0 ? true : false
+      })
     );
 
     console.log(selectedList);
