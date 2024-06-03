@@ -15,6 +15,8 @@ export interface ContestEntity {
   numOfParticipants: number;
   isRegistered?: boolean;
   isPublic: boolean;
+  isRestrictedForum: boolean;
+  isDisabledForum: boolean;
   createdBy: UserEntity;
   createdAt: string;
   updatedAt: string;

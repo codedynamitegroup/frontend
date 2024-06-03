@@ -9,8 +9,6 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import ContestEditDetails from "./ContestEditDetails";
-import ContestEditLeaderboard from "./ContestEditLeaderboard";
-import ContestEditModerators from "./ContestEditModerators";
 import ContestEditProblems from "./ContestEditProblems";
 import ContestEditSignUps from "./ContestEditSignUps";
 import ContestEditStatistics from "./ContestEditStatictics";
@@ -22,6 +20,7 @@ import { useForm } from "react-hook-form";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { ContestService } from "services/coreService/ContestService";
 import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
+import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -34,6 +33,8 @@ export interface IFormDataType {
   rules?: string;
   scoring?: string;
   isPublic: boolean;
+  isRestrictedForum: boolean;
+  isDisabledForum: boolean;
 }
 
 const EditContestDetails = () => {
@@ -55,9 +56,8 @@ const EditContestDetails = () => {
     return [
       routes.admin.contest.edit.details,
       routes.admin.contest.edit.problems,
-      // routes.admin.contest.edit.moderators,
+      routes.admin.contest.edit.advanced_settings,
       routes.admin.contest.edit.signups,
-      routes.admin.contest.edit.leaderboard,
       routes.admin.contest.edit.statistics
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,7 +112,9 @@ const EditContestDetails = () => {
       prizes: yup.string().trim(""),
       rules: yup.string().trim(""),
       scoring: yup.string().trim(""),
-      isPublic: yup.boolean().required(t("contest_is_public_required"))
+      isPublic: yup.boolean().required(t("contest_is_public_required")),
+      isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
+      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required"))
     });
   }, [t]);
 
@@ -134,7 +136,9 @@ const EditContestDetails = () => {
       prizes: "",
       rules: "",
       scoring: "",
-      isPublic: false
+      isPublic: false,
+      isRestrictedForum: false,
+      isDisabledForum: false
     }
   });
 
@@ -291,20 +295,11 @@ const EditContestDetails = () => {
                 }
                 value={1}
               />
-              {/* <Tab
-                sx={{ textTransform: "none" }}
-                label={
-                  <ParagraphBody translate-key='common_moderators'>
-                    {t("common_moderators")}
-                  </ParagraphBody>
-                }
-                value={2}
-              /> */}
               <Tab
                 sx={{ textTransform: "none" }}
                 label={
-                  <ParagraphBody translate-key='common_signups'>
-                    {t("common_signups")}
+                  <ParagraphBody translate-key='common_advanced_settings'>
+                    {t("common_advanced_settings")}
                   </ParagraphBody>
                 }
                 value={2}
@@ -312,8 +307,8 @@ const EditContestDetails = () => {
               <Tab
                 sx={{ textTransform: "none" }}
                 label={
-                  <ParagraphBody translate-key='common_leaderboard'>
-                    {t("common_leaderboard")}
+                  <ParagraphBody translate-key='common_signups'>
+                    {t("common_signups")}
                   </ParagraphBody>
                 }
                 value={3}
@@ -342,9 +337,8 @@ const EditContestDetails = () => {
               }
             />
             <Route path={"problems"} element={<ContestEditProblems />} />
-            {/* <Route path={"moderators"} element={<ContestEditModerators />} /> */}
+            <Route path={"advanced_settings"} element={<ContestEditAdvancedSettings />} />
             <Route path={"signups"} element={<ContestEditSignUps />} />
-            <Route path={"leaderboard"} element={<ContestEditLeaderboard />} />
             <Route path={"statistics"} element={<ContestEditStatistics />} />
           </Routes>
         </Card>
