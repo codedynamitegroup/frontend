@@ -126,6 +126,24 @@ const router = createHashRouter(
           element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
         />
 
+        {/*  question bank */}
+        <Route
+          path={routes.lecturer.question_bank.create_question.essay.create}
+          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.multiple_choice.create}
+          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.short_answer.create}
+          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.true_false.create}
+          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+        />
+
         <Route
           path={routes.lecturer.question.ai.create}
           element={<AIQuestionCreated />}

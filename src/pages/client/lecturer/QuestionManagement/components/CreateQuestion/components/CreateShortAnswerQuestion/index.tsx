@@ -61,6 +61,9 @@ interface FormData {
 const CreateShortAnswerQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const categoryName = location.state?.categoryName;
+  const categoryId = useParams()["categoryId"];
 
   const { t, i18n } = useTranslation();
 
@@ -178,13 +181,13 @@ const CreateShortAnswerQuestion = (props: Props) => {
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "SHORT_ANSWER",
       answers: formSubmittedData.answers,
-
+      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       caseSensitive: Boolean(formSubmittedData?.caseSensitive)
     };
     console.log(newQuestion);
     QuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
-        getQuestionByQuestionId(res.questionId);
+        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
       })
       .finally(() => {
         console.log("finally");
@@ -207,7 +210,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+        if (isQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
 
@@ -252,14 +257,14 @@ const CreateShortAnswerQuestion = (props: Props) => {
           <AlertDialog isBlocking={openAlertDiaglog} />
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
-              {props.insideCrumb ? (
+              {isQuestionBank ? (
                 <ParagraphBody
                   className={classes.breadCump}
                   colorname='--gray-50'
                   fontWeight={"600"}
                 >
                   <span
-                    onClick={() => navigate("/lecturer/question-bank-management")}
+                    onClick={() => navigate(routes.lecturer.question_bank.path)}
                     translation-key='common_question_bank'
                   >
                     {i18next.format(t("common_question_bank"), "firstUppercase")}
@@ -270,7 +275,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
                       navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
                     }
                   >
-                    Học OOP
+                    {categoryName}
                   </span>{" "}
                   {"> "}
                   <span>Tạo câu hỏi</span>

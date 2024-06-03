@@ -231,6 +231,9 @@ const CreateEssayQuestion = (props: Props) => {
 
   const location = useLocation();
   const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const categoryName = location.state?.categoryName;
+  const categoryId = useParams()["categoryId"];
 
   const submitHandler = async (data: any) => {
     setSubmitLoading(true);
@@ -246,7 +249,7 @@ const CreateEssayQuestion = (props: Props) => {
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "ESSAY",
-
+      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       responseFormat: formSubmittedData.responseFormat,
       responseRequired: Number(formSubmittedData.responseRequired),
       responseFieldLines: Number(formSubmittedData.responseFieldLines),
@@ -266,7 +269,7 @@ const CreateEssayQuestion = (props: Props) => {
     QuestionService.createEssayQuestion(newEssayQuestion)
       .then((res) => {
         console.log(res);
-        getQuestionByQuestionId(res.questionId);
+        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
         setSnackbarType(AlertType.Success);
         setSnackbarContent(
           t("question_management_create_question_success", {
@@ -286,7 +289,9 @@ const CreateEssayQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+        if (isQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
 

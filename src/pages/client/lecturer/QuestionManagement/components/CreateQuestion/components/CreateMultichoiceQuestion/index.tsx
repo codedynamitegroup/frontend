@@ -184,6 +184,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
 
   const location = useLocation();
   const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const categoryName = location.state?.categoryName;
+  const categoryId = useParams()["categoryId"];
 
   const submitHandler = async (data: any) => {
     console.log(data);
@@ -201,7 +204,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
       qType: "MULTIPLE_CHOICE",
 
       answers: formSubmittedData.answers,
-
+      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       single: Number(formSubmittedData.single) === 1,
       shuffleAnswers: Boolean(Number(formSubmittedData.shuffleAnswer)),
       showStandardInstructions: formSubmittedData.showInstructions.toString(),
@@ -215,7 +218,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
     QuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
-        getQuestionByQuestionId(res.questionId);
+        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
         setSnackbarType(AlertType.Success);
         setSnackbarContent(
           t("question_management_create_question_success", {
@@ -235,7 +238,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+        if (isQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
 
@@ -319,14 +324,14 @@ const CreateMultichoiceQuestion = (props: Props) => {
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
-              {props.insideCrumb ? (
+              {isQuestionBank ? (
                 <ParagraphBody
                   className={classes.breadCump}
                   colorname='--gray-50'
                   fontWeight={"600"}
                 >
                   <span
-                    onClick={() => navigate("/lecturer/question-bank-management")}
+                    onClick={() => navigate(routes.lecturer.question_bank.path)}
                     translation-key='common_question_bank'
                   >
                     {i18next.format(t("common_question_bank"), "firstUppercase")}
@@ -337,7 +342,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
                     }
                   >
-                    Học OOP
+                    {categoryName}
                   </span>{" "}
                   {"> "}
                   <span>Tạo câu hỏi</span>
