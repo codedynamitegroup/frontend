@@ -104,13 +104,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       isActive: false,
       position: "left"
     },
-    // {
-    //   name: "header_course",
-    //   path: routes.student.course.management,
-    //   isActive: false,
-    //   position: "left",
-    //   isVisible: loggedUser ? true : false
-    // },
     {
       name: "header_login_button",
       path: routes.user.login.root,

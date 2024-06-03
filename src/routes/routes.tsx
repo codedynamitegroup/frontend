@@ -1,6 +1,10 @@
 import qtype from "utils/constant/Qtype";
 
 export const routes = {
+  general: {
+    notFound: "*",
+    forbidden: "/forbidden"
+  },
   lecturer: {
     root: "/lecturer/*",
     calendar: "/lecturer/calendar",
