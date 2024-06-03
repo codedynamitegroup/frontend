@@ -57,6 +57,14 @@ import { RootState } from "store";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
 import { clearQuestionCreate } from "reduxes/coreService/questionCreate";
+import ParagraphBody from "components/text/ParagraphBody";
+import qtype from "utils/constant/Qtype";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import { setCategories } from "reduxes/courseService/questionBankCategory";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+
+import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { QuestionService } from "services/coreService/QuestionService";
 
 const drawerWidth = 400;
 
@@ -126,6 +134,7 @@ export const OVERDUE_HANDLING = {
 export default function ExamCreated() {
   const { courseId } = useParams();
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
+  const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
   const dispatch = useDispatch();
   const submitHandler = () => {
     const questionIds = questionCreate.questionCreate.map((item) => ({
@@ -157,6 +166,51 @@ export default function ExamCreated() {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const handleGetQuestionBankCategories = async ({
+    search = "",
+    pageNo = 0,
+    pageSize = 99
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getQuestionBankCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategories({
+          search,
+          pageNo,
+          pageSize
+        });
+      dispatch(setCategories(getQuestionBankCategoryResponse));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleGetQuestions = async ({
+    categoryId,
+    search = "",
+    pageNo = 0,
+    pageSize = 99
+  }: {
+    categoryId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
+        categoryId,
+        search,
+        pageNo,
+        pageSize
+      });
+      dispatch(setQuestionsCategory(getQuestionResponse));
+    } catch (error) {
+      console.error("Failed to fetch questions by category id", error);
+    }
   };
 
   const { t } = useTranslation();
@@ -306,11 +360,17 @@ export default function ExamCreated() {
   };
 
   const handleOpenAddQuestionFromBankDialog = () => {
+    handleGetQuestionBankCategories({});
     setIsAddQuestionFromBankDialogOpen(true);
   };
 
   const handleCloseAddQuestionFromBankDialog = () => {
     setIsAddQuestionFromBankDialogOpen(false);
+  };
+
+  const handleComfirmQuestionFromBankDialog = () => {
+    // handleGetQuestions({ categoryId: "228be04d-f10b-4675-9d80-f97f039113c1" });
+    handleCloseAddQuestionFromBankDialog();
   };
 
   const onCreateNewQuestion = async (popupState: any) => {
@@ -418,23 +478,15 @@ export default function ExamCreated() {
         title={t("exam_management_create_from_bank")}
         cancelText={t("common_cancel")}
         confirmText={t("common_add")}
-        onHanldeConfirm={handleCloseAddQuestionFromBankDialog}
+        onHanldeConfirm={handleComfirmQuestionFromBankDialog}
         onHandleCancel={handleCloseAddQuestionFromBankDialog}
         categoryPickTitle={t("exam_management_create_from_bank_choose_topic")}
-        categoryList={[
-          {
-            value: "0",
-            label: "Danh mục 1"
-          },
-          {
-            value: "1",
-            label: "Danh mục 2"
-          },
-          {
-            value: "2",
-            label: "Danh mục 3"
-          }
-        ]}
+        categoryList={questionBankCategoriesState.categories.questionBankCategories.map(
+          (item, index) => ({
+            value: item.id,
+            label: item.name
+          })
+        )}
         translation-key={[
           "exam_management_create_from_bank",
           "common_cancel",
@@ -593,7 +645,14 @@ export default function ExamCreated() {
                     <CustomDataGrid
                       dataList={questionCreate.questionCreate.map((item, index) => ({
                         stt: index + 1,
-                        qtypeText: item.qtype,
+                        qtypeText:
+                          item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                            ? "câu hỏi ngắn"
+                            : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                              ? "câu hỏi trắc nghiệm"
+                              : item.qtype === QuestionTypeEnum.CODE
+                                ? "câu hỏi code"
+                                : "câu hỏi tự luận",
                         ...item
                       }))}
                       tableHeader={tableHeading}

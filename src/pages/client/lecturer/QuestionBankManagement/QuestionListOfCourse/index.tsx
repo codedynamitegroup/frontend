@@ -36,6 +36,7 @@ import dayjs from "dayjs";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -106,7 +107,7 @@ const QuestionListOfCourse = () => {
       flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
-        return <ParagraphBody>{params.row.qtype}</ParagraphBody>;
+        return <ParagraphBody>{params.row.qtypeText}</ParagraphBody>;
       }
     },
     {
@@ -339,14 +340,14 @@ const QuestionListOfCourse = () => {
               }}
               dataList={questionCategoryState.questions.map((item, index) => ({
                 stt: index + 1,
-                // qtypeText:
-                //   item.qtype === QuestionTypeEnum.ESSAY
-                //     ? "Câu hỏi tự luận"
-                //     : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                //       ? "Câu hỏi nhiều đáp án"
-                //       : item.qtype === QuestionTypeEnum.SHORT_ANSWER
-                //         ? "Câu hỏi ngắn"
-                //         : "Code",
+                qtypeText:
+                  item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                    ? "câu hỏi ngắn"
+                    : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                      ? "câu hỏi trắc nghiệm"
+                      : item.qtype === QuestionTypeEnum.CODE
+                        ? "câu hỏi code"
+                        : "câu hỏi tự luận",
                 ...item
               }))}
               tableHeader={columns}
