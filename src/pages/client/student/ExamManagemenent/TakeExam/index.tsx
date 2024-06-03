@@ -182,6 +182,8 @@ export default function TakeExam() {
         });
   }, []);
 
+  const handleSubmitExam = () => {};
+
   // get current page question list
   React.useEffect(() => {
     const currentQuestionList = questionList
@@ -228,18 +230,18 @@ export default function TakeExam() {
     const slug = convertIdToSlug(questionId);
 
     if (index === questionPageIndex) {
-      // const element = document.getElementById(slug);
-      // element?.scrollIntoView({ behavior: "smooth" });
-      navigate(
-        `${routes.student.exam.take
-          .replace(":courseId", courseId ?? examState.examDetail.courseId)
-          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
-        {
-          replace: true
-        }
-      );
+      const element = document.getElementById(slug);
+      element?.scrollIntoView({ behavior: "smooth" });
+      // navigate(
+      //   `${routes.student.exam.take
+      //     .replace(":courseId", courseId ?? examState.examDetail.courseId)
+      //     .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+      //   {
+      //     replace: true
+      //   }
+      // );
     } else {
-      console.log(
+      navigate(
         `${routes.student.exam.take
           .replace(":courseId", courseId ?? examState.examDetail.courseId)
           .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
@@ -276,9 +278,18 @@ export default function TakeExam() {
     const firstFilteredQuestion = questionList
       .filter((question) => selectedQtype.includes(question.questionData.qtype))
       .at(0);
-    navigate(`${routes.student.exam.take}?page=${firstFilteredQuestion?.questionData.page || 0}`, {
-      replace: true
-    });
+
+    navigate(
+      `${routes.student.exam.take
+        .replace(":courseId", courseId ?? examState.examDetail.courseId)
+        .replace(
+          ":examId",
+          examId ?? examState.examDetail.id
+        )}?page=${firstFilteredQuestion?.questionData.page || 0}`,
+      {
+        replace: true
+      }
+    );
   }, [selectedQtype]);
 
   // Scroll to question
