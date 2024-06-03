@@ -1,5 +1,3 @@
-import notFoundError from "assets/img/img_notFoundError.png";
-import unAuthorized from "assets/img/img_unAuthorized.png";
 import courseAssignment from "assets/img/icon/course/courseDetail/assignment.svg";
 import courseFile from "assets/img/icon/course/courseDetail/file.svg";
 import courseUrl from "assets/img/icon/course/courseDetail/url.svg";
@@ -45,8 +43,10 @@ import icAlmostEqualTo from "assets/img/icon/almost_equal_to_icon.svg";
 import avatarBoyDefault from "assets/img/avatar/default-avatar-boy.svg";
 import avatarGirlDefault from "assets/img/avatar/default-avatar-girl.svg";
 
+import notFoundError from "assets/img/error/NotFoundError.svg";
+import forbiddenError from "assets/img/error/ForbiddenError.svg";
+
 const images = {
-  auth: { notFoundError, unAuthorized },
   course: {
     courseAssignment,
     courseFile,
@@ -74,7 +74,8 @@ const images = {
   temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } },
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo,
-  avatar: { avatarBoyDefault, avatarGirlDefault }
+  avatar: { avatarBoyDefault, avatarGirlDefault },
+  error: { notFoundError, forbiddenError }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
 export { notificaionIcon };

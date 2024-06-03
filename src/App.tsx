@@ -1,4 +1,3 @@
-import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
 import {
   Route,
@@ -50,104 +49,101 @@ import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamR
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
-      <Route path={routes.grading_pdf} element={<CustomPdfViewer />} />
-
       <Route element={<PersistLogin />}>
         <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
         <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
         <Route path={routes.user.homepage.root} element={<UserHomepage />} />
         <Route path={routes.user.root} element={<UserHomepage />} />
+
+        <Route
+          path={routes.user.course_certificate.detail.lesson.detail}
+          element={<DetailProblem />}
+        />
+
+        <Route
+          path={routes.user.course_certificate.detail.lesson.share_solution}
+          element={<ShareSolution />}
+        />
+
+        <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
+        <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
+        <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection}
+          element={<LecturerSourceCodePlagiarismManagement />}
+        />
+        <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
+        <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
+        <Route
+          path={routes.lecturer.assignment.preview_submit}
+          element={<PreviewAssignmentSubmission />}
+        />
+        <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
+        <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
+        <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
+        <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection}
+          element={<LecturerSourceCodePlagiarismManagement />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_submissions}
+          element={<LecturerSourceCodePlagiarismFileSubmissions />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_submissions_detail}
+          element={<LecturerSourceCodePlagiarismFileSubmissionDetails />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_pairs}
+          element={<LecturerSourceCodePlagiarismPairs />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_pairs_detail}
+          element={<LecturerSourceCodePlagiarismPairDetails />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_clusters}
+          element={<LecturerSourceCodePlagiarismClusters />}
+        />
+        <Route
+          path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
+          element={<LecturerSourceCodePlagiarismClustersDetails />}
+        />
+        <Route
+          path={routes.lecturer.question.essay.create}
+          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+        />
+        <Route
+          path={routes.lecturer.question.multiple_choice.create}
+          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+        />
+        <Route
+          path={routes.lecturer.question.short_answer.create}
+          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+        />
+        <Route
+          path={routes.lecturer.question.true_false.create}
+          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+        />
+
+        <Route
+          path={routes.lecturer.question.ai.create}
+          element={<AIQuestionCreated />}
+          handle={{ crumbName: "default" }}
+        />
+
+        <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
+        <Route path={routes.student.root} element={<StudentCoursesManagement />} />
+        <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
+        <Route path={routes.student.exam.take} element={<TakeExam />} />
+        <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
+        <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
+
+        <Route path={routes.admin.contest.root} element={<ContestManagement />} />
+        <Route path={routes.admin.contest.create} element={<CreateContest />} />
+        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
       </Route>
-
-      <Route
-        path={routes.user.course_certificate.detail.lesson.detail}
-        element={<DetailProblem />}
-      />
-
-      <Route
-        path={routes.user.course_certificate.detail.lesson.share_solution}
-        element={<ShareSolution />}
-      />
-
-      <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
-      <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
-      <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection}
-        element={<LecturerSourceCodePlagiarismManagement />}
-      />
-      <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
-      <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
-      <Route
-        path={routes.lecturer.assignment.preview_submit}
-        element={<PreviewAssignmentSubmission />}
-      />
-      <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
-      <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
-      <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
-      <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection}
-        element={<LecturerSourceCodePlagiarismManagement />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_submissions}
-        element={<LecturerSourceCodePlagiarismFileSubmissions />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_submissions_detail}
-        element={<LecturerSourceCodePlagiarismFileSubmissionDetails />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_pairs}
-        element={<LecturerSourceCodePlagiarismPairs />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_pairs_detail}
-        element={<LecturerSourceCodePlagiarismPairDetails />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_clusters}
-        element={<LecturerSourceCodePlagiarismClusters />}
-      />
-      <Route
-        path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
-        element={<LecturerSourceCodePlagiarismClustersDetails />}
-      />
-      <Route
-        path={routes.lecturer.question.essay.create}
-        element={<CreateEssayQuestion qtype={qtype.essay.code} />}
-      />
-      <Route
-        path={routes.lecturer.question.multiple_choice.create}
-        element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
-      />
-      <Route
-        path={routes.lecturer.question.short_answer.create}
-        element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
-      />
-      <Route
-        path={routes.lecturer.question.true_false.create}
-        element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
-      />
-
-      <Route
-        path={routes.lecturer.question.ai.create}
-        element={<AIQuestionCreated />}
-        handle={{ crumbName: "default" }}
-      />
-
-      <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
-      <Route path={routes.student.root} element={<StudentCoursesManagement />} />
-      <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
-      <Route path={routes.student.exam.take} element={<TakeExam />} />
-      <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
-
-      <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
-
-      <Route path={routes.admin.contest.root} element={<ContestManagement />} />
-      <Route path={routes.admin.contest.create} element={<CreateContest />} />
-      <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
     </Route>
   )
 );
