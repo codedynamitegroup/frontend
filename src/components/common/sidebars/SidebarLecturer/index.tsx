@@ -52,12 +52,12 @@ export default function SidebarLecturer({ children }: any) {
       icon: <CalendarIcon className={classes.itemIcon} />,
       link: routes.lecturer.calendar
     },
-    {
-      name: t("code_management_title"),
-      "translation-key": "code_management_title",
-      icon: <CodeIcon className={classes.itemIcon} />,
-      link: routes.lecturer.code_question.management
-    },
+    // {
+    //   name: t("code_management_title"),
+    //   "translation-key": "code_management_title",
+    //   icon: <CodeIcon className={classes.itemIcon} />,
+    //   link: routes.lecturer.code_question.management
+    // },
     {
       name: i18next.format(t("common_question_bank"), "firstUppercase"),
       "translation-key": "common_question_bank",

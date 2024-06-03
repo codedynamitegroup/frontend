@@ -185,7 +185,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
     QuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
         getQuestionByQuestionId(res.questionId);
-        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       })
       .finally(() => {
         console.log("finally");
@@ -208,6 +207,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
+        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
 

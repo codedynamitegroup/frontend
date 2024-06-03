@@ -15,7 +15,7 @@ import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -42,6 +42,9 @@ import JoySelect from "components/common/JoySelect";
 import Option from "@mui/joy/Option";
 import Select from "@mui/joy/Select";
 import { Chip } from "@mui/joy";
+import { get } from "http";
+import { useDispatch } from "react-redux";
+import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 
 interface Props {
   courseId?: string;
@@ -226,6 +229,9 @@ const CreateEssayQuestion = (props: Props) => {
   const watchAttachments = watch("attachments");
   const watchFileTypesList = watch("fileTypesList");
 
+  const location = useLocation();
+  const courseId = location.state?.courseId;
+
   const submitHandler = async (data: any) => {
     setSubmitLoading(true);
 
@@ -260,6 +266,7 @@ const CreateEssayQuestion = (props: Props) => {
     QuestionService.createEssayQuestion(newEssayQuestion)
       .then((res) => {
         console.log(res);
+        getQuestionByQuestionId(res.questionId);
         setSnackbarType(AlertType.Success);
         setSnackbarContent(
           t("question_management_create_question_success", {
@@ -279,7 +286,18 @@ const CreateEssayQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
+        navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
+  };
+
+  const dispatch = useDispatch();
+  const getQuestionByQuestionId = async (questionId: string) => {
+    try {
+      const response = await QuestionService.getQuestionsByQuestionId(questionId);
+      dispatch(setQuestionCreate(response));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

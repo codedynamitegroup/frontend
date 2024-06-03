@@ -822,11 +822,11 @@ export default function ExamCreated() {
                     {
                       value: "1",
                       label: t("asingment_management_possibility_hind_can_not_access")
-                    },
-                    {
-                      value: "2",
-                      label: t("asingment_management_possibility_hide_can_access")
                     }
+                    // {
+                    //   value: "2",
+                    //   label: t("asingment_management_possibility_hide_can_access")
+                    // }
                   ]}
                   backgroundColor='#D9E2ED'
                   translation-key={[
