@@ -45,10 +45,12 @@ export default function ProblemTable() {
   const [page, setPage] = useState(0);
   // console.log("page", page, "row perpage", rowsPerPage);
 
+  const choosenTagList = algorithmTag.tagList.filter((value) => value.isChoosen);
+
   useEffect(() => {
     CodeQuestionService.getCodeQuestion(
       {
-        tag: algorithmTag.filter.length > 0 ? algorithmTag.filter : null,
+        tag: choosenTagList.length > 0 ? choosenTagList : null,
         search: searchAndDifficultyAndSolved.searchKey,
         difficulty: searchAndDifficultyAndSolved.difficulty,
         solved: searchAndDifficultyAndSolved.solved
@@ -62,7 +64,7 @@ export default function ProblemTable() {
         setCodeQuestionList(data);
       })
       .catch((reason) => console.log(reason));
-  }, [algorithmTag.filter, page, rowsPerPage, searchAndDifficultyAndSolved]);
+  }, [algorithmTag.tagList, page, rowsPerPage, searchAndDifficultyAndSolved]);
 
   const renderStatus = (status: number) => {
     if (status === 1) {

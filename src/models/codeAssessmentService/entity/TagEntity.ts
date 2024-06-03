@@ -6,4 +6,5 @@ export interface TagEntity {
   name: string;
   numOfCodeQuestion: number;
   type: TagType;
+  isChoosen: boolean | undefined;
 }
