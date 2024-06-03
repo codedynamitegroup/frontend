@@ -1,7 +1,6 @@
-import { Avatar, Box, Chip, Container, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Chip, Container, Grid, Stack } from "@mui/material";
 import classes from "./styles.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
-import LabTabs from "./components/TabTopic";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -14,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from "hooks";
 import {
   setLoading as setLoadingAlgorithm,
-  setFilter as setFilterAlgorithm,
   setAlgorithmTagList
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 
@@ -28,6 +26,7 @@ import {
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
+import cloneDeep from "lodash.clonedeep";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
@@ -60,10 +59,10 @@ const ListProblem = () => {
     setTimer(newTimer);
   };
 
-  const handleFilterAlgorithm = (algorithm: TagEntity) => {
-    const tags: TagEntity[] = [];
-    if (algorithmTag.filter.length < 1) tags.push(algorithm);
-    dispatch(setFilterAlgorithm(tags));
+  const handleFilterAlgorithm = (index: number) => {
+    let newList = cloneDeep(algorithmTag.tagList);
+    newList[index].isChoosen = !newList[index].isChoosen;
+    dispatch(setAlgorithmTagList(newList));
   };
 
   const handleChangeSolved = (value: string) => {
@@ -109,37 +108,71 @@ const ListProblem = () => {
                   </Heading3>
 
                   <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
-                    {!algorithmTag.isLoading &&
-                      (algorithmTag.filter.length > 0
-                        ? algorithmTag.filter
-                        : algorithmTag.tagList
-                      ).map((algorithm, index) => (
-                        <Chip
-                          key={index}
-                          id={algorithm.id}
-                          onClick={() => {
-                            if (algorithm.id != null) handleFilterAlgorithm(algorithm);
-                          }}
-                          sx={{
-                            padding: "15px 8px",
-                            backgroundColor: "var(--blue-50)",
-                            fontFamily: "Montserrat"
-                          }}
-                          // label={algorithm.numOfCodeQuestion}
-                          label={algorithm.name}
-                          avatar={
-                            <Avatar
-                              sx={{
-                                bgcolor: "var(--blue-50)",
-                                border: 1
-                              }}
-                            >
-                              {algorithm.numOfCodeQuestion}
-                            </Avatar>
-                          }
-                          size='small'
-                        />
-                      ))}
+                    {!algorithmTag.isLoading && (
+                      <>
+                        {algorithmTag.tagList.map(
+                          (algorithm, index) =>
+                            algorithm.isChoosen && (
+                              <Chip
+                                key={index}
+                                id={algorithm.id}
+                                onClick={() => {
+                                  if (algorithm.id != null) handleFilterAlgorithm(index);
+                                }}
+                                sx={{
+                                  border: 1,
+                                  padding: "15px 8px",
+                                  backgroundColor: "#C7D6EA",
+                                  fontFamily: "Montserrat"
+                                }}
+                                // label={algorithm.numOfCodeQuestion}
+                                label={algorithm.name}
+                                avatar={
+                                  <Avatar
+                                    sx={{
+                                      bgcolor: "transparent",
+                                      border: 1
+                                    }}
+                                  >
+                                    {algorithm.numOfCodeQuestion}
+                                  </Avatar>
+                                }
+                                size='small'
+                              />
+                            )
+                        )}
+                        {algorithmTag.tagList.map(
+                          (algorithm, index) =>
+                            !algorithm.isChoosen && (
+                              <Chip
+                                key={index}
+                                id={algorithm.id}
+                                onClick={() => {
+                                  if (algorithm.id != null) handleFilterAlgorithm(index);
+                                }}
+                                sx={{
+                                  padding: "15px 8px",
+                                  backgroundColor: "var(--blue-50)",
+                                  fontFamily: "Montserrat"
+                                }}
+                                // label={algorithm.numOfCodeQuestion}
+                                label={algorithm.name}
+                                avatar={
+                                  <Avatar
+                                    sx={{
+                                      bgcolor: "transparent",
+                                      border: 1
+                                    }}
+                                  >
+                                    {algorithm.numOfCodeQuestion}
+                                  </Avatar>
+                                }
+                                size='small'
+                              />
+                            )
+                        )}
+                      </>
+                    )}
                   </Box>
                 </Box>
               </Grid>

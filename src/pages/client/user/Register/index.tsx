@@ -1,24 +1,22 @@
 import React, { useMemo, useState } from "react";
 import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
-import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Box, Link } from "@mui/material";
 import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ErrorMessage from "components/text/ErrorMessage";
 import { RegisteredRequest } from "models/authService/entity/user";
-import { setLoading } from "reduxes/Loading";
-import { useDispatch } from "react-redux";
 import { UserService } from "services/authService/UserService";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import Heading1 from "components/text/Heading1";
+import InputTextField from "components/common/inputs/InputTextField";
+import LoadButton from "components/common/buttons/LoadingButton";
+import { BtnType } from "components/common/buttons/Button";
 
 interface IFormData {
   email: string;
@@ -30,7 +28,6 @@ interface IFormData {
 
 export default function Register() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -38,11 +35,17 @@ export default function Register() {
       password: yup
         .string()
         .required(t("password_required"))
-        .min(6, t("password_min_length", { lengthNum: 6 })),
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        ),
       confirmPassword: yup
         .string()
         .required(t("password_confirm_required"))
-        .min(6, t("password_confirm_min_length", { lengthNum: 6 }))
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        )
         .oneOf([yup.ref("password")], t("password_confirm_not_match")),
       firstName: yup.string().required(t("first_name_required")),
       lastName: yup.string().required(t("last_name_required"))
@@ -60,6 +63,7 @@ export default function Register() {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const [isRegisteredLoading, setIsRegisteredLoading] = useState(false);
 
   const handleRegister = (data: any) => {
     const registerData: RegisteredRequest = {
@@ -68,7 +72,7 @@ export default function Register() {
       firstName: data.firstName,
       lastName: data.lastName
     };
-    dispatch(setLoading(true));
+    setIsRegisteredLoading(true);
     UserService.register(registerData)
       .then(async (response) => {
         navigate(routes.user.login.root);
@@ -84,7 +88,7 @@ export default function Register() {
         });
       })
       .finally(() => {
-        dispatch(setLoading(false));
+        setIsRegisteredLoading(false);
       });
   };
 
@@ -97,71 +101,55 @@ export default function Register() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.form}>
-              <Typography
-                variant='h4'
-                className={classes.title}
-                translation-key='header_register_button'
-              >
+              <Heading1 translation-key='header_register_button'>
                 {t("header_register_button")}
-              </Typography>
+              </Heading1>
               <form className={classes.formControl} onSubmit={handleSubmit(handleRegister)}>
-                <TextField
-                  label='Email'
-                  margin='normal'
-                  variant='outlined'
-                  error={Boolean(errors?.email)}
-                  {...register("email")}
+                <InputTextField
+                  label={t("Email")}
+                  type='text'
+                  inputRef={register("email")}
+                  errorMessage={errors?.email?.message}
+                  width='100%'
                 />
-                <ErrorMessage>{errors?.email?.message}</ErrorMessage>
-                <TextField
-                  label={t("common_password")}
-                  margin='normal'
-                  type='password'
-                  variant='outlined'
-                  translation-key='common_password'
-                  {...register("password")}
-                  error={Boolean(errors?.password)}
-                />
-                <ErrorMessage>{errors?.password?.message}</ErrorMessage>
-                <TextField
-                  label={t("common_password_confirm")}
-                  margin='normal'
-                  type='password'
-                  variant='outlined'
-                  translation-key='common_password_confirm'
-                  {...register("confirmPassword")}
-                  error={Boolean(errors?.confirmPassword)}
-                />
-                <ErrorMessage>{errors?.confirmPassword?.message}</ErrorMessage>
-                <TextField
+                <InputTextField
                   label={t("first_name")}
-                  translation-key='first_name'
-                  margin='normal'
                   type='text'
-                  variant='outlined'
-                  {...register("firstName")}
-                  error={Boolean(errors?.firstName)}
+                  inputRef={register("firstName")}
+                  errorMessage={errors?.firstName?.message}
+                  width='100%'
                 />
-                <ErrorMessage>{errors?.firstName?.message}</ErrorMessage>
-                <TextField
+                <InputTextField
                   label={t("last_name")}
-                  translation-key='last_name'
-                  margin='normal'
                   type='text'
-                  variant='outlined'
-                  {...register("lastName")}
-                  error={Boolean(errors?.lastName)}
+                  inputRef={register("lastName")}
+                  errorMessage={errors?.lastName?.message}
+                  width='100%'
                 />
-                <ErrorMessage>{errors?.lastName?.message}</ErrorMessage>
-                <Button
-                  className={classes.submit}
-                  color='primary'
-                  type='submit'
-                  variant='contained'
+                <InputTextField
+                  label={t("common_password")}
+                  type='password'
+                  inputRef={register("password")}
+                  errorMessage={errors?.password?.message}
+                  width='100%'
+                />
+                <InputTextField
+                  label={t("common_password_confirm")}
+                  type='password'
+                  inputRef={register("confirmPassword")}
+                  errorMessage={errors?.confirmPassword?.message}
+                  width='100%'
+                />
+                <LoadButton
+                  loading={isRegisteredLoading}
+                  btnType={BtnType.Primary}
+                  colorname='--white'
+                  autoFocus
                   translation-key='header_register_button'
+                  isTypeSubmit
                 >
                   {t("header_register_button")}
-                </Button>
+                </LoadButton>
                 <Link
                   component={RouterLink}
                   to={routes.user.login.root}
@@ -174,14 +162,6 @@ export default function Register() {
                 <ParagraphBody translation-key='register_login_alternative'>
                   {t("register_login_alternative")}
                 </ParagraphBody>
-                <Box className={classes.social}>
-                  <Button className={`${classes.socialIconGoogle} ${classes.socialIcon}`}>
-                    <FontAwesomeIcon icon={faGoogle} />
-                  </Button>
-                  <Button className={`${classes.socialIconMicrosoft} ${classes.socialIcon}`}>
-                    <FontAwesomeIcon icon={faMicrosoft} />
-                  </Button>
-                </Box>
               </form>
             </Box>
             <SnackbarAlert

@@ -168,7 +168,9 @@ export const routes = {
       root: "/register"
     },
     forgot_password: {
-      root: "/forgot-password"
+      root: "/forgot-password",
+      verify_otp: "/forgot-password/verify-otp",
+      reset_password: "/forgot-password/reset-password"
     }
   },
   admin: {

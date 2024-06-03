@@ -20,6 +20,10 @@
   }
 }
 
+.labelError {
+  color: var(--red-error);
+}
+
 .inputTextfield {
   &[class~="Mui-disabled"] {
     background: var(--gray-5);
@@ -42,7 +46,7 @@
   }
 
   input {
-    padding: 8px 16px;
+    padding: 14px 16px;
     font-style: normal;
     font-weight: 400;
     font-size: 16px !important;

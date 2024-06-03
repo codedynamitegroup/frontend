@@ -261,7 +261,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     className={page.isActive ? classes.isActive : ""}
                     fontWeight={600}
                     translation-key={page.name}
-                    colorname={"--gray-60"}
+                    colorname={"--gray-50"}
                   >
                     {t(page.name)}
                   </ParagraphSmall>
@@ -286,7 +286,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                       className={page.isActive ? classes.isActive : ""}
                       fontWeight={600}
                       translation-key={page.name}
-                      colorname={"--gray-60"}
+                      colorname={"--gray-50"}
                     >
                       {t(page.name)}
                     </ParagraphSmall>
@@ -315,8 +315,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     }
                     alt='avatar'
                   ></img>
-                  <ParagraphSmall fontWeight={600}>
-                    {loggedUser.firstName + " " + loggedUser.lastName}
+                  <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
+                    {`${loggedUser.firstName} ${loggedUser.lastName}`}
                   </ParagraphSmall>
                 </Button>
               </Grid>
