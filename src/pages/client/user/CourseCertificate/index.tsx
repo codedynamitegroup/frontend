@@ -40,8 +40,12 @@ import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
 
 const CourseCertificates = () => {
+  const user: User = useSelector(selectCurrentUser);
+
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
 
@@ -61,7 +65,9 @@ const CourseCertificates = () => {
     return topicState.topics.find((topic) => topic.topicId === catalogActive);
   }, [catalogActive, topicState.topics]);
 
-  const [assignmentSection, setAssignmentSection] = React.useState("0");
+  const [isRegisterFilterValue, setIsRegisterFilterValue] = React.useState<IsRegisteredFilterEnum>(
+    IsRegisteredFilterEnum.ALL
+  );
 
   const basicCertificateCourses: CertificateCourseEntity[] = useMemo(() => {
     if (certificateCourseState.certificateCourses.length === 0) return [];
@@ -187,10 +193,10 @@ const CourseCertificates = () => {
       handleGetCertificateCourses({
         courseName: searchText,
         filterTopicIds: [currentTopic?.topicId || ""],
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        isRegisteredFilter: isRegisterFilterValue
       });
     },
-    [currentTopic?.topicId, handleGetCertificateCourses]
+    [currentTopic?.topicId, handleGetCertificateCourses, isRegisterFilterValue]
   );
 
   useEffect(() => {
@@ -202,7 +208,7 @@ const CourseCertificates = () => {
     handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: IsRegisteredFilterEnum.ALL,
+      isRegisteredFilter: isRegisterFilterValue,
       fetchMostEnrolled: true
     });
   }, [currentTopic?.topicId, handleGetCertificateCourses]);
@@ -392,32 +398,36 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      <BasicSelect
-                        labelId='select-assignment-section-label'
-                        value={assignmentSection}
-                        onHandleChange={(value) => setAssignmentSection(value)}
-                        sx={{ maxWidth: "200px" }}
-                        items={[
-                          {
-                            value: "0",
-                            label: t("common_all")
-                          },
-                          {
-                            value: "1",
-                            label: t("common_registered")
-                          },
-                          {
-                            value: "2",
-                            label: t("common_not_registered")
+                      {user && (
+                        <BasicSelect
+                          labelId='select-assignment-section-label'
+                          value={isRegisterFilterValue}
+                          onHandleChange={(value) =>
+                            setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
                           }
-                        ]}
-                        backgroundColor='#FFFFFF'
-                        translation-key={[
-                          "common_all",
-                          "common_registered",
-                          "common_not_registered"
-                        ]}
-                      />
+                          sx={{ maxWidth: "200px" }}
+                          items={[
+                            {
+                              value: IsRegisteredFilterEnum.ALL,
+                              label: t("common_all")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.REGISTERED,
+                              label: t("common_registered")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.NOT_REGISTERED,
+                              label: t("common_not_registered")
+                            }
+                          ]}
+                          backgroundColor='#FFFFFF'
+                          translation-key={[
+                            "common_all",
+                            "common_registered",
+                            "common_not_registered"
+                          ]}
+                        />
+                      )}
                     </Box>
                   </Box>
                 )}
@@ -514,20 +524,22 @@ const CourseCertificates = () => {
                       />
                       <BasicSelect
                         labelId='select-assignment-section-label'
-                        value={assignmentSection}
-                        onHandleChange={(value) => setAssignmentSection(value)}
+                        value={isRegisterFilterValue}
+                        onHandleChange={(value) =>
+                          setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
+                        }
                         sx={{ maxWidth: "200px" }}
                         items={[
                           {
-                            value: "0",
+                            value: IsRegisteredFilterEnum.ALL,
                             label: t("common_all")
                           },
                           {
-                            value: "1",
+                            value: IsRegisteredFilterEnum.REGISTERED,
                             label: t("common_registered")
                           },
                           {
-                            value: "2",
+                            value: IsRegisteredFilterEnum.NOT_REGISTERED,
                             label: t("common_not_registered")
                           }
                         ]}
@@ -540,7 +552,7 @@ const CourseCertificates = () => {
                       />
                     </Box>
 
-                    {topicState.topics.find((topic) => topic.topicId === catalogActive)
+                    {/* {topicState.topics.find((topic) => topic.topicId === catalogActive)
                       ?.isSingleProgrammingLanguage === false && (
                       <Stack
                         direction='row'
@@ -570,20 +582,9 @@ const CourseCertificates = () => {
                           />
                         )}
                       </Stack>
-                    )}
+                    )} */}
                   </Box>
                 )}
-                {/* <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100%"
-                  }}
-                >
-                  <CircularProgress />
-                </Box> */}
                 <Box className={classes.couseCertificatesByTopic}>
                   <Heading3 translation-key='certificate_basic'>
                     {t("certificate_basic")} ({basicCertificateCourses.length})
