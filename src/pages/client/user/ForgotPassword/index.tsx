@@ -15,8 +15,8 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import { UserService } from "services/authService/UserService";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
 interface IFormData {
   email: string;
 }
@@ -24,9 +24,7 @@ interface IFormData {
 export default function ForgotPassword() {
   const { t } = useTranslation();
   const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const dispatch = useDispatch();
   const schema = useMemo(() => {
     return yup.object().shape({
       email: yup.string().required(t("email_required")).email(t("email_invalid"))
@@ -45,15 +43,13 @@ export default function ForgotPassword() {
     setIsForgotPasswordLoading(true);
     UserService.forgotPassword(data.email)
       .then(async (response) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Gửi email thành công, vui lại kiểm tra email của bạn.");
-        setAlertType(AlertType.Success);
+        dispatch(
+          setSuccessMess("We have sent an email to your email address. Please check your email.")
+        );
       })
       .catch((error: any) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Gửi email thất bại! Kiểm tra lại thông tin email.");
-        setAlertType(AlertType.Error);
-        console.error("Failed to login", {
+        dispatch(setErrorMess("Failed to send email! Check your email information."));
+        console.error("Failed to send email", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
@@ -105,12 +101,6 @@ export default function ForgotPassword() {
               >{`< ${t("forget_password_back_link")}`}</Link>
             </Box>
           </Grid>
-          <SnackbarAlert
-            open={openSnackbarAlert}
-            setOpen={setOpenSnackbarAlert}
-            type={alertType}
-            content={alertContent}
-          />
         </Grid>
       </Container>
     </Box>

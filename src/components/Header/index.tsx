@@ -33,6 +33,7 @@ import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvid
 import { UserService } from "services/authService/UserService";
 import clsx from "clsx";
 import { ERoleName } from "models/authService/entity/role";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface ILinkMenu {
   name: string;
@@ -201,9 +202,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
         }
         localStorage.removeItem("provider");
         dispatch(logOut());
+        dispatch(setSuccessMess("Logout successfully"));
         navigate(routes.user.homepage.root);
       })
       .catch((error) => {
+        dispatch(setErrorMess("Failed to logout, please try again later."));
         console.error("Failed to logout", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",

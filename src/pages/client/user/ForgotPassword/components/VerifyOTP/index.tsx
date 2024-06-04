@@ -14,10 +14,11 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import ParagraphBody from "components/text/ParagraphBody";
 import { UserService } from "services/authService/UserService";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { VerifyOTPUserRequest } from "models/authService/entity/user";
 import OtpInput from "react-otp-input";
 import ErrorMessage from "components/text/ErrorMessage";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
 
 interface IFormData {
   otp: string;
@@ -26,9 +27,6 @@ interface IFormData {
 export default function VerifyOTP() {
   const { t } = useTranslation();
   const [isVerifyOTPLoading, setIsVerifyOTPLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const email = searchParams.get("email");
@@ -42,8 +40,9 @@ export default function VerifyOTP() {
     });
   }, []);
 
+  const dispatch = useDispatch();
+
   const {
-    register,
     control,
     handleSubmit,
     formState: { errors }
@@ -55,9 +54,7 @@ export default function VerifyOTP() {
 
   const handleForgotPassword = (data: IFormData) => {
     if (!email) {
-      setOpenSnackbarAlert(true);
-      setAlertContent("Không tìm thấy email. Vui lòng thử lại.");
-      setAlertType(AlertType.Error);
+      dispatch(setErrorMess("Cannot find email. Please try again."));
       return;
     }
     const verifyOTPData: VerifyOTPUserRequest = {
@@ -67,15 +64,11 @@ export default function VerifyOTP() {
     setIsVerifyOTPLoading(true);
     UserService.verifyOTP(verifyOTPData)
       .then(async (response) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Xác nhận OTP thành công.");
-        setAlertType(AlertType.Success);
+        dispatch(setSuccessMess("OTP verification successful."));
         navigate(`${routes.user.forgot_password.reset_password}?email=${email}&otp=${data.otp}`);
       })
       .catch((error: any) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Gửi xác nhận OTP thất bại! Kiểm tra lại thông tin OTP.");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("Failed to verify OTP! Check your OTP information."));
         console.error("Failed to verify OTP", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -148,12 +141,6 @@ export default function VerifyOTP() {
               >{`< Trở về trang quên mật khẩu`}</Link>
             </Box>
           </Grid>
-          <SnackbarAlert
-            open={openSnackbarAlert}
-            setOpen={setOpenSnackbarAlert}
-            type={alertType}
-            content={alertContent}
-          />
         </Grid>
       </Container>
     </Box>

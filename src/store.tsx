@@ -33,6 +33,7 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist
 import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
+import appStatus from "reduxes/AppStatus";
 
 const persistConfig = {
   key: "takeExam",
@@ -75,7 +76,8 @@ const store = configureStore({
     questionCreate: questionCreate,
     takeExam: takeExamPersistedReducer,
     questionCategory: questionCategory,
-    loading: loading
+    loading: loading,
+    appStatus: appStatus
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

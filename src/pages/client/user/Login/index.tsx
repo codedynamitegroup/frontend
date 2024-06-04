@@ -22,12 +22,12 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginRequest, User } from "models/authService/entity/user";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import { loginStatus, selectCurrentUser } from "reduxes/Auth";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormData {
   email: string;
@@ -40,9 +40,6 @@ export default function Login() {
   const { instance } = useMsal();
   const userLogged: User = useSelector(selectCurrentUser);
   const navigate = useNavigate();
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [isLoggedLoading, setIsLoggedLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -52,11 +49,10 @@ export default function Login() {
       password: yup
         .string()
         .required(t("password_required"))
-        .min(6, t("password_min_length", { lengthNum: 6 }))
-      // .matches(
-      //   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-      //   t("password_invalid")
-      // )
+        .matches(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+          t("password_invalid")
+        )
     });
   }, [t]);
 
@@ -114,9 +110,11 @@ export default function Login() {
         localStorage.setItem("refresh_token", response.refreshToken);
         localStorage.setItem("provider", ESocialLoginProvider.MICROSOFT);
         dispatch(loginStatus(true));
+        dispatch(setSuccessMess("Login successfully"));
         navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
+        dispatch(setErrorMess("Failed to login!! Please try again later"));
         console.error("Failed to login", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -137,9 +135,11 @@ export default function Login() {
           localStorage.setItem("refresh_token", response.refreshToken);
           localStorage.setItem("provider", ESocialLoginProvider.GOOGLE);
           dispatch(loginStatus(true));
+          dispatch(setSuccessMess("Login successfully"));
           navigate(routes.user.dashboard.root);
         })
         .catch((error: any) => {
+          dispatch(setErrorMess("Failed to login!! Please try again later"));
           console.error("Failed to login", {
             code: error.response?.code || 503,
             status: error.response?.status || "Service Unavailable",
@@ -164,12 +164,11 @@ export default function Login() {
         localStorage.setItem("access_token", response.accessToken);
         localStorage.setItem("refresh_token", response.refreshToken);
         dispatch(loginStatus(true));
+        dispatch(setSuccessMess("Login successfully"));
         navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Đăng nhập thất bại! Kiểm tra lại thông tin email và mật khẩu.");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("Failed to login!! Please check your email and password"));
         console.error("Failed to login", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -259,12 +258,6 @@ export default function Login() {
                 </Box>
               </form>
             </Box>
-            <SnackbarAlert
-              open={openSnackbarAlert}
-              setOpen={setOpenSnackbarAlert}
-              type={alertType}
-              content={alertContent}
-            />
           </Grid>
         </Grid>
       </Container>
