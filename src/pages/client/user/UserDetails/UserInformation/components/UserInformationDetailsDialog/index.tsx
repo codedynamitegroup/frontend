@@ -264,46 +264,54 @@ const UserInformationDetailsDialog = ({
         </Heading1>
         <Divider />
 
-        <Grid container spacing={1} columns={12}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            {images.logo.moodleLogo && (
-              <Avatar
-                alt='Google'
-                src={images.logo.googleLogo}
+        {user && (
+          <>
+            <Grid container spacing={1} columns={12}>
+              <Grid
+                item
+                xs={3}
                 sx={{
-                  width: "40px",
-                  height: "40px"
+                  display: "flex",
+                  alignItems: "center"
                 }}
-              />
-            )}
-            <ParagraphBody
-              sx={{
-                marginLeft: "5px"
-              }}
-            >
-              Google
-            </ParagraphBody>
-          </Grid>
-          <Grid
-            item
-            xs={9}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <ParagraphBody translation-key='user_detail_dialog_linked'>
-              {t("user_detail_dialog_linked")}
-            </ParagraphBody>
-          </Grid>
-          {/* <Grid
+              >
+                {images.logo.moodleLogo && (
+                  <Avatar
+                    alt='Google'
+                    src={images.logo.googleLogo}
+                    sx={{
+                      width: "40px",
+                      height: "40px"
+                    }}
+                  />
+                )}
+                <ParagraphBody
+                  sx={{
+                    marginLeft: "5px"
+                  }}
+                >
+                  Google
+                </ParagraphBody>
+              </Grid>
+              <Grid
+                item
+                xs={9}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {user?.isLinkedWithGoogle ? (
+                  <ParagraphBody translation-key='user_detail_dialog_linked'>
+                    {t("user_detail_dialog_linked")}
+                  </ParagraphBody>
+                ) : (
+                  <ParagraphBody translation-key='user_detail_dialog_not_linked'>
+                    {t("user_detail_dialog_not_linked")}
+                  </ParagraphBody>
+                )}
+              </Grid>
+              {/* <Grid
             item
             xs={3}
             sx={{
@@ -319,49 +327,55 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_remove_link")}
             </Button>
           </Grid> */}
-        </Grid>
-        <Divider />
+            </Grid>
+            <Divider />
 
-        <Grid container spacing={1} columns={12}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            {images.logo.moodleLogo && (
-              <Avatar
-                alt='Microsoft'
-                src={images.logo.microsoftLogo}
+            <Grid container spacing={1} columns={12}>
+              <Grid
+                item
+                xs={3}
                 sx={{
-                  width: "40px",
-                  height: "40px"
+                  display: "flex",
+                  alignItems: "center"
                 }}
-              />
-            )}
-            <ParagraphBody
-              sx={{
-                marginLeft: "5px"
-              }}
-            >
-              Microsoft
-            </ParagraphBody>
-          </Grid>
-          <Grid
-            item
-            xs={9}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <ParagraphBody translation-key='user_detail_dialog_not_linked'>
-              {t("user_detail_dialog_not_linked")}
-            </ParagraphBody>
-          </Grid>
-          {/* <Grid
+              >
+                {images.logo.moodleLogo && (
+                  <Avatar
+                    alt='Microsoft'
+                    src={images.logo.microsoftLogo}
+                    sx={{
+                      width: "40px",
+                      height: "40px"
+                    }}
+                  />
+                )}
+                <ParagraphBody
+                  sx={{
+                    marginLeft: "5px"
+                  }}
+                >
+                  Microsoft
+                </ParagraphBody>
+              </Grid>
+              <Grid
+                item
+                xs={9}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {user?.isLinkedWithMicrosoft ? (
+                  <ParagraphBody translation-key='user_detail_dialog_linked'>
+                    {t("user_detail_dialog_linked")}
+                  </ParagraphBody>
+                ) : (
+                  <ParagraphBody translation-key='user_detail_dialog_not_linked'>
+                    {t("user_detail_dialog_not_linked")}
+                  </ParagraphBody>
+                )}
+              </Grid>
+              {/* <Grid
             item
             xs={3}
             sx={{
@@ -377,8 +391,10 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_link")}
             </Button>
           </Grid> */}
-        </Grid>
-        <Divider />
+            </Grid>
+            <Divider />
+          </>
+        )}
       </Box>
     </CustomDialog>
   );

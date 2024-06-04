@@ -72,10 +72,7 @@ export default function SidebarManagement(sideBarItemList: SidebarManagementProp
           prevSideBar.map((item, i) =>
             i === index
               ? {
-                  ...item,
-                  icon: React.cloneElement(item.icon, {
-                    className: classes.selectedIcon
-                  })
+                  ...item
                 }
               : item
           )

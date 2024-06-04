@@ -133,6 +133,7 @@ export const API = {
     FORGOT_PASSWORD: "/auth/users/forgot-password/:email",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
     UPDATE_PROFILE_USER: "/auth/users",
-    CHANGE_PASSWORD: "/auth/users/forgot-password/change-password"
+    CHANGE_PASSWORD: "/auth/users/change-password",
+    RESET_PASSWORD: "/auth/users/forgot-password/change-password"
   }
 };

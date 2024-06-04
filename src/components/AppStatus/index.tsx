@@ -1,13 +1,16 @@
 import { Alert, Snackbar } from "@mui/material";
+import LoadingScreen from "components/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrorMess, clearSuccessMess, selectStateSnackbar } from "reduxes/AppStatus";
+import { selectedLoading } from "reduxes/Loading";
 
 export const AppStatus = () => {
   const dispach = useDispatch();
   const status = useSelector(selectStateSnackbar);
-
+  const isLoading = useSelector(selectedLoading);
   return (
     <>
+      {isLoading && <LoadingScreen />}
       <Snackbar
         open={!!status.error}
         autoHideDuration={5000}

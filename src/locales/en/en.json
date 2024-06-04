@@ -192,6 +192,8 @@
   "common_email": "Email",
 
   "side_bar_dashboard": "Dashboard",
+  "side_bar_contest": "Contest management",
+  "side_bar_user_management": "User management",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 

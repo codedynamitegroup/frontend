@@ -6,7 +6,7 @@ import { routes } from "routes/routes";
 import { ERoleName } from "models/authService/entity/role";
 import { User } from "models/authService/entity/user";
 import { useEffect, useState } from "react";
-import LoadingScreen from "../LoadingScreen";
+import LoadingScreen from "components/LoadingScreen";
 
 interface PropsData {
   availableRoles: ERoleName[];
