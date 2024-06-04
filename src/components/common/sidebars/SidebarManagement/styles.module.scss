@@ -17,12 +17,6 @@
   align-items: center;
 }
 
-.itemIcon {
-  color: rgba(37, 43, 54, 0.38);
-}
-.selectedIcon {
-  color: black;
-}
 .item {
   &[class~="Mui-selected"] {
     background-color: var(--gray-3);

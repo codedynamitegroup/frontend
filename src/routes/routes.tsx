@@ -195,6 +195,9 @@ export const routes = {
     }
   },
   admin: {
+    homepage: {
+      root: "/admin/*"
+    },
     contest: {
       root: "/admin/contests",
       edit: {

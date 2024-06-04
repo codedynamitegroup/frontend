@@ -46,15 +46,15 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end"
 }));
 
-interface HeaderProps {
+interface HeaderAdminProps {
   toggleDrawer?: () => void;
 }
 
-const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
+const HeaderAdmin = React.forwardRef<HTMLDivElement, HeaderAdminProps>((props, ref) => {
   const drawerWidth = 240;
   const { t } = useTranslation();
   const { toggleDrawer } = props;
-  const { loggedUser, logout, isLecturer, isStudent } = useAuth();
+  const { loggedUser, logout } = useAuth();
 
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -82,38 +82,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  const pagesHeaderDefault: ILinkMenu[] = [
-    {
-      name: "header_explore_course",
-      path: routes.user.course_certificate.root,
-      isActive: false,
-      position: "left"
-    },
-    {
-      name: "common_practice",
-      path: routes.user.problem.root,
-      isActive: false,
-      position: "left"
-    },
-    {
-      name: "header_contest",
-      path: routes.user.contest.root,
-      isActive: false,
-      position: "left"
-    },
-    {
-      name: "header_login_button",
-      path: routes.user.login.root,
-      isActive: false,
-      position: "right"
-    },
-    {
-      name: "header_register_button",
-      path: routes.user.register.root,
-      isActive: false,
-      position: "right"
-    }
-  ];
+  const pagesHeaderDefault: ILinkMenu[] = [];
 
   const [pagesHeader, setPagesHeader] = React.useState<ILinkMenu[]>(pagesHeaderDefault);
 
@@ -223,40 +192,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   </Link>
                 </ParagraphSmall>
               ))}
-            {isStudent && (
-              <ParagraphSmall
-                className={clsx([classes.item])}
-                fontWeight={600}
-                translation-key='header_course'
-                colorname={"--gray-50"}
-              >
-                <Link
-                  component={RouterLink}
-                  to={routes.student.course.management}
-                  translation-key='header_course'
-                  className={classes.textLink}
-                >
-                  {t("header_course")}
-                </Link>
-              </ParagraphSmall>
-            )}
-            {isLecturer && (
-              <ParagraphSmall
-                className={clsx([classes.item])}
-                fontWeight={600}
-                translation-key='header_course'
-                colorname={"--gray-50"}
-              >
-                <Link
-                  component={RouterLink}
-                  to={routes.lecturer.course.management}
-                  translation-key='header_course'
-                  className={classes.textLink}
-                >
-                  {t("header_course")}
-                </Link>
-              </ParagraphSmall>
-            )}
           </Box>
           <Box>
             <LanguageSelector />
@@ -422,4 +357,4 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     </AppBar>
   );
 });
-export default Header;
+export default HeaderAdmin;
