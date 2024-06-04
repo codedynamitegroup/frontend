@@ -12,6 +12,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "services/authService/azure.config";
 import { PersistGate } from "redux-persist/integration/react";
+import AppStatus from "components/AppStatus";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
@@ -24,6 +25,7 @@ root.render(
         <MsalProvider instance={pca}>
           <React.Suspense fallback={<LinearProgress />}>
             <PersistGate loading={null} persistor={persistor}>
+              <AppStatus />
               <App />
             </PersistGate>
           </React.Suspense>

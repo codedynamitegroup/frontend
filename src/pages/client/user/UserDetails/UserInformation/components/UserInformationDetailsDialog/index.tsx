@@ -23,7 +23,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { UserService } from "services/authService/UserService";
 import LoadButton from "components/common/buttons/LoadingButton";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormDataUpdateProfileUser {
   firstName: string;
@@ -59,9 +59,6 @@ const UserInformationDetailsDialog = ({
   const user: User = useSelector(selectCurrentUser);
   const [data, setData] = useState<User>(user);
   const [isUpdateProfileLoading, setIsUpdateProfileLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const accessToken = localStorage.getItem("access_token");
   const provider = localStorage.getItem("provider");
 
@@ -118,6 +115,7 @@ const UserInformationDetailsDialog = ({
       phone: data.phone
     })
       .then((res) => {
+        dispatch(setSuccessMess("User updated successfully"));
         UserService.getUserByEmail()
           .then((response) => {
             const user: User = response;
@@ -128,14 +126,9 @@ const UserInformationDetailsDialog = ({
           .catch((error) => {
             console.error("Failed to get user by email", error);
           });
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật tài khoản thành công");
-        setAlertType(AlertType.Success);
       })
       .catch((error) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật tài khoản thất bại!! Hãy thử lại");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("User updated failed. Please try again later."));
         console.error("Failed to update profile", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -386,12 +379,6 @@ const UserInformationDetailsDialog = ({
           </Grid> */}
         </Grid>
         <Divider />
-        <SnackbarAlert
-          open={openSnackbarAlert}
-          setOpen={setOpenSnackbarAlert}
-          type={alertType}
-          content={alertContent}
-        />
       </Box>
     </CustomDialog>
   );

@@ -3,7 +3,6 @@ import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
 import { Box, Link } from "@mui/material";
 import images from "config/images";
-import ParagraphBody from "components/text/ParagraphBody";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
@@ -12,11 +11,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisteredRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
+import { useDispatch } from "react-redux";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormData {
   email: string;
@@ -29,6 +29,7 @@ interface IFormData {
 export default function Register() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const schema = useMemo(() => {
     return yup.object().shape({
       email: yup.string().required(t("email_required")).email(t("email_invalid")),
@@ -60,9 +61,6 @@ export default function Register() {
     resolver: yupResolver(schema)
   });
 
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [isRegisteredLoading, setIsRegisteredLoading] = useState(false);
 
   const handleRegister = (data: any) => {
@@ -75,12 +73,11 @@ export default function Register() {
     setIsRegisteredLoading(true);
     UserService.register(registerData)
       .then(async (response) => {
+        dispatch(setSuccessMess("Register successfully"));
         navigate(routes.user.login.root);
       })
       .catch((error: any) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Tài khoản đã tồn tại!!!");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("Account already exists!!!"));
         console.error("Failed to register", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -161,12 +158,6 @@ export default function Register() {
                 </Link>
               </form>
             </Box>
-            <SnackbarAlert
-              open={openSnackbarAlert}
-              setOpen={setOpenSnackbarAlert}
-              type={alertType}
-              content={alertContent}
-            />
           </Grid>
         </Grid>
       </Container>
