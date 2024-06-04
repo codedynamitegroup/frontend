@@ -41,9 +41,9 @@ import PersistLogin from "components/common/PersistLogin";
 import { useSelector } from "react-redux";
 import { selectedLoading } from "reduxes/Loading";
 import LoadingScreen from "components/common/LoadingScreen";
-import ContestManagement from "pages/client/admin/ContestManagement/ContestManagement";
-import CreateContest from "pages/client/admin/ContestManagement/CreateContest";
-import EditContestDetails from "pages/client/admin/ContestManagement/EditContestDetails";
+import ContestManagement from "pages/admin/ContestManagement/ContestManagement";
+import CreateContest from "pages/admin/ContestManagement/CreateContest";
+import EditContestDetails from "pages/admin/ContestManagement/EditContestDetails";
 import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
 
 const router = createHashRouter(
