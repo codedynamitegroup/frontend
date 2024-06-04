@@ -160,14 +160,14 @@ const router = createHashRouter(
         <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
         <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
-        {/* <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
+        <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
           <Route path={routes.admin.contest.root} element={<ContestManagement />} />
           <Route path={routes.admin.contest.create} element={<CreateContest />} />
           <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
-        </Route> */}
-        <Route path={routes.admin.contest.root} element={<ContestManagement />} />
+        </Route>
+        {/* <Route path={routes.admin.contest.root} element={<ContestManagement />} />
         <Route path={routes.admin.contest.create} element={<CreateContest />} />
-        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
+        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} /> */}
       </Route>
     </Route>
   )

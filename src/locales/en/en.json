@@ -242,6 +242,7 @@
   "contest_programming_language_title": "Programming language",
   "contest_end_time_invalid": "End time must be greater than start time",
   "contest_preview_contest_details_page": "Preview contest details page",
+  "contest_forum": "Forum",
 
   "contest_management_title": "Contest Management",
   "contest_details": "Contest details",
@@ -262,6 +263,10 @@
   "contest_end_time_tooltip": "This is contest end time. If you don't want to set end time, please check the box below",
   "this_contest_has_no_end_time": "This contest has no end time",
   "contest_is_public": "Is public",
+  "contest_is_restricted_forum": "Restricted forum",
+  "contest_is_restricted_forum_tooltip": "Participants can post questions but can't post answers. Only contest moderators will have permission to post answers. This configuration should also be set for individual challenge(s) of the contest.",
+  "contest_is_disabled_forum": "Disabled forum",
+  "contest_is_disabled_forum_tooltip": "Discussions tab will be disabled.",
   "contest_is_public_tooltip": "If this is a public contest, everyone can join",
   "contest_metadata_customization": "Metadata customization",
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
