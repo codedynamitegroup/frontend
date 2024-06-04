@@ -262,8 +262,8 @@ const LecturerCourseAssignmentDetails = () => {
           onClick={() => {
             navigate(
               routes.lecturer.assignment.submissions
-                .replace(":assignmentId", "1")
-                .replace(":courseId", "1")
+                .replace(":assignmentId", assignmentId ?? "")
+                .replace(":courseId", courseId ?? "")
             );
           }}
         >
