@@ -168,3 +168,12 @@ export interface PostQuestionDetail {
 export interface PostQuestionDetailList {
   questionCommands: PostQuestionDetail[];
 }
+
+export interface QuestionClone {
+  questionId: string;
+  qtype?: string;
+}
+
+export interface QuestionCloneRequest {
+  questions: QuestionClone[];
+}

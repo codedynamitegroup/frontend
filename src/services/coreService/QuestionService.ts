@@ -4,7 +4,8 @@ import {
   PostEssayQuestion,
   PostMultipleChoiceQuestion,
   PostQuestionDetailList,
-  PostShortAnswerQuestion
+  PostShortAnswerQuestion,
+  QuestionCloneRequest
 } from "models/coreService/entity/QuestionEntity";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
@@ -167,6 +168,26 @@ export class QuestionService {
       }
     } catch (error: any) {
       console.error("Failed to delete question by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+
+  static async cloneQuestionByIdIn(questions: QuestionCloneRequest) {
+    try {
+      const response = await axios.post(
+        `${coreServiceApiUrl}${API.CORE.QUESTION.CLONE}`,
+        questions
+      );
+      if (response.status === 201) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to clone question by id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

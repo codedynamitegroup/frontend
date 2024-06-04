@@ -54,9 +54,13 @@ import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
-import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
+import {
+  QuestionClone,
+  QuestionCloneRequest,
+  QuestionEntity
+} from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
-import { clearQuestionCreate } from "reduxes/coreService/questionCreate";
+import { clearQuestionCreate, setQuestionCreate, setQuestionCreateFromBank } from "reduxes/coreService/questionCreate";
 import ParagraphBody from "components/text/ParagraphBody";
 import qtype from "utils/constant/Qtype";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
@@ -65,6 +69,12 @@ import { QuestionBankCategoryService } from "services/courseService/QuestionBank
 
 import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { QuestionService } from "services/coreService/QuestionService";
+import { di } from "@fullcalendar/core/internal-common";
+import { create } from "domain";
+import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
+import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
+import { UserEntity } from "models/coreService/entity/UserEntity";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 const drawerWidth = 400;
 
@@ -186,30 +196,6 @@ export default function ExamCreated() {
       dispatch(setCategories(getQuestionBankCategoryResponse));
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const handleGetQuestions = async ({
-    categoryId,
-    search = "",
-    pageNo = 0,
-    pageSize = 99
-  }: {
-    categoryId: string;
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    try {
-      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
-        categoryId,
-        search,
-        pageNo,
-        pageSize
-      });
-      dispatch(setQuestionsCategory(getQuestionResponse));
-    } catch (error) {
-      console.error("Failed to fetch questions by category id", error);
     }
   };
 
@@ -368,8 +354,48 @@ export default function ExamCreated() {
     setIsAddQuestionFromBankDialogOpen(false);
   };
 
-  const handleComfirmQuestionFromBankDialog = () => {
-    // handleGetQuestions({ categoryId: "228be04d-f10b-4675-9d80-f97f039113c1" });
+  const handleComfirmQuestionFromBankDialog = async (questionIds: QuestionClone[]) => {
+    const questions: QuestionCloneRequest = {
+      questions: questionIds
+    };
+    const response = await QuestionService.cloneQuestionByIdIn(questions);
+
+    const questionCreate: QuestionEntity[] = response.questions.map(
+      (item: {
+        id: string;
+        organization: OrganizationEntity;
+        difficulty: QuestionDifficultyEnum;
+        name: string;
+        questionText: string;
+        generalFeedback: string;
+        defaultMark: number;
+        pass?: boolean;
+        createdBy: UserEntity;
+        updatedBy: UserEntity;
+        qtype: QuestionTypeEnum;
+        answers: AnswerOfQuestion[];
+        createdAt: Date;
+        updatedAt: Date;
+      }) => ({
+        id: item.id,
+        organization: item.organization,
+        difficulty: item.difficulty,
+        name: item.name,
+        questionText: item.questionText,
+        generalFeedback: item.generalFeedback,
+        defaultMark: item.defaultMark,
+        createdBy: item.createdBy,
+        updatedBy: item.updatedBy,
+        qtype: item.qtype,
+        answers: item.answers,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt
+      })
+    );
+
+    console.log(questionCreate);
+    dispatch(setQuestionCreateFromBank(questionCreate));
+
     handleCloseAddQuestionFromBankDialog();
   };
 
@@ -427,6 +453,14 @@ export default function ExamCreated() {
   const { height: header2Height } = useBoxDimensions({
     ref: header2Ref
   });
+
+  // React.useEffect(() => {
+  //   handleGetQuestionBankCategories({});
+  // }, []);
+
+  const handleCategoryPick = (value: string) => {
+    console.log(value);
+  };
 
   return (
     <>
@@ -650,9 +684,13 @@ export default function ExamCreated() {
                             ? "câu hỏi ngắn"
                             : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
                               ? "câu hỏi trắc nghiệm"
-                              : item.qtype === QuestionTypeEnum.CODE
-                                ? "câu hỏi code"
-                                : "câu hỏi tự luận",
+                              : item.qtype === QuestionTypeEnum.ESSAY
+                                ? "câu hỏi tự luận"
+                                : item.qtype === QuestionTypeEnum.TRUE_FALSE
+                                  ? "câu hỏi đúng/sai"
+                                  : item.qtype === QuestionTypeEnum.CODE
+                                    ? "câu hỏi code"
+                                    : "",
                         ...item
                       }))}
                       tableHeader={tableHeading}
