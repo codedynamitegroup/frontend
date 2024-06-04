@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import classes from "./styles.module.scss";
+import CodeIcon from "@mui/icons-material/Code";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PublishIcon from "@mui/icons-material/Publish";
 import {
   Button,
   FormControl,
@@ -9,47 +11,46 @@ import {
   SelectChangeEvent,
   Tabs
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import Tab from "@mui/material/Tab";
+import { Box } from "@mui/system";
 import CodeEditor from "components/editor/CodeEditor";
-import { useState } from "react";
-import CodeIcon from "@mui/icons-material/Code";
-import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
-import Header from "components/Header";
 import ParagraphBody from "components/text/ParagraphBody";
-import { routes } from "routes/routes";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import ProblemDetailDescription from "./components/Description";
-import ProblemDetailSolution from "./components/ListSolution";
-import ProblemDetailSubmission from "./components/Submission";
-import { Resizable } from "re-resizable";
-import TestCase from "./components/TestCase";
-import Result from "./components/Result";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PublishIcon from "@mui/icons-material/Publish";
-import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from "hooks";
-import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { UUID } from "crypto";
+import { useAppDispatch, useAppSelector } from "hooks";
+import useBoxDimensions from "hooks/useBoxDimensions";
+import cloneDeep from "lodash/cloneDeep";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
+import { Resizable } from "re-resizable";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
+import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import {
-  setSourceCode,
-  setLanguageId,
   setCpuTimeLimit,
-  setMemoryLimit
+  setHeadBodyTailCode,
+  setLanguageId,
+  setMemoryLimit,
+  setSourceCode,
+  setSystemLanguageId
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import {
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
-import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import cloneDeep from "lodash/cloneDeep";
+import { routes } from "routes/routes";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
-import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import ProblemDetailDescription from "./components/Description";
+import ProblemDetailSolution from "./components/ListSolution";
+import Result from "./components/Result";
+import ProblemDetailSubmission from "./components/Submission";
+import TestCase from "./components/TestCase";
+import classes from "./styles.module.scss";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 
 export default function DetailProblem() {
   const { problemId, courseId, lessonId } = useParams<{
@@ -122,7 +123,9 @@ export default function DetailProblem() {
       const bodyCode: string = selectedLanguage.bodyCode;
       const tailCode: string = language.pLanguage.tailCode;
       dispatch(setSourceCode(`${headCode}\n${bodyCode}\n${tailCode}`));
+      dispatch(setHeadBodyTailCode({ headCode, bodyCode, tailCode }));
       dispatch(setLanguageId(language.pLanguage.judge0Id));
+      dispatch(setSystemLanguageId(language.pLanguage.id));
       dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
       dispatch(setMemoryLimit(language.pLanguage.memoryLimit));
     }
@@ -215,8 +218,36 @@ export default function DetailProblem() {
 
         // console.log("response data", data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        dispatch(setExecuteResultLoading(false));
+        setTestCaseTab(0);
+      });
     // console.log("current data", currentExecuteData);
+  };
+  const handleSubmitCode = () => {
+    if (
+      problemId !== undefined &&
+      currentExecuteData.body_code !== undefined &&
+      currentExecuteData.head_code !== undefined &&
+      currentExecuteData.tail_code !== undefined &&
+      currentExecuteData.system_language_id !== undefined
+    )
+      CodeSubmissionService.createCodeSubmission(
+        problemId,
+        currentExecuteData.system_language_id,
+        currentExecuteData.head_code,
+        currentExecuteData.body_code,
+        currentExecuteData.tail_code
+      )
+        .then((data) => {
+          console.log("create submit response", data);
+          navigate(routes.user.problem.detail.submission.replace(":problemId", problemId));
+          // console.log("response data", data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   };
 
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -326,6 +357,7 @@ export default function DetailProblem() {
               className={classes.submitBtn}
               color='primary'
               translation-key='detail_problem_submit'
+              onClick={handleSubmitCode}
             >
               <PublishIcon />
               {t("detail_problem_submit")}

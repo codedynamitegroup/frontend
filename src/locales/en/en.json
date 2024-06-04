@@ -188,6 +188,8 @@
   "common_rules": "Rules",
   "common_scoring": "Scoring",
   "common_advanced_settings": "Advanced settings",
+  "common_no": "No",
+  "common_email": "Email",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -243,6 +245,7 @@
   "contest_end_time_invalid": "End time must be greater than start time",
   "contest_preview_contest_details_page": "Preview contest details page",
   "contest_forum": "Forum",
+  "contest_sign_up_date": "Sign up date",
 
   "contest_management_title": "Contest Management",
   "contest_details": "Contest details",
