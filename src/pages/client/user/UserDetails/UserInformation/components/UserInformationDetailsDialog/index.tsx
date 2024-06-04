@@ -1,6 +1,6 @@
 import { Avatar, DialogProps, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button, { BtnType } from "components/common/buttons/Button";
+import { BtnType } from "components/common/buttons/Button";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
@@ -118,7 +118,7 @@ const UserInformationDetailsDialog = ({
       phone: data.phone
     })
       .then((res) => {
-        UserService.getUserByEmail(user.email)
+        UserService.getUserByEmail()
           .then((response) => {
             const user: User = response;
             dispatch(

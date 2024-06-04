@@ -3,7 +3,15 @@ import { User } from "models/authService/entity/user";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-import { setLogin, selectCurrentUser, selectLoginStatus, loginStatus, logOut } from "reduxes/Auth";
+import {
+  setLogin,
+  selectCurrentUser,
+  selectLoginStatus,
+  loginStatus,
+  logOut,
+  fetchStatus,
+  EFetchingUser
+} from "reduxes/Auth";
 import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 
@@ -33,13 +41,13 @@ const PersistLogin = () => {
         return;
       }
       if (!accessToken || !refreshToken) {
+        dispatch(fetchStatus(EFetchingUser.FAILED));
         return;
       }
       const isExpired: boolean = isTokenExpired(accessToken);
-      const decodedToken: any = jwtDecode(accessToken);
 
       if (!isExpired) {
-        UserService.getUserByEmail(decodedToken.email)
+        UserService.getUserByEmail()
           .then((response) => {
             const user: User = response;
             dispatch(setLogin({ user: user }));
@@ -47,6 +55,7 @@ const PersistLogin = () => {
           })
           .catch((error) => {
             console.error("Failed to get user by email", error);
+            dispatch(fetchStatus(EFetchingUser.FAILED));
           });
       } else {
         try {
@@ -54,8 +63,7 @@ const PersistLogin = () => {
           localStorage.setItem("access_token", refreshTokenResponse.accessToken);
           localStorage.setItem("refresh_token", refreshTokenResponse.refreshToken);
 
-          const newDecodedToken: any = jwtDecode(refreshTokenResponse.accessToken);
-          UserService.getUserByEmail(newDecodedToken.email)
+          UserService.getUserByEmail()
             .then((response) => {
               const user: User = response;
               dispatch(setLogin({ user: user }));
@@ -63,6 +71,7 @@ const PersistLogin = () => {
             })
             .catch((error) => {
               console.error("Failed to get user by email", error);
+              dispatch(fetchStatus(EFetchingUser.FAILED));
             });
         } catch (error) {
           console.error("Error refreshing token", error);
@@ -77,7 +86,7 @@ const PersistLogin = () => {
     getUser();
   }, [dispatch, refreshToken, selectedUser, accessToken, selectedLoginStatus, navigate]);
 
-  return <>{<Outlet />} </>;
+  return <Outlet />;
 };
 
 export default PersistLogin;

@@ -33,12 +33,12 @@ export class UserService {
       });
     }
   }
-  static async getUserByEmail(email: string) {
+  static async getUserByEmail() {
     try {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
+      }).get(`${API.AUTH.GET_USER_BY_EMAIL}`);
       if (response.status === 200) {
         return response.data;
       }
