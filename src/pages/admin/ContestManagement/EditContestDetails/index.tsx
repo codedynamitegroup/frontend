@@ -21,7 +21,6 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { ContestService } from "services/coreService/ContestService";
 import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
-import { ContestUserEntity } from "models/coreService/entity/ContestUserEntity";
 import NotFoundPage from "pages/common/NotFoundPage";
 
 export interface IFormDataType {
@@ -53,8 +52,6 @@ const EditContestDetails = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const [defaultContestName, setDefaultContestName] = useState("");
-
-  const [signUps, setSignUps] = useState<ContestUserEntity[]>([]);
 
   const tabs: string[] = useMemo(() => {
     return [
@@ -192,15 +189,6 @@ const EditContestDetails = () => {
     },
     [setValue]
   );
-
-  const handleGetSignUpsByContestId = useCallback(async (id: string) => {
-    try {
-      const signUpsResponse = await ContestService.getSignUpsOfContest(id, 1, 10, true);
-      console.log("signUpsResponse", signUpsResponse);
-    } catch (error: any) {
-      console.error("error", error);
-    }
-  }, []);
 
   const handleUpdateContest = useCallback(async (id: string, data: UpdateContestCommand) => {
     try {

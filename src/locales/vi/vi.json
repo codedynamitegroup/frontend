@@ -178,6 +178,8 @@
   "common_rules": "Quy tắc",
   "common_scoring": "Cách tính điểm",
   "common_advanced_settings": "Cài đặt nâng cao",
+  "common_no": "STT",
+  "common_email": "Email",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -246,6 +248,7 @@
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
   "contest_preview_contest_details_page": "Xem trước trang chi tiết cuộc thi",
   "contest_forum": "Diễn đàn",
+  "contest_sign_up_date": "Ngày đăng ký",
 
   "contest_management_title": "Quản lý cuộc thi",
   "contest_details": "Chi tiết cuộc thi",
