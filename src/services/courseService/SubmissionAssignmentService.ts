@@ -25,6 +25,27 @@ export class SubmissionAssignmentService {
       });
     }
   }
+  static async getSubmissionAssignmentByAssignmentId(assignmentId: string) {
+    try {
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT.DEFAULT}`,
+        {
+          params: { assignmentId }
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch submission assignment by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async countSubmissionToGrade(assignmentId: string) {
     try {
       const response = await axios.get(
