@@ -13,6 +13,9 @@ import * as React from "react";
 import QuestionsFeatureBar from "../FeatureBar";
 import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
+import { QuestionService } from "services/coreService/QuestionService";
+import { useDispatch } from "react-redux";
+import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
   title?: string;
@@ -108,6 +111,32 @@ export default function PickQuestionFromQuestionBankDialog({
     ],
     []
   );
+
+  const [searchText, setSearchText] = React.useState("");
+  const dispatch = useDispatch();
+  const handleGetQuestions = async ({
+    categoryId,
+    search = searchText,
+    pageNo = 0,
+    pageSize = 99
+  }: {
+    categoryId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => {
+    try {
+      const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
+        categoryId,
+        search,
+        pageNo,
+        pageSize
+      });
+      dispatch(setQuestionsCategory(getQuestionResponse));
+    } catch (error) {
+      console.error("Failed to fetch questions by category id", error);
+    }
+  };
 
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };

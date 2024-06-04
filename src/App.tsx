@@ -1,4 +1,3 @@
-import CustomPdfViewer from "components/pdf/CustomPdfViewer";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
 import {
   Route,
@@ -45,6 +44,7 @@ import LoadingScreen from "components/common/LoadingScreen";
 import ContestManagement from "pages/admin/ContestManagement/ContestManagement";
 import CreateContest from "pages/admin/ContestManagement/CreateContest";
 import EditContestDetails from "pages/admin/ContestManagement/EditContestDetails";
+import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -127,6 +127,24 @@ const router = createHashRouter(
           element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
         />
 
+        {/*  question bank */}
+        <Route
+          path={routes.lecturer.question_bank.create_question.essay.create}
+          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.multiple_choice.create}
+          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.short_answer.create}
+          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.true_false.create}
+          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+        />
+
         <Route
           path={routes.lecturer.question.ai.create}
           element={<AIQuestionCreated />}
@@ -137,6 +155,7 @@ const router = createHashRouter(
         <Route path={routes.student.root} element={<StudentCoursesManagement />} />
         <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
         <Route path={routes.student.exam.take} element={<TakeExam />} />
+        <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
         <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
         <Route path={routes.admin.contest.root} element={<ContestManagement />} />

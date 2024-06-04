@@ -813,5 +813,11 @@
 
   "take_exam_question_navigation_title": "Chuyển hướng đến câu hỏi",
   "take_exam_question_name": "Câu hỏi",
-  "take_exam_question_sort_question": "Lọc câu hỏi"
+  "take_exam_question_sort_question": "Lọc câu hỏi",
+
+  "common_answer_saved": "Đã lưu câu trả lời",
+  "common_not_answered": "Chưa trả lời",
+  "common_answered": "Đã trả lời",
+  "common_score_can_achieve": "Điểm có thể đạt được",
+  "common_flagged_question": "Câu hỏi đã gắn cờ"
 }
