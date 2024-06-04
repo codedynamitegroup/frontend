@@ -416,8 +416,8 @@ export default function TakeExam() {
               onClick={() => {
                 navigate(
                   routes.student.exam.detail
-                    .replace(":courseId", examData.courseId)
-                    .replace(":examId", examData.id)
+                    .replace(":courseId", courseId || examData.courseId)
+                    .replace(":examId", examId || examData.id)
                 );
               }}
               startDecorator={<ChevronLeftIcon fontSize='small' />}

@@ -22,6 +22,7 @@ import { setExamData } from "reduxes/TakeExam";
 
 const StudentCourseExamDetails = () => {
   const { examId } = useParams<{ examId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
 
@@ -215,8 +216,8 @@ const StudentCourseExamDetails = () => {
           dispatch(setExamData(exam));
           navigate(
             routes.student.exam.take
-              .replace(":courseId", examState.examDetail.courseId)
-              .replace(":examId", examState.examDetail.id)
+              .replace(":courseId", courseId || examState.examDetail.courseId)
+              .replace(":examId", examId || examState.examDetail.id)
           );
         }}
         width='fit-content'

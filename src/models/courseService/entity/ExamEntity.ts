@@ -50,10 +50,10 @@ export interface StartEndExamRequest {
 }
 
 export interface SubmitExamRequest {
-  examSubmissionId: string;
   examId: string;
   userId: string;
   questions: ExamQuestionSubmission[];
+  startTime: string;
 }
 
 export interface ExamQuestionSubmission {

@@ -29,6 +29,8 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { Chip } from "@mui/joy";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import moment from "moment";
+import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
+import { ExamService } from "services/courseService/ExamService";
 
 const drawerWidth = 370;
 
@@ -49,6 +51,7 @@ const SubmitExamSummary = () => {
 
     return startTimeMil + (examData?.timeLimit || 0) * 1000;
   });
+  const [timeLeft, setTimeLeft] = React.useState(0);
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -85,7 +88,8 @@ const SubmitExamSummary = () => {
       return;
     }
     const time = moment(inputTime).diff(moment().utc(), "milliseconds");
-    console.log("inputTime", inputTime);
+    setTimeLeft(time);
+
     if (time < 0) {
       return;
     } else {
@@ -126,14 +130,39 @@ const SubmitExamSummary = () => {
   const submitExamHandler = async () => {
     setSubmitButtonLoading(true);
 
-    questionList.forEach((question) => {
-      if (
-        question.questionData.qtype === "ESSAY" &&
-        question.files !== undefined &&
-        question.files.length > 0
-      ) {
-      }
+    const questions = questionList.map((question) => {
+      return {
+        questionId: question.questionData.id,
+        content: question.content,
+        numFile: question.files?.length || 0
+      };
     });
+
+    const startAtTime = new Date(
+      new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
+    ).toISOString();
+    console.log("start at time", new Date(startAtTime));
+    const submitData: SubmitExamRequest = {
+      examId: examId || storageExamID,
+      userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
+      questions: questions,
+      startTime: startAtTime
+    };
+
+    console.log("submitData", submitData);
+    setSubmitButtonLoading(false);
+
+    ExamService.submitExam(submitData)
+      .then((response) => {
+        console.log("response", response);
+        // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
+      })
+      .catch((error) => {
+        console.error("Failed to submit exam", error);
+      })
+      .finally(() => {
+        setSubmitButtonLoading(false);
+      });
   };
 
   React.useEffect(() => {
@@ -141,6 +170,12 @@ const SubmitExamSummary = () => {
       // navigate(routes.student.exam.take.replace(":courseId", courseId).replace(":examId", examId));
     }
   }, []);
+
+  React.useEffect(() => {
+    if (timeLeft <= 0) {
+      // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
+    }
+  }, [timeLeft]);
 
   return (
     <>
