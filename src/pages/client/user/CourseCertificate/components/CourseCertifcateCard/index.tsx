@@ -1,5 +1,4 @@
 import { Box, Divider, Grid, Rating, Stack } from "@mui/material";
-import React from "react";
 import classes from "./styles.module.scss";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -9,12 +8,17 @@ import { CertificateCourseEntity } from "models/coreService/entity/CertificateCo
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "reduxes/Auth";
+import { User } from "models/authService/entity/user";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 type Props = {
   course: CertificateCourseEntity;
 };
 
 const CourseCertificateCard = ({ course }: Props) => {
+  const user: User = useSelector(selectCurrentUser);
   const { t } = useTranslation();
 
   return (
@@ -72,6 +76,37 @@ const CourseCertificateCard = ({ course }: Props) => {
                     : ""}
             </ParagraphBody>
           </Box>
+          {user && course?.isRegistered === true ? (
+            <Box className={classes.iconCourse}>
+              <CheckCircleOutlineIcon
+                sx={{
+                  width: "20px",
+                  height: "20px",
+                  color: "var(--green-600)",
+                  marginRight: "-5px"
+                }}
+              />
+              <ParagraphBody translate-key='certificate_registered'>
+                {t("certificate_registered")}
+              </ParagraphBody>
+            </Box>
+          ) : (
+            user && (
+              <Box className={classes.iconCourse}>
+                <CheckCircleOutlineIcon
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    color: "var(--gray-50)",
+                    marginRight: "-5px"
+                  }}
+                />
+                <ParagraphBody translate-key='certificate_not_registered'>
+                  {t("certificate_not_registered")}
+                </ParagraphBody>
+              </Box>
+            )
+          )}
         </Grid>
       </Grid>
     </Box>

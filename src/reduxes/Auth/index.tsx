@@ -1,19 +1,21 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "models/authService/entity/user";
-import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 
+export enum EFetchingUser {
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
+  PENDING = "PENDING"
+}
 interface InitialState {
   currentUser: User | null;
-  token: string | null;
   isLoggedIn: Boolean;
-  provider: ESocialLoginProvider | null;
+  isFetching: EFetchingUser | null;
 }
 
 const initialState: InitialState = {
   currentUser: null,
-  token: null,
   isLoggedIn: false,
-  provider: null
+  isFetching: null
 };
 
 const authSlice = createSlice({
@@ -22,25 +24,27 @@ const authSlice = createSlice({
   reducers: {
     setLogin: (state, action: PayloadAction<any>) => {
       state.currentUser = action.payload.user;
-      state.token = action.payload.token;
-      state.provider = action.payload.provider;
+      state.isLoggedIn = true;
+      state.isFetching = EFetchingUser.SUCCESS;
     },
     logOut: (state) => {
       state.currentUser = null;
-      state.token = null;
       state.isLoggedIn = false;
+      state.isFetching = null;
     },
     loginStatus: (state, action: PayloadAction<Boolean>) => {
       state.isLoggedIn = action.payload;
+    },
+    fetchStatus: (state, action: PayloadAction<EFetchingUser>) => {
+      state.isFetching = action.payload;
     }
   }
 });
 
-export const { setLogin, logOut, loginStatus } = authSlice.actions;
+export const { setLogin, logOut, loginStatus, fetchStatus } = authSlice.actions;
 
 export default authSlice.reducer;
 
 export const selectCurrentUser = (state: any) => state.auth.currentUser;
-export const selectToken = (state: any) => state.auth.token;
 export const selectLoginStatus = (state: any) => state.auth.isLoggedIn;
-export const selectProvider = (state: any) => state.auth.provider;
+export const selectFetchingStatus = (state: any) => state.auth.isFetching;

@@ -52,6 +52,7 @@
   "common_grade": "Grade",
   "common_role": "Role",
   "common_name": "Name",
+  "common_phone": "Phone number",
   "common_post": "Post",
   "common_title": "Title",
   "common_confirm": "Confirm",
@@ -157,6 +158,7 @@
   "common_topics": "Topics",
   "common_view_details": "View details",
   "common_update_language": "Update language",
+  "common_update": "Update",
   "register_certificate_course_success": "Register certificate course {{courseName}} successfully",
   "register_certificate_course_fail": "Register certificate course {{courseName}} fail",
   "common_view_this_course": "View this course",
@@ -185,6 +187,7 @@
   "common_prizes": "Prizes",
   "common_rules": "Rules",
   "common_scoring": "Scoring",
+  "common_advanced_settings": "Advanced settings",
 
   "side_bar_dashboard": "Dashboard",
 
@@ -239,6 +242,7 @@
   "contest_programming_language_title": "Programming language",
   "contest_end_time_invalid": "End time must be greater than start time",
   "contest_preview_contest_details_page": "Preview contest details page",
+  "contest_forum": "Forum",
 
   "contest_management_title": "Contest Management",
   "contest_details": "Contest details",
@@ -259,6 +263,10 @@
   "contest_end_time_tooltip": "This is contest end time. If you don't want to set end time, please check the box below",
   "this_contest_has_no_end_time": "This contest has no end time",
   "contest_is_public": "Is public",
+  "contest_is_restricted_forum": "Restricted forum",
+  "contest_is_restricted_forum_tooltip": "Participants can post questions but can't post answers. Only contest moderators will have permission to post answers. This configuration should also be set for individual challenge(s) of the contest.",
+  "contest_is_disabled_forum": "Disabled forum",
+  "contest_is_disabled_forum_tooltip": "Discussions tab will be disabled.",
   "contest_is_public_tooltip": "If this is a public contest, everyone can join",
   "contest_metadata_customization": "Metadata customization",
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
@@ -308,8 +316,10 @@
   "certificate_detail_certification_description": "You will receive a course certificate when you complete at least 85% of the course content",
   "certificate_detail_breadcrump": "Course list",
   "not_registered_certificate_course_message": "You have not registered for this course yet",
+  "certificate_registered": "Registered",
+  "certificate_not_registered": "Not registered",
 
-  "dashboard_continue_title": "Continue your course",
+  "dashboard_continue_title": "Let continue your courses",
   "dashboard_happening_contest": "Happening contests",
   "dashboard_other_course": "Other courses",
   "dashboard_current_lesson": "Current lesson",
@@ -468,6 +478,7 @@
 
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
+  "phone_number_invalid": "Phone number is invalid",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
@@ -783,7 +794,9 @@
 
   "type_number": "number",
 
+  "password_old_required": "Old password is required",
   "password_required": "Password is required",
+  "password_invalid": "Password is invalid",
   "password_confirm_required": "Confirmed password is required",
   "password_confirm_not_match": "Confirmed password does not match with password",
   "password_confirm_min_length": "Length of password confirm must be at least {{lengthNum}} characters",
@@ -809,5 +822,11 @@
 
   "take_exam_question_navigation_title": "Question navigation",
   "take_exam_question_name": "Question",
-  "take_exam_question_sort_question": "Filter question"
+  "take_exam_question_sort_question": "Filter question",
+
+  "common_answer_saved": "Answer saved",
+  "common_not_answered": "Not answered",
+  "common_answered": "Answered",
+  "common_score_can_achieve": "Achievable score",
+  "common_flagged_question": "Flagged question"
 }

@@ -17,10 +17,10 @@ import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import classes from "./styles.module.scss";
 import { useEffect } from "react";
-import { matchPath, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -31,6 +31,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import { UserService } from "services/authService/UserService";
+import clsx from "clsx";
+import { ERoleName } from "models/authService/entity/role";
 
 interface ILinkMenu {
   name: string;
@@ -81,6 +83,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const loggedUser: User = useSelector(selectCurrentUser);
 
   const pagesHeaderDefault: ILinkMenu[] = [
     {
@@ -98,12 +101,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     {
       name: "header_contest",
       path: routes.user.contest.root,
-      isActive: false,
-      position: "left"
-    },
-    {
-      name: "header_course",
-      path: routes.student.course.management,
       isActive: false,
       position: "left"
     },
@@ -129,6 +126,17 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     setOpen(false);
   };
 
+  const isRoleStudentAndLecturer = (): Boolean => {
+    if (!loggedUser) {
+      return false;
+    }
+    if (!loggedUser.roles) {
+      return false;
+    }
+    return loggedUser.roles.some(
+      (role) => role.name === ERoleName.STUDENT_MOODLE || role.name === ERoleName.TEACHER_MOODLE
+    );
+  };
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 900) {
@@ -150,19 +158,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const loggedUser: User = useSelector(selectCurrentUser);
-
-  const handleClickPage = (page: any) => {
-    if (
-      localStorage.getItem("role") === "lecturer" &&
-      page.path === routes.student.course.management
-    ) {
-      navigate(routes.lecturer.course.management);
-    } else {
-      navigate(page.path);
-    }
   };
 
   const { pathname } = useLocation();
@@ -193,7 +188,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       return item;
     });
     setPagesHeader(pagesHeaderUpdated);
-  }, [pathname]);
+  }, [pathname, loggedUser]);
 
   const handleLogout = async () => {
     UserService.logout()
@@ -217,14 +212,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       });
   };
 
-  const handleLogo = () => {
-    if (loggedUser) {
-      navigate(routes.user.dashboard.root);
-    } else {
-      navigate(routes.user.homepage.root);
-    }
-  };
-
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -243,30 +230,54 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             )}
 
-            <Box className={classes.logo} onClick={handleLogo}>
-              <img src={images.logo.appLogo} alt='logo' />
+            <Box className={classes.logo}>
+              <Link
+                component={RouterLink}
+                to={loggedUser ? routes.user.dashboard.root : routes.user.homepage.root}
+                className={classes.textLink}
+              >
+                <img src={images.logo.appLogo} alt='logo' />
+              </Link>
             </Box>
           </Box>
-          <Box className={classes.navbarItem}>
+          <Box className={classes.navbarItem} ml={2}>
             {pagesHeader
               .filter((page) => page.position === "left")
               .map((page, index) => (
-                <Button
+                <ParagraphSmall
                   key={index}
-                  sx={{ textTransform: "none", margin: "1rem" }}
-                  className={classes.item}
-                  onClick={() => handleClickPage(page)}
+                  className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                  fontWeight={600}
+                  translation-key={page.name}
+                  colorname={"--gray-50"}
                 >
-                  <ParagraphSmall
-                    className={page.isActive ? classes.isActive : ""}
-                    fontWeight={600}
+                  <Link
+                    component={RouterLink}
+                    to={page.path}
                     translation-key={page.name}
-                    colorname={"--gray-60"}
+                    className={classes.textLink}
                   >
                     {t(page.name)}
-                  </ParagraphSmall>
-                </Button>
+                  </Link>
+                </ParagraphSmall>
               ))}
+            {isRoleStudentAndLecturer() && (
+              <ParagraphSmall
+                className={clsx([classes.item])}
+                fontWeight={600}
+                translation-key='header_course'
+                colorname={"--gray-50"}
+              >
+                <Link
+                  component={RouterLink}
+                  to={routes.student.course.management}
+                  translation-key='header_course'
+                  className={classes.textLink}
+                >
+                  {t("header_course")}
+                </Link>
+              </ParagraphSmall>
+            )}
           </Box>
           <Box>
             <LanguageSelector />
@@ -276,21 +287,22 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {pagesHeader
                 .filter((page) => page.position === "right")
                 .map((page, index) => (
-                  <Button
+                  <ParagraphSmall
                     key={index}
-                    sx={{ textTransform: "none", margin: "1rem" }}
-                    className={classes.item}
-                    onClick={() => handleClickPage(page)}
+                    className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                    fontWeight={600}
+                    translation-key={page.name}
+                    colorname={"--gray-50"}
                   >
-                    <ParagraphSmall
-                      className={page.isActive ? classes.isActive : ""}
-                      fontWeight={600}
+                    <Link
+                      component={RouterLink}
+                      to={page.path}
                       translation-key={page.name}
-                      colorname={"--gray-60"}
+                      className={classes.textLink}
                     >
                       {t(page.name)}
-                    </ParagraphSmall>
-                  </Button>
+                    </Link>
+                  </ParagraphSmall>
                 ))}
             </Box>
           ) : (
@@ -315,8 +327,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     }
                     alt='avatar'
                   ></img>
-                  <ParagraphSmall fontWeight={600}>
-                    {loggedUser.firstName + " " + loggedUser.lastName}
+                  <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
+                    {`${loggedUser.firstName} ${loggedUser.lastName}`}
                   </ParagraphSmall>
                 </Button>
               </Grid>

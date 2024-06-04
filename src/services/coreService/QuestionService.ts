@@ -35,7 +35,7 @@ export class QuestionService {
         `${coreServiceApiUrl}${API.CORE.QUESTION.ESSAY_QUESTION.CREATE}`,
         essayQuestionData
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {
@@ -54,7 +54,7 @@ export class QuestionService {
         `${coreServiceApiUrl}${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.CREATE}`,
         multipleChoiceQuestionData
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {

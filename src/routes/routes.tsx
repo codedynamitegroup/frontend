@@ -1,6 +1,10 @@
 import qtype from "utils/constant/Qtype";
 
 export const routes = {
+  general: {
+    notFound: "*",
+    forbidden: "/forbidden"
+  },
   lecturer: {
     root: "/lecturer/*",
     calendar: "/lecturer/calendar",
@@ -48,10 +52,26 @@ export const routes = {
     },
     question_bank: {
       path: "/lecturer/question-bank-management",
+      detail: "/lecturer/question-bank-management/:categoryId",
       questions_list_of_category: {
         path: ":categoryId"
       },
       create_question: {
+        essay: {
+          create: "/lecturer/question-bank-management/:categoryId/create/essay"
+        },
+        multiple_choice: {
+          create: "/lecturer/question-bank-management/:categoryId/create/multiple-choice"
+        },
+        short_answer: {
+          create: "/lecturer/question-bank-management/:categoryId/create/short-answer"
+        },
+        true_false: {
+          create: "/lecturer/question-bank-management/:categoryId/create/true-false"
+        },
+        ai: {
+          create: "/lecturer/question-bank-management/:categoryId/create/ai"
+        },
         paths: Object.values(qtype)
           .map((value) => value.code)
           .map((code) => ({
@@ -115,7 +135,8 @@ export const routes = {
     exam: {
       detail: "/student/courses/:courseId/assignments/exams/:examId",
       take: "/student/courses/:courseId/assignments/exams/:examId/take",
-      review: "/student/courses/:courseId/assignments/exams/:examId/review"
+      review: "/student/courses/:courseId/assignments/exams/:examId/review",
+      submitSummary: "/student/courses/:courseId/assignments/exams/:examId/summary"
     },
     calendar: "/student/calendar"
   },
@@ -168,7 +189,9 @@ export const routes = {
       root: "/register"
     },
     forgot_password: {
-      root: "/forgot-password"
+      root: "/forgot-password",
+      verify_otp: "/forgot-password/verify-otp",
+      reset_password: "/forgot-password/reset-password"
     }
   },
   admin: {
@@ -178,9 +201,8 @@ export const routes = {
         root: "/admin/contests/edit/:contestId/*",
         details: "/admin/contests/edit/:contestId/details",
         problems: "/admin/contests/edit/:contestId/problems",
-        moderators: "/admin/contests/edit/:contestId/moderators",
+        advanced_settings: "/admin/contests/edit/:contestId/advanced-settings",
         signups: "/admin/contests/edit/:contestId/signups",
-        leaderboard: "/admin/contests/edit/:contestId/leaderboard",
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
       create: "/admin/contests/create"

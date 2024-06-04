@@ -182,6 +182,17 @@ export default function TakeExam() {
         });
   }, []);
 
+  const handleSubmitExam = () => {
+    navigate(
+      `${routes.student.exam.submitSummary
+        .replace(":courseId", courseId ?? examState.examDetail.courseId)
+        .replace(":examId", examId ?? examState.examDetail.id)}`,
+      {
+        replace: true
+      }
+    );
+  };
+
   // get current page question list
   React.useEffect(() => {
     const currentQuestionList = questionList
@@ -228,18 +239,18 @@ export default function TakeExam() {
     const slug = convertIdToSlug(questionId);
 
     if (index === questionPageIndex) {
-      // const element = document.getElementById(slug);
-      // element?.scrollIntoView({ behavior: "smooth" });
-      navigate(
-        `${routes.student.exam.take
-          .replace(":courseId", courseId ?? examState.examDetail.courseId)
-          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
-        {
-          replace: true
-        }
-      );
+      const element = document.getElementById(slug);
+      element?.scrollIntoView({ behavior: "smooth" });
+      // navigate(
+      //   `${routes.student.exam.take
+      //     .replace(":courseId", courseId ?? examState.examDetail.courseId)
+      //     .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+      //   {
+      //     replace: true
+      //   }
+      // );
     } else {
-      console.log(
+      navigate(
         `${routes.student.exam.take
           .replace(":courseId", courseId ?? examState.examDetail.courseId)
           .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
@@ -276,9 +287,18 @@ export default function TakeExam() {
     const firstFilteredQuestion = questionList
       .filter((question) => selectedQtype.includes(question.questionData.qtype))
       .at(0);
-    navigate(`${routes.student.exam.take}?page=${firstFilteredQuestion?.questionData.page || 0}`, {
-      replace: true
-    });
+
+    navigate(
+      `${routes.student.exam.take
+        .replace(":courseId", courseId ?? examState.examDetail.courseId)
+        .replace(
+          ":examId",
+          examId ?? examState.examDetail.id
+        )}?page=${firstFilteredQuestion?.questionData.page || 0}`,
+      {
+        replace: true
+      }
+    );
   }, [selectedQtype]);
 
   // Scroll to question
@@ -556,7 +576,7 @@ export default function TakeExam() {
                   (questionList.length > 0
                     ? questionList[questionList.length - 1].questionData.page
                     : -1) ? (
-                    <Button onClick={() => {}} variant='solid' color='primary'>
+                    <Button onClick={handleSubmitExam} variant='solid' color='primary'>
                       Kết thúc bài làm...
                     </Button>
                   ) : (
@@ -781,7 +801,7 @@ export default function TakeExam() {
                         <Pagination count={99} />
                       </Grid> */}
                       <Grid item justifyContent={"center"} xs={12}>
-                        <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
+                        <Button onClick={handleSubmitExam} variant='soft' color='primary' fullWidth>
                           Kết thúc bài làm...
                         </Button>
                       </Grid>

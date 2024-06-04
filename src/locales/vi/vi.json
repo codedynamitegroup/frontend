@@ -45,6 +45,7 @@
   "common_grade": "Điểm",
   "common_role": "Vai trò",
   "common_name": "Tên",
+  "common_phone": "Số điện thoại",
   "common_post": "Đăng",
   "common_find_by_col": "Tìm kiếm theo cột",
   "common_classify_category": "Phân loại",
@@ -147,6 +148,7 @@
   "common_topics": "Chủ đề",
   "common_view_details": "Xem chi tiết",
   "common_update_language": "Cập nhật ngôn ngữ",
+  "common_update": "Cập nhật",
   "register_certificate_course_success": "Đăng ký khóa học chứng chỉ {{courseName}} thành công",
   "register_certificate_course_fail": "Đăng ký khóa học chứng chỉ {{courseName}} thất bại",
   "common_view_this_course": "Xem khóa học này",
@@ -175,6 +177,7 @@
   "common_prizes": "Giải thưởng",
   "common_rules": "Quy tắc",
   "common_scoring": "Cách tính điểm",
+  "common_advanced_settings": "Cài đặt nâng cao",
 
   "side_bar_dashboard": "Trang chủ",
 
@@ -242,6 +245,7 @@
   "contest_programming_language_title": "Ngôn ngữ lập trình",
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
   "contest_preview_contest_details_page": "Xem trước trang chi tiết cuộc thi",
+  "contest_forum": "Diễn đàn",
 
   "contest_management_title": "Quản lý cuộc thi",
   "contest_details": "Chi tiết cuộc thi",
@@ -262,6 +266,10 @@
   "contest_end_time_tooltip": "Thời gian kết thúc cuộc thi. Nếu bạn không muốn thiết lập thời gian kết thúc, hãy đánh dấu vào ô bên dưới",
   "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
   "contest_is_public": "Công khai",
+  "contest_is_restricted_forum": "Hạn chế truy cập diễn đàn",
+  "contest_is_restricted_forum_tooltip": "Người tham gia có thể đăng câu hỏi nhưng không thể đăng câu trả lời. Chỉ người điều hành cuộc thi mới có quyền đăng câu trả lời. Cấu hình này cũng nên được thiết lập cho từng thách thức của cuộc thi.",
+  "contest_is_disabled_forum": "Tắt diễn đàn",
+  "contest_is_disabled_forum_tooltip": "Tab thảo luận sẽ bị tắt.",
   "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
   "contest_metadata_customization": "Tùy chỉnh thông tin",
   "contest_details_description": "Tùy chỉnh cuộc thi của bạn bằng cách cung cấp thông tin cần thiết để tạo trang chi tiết cuộc thi của bạn.",
@@ -308,6 +316,8 @@
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",
+  "certificate_registered": "Đã đăng ký",
+  "certificate_not_registered": "Chưa đăng ký",
 
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
   "dashboard_happening_contest": "Cuộc thi đang diễn ra",
@@ -461,6 +471,7 @@
 
   "email_required": "Email không được để trống",
   "email_invalid": "Email không hợp lệ",
+  "phone_number_invalid": "Số điện thoại không hợp lệ",
 
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",
@@ -780,7 +791,9 @@
 
   "type_number": "số",
 
+  "password_old_required": "Mật khẩu cũ không được để trống",
   "password_required": "Mật khẩu không được để trống",
+  "password_invalid": "Mật khẩu không hợp lệ",
   "password_confirm_required": "Xác nhận mật khẩu không được để trống",
   "password_confirm_not_match": "Mật khẩu xác nhận không khớp với mật khẩu đã nhập",
   "password_confirm_min_length": "Mật khẩu xác nhận phải chứa ít nhất {{lengthNum}} ký tự",
@@ -805,5 +818,11 @@
 
   "take_exam_question_navigation_title": "Chuyển hướng đến câu hỏi",
   "take_exam_question_name": "Câu hỏi",
-  "take_exam_question_sort_question": "Lọc câu hỏi"
+  "take_exam_question_sort_question": "Lọc câu hỏi",
+
+  "common_answer_saved": "Đã lưu câu trả lời",
+  "common_not_answered": "Chưa trả lời",
+  "common_answered": "Đã trả lời",
+  "common_score_can_achieve": "Điểm có thể đạt được",
+  "common_flagged_question": "Câu hỏi đã gắn cờ"
 }
