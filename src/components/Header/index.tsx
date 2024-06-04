@@ -130,6 +130,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     if (!loggedUser) {
       return false;
     }
+    if (!loggedUser.roles) {
+      return false;
+    }
     return loggedUser.roles.some(
       (role) => role.name === ERoleName.STUDENT_MOODLE || role.name === ERoleName.TEACHER_MOODLE
     );
