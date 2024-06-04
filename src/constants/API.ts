@@ -28,7 +28,8 @@ export const API = {
       DELETE_BY_ID: "/core/contests/:id",
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular",
-      LEADERBOARD: "/core/contests/:id/leaderboard"
+      LEADERBOARD: "/core/contests/:id/leaderboard",
+      GET_USERS_OF_CONTEST: "/core/contests/:id/users"
     },
     QUESTION: {
       DEFAULT: "/core/questions",

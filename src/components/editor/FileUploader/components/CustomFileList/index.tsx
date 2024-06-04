@@ -25,6 +25,7 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
       console.error("File not found");
     }
   };
+
   return (
     <Box sx={{ flexGrow: 1, maxWidth: 300 }}>
       {treeView ? (
@@ -33,7 +34,7 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
-          {files.length != 0 && (
+          {files.length !== 0 && (
             <TreeItem nodeId='root' label='Files'>
               {files.map((file, index) => (
                 <div className='thumbnail' key={index}>
@@ -41,7 +42,9 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
                     key={file.id}
                     href={file.downloadUrl}
                     style={{
-                      display: "block"
+                      display: "block",
+                      wordBreak: "break-word",
+                      whiteSpace: "normal"
                     }}
                     onClick={(e) => {
                       e.preventDefault();
@@ -62,7 +65,9 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
               key={file.id}
               href={file.downloadUrl}
               style={{
-                display: "block"
+                display: "block",
+                wordBreak: "break-word",
+                whiteSpace: "normal"
               }}
               onClick={(e) => {
                 e.preventDefault();

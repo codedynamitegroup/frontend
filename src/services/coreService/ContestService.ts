@@ -162,4 +162,50 @@ export class ContestService {
       });
     }
   }
+
+  static async deleteContest(id: string) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.CORE.CONTEST.DELETE_BY_ID.replace(":id", id)}`);
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async getSignUpsOfContest(
+    contestId: string,
+    pageNo: number,
+    pageSize: number,
+    fetchAll: boolean = false
+  ) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.CONTEST.GET_USERS_OF_CONTEST.replace(":id", contestId)}`, {
+        params: {
+          pageNo,
+          pageSize,
+          fetchAll
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

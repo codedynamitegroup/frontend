@@ -3,7 +3,7 @@ import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
 import useBoxDimensions from "hooks/useBoxDimensions";
@@ -25,6 +25,8 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
+import { useDispatch } from "react-redux";
+import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 
 interface Props {
   qtype: String;
@@ -120,6 +122,12 @@ const CreateTrueFalseQuestion = (props: Props) => {
     }
   });
 
+  const location = useLocation();
+  const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const categoryName = location.state?.categoryName;
+  const categoryId = useParams()["categoryId"];
+
   const submitHandler = async (data: any) => {
     console.log(data);
     setSubmitLoading(true);
@@ -137,7 +145,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
       qType: "TRUE_FALSE",
 
       answers: undefined,
-
+      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       single: true,
       shuffleAnswers: false,
       showStandardInstructions: formSubmittedData.showInstructions.toString(),
@@ -151,6 +159,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
     QuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
+        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
         setSnackbarType(AlertType.Success);
         setSnackbarContent(
           t("question_management_create_question_success", {
@@ -170,7 +179,20 @@ const CreateTrueFalseQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
+        if (isQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
+  };
+
+  const dispatch = useDispatch();
+  const getQuestionByQuestionId = async (questionId: string) => {
+    try {
+      const response = await QuestionService.getQuestionsByQuestionId(questionId);
+      dispatch(setQuestionCreate(response));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -207,14 +229,14 @@ const CreateTrueFalseQuestion = (props: Props) => {
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <Box className={classes.tabWrapper}>
-              {props.insideCrumb ? (
+              {isQuestionBank ? (
                 <ParagraphBody
                   className={classes.breadCump}
                   colorname='--gray-50'
                   fontWeight={"600"}
                 >
                   <span
-                    onClick={() => navigate("/lecturer/question-bank-management")}
+                    onClick={() => navigate(routes.lecturer.question_bank.path)}
                     translation-key='common_question_bank'
                   >
                     {i18next.format(t("common_question_bank"), "firstUppercase")}
@@ -225,7 +247,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
                       navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
                     }
                   >
-                    Học OOP
+                    {categoryName}
                   </span>{" "}
                   {"> "}
                   <span>Tạo câu hỏi</span>

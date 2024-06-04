@@ -182,7 +182,16 @@ export default function TakeExam() {
         });
   }, []);
 
-  const handleSubmitExam = () => {};
+  const handleSubmitExam = () => {
+    navigate(
+      `${routes.student.exam.submitSummary
+        .replace(":courseId", courseId ?? examState.examDetail.courseId)
+        .replace(":examId", examId ?? examState.examDetail.id)}`,
+      {
+        replace: true
+      }
+    );
+  };
 
   // get current page question list
   React.useEffect(() => {
@@ -567,7 +576,7 @@ export default function TakeExam() {
                   (questionList.length > 0
                     ? questionList[questionList.length - 1].questionData.page
                     : -1) ? (
-                    <Button onClick={() => {}} variant='solid' color='primary'>
+                    <Button onClick={handleSubmitExam} variant='solid' color='primary'>
                       Kết thúc bài làm...
                     </Button>
                   ) : (
@@ -792,7 +801,7 @@ export default function TakeExam() {
                         <Pagination count={99} />
                       </Grid> */}
                       <Grid item justifyContent={"center"} xs={12}>
-                        <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
+                        <Button onClick={handleSubmitExam} variant='soft' color='primary' fullWidth>
                           Kết thúc bài làm...
                         </Button>
                       </Grid>

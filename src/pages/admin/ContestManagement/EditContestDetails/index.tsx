@@ -21,6 +21,8 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { ContestService } from "services/coreService/ContestService";
 import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
+import { ContestUserEntity } from "models/coreService/entity/ContestUserEntity";
+import NotFoundPage from "pages/common/NotFoundPage";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -51,6 +53,8 @@ const EditContestDetails = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const [defaultContestName, setDefaultContestName] = useState("");
+
+  const [signUps, setSignUps] = useState<ContestUserEntity[]>([]);
 
   const tabs: string[] = useMemo(() => {
     return [
@@ -189,6 +193,15 @@ const EditContestDetails = () => {
     [setValue]
   );
 
+  const handleGetSignUpsByContestId = useCallback(async (id: string) => {
+    try {
+      const signUpsResponse = await ContestService.getSignUpsOfContest(id, 1, 10, true);
+      console.log("signUpsResponse", signUpsResponse);
+    } catch (error: any) {
+      console.error("error", error);
+    }
+  }, []);
+
   const handleUpdateContest = useCallback(async (id: string, data: UpdateContestCommand) => {
     try {
       const updateContestResponse = await ContestService.updateContest(id, data);
@@ -204,9 +217,6 @@ const EditContestDetails = () => {
     } catch (error: any) {
       console.error("error", error);
       if (error.code === 401 || error.code === 403) {
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Error);
-        setContent("Please authenticate");
       }
       // Show snackbar here
     }
@@ -324,23 +334,36 @@ const EditContestDetails = () => {
               />
             </Tabs>
           </Box>
-          <Routes>
-            <Route
-              path={"*"}
-              element={
-                <ContestEditDetails
-                  control={control}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                />
-              }
-            />
-            <Route path={"problems"} element={<ContestEditProblems />} />
-            <Route path={"advanced_settings"} element={<ContestEditAdvancedSettings />} />
-            <Route path={"signups"} element={<ContestEditSignUps />} />
-            <Route path={"statistics"} element={<ContestEditStatistics />} />
-          </Routes>
+          <Box>
+            <Routes>
+              <Route
+                path={"details"}
+                element={
+                  <ContestEditDetails
+                    control={control}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                }
+              />
+              <Route path={"problems"} element={<ContestEditProblems />} />
+              <Route
+                path={"advanced-settings"}
+                element={
+                  <ContestEditAdvancedSettings
+                    control={control}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                }
+              />
+              <Route path={"signups"} element={<ContestEditSignUps />} />
+              <Route path={"statistics"} element={<ContestEditStatistics />} />
+              <Route path={"*"} element={<NotFoundPage />} />
+            </Routes>
+          </Box>
         </Card>
         <Box
           sx={{

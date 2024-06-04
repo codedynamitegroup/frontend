@@ -41,9 +41,12 @@ import PersistLogin from "components/common/PersistLogin";
 import { useSelector } from "react-redux";
 import { selectedLoading } from "reduxes/Loading";
 import LoadingScreen from "components/common/LoadingScreen";
-import ContestManagement from "pages/client/admin/ContestManagement/ContestManagement";
-import CreateContest from "pages/client/admin/ContestManagement/CreateContest";
-import EditContestDetails from "pages/client/admin/ContestManagement/EditContestDetails";
+import ContestManagement from "pages/admin/ContestManagement/ContestManagement";
+import CreateContest from "pages/admin/ContestManagement/CreateContest";
+import EditContestDetails from "pages/admin/ContestManagement/EditContestDetails";
+import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
+import { ERoleName } from "models/authService/entity/role";
+import RequireAuth from "components/common/RequireAuth";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -126,6 +129,24 @@ const router = createHashRouter(
           element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
         />
 
+        {/*  question bank */}
+        <Route
+          path={routes.lecturer.question_bank.create_question.essay.create}
+          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.multiple_choice.create}
+          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.short_answer.create}
+          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+        />
+        <Route
+          path={routes.lecturer.question_bank.create_question.true_false.create}
+          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+        />
+
         <Route
           path={routes.lecturer.question.ai.create}
           element={<AIQuestionCreated />}
@@ -136,11 +157,17 @@ const router = createHashRouter(
         <Route path={routes.student.root} element={<StudentCoursesManagement />} />
         <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
         <Route path={routes.student.exam.take} element={<TakeExam />} />
+        <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
         <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
-        <Route path={routes.admin.contest.root} element={<ContestManagement />} />
+        <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
+          <Route path={routes.admin.contest.root} element={<ContestManagement />} />
+          <Route path={routes.admin.contest.create} element={<CreateContest />} />
+          <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
+        </Route>
+        {/* <Route path={routes.admin.contest.root} element={<ContestManagement />} />
         <Route path={routes.admin.contest.create} element={<CreateContest />} />
-        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
+        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} /> */}
       </Route>
     </Route>
   )
