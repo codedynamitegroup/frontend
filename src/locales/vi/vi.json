@@ -178,8 +178,12 @@
   "common_rules": "Quy tắc",
   "common_scoring": "Cách tính điểm",
   "common_advanced_settings": "Cài đặt nâng cao",
+  "common_no": "STT",
+  "common_email": "Email",
 
   "side_bar_dashboard": "Trang chủ",
+  "side_bar_contest_management": "Quản lý cuộc thi",
+  "side_bar_user_management": "Quản lý người dùng",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -245,6 +249,8 @@
   "contest_programming_language_title": "Ngôn ngữ lập trình",
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
   "contest_preview_contest_details_page": "Xem trước trang chi tiết cuộc thi",
+  "contest_forum": "Diễn đàn",
+  "contest_sign_up_date": "Ngày đăng ký",
 
   "contest_management_title": "Quản lý cuộc thi",
   "contest_details": "Chi tiết cuộc thi",
@@ -265,6 +271,10 @@
   "contest_end_time_tooltip": "Thời gian kết thúc cuộc thi. Nếu bạn không muốn thiết lập thời gian kết thúc, hãy đánh dấu vào ô bên dưới",
   "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
   "contest_is_public": "Công khai",
+  "contest_is_restricted_forum": "Hạn chế truy cập diễn đàn",
+  "contest_is_restricted_forum_tooltip": "Người tham gia có thể đăng câu hỏi nhưng không thể đăng câu trả lời. Chỉ người điều hành cuộc thi mới có quyền đăng câu trả lời. Cấu hình này cũng nên được thiết lập cho từng thách thức của cuộc thi.",
+  "contest_is_disabled_forum": "Tắt diễn đàn",
+  "contest_is_disabled_forum_tooltip": "Tab thảo luận sẽ bị tắt.",
   "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
   "contest_metadata_customization": "Tùy chỉnh thông tin",
   "contest_details_description": "Tùy chỉnh cuộc thi của bạn bằng cách cung cấp thông tin cần thiết để tạo trang chi tiết cuộc thi của bạn.",

@@ -14,6 +14,7 @@ import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmis
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { useIsMounted } from "utils/isMounted";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { roundedNumber } from "utils/number";
 
 export default function ProblemDetailSubmission() {
   const { t } = useTranslation();
@@ -23,7 +24,6 @@ export default function ProblemDetailSubmission() {
   const pageNum = 0;
 
   const [codeSubmissions, setCodeSubmissions] = useState<CodeSubmissionDetailEntity[]>();
-  const [triggerCron, setTriggerCron] = useState<boolean>(false);
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -45,7 +45,7 @@ export default function ProblemDetailSubmission() {
       }
 
     if (isGrading === true) {
-      await sleep(3500);
+      await sleep(2500);
       if (codeQuestion !== null && codeQuestion.id !== undefined)
         CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
           .then((data: CodeSubmissionPaginationList) => {
@@ -74,7 +74,7 @@ export default function ProblemDetailSubmission() {
     returnObjects: true
   }) as Array<string>;
   const customColumns = ["status", "language", "runtime", "memory"];
-  const data =
+  const data: Array<{ [key: string]: any; notClickAble?: boolean }> =
     codeSubmissions === undefined
       ? []
       : codeSubmissions.map((value, index) => {
@@ -82,6 +82,8 @@ export default function ProblemDetailSubmission() {
           return {
             id: index,
             codeSubmissionId: value.id,
+            gradingStatus: value.gradingStatus,
+            notClickAble: value.gradingStatus === "GRADED" ? false : true,
             status: (
               <ParagraphBody
                 fontWeight={"700"}
@@ -100,7 +102,7 @@ export default function ProblemDetailSubmission() {
             runtime:
               value.avgRuntime === undefined || value.gradingStatus === "GRADING"
                 ? "N/A"
-                : `${value.avgRuntime}s`,
+                : `${roundedNumber(value.avgRuntime, 3)}s`,
             memory:
               value.avgMemory === undefined || value.gradingStatus === "GRADING"
                 ? "N/A"
@@ -174,17 +176,18 @@ export default function ProblemDetailSubmission() {
 
   const [submissionDetail, setsubmissionDetail] = useState(true);
   const handlesubmissionDetail = (rowId: number) => {
-    const codeSubmissionId = data[rowId].codeSubmissionId;
-
-    CodeSubmissionService.getDetailCodeSubmission(codeSubmissionId)
-      .then((data: CodeSubmissionDetailEntity) => {
-        setLanguageName(mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name);
-        if (languageName !== undefined && codeQuestion !== null) {
-          setDetail(data);
-          setsubmissionDetail(!submissionDetail);
-        }
-      })
-      .catch((err) => console.error(err));
+    const codeSubmisison = data[rowId];
+    const codeSubmissionId = codeSubmisison.codeSubmissionId;
+    if (codeSubmisison.gradingStatus === "GRADED")
+      CodeSubmissionService.getDetailCodeSubmission(codeSubmissionId)
+        .then((data: CodeSubmissionDetailEntity) => {
+          setLanguageName(mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name);
+          if (languageName !== undefined && codeQuestion !== null) {
+            setDetail(data);
+            setsubmissionDetail(!submissionDetail);
+          }
+        })
+        .catch((err) => console.error(err));
   };
 
   return (

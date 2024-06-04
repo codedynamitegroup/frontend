@@ -33,12 +33,12 @@ export class UserService {
       });
     }
   }
-  static async getUserByEmail(email: string) {
+  static async getUserByEmail() {
     try {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_USER_BY_EMAIL.replace(":email", email)}`);
+      }).get(`${API.AUTH.GET_USER_BY_EMAIL}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -200,7 +200,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+      }).post(`${API.AUTH.RESET_PASSWORD}`, {
         email: resetPasswordUserRequest.email,
         newPassword: resetPasswordUserRequest.password,
         otp: resetPasswordUserRequest.otp

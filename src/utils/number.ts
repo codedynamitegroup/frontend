@@ -17,4 +17,10 @@ const standardlizeDecimalNumber = (number: number, point = ".") => {
   return "0";
 };
 
-export { standardlizeNumber, standardlizeDecimalNumber };
+const roundedNumber = (number: number | undefined, scale: number): number | undefined => {
+  const pow = Math.pow(10, scale);
+  if (number === undefined) return number;
+  return Math.round((number + Number.EPSILON) * pow) / pow;
+};
+
+export { standardlizeNumber, standardlizeDecimalNumber, roundedNumber };

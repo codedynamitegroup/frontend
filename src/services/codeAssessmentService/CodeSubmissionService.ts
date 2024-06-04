@@ -1,9 +1,10 @@
-import api from "utils/api";
 import { API } from "constants/API";
 import { UUID } from "crypto";
-import { code } from "@uiw/react-md-editor";
+import api from "utils/api";
+import { encodeBase64 } from "utils/base64";
 
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
+const gateWayServiceApiUrl = process.env.REACT_APP_GATEWAY_SERVICE_API_URL || "";
 
 export class CodeSubmissionService {
   static async getDetailCodeSubmission(codeQuestionId: UUID) {
@@ -13,6 +14,41 @@ export class CodeSubmissionService {
         // isAuthorization: true
       }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.GET_BY_ID.replace(":id", codeQuestionId)}`);
       if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async createCodeSubmission(
+    codeQuestionId: UUID,
+    languageId: UUID,
+    headCode: string,
+    bodyCode: string,
+    tailCode: string
+  ) {
+    const headCode64 = encodeBase64(headCode);
+    const tailCode64 = encodeBase64(tailCode);
+    const bodyCode64 = encodeBase64(bodyCode);
+    const callbackUrl = `${gateWayServiceApiUrl}/code-assessment/code-submission/test-case-token`;
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl
+        // isAuthorization: true
+      }).post(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.DEFAULT}`, {
+        codeQuestionId,
+        languageId,
+        headCode: headCode64,
+        tailCode: tailCode64,
+        bodyCode: bodyCode64,
+        callbackUrl
+      });
+      if (response.status === 202) {
         return response.data;
       }
     } catch (error: any) {

@@ -10,9 +10,10 @@ import { BtnType } from "components/common/buttons/Button";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { UserService } from "services/authService/UserService";
 import LoadButton from "components/common/buttons/LoadingButton";
+import { useDispatch } from "react-redux";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormDataUpdatePassword {
   oldPassword: string;
@@ -77,10 +78,8 @@ const UserPasswordChangeDialog = ({
   } = useForm<IFormDataUpdatePassword>({
     resolver: yupResolver(schema)
   });
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [isUpdatedPasswordLoading, setIsUpdatedPasswordLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleUpdatePassword = (data: IFormDataUpdatePassword) => {
     setIsUpdatedPasswordLoading(true);
@@ -89,16 +88,11 @@ const UserPasswordChangeDialog = ({
       newPassword: data.newPassword
     })
       .then((res) => {
-        console.log(res);
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật mật khẩu thành công");
-        setAlertType(AlertType.Success);
+        dispatch(setSuccessMess("Password updated successfully"));
       })
       .catch((error) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật mật khẩu thất bại!! Hãy thử lại");
-        setAlertType(AlertType.Error);
-        console.error("Failed to update profile", {
+        dispatch(setErrorMess("Password updated failed. Please try again."));
+        console.error("Failed to update password", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
@@ -178,12 +172,6 @@ const UserPasswordChangeDialog = ({
             </LoadButton>
           </Grid>
         </Grid>
-        <SnackbarAlert
-          open={openSnackbarAlert}
-          setOpen={setOpenSnackbarAlert}
-          type={alertType}
-          content={alertContent}
-        />
       </Box>
     </CustomDialog>
   );

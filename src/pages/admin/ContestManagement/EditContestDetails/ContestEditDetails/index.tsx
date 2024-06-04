@@ -44,7 +44,8 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
         direction='column'
         className={classes.container}
         sx={{
-          margin: "0px 20px 20px 20px"
+          margin: "0px 20px 20px 20px",
+          width: "calc(100% - 40px)"
         }}
       >
         <Grid item xs={12}>

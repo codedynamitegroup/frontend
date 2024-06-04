@@ -28,7 +28,8 @@ export const API = {
       DELETE_BY_ID: "/core/contests/:id",
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular",
-      LEADERBOARD: "/core/contests/:id/leaderboard"
+      LEADERBOARD: "/core/contests/:id/leaderboard",
+      GET_USERS_OF_CONTEST: "/core/contests/:id/users"
     },
     QUESTION: {
       DEFAULT: "/core/questions",
@@ -131,10 +132,11 @@ export const API = {
     REFRESH_TOKEN: "/auth/users/refresh-token",
     LOGOUT: "/auth/users/logout",
     REGISTER: "/auth/users/register",
-    GET_USER_BY_EMAIL: "/auth/users/get-by-email/:email",
+    GET_USER_BY_EMAIL: "/auth/users/get-by-email",
     FORGOT_PASSWORD: "/auth/users/forgot-password/:email",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
     UPDATE_PROFILE_USER: "/auth/users",
-    CHANGE_PASSWORD: "/auth/users/forgot-password/change-password"
+    CHANGE_PASSWORD: "/auth/users/change-password",
+    RESET_PASSWORD: "/auth/users/forgot-password/change-password"
   }
 };

@@ -20,6 +20,8 @@ import VerifyOTP from "./ForgotPassword/components/VerifyOTP";
 import ResetPassword from "./ForgotPassword/components/ResetPassword";
 import ForbiddenPage from "pages/common/ForbiddenPage";
 import NotFoundPage from "pages/common/NotFoundPage";
+import RequireAuth from "components/common/RequireAuth";
+import { ERoleName } from "models/authService/entity/role";
 
 type Props = {};
 
@@ -53,7 +55,9 @@ const UserHomepage = (props: Props) => {
             <Route path={"forgot-password"} element={<ForgotPassword />} />
             <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
-            <Route path={"user/information"} element={<UserInformation />} />
+            <Route element={<RequireAuth availableRoles={[ERoleName.USER]} />}>
+              <Route path={"user/information"} element={<UserInformation />} />
+            </Route>
             <Route path={"forbidden"} element={<ForbiddenPage />} />
             <Route path={"*"} element={<NotFoundPage />} />
           </Routes>

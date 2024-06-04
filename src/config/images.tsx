@@ -46,6 +46,8 @@ import avatarGirlDefault from "assets/img/avatar/default-avatar-girl.svg";
 import notFoundError from "assets/img/error/NotFoundError.svg";
 import forbiddenError from "assets/img/error/ForbiddenError.svg";
 
+import contest from "assets/img/sidebar/contest.svg";
+
 const images = {
   course: {
     courseAssignment,
@@ -75,7 +77,8 @@ const images = {
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo,
   avatar: { avatarBoyDefault, avatarGirlDefault },
-  error: { notFoundError, forbiddenError }
+  error: { notFoundError, forbiddenError },
+  contest
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
 export { notificaionIcon };
