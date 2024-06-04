@@ -1,24 +1,24 @@
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 import {
+  IconButton,
+  Paper,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  Paper,
-  IconButton,
   Tooltip
 } from "@mui/material";
-import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
+import classes from "./styles.module.scss";
 
 interface TableTemplateProps {
-  data: Array<{ [key: string]: any }>;
+  data: Array<{ [key: string]: any; notClickAble?: boolean }>;
   customHeading: string[];
   customColumns: string[];
   isActionColumn: boolean;
@@ -135,9 +135,13 @@ function UserTableTemplate({
                         <IconButton
                           aria-label='edit'
                           size='medium'
-                          onClick={() => {
-                            handleEditClick(row.id);
-                          }}
+                          onClick={
+                            !row.notClickAble
+                              ? () => {
+                                  handleEditClick(row.id);
+                                }
+                              : undefined
+                          }
                         >
                           <EditIcon />
                         </IconButton>

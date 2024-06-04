@@ -1,32 +1,30 @@
+import SearchIcon from "@mui/icons-material/Search";
 import { Avatar, Box, Chip, Container, Grid, Stack } from "@mui/material";
-import classes from "./styles.module.scss";
-import { ChangeEvent, useEffect, useState } from "react";
+import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import BasicSelect from "components/common/select/BasicSelect";
 import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
-import ParagraphBody from "components/text/ParagraphBody";
-import images from "config/images";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import SearchIcon from "@mui/icons-material/Search";
-import InputAdornment from "@mui/material/InputAdornment";
-import BasicSelect from "components/common/select/BasicSelect";
+import { useAppDispatch, useAppSelector } from "hooks";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from "hooks";
 import {
-  setLoading as setLoadingAlgorithm,
-  setAlgorithmTagList
+  setAlgorithmTagList,
+  setLoading as setLoadingAlgorithm
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
+import classes from "./styles.module.scss";
 
+import cloneDeep from "lodash.clonedeep";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
-import { TagService } from "services/codeAssessmentService/TagService";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import {
   setDifficulty,
-  setSolved,
-  setSearchKey
+  setSearchKey,
+  setSolved
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
-import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { TagService } from "services/codeAssessmentService/TagService";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
-import cloneDeep from "lodash.clonedeep";
 
 const ListProblem = () => {
   const [levelProblem, setlevelProblem] = useState("0");
