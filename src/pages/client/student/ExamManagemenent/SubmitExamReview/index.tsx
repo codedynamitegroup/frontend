@@ -28,15 +28,27 @@ import Table from "@mui/joy/Table";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Chip } from "@mui/joy";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
+import moment from "moment";
 
 const drawerWidth = 370;
 
 const SubmitExamSummary = () => {
   const examId = useParams<{ examId: string }>().examId;
+  const storageExamID = useAppSelector((state) => state.takeExam.examId);
+  const startTime = useAppSelector((state) => state.takeExam.startAt);
+  const examData = useAppSelector((state) => state.takeExam.examData);
+
   const courseId = useParams<{ courseId: string }>().courseId;
   const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [timeLimit, setTimeLimit] = React.useState(() => {
+    if (!startTime) return 0;
+
+    const startTimeMil = new Date(startTime).getTime();
+
+    return startTimeMil + (examData?.timeLimit || 0) * 1000;
+  });
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -68,6 +80,27 @@ const SubmitExamSummary = () => {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
+  const getTimeUntil = (inputTime: any) => {
+    if (!inputTime) {
+      return;
+    }
+    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+    console.log("inputTime", inputTime);
+    if (time < 0) {
+      return;
+    } else {
+      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+      setMinutes(Math.floor((time / 1000 / 60) % 60));
+      setSeconds(Math.floor((time / 1000) % 60));
+    }
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLimit]);
+
   const questionList = useAppSelector((state) => state.takeExam.questionList);
   const handleQuestionNavigateButton = (question: any) => {
     const slug = convertUuidToHashSlug(question.questionData.id);
@@ -88,6 +121,26 @@ const SubmitExamSummary = () => {
     { value: "Câu hỏi", width: "40%" },
     { value: "Trạng thái", width: "" }
   ];
+
+  const [submitButtonLoading, setSubmitButtonLoading] = React.useState(false);
+  const submitExamHandler = async () => {
+    setSubmitButtonLoading(true);
+
+    questionList.forEach((question) => {
+      if (
+        question.questionData.qtype === "ESSAY" &&
+        question.files !== undefined &&
+        question.files.length > 0
+      ) {
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    if (examId !== storageExamID) {
+      // navigate(routes.student.exam.take.replace(":courseId", courseId).replace(":examId", examId));
+    }
+  }, []);
 
   return (
     <>
@@ -273,7 +326,13 @@ const SubmitExamSummary = () => {
             >
               Phải nộp bài trước thứ hai, ngày 3, tháng 6, 2024, 23:59 sáng
             </ParagraphBody>
-            <Button sx={{ width: "fit-content" }}>Nộp bài và hoàn thành</Button>
+            <Button
+              sx={{ width: "fit-content" }}
+              onClick={submitExamHandler}
+              loading={submitButtonLoading}
+            >
+              Nộp bài và hoàn thành
+            </Button>
           </Box>
 
           <Drawer
@@ -368,18 +427,6 @@ const SubmitExamSummary = () => {
                           </Badge>
                         </Grid>
                       ))}
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                      {/* <Grid item justifyContent={"center"}>
-                        <Pagination count={99} />
-                      </Grid> */}
-                      <Grid item justifyContent={"center"} xs={12}>
-                        <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
-                          Kết thúc bài làm...
-                        </Button>
-                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>

@@ -37,7 +37,7 @@ import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/Ex
 const persistConfig = {
   key: "takeExam",
   storage,
-  whitelist: ["questionList", "examId"],
+  whitelist: ["questionList", "examId", "startAt", "endAt", "examData"],
   debug: true
 };
 const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> = persistReducer(

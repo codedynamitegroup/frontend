@@ -68,19 +68,20 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
 
         try {
           let url = "";
+          console.log("file uploader file", file);
 
           // upload to object storage if auto upload is disabled
           // (remember to revoke to cleanup after upload to CDN)
           // else upload to cloudinary if auto upload is enabled
-          if (stopAutoUpload) url = URL.createObjectURL(file);
-          else url = await uploadToCloudinary(file);
+          // if (stopAutoUpload) url = URL.createObjectURL(file);
+          url = await uploadToCloudinary(file);
 
           // if using related object, dispatch the file to the related object
           if (relatedId) {
             dispatch(
               relatedDispatch({
                 id: relatedId,
-                fileUrl: url.slice(5), // slice blob: from url
+                fileUrl: url, // slice blob: from url
                 fileName: incommingFiles[i].name
               })
             );
@@ -123,8 +124,6 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
   const onDelete = (id: FileMosaicProps["id"]) => {
     // get the file url to be deleted
     let deletingFileUrl = extFiles.find((f) => f.id === id)?.downloadUrl;
-    deletingFileUrl =
-      deletingFileUrl?.slice(0, 4) === "blob" ? deletingFileUrl.slice(5) : deletingFileUrl;
 
     // remove from redux
     dispatch(relatedRemoveDispatch({ id: relatedId, fileUrl: deletingFileUrl }));
@@ -203,13 +202,6 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
         maxFileSize={maxFileSize ? maxFileSize : 2998000 * 20}
         maxFiles={maxFiles === -1 ? undefined : maxFiles}
         label={t("drag_drop_file_placeholder")}
-        // accept=".png,image/*, video/*"
-        // uploadConfig={{
-        //   autoUpload: true,
-        //   url: `https://api.cloudinary.com/v1_1/${cloudinaryName}/upload`,
-        //   method: "POST",
-        //   cleanOnUpload: true
-        // }}
         onUploadStart={handleStart}
         onUploadFinish={handleFinish}
         onChange={updateFiles}
@@ -255,17 +247,15 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
 
 // fetch file from url of current site and convert to ExtFile
 const convertToFile = async (url: string, filename: string) => {
-  console.log("file", url);
-  const response = await fetch(url);
+  const response = await fetch(url, { method: "HEAD" });
+  const mimeType = response.headers.get("content-type");
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  console.log("Response MIME type:", response.headers.get("Content-Type"));
-
   const blob = await response.blob();
-  const file = new File([blob], filename);
+  const file = new File([blob], filename, { type: blob.type });
 
   const newExtFile: ExtFile = {
     file,

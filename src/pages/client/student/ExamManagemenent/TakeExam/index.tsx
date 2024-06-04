@@ -41,14 +41,14 @@ import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { parse as uuidParse } from "uuid";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAppSelector } from "hooks";
 import { setExam } from "reduxes/TakeExam";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import Checkbox from "@mui/joy/Checkbox";
-import { RootState } from "store";
 import Heading2 from "components/text/Heading2";
+import moment from "moment";
 
 const drawerWidth = 370;
 
@@ -83,8 +83,9 @@ const drawerWidth = 370;
 
 export default function TakeExam() {
   const examId = useParams<{ examId: string }>().examId;
+  const storageExamID = useAppSelector((state) => state.takeExam.examId);
+
   const courseId = useParams<{ courseId: string }>().courseId;
-  const examState = useSelector((state: RootState) => state.exam);
 
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
@@ -99,6 +100,8 @@ export default function TakeExam() {
   }
   const dispatch = useDispatch();
   const questionList = useAppSelector((state) => state.takeExam.questionList);
+  const examData = useAppSelector((state) => state.takeExam.examData);
+  const startTime = useAppSelector((state) => state.takeExam.startAt);
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
   const [drawerVariant, setDrawerVariant] = React.useState<
@@ -110,26 +113,33 @@ export default function TakeExam() {
   const [hours, setHours] = React.useState(0);
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
+  const [timeLimit, setTimeLimit] = React.useState(() => {
+    if (!startTime) return 0;
 
-  // const [timeLimit, setTimeLimit] = React.useState(new Date().getTime() + 3600000 * 10);
+    const startTimeMil = new Date(startTime).getTime();
 
-  // const getTime = React.useCallback(() => {
-  //   const now = new Date().getTime();
-  //   const distance = timeLimit - now;
+    return startTimeMil + (examData?.timeLimit || 0) * 1000;
+  });
+  const getTimeUntil = (inputTime: any) => {
+    if (!inputTime) {
+      return;
+    }
+    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+    console.log("inputTime", inputTime);
+    if (time < 0) {
+      return;
+    } else {
+      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+      setMinutes(Math.floor((time / 1000 / 60) % 60));
+      setSeconds(Math.floor((time / 1000) % 60));
+    }
+  };
 
-  //   if (distance > 0) {
-  //     setHours(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-  //     setMinutes(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-  //     setSeconds(Math.floor((distance % (1000 * 60)) / 1000));
-  //   }
-  // }, [timeLimit]);
+  React.useEffect(() => {
+    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
 
-  // Handle time countdown
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => getTime(), 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [getTime, hours, minutes, seconds, timeLimit]);
+    return () => clearInterval(interval);
+  }, [timeLimit]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -155,12 +165,11 @@ export default function TakeExam() {
   });
 
   // get whole question list if storage is empty (first time load page)
+  // start the timer
   React.useEffect(() => {
-    if (questionList === undefined || questionList?.length <= 0)
-      ExamService.getExamQuestionById(examId ?? examState.examDetail.id, null)
+    if (questionList === undefined || questionList?.length <= 0 || examId !== storageExamID)
+      ExamService.getExamQuestionById(examId ?? examData.id, null)
         .then((res) => {
-          console.log("get whole list", res);
-
           const questionFromAPI = res.questions.map((question: GetQuestionExam, index: number) => {
             return {
               flag: false,
@@ -170,9 +179,16 @@ export default function TakeExam() {
               files: []
             };
           });
+
+          // const startTime = new Date(new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" }));
+          const startTime = new Date();
+          console.log("startTIme", startTime);
+
+          setTimeLimit(startTime.getTime() + (examData?.timeLimit || 0) * 1000);
           dispatch(
             setExam({
-              examId: examId ?? examState.examDetail.id,
+              examId: examId ?? examData.id,
+              startAt: startTime.toISOString(),
               questionList: questionFromAPI
             })
           );
@@ -185,8 +201,8 @@ export default function TakeExam() {
   const handleSubmitExam = () => {
     navigate(
       `${routes.student.exam.submitSummary
-        .replace(":courseId", courseId ?? examState.examDetail.courseId)
-        .replace(":examId", examId ?? examState.examDetail.id)}`,
+        .replace(":courseId", courseId ?? examData.courseId)
+        .replace(":examId", examId ?? examData.id)}`,
       {
         replace: true
       }
@@ -231,7 +247,7 @@ export default function TakeExam() {
       .catch((err) => {
         console.log(err);
       });
-  }, [questionPageIndex]);
+  }, [questionPageIndex, storageExamID]);
 
   // back - forward button
   const handleQuestionNavigateButton = (questionId: string) => {
@@ -245,8 +261,8 @@ export default function TakeExam() {
     } else {
       navigate(
         `${routes.student.exam.take
-          .replace(":courseId", courseId ?? examState.examDetail.courseId)
-          .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
+          .replace(":courseId", courseId ?? examData.courseId)
+          .replace(":examId", examId ?? examData.id)}?page=${index}#${slug}`,
         {
           replace: true
         }
@@ -288,10 +304,10 @@ export default function TakeExam() {
 
     navigate(
       `${routes.student.exam.take
-        .replace(":courseId", courseId ?? examState.examDetail.courseId)
+        .replace(":courseId", courseId ?? examData.courseId)
         .replace(
           ":examId",
-          examId ?? examState.examDetail.id
+          examId ?? examData.id
         )}?page=${firstFilteredQuestion?.questionData.page || 0}`,
       {
         replace: true
@@ -392,16 +408,16 @@ export default function TakeExam() {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>{examState.examDetail.name}</Heading1>
+            <Heading1 fontWeight={"500"}>{examData.name}</Heading1>
             <Heading2>
-              <div dangerouslySetInnerHTML={{ __html: examState.examDetail.intro }}></div>
+              <div dangerouslySetInnerHTML={{ __html: examData.intro }}></div>
             </Heading2>
             <Button
               onClick={() => {
                 navigate(
                   routes.student.exam.detail
-                    .replace(":courseId", examState.examDetail.courseId)
-                    .replace(":examId", examState.examDetail.id)
+                    .replace(":courseId", examData.courseId)
+                    .replace(":examId", examData.id)
                 );
               }}
               startDecorator={<ChevronLeftIcon fontSize='small' />}
@@ -554,8 +570,8 @@ export default function TakeExam() {
                     <Link
                       to={{
                         pathname: routes.student.exam.take
-                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
-                          .replace(":examId", examId ?? examState.examDetail.id),
+                          .replace(":courseId", courseId ?? examData.courseId)
+                          .replace(":examId", examId ?? examData.id),
                         search: `?page=${questionPageIndex - 1}`
                       }}
                     >
@@ -577,8 +593,8 @@ export default function TakeExam() {
                     <Link
                       to={{
                         pathname: routes.student.exam.take
-                          .replace(":courseId", courseId ?? examState.examDetail.courseId)
-                          .replace(":examId", examId ?? examState.examDetail.id),
+                          .replace(":courseId", courseId ?? examData.courseId)
+                          .replace(":examId", examId ?? examData.id),
                         search: `?page=${questionPageIndex + 1}`
                       }}
                     >

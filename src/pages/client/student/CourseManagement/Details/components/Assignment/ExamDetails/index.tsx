@@ -18,6 +18,7 @@ import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { setExamDetail, setExamOverview } from "reduxes/courseService/exam";
+import { setExamData } from "reduxes/TakeExam";
 
 const StudentCourseExamDetails = () => {
   const { examId } = useParams<{ examId: string }>();
@@ -211,6 +212,7 @@ const StudentCourseExamDetails = () => {
       <Button
         btnType={BtnType.Primary}
         onClick={() => {
+          dispatch(setExamData(exam));
           navigate(
             routes.student.exam.take
               .replace(":courseId", examState.examDetail.courseId)
