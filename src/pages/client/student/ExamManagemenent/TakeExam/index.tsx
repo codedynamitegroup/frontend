@@ -159,7 +159,7 @@ export default function TakeExam() {
     if (questionList === undefined || questionList?.length <= 0)
       ExamService.getExamQuestionById(examId ?? examState.examDetail.id, null)
         .then((res) => {
-          console.log(res);
+          console.log("get whole list", res);
 
           const questionFromAPI = res.questions.map((question: GetQuestionExam, index: number) => {
             return {
@@ -195,6 +195,7 @@ export default function TakeExam() {
 
   // get current page question list
   React.useEffect(() => {
+    // get all question with the current page index
     const currentQuestionList = questionList
       .filter((question) => question.questionData.page === questionPageIndex)
       .map((question) => ({
@@ -210,7 +211,7 @@ export default function TakeExam() {
 
     QuestionService.getQuestionDetail(postQuestionDetailList)
       .then((res) => {
-        console.log(res);
+        console.log("get current list", res);
         const transformList = res.questionResponses.map((question: any) => {
           const data = question.qtypeEssayQuestion
             ? question.qtypeEssayQuestion
@@ -241,14 +242,6 @@ export default function TakeExam() {
     if (index === questionPageIndex) {
       const element = document.getElementById(slug);
       element?.scrollIntoView({ behavior: "smooth" });
-      // navigate(
-      //   `${routes.student.exam.take
-      //     .replace(":courseId", courseId ?? examState.examDetail.courseId)
-      //     .replace(":examId", examId ?? examState.examDetail.id)}?page=${index}#${slug}`,
-      //   {
-      //     replace: true
-      //   }
-      // );
     } else {
       navigate(
         `${routes.student.exam.take
@@ -261,9 +254,9 @@ export default function TakeExam() {
     }
   };
 
+  const [isSelectedQtypeChanged, setIsSelectedQtypeChanged] = React.useState(false);
   // Handler for selecting question type autocomplte
   const selectQtypeHandler = (event: any, value: any) => {
-    console.log(value);
     if (value.length === 0) {
       setSelectedQtype([]);
     } else {
@@ -281,9 +274,14 @@ export default function TakeExam() {
       });
       setSelectedQtype(selectedQtype);
     }
+    setIsSelectedQtypeChanged(true);
   };
 
   React.useEffect(() => {
+    if (!isSelectedQtypeChanged) return;
+    setIsSelectedQtypeChanged(false);
+
+    console.log("selectedQtype", selectedQtype);
     const firstFilteredQuestion = questionList
       .filter((question) => selectedQtype.includes(question.questionData.qtype))
       .at(0);
@@ -312,10 +310,6 @@ export default function TakeExam() {
       }
     }, 100); // check every 100ms
   }, [location]);
-
-  // React.useEffect(() => {
-  //   console.log(currentQuestionList);
-  // }, [currentQuestionList]);
 
   return (
     <>
