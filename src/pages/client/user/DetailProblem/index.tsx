@@ -369,8 +369,8 @@ export default function DetailProblem() {
               translation-key='detail_problem_submit'
               onClick={handleSubmitCode}
             >
-              {!submissionLoading && <CircularProgress size={20} />}
-              {submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+              {submissionLoading && <CircularProgress size={20} />}
+              {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
             </Button>
           </Box>
           <Box
