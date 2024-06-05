@@ -23,7 +23,7 @@ import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQues
 import { useAppSelector } from "hooks";
 import { convert } from "html-to-text";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import { roundedNumber } from "utils/number";
+import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -220,7 +220,7 @@ export default function DetailSolution({
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
-                {codeSubmissionDetail?.avgMemory ?? "N/A"}KB
+                {roundedNumber(kiloByteToMegaByte(codeSubmissionDetail?.avgMemory), 3) ?? "N/A"}KB
               </ParagraphBody>
             </Container>
           </Grid>
