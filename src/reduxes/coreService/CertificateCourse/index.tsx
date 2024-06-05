@@ -24,7 +24,6 @@ const certificateCourseSlice = createSlice({
     },
     setCertificateCourses: (state, action) => {
       state.certificateCourses = action.payload;
-      // state.mostEnrolledCertificateCourses = action.payload.mostEnrolledCertificateCourses;
     },
     setMostEnrolledCertificateCourses: (state, action) => {
       state.mostEnrolledCertificateCourses = action.payload;
