@@ -43,3 +43,21 @@ export interface ExamOverview {
   numberOfStudents: number;
   submitted: number;
 }
+
+export interface StartEndExamRequest {
+  examId: string;
+  userId: string;
+}
+
+export interface SubmitExamRequest {
+  examId: string;
+  userId: string;
+  questions: ExamQuestionSubmission[];
+  startTime: string;
+}
+
+export interface ExamQuestionSubmission {
+  questionId: string;
+  content: string;
+  numFile: number;
+}

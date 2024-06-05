@@ -305,11 +305,11 @@ const QuestionListOfCourse = () => {
               {categoryState.categoryDetails?.description}
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              <Button btnType={BtnType.Primary}>
+              {/* <Button btnType={BtnType.Primary}>
                 <ParagraphBody paddingX={3} translation-key='common_data_export'>
                   {t("common_data_export")}
                 </ParagraphBody>
-              </Button>
+              </Button> */}
               <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
                 <ParagraphBody paddingX={3} translation-key='common_add_question'>
                   {" "}
@@ -345,9 +345,13 @@ const QuestionListOfCourse = () => {
                     ? "câu hỏi ngắn"
                     : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
                       ? "câu hỏi trắc nghiệm"
-                      : item.qtype === QuestionTypeEnum.CODE
-                        ? "câu hỏi code"
-                        : "câu hỏi tự luận",
+                      : item.qtype === QuestionTypeEnum.ESSAY
+                        ? "câu hỏi tự luận"
+                        : item.qtype === QuestionTypeEnum.TRUE_FALSE
+                          ? "câu hỏi đúng/sai"
+                          : item.qtype === QuestionTypeEnum.CODE
+                            ? "câu hỏi code"
+                            : "",
                 ...item
               }))}
               tableHeader={columns}
