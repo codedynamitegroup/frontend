@@ -18,6 +18,7 @@ import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
+import useAuth from "hooks/useAuth";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
@@ -38,11 +39,6 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
-import TextTitle from "components/text/TextTitle";
-import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
-import useAuth from "hooks/useAuth";
 
 const CourseCertificates = () => {
   const { isLoggedIn } = useAuth();

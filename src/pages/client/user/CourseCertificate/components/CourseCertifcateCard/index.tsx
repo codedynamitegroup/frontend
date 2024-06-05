@@ -1,24 +1,23 @@
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Box, Divider, Grid, Rating, Stack } from "@mui/material";
-import classes from "./styles.module.scss";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAuth from "hooks/useAuth";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "reduxes/Auth";
-import { User } from "models/authService/entity/user";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import classes from "./styles.module.scss";
 
 type Props = {
   course: CertificateCourseEntity;
 };
 
 const CourseCertificateCard = ({ course }: Props) => {
-  const user: User = useSelector(selectCurrentUser);
+  // const user: User = useSelector(selectCurrentUser);
+  const { isLoggedIn } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -76,7 +75,7 @@ const CourseCertificateCard = ({ course }: Props) => {
                     : ""}
             </ParagraphBody>
           </Box>
-          {user && course?.isRegistered === true ? (
+          {isLoggedIn && course?.isRegistered === true ? (
             <Box className={classes.iconCourse}>
               <CheckCircleOutlineIcon
                 sx={{
@@ -91,7 +90,7 @@ const CourseCertificateCard = ({ course }: Props) => {
               </ParagraphBody>
             </Box>
           ) : (
-            user && (
+            isLoggedIn && (
               <Box className={classes.iconCourse}>
                 <CheckCircleOutlineIcon
                   sx={{
