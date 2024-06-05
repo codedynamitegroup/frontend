@@ -42,9 +42,10 @@ import TextTitle from "components/text/TextTitle";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
+import useAuth from "hooks/useAuth";
 
 const CourseCertificates = () => {
-  const user: User = useSelector(selectCurrentUser);
+  const { isLoggedIn } = useAuth();
 
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
@@ -410,7 +411,7 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      {user && (
+                      {isLoggedIn && (
                         <BasicSelect
                           labelId='select-assignment-section-label'
                           value={isRegisterFilterValue}
@@ -534,34 +535,36 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      <BasicSelect
-                        labelId='select-assignment-section-label'
-                        value={isRegisterFilterValue}
-                        onHandleChange={(value) =>
-                          setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
-                        }
-                        sx={{ maxWidth: "200px" }}
-                        items={[
-                          {
-                            value: IsRegisteredFilterEnum.ALL,
-                            label: t("common_all")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.REGISTERED,
-                            label: t("common_registered")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.NOT_REGISTERED,
-                            label: t("common_not_registered")
+                      {isLoggedIn && (
+                        <BasicSelect
+                          labelId='select-assignment-section-label'
+                          value={isRegisterFilterValue}
+                          onHandleChange={(value) =>
+                            setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
                           }
-                        ]}
-                        backgroundColor='#FFFFFF'
-                        translation-key={[
-                          "common_all",
-                          "common_registered",
-                          "common_not_registered"
-                        ]}
-                      />
+                          sx={{ maxWidth: "200px" }}
+                          items={[
+                            {
+                              value: IsRegisteredFilterEnum.ALL,
+                              label: t("common_all")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.REGISTERED,
+                              label: t("common_registered")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.NOT_REGISTERED,
+                              label: t("common_not_registered")
+                            }
+                          ]}
+                          backgroundColor='#FFFFFF'
+                          translation-key={[
+                            "common_all",
+                            "common_registered",
+                            "common_not_registered"
+                          ]}
+                        />
+                      )}
                     </Box>
 
                     {/* {topicState.topics.find((topic) => topic.topicId === catalogActive)
