@@ -67,6 +67,14 @@ export const API = {
       DEFAULT: "/course/course-type",
       GET_BY_ORGANIZATION_ID: "/course/course-type/:id"
     },
+    COURSE_USER: {
+      DEFAULT: "/course/course-user",
+      GET_BY_COURSE_ID: "/course/course-user/course/:id",
+      GET_BY_USER_ID: "/course/course-user/user/:id",
+      GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
+      COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count",
+      GET_ALL_COURSE_BY_USER_ID: "/course/course-user/user/:id"
+    },
     ASSIGNMENT: {
       DEFAULT: "/course/assignment",
       GET_BY_ID: "/course/assignment/:id",

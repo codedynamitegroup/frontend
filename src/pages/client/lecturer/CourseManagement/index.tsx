@@ -1,12 +1,11 @@
 import Grid from "@mui/material/Grid";
 import SearchBar from "components/common/search/SearchBar";
 import CourseCard from "./components/CourseCard";
-import { User } from "models/courseService/user";
 
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCardIcon from "@mui/icons-material/ViewModule";
@@ -17,7 +16,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { CourseService } from "services/courseService/CourseService";
-import { setCourses } from "reduxes/courseService/course";
+import { CourseTypeService } from "services/courseService/CourseTypeService";
+import { setCourseTypes } from "reduxes/courseService/course_type";
+import { CircularProgress } from "@mui/material";
+import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
+import { setCourses, setLoading } from "reduxes/courseService/courseUser";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
+import { CourseUserService } from "services/courseService/CourseUserService";
 
 enum EView {
   cardView = 1,
@@ -25,53 +31,73 @@ enum EView {
 }
 
 const LecturerCourses = () => {
-  const tempCategories = ["Chất lượng cao", "Việt - Pháp", "Tiên tiến", "Sau đại học"];
-
   const [searchText, setSearchText] = useState("");
+  const [courseTypes, setCourseTypesState] = useState<CourseTypeEntity[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const courseState = useSelector((state: RootState) => state.course);
+  const user: User = useSelector(selectCurrentUser);
+  const courseState = useSelector((state: RootState) => state.courseUser);
+  const courseTypeState = useSelector((state: RootState) => state.courseType);
 
   const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
   };
 
-  const handleGetCourses = async ({
-    search = searchText,
-    pageNo = 0,
-    pageSize = 10
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
+  const handleGetCourseTypes = useCallback(async () => {
     try {
-      const getCourseResponse = await CourseService.getCourses({
-        search,
-        pageNo,
-        pageSize
-      });
-      console.log(getCourseResponse);
-      dispatch(setCourses(getCourseResponse));
+      const getCourseTypeResponse = await CourseTypeService.getCourseTypes();
+      setCourseTypesState(getCourseTypeResponse.courseTypes);
+      dispatch(setCourseTypes(getCourseTypeResponse));
     } catch (error) {
-      console.error("Failed to fetch courses", error);
+      console.error("Failed to fetch course types", error);
     }
-  };
+  }, [dispatch]);
+
+  const handleGetCourses = useCallback(
+    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
+      if (!user?.userId) return;
+
+      dispatch(setLoading({ isLoading: true }));
+
+      try {
+        const getCourseResponse = await CourseUserService.getAllCourseByUserId(user.userId, {
+          search,
+          courseType,
+          pageNo,
+          pageSize
+        });
+        dispatch(setCourses(getCourseResponse));
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
+      } finally {
+        dispatch(setLoading({ isLoading: false }));
+      }
+    },
+    [dispatch, searchText, selectedCategories, user?.userId]
+  );
 
   useEffect(() => {
-    const featchInitialCourses = async () => {
-      await handleGetCourses({ search: searchText });
-    };
-    featchInitialCourses();
-  }, [searchText]);
+    handleGetCourseTypes();
+  }, [handleGetCourseTypes]);
+
+  useEffect(() => {
+    if (user?.userId) {
+      handleGetCourses({ search: searchText, courseType: selectedCategories });
+    }
+  }, [handleGetCourses, searchText, selectedCategories, user?.userId]);
 
   const [viewType, setViewType] = useState(EView.listView);
 
   const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
     setViewType(nextView);
   };
-  const handleCategoryFilterChange = (selectedCategoryList: Array<string>) => {
-    console.log(selectedCategoryList);
-  };
+  const handleCategoryFilterChange = useCallback(
+    (selectedCategoryList: Array<string>) => {
+      setSelectedCategories(selectedCategoryList);
+      handleGetCourses({ search: searchText, courseType: selectedCategoryList });
+    },
+    [handleGetCourses, searchText]
+  );
   const { t } = useTranslation();
 
   return (
@@ -85,8 +111,8 @@ const LecturerCourses = () => {
         <Box className={classes.filterContainer}>
           <ChipMultipleFilter
             label={t("course_filter")}
-            defaultChipList={[]}
-            filterList={tempCategories}
+            defaultChipList={courseTypeState.courseTypes.map((courseType) => courseType.name)}
+            filterList={selectedCategories}
             onFilterListChangeHandler={handleCategoryFilterChange}
             translation-key='course_filter'
           />
