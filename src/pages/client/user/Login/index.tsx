@@ -42,6 +42,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoggedLoading, setIsLoggedLoading] = useState(false);
   const dispatch = useDispatch();
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || undefined;
 
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -150,6 +151,9 @@ export default function Login() {
           setIsLoggedLoading(false);
         });
     },
+    onError: (error: any) => {
+      console.log(error);
+    },
     flow: "implicit"
   });
 
@@ -239,12 +243,15 @@ export default function Login() {
                   {t("register_login_alternative")}
                 </ParagraphBody>
                 <Box className={classes.social}>
-                  <Button
-                    onClick={() => signInWithGoogle()}
-                    className={`${classes.socialIconGoogle} ${classes.socialIcon}`}
-                  >
-                    <FontAwesomeIcon icon={faGoogle} />
-                  </Button>
+                  {googleClientId && (
+                    <Button
+                      onClick={() => {}}
+                      className={`${classes.socialIconGoogle} ${classes.socialIcon}`}
+                    >
+                      <FontAwesomeIcon icon={faGoogle} />
+                    </Button>
+                  )}
+
                   <MicrosoftLogin
                     clientId={microsoftClientId}
                     redirectUri={process.env.REACT_APP_MICROSOFT_REDIRECT_URL || ""}
