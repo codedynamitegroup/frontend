@@ -79,6 +79,17 @@ const createInstance = ({
         });
       }
     );
+  } else {
+    instance.interceptors.request.use(
+      (config) => {
+        const newAccessToken = localStorage.getItem("access_token");
+        if (newAccessToken) {
+          config.headers["Access-Token"] = newAccessToken;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
   }
   return instance;
 };
