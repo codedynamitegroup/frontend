@@ -27,6 +27,9 @@ import {
 } from "reduxes/courseService/submission_assignment";
 
 import images from "config/images";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
+import { CourseUserService } from "services/courseService/CourseUserService";
 
 type Column = {
   header: string;
@@ -42,6 +45,7 @@ const StudentCourseAssignmentDetails = () => {
   const assignmentState = useSelector((state: RootState) => state.assignment);
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const dispatch = useDispatch();
+  const user: User = useSelector(selectCurrentUser);
 
   const handleGetAssignmentDetails = async (id: string) => {
     try {
@@ -71,7 +75,7 @@ const StudentCourseAssignmentDetails = () => {
     };
 
     fetchAssignmentDetails();
-    handleGetSubmissionAssignment("9090d7b2-3b20-46a8-9700-6ea8699c7696", assignmentId ?? "");
+    handleGetSubmissionAssignment(user.userId, assignmentId ?? "");
   }, []);
 
   function calculateTimeDifference(
