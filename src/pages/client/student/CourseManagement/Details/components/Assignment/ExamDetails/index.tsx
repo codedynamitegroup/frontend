@@ -25,6 +25,7 @@ const StudentCourseExamDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
+  const startAt = useSelector((state: RootState) => state.takeExam.startAt);
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -79,6 +80,15 @@ const StudentCourseExamDetails = () => {
   }, []);
 
   const navigate = useNavigate();
+
+  const startAttemptButtonHandler = () => {
+    dispatch(setExamData(exam));
+    navigate(
+      routes.student.exam.take
+        .replace(":courseId", courseId || examState.examDetail.courseId)
+        .replace(":examId", examId || examState.examDetail.id)
+    );
+  };
 
   return (
     <Box className={classes.assignmentBody}>
@@ -210,19 +220,8 @@ const StudentCourseExamDetails = () => {
       <Heading2>
         Điểm cao nhất: <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
-      <Button
-        btnType={BtnType.Primary}
-        onClick={() => {
-          dispatch(setExamData(exam));
-          navigate(
-            routes.student.exam.take
-              .replace(":courseId", courseId || examState.examDetail.courseId)
-              .replace(":examId", examId || examState.examDetail.id)
-          );
-        }}
-        width='fit-content'
-      >
-        <ParagraphBody>Làm bài kiểm tra</ParagraphBody>
+      <Button btnType={BtnType.Primary} onClick={startAttemptButtonHandler} width='fit-content'>
+        <ParagraphBody>{startAt ? "Tiếp tục làm bài" : "Bắt đầu làm bài"}</ParagraphBody>
       </Button>
     </Box>
   );

@@ -149,6 +149,15 @@ const takeExamSlice = createSlice({
         state.questionList[index].files = [];
       }
       return state;
+    },
+    cleanTakeExamState: (state) => {
+      state.examId = "";
+      state.startAt = undefined;
+      state.endAt = undefined;
+      state.examData = initState.examData;
+      state.questionList = [];
+
+      return state;
     }
   }
 });
@@ -162,7 +171,8 @@ export const {
   addFileToExamQuesiton,
   removeFileFromExamQuestion,
   removeAllFilesFromExamQuestion,
-  setExamData
+  setExamData,
+  cleanTakeExamState
 } = takeExamSlice.actions;
 
 export default takeExamSlice.reducer;

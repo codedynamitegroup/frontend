@@ -21,10 +21,11 @@ const ShortAnswerExamQuestion = (props: Props) => {
   const { page, questionShortAnswer, questionState } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const isFlagged = questionState.flag;
+  const isFlagged = questionState?.flag;
 
   const flagQuestionHandle = () => {
-    dispatch(setFlag({ id: questionShortAnswer.question.id, flag: !isFlagged }));
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionShortAnswer.question.id, flag: !isFlagged }));
   };
 
   const debouncedHandleOnInputChange = debounce((e: any) => {
@@ -58,12 +59,12 @@ const ShortAnswerExamQuestion = (props: Props) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -98,7 +99,7 @@ const ShortAnswerExamQuestion = (props: Props) => {
           {t("common_answer")}
         </ParagraphBody>
         <Textarea
-          defaultValue={questionState.content}
+          defaultValue={questionState?.content}
           onChange={debouncedHandleOnInputChange}
           sx={{ marginBottom: 1, backgroundColor: "white" }}
           minRows={1}

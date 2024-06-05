@@ -11,7 +11,7 @@ import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { routes } from "routes/routes";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -31,14 +31,25 @@ import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import moment from "moment";
 import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
+import { setLoading } from "reduxes/Loading";
+import { useDispatch } from "react-redux";
+import { cleanTakeExamState } from "reduxes/TakeExam";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 
 const drawerWidth = 370;
 
 const SubmitExamSummary = () => {
+  const dispatch = useDispatch();
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
   const startTime = useAppSelector((state) => state.takeExam.startAt);
   const examData = useAppSelector((state) => state.takeExam.examData);
+  const timeClose = new Date(examData.timeClose);
+
+  // snack bar config
+  const [openSnackAlert, setOpenSnackAlert] = React.useState(false);
+  const [snackBarAlertMessage, setSnackBarAlertMessage] = React.useState("");
+  const [snackBarType, setSnackBarType] = React.useState(AlertType.Success);
 
   const courseId = useParams<{ courseId: string }>().courseId;
   const theme = useTheme();
@@ -91,6 +102,15 @@ const SubmitExamSummary = () => {
     setTimeLeft(time);
 
     if (time < 0) {
+      if (examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
+      else {
+        navigate(
+          routes.student.exam.detail
+            .replace(":courseId", courseId || examData.courseId)
+            .replace(":examId", examId || examData.id)
+        );
+      }
+
       return;
     } else {
       setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
@@ -126,9 +146,9 @@ const SubmitExamSummary = () => {
     { value: "Trạng thái", width: "" }
   ];
 
-  const [submitButtonLoading, setSubmitButtonLoading] = React.useState(false);
   const submitExamHandler = async () => {
-    setSubmitButtonLoading(true);
+    const endTime = new Date();
+    dispatch(setLoading(true));
 
     const questions = questionList.map((question) => {
       return {
@@ -149,19 +169,27 @@ const SubmitExamSummary = () => {
       startTime: startAtTime
     };
 
-    console.log("submitData", submitData);
-    setSubmitButtonLoading(false);
-
     ExamService.submitExam(submitData)
       .then((response) => {
         console.log("response", response);
-        // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
+        dispatch(cleanTakeExamState());
+
+        setSnackBarAlertMessage("Nộp bài thành công");
+        setSnackBarType(AlertType.Success);
+        setOpenSnackAlert(true);
+        navigate(
+          routes.student.exam.detail
+            .replace(":courseId", courseId || examData.courseId)
+            .replace(":examId", examId || examData.id)
+        );
       })
       .catch((error) => {
-        console.error("Failed to submit exam", error);
+        setSnackBarAlertMessage("Nộp bài thất bại");
+        setSnackBarType(AlertType.Error);
+        setOpenSnackAlert(true);
       })
       .finally(() => {
-        setSubmitButtonLoading(false);
+        dispatch(setLoading(false));
       });
   };
 
@@ -177,9 +205,40 @@ const SubmitExamSummary = () => {
     }
   }, [timeLeft]);
 
+  const monthNames = [
+    t("common_january"),
+    t("common_february"),
+    t("common_march"),
+    t("common_april"),
+    t("common_may"),
+    t("common_june"),
+    t("common_july"),
+    t("common_august"),
+    t("common_september"),
+    t("common_october"),
+    t("common_november"),
+    t("common_december")
+  ];
+
+  const weekdayNames = [
+    t("common_sunday"),
+    t("common_monday"),
+    t("common_tuesday"),
+    t("common_wednesday"),
+    t("common_thursday"),
+    t("common_friday"),
+    t("common_saturday")
+  ];
   return (
     <>
       <Grid className={classes.root}>
+        <SnackbarAlert
+          open={openSnackAlert}
+          setOpen={setOpenSnackAlert}
+          content={snackBarAlertMessage}
+          type={snackBarType}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        />
         <Header ref={headerRef} />
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
           <CssBaseline />
@@ -201,9 +260,9 @@ const SubmitExamSummary = () => {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>Temp name</Heading1>
+            <Heading1 fontWeight={"500"}>{examData.name}</Heading1>
             <Heading2>
-              <div dangerouslySetInnerHTML={{ __html: "Temp intro" }}></div>
+              <div dangerouslySetInnerHTML={{ __html: examData.intro }}></div>
             </Heading2>
             <Button
               onClick={() => {
@@ -359,13 +418,15 @@ const SubmitExamSummary = () => {
               color={"#212121"}
               fontWeight={"400"}
             >
-              Phải nộp bài trước thứ hai, ngày 3, tháng 6, 2024, 23:59 sáng
+              {t("submit_before", {
+                weekDay: weekdayNames[timeClose.getDay()],
+                day: timeClose.getDate(),
+                month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                year: timeClose.getFullYear(),
+                time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
+              })}
             </ParagraphBody>
-            <Button
-              sx={{ width: "fit-content" }}
-              onClick={submitExamHandler}
-              loading={submitButtonLoading}
-            >
+            <Button sx={{ width: "fit-content" }} onClick={submitExamHandler}>
               Nộp bài và hoàn thành
             </Button>
           </Box>
