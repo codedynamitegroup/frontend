@@ -1,8 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 
 export interface InitialState {
   examId: string;
+  startAt?: string;
+  endAt?: string;
+  examData: ExamEntity;
   questionList: {
     flag: boolean;
     answered: boolean;
@@ -17,6 +21,26 @@ export interface InitialState {
 
 const initState: InitialState = {
   examId: "",
+  examData: {
+    id: "",
+    courseId: "",
+    name: "",
+    scores: 0,
+    maxScores: 0,
+    timeOpen: new Date(),
+    timeClose: new Date(),
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    maxAttempts: 0,
+    shuffleAnswers: false,
+    gradeMethod: "",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  startAt: undefined,
+  endAt: undefined,
   questionList: []
 };
 
@@ -24,8 +48,30 @@ const takeExamSlice = createSlice({
   name: "takeExam",
   initialState: initState,
   reducers: {
-    setExam: (state, action: PayloadAction<InitialState>) => {
-      state = action.payload;
+    setExam: (
+      state,
+      action: PayloadAction<{
+        examId: string;
+        startAt: string;
+        questionList: {
+          flag: boolean;
+          answered: boolean;
+          content: string;
+          questionData: GetQuestionExam;
+          files?: {
+            fileUrl: string;
+            fileName: string;
+          }[];
+        }[];
+      }>
+    ) => {
+      state.examId = action.payload.examId;
+      state.startAt = action.payload.startAt;
+      state.questionList = action.payload.questionList;
+      return state;
+    },
+    setExamData: (state, action: PayloadAction<ExamEntity>) => {
+      state.examData = action.payload;
       return state;
     },
     setExamId: (state, action: PayloadAction<string>) => {
@@ -115,7 +161,8 @@ export const {
   setExam,
   addFileToExamQuesiton,
   removeFileFromExamQuestion,
-  removeAllFilesFromExamQuestion
+  removeAllFilesFromExamQuestion,
+  setExamData
 } = takeExamSlice.actions;
 
 export default takeExamSlice.reducer;

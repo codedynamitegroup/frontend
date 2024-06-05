@@ -1,6 +1,7 @@
 export enum QuestionTypeEnum {
   MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
   SHORT_ANSWER = "SHORT_ANSWER",
+  TRUE_FALSE = "TRUE_FALSE",
   CODE = "CODE",
   ESSAY = "ESSAY"
 }

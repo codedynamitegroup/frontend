@@ -18,6 +18,7 @@ import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
+import useAuth from "hooks/useAuth";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
@@ -38,13 +39,9 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
-import TextTitle from "components/text/TextTitle";
-import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 
 const CourseCertificates = () => {
-  const user: User = useSelector(selectCurrentUser);
+  const { isLoggedIn } = useAuth();
 
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
@@ -136,13 +133,13 @@ const CourseCertificates = () => {
     async ({
       courseName,
       filterTopicIds,
-      isRegisteredFilter,
-      fetchMostEnrolled = false
+      isRegisteredFilter
+      // fetchMostEnrolled = false
     }: {
       courseName: string;
       filterTopicIds: string[];
       isRegisteredFilter: IsRegisteredFilterEnum;
-      fetchMostEnrolled?: boolean;
+      // fetchMostEnrolled?: boolean;
     }) => {
       dispatch(setLoading({ isLoading: true }));
       try {
@@ -153,13 +150,6 @@ const CourseCertificates = () => {
         });
         setTimeout(() => {
           dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-          if (fetchMostEnrolled) {
-            dispatch(
-              setMostEnrolledCertificateCourses(
-                getCertificateCoursesResponse.mostEnrolledCertificateCourses
-              )
-            );
-          }
           dispatch(setLoading({ isLoading: false }));
         }, 500);
       } catch (error: any) {
@@ -174,6 +164,25 @@ const CourseCertificates = () => {
     },
     [dispatch]
   );
+
+  const handleGetMostEnrolledCertificateCourses = useCallback(async () => {
+    try {
+      const getMostEnrolledCertificateCoursesResponse =
+        await CertificateCourseService.getMostEnrolledCertificateCourses();
+      dispatch(
+        setMostEnrolledCertificateCourses(
+          getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
+        )
+      );
+    } catch (error: any) {
+      console.error("Failed to fetch most enrolled certificate courses", {
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+      // Show snackbar here
+    }
+  }, [dispatch]);
 
   const handleChangeCatalog = useCallback(
     (value: string) => {
@@ -201,17 +210,17 @@ const CourseCertificates = () => {
 
   useEffect(() => {
     handleGetTopics();
-  }, [handleGetTopics]);
+    handleGetMostEnrolledCertificateCourses();
+  }, []);
 
   useEffect(() => {
     if (certificateCourseState.isLoading) return;
     handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: isRegisterFilterValue,
-      fetchMostEnrolled: true
+      isRegisteredFilter: isRegisterFilterValue
     });
-  }, [currentTopic?.topicId, handleGetCertificateCourses]);
+  }, [currentTopic?.topicId, handleGetCertificateCourses, handleGetMostEnrolledCertificateCourses]);
 
   return (
     <>
@@ -398,7 +407,7 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      {user && (
+                      {isLoggedIn && (
                         <BasicSelect
                           labelId='select-assignment-section-label'
                           value={isRegisterFilterValue}
@@ -522,34 +531,36 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      <BasicSelect
-                        labelId='select-assignment-section-label'
-                        value={isRegisterFilterValue}
-                        onHandleChange={(value) =>
-                          setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
-                        }
-                        sx={{ maxWidth: "200px" }}
-                        items={[
-                          {
-                            value: IsRegisteredFilterEnum.ALL,
-                            label: t("common_all")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.REGISTERED,
-                            label: t("common_registered")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.NOT_REGISTERED,
-                            label: t("common_not_registered")
+                      {isLoggedIn && (
+                        <BasicSelect
+                          labelId='select-assignment-section-label'
+                          value={isRegisterFilterValue}
+                          onHandleChange={(value) =>
+                            setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
                           }
-                        ]}
-                        backgroundColor='#FFFFFF'
-                        translation-key={[
-                          "common_all",
-                          "common_registered",
-                          "common_not_registered"
-                        ]}
-                      />
+                          sx={{ maxWidth: "200px" }}
+                          items={[
+                            {
+                              value: IsRegisteredFilterEnum.ALL,
+                              label: t("common_all")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.REGISTERED,
+                              label: t("common_registered")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.NOT_REGISTERED,
+                              label: t("common_not_registered")
+                            }
+                          ]}
+                          backgroundColor='#FFFFFF'
+                          translation-key={[
+                            "common_all",
+                            "common_registered",
+                            "common_not_registered"
+                          ]}
+                        />
+                      )}
                     </Box>
 
                     {/* {topicState.topics.find((topic) => topic.topicId === catalogActive)

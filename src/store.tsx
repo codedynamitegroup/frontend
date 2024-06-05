@@ -38,7 +38,7 @@ import appStatus from "reduxes/AppStatus";
 const persistConfig = {
   key: "takeExam",
   storage,
-  whitelist: ["questionList", "examId"],
+  whitelist: ["questionList", "examId", "startAt", "endAt", "examData"],
   debug: true
 };
 const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> = persistReducer(

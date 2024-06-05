@@ -2,6 +2,7 @@ export const API = {
   CORE: {
     CERTIFICATE_COURSE: {
       DEFAULT: "/core/certificate-courses",
+      MOST_ENROLLED: "/core/certificate-courses/most-enrolled",
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
@@ -33,6 +34,7 @@ export const API = {
     },
     QUESTION: {
       DEFAULT: "/core/questions",
+      CLONE: "/core/questions/clone",
       GET_BY_CATEGORY_ID: "/core/questions/category/:categoryId",
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
@@ -96,7 +98,10 @@ export const API = {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",
       GET_BY_ID: "/course/exam/:id",
-      CREATE: "/course/exam"
+      CREATE: "/course/exam",
+      START: "/course/exam/question/start-exam",
+      END: "/course/exam/question/end-exam",
+      SUBMIT: "/course/exam/question/submit"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"

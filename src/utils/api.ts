@@ -1,8 +1,5 @@
 import axios from "axios";
 import { API } from "constants/API";
-import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
-
 const AUTH_SERVICE_API_URL = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
 const createInstance = ({
@@ -81,6 +78,17 @@ const createInstance = ({
               : error?.response?.data?.message || error?.message
         });
       }
+    );
+  } else {
+    instance.interceptors.request.use(
+      (config) => {
+        const newAccessToken = localStorage.getItem("access_token");
+        if (newAccessToken) {
+          config.headers["Access-Token"] = newAccessToken;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
     );
   }
   return instance;
