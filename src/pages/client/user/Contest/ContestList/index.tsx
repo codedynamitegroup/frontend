@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
-import { setContests, setMostPopularContests } from "reduxes/coreService/Contest";
+import { setContests, setLoading, setMostPopularContests } from "reduxes/coreService/Contest";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import "swiper/css";
@@ -98,6 +98,7 @@ const ContestList = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
+      dispatch(setLoading(true));
       try {
         const getContestsResponse = await ContestService.getContests({
           searchName: searchName,
@@ -105,13 +106,17 @@ const ContestList = () => {
           pageNo: pageNo,
           pageSize: pageSize
         });
-        dispatch(setContests(getContestsResponse));
+        setTimeout(() => {
+          dispatch(setContests(getContestsResponse));
+          dispatch(setLoading(false));
+        }, 1000);
       } catch (error: any) {
         console.error("Failed to fetch contests", {
           code: error.code || 503,
           status: error.status || "Service Unavailable",
           message: error.message
         });
+        dispatch(setLoading(false));
         // Show snackbar here
       }
     },
@@ -353,6 +358,7 @@ const ContestList = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       height: "100%",
+                      width: "100%",
                       gap: "10px"
                     }}
                   >
