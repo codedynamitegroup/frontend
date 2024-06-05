@@ -79,7 +79,7 @@ const ContestManagement = () => {
         setTimeout(() => {
           dispatch(setContests(getCertificateCoursesResponse));
           dispatch(setLoading(false));
-        }, 500);
+        }, 1000);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
@@ -87,8 +87,8 @@ const ContestManagement = () => {
           setType(AlertType.Error);
           setContent("Please authenticate");
         }
-        dispatch(setLoading(false));
         // Show snackbar here
+        dispatch(setLoading(false));
       }
     },
     [dispatch]

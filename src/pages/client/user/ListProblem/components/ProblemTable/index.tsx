@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, CircularProgress, Stack, Tooltip } from "@mui/material";
 import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 
@@ -40,6 +40,7 @@ export default function ProblemTable() {
     totalPages: 0,
     codeQuestions: []
   });
+  const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   // console.log("page", page, "row perpage", rowsPerPage);
@@ -47,6 +48,7 @@ export default function ProblemTable() {
   const choosenTagList = algorithmTag.tagList.filter((value) => value.isChoosen);
 
   useEffect(() => {
+    setLoading(true);
     CodeQuestionService.getCodeQuestion(
       {
         tag: choosenTagList.length > 0 ? choosenTagList : null,
@@ -62,7 +64,8 @@ export default function ProblemTable() {
       .then((data: PaginationList<CodeQuestionEntity>) => {
         setCodeQuestionList(data);
       })
-      .catch((reason) => console.log(reason));
+      .catch((reason) => console.log(reason))
+      .finally(() => setLoading(false));
   }, [algorithmTag.tagList, page, rowsPerPage, searchAndDifficultyAndSolved]);
 
   const renderStatus = (status: number) => {
@@ -191,78 +194,90 @@ export default function ProblemTable() {
     <Box className={classes.container}>
       {/* <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2> */}
       <Box className={classes.table}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label='custom table'>
-            <TableHead className={classes["table-head"]}>
-              <TableRow>
-                <TableCell align='center' className={classes.status}>
-                  <ParagraphBody fontWeight={700} translation-key='common_status'>
-                    {t("common_status")}
-                  </ParagraphBody>
-                </TableCell>
-                <TableCell align='left'>
-                  <ParagraphBody fontWeight={700} translation-key='list_problem_problem_name'>
-                    {t("list_problem_problem_name")}
-                  </ParagraphBody>
-                </TableCell>
-                <TableCell align='left' className={classes.status}>
-                  <ParagraphBody fontWeight={700} translation-key='common_difficult_level'>
-                    {t("common_difficult_level")}
-                  </ParagraphBody>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {data &&
-                data.length > 0 &&
-                data.map((row, rowIndex) => (
-                  <TableRow
-                    className={rowIndex % 2 === 0 ? classes.row : classes.row1}
-                    key={rowIndex}
-                    // onClick={() =>
-                    //   navigate(routes.user.problem.detail.description.replace(":problemId", row.id))
-                    // }
-                  >
-                    <TableCell align='center'>{row.status}</TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <StyledLink
-                        to={routes.user.problem.detail.description.replace(":problemId", row.id)}
-                        style={{ pointerEvents: accessToken === null ? "none" : "auto" }}
-                      >
-                        {row.name}
-                      </StyledLink>
+        {loading && (
+          <Stack alignItems={"center"}>
+            <CircularProgress />
+          </Stack>
+        )}
+        {!loading && (
+          <>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label='custom table'>
+                <TableHead className={classes["table-head"]}>
+                  <TableRow>
+                    <TableCell align='center' className={classes.status}>
+                      <ParagraphBody fontWeight={700} translation-key='common_status'>
+                        {t("common_status")}
+                      </ParagraphBody>
                     </TableCell>
-                    <TableCell>{row.level}</TableCell>
+                    <TableCell align='left'>
+                      <ParagraphBody fontWeight={700} translation-key='list_problem_problem_name'>
+                        {t("list_problem_problem_name")}
+                      </ParagraphBody>
+                    </TableCell>
+                    <TableCell align='left' className={classes.status}>
+                      <ParagraphBody fontWeight={700} translation-key='common_difficult_level'>
+                        {t("common_difficult_level")}
+                      </ParagraphBody>
+                    </TableCell>
                   </TableRow>
-                ))}
-              {(!data || data.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={customHeading.length}>
-                    <ParagraphBody
-                      className={classes.noList}
-                      translation-key='list_problem_not_found_data'
-                    >
-                      {t("list_problem_not_found_data")}
-                    </ParagraphBody>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          component='div'
-          rowsPerPageOptions={[5, 10, 25, 100]}
-          count={codeQuestionList.totalItems}
-          page={Number(page)}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          translation-key='common_table_row_per_page'
-          labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          className={classes.pagination}
-        />
+                </TableHead>
+
+                <TableBody>
+                  {data &&
+                    data.length > 0 &&
+                    data.map((row, rowIndex) => (
+                      <TableRow
+                        className={rowIndex % 2 === 0 ? classes.row : classes.row1}
+                        key={rowIndex}
+                        // onClick={() =>
+                        //   navigate(routes.user.problem.detail.description.replace(":problemId", row.id))
+                        // }
+                      >
+                        <TableCell align='center'>{row.status}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <StyledLink
+                            to={routes.user.problem.detail.description.replace(
+                              ":problemId",
+                              row.id
+                            )}
+                            style={{ pointerEvents: accessToken === null ? "none" : "auto" }}
+                          >
+                            {row.name}
+                          </StyledLink>
+                        </TableCell>
+                        <TableCell>{row.level}</TableCell>
+                      </TableRow>
+                    ))}
+                  {(!data || data.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={customHeading.length}>
+                        <ParagraphBody
+                          className={classes.noList}
+                          translation-key='list_problem_not_found_data'
+                        >
+                          {t("list_problem_not_found_data")}
+                        </ParagraphBody>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              component='div'
+              rowsPerPageOptions={[5, 10, 25, 100]}
+              count={codeQuestionList.totalItems}
+              page={Number(page)}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              translation-key='common_table_row_per_page'
+              labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              className={classes.pagination}
+            />
+          </>
+        )}
       </Box>
     </Box>
   );
