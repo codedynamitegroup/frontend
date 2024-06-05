@@ -23,7 +23,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { UserService } from "services/authService/UserService";
 import LoadButton from "components/common/buttons/LoadingButton";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormDataUpdateProfileUser {
   firstName: string;
@@ -59,9 +59,6 @@ const UserInformationDetailsDialog = ({
   const user: User = useSelector(selectCurrentUser);
   const [data, setData] = useState<User>(user);
   const [isUpdateProfileLoading, setIsUpdateProfileLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const accessToken = localStorage.getItem("access_token");
   const provider = localStorage.getItem("provider");
 
@@ -118,6 +115,7 @@ const UserInformationDetailsDialog = ({
       phone: data.phone
     })
       .then((res) => {
+        dispatch(setSuccessMess("User updated successfully"));
         UserService.getUserByEmail()
           .then((response) => {
             const user: User = response;
@@ -128,14 +126,9 @@ const UserInformationDetailsDialog = ({
           .catch((error) => {
             console.error("Failed to get user by email", error);
           });
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật tài khoản thành công");
-        setAlertType(AlertType.Success);
       })
       .catch((error) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật tài khoản thất bại!! Hãy thử lại");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("User updated failed. Please try again later."));
         console.error("Failed to update profile", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -271,46 +264,54 @@ const UserInformationDetailsDialog = ({
         </Heading1>
         <Divider />
 
-        <Grid container spacing={1} columns={12}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            {images.logo.moodleLogo && (
-              <Avatar
-                alt='Google'
-                src={images.logo.googleLogo}
+        {user && (
+          <>
+            <Grid container spacing={1} columns={12}>
+              <Grid
+                item
+                xs={3}
                 sx={{
-                  width: "40px",
-                  height: "40px"
+                  display: "flex",
+                  alignItems: "center"
                 }}
-              />
-            )}
-            <ParagraphBody
-              sx={{
-                marginLeft: "5px"
-              }}
-            >
-              Google
-            </ParagraphBody>
-          </Grid>
-          <Grid
-            item
-            xs={9}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <ParagraphBody translation-key='user_detail_dialog_linked'>
-              {t("user_detail_dialog_linked")}
-            </ParagraphBody>
-          </Grid>
-          {/* <Grid
+              >
+                {images.logo.moodleLogo && (
+                  <Avatar
+                    alt='Google'
+                    src={images.logo.googleLogo}
+                    sx={{
+                      width: "40px",
+                      height: "40px"
+                    }}
+                  />
+                )}
+                <ParagraphBody
+                  sx={{
+                    marginLeft: "5px"
+                  }}
+                >
+                  Google
+                </ParagraphBody>
+              </Grid>
+              <Grid
+                item
+                xs={9}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {user?.isLinkedWithGoogle ? (
+                  <ParagraphBody translation-key='user_detail_dialog_linked'>
+                    {t("user_detail_dialog_linked")}
+                  </ParagraphBody>
+                ) : (
+                  <ParagraphBody translation-key='user_detail_dialog_not_linked'>
+                    {t("user_detail_dialog_not_linked")}
+                  </ParagraphBody>
+                )}
+              </Grid>
+              {/* <Grid
             item
             xs={3}
             sx={{
@@ -326,49 +327,55 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_remove_link")}
             </Button>
           </Grid> */}
-        </Grid>
-        <Divider />
+            </Grid>
+            <Divider />
 
-        <Grid container spacing={1} columns={12}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            {images.logo.moodleLogo && (
-              <Avatar
-                alt='Microsoft'
-                src={images.logo.microsoftLogo}
+            <Grid container spacing={1} columns={12}>
+              <Grid
+                item
+                xs={3}
                 sx={{
-                  width: "40px",
-                  height: "40px"
+                  display: "flex",
+                  alignItems: "center"
                 }}
-              />
-            )}
-            <ParagraphBody
-              sx={{
-                marginLeft: "5px"
-              }}
-            >
-              Microsoft
-            </ParagraphBody>
-          </Grid>
-          <Grid
-            item
-            xs={9}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <ParagraphBody translation-key='user_detail_dialog_not_linked'>
-              {t("user_detail_dialog_not_linked")}
-            </ParagraphBody>
-          </Grid>
-          {/* <Grid
+              >
+                {images.logo.moodleLogo && (
+                  <Avatar
+                    alt='Microsoft'
+                    src={images.logo.microsoftLogo}
+                    sx={{
+                      width: "40px",
+                      height: "40px"
+                    }}
+                  />
+                )}
+                <ParagraphBody
+                  sx={{
+                    marginLeft: "5px"
+                  }}
+                >
+                  Microsoft
+                </ParagraphBody>
+              </Grid>
+              <Grid
+                item
+                xs={9}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {user?.isLinkedWithMicrosoft ? (
+                  <ParagraphBody translation-key='user_detail_dialog_linked'>
+                    {t("user_detail_dialog_linked")}
+                  </ParagraphBody>
+                ) : (
+                  <ParagraphBody translation-key='user_detail_dialog_not_linked'>
+                    {t("user_detail_dialog_not_linked")}
+                  </ParagraphBody>
+                )}
+              </Grid>
+              {/* <Grid
             item
             xs={3}
             sx={{
@@ -384,14 +391,10 @@ const UserInformationDetailsDialog = ({
               {t("user_detail_dialog_link")}
             </Button>
           </Grid> */}
-        </Grid>
-        <Divider />
-        <SnackbarAlert
-          open={openSnackbarAlert}
-          setOpen={setOpenSnackbarAlert}
-          type={alertType}
-          content={alertContent}
-        />
+            </Grid>
+            <Divider />
+          </>
+        )}
       </Box>
     </CustomDialog>
   );

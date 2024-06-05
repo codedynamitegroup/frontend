@@ -183,6 +183,8 @@
   "common_email": "Email",
 
   "side_bar_dashboard": "Trang chủ",
+  "side_bar_contest_management": "Quản lý cuộc thi",
+  "side_bar_user_management": "Quản lý người dùng",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",

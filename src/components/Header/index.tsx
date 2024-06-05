@@ -26,13 +26,9 @@ import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import HeaderNotification from "./HeaderNotification";
-import { logOut, selectCurrentUser } from "reduxes/Auth";
-import { useDispatch, useSelector } from "react-redux";
-import { User } from "models/authService/entity/user";
-import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
-import { UserService } from "services/authService/UserService";
 import clsx from "clsx";
 import { ERoleName } from "models/authService/entity/role";
+import useAuth from "hooks/useAuth";
 
 interface ILinkMenu {
   name: string;
@@ -58,6 +54,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
   const { t } = useTranslation();
   const { toggleDrawer } = props;
+  const { loggedUser, logout, isLecturer, isStudent } = useAuth();
+
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
@@ -83,7 +81,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const loggedUser: User = useSelector(selectCurrentUser);
 
   const pagesHeaderDefault: ILinkMenu[] = [
     {
@@ -120,23 +117,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   const [pagesHeader, setPagesHeader] = React.useState<ILinkMenu[]>(pagesHeaderDefault);
 
-  const dispatch = useDispatch();
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
-  const isRoleStudentAndLecturer = (): Boolean => {
-    if (!loggedUser) {
-      return false;
-    }
-    if (!loggedUser.roles) {
-      return false;
-    }
-    return loggedUser.roles.some(
-      (role) => role.name === ERoleName.STUDENT_MOODLE || role.name === ERoleName.TEACHER_MOODLE
-    );
-  };
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 900) {
@@ -190,28 +174,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
 
-  const handleLogout = async () => {
-    UserService.logout()
-      .then(() => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        const provider = localStorage.getItem("provider");
-        if (provider === ESocialLoginProvider.MICROSOFT) {
-          sessionStorage.clear();
-        }
-        localStorage.removeItem("provider");
-        dispatch(logOut());
-        navigate(routes.user.homepage.root);
-      })
-      .catch((error) => {
-        console.error("Failed to logout", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-      });
-  };
-
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -261,7 +223,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   </Link>
                 </ParagraphSmall>
               ))}
-            {isRoleStudentAndLecturer() && (
+            {isStudent && (
               <ParagraphSmall
                 className={clsx([classes.item])}
                 fontWeight={600}
@@ -271,6 +233,23 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 <Link
                   component={RouterLink}
                   to={routes.student.course.management}
+                  translation-key='header_course'
+                  className={classes.textLink}
+                >
+                  {t("header_course")}
+                </Link>
+              </ParagraphSmall>
+            )}
+            {isLecturer && (
+              <ParagraphSmall
+                className={clsx([classes.item])}
+                fontWeight={600}
+                translation-key='header_course'
+                colorname={"--gray-50"}
+              >
+                <Link
+                  component={RouterLink}
+                  to={routes.lecturer.course.management}
                   translation-key='header_course'
                   className={classes.textLink}
                 >
@@ -380,11 +359,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </ListItemIcon>
             {t("common_account_info")}
           </MenuItem>
-          <MenuItem
-            className={classes.logout}
-            onClick={handleLogout}
-            translation-key='common_logout'
-          >
+          <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
             <ListItemIcon>
               <Logout className={classes.iconLogout} fontSize='small' />
             </ListItemIcon>

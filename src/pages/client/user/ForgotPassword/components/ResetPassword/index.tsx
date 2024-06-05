@@ -13,10 +13,10 @@ import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
-import ParagraphBody from "components/text/ParagraphBody";
 import { UserService } from "services/authService/UserService";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import { ResetPasswordUserRequest, VerifyOTPUserRequest } from "models/authService/entity/user";
+import { ResetPasswordUserRequest } from "models/authService/entity/user";
+import { useDispatch } from "react-redux";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormData {
   resetPassword: string;
@@ -26,13 +26,11 @@ interface IFormData {
 export default function ResetPassword() {
   const { t } = useTranslation();
   const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const email = searchParams.get("email");
   const otp = searchParams.get("otp");
+  const dispatch = useDispatch();
 
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -67,9 +65,7 @@ export default function ResetPassword() {
   const handleForgotPassword = (data: IFormData) => {
     console.log(email, otp);
     if (!email || !otp) {
-      setOpenSnackbarAlert(true);
-      setAlertContent("Không tìm thấy email hoặc mã OTP. Vui lòng thử lại.");
-      setAlertType(AlertType.Error);
+      dispatch(setErrorMess("Cannot find email or OTP code. Please try again."));
       return;
     }
     const resetPasswordUserRequest: ResetPasswordUserRequest = {
@@ -80,15 +76,11 @@ export default function ResetPassword() {
     setIsResetPasswordLoading(true);
     UserService.resetPassword(resetPasswordUserRequest)
       .then(async (res) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật mật khẩu thành công.");
-        setAlertType(AlertType.Success);
+        dispatch(setSuccessMess("Password updated successfully. Please login."));
         navigate(routes.user.login.root);
       })
       .catch((error: any) => {
-        setOpenSnackbarAlert(true);
-        setAlertContent("Cập nhật mật khẩu thất bại! Hãy thử lại sau.");
-        setAlertType(AlertType.Error);
+        dispatch(setErrorMess("Password update failed. Please try again later."));
         console.error("Failed to reset password", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
@@ -145,12 +137,6 @@ export default function ResetPassword() {
               >{`< Trở về trang quên mật khẩu`}</Link>
             </Box>
           </Grid>
-          <SnackbarAlert
-            open={openSnackbarAlert}
-            setOpen={setOpenSnackbarAlert}
-            type={alertType}
-            content={alertContent}
-          />
         </Grid>
       </Container>
     </Box>

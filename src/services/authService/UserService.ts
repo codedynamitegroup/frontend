@@ -200,7 +200,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+      }).post(`${API.AUTH.RESET_PASSWORD}`, {
         email: resetPasswordUserRequest.email,
         newPassword: resetPasswordUserRequest.password,
         otp: resetPasswordUserRequest.otp

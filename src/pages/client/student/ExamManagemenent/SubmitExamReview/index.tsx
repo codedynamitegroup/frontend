@@ -28,15 +28,30 @@ import Table from "@mui/joy/Table";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Chip } from "@mui/joy";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
+import moment from "moment";
+import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
+import { ExamService } from "services/courseService/ExamService";
 
 const drawerWidth = 370;
 
 const SubmitExamSummary = () => {
   const examId = useParams<{ examId: string }>().examId;
+  const storageExamID = useAppSelector((state) => state.takeExam.examId);
+  const startTime = useAppSelector((state) => state.takeExam.startAt);
+  const examData = useAppSelector((state) => state.takeExam.examData);
+
   const courseId = useParams<{ courseId: string }>().courseId;
   const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [timeLimit, setTimeLimit] = React.useState(() => {
+    if (!startTime) return 0;
+
+    const startTimeMil = new Date(startTime).getTime();
+
+    return startTimeMil + (examData?.timeLimit || 0) * 1000;
+  });
+  const [timeLeft, setTimeLeft] = React.useState(0);
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -68,6 +83,28 @@ const SubmitExamSummary = () => {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
+  const getTimeUntil = (inputTime: any) => {
+    if (!inputTime) {
+      return;
+    }
+    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+    setTimeLeft(time);
+
+    if (time < 0) {
+      return;
+    } else {
+      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+      setMinutes(Math.floor((time / 1000 / 60) % 60));
+      setSeconds(Math.floor((time / 1000) % 60));
+    }
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLimit]);
+
   const questionList = useAppSelector((state) => state.takeExam.questionList);
   const handleQuestionNavigateButton = (question: any) => {
     const slug = convertUuidToHashSlug(question.questionData.id);
@@ -88,6 +125,57 @@ const SubmitExamSummary = () => {
     { value: "Câu hỏi", width: "40%" },
     { value: "Trạng thái", width: "" }
   ];
+
+  const [submitButtonLoading, setSubmitButtonLoading] = React.useState(false);
+  const submitExamHandler = async () => {
+    setSubmitButtonLoading(true);
+
+    const questions = questionList.map((question) => {
+      return {
+        questionId: question.questionData.id,
+        content: question.content,
+        numFile: question.files?.length || 0
+      };
+    });
+
+    const startAtTime = new Date(
+      new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
+    ).toISOString();
+    console.log("start at time", new Date(startAtTime));
+    const submitData: SubmitExamRequest = {
+      examId: examId || storageExamID,
+      userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
+      questions: questions,
+      startTime: startAtTime
+    };
+
+    console.log("submitData", submitData);
+    setSubmitButtonLoading(false);
+
+    ExamService.submitExam(submitData)
+      .then((response) => {
+        console.log("response", response);
+        // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
+      })
+      .catch((error) => {
+        console.error("Failed to submit exam", error);
+      })
+      .finally(() => {
+        setSubmitButtonLoading(false);
+      });
+  };
+
+  React.useEffect(() => {
+    if (examId !== storageExamID) {
+      // navigate(routes.student.exam.take.replace(":courseId", courseId).replace(":examId", examId));
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (timeLeft <= 0) {
+      // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
+    }
+  }, [timeLeft]);
 
   return (
     <>
@@ -273,7 +361,13 @@ const SubmitExamSummary = () => {
             >
               Phải nộp bài trước thứ hai, ngày 3, tháng 6, 2024, 23:59 sáng
             </ParagraphBody>
-            <Button sx={{ width: "fit-content" }}>Nộp bài và hoàn thành</Button>
+            <Button
+              sx={{ width: "fit-content" }}
+              onClick={submitExamHandler}
+              loading={submitButtonLoading}
+            >
+              Nộp bài và hoàn thành
+            </Button>
           </Box>
 
           <Drawer
@@ -368,18 +462,6 @@ const SubmitExamSummary = () => {
                           </Badge>
                         </Grid>
                       ))}
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                      {/* <Grid item justifyContent={"center"}>
-                        <Pagination count={99} />
-                      </Grid> */}
-                      <Grid item justifyContent={"center"} xs={12}>
-                        <Button onClick={() => {}} variant='soft' color='primary' fullWidth>
-                          Kết thúc bài làm...
-                        </Button>
-                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>

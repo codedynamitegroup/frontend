@@ -1,6 +1,10 @@
 import axios from "axios";
 import { API } from "constants/API";
-import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
+import {
+  ExamCreateRequest,
+  StartEndExamRequest,
+  SubmitExamRequest
+} from "models/courseService/entity/ExamEntity";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
@@ -107,6 +111,57 @@ export class ExamService {
       }
     } catch (error: any) {
       console.error("Failed to create exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async startExam(examData: StartEndExamRequest) {
+    try {
+      const response = await axios.post(`${courseServiceApiUrl}${API.COURSE.EXAM.START}`, examData);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to start exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async endExam(examData: StartEndExamRequest) {
+    try {
+      const response = await axios.post(`${courseServiceApiUrl}${API.COURSE.EXAM.END}`, examData);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to end exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async submitExam(examData: SubmitExamRequest) {
+    try {
+      const response = await axios.post(
+        `${courseServiceApiUrl}${API.COURSE.EXAM.SUBMIT}`,
+        examData
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to submit exam", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
