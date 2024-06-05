@@ -2,6 +2,7 @@ export const API = {
   CORE: {
     CERTIFICATE_COURSE: {
       DEFAULT: "/core/certificate-courses",
+      MOST_ENROLLED: "/core/certificate-courses/most-enrolled",
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",

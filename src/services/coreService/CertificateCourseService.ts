@@ -36,6 +36,23 @@ export class CertificateCourseService {
     }
   }
 
+  static async getMostEnrolledCertificateCourses() {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).post(`${API.CORE.CERTIFICATE_COURSE.MOST_ENROLLED}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
   static async getCertificateCourseById(id: string) {
     try {
       const response = await api({

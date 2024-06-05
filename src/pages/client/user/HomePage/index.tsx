@@ -1,4 +1,4 @@
-import { Box, Button, CardMedia, Container, Grid } from "@mui/material";
+import { Box, Button, CardMedia, CircularProgress, Container, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -83,8 +83,10 @@ export default function HomePage() {
         filterTopicIds: filterTopicIds,
         isRegisteredFilter: isRegisteredFilter
       });
-      dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-      dispatch(setLoading({ isLoading: false }));
+      setTimeout(() => {
+        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
+        dispatch(setLoading({ isLoading: false }));
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.code || 503,
@@ -135,162 +137,203 @@ export default function HomePage() {
           <Container className={classes.courseContainer}>
             <Grid item xs={12} className={classes.courseContent}>
               <Heading3 className={classes.courseHeading}>{t("home_learn_to_code")}</Heading3>
-              <Grid
-                container
-                spacing={2}
-                sx={{
-                  padding: "20px 100px 0px 100px"
-                }}
-              >
-                {singleBasicProgrammingLanguageCertificateCourses.length > 0 &&
-                  singleBasicProgrammingLanguageCertificateCourses
-                    .slice(0, 3)
-                    .map((certificateCourse) => (
-                      <Grid item sm={12} md={4} key={certificateCourse.certificateCourseId}>
-                        <Card
-                          sx={{
-                            width: "100%",
-                            boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)"
-                          }}
-                        >
-                          <CardMedia
-                            component='img'
-                            height='140'
-                            image={certificateCourse.topic.thumbnailUrl}
-                          />
-                          <CardContent className={classes.courseCard}>
-                            <Heading3>{certificateCourse.name}</Heading3>
-                            <ParagraphBody className={classes.courseDescription}>
-                              {certificateCourse.topic.description}
-                            </ParagraphBody>
-                            <Box className={classes.iconCourse}>
-                              <img
-                                src={images.icLevel}
-                                alt='icon level'
-                                className={classes.iconLevel}
-                              />
-                              <ParagraphBody>
-                                {certificateCourse?.skillLevel === SkillLevelEnum.BASIC
-                                  ? t("common_easy")
-                                  : certificateCourse?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                    ? t("common_medium")
-                                    : certificateCourse?.skillLevel === SkillLevelEnum.ADVANCED
-                                      ? t("common_hard")
-                                      : ""}
+              {certificateCourseState.isLoading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    gap: "10px"
+                  }}
+                >
+                  <CircularProgress />
+                  <ParagraphBody translate-key='common_loading'>
+                    {t("common_loading")}
+                  </ParagraphBody>
+                </Box>
+              ) : (
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{
+                    padding: "20px 100px 0px 100px"
+                  }}
+                >
+                  {singleBasicProgrammingLanguageCertificateCourses &&
+                    singleBasicProgrammingLanguageCertificateCourses.length > 0 &&
+                    singleBasicProgrammingLanguageCertificateCourses
+                      .slice(0, 3)
+                      .map((certificateCourse) => (
+                        <Grid item sm={12} md={4} key={certificateCourse.certificateCourseId}>
+                          <Card
+                            sx={{
+                              width: "100%",
+                              boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)"
+                            }}
+                          >
+                            <CardMedia
+                              component='img'
+                              height='140'
+                              image={certificateCourse.topic.thumbnailUrl}
+                            />
+                            <CardContent className={classes.courseCard}>
+                              <Heading3>{certificateCourse.name}</Heading3>
+                              <ParagraphBody className={classes.courseDescription}>
+                                {certificateCourse.topic.description}
                               </ParagraphBody>
-                            </Box>
-                            <Box className={classes.courseDetail}>
-                              <Box className={classes.userLearning}>
-                                <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
-                                <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                              <Box className={classes.iconCourse}>
+                                <img
+                                  src={images.icLevel}
+                                  alt='icon level'
+                                  className={classes.iconLevel}
+                                />
+                                <ParagraphBody>
+                                  {certificateCourse?.skillLevel === SkillLevelEnum.BASIC
+                                    ? t("common_easy")
+                                    : certificateCourse?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                      ? t("common_medium")
+                                      : certificateCourse?.skillLevel === SkillLevelEnum.ADVANCED
+                                        ? t("common_hard")
+                                        : ""}
+                                </ParagraphBody>
                               </Box>
-                              <Box className={classes.userRating}>
-                                <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>
-                                <StarIcon className={classes.icStar} />
+                              <Box className={classes.courseDetail}>
+                                <Box className={classes.userLearning}>
+                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
+                                  <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                                </Box>
+                                <Box className={classes.userRating}>
+                                  <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>
+                                  <StarIcon className={classes.icStar} />
+                                </Box>
                               </Box>
-                            </Box>
-                            <Button
-                              className={classes.viewDetailBtn}
-                              fullWidth
-                              variant='outlined'
-                              color='primary'
-                              translation-key='common_view_this_course'
-                              onClick={() =>
-                                navigate(
-                                  routes.user.course_certificate.detail.lesson.root.replace(
-                                    ":courseId",
-                                    certificateCourse.certificateCourseId
+                              <Button
+                                className={classes.viewDetailBtn}
+                                fullWidth
+                                variant='outlined'
+                                color='primary'
+                                translation-key='common_view_this_course'
+                                onClick={() =>
+                                  navigate(
+                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                      ":courseId",
+                                      certificateCourse.certificateCourseId
+                                    )
                                   )
-                                )
-                              }
-                            >
-                              {t("common_view_this_course")}
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    ))}
-              </Grid>
+                                }
+                              >
+                                {t("common_view_this_course")}
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
+                </Grid>
+              )}
             </Grid>
             <Grid item xs={12} className={classes.courseContent}>
               <Heading3 className={classes.courseHeading}>
                 {t("home_data_structures_and_algorithms")}
               </Heading3>
-              <Grid
-                container
-                spacing={2}
-                sx={{
-                  padding: "20px 100px 0px 100px"
-                }}
-              >
-                {dsaProgrammingLanguageCertificateCourses.length > 0 &&
-                  dsaProgrammingLanguageCertificateCourses.slice(0, 3).map((certificateCourse) => (
-                    <Grid item sm={12} md={4} key={certificateCourse.certificateCourseId}>
-                      <Card
-                        sx={{
-                          width: "100%",
-                          boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)"
-                        }}
-                      >
-                        <CardMedia
-                          component='img'
-                          height='140'
-                          image={certificateCourse.topic.thumbnailUrl}
-                        />
-                        <CardContent className={classes.courseCard}>
-                          <Heading3>{certificateCourse.name}</Heading3>
-                          <ParagraphBody className={classes.courseDescription}>
-                            {certificateCourse.topic.description}
-                          </ParagraphBody>
-                          <Box className={classes.iconCourse}>
-                            <img
-                              src={images.icLevel}
-                              alt='icon level'
-                              className={classes.iconLevel}
-                            />
-                            <ParagraphBody>
-                              {" "}
-                              {certificateCourse?.skillLevel === SkillLevelEnum.BASIC
-                                ? t("common_easy")
-                                : certificateCourse?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                  ? t("common_medium")
-                                  : certificateCourse?.skillLevel === SkillLevelEnum.ADVANCED
-                                    ? t("common_hard")
-                                    : ""}
-                            </ParagraphBody>
-                          </Box>
-                          <Box className={classes.courseDetail}>
-                            <Box className={classes.userLearning}>
-                              <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
-                              <FontAwesomeIcon icon={faUser} className={classes.icUser} />
-                            </Box>
-                            <Box className={classes.userRating}>
-                              <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>
-                              <StarIcon className={classes.icStar} />
-                            </Box>
-                          </Box>
-                          <Button
-                            className={classes.viewDetailBtn}
-                            fullWidth
-                            variant='outlined'
-                            color='primary'
-                            translation-key='common_view_this_course'
-                            onClick={() =>
-                              navigate(
-                                routes.user.course_certificate.detail.lesson.root.replace(
-                                  ":courseId",
-                                  certificateCourse.certificateCourseId
-                                )
-                              )
-                            }
+
+              {certificateCourseState.isLoading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    gap: "10px"
+                  }}
+                >
+                  <CircularProgress />
+                  <ParagraphBody translate-key='common_loading'>
+                    {t("common_loading")}
+                  </ParagraphBody>
+                </Box>
+              ) : (
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{
+                    padding: "20px 100px 0px 100px"
+                  }}
+                >
+                  {dsaProgrammingLanguageCertificateCourses &&
+                    dsaProgrammingLanguageCertificateCourses.length > 0 &&
+                    dsaProgrammingLanguageCertificateCourses
+                      .slice(0, 3)
+                      .map((certificateCourse) => (
+                        <Grid item sm={12} md={4} key={certificateCourse.certificateCourseId}>
+                          <Card
+                            sx={{
+                              width: "100%",
+                              boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)"
+                            }}
                           >
-                            {t("common_view_this_course")}
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-              </Grid>
+                            <CardMedia
+                              component='img'
+                              height='140'
+                              image={certificateCourse.topic.thumbnailUrl}
+                            />
+                            <CardContent className={classes.courseCard}>
+                              <Heading3>{certificateCourse.name}</Heading3>
+                              <ParagraphBody className={classes.courseDescription}>
+                                {certificateCourse.topic.description}
+                              </ParagraphBody>
+                              <Box className={classes.iconCourse}>
+                                <img
+                                  src={images.icLevel}
+                                  alt='icon level'
+                                  className={classes.iconLevel}
+                                />
+                                <ParagraphBody>
+                                  {" "}
+                                  {certificateCourse?.skillLevel === SkillLevelEnum.BASIC
+                                    ? t("common_easy")
+                                    : certificateCourse?.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                      ? t("common_medium")
+                                      : certificateCourse?.skillLevel === SkillLevelEnum.ADVANCED
+                                        ? t("common_hard")
+                                        : ""}
+                                </ParagraphBody>
+                              </Box>
+                              <Box className={classes.courseDetail}>
+                                <Box className={classes.userLearning}>
+                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
+                                  <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                                </Box>
+                                <Box className={classes.userRating}>
+                                  <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>
+                                  <StarIcon className={classes.icStar} />
+                                </Box>
+                              </Box>
+                              <Button
+                                className={classes.viewDetailBtn}
+                                fullWidth
+                                variant='outlined'
+                                color='primary'
+                                translation-key='common_view_this_course'
+                                onClick={() =>
+                                  navigate(
+                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                      ":courseId",
+                                      certificateCourse.certificateCourseId
+                                    )
+                                  )
+                                }
+                              >
+                                {t("common_view_this_course")}
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
+                </Grid>
+              )}
             </Grid>
             <Box className={classes.viewAllBtn}>
               <Button
