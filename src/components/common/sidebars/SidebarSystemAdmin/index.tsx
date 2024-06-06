@@ -33,7 +33,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   })
 }));
 
-export default function SidebarSystemAdmin({ children }: any) {
+export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any) {
   const { t } = useTranslation();
   const sideBarItemListData: SidebarItem[] = [
     {
@@ -53,11 +53,11 @@ export default function SidebarSystemAdmin({ children }: any) {
     //   link: routes.admin.contest.root
     // }
   ];
-  const [open, setOpen] = React.useState(true);
+  // const [open, setOpen] = React.useState(true);
 
-  const toggleDrawer = () => {
-    setOpen((pre) => !pre);
-  };
+  // const toggleDrawer = () => {
+  //   setOpen((pre) => !pre);
+  // };
 
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({

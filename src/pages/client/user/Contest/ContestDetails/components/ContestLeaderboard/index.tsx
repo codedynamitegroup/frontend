@@ -123,7 +123,7 @@ export default function ContestLeaderboard(props: PropsData) {
                   {currentUserRank.contestQuestions.map(
                     (problem: ContestQuestionEntity, index: number) => (
                       <TableCell key={index} align='center' className={clsx(classes.tableCell)}>
-                        {problem.numOfSubmissions > 0 ? (
+                        {problem?.numOfSubmissions && problem.numOfSubmissions > 0 ? (
                           <Box>
                             <Typography fontSize={"18px"} fontWeight={600}>
                               {problem.grade || 0}
@@ -189,7 +189,7 @@ export default function ContestLeaderboard(props: PropsData) {
                 </TableCell>
                 {row.contestQuestions.map((problem: ContestQuestionEntity, index: any) => (
                   <TableCell align='center' className={clsx(classes.tableCell)} key={index}>
-                    {problem.numOfSubmissions > 0 ? (
+                    {problem?.numOfSubmissions && problem.numOfSubmissions > 0 ? (
                       <Box>
                         <Typography fontSize={"18px"} fontWeight={600}>
                           {problem.grade || 0}
