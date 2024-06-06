@@ -334,7 +334,7 @@ const CourseCertificates = () => {
                         {isRecommendedLoading
                           ? Array.from({ length: 3 }).map((_, index) => (
                               <Grid item xs={4} key={index}>
-                                <Skeleton variant='rectangular' width='100%' height={270} />
+                                <Skeleton variant='rectangular' width='100%' height={320} />
                               </Grid>
                             ))
                           : certificateCourseState.mostEnrolledCertificateCourses
