@@ -18,11 +18,18 @@ import { CertificateCourseService } from "services/coreService/CertificateCourse
 import { useEffect, useMemo } from "react";
 import { routes } from "routes/routes";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import useAuth from "hooks/useAuth";
 
 export default function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useAuth();
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(routes.user.dashboard.root);
+    }
+  }, [isLoggedIn]);
 
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 

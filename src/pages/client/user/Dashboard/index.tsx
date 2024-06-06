@@ -1,100 +1,67 @@
-import { Container, Grid } from "@mui/material";
-import React, { useEffect, useMemo } from "react";
-import classes from "./styles.module.scss";
-import Box from "@mui/material/Box";
-import Heading2 from "components/text/Heading2";
-import { LinearProgress } from "@mui/joy";
-import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import Heading3 from "components/text/Heading3";
-import Divider from "@mui/material/Divider";
-import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
-import images from "config/images";
-import Heading5 from "components/text/Heading5";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LinearProgress } from "@mui/joy";
+import JoyButton from "@mui/joy/Button";
+import { CircularProgress, Container, Grid, Skeleton } from "@mui/material";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
-import { CertificateCourseService } from "services/coreService/CertificateCourseService";
-import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import Divider from "@mui/material/Divider";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
+import Heading2 from "components/text/Heading2";
+import Heading3 from "components/text/Heading3";
+import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import images from "config/images";
+import useAuth from "hooks/useAuth";
+import i18next from "i18next";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import { User } from "models/authService/entity/user";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "reduxes/Auth";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setMostPopularContests } from "reduxes/coreService/Contest";
+import { routes } from "routes/routes";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch, RootState } from "store";
+import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import classes from "./styles.module.scss";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const user: User = useSelector(selectCurrentUser);
+  // const user: User = useSelector(selectCurrentUser);
+  const { loggedUser } = useAuth();
+  const contestState = useSelector((state: RootState) => state.contest);
+  const dispatch = useDispatch<AppDispatch>();
 
   const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
     CertificateCourseEntity[]
   >([]);
 
+  const [isCertificateCoursesLoading, setIsCertificateCoursesLoading] =
+    React.useState<boolean>(false);
   const [certificateCourses, setCertificateCourses] = React.useState<CertificateCourseEntity[]>([]);
 
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     name: "Học Python",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/cf55489ccd434e8c81c61e6fffc9433f.jpg",
-  //     process: 38,
-  //     currentLesson: "Sử dụng vòng lặp"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Học C++",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/37a8e25c3ada4cb0bc3b0b32a36881fe.jpg",
-  //     process: 10,
-  //     currentLesson: "Câu điều kiện"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Học Java",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/00e74493b80d4dcfadf2e1a59af577e7.jpg",
-  //     process: 1,
-  //     currentLesson: "Đọc ghi file"
-  //   }
-  // ];
-
-  // const courseCertificatesBasic: CourseCertificate[] = [
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-  //     title: "Học C++ cơ bản",
-  //     description:
-  //       "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-  //     lesson: 10,
-  //     level: t("common_easy")
-  //   },
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-  //     title: "Học Python cơ bản",
-  //     description:
-  //       "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-  //     lesson: 30,
-  //     level: t("common_easy")
-  //   },
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-  //     title: "Học Go cơ bản",
-  //     description:
-  //       "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-  //     lesson: 35,
-  //     level: t("common_easy")
-  //   }
-  // ];
+  const [isMostPopularContestsLoading, setIsMostPopularContestsLoading] =
+    React.useState<boolean>(false);
+  const firstMostPopularContest = useMemo(() => {
+    if (
+      !contestState.mostPopularContests ||
+      !contestState.mostPopularContests.mostPopularContests
+    ) {
+      return null;
+    }
+    return contestState.mostPopularContests.mostPopularContests[0];
+  }, [contestState.mostPopularContests]);
 
   const handleGetCertificateCourses = async ({
     courseName,
@@ -105,22 +72,69 @@ export default function UserDashboard() {
     filterTopicIds: string[];
     isRegisteredFilter: IsRegisteredFilterEnum;
   }) => {
+    setIsCertificateCoursesLoading(true);
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
         courseName,
         filterTopicIds,
         isRegisteredFilter
       });
-      return getCertificateCoursesResponse;
+      setTimeout(() => {
+        setIsCertificateCoursesLoading(false);
+        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.code || 503,
         status: error.status || "Service Unavailable",
         message: error.message
       });
+      setIsCertificateCoursesLoading(false);
       // Show snackbar here
     }
   };
+
+  const handleGetRegisteredCertificateCourses = async () => {
+    setIsCertificateCoursesLoading(true);
+    try {
+      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+        courseName: "",
+        filterTopicIds: [],
+        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
+      });
+      setTimeout(() => {
+        setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+        setIsCertificateCoursesLoading(false);
+      }, 500);
+    } catch (error: any) {
+      console.error("Failed to fetch certificate courses", {
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+      setIsCertificateCoursesLoading(false);
+      // Show snackbar here
+    }
+  };
+
+  const handleGetMostPopularContests = useCallback(async () => {
+    setIsMostPopularContestsLoading(true);
+    try {
+      const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
+      setTimeout(() => {
+        dispatch(setMostPopularContests(getMostPopularContestsResponse));
+        setIsMostPopularContestsLoading(false);
+      }, 500);
+    } catch (error: any) {
+      console.error("Failed to fetch most popular contests", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      setIsMostPopularContestsLoading(false);
+      // Show snackbar here
+    }
+  }, [dispatch]);
 
   const ongoingRegisteredCourses = useMemo(() => {
     if (!registeredCertificateCourses) {
@@ -149,23 +163,15 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const getRegisteredCertificateCoursesResponse = await handleGetCertificateCourses({
-        courseName: "",
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
-      });
-      if (getRegisteredCertificateCoursesResponse) {
-        setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.certificateCourses);
-      }
-
-      const getAllCertificateCoursesResponse = await handleGetCertificateCourses({
-        courseName: "",
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
-      });
-      if (getAllCertificateCoursesResponse) {
-        setCertificateCourses(getAllCertificateCoursesResponse.certificateCourses);
-      }
+      Promise.all([
+        handleGetRegisteredCertificateCourses(),
+        handleGetCertificateCourses({
+          courseName: "",
+          filterTopicIds: [],
+          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        }),
+        handleGetMostPopularContests()
+      ]);
     };
 
     fetchInitialData();
@@ -178,7 +184,7 @@ export default function UserDashboard() {
           <Grid item sm={12} md={7} className={classes.sectionContent}>
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
               <Heading2>
-                {t("dashboard_continue_title")}, {user?.firstName}
+                {t("dashboard_continue_title")}, {loggedUser?.firstName}
               </Heading2>
               <Box className={classes.courseLearningList}>
                 {ongoingRegisteredCourses.length === 0 ? (
@@ -244,72 +250,88 @@ export default function UserDashboard() {
                 <Heading2 translation-key='dashboard_other_course'>
                   {t("dashboard_other_course")}
                 </Heading2>
-                <CustomButton
-                  btnType={BtnType.Primary}
+                <JoyButton
                   translation-key='home_view_all_courses'
                   onClick={() => {
                     navigate(routes.user.course_certificate.root);
                   }}
                 >
                   {t("home_view_all_courses")}
-                </CustomButton>
+                </JoyButton>
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
                 <Grid container spacing={3}>
-                  {otherCertificateCourses.map((course, index) => (
-                    <Grid item xs={4} key={index}>
-                      <Box
-                        className={classes.courseCerticate}
-                        onClick={() => {
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.root.replace(
-                              ":courseId",
-                              course.certificateCourseId.toString()
-                            )
-                          );
-                        }}
-                      >
-                        <Grid container direction={"column"} margin={0} gap={2}>
-                          <Grid item container xs={5} className={classes.titleCourse}>
-                            <Grid item xs={3} className={classes.imgCourse}>
-                              <img alt='img course' src={course.topic.thumbnailUrl} />
+                  {isCertificateCoursesLoading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        width: "100%",
+                        gap: "10px"
+                      }}
+                    >
+                      <CircularProgress />
+                      <ParagraphBody>{t("common_loading")}</ParagraphBody>
+                    </Box>
+                  ) : (
+                    otherCertificateCourses.map((course, index) => (
+                      <Grid item xs={4} key={index}>
+                        <Box
+                          className={classes.courseCerticate}
+                          onClick={() => {
+                            navigate(
+                              routes.user.course_certificate.detail.lesson.root.replace(
+                                ":courseId",
+                                course.certificateCourseId.toString()
+                              )
+                            );
+                          }}
+                        >
+                          <Grid container direction={"column"} margin={0} gap={2}>
+                            <Grid item container xs={5} className={classes.titleCourse}>
+                              <Grid item xs={3} className={classes.imgCourse}>
+                                <img alt='img course' src={course.topic.thumbnailUrl} />
+                              </Grid>
+                              <Grid item xs={9} className={classes.nameCourse}>
+                                <Heading5>{course.name}</Heading5>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={9} className={classes.nameCourse}>
-                              <Heading5>{course.name}</Heading5>
-                            </Grid>
-                          </Grid>
-                          <Divider />
+                            <Divider />
 
-                          <Grid item xs={2}>
-                            <Box className={classes.iconCourse}>
-                              <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
-                              <ParagraphBody translation-key='certificate_detail_lesson'>
-                                {course.numOfQuestions}{" "}
-                                {i18next.format(
-                                  t("certificate_detail_lesson", { count: 2 }),
-                                  "lowercase"
-                                )}
-                              </ParagraphBody>
-                            </Box>
-                            <Box className={classes.iconCourse}>
-                              <img
-                                src={images.icLevel}
-                                alt='icon level'
-                                className={classes.iconLevel}
-                              />
-                              <ParagraphBody>
-                                {course.skillLevel === SkillLevelEnum.BASIC
-                                  ? t("common_easy")
-                                  : course.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                    ? t("common_medium")
-                                    : t("common_hard")}
-                              </ParagraphBody>
-                            </Box>
+                            <Grid item xs={2}>
+                              <Box className={classes.iconCourse}>
+                                <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
+                                <ParagraphBody translation-key='certificate_detail_lesson'>
+                                  {course.numOfQuestions}{" "}
+                                  {i18next.format(
+                                    t("certificate_detail_lesson", { count: 2 }),
+                                    "lowercase"
+                                  )}
+                                </ParagraphBody>
+                              </Box>
+                              <Box className={classes.iconCourse}>
+                                <img
+                                  src={images.icLevel}
+                                  alt='icon level'
+                                  className={classes.iconLevel}
+                                />
+                                <ParagraphBody>
+                                  {course.skillLevel === SkillLevelEnum.BASIC
+                                    ? t("common_easy")
+                                    : course.skillLevel === SkillLevelEnum.INTERMEDIATE
+                                      ? t("common_medium")
+                                      : t("common_hard")}
+                                </ParagraphBody>
+                              </Box>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </Box>
-                    </Grid>
-                  ))}
+                        </Box>
+                      </Grid>
+                    ))
+                  )}
                 </Grid>
               </Box>
             </Box>
@@ -321,38 +343,64 @@ export default function UserDashboard() {
             </Heading2>
             <Box className={classes.contest}>
               <Card>
-                <CardMedia
-                  component='img'
-                  alt='green iguana'
-                  height='140'
-                  image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
-                />
+                {isMostPopularContestsLoading ? (
+                  <Skeleton variant='rectangular' height={140} />
+                ) : (
+                  <CardMedia
+                    component='img'
+                    alt='green iguana'
+                    height='140'
+                    // image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
+                    image={firstMostPopularContest?.thumbnailUrl}
+                  />
+                )}
+
                 <CardContent>
-                  <Typography gutterBottom variant='h5' component='div'>
-                    Cuộc thi lập trình đa vũ trụ
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    color='text.secondary'
-                    translation-key='dashboard_participant_num'
-                  >
-                    {t("dashboard_participant_num", { participantNum: 1000 })}
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    color='text.primary'
-                    translation-key='dashboard_contest_end'
-                  >
-                    {t("dashboard_contest_end")} 20/04/2024
-                  </Typography>
+                  {isMostPopularContestsLoading ? (
+                    <Skeleton variant='text' />
+                  ) : (
+                    <ParagraphBody>{firstMostPopularContest?.name}</ParagraphBody>
+                  )}
+                  {isMostPopularContestsLoading ? (
+                    <Skeleton variant='text' />
+                  ) : (
+                    <ParagraphSmall fontWeight={500} translation-key='dashboard_participant_num'>
+                      {t("dashboard_participant_num", { participantNum: 1000 })}
+                    </ParagraphSmall>
+                  )}
+
+                  {isMostPopularContestsLoading ? (
+                    <Skeleton variant='text' />
+                  ) : (
+                    <ParagraphSmall fontWeight={500} translation-key='dashboard_contest_end'>
+                      {t("dashboard_contest_end")}{" "}
+                      {firstMostPopularContest
+                        ? standardlizeUTCStringToLocaleString(
+                            firstMostPopularContest.endTime,
+                            i18next.language
+                          )
+                        : ""}
+                    </ParagraphSmall>
+                  )}
                 </CardContent>
                 <CardActions>
-                  <CustomButton
-                    btnType={BtnType.Primary}
-                    translation-key='contest_detail_join_button'
-                  >
-                    {t("contest_detail_join_button")}
-                  </CustomButton>
+                  {isMostPopularContestsLoading ? (
+                    <Skeleton variant='rounded' width={100} height={30} />
+                  ) : (
+                    <JoyButton
+                      translation-key='common_view_details'
+                      onClick={() => {
+                        navigate(
+                          routes.user.contest.detail.replace(
+                            ":contestId",
+                            firstMostPopularContest?.contestId.toString() || ""
+                          )
+                        );
+                      }}
+                    >
+                      {t("common_view_details")}
+                    </JoyButton>
+                  )}
                 </CardActions>
               </Card>
             </Box>

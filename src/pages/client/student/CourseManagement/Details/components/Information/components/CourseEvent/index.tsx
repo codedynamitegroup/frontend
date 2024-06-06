@@ -19,7 +19,7 @@ const StudentCourseEvent = (props: PropData) => {
   const { id, name, type, startDate, endDate, status } = props;
   const { t } = useTranslation();
   let courseTypeString = "";
-  const backgroundColor = status === ECourseEventStatus.submitted ? "var(--gray-40)" : "white";
+  const backgroundColor = status === ECourseEventStatus.submitted ? "var(--gray-10)" : "white";
   const textDecorLine = status === ECourseEventStatus.submitted ? "line-through" : "none";
   switch (type) {
     case ECourseResourceType.assignment:

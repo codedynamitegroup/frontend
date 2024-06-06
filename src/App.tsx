@@ -38,12 +38,7 @@ import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/
 import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
 import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
 import PersistLogin from "components/common/PersistLogin";
-import ContestManagement from "pages/admin/ContestManagement/ContestManagement";
-import CreateContest from "pages/admin/ContestManagement/CreateContest";
-import EditContestDetails from "pages/admin/ContestManagement/EditContestDetails";
 import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
-import { ERoleName } from "models/authService/entity/role";
-import RequireAuth from "components/common/RequireAuth";
 import SystemAdminHomepage from "pages/admin";
 
 const router = createHashRouter(
@@ -159,14 +154,6 @@ const router = createHashRouter(
         <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
         <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
-        {/* <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
-          <Route path={routes.admin.contest.root} element={<ContestManagement />} />
-          <Route path={routes.admin.contest.create} element={<CreateContest />} />
-          <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} />
-        </Route> */}
-        {/* <Route path={routes.admin.contest.root} element={<ContestManagement />} />
-        <Route path={routes.admin.contest.create} element={<CreateContest />} />
-        <Route path={routes.admin.contest.edit.root} element={<EditContestDetails />} /> */}
       </Route>
     </Route>
   )

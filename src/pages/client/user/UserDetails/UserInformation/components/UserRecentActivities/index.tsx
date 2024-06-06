@@ -3,7 +3,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
-import { Card, Divider, Tab, Tabs } from "@mui/material";
+import { Card, Divider, Link, Tab, Tabs } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
@@ -14,6 +14,8 @@ import classes from "./styles.module.scss";
 import CustomHeatMap from "components/heatmap/CustomHeatMap";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
+import { Link as RouterLink } from "react-router-dom";
+import { routes } from "routes/routes";
 
 const UserRecentActivities = () => {
   const { t } = useTranslation();
@@ -38,20 +40,31 @@ const UserRecentActivities = () => {
             sx={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
+              gap: "20px"
             }}
           >
             <ParagraphBody translation-key='user_detail_non_certification'>
               {t("user_detail_non_certification")}
             </ParagraphBody>
-            <Button
+            <ParagraphBody translation-key='user_detail_get_certification' colorname='--blue-2'>
+              <Link
+                component={RouterLink}
+                to={routes.user.course_certificate.root}
+                className={classes.textLink}
+              >
+                {t("user_detail_get_certification")} <ChevronRightIcon />
+              </Link>
+            </ParagraphBody>
+
+            {/* <Button
               btnType={BtnType.Text}
               onClick={() => {}}
               endIcon={<ChevronRightIcon />}
-              translation-key='user_detail_get_certification'
+              
             >
               {t("user_detail_get_certification")}
-            </Button>
+            </Button> */}
           </Box>
         </Box>
       </Card>

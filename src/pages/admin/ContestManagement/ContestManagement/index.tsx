@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setContests, setLoading } from "reduxes/coreService/Contest";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
@@ -358,10 +359,16 @@ const ContestManagement = () => {
   }, [i18next.language]);
 
   useEffect(() => {
-    handleGetContests({
-      searchName: "",
-      startTimeFilter: ContestStartTimeFilterEnum.ALL
-    });
+    const fetchContests = async () => {
+      dispatch(setInititalLoading(true));
+      await handleGetContests({
+        searchName: "",
+        startTimeFilter: ContestStartTimeFilterEnum.ALL
+      });
+      dispatch(setInititalLoading(false));
+    };
+
+    fetchContests();
   }, [handleGetContests]);
 
   return (
