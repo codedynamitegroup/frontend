@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCertificateCourseDetails } from "reduxes/coreService/CertificateCourse";
 import { setChapters } from "reduxes/coreService/Chapter";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -180,8 +181,10 @@ const CourseCertificateDetail = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       if (courseId) {
+        dispatch(setInititalLoading(true));
         await handleGetCertificateCourseById(courseId);
         await handleGetChaptersByCertificateCourseId(courseId);
+        dispatch(setInititalLoading(false));
       }
     };
     fetchInitialData();

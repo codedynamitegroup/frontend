@@ -1,40 +1,49 @@
-import { Container, Grid } from "@mui/material";
-import React, { useEffect, useMemo } from "react";
-import classes from "./styles.module.scss";
-import Box from "@mui/material/Box";
-import Heading2 from "components/text/Heading2";
-import { LinearProgress } from "@mui/joy";
-import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import Heading3 from "components/text/Heading3";
-import Divider from "@mui/material/Divider";
-import ParagraphBody from "components/text/ParagraphBody";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
-import images from "config/images";
-import Heading5 from "components/text/Heading5";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LinearProgress } from "@mui/joy";
+import { Container, Grid } from "@mui/material";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
-import { CertificateCourseService } from "services/coreService/CertificateCourseService";
-import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CustomButton, { BtnType } from "components/common/buttons/Button";
+import Heading2 from "components/text/Heading2";
+import Heading3 from "components/text/Heading3";
+import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
+import images from "config/images";
+import useAuth from "hooks/useAuth";
+import i18next from "i18next";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import { User } from "models/authService/entity/user";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "reduxes/Auth";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { routes } from "routes/routes";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { AppDispatch, RootState } from "store";
+import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import classes from "./styles.module.scss";
+import { ContestService } from "services/coreService/ContestService";
+import { setMostPopularContests } from "reduxes/coreService/Contest";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import JoyButton from "@mui/joy/Button";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const user: User = useSelector(selectCurrentUser);
+  // const user: User = useSelector(selectCurrentUser);
+  const { loggedUser } = useAuth();
+  const contestState = useSelector((state: RootState) => state.contest);
+  const dispatch = useDispatch<AppDispatch>();
 
   const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
     CertificateCourseEntity[]
@@ -42,59 +51,15 @@ export default function UserDashboard() {
 
   const [certificateCourses, setCertificateCourses] = React.useState<CertificateCourseEntity[]>([]);
 
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     name: "Học Python",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/cf55489ccd434e8c81c61e6fffc9433f.jpg",
-  //     process: 38,
-  //     currentLesson: "Sử dụng vòng lặp"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Học C++",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/37a8e25c3ada4cb0bc3b0b32a36881fe.jpg",
-  //     process: 10,
-  //     currentLesson: "Câu điều kiện"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Học Java",
-  //     image:
-  //       "https://codelearnstorage.s3.amazonaws.com/CodeCamp/CodeCamp/Upload/Course/00e74493b80d4dcfadf2e1a59af577e7.jpg",
-  //     process: 1,
-  //     currentLesson: "Đọc ghi file"
-  //   }
-  // ];
-
-  // const courseCertificatesBasic: CourseCertificate[] = [
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/cpp.svg",
-  //     title: "Học C++ cơ bản",
-  //     description:
-  //       "Practice problems of C++, the language most used for DSA and low level programming due to its efficiency and speed.",
-  //     lesson: 10,
-  //     level: t("common_easy")
-  //   },
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/python.svg",
-  //     title: "Học Python cơ bản",
-  //     description:
-  //       "Practice Python problems, the language known for its simplicity and readability making it the best language for beginners..",
-  //     lesson: 30,
-  //     level: t("common_easy")
-  //   },
-  //   {
-  //     imgUrl: "https://cdn.codechef.com/images/self-learning/icons/go.svg",
-  //     title: "Học Go cơ bản",
-  //     description:
-  //       "Learn the basics of Go programming with ease in this interactive and practical course. This course will provide a good base to building real world applications in go.",
-  //     lesson: 35,
-  //     level: t("common_easy")
-  //   }
-  // ];
+  const firstMostPopularContest = useMemo(() => {
+    if (
+      !contestState.mostPopularContests ||
+      !contestState.mostPopularContests.mostPopularContests
+    ) {
+      return null;
+    }
+    return contestState.mostPopularContests.mostPopularContests[0];
+  }, [contestState.mostPopularContests]);
 
   const handleGetCertificateCourses = async ({
     courseName,
@@ -121,6 +86,20 @@ export default function UserDashboard() {
       // Show snackbar here
     }
   };
+
+  const handleGetMostPopularContests = useCallback(async () => {
+    try {
+      const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
+      dispatch(setMostPopularContests(getMostPopularContestsResponse));
+    } catch (error: any) {
+      console.error("Failed to fetch most popular contests", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  }, [dispatch]);
 
   const ongoingRegisteredCourses = useMemo(() => {
     if (!registeredCertificateCourses) {
@@ -149,6 +128,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
+      dispatch(setInititalLoading(true));
       const getRegisteredCertificateCoursesResponse = await handleGetCertificateCourses({
         courseName: "",
         filterTopicIds: [],
@@ -166,6 +146,10 @@ export default function UserDashboard() {
       if (getAllCertificateCoursesResponse) {
         setCertificateCourses(getAllCertificateCoursesResponse.certificateCourses);
       }
+
+      await handleGetMostPopularContests();
+
+      dispatch(setInititalLoading(false));
     };
 
     fetchInitialData();
@@ -178,7 +162,7 @@ export default function UserDashboard() {
           <Grid item sm={12} md={7} className={classes.sectionContent}>
             <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
               <Heading2>
-                {t("dashboard_continue_title")}, {user?.firstName}
+                {t("dashboard_continue_title")}, {loggedUser?.firstName}
               </Heading2>
               <Box className={classes.courseLearningList}>
                 {ongoingRegisteredCourses.length === 0 ? (
@@ -244,15 +228,14 @@ export default function UserDashboard() {
                 <Heading2 translation-key='dashboard_other_course'>
                   {t("dashboard_other_course")}
                 </Heading2>
-                <CustomButton
-                  btnType={BtnType.Primary}
+                <JoyButton
                   translation-key='home_view_all_courses'
                   onClick={() => {
                     navigate(routes.user.course_certificate.root);
                   }}
                 >
                   {t("home_view_all_courses")}
-                </CustomButton>
+                </JoyButton>
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
                 <Grid container spacing={3}>
@@ -325,34 +308,41 @@ export default function UserDashboard() {
                   component='img'
                   alt='green iguana'
                   height='140'
-                  image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
+                  // image='https://files.codingninjas.in/article_images/codingcompetitionblog-23489.webp'
+                  image={firstMostPopularContest?.thumbnailUrl}
                 />
                 <CardContent>
-                  <Typography gutterBottom variant='h5' component='div'>
-                    Cuộc thi lập trình đa vũ trụ
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    color='text.secondary'
-                    translation-key='dashboard_participant_num'
-                  >
+                  <ParagraphBody>
+                    {/* Cuộc thi lập trình đa vũ trụ */}
+                    {firstMostPopularContest?.name}
+                  </ParagraphBody>
+                  <ParagraphSmall translation-key='dashboard_participant_num'>
                     {t("dashboard_participant_num", { participantNum: 1000 })}
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    color='text.primary'
-                    translation-key='dashboard_contest_end'
-                  >
-                    {t("dashboard_contest_end")} 20/04/2024
-                  </Typography>
+                  </ParagraphSmall>
+                  <ParagraphSmall fontWeight={500} translation-key='dashboard_contest_end'>
+                    {t("dashboard_contest_end")}{" "}
+                    {firstMostPopularContest
+                      ? standardlizeUTCStringToLocaleString(
+                          firstMostPopularContest.endTime,
+                          i18next.language
+                        )
+                      : ""}
+                  </ParagraphSmall>
                 </CardContent>
                 <CardActions>
-                  <CustomButton
-                    btnType={BtnType.Primary}
-                    translation-key='contest_detail_join_button'
+                  <JoyButton
+                    translation-key='common_view_details'
+                    onClick={() => {
+                      navigate(
+                        routes.user.contest.detail.replace(
+                          ":contestId",
+                          firstMostPopularContest?.contestId.toString() || ""
+                        )
+                      );
+                    }}
                   >
-                    {t("contest_detail_join_button")}
-                  </CustomButton>
+                    {t("common_view_details")}
+                  </JoyButton>
                 </CardActions>
               </Card>
             </Box>
