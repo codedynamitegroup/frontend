@@ -8,7 +8,7 @@ import UserTableTemplate from "components/common/table/UserTableTemplate";
 import { useTranslation } from "react-i18next";
 import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash/cloneDeep";
-import { useAppSelector } from "hooks";
+import { useAppDispatch, useAppSelector } from "hooks";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
@@ -18,6 +18,7 @@ import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import { CircularProgress, Stack } from "@mui/material";
 import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
 import { clearInterval } from "timers";
+import { setLoading } from "reduxes/Loading";
 
 export default function ProblemDetailSubmission({
   submissionLoading
@@ -26,6 +27,8 @@ export default function ProblemDetailSubmission({
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   const pageSize = 100;
   const pageNum = 0;
@@ -168,21 +171,24 @@ export default function ProblemDetailSubmission({
   const [detail, setDetail] = useState<CodeSubmissionDetailEntity | null>(null);
   const [languageName, setLanguageName] = useState<string | undefined>();
 
-  const [submissionDetail, setsubmissionDetail] = useState(true);
+  const [submissionDetail, setsubmissionDetail] = useState(false);
   const handlesubmissionDetail = (rowId: number) => {
     const codeSubmisison = data[rowId];
     const codeSubmissionId = codeSubmisison.codeSubmissionId;
+    dispatch(setLoading(true));
     CodeSubmissionService.getDetailCodeSubmission(codeSubmissionId)
       .then((data: CodeSubmissionDetailEntity) => {
-        setLanguageName(mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name);
-        if (languageName !== undefined && codeQuestion !== null) {
+        const langName = mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name;
+        setLanguageName(langName);
+        if (langName !== undefined && codeQuestion !== null) {
           data.gradingStatus = codeSubmisison.gradingStatus;
           data.description = codeSubmisison.description;
           setDetail(data);
-          setsubmissionDetail(!submissionDetail);
+          setsubmissionDetail((value) => !value);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => dispatch(setLoading(false)));
   };
   const checkGrading = (): boolean => {
     const data = codeSubmissions;
@@ -219,7 +225,7 @@ export default function ProblemDetailSubmission({
         </Stack>
       )}
       {!codeSubmissionLoading &&
-        (submissionDetail === true ? (
+        (submissionDetail === false ? (
           <Box className={classes.submissionTable}>
             <UserTableTemplate
               translation-key='detail_problem_submission_customHeading'
