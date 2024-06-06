@@ -43,8 +43,10 @@ import Option from "@mui/joy/Option";
 import Select from "@mui/joy/Select";
 import { Chip } from "@mui/joy";
 import { get } from "http";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
 
 interface Props {
   courseId?: string;
@@ -234,15 +236,16 @@ const CreateEssayQuestion = (props: Props) => {
   const isQuestionBank = location.state?.isQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
     setSubmitLoading(true);
 
     const formSubmittedData: FormData = { ...data };
     const newEssayQuestion: PostEssayQuestion = {
-      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      organizationId: user.organization.organizationId,
+      createdBy: user.userId,
+      updatedBy: user.userId,
       difficulty: "EASY",
       name: formSubmittedData.questionName,
       questionText: formSubmittedData.questionDescription,
