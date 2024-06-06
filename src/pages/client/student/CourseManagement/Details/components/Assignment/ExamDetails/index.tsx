@@ -13,7 +13,7 @@ import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
-import { ExamEntity, ExamOverview } from "models/courseService/entity/ExamEntity";
+import { ExamEntity, ExamOverview, ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
@@ -82,7 +82,25 @@ const StudentCourseExamDetails = () => {
   const navigate = useNavigate();
 
   const startAttemptButtonHandler = () => {
-    dispatch(setExamData(exam));
+    const examStateData: ReduxExamEntity = {
+      id: exam.id,
+      courseId: exam.courseId,
+      name: exam.name,
+      scores: exam.scores,
+      maxScores: exam.maxScores,
+      timeOpen: exam.timeOpen.toISOString(),
+      timeClose: exam.timeClose.toISOString(),
+      timeLimit: exam.timeLimit,
+      intro: exam.intro,
+      overdueHanding: exam.overdueHanding,
+      canRedoQuestions: exam.canRedoQuestions,
+      maxAttempts: exam.maxAttempts,
+      shuffleAnswers: exam.shuffleAnswers,
+      gradeMethod: exam.gradeMethod,
+      createdAt: exam.createdAt?.toISOString(),
+      updatedAt: exam.updatedAt?.toISOString()
+    };
+    dispatch(setExamData(examStateData));
     navigate(
       routes.student.exam.take
         .replace(":courseId", courseId || examState.examDetail.courseId)
@@ -195,6 +213,8 @@ const StudentCourseExamDetails = () => {
       </Card>
       <Heading2>Tóm tắt những lần làm bài trước</Heading2>
       <ExamAttemptSummaryTable
+        examId={examId || examState.examDetail.id}
+        courseId={courseId || examState.examDetail.courseId}
         headers={["Lần thử", "Trạng thái", "Điểm / 10.0", "Xem đánh giá"]}
         rows={[
           {

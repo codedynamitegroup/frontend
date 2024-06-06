@@ -17,6 +17,25 @@ export interface ExamEntity {
   updatedAt?: Date;
 }
 
+export interface ReduxExamEntity {
+  id: string;
+  courseId: string;
+  name: string;
+  scores?: number;
+  maxScores?: number;
+  timeOpen: string;
+  timeClose: string;
+  timeLimit?: number;
+  intro: string;
+  overdueHanding?: string;
+  canRedoQuestions?: boolean;
+  maxAttempts?: number;
+  shuffleAnswers?: boolean;
+  gradeMethod: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ExamCreateRequest {
   courseId: string;
   name: string;
@@ -54,6 +73,7 @@ export interface SubmitExamRequest {
   userId: string;
   questions: ExamQuestionSubmission[];
   startTime: string;
+  submitTime: string;
 }
 
 export interface ExamQuestionSubmission {
