@@ -79,10 +79,8 @@ export default function UserDashboard() {
         filterTopicIds,
         isRegisteredFilter
       });
-      setTimeout(() => {
-        setIsCertificateCoursesLoading(false);
-        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-      }, 500);
+      setIsCertificateCoursesLoading(false);
+      setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.code || 503,
@@ -102,10 +100,8 @@ export default function UserDashboard() {
         filterTopicIds: [],
         isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
       });
-      setTimeout(() => {
-        setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-        setIsCertificateCoursesLoading(false);
-      }, 500);
+      setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+      setIsCertificateCoursesLoading(false);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.code || 503,
@@ -121,10 +117,8 @@ export default function UserDashboard() {
     setIsMostPopularContestsLoading(true);
     try {
       const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
-      setTimeout(() => {
-        dispatch(setMostPopularContests(getMostPopularContestsResponse));
-        setIsMostPopularContestsLoading(false);
-      }, 500);
+      dispatch(setMostPopularContests(getMostPopularContestsResponse));
+      setIsMostPopularContestsLoading(false);
     } catch (error: any) {
       console.error("Failed to fetch most popular contests", {
         code: error.response?.code || 503,

@@ -77,10 +77,8 @@ const ContestManagement = () => {
           pageNo,
           pageSize
         });
-        setTimeout(() => {
-          dispatch(setContests(getCertificateCoursesResponse));
-          dispatch(setLoading(false));
-        }, 1000);
+        dispatch(setContests(getCertificateCoursesResponse));
+        dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {

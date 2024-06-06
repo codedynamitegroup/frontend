@@ -153,7 +153,7 @@
   "register_certificate_course_success": "Đăng ký khóa học chứng chỉ {{courseName}} thành công",
   "register_certificate_course_fail": "Đăng ký khóa học chứng chỉ {{courseName}} thất bại",
   "common_view_this_course": "Xem khóa học này",
-  "home_learn_to_code": "Học lập trình",
+  "home_learn_to_code": "Ngôn ngữ lập trình",
   "home_data_structures_and_algorithms": "Cấu trúc dữ liệu và giải thuật",
   "common_all_courses_catalog": "Tất cả khoá học",
   "common_loading_search": "Đang tìm kiếm...",

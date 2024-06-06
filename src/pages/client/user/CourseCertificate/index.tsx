@@ -116,10 +116,8 @@ const CourseCertificates = () => {
       const getTopicsResponse = await TopicService.getTopics({
         fetchAll: true
       });
-      setTimeout(() => {
-        dispatch(setTopics(getTopicsResponse));
-        setIsTopicsLoading(false);
-      }, 500);
+      dispatch(setTopics(getTopicsResponse));
+      setIsTopicsLoading(false);
     } catch (error: any) {
       console.error("Failed to fetch topics", {
         code: error.code || 503,
@@ -150,10 +148,8 @@ const CourseCertificates = () => {
           filterTopicIds,
           isRegisteredFilter
         });
-        setTimeout(() => {
-          dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-          dispatch(setLoading({ isLoading: false }));
-        }, 500);
+        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
+        dispatch(setLoading({ isLoading: false }));
       } catch (error: any) {
         console.error("Failed to fetch certificate courses", {
           code: error.code || 503,
@@ -172,14 +168,12 @@ const CourseCertificates = () => {
     try {
       const getMostEnrolledCertificateCoursesResponse =
         await CertificateCourseService.getMostEnrolledCertificateCourses();
-      setTimeout(() => {
-        dispatch(
-          setMostEnrolledCertificateCourses(
-            getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
-          )
-        );
-        setIsRecommendedLoading(false);
-      }, 500);
+      dispatch(
+        setMostEnrolledCertificateCourses(
+          getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
+        )
+      );
+      setIsRecommendedLoading(false);
     } catch (error: any) {
       console.error("Failed to fetch most enrolled certificate courses", {
         code: error.code || 503,

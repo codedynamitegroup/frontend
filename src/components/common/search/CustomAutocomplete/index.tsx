@@ -49,7 +49,7 @@ export default function CustomAutocomplete({
   React.useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       onHandleChange(value);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(delayDebounceFn);
   }, [onHandleChange, value]);
