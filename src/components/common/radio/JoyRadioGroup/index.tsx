@@ -49,6 +49,7 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
           overlay ? (
             <Sheet variant='outlined' key={index}>
               <Radio
+                disabled={disabled}
                 overlay
                 checkedIcon={
                   numbering && (

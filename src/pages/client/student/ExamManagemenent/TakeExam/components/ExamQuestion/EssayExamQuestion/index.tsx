@@ -12,10 +12,13 @@ import {
   addFileToExamQuesiton,
   removeAllFilesFromExamQuestion,
   removeFileFromExamQuestion,
+  setAnswered,
   setFlag
 } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
 import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
+import { debounce } from "lodash";
+import { useState } from "react";
 
 interface Props {
   page: number;
@@ -27,6 +30,7 @@ interface Props {
 const EssayExamQuestion = (props: Props) => {
   const { page, questionEssayQuestion, questionState } = props;
   const isFlagged = questionState?.flag;
+  const [textValue, setTextValue] = useState<string>("");
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const fileTypeList =
@@ -48,6 +52,24 @@ const EssayExamQuestion = (props: Props) => {
   const flagQuestionHandle = () => {
     if (isFlagged !== undefined)
       dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+  };
+
+  const debouncedHandleOnInputChange = debounce((value: string) => {
+    let isAnswered = true;
+    if (value === "") isAnswered = false;
+
+    dispatch(
+      setAnswered({
+        id: questionEssayQuestion.question.id,
+        answered: isAnswered,
+        content: value
+      })
+    );
+  }, 250);
+
+  const HandleInputChange = (value: string) => {
+    setTextValue(value);
+    debouncedHandleOnInputChange(value);
   };
 
   return (
@@ -110,7 +132,9 @@ const EssayExamQuestion = (props: Props) => {
           </ParagraphBody>
           {questionEssayQuestion.responseFormat === "editor" && (
             <TextEditor
-              value=''
+              value={textValue}
+              defaultvalue={questionState?.content}
+              onChange={HandleInputChange}
               roundedBorder
               maxLines={questionEssayQuestion.responseFieldLines}
             />

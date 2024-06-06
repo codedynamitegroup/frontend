@@ -198,7 +198,7 @@ export default function TakeExam() {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
+    const interval = setInterval(() => getTimeUntil(timeLimit), 500);
 
     return () => clearInterval(interval);
   }, [timeLimit]);
