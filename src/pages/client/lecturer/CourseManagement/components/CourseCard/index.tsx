@@ -57,7 +57,7 @@ const CourseCard = (props: CardProps) => {
         <Heading5 className={classes.courseNameText} colorname='--blue-3'>
           <Link
             component={RouterLink}
-            to={routes.student.course.information.replace(":courseId", props.courseId)}
+            to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
             underline='hover'
             color='inherit'
           >
