@@ -6,7 +6,7 @@ export interface ContestQuestionEntity {
   questionText: string;
   defaultMark: number;
   maxGrade: number;
-  grade: number;
-  numOfSubmissions: number;
-  doTime: number;
+  grade?: number;
+  numOfSubmissions?: number;
+  doTime?: number;
 }

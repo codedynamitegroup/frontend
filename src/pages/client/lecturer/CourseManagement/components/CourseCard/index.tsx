@@ -3,23 +3,21 @@ import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import List from "@mui/material/List";
 import Link from "@mui/material/Link";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { User } from "models/courseService/user";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { routes } from "routes/routes";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
+import { Grid } from "@mui/material";
+import Heading4 from "components/text/Heading4";
+import Heading5 from "components/text/Heading5";
 
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -44,37 +42,37 @@ interface CardProps {
 const CourseCard = (props: CardProps) => {
   const { t } = useTranslation();
   return (
-    <Paper className={classes.cardContainer}>
+    <Grid className={classes.cardContainer}>
       <Box className={classes.topGroup}>
         <Box className={classes.detailGroup}>
-          <Typography fontWeight='20px' fontSize='18px'>
-            {props.courseCategory}
-          </Typography>
+          <Heading4>{props.courseCategory}</Heading4>
         </Box>
-
-        <IconButton>
+        {/* <IconButton>
           <MoreVertIcon sx={{ color: "white" }} />
-        </IconButton>
+        </IconButton> */}
       </Box>
       <Divider className={classes.cardDivider} />
-      <Link
-        component={RouterLink}
-        to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
-        underline='hover'
-        color='inherit'
-      >
-        <Typography className={classes.courseNameText}>{props.courseName}</Typography>
-      </Link>
-      <List>
+
+      <List className={classes.listWrapper}>
+        <Heading5 className={classes.courseNameText} colorname='--blue-3'>
+          <Link
+            component={RouterLink}
+            to={routes.student.course.information.replace(":courseId", props.courseId)}
+            underline='hover'
+            color='inherit'
+          >
+            {props.courseName}
+          </Link>
+        </Heading5>
         {props.teacherList.slice(0, 2).map((teacher) => (
-          <ListItem key={teacher.userId}>
+          <ListItem className={classes.listItem} key={teacher.userId}>
             <ListItemAvatar>
               <Avatar alt={teacher.firstName} src={""} />
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Link component={RouterLink} to='#' underline='hover'>
-                  {teacher.firstName + " " + teacher.lastName}
+                  {teacher.lastName} {teacher.firstName}
                 </Link>
               }
               secondary='Giảng viên'
@@ -96,7 +94,7 @@ const CourseCard = (props: CardProps) => {
                   <ListItemText
                     primary={
                       <Link component={RouterLink} to='#' underline='hover'>
-                        {teacher.firstName + " " + teacher.lastName}
+                        {teacher.lastName} {teacher.firstName}
                       </Link>
                     }
                     secondary='Giảng viên'
@@ -123,7 +121,7 @@ const CourseCard = (props: CardProps) => {
           </Button>
         </CustomTooltip>
       ) : null}
-    </Paper>
+    </Grid>
   );
 };
 

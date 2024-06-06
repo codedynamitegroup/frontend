@@ -10,7 +10,8 @@ import {
   loginStatus,
   logOut,
   fetchStatus,
-  EFetchingUser
+  EFetchingUser,
+  selectFetchingStatus
 } from "reduxes/Auth";
 import { setLoadingAuth } from "reduxes/Loading";
 import { routes } from "routes/routes";
@@ -19,6 +20,7 @@ import { UserService } from "services/authService/UserService";
 const PersistLogin = () => {
   const selectedUser = useSelector(selectCurrentUser);
   const selectedLoginStatus = useSelector(selectLoginStatus);
+  const selectedFetchingStatus = useSelector(selectFetchingStatus);
   const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
   const dispatch = useDispatch();
@@ -38,6 +40,12 @@ const PersistLogin = () => {
 
   useEffect(() => {
     const getUser = async () => {
+      if (
+        selectedFetchingStatus === EFetchingUser.SUCCESS ||
+        selectedFetchingStatus === EFetchingUser.FAILED
+      ) {
+        return;
+      }
       if (selectedLoginStatus && accessToken && refreshToken && selectedUser) {
         return;
       }
@@ -100,7 +108,15 @@ const PersistLogin = () => {
       }
     };
     getUser();
-  }, [dispatch, refreshToken, selectedUser, accessToken, selectedLoginStatus, navigate]);
+  }, [
+    dispatch,
+    refreshToken,
+    selectedUser,
+    accessToken,
+    selectedLoginStatus,
+    navigate,
+    selectedFetchingStatus
+  ]);
 
   return <Outlet />;
 };
