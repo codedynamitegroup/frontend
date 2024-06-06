@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Skeleton,
   Stack,
   ToggleButtonGroup
 } from "@mui/material";
@@ -47,6 +48,7 @@ const CourseCertificates = () => {
   const [searchParams] = useSearchParams();
 
   const [isTopicsLoading, setIsTopicsLoading] = useState(false);
+  const [isRecommendedLoading, setIsRecommendedLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const topicState = useSelector((state: RootState) => state.topic);
@@ -109,17 +111,22 @@ const CourseCertificates = () => {
   const navigate = useNavigate();
 
   const handleGetTopics = useCallback(async () => {
+    setIsTopicsLoading(true);
     try {
       const getTopicsResponse = await TopicService.getTopics({
         fetchAll: true
       });
-      dispatch(setTopics(getTopicsResponse));
+      setTimeout(() => {
+        dispatch(setTopics(getTopicsResponse));
+        setIsTopicsLoading(false);
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch topics", {
         code: error.code || 503,
         status: error.status || "Service Unavailable",
         message: error.message
       });
+      setIsTopicsLoading(false);
       // Show snackbar here
     }
   }, [dispatch]);
@@ -161,20 +168,25 @@ const CourseCertificates = () => {
   );
 
   const handleGetMostEnrolledCertificateCourses = useCallback(async () => {
+    setIsRecommendedLoading(true);
     try {
       const getMostEnrolledCertificateCoursesResponse =
         await CertificateCourseService.getMostEnrolledCertificateCourses();
-      dispatch(
-        setMostEnrolledCertificateCourses(
-          getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
-        )
-      );
+      setTimeout(() => {
+        dispatch(
+          setMostEnrolledCertificateCourses(
+            getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
+          )
+        );
+        setIsRecommendedLoading(false);
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch most enrolled certificate courses", {
         code: error.code || 503,
         status: error.status || "Service Unavailable",
         message: error.message
       });
+      setIsRecommendedLoading(false);
       // Show snackbar here
     }
   }, [dispatch]);
@@ -205,9 +217,7 @@ const CourseCertificates = () => {
 
   useEffect(() => {
     const fetchDefaultData = async () => {
-      setIsTopicsLoading(true);
       await handleGetTopics();
-      setIsTopicsLoading(false);
       await handleGetMostEnrolledCertificateCourses();
     };
     fetchDefaultData();
@@ -321,25 +331,31 @@ const CourseCertificates = () => {
                         {t("certificate_hot_recommend")}
                       </Heading2>
                       <Grid container spacing={3}>
-                        {certificateCourseState.mostEnrolledCertificateCourses
-                          .slice(0, 3)
-                          .map((course, index) => (
-                            <Grid
-                              item
-                              xs={4}
-                              key={index}
-                              onClick={() =>
-                                navigate(
-                                  routes.user.course_certificate.detail.lesson.root.replace(
-                                    ":courseId",
-                                    course.certificateCourseId
-                                  )
-                                )
-                              }
-                            >
-                              <CourseCertificateCard course={course} />
-                            </Grid>
-                          ))}
+                        {isRecommendedLoading
+                          ? Array.from({ length: 3 }).map((_, index) => (
+                              <Grid item xs={4} key={index}>
+                                <Skeleton variant='rectangular' width='100%' height={270} />
+                              </Grid>
+                            ))
+                          : certificateCourseState.mostEnrolledCertificateCourses
+                              .slice(0, 3)
+                              .map((course, index) => (
+                                <Grid
+                                  item
+                                  xs={4}
+                                  key={index}
+                                  onClick={() =>
+                                    navigate(
+                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                        ":courseId",
+                                        course.certificateCourseId
+                                      )
+                                    )
+                                  }
+                                >
+                                  <CourseCertificateCard course={course} />
+                                </Grid>
+                              ))}
                       </Grid>
                     </Card>
                     <Heading1 translation-key='common_all_courses_catalog'>
