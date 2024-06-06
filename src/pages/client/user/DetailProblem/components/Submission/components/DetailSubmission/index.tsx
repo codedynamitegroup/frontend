@@ -162,7 +162,8 @@ export default function DetailSolution({
                       : "--green-600"
                 }
               >
-                {codeSubmissionDetail.gradingStatus === "GRADING"
+                {codeSubmissionDetail.gradingStatus === "GRADING" ||
+                codeSubmissionDetail.description === undefined
                   ? codeSubmissionDetail.gradingStatus
                   : codeSubmissionDetail.description}
               </ParagraphBody>
@@ -203,7 +204,8 @@ export default function DetailSolution({
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
-                {roundedNumber(codeSubmissionDetail?.avgRuntime, 3) ?? "N/A"}ms
+                {roundedNumber(codeSubmissionDetail?.avgRuntime, 3) ?? "N/A"}
+                {codeSubmissionDetail?.avgRuntime !== undefined ? "ms" : ""}
               </ParagraphBody>
             </Container>
           </Grid>
@@ -220,7 +222,8 @@ export default function DetailSolution({
             </Container>
             <Container className={classes.data}>
               <ParagraphBody colorname={"--white"} fontSize={"20px"} fontWeight={"700"}>
-                {roundedNumber(kiloByteToMegaByte(codeSubmissionDetail?.avgMemory), 3) ?? "N/A"}KB
+                {roundedNumber(kiloByteToMegaByte(codeSubmissionDetail?.avgMemory), 3) ?? "N/A"}{" "}
+                {codeSubmissionDetail?.avgMemory !== undefined ? "MB" : ""}
               </ParagraphBody>
             </Container>
           </Grid>

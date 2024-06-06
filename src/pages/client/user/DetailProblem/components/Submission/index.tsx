@@ -71,6 +71,7 @@ export default function ProblemDetailSubmission({
             id: index,
             codeSubmissionId: value.id,
             gradingStatus: value.gradingStatus,
+            description: value.description,
             notClickAble: value.gradingStatus === "GRADED" ? false : true,
             status: (
               <ParagraphBody
@@ -171,16 +172,17 @@ export default function ProblemDetailSubmission({
   const handlesubmissionDetail = (rowId: number) => {
     const codeSubmisison = data[rowId];
     const codeSubmissionId = codeSubmisison.codeSubmissionId;
-    if (codeSubmisison.gradingStatus === "GRADED")
-      CodeSubmissionService.getDetailCodeSubmission(codeSubmissionId)
-        .then((data: CodeSubmissionDetailEntity) => {
-          setLanguageName(mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name);
-          if (languageName !== undefined && codeQuestion !== null) {
-            setDetail(data);
-            setsubmissionDetail(!submissionDetail);
-          }
-        })
-        .catch((err) => console.error(err));
+    CodeSubmissionService.getDetailCodeSubmission(codeSubmissionId)
+      .then((data: CodeSubmissionDetailEntity) => {
+        setLanguageName(mapLanguages.get(data.programmingLanguageId ?? "")?.pLanguage.name);
+        if (languageName !== undefined && codeQuestion !== null) {
+          data.gradingStatus = codeSubmisison.gradingStatus;
+          data.description = codeSubmisison.description;
+          setDetail(data);
+          setsubmissionDetail(!submissionDetail);
+        }
+      })
+      .catch((err) => console.error(err));
   };
   const checkGrading = (): boolean => {
     const data = codeSubmissions;
