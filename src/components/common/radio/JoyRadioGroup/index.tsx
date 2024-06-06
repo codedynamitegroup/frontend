@@ -16,6 +16,7 @@ interface JoyRadioGroupProps {
   fontFamily?: string;
   numbering?: string | null;
   overlay?: boolean;
+  disabled?: boolean;
 }
 
 const JoyRadioGroup = (props: JoyRadioGroupProps) => {
@@ -31,7 +32,8 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
     onChange,
     value,
     numbering,
-    overlay
+    overlay,
+    disabled
   } = props;
   return (
     <RadioGroup orientation={orientation} size={size} variant={variant} value={value}>
@@ -88,6 +90,7 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
             </Sheet>
           ) : (
             <Radio
+              disabled={disabled}
               checked={index === 0 ? true : false}
               checkedIcon={
                 numbering && (

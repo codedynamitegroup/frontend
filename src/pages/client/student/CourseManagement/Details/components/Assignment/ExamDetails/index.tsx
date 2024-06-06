@@ -82,14 +82,19 @@ const StudentCourseExamDetails = () => {
   const navigate = useNavigate();
 
   const startAttemptButtonHandler = () => {
+    const timeOpen = exam.timeOpen ? new Date(exam.timeOpen) : new Date();
+    const timeClose = exam.timeClose ? new Date(exam.timeClose) : new Date();
+    const createdAt = exam.createdAt ? new Date(exam.createdAt) : new Date();
+    const updatedAt = exam.updatedAt ? new Date(exam.updatedAt) : new Date();
+
     const examStateData: ReduxExamEntity = {
       id: exam.id,
       courseId: exam.courseId,
       name: exam.name,
       scores: exam.scores,
       maxScores: exam.maxScores,
-      timeOpen: exam.timeOpen.toISOString(),
-      timeClose: exam.timeClose.toISOString(),
+      timeOpen: timeOpen.toISOString(),
+      timeClose: timeClose.toISOString(),
       timeLimit: exam.timeLimit,
       intro: exam.intro,
       overdueHanding: exam.overdueHanding,
@@ -97,8 +102,8 @@ const StudentCourseExamDetails = () => {
       maxAttempts: exam.maxAttempts,
       shuffleAnswers: exam.shuffleAnswers,
       gradeMethod: exam.gradeMethod,
-      createdAt: exam.createdAt?.toISOString(),
-      updatedAt: exam.updatedAt?.toISOString()
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString()
     };
     dispatch(setExamData(examStateData));
     navigate(

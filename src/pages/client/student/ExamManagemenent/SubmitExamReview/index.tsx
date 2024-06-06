@@ -147,7 +147,9 @@ const SubmitExamSummary = () => {
   ];
 
   const submitExamHandler = async () => {
-    const endTime = new Date();
+    const endTime = new Date(
+      new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
+    ).toISOString();
     dispatch(setLoading(true));
 
     const questions = questionList.map((question) => {
@@ -166,7 +168,8 @@ const SubmitExamSummary = () => {
       examId: examId || storageExamID,
       userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
       questions: questions,
-      startTime: startAtTime
+      startTime: startAtTime,
+      submitTime: endTime
     };
 
     ExamService.submitExam(submitData)
@@ -178,9 +181,10 @@ const SubmitExamSummary = () => {
         setSnackBarType(AlertType.Success);
         setOpenSnackAlert(true);
         navigate(
-          routes.student.exam.detail
+          routes.student.exam.review
             .replace(":courseId", courseId || examData.courseId)
             .replace(":examId", examId || examData.id)
+            .replace(":submissionId", response.examSubmissionId)
         );
       })
       .catch((error) => {
@@ -229,6 +233,7 @@ const SubmitExamSummary = () => {
     t("common_friday"),
     t("common_saturday")
   ];
+
   return (
     <>
       <Grid className={classes.root}>

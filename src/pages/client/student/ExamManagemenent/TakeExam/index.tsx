@@ -86,6 +86,7 @@ const drawerWidth = 370;
 export default function TakeExam() {
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
+  const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
 
   const courseId = useParams<{ courseId: string }>().courseId;
 
@@ -138,7 +139,9 @@ export default function TakeExam() {
 
     if (time < 0) {
       dispatch(setLoading(true));
-      const endTime = new Date();
+      const endTime = new Date(
+        new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
+      ).toISOString();
 
       // if enable auto submit ==> submit exam
       if (examData.overdueHanding === "AUTOSUBMIT") {
@@ -159,21 +162,23 @@ export default function TakeExam() {
           examId: examId || storageExamID,
           userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
           questions: questions,
-          startTime: startAtTime
+          startTime: startAtTime,
+          submitTime: endTime
         };
 
         ExamService.submitExam(submitData)
-          .then((response) => {})
-          .catch((error) => {})
-          .finally(() => {
+          .then((response) => {
             dispatch(setLoading(false));
             dispatch(cleanTakeExamState());
             navigate(
-              routes.student.exam.detail
+              routes.student.exam.review
                 .replace(":courseId", courseId || examData.courseId)
                 .replace(":examId", examId || examData.id)
+                .replace(":submissionId", response.examSubmissionId)
             );
-          });
+          })
+          .catch((error) => {})
+          .finally(() => {});
       } else {
         // else ==> abandon exam
         dispatch(cleanTakeExamState());
@@ -555,13 +560,8 @@ export default function TakeExam() {
                       selectedQtype.includes(question.data.question.qtype)
                   )
                   .map((question: any, index: number) => (
-                    <>
-                      <Grid
-                        item
-                        xs={12}
-                        id={convertIdToSlug(question.data.question.id)}
-                        key={question.data.question.id}
-                      >
+                    <React.Fragment key={question.data.question.id}>
+                      <Grid item xs={12} id={convertIdToSlug(question.data.question.id)}>
                         {question.data.question.qtype === qtype.essay.code ? (
                           <EssayExamQuestion
                             page={questionList.findIndex(
@@ -619,7 +619,7 @@ export default function TakeExam() {
                           }}
                         />
                       </Grid>
-                    </>
+                    </React.Fragment>
                   ))}
 
                 <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>

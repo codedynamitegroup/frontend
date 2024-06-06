@@ -135,7 +135,7 @@ export const routes = {
     exam: {
       detail: "/student/courses/:courseId/assignments/exams/:examId",
       take: "/student/courses/:courseId/assignments/exams/:examId/take",
-      review: "/student/courses/:courseId/assignments/exams/:examId/review",
+      review: "/student/courses/:courseId/assignments/exams/:examId/review/:submissionId",
       submitSummary: "/student/courses/:courseId/assignments/exams/:examId/summary"
     },
     calendar: "/student/calendar"
