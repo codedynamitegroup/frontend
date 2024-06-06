@@ -84,7 +84,7 @@ const CustomDataGrid = (props: DataGridProps) => {
   const { t } = useTranslation();
 
   return (
-    <Box className={classes.container}>
+    <Box className={classes.tableWrapper}>
       <DataGrid
         loading={loading}
         rows={dataList}
@@ -146,6 +146,9 @@ const CustomDataGrid = (props: DataGridProps) => {
             : {
                 "& .MuiDataGrid-row:hover": {
                   cursor: onClickRow ? "pointer" : "default"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "var(--gray-10)"
                 },
                 ...sx
               }

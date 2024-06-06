@@ -1,5 +1,5 @@
 .container {
-  border: 1px solid var(--gray-50);
+  border: 1px solid var(--gray-40);
   border-radius: 5px;
   [class~="MuiAccordionSummary-content"] {
     display: flex;
@@ -9,8 +9,8 @@
   [class~="MuiAccordionDetails-root"] {
     max-height: 220px;
     background-color: var(--gray-3);
-    border-top: 1px solid var(--gray-50);
-    border-bottom: 1px solid var(--gray-50);
+    border-top: 1px solid var(--gray-40);
+    border-bottom: 1px solid var(--gray-40);
   }
   .accordionContainer {
     .announcementSubject {
