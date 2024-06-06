@@ -197,6 +197,7 @@ const ContestManagement = () => {
       field: "numOfParticipants",
       headerName: t("common_num_of_participants"),
       flex: 0.4,
+      minWidth: 100,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
