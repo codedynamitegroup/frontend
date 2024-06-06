@@ -440,7 +440,10 @@ export default function DetailProblem() {
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
                   <Route path={"solution"} element={<ProblemDetailSolution />} />
-                  <Route path={"submission"} element={<ProblemDetailSubmission />} />
+                  <Route
+                    path={"submission"}
+                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                  />
                 </Routes>
               </Box>
             </Box>

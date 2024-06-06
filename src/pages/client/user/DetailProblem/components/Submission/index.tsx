@@ -16,8 +16,14 @@ import { useIsMounted } from "utils/isMounted";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import { CircularProgress, Stack } from "@mui/material";
+import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
+import { clearInterval } from "timers";
 
-export default function ProblemDetailSubmission() {
+export default function ProblemDetailSubmission({
+  submissionLoading
+}: {
+  submissionLoading: boolean;
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -50,7 +56,7 @@ export default function ProblemDetailSubmission() {
         .catch((err) => console.log(err))
         .finally(() => setCodeSubmissionLoading(false));
     }
-  }, []);
+  }, [submissionLoading]);
 
   const customHeading = t("detail_problem_submission_customHeading", {
     returnObjects: true
@@ -176,6 +182,32 @@ export default function ProblemDetailSubmission() {
         })
         .catch((err) => console.error(err));
   };
+  const checkGrading = (): boolean => {
+    const data = codeSubmissions;
+    console.log(data);
+    if (data === undefined || data.length < 1) return false;
+    for (let i = 0; i < data.length; ++i) if (data[i].gradingStatus === "GRADING") return true;
+    return false;
+  };
+  useEffect(() => {
+    const isGrading = checkGrading();
+    if (isGrading) {
+      console.log("polling");
+      const intervalId = window.setInterval(function () {
+        if (codeQuestion !== null && codeQuestion.id !== undefined) {
+          CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
+            .then((data: CodeSubmissionPaginationList) => {
+              setCodeSubmissions(data.codeSubmissions);
+              window.clearInterval(intervalId);
+            })
+            .catch((err) => console.log(err));
+        }
+      }, 5000); // Poll every 5 seconds
+
+      return () => window.clearInterval(intervalId);
+    } // Cleanup interval on unmount
+    else console.log("not polling");
+  }, [codeSubmissions]);
 
   return (
     <Box className={classes.container}>

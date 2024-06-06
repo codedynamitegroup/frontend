@@ -57,7 +57,12 @@ const PersistLogin = () => {
           })
           .catch((error) => {
             console.error("Failed to get user by email", error);
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            localStorage.removeItem("provider");
+            dispatch(logOut());
             dispatch(fetchStatus(EFetchingUser.FAILED));
+            navigate(routes.user.homepage.root);
           })
           .finally(() => {
             dispatch(setLoadingAuth(false));
@@ -89,6 +94,7 @@ const PersistLogin = () => {
           localStorage.removeItem("provider");
           dispatch(logOut());
           dispatch(setLoadingAuth(false));
+          dispatch(fetchStatus(EFetchingUser.FAILED));
           navigate(routes.user.homepage.root);
         }
       }

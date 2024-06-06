@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
-import { Grid } from "@mui/material";
+import { Grid, Pagination, Stack } from "@mui/material";
 import { useState } from "react";
 import { useRef } from "react";
 import DetailSolution from "./components/DetailSolution";
@@ -56,7 +56,7 @@ export default function ProblemDetailSolution() {
     "Dynamic Programming"
   ];
 
-  const users = [
+  const users1 = [
     {
       id: 1,
       name: "Nguyễn Văn A",
@@ -164,6 +164,7 @@ export default function ProblemDetailSolution() {
       comment: 35
     }
   ];
+  const [users, setUser] = useState(users1);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useTranslation();
@@ -203,8 +204,13 @@ export default function ProblemDetailSolution() {
   return (
     <Box className={classes.containerListSolution}>
       {solutionDetail === true ? (
-        <Box className={classes.listSolution}>
-          <Box className={classes.stickyFilter} ref={stickyFilterRef}>
+        <Stack height={"100%"}>
+          <Box
+            className={classes.stickyFilter}
+            onScroll={(e) => {
+              console.log("cc ", e.target);
+            }}
+          >
             <Grid container className={classes.filterContainer}>
               <Grid item xs={8}>
                 <SearchBar onSearchClick={searchHandle} />
@@ -270,58 +276,49 @@ export default function ProblemDetailSolution() {
               </Button>
             </Box>
           </Box>
-          <Box
-            className={classes.solutionContainer}
-            style={{
-              height: `calc(100% - ${stickyFilterHeight}px)`
-            }}
-          >
-            <Box className={classes.solutionItem}>
-              {users.map((user) => {
-                return (
-                  <Box
-                    onClick={handleSolutionDetail}
-                    className={classes.solutionInfo}
-                    key={user.id}
-                  >
-                    <Box className={classes.solutionTitle}>
-                      <Box className={classes.avatar}>
-                        <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
-                      </Box>
-                      <Box className={classes.nameTitleContainer}>
-                        <Box className={classes.name}>{user.name}</Box>
-                        <Box className={classes.title}>{user.title}</Box>
-                      </Box>
+          <Stack overflow={"auto"}>
+            {users.map((user) => {
+              return (
+                <Box onClick={handleSolutionDetail} className={classes.solutionInfo} key={user.id}>
+                  <Box className={classes.solutionTitle}>
+                    <Box className={classes.avatar}>
+                      <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
                     </Box>
-                    <Box className={classes.tagLanguageSolution}>
-                      {user.tags.slice(0, 3).map((tag, index) => {
-                        return (
-                          <Box key={index} className={classes.item}>
-                            {tag}
-                          </Box>
-                        );
-                      })}
-                    </Box>
-                    <Box className={classes.solutionButton}>
-                      <Box className={classes.upVote}>
-                        <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
-                        <Box className={classes.upVoteNumber}>{user.upVote}</Box>
-                      </Box>
-                      <Box className={classes.view}>
-                        <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
-                        <Box className={classes.viewNumber}>{user.view}</Box>
-                      </Box>
-                      <Box className={classes.comment}>
-                        <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
-                        <Box className={classes.commentNumber}>{user.comment}</Box>
-                      </Box>
+                    <Box className={classes.nameTitleContainer}>
+                      <Box className={classes.name}>{user.name}</Box>
+                      <Box className={classes.title}>{user.title}</Box>
                     </Box>
                   </Box>
-                );
-              })}
-            </Box>
-          </Box>
-        </Box>
+                  <Box className={classes.tagLanguageSolution}>
+                    {user.tags.slice(0, 3).map((tag, index) => {
+                      return (
+                        <Box key={index} className={classes.item}>
+                          {tag}
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                  <Box className={classes.solutionButton}>
+                    <Box className={classes.upVote}>
+                      <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
+                      <Box className={classes.upVoteNumber}>{user.upVote}</Box>
+                    </Box>
+                    <Box className={classes.view}>
+                      <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
+                      <Box className={classes.viewNumber}>{user.view}</Box>
+                    </Box>
+                    <Box className={classes.comment}>
+                      <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
+                      <Box className={classes.commentNumber}>{user.comment}</Box>
+                    </Box>
+                  </Box>
+                </Box>
+              );
+            })}
+            {/* <Button onClick={() => setUser([...users, ...users1])}>Load more</Button> */}
+            <Pagination count={10} />
+          </Stack>
+        </Stack>
       ) : (
         <Box className={classes.detailSolution}>
           <DetailSolution handleSolutionDetail={handleSolutionDetail} />

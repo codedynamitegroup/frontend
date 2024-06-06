@@ -168,7 +168,7 @@ const LecturerCourseGrade = () => {
           pageSize={pageSize}
           totalElement={totalElement}
           onPaginationModelChange={pageChangeHandler}
-          columnGroupingModel={columnGroupingModel}
+          // columnGroupingModel={columnGroupingModel}
           showVerticalCellBorder={true}
           customColumnMenu={CustomColumnMenu}
           onClickRow={rowClickHandler}
