@@ -140,11 +140,15 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return registeredCertificateCourses
-      .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
-      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
-      .slice(0, 4);
+    return (
+      registeredCertificateCourses
+        // .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
+        .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
+        .slice(0, 4)
+    );
   }, [registeredCertificateCourses]);
+
+  console.log("ongoingRegisteredCourses", ongoingRegisteredCourses);
 
   const otherCertificateCourses = useMemo(() => {
     if (!certificateCourses) {
@@ -288,6 +292,9 @@ export default function UserDashboard() {
                                 course.certificateCourseId.toString()
                               )
                             );
+                          }}
+                          sx={{
+                            height: "100%"
                           }}
                         >
                           <Grid container direction={"column"} margin={0} gap={2}>
