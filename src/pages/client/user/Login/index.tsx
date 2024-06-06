@@ -42,7 +42,6 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoggedLoading, setIsLoggedLoading] = useState(false);
   const dispatch = useDispatch();
-  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || undefined;
 
   const schema = useMemo(() => {
     return yup.object().shape({
