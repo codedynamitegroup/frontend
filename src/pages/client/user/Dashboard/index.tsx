@@ -81,8 +81,31 @@ export default function UserDashboard() {
       });
       setTimeout(() => {
         setIsCertificateCoursesLoading(false);
+        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
       }, 500);
-      return getCertificateCoursesResponse;
+    } catch (error: any) {
+      console.error("Failed to fetch certificate courses", {
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+      setIsCertificateCoursesLoading(false);
+      // Show snackbar here
+    }
+  };
+
+  const handleGetRegisteredCertificateCourses = async () => {
+    setIsCertificateCoursesLoading(true);
+    try {
+      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+        courseName: "",
+        filterTopicIds: [],
+        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
+      });
+      setTimeout(() => {
+        setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+        setIsCertificateCoursesLoading(false);
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch certificate courses", {
         code: error.code || 503,
@@ -98,8 +121,8 @@ export default function UserDashboard() {
     setIsMostPopularContestsLoading(true);
     try {
       const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
-      dispatch(setMostPopularContests(getMostPopularContestsResponse));
       setTimeout(() => {
+        dispatch(setMostPopularContests(getMostPopularContestsResponse));
         setIsMostPopularContestsLoading(false);
       }, 500);
     } catch (error: any) {
@@ -140,25 +163,15 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const getRegisteredCertificateCoursesResponse = await handleGetCertificateCourses({
-        courseName: "",
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
-      });
-      if (getRegisteredCertificateCoursesResponse) {
-        setRegisteredCertificateCourses(getRegisteredCertificateCoursesResponse.certificateCourses);
-      }
+      await handleGetRegisteredCertificateCourses();
 
-      const getAllCertificateCoursesResponse = await handleGetCertificateCourses({
+      await handleGetCertificateCourses({
         courseName: "",
         filterTopicIds: [],
         isRegisteredFilter: IsRegisteredFilterEnum.ALL
       });
-      if (getAllCertificateCoursesResponse) {
-        setCertificateCourses(getAllCertificateCoursesResponse.certificateCourses);
-      }
 
-      handleGetMostPopularContests();
+      await handleGetMostPopularContests();
     };
 
     fetchInitialData();
