@@ -6,7 +6,7 @@ import { Route, Routes } from "react-router";
 import StudentCourses from "./CourseManagement";
 import StudentEventCalendar from "./StudentEventCalendar";
 import StudentCourseDetail from "./CourseManagement/Details";
-import StudentCourseAssignmentDetails from "./CourseManagement/Details/components/Assignment/AssignmentDetails";
+
 type Props = {};
 
 const StudentCoursesManagement = (props: Props) => {

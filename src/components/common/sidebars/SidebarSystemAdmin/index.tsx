@@ -1,4 +1,3 @@
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
@@ -6,14 +5,10 @@ import React, { useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
-import { CalendarIcon } from "@mui/x-date-pickers";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import HeaderAdmin from "components/common/HeaderAdmin";
 import images from "config/images";
-import PersonIcon from "@mui/icons-material/Person";
+import Header from "components/Header";
 
 const drawerWidth = 300;
 
@@ -38,7 +33,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   })
 }));
 
-export default function SidebarSystemAdmin({ children }: any) {
+export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any) {
   const { t } = useTranslation();
   const sideBarItemListData: SidebarItem[] = [
     {
@@ -46,23 +41,23 @@ export default function SidebarSystemAdmin({ children }: any) {
       "translation-key": "side_bar_contest_management",
       icon: (
         <Box className={classes.img}>
-          <img src={images.contest} alt='contest img' />
+          <img src={images.admin.contest} alt='contest img' />
         </Box>
       ),
       link: routes.admin.contest.root
-    },
-    {
-      name: t("side_bar_user_management"),
-      "translation-key": "side_bar_user_management",
-      icon: <PersonIcon className={classes.itemIcon} />,
-      link: routes.admin.contest.root
     }
+    // {
+    //   name: t("side_bar_user_management"),
+    //   "translation-key": "side_bar_user_management",
+    //   icon: <PersonIcon className={classes.itemIcon} />,
+    //   link: routes.admin.contest.root
+    // }
   ];
-  const [open, setOpen] = React.useState(true);
+  // const [open, setOpen] = React.useState(true);
 
-  const toggleDrawer = () => {
-    setOpen((pre) => !pre);
-  };
+  // const toggleDrawer = () => {
+  //   setOpen((pre) => !pre);
+  // };
 
   const headerRef = useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -71,7 +66,7 @@ export default function SidebarSystemAdmin({ children }: any) {
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <HeaderAdmin toggleDrawer={toggleDrawer} ref={headerRef} />
+      <Header toggleDrawer={toggleDrawer} ref={headerRef} />
       <Drawer
         className={classes.drawer}
         sx={{

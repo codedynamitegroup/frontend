@@ -1,4 +1,12 @@
-import { Box, Container, Grid, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography
+} from "@mui/material";
 import CustomPagination from "components/common/pagination/CustomPagination";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import images from "config/images";
@@ -8,7 +16,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
-import { setContests, setMostPopularContests } from "reduxes/coreService/Contest";
+import { setContests, setLoading, setMostPopularContests } from "reduxes/coreService/Contest";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import "swiper/css";
@@ -22,6 +30,7 @@ import ContestContentCard from "./components/ContestContentCard";
 import TrendingContestCard from "./components/TrendingContestCard";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
+import ParagraphBody from "components/text/ParagraphBody";
 
 const ContestList = () => {
   const navigate = useNavigate();
@@ -89,6 +98,7 @@ const ContestList = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
+      dispatch(setLoading(true));
       try {
         const getContestsResponse = await ContestService.getContests({
           searchName: searchName,
@@ -96,13 +106,17 @@ const ContestList = () => {
           pageNo: pageNo,
           pageSize: pageSize
         });
-        dispatch(setContests(getContestsResponse));
+        setTimeout(() => {
+          dispatch(setContests(getContestsResponse));
+          dispatch(setLoading(false));
+        }, 1000);
       } catch (error: any) {
         console.error("Failed to fetch contests", {
           code: error.code || 503,
           status: error.status || "Service Unavailable",
           message: error.message
         });
+        dispatch(setLoading(false));
         // Show snackbar here
       }
     },
@@ -336,53 +350,34 @@ const ContestList = () => {
             </Grid>
             <Box marginTop={"15px"}>
               <Grid container spacing={2} alignItems={"flex-start"}>
-                {contestState.contests.contests.map((item, index) => (
-                  <Grid item xs={12} key={index.toString()}>
-                    <ContestContentCard
-                      name={item.name}
-                      avtImage={item.thumbnailUrl}
-                      contestId={item.contestId}
-                      startTime={item.startTime}
-                      endTime={item.endTime}
-                    />
-                  </Grid>
-                ))}
-                {/* <Grid item xs={12}>
-                  <ContestContentCard
-                    name='Sasuke war 11'
-                    avtImage={images.temp.contest.tempContest1}
-                    startTime='2021-10-10T00:00:00Z'
-                    endTime='2021-10-10T00:00:00Z'
-                    contestId={"1"}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='Batch the code'
-                    avtImage={images.temp.contest.tempContest2}
-                    startTime='2021-10-10T00:00:00Z'
-                    endTime='2021-10-10T00:00:00Z'
-                    contestId={"2"}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='FPT Tech day'
-                    avtImage={images.temp.contest.tempContest3}
-                    startTime='2021-10-10T00:00:00Z'
-                    endTime='2021-10-10T00:00:00Z'
-                    contestId={"3"}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <ContestContentCard
-                    name='CSS 11'
-                    avtImage={images.temp.contest.tempContest4}
-                    startTime='2021-10-10T00:00:00Z'
-                    endTime='2021-10-10T00:00:00Z'
-                    contestId={"1"}
-                  />
-                </Grid> */}
+                {contestState.isLoading ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      width: "100%",
+                      gap: "10px"
+                    }}
+                  >
+                    <CircularProgress />
+                    <ParagraphBody>{t("common_loading")}</ParagraphBody>
+                  </Box>
+                ) : (
+                  contestState.contests.contests.map((item, index) => (
+                    <Grid item xs={12} key={index.toString()}>
+                      <ContestContentCard
+                        name={item.name}
+                        avtImage={item.thumbnailUrl}
+                        contestId={item.contestId}
+                        startTime={item.startTime}
+                        endTime={item.endTime}
+                      />
+                    </Grid>
+                  ))
+                )}
                 <Grid
                   item
                   xs={12}

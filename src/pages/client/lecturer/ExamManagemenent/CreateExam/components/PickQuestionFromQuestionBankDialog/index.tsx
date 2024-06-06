@@ -14,8 +14,11 @@ import QuestionsFeatureBar from "../FeatureBar";
 import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { QuestionService } from "services/coreService/QuestionService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { QuestionClone, QuestionCloneRequest } from "models/coreService/entity/QuestionEntity";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import { RootState } from "store";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
   title?: string;
@@ -24,12 +27,13 @@ interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
   cancelText?: string;
   confirmText?: string;
   onHandleCancel?: () => void;
-  onHanldeConfirm?: () => void;
+  onHanldeConfirm?: (questionIds: QuestionClone[]) => void;
   categoryPickTitle?: string;
   categoryList?: {
     value: string;
     label: string;
   }[];
+  onQuestionPick?: () => void;
 }
 
 export default function PickQuestionFromQuestionBankDialog({
@@ -43,70 +47,32 @@ export default function PickQuestionFromQuestionBankDialog({
   onHanldeConfirm,
   categoryPickTitle,
   categoryList,
+  onQuestionPick,
   ...props
 }: PickQuestionFromQuestionBankDialogProps) {
   const { t } = useTranslation();
   const [category, setCategory] = React.useState("0");
-  const questionList = [
-    {
-      id: 4,
-      name: "Trắc nghiệm lập trình C++",
-      description: "Hãy cho biết con trỏ trong C++ là gì?",
-      max_grade: 10,
-      type: {
-        value: "essay",
-        label: "Tự luận"
-      }
-    },
-    {
-      id: 2,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "Who is the father of Software Engineering?",
-      max_grade: 10,
-      type: {
-        value: "multiple_choice",
-        label: "Trắc nghiệm"
-      }
-    },
-    {
-      id: 3,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "What is the full form of HTML?",
-      max_grade: 10,
-      type: {
-        value: "short-answer",
-        label: "Trả lời ngắn"
-      }
-    },
-    {
-      id: 1,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "HTML stands for Hyper Text Markup Language",
-      max_grade: 10,
-      type: {
-        value: "true-false",
-        label: "Đúng/Sai"
-      }
-    }
-  ];
+
+  const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
+
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
-      { field: "id", headerName: "STT", minWidth: 1 },
+      { field: "stt", headerName: "STT", minWidth: 1 },
       {
         field: "name",
         headerName: t("exam_management_create_question_name"),
         minWidth: 250
       },
       {
-        field: "description",
+        field: "questionText",
         headerName: t("exam_management_create_question_description"),
-        minWidth: 400
+        minWidth: 400,
+        renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>
       },
       {
-        field: "type",
+        field: "qtypeText",
         headerName: t("exam_management_create_question_type"),
-        minWidth: 150,
-        renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+        minWidth: 150
       }
     ],
     []
@@ -140,10 +106,19 @@ export default function PickQuestionFromQuestionBankDialog({
 
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
+
+  const [selectedRowId, setSelectedRowId] = React.useState<QuestionClone[]>([]);
+
+  const rowSelectionHandler = async (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {};
+  ) => {
+    const questionIds: QuestionClone[] = selectedRowId.map((id) => ({
+      questionId: id.toString()
+    }));
+    setSelectedRowId(questionIds);
+  };
+
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };
@@ -153,6 +128,7 @@ export default function PickQuestionFromQuestionBankDialog({
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
+    handleGetQuestions({ categoryId: value });
   };
 
   const rowClickHandler = (params: GridRowParams<any>) => {
@@ -167,7 +143,7 @@ export default function PickQuestionFromQuestionBankDialog({
       cancelText={cancelText}
       confirmText={confirmText}
       onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm}
+      onHanldeConfirm={onHanldeConfirm ? () => onHanldeConfirm(selectedRowId) : () => {}}
       minWidth='1000px'
       {...props}
     >
@@ -200,7 +176,22 @@ export default function PickQuestionFromQuestionBankDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
-            dataList={questionList}
+            dataList={questionCategoryState.questions.map((question, index) => ({
+              stt: index + 1,
+              qtypeText:
+                question.qtype === QuestionTypeEnum.SHORT_ANSWER
+                  ? "câu hỏi ngắn"
+                  : question.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                    ? "câu hỏi trắc nghiệm"
+                    : question.qtype === QuestionTypeEnum.ESSAY
+                      ? "câu hỏi tự luận"
+                      : question.qtype === QuestionTypeEnum.TRUE_FALSE
+                        ? "câu hỏi đúng/sai"
+                        : question.qtype === QuestionTypeEnum.CODE
+                          ? "câu hỏi code"
+                          : "",
+              ...question
+            }))}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}
             visibleColumn={visibleColumnList}

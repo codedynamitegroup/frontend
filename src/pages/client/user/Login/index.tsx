@@ -26,7 +26,7 @@ import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
-import { loginStatus, selectCurrentUser } from "reduxes/Auth";
+import { EFetchingUser, fetchStatus, loginStatus, selectCurrentUser } from "reduxes/Auth";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface IFormData {
@@ -111,6 +111,7 @@ export default function Login() {
         localStorage.setItem("provider", ESocialLoginProvider.MICROSOFT);
         dispatch(loginStatus(true));
         dispatch(setSuccessMess("Login successfully"));
+        dispatch(fetchStatus(EFetchingUser.PENDING));
         navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
@@ -136,6 +137,7 @@ export default function Login() {
           localStorage.setItem("provider", ESocialLoginProvider.GOOGLE);
           dispatch(loginStatus(true));
           dispatch(setSuccessMess("Login successfully"));
+          dispatch(fetchStatus(EFetchingUser.PENDING));
           navigate(routes.user.dashboard.root);
         })
         .catch((error: any) => {
@@ -149,6 +151,9 @@ export default function Login() {
         .finally(() => {
           setIsLoggedLoading(false);
         });
+    },
+    onError: (error: any) => {
+      console.log(error);
     },
     flow: "implicit"
   });
@@ -165,6 +170,7 @@ export default function Login() {
         localStorage.setItem("refresh_token", response.refreshToken);
         dispatch(loginStatus(true));
         dispatch(setSuccessMess("Login successfully"));
+        dispatch(fetchStatus(EFetchingUser.PENDING));
         navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
@@ -245,6 +251,7 @@ export default function Login() {
                   >
                     <FontAwesomeIcon icon={faGoogle} />
                   </Button>
+
                   <MicrosoftLogin
                     clientId={microsoftClientId}
                     redirectUri={process.env.REACT_APP_MICROSOFT_REDIRECT_URL || ""}

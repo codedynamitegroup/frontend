@@ -22,6 +22,8 @@ import { ContestService } from "services/coreService/ContestService";
 import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 import NotFoundPage from "pages/common/NotFoundPage";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { motion } from "framer-motion";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -36,9 +38,18 @@ export interface IFormDataType {
   isPublic: boolean;
   isRestrictedForum: boolean;
   isDisabledForum: boolean;
+  // problems: {
+  //   questionId: string;
+  //   codeQuestionId: string;
+  //   difficulty: string;
+  //   name: string;
+  //   questionText: string;
+  //   defaultMark: number;
+  //   maxGrade: number;
+  // }[];
 }
 
-const EditContestDetails = () => {
+const EditContestDetails = ({ isDrawerOpen }: any) => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -116,6 +127,17 @@ const EditContestDetails = () => {
       isPublic: yup.boolean().required(t("contest_is_public_required")),
       isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
       isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required"))
+      // problems: yup.array().of(
+      //   yup.object().shape({
+      //     questionId: yup.string().required(t("contest_question_id_required")),
+      //     codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
+      //     difficulty: yup.string().required(t("contest_difficulty_required")),
+      //     name: yup.string().required(t("contest_name_required")),
+      //     questionText: yup.string().required(t("contest_question_text_required")),
+      //     defaultMark: yup.number().required(t("contest_default_mark_required")),
+      //     maxGrade: yup.number().required(t("contest_max_grade_required"))
+      //   })
+      // )
     });
   }, [t]);
 
@@ -358,11 +380,12 @@ const EditContestDetails = () => {
             display: "flex",
             justifyContent: "space-between",
             position: "fixed",
-            bottom: "0",
-            width: "100%",
+            bottom: "0px",
             padding: "20px",
+            marginLeft: "-25px",
             backgroundColor: "white",
-            borderTop: "1px solid #E0E0E0"
+            borderTop: "1px solid #E0E0E0",
+            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
           }}
         >
           <JoyButton

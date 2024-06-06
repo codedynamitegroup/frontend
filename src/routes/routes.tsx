@@ -120,6 +120,7 @@ export const routes = {
   student: {
     root: "/student/*",
     course: {
+      root: "/student/courses/*",
       management: "/student/courses",
       detail: "/student/courses/:courseId/*",
       information: "/student/courses/:courseId/information",
@@ -198,6 +199,7 @@ export const routes = {
     homepage: {
       root: "/admin/*"
     },
+    information: "/admin/information",
     contest: {
       root: "/admin/contests",
       edit: {

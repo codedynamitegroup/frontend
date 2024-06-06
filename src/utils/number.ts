@@ -23,4 +23,9 @@ const roundedNumber = (number: number | undefined, scale: number): number | unde
   return Math.round((number + Number.EPSILON) * pow) / pow;
 };
 
-export { standardlizeNumber, standardlizeDecimalNumber, roundedNumber };
+const kiloByteToMegaByte = (number: number | undefined): number | undefined => {
+  if (number === undefined) return number;
+  return number / 1024;
+};
+
+export { standardlizeNumber, standardlizeDecimalNumber, roundedNumber, kiloByteToMegaByte };

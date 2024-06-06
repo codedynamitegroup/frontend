@@ -1,4 +1,6 @@
-.container {
+.tableWrapper {
+  // border: 1px solid var(--gray-40);
+  border-radius: 5px;
   &[class~="MuiDataGrid-columnHeaderTitle"] {
     white-space: normal;
   }

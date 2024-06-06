@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Grid from "@mui/material/Grid";
 import SearchBar from "components/common/search/SearchBar";
 import CourseCard from "./components/CourseCard";
@@ -14,12 +14,15 @@ import Heading1 from "components/text/Heading1";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { setCourses, setLoading } from "reduxes/courseService/course";
-import { CourseService } from "services/courseService/CourseService";
+import { setCourses, setLoading } from "reduxes/courseService/courseUser";
+
 import { CourseTypeService } from "services/courseService/CourseTypeService";
 import { setCourseTypes } from "reduxes/courseService/course_type";
 import { CircularProgress } from "@mui/material";
 import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
+import { CourseUserService } from "services/courseService/CourseUserService";
 
 enum EView {
   cardView = 1,
@@ -30,9 +33,11 @@ const StudentCourses = () => {
   const [searchText, setSearchText] = useState("");
   const [courseTypes, setCourseTypesState] = useState<CourseTypeEntity[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const courseState = useSelector((state: RootState) => state.course);
+  const courseState = useSelector((state: RootState) => state.courseUser);
+
   const courseTypeState = useSelector((state: RootState) => state.courseType);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const user: User = useSelector(selectCurrentUser);
 
   const searchHandle = useCallback(async (searchText: string) => {
     setSearchText(searchText);
@@ -54,10 +59,12 @@ const StudentCourses = () => {
 
   const handleGetCourses = useCallback(
     async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
+      if (!user?.userId) return;
+
       dispatch(setLoading({ isLoading: true }));
 
       try {
-        const getCourseResponse = await CourseService.getCourses({
+        const getCourseResponse = await CourseUserService.getAllCourseByUserId(user.userId, {
           search,
           courseType,
           pageNo,
@@ -70,7 +77,7 @@ const StudentCourses = () => {
         dispatch(setLoading({ isLoading: false }));
       }
     },
-    [dispatch, searchText, selectedCategories]
+    [dispatch, searchText, selectedCategories, user?.userId]
   );
 
   useEffect(() => {
@@ -78,13 +85,12 @@ const StudentCourses = () => {
   }, [handleGetCourseTypes]);
 
   useEffect(() => {
-    handleGetCourses({ search: searchText, courseType: selectedCategories });
-  }, [handleGetCourses, searchText, selectedCategories]);
+    if (user?.userId) {
+      handleGetCourses({ search: searchText, courseType: selectedCategories });
+    }
+  }, [searchText, selectedCategories, user?.userId]);
 
-  const tempCategories = useMemo(
-    () => courseTypes.map((courseType) => courseType.name),
-    [courseTypes]
-  );
+  // Ensure handleGetCourses is called on component mount if userId is available
 
   const [viewType, setViewType] = useState(EView.listView);
 

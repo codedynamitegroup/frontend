@@ -49,3 +49,20 @@
   flex-direction: column;
   gap: 15px;
 }
+.resourceAccordionContainer {
+  box-shadow: none !important;
+  border: 1px solid var(--gray-40);
+  /* Other styles */
+}
+
+.resourceSummaryContainer {
+  box-shadow: none;
+
+  /* Other styles */
+}
+
+.accordDetail {
+  box-shadow: none;
+
+  /* Other styles */
+}

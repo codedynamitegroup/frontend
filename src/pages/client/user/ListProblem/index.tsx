@@ -1,5 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Avatar, Box, Chip, Container, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Chip, CircularProgress, Container, Grid, Stack } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -106,6 +106,11 @@ const ListProblem = () => {
                   </Heading3>
 
                   <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
+                    {algorithmTag.isLoading && (
+                      <Stack alignItems={"center"}>
+                        <CircularProgress />
+                      </Stack>
+                    )}
                     {!algorithmTag.isLoading && (
                       <>
                         {algorithmTag.tagList.map(

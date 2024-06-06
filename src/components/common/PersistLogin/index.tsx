@@ -10,15 +10,17 @@ import {
   loginStatus,
   logOut,
   fetchStatus,
-  EFetchingUser
+  EFetchingUser,
+  selectFetchingStatus
 } from "reduxes/Auth";
-import { setLoading } from "reduxes/Loading";
+import { setLoadingAuth } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 
 const PersistLogin = () => {
   const selectedUser = useSelector(selectCurrentUser);
   const selectedLoginStatus = useSelector(selectLoginStatus);
+  const selectedFetchingStatus = useSelector(selectFetchingStatus);
   const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
   const dispatch = useDispatch();
@@ -38,6 +40,12 @@ const PersistLogin = () => {
 
   useEffect(() => {
     const getUser = async () => {
+      if (
+        selectedFetchingStatus === EFetchingUser.SUCCESS ||
+        selectedFetchingStatus === EFetchingUser.FAILED
+      ) {
+        return;
+      }
       if (selectedLoginStatus && accessToken && refreshToken && selectedUser) {
         return;
       }
@@ -48,7 +56,7 @@ const PersistLogin = () => {
       const isExpired: boolean = isTokenExpired(accessToken);
 
       if (!isExpired) {
-        dispatch(setLoading(true));
+        dispatch(setLoadingAuth(true));
         UserService.getUserByEmail()
           .then((response) => {
             const user: User = response;
@@ -57,14 +65,19 @@ const PersistLogin = () => {
           })
           .catch((error) => {
             console.error("Failed to get user by email", error);
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            localStorage.removeItem("provider");
+            dispatch(logOut());
             dispatch(fetchStatus(EFetchingUser.FAILED));
+            navigate(routes.user.homepage.root);
           })
           .finally(() => {
-            dispatch(setLoading(false));
+            dispatch(setLoadingAuth(false));
           });
       } else {
         try {
-          dispatch(setLoading(true));
+          dispatch(setLoadingAuth(true));
           const refreshTokenResponse = await UserService.refreshToken(accessToken, refreshToken);
           localStorage.setItem("access_token", refreshTokenResponse.accessToken);
           localStorage.setItem("refresh_token", refreshTokenResponse.refreshToken);
@@ -80,7 +93,7 @@ const PersistLogin = () => {
               dispatch(fetchStatus(EFetchingUser.FAILED));
             })
             .finally(() => {
-              dispatch(setLoading(false));
+              dispatch(setLoadingAuth(false));
             });
         } catch (error) {
           console.error("Error refreshing token", error);
@@ -88,13 +101,22 @@ const PersistLogin = () => {
           localStorage.removeItem("refresh_token");
           localStorage.removeItem("provider");
           dispatch(logOut());
-          dispatch(setLoading(false));
-          navigate(routes.user.login.root);
+          dispatch(setLoadingAuth(false));
+          dispatch(fetchStatus(EFetchingUser.FAILED));
+          navigate(routes.user.homepage.root);
         }
       }
     };
     getUser();
-  }, [dispatch, refreshToken, selectedUser, accessToken, selectedLoginStatus, navigate]);
+  }, [
+    dispatch,
+    refreshToken,
+    selectedUser,
+    accessToken,
+    selectedLoginStatus,
+    navigate,
+    selectedFetchingStatus
+  ]);
 
   return <Outlet />;
 };

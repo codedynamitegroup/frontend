@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Skeleton,
   Stack,
   ToggleButtonGroup
 } from "@mui/material";
@@ -18,6 +19,7 @@ import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
+import useAuth from "hooks/useAuth";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
@@ -38,16 +40,15 @@ import { TopicService } from "services/coreService/TopicService";
 import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
-import TextTitle from "components/text/TextTitle";
-import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 
 const CourseCertificates = () => {
-  const user: User = useSelector(selectCurrentUser);
+  const { isLoggedIn } = useAuth();
 
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
+
+  const [isTopicsLoading, setIsTopicsLoading] = useState(false);
+  const [isRecommendedLoading, setIsRecommendedLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const topicState = useSelector((state: RootState) => state.topic);
@@ -106,28 +107,26 @@ const CourseCertificates = () => {
     return [];
   }, [currentTopic]);
 
-  const defaultProgrammingLanguage = useMemo(() => {
-    if (supportedProgrammingLanguages.length > 0) {
-      return supportedProgrammingLanguages[0].id;
-    }
-    return "";
-  }, [supportedProgrammingLanguages]);
-
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleGetTopics = useCallback(async () => {
+    setIsTopicsLoading(true);
     try {
       const getTopicsResponse = await TopicService.getTopics({
         fetchAll: true
       });
-      dispatch(setTopics(getTopicsResponse));
+      setTimeout(() => {
+        dispatch(setTopics(getTopicsResponse));
+        setIsTopicsLoading(false);
+      }, 500);
     } catch (error: any) {
       console.error("Failed to fetch topics", {
         code: error.code || 503,
         status: error.status || "Service Unavailable",
         message: error.message
       });
+      setIsTopicsLoading(false);
       // Show snackbar here
     }
   }, [dispatch]);
@@ -136,13 +135,13 @@ const CourseCertificates = () => {
     async ({
       courseName,
       filterTopicIds,
-      isRegisteredFilter,
-      fetchMostEnrolled = false
+      isRegisteredFilter
+      // fetchMostEnrolled = false
     }: {
       courseName: string;
       filterTopicIds: string[];
       isRegisteredFilter: IsRegisteredFilterEnum;
-      fetchMostEnrolled?: boolean;
+      // fetchMostEnrolled?: boolean;
     }) => {
       dispatch(setLoading({ isLoading: true }));
       try {
@@ -153,13 +152,6 @@ const CourseCertificates = () => {
         });
         setTimeout(() => {
           dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-          if (fetchMostEnrolled) {
-            dispatch(
-              setMostEnrolledCertificateCourses(
-                getCertificateCoursesResponse.mostEnrolledCertificateCourses
-              )
-            );
-          }
           dispatch(setLoading({ isLoading: false }));
         }, 500);
       } catch (error: any) {
@@ -174,6 +166,30 @@ const CourseCertificates = () => {
     },
     [dispatch]
   );
+
+  const handleGetMostEnrolledCertificateCourses = useCallback(async () => {
+    setIsRecommendedLoading(true);
+    try {
+      const getMostEnrolledCertificateCoursesResponse =
+        await CertificateCourseService.getMostEnrolledCertificateCourses();
+      setTimeout(() => {
+        dispatch(
+          setMostEnrolledCertificateCourses(
+            getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
+          )
+        );
+        setIsRecommendedLoading(false);
+      }, 500);
+    } catch (error: any) {
+      console.error("Failed to fetch most enrolled certificate courses", {
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+      setIsRecommendedLoading(false);
+      // Show snackbar here
+    }
+  }, [dispatch]);
 
   const handleChangeCatalog = useCallback(
     (value: string) => {
@@ -200,18 +216,21 @@ const CourseCertificates = () => {
   );
 
   useEffect(() => {
-    handleGetTopics();
-  }, [handleGetTopics]);
+    const fetchDefaultData = async () => {
+      await handleGetTopics();
+      await handleGetMostEnrolledCertificateCourses();
+    };
+    fetchDefaultData();
+  }, []);
 
   useEffect(() => {
     if (certificateCourseState.isLoading) return;
     handleGetCertificateCourses({
       courseName: searchText,
       filterTopicIds: [currentTopic?.topicId || ""],
-      isRegisteredFilter: isRegisterFilterValue,
-      fetchMostEnrolled: true
+      isRegisteredFilter: isRegisterFilterValue
     });
-  }, [currentTopic?.topicId, handleGetCertificateCourses]);
+  }, [currentTopic?.topicId, handleGetCertificateCourses, handleGetMostEnrolledCertificateCourses]);
 
   return (
     <>
@@ -244,40 +263,57 @@ const CourseCertificates = () => {
               </Box>
               <Heading5 translation-key='common_topics'>{t("common_topics")}</Heading5>
               <Box className={classes.couseCertificatesByTopic}>
-                <ToggleButtonGroup
-                  orientation='vertical'
-                  color='primary'
-                  value={catalogActive}
-                  exclusive
-                  onChange={(e, value) => handleChangeCatalog(value as string)}
-                  aria-label='Platform'
-                  fullWidth
-                >
-                  {topicState.topics.map((topic: TopicEntity, index: number) => (
-                    <AnimatedToggleButton
-                      key={index}
-                      value={topic.topicId}
-                      isActive={catalogActive === topic.topicId}
-                    >
-                      <Stack
-                        direction='row'
-                        alignItems='center'
-                        justifyContent='flex-start'
-                        textAlign={"left"}
-                        gap={1}
+                {isTopicsLoading ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      width: "100%",
+                      gap: "10px"
+                    }}
+                  >
+                    <CircularProgress />
+                    <ParagraphBody>{t("common_loading")}</ParagraphBody>
+                  </Box>
+                ) : (
+                  <ToggleButtonGroup
+                    orientation='vertical'
+                    color='primary'
+                    value={catalogActive}
+                    exclusive
+                    onChange={(e, value) => handleChangeCatalog(value as string)}
+                    aria-label='Platform'
+                    fullWidth
+                  >
+                    {topicState.topics.map((topic: TopicEntity, index: number) => (
+                      <AnimatedToggleButton
+                        key={index}
+                        value={topic.topicId}
+                        isActive={catalogActive === topic.topicId}
                       >
-                        <img
-                          style={{ width: "20px", height: "20px" }}
-                          src={topic.thumbnailUrl}
-                          alt={topic.name}
-                        />
-                        <ParagraphBody>
-                          {topic.name} ({topic.numOfCertificateCourses})
-                        </ParagraphBody>
-                      </Stack>
-                    </AnimatedToggleButton>
-                  ))}
-                </ToggleButtonGroup>
+                        <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='flex-start'
+                          textAlign={"left"}
+                          gap={1}
+                        >
+                          <img
+                            style={{ width: "20px", height: "20px" }}
+                            src={topic.thumbnailUrl}
+                            alt={topic.name}
+                          />
+                          <ParagraphBody>
+                            {topic.name} ({topic.numOfCertificateCourses})
+                          </ParagraphBody>
+                        </Stack>
+                      </AnimatedToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
+                )}
               </Box>
             </Grid>
             <Grid item xs={0.5}></Grid>
@@ -295,25 +331,31 @@ const CourseCertificates = () => {
                         {t("certificate_hot_recommend")}
                       </Heading2>
                       <Grid container spacing={3}>
-                        {certificateCourseState.mostEnrolledCertificateCourses
-                          .slice(0, 3)
-                          .map((course, index) => (
-                            <Grid
-                              item
-                              xs={4}
-                              key={index}
-                              onClick={() =>
-                                navigate(
-                                  routes.user.course_certificate.detail.lesson.root.replace(
-                                    ":courseId",
-                                    course.certificateCourseId
-                                  )
-                                )
-                              }
-                            >
-                              <CourseCertificateCard course={course} />
-                            </Grid>
-                          ))}
+                        {isRecommendedLoading
+                          ? Array.from({ length: 3 }).map((_, index) => (
+                              <Grid item xs={4} key={index}>
+                                <Skeleton variant='rectangular' width='100%' height={320} />
+                              </Grid>
+                            ))
+                          : certificateCourseState.mostEnrolledCertificateCourses
+                              .slice(0, 3)
+                              .map((course, index) => (
+                                <Grid
+                                  item
+                                  xs={4}
+                                  key={index}
+                                  onClick={() =>
+                                    navigate(
+                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                        ":courseId",
+                                        course.certificateCourseId
+                                      )
+                                    )
+                                  }
+                                >
+                                  <CourseCertificateCard course={course} />
+                                </Grid>
+                              ))}
                       </Grid>
                     </Card>
                     <Heading1 translation-key='common_all_courses_catalog'>
@@ -398,7 +440,7 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      {user && (
+                      {isLoggedIn && (
                         <BasicSelect
                           labelId='select-assignment-section-label'
                           value={isRegisterFilterValue}
@@ -522,34 +564,36 @@ const CourseCertificates = () => {
                           );
                         }}
                       />
-                      <BasicSelect
-                        labelId='select-assignment-section-label'
-                        value={isRegisterFilterValue}
-                        onHandleChange={(value) =>
-                          setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
-                        }
-                        sx={{ maxWidth: "200px" }}
-                        items={[
-                          {
-                            value: IsRegisteredFilterEnum.ALL,
-                            label: t("common_all")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.REGISTERED,
-                            label: t("common_registered")
-                          },
-                          {
-                            value: IsRegisteredFilterEnum.NOT_REGISTERED,
-                            label: t("common_not_registered")
+                      {isLoggedIn && (
+                        <BasicSelect
+                          labelId='select-assignment-section-label'
+                          value={isRegisterFilterValue}
+                          onHandleChange={(value) =>
+                            setIsRegisterFilterValue(value as IsRegisteredFilterEnum)
                           }
-                        ]}
-                        backgroundColor='#FFFFFF'
-                        translation-key={[
-                          "common_all",
-                          "common_registered",
-                          "common_not_registered"
-                        ]}
-                      />
+                          sx={{ maxWidth: "200px" }}
+                          items={[
+                            {
+                              value: IsRegisteredFilterEnum.ALL,
+                              label: t("common_all")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.REGISTERED,
+                              label: t("common_registered")
+                            },
+                            {
+                              value: IsRegisteredFilterEnum.NOT_REGISTERED,
+                              label: t("common_not_registered")
+                            }
+                          ]}
+                          backgroundColor='#FFFFFF'
+                          translation-key={[
+                            "common_all",
+                            "common_registered",
+                            "common_not_registered"
+                          ]}
+                        />
+                      )}
                     </Box>
 
                     {/* {topicState.topics.find((topic) => topic.topicId === catalogActive)

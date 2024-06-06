@@ -15,7 +15,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import AppStatus from "components/AppStatus";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "googleClientId";
 const pca = new PublicClientApplication(msalConfig);
 
 root.render(

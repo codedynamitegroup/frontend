@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setContests, setLoading } from "reduxes/coreService/Contest";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
@@ -79,7 +80,7 @@ const ContestManagement = () => {
         setTimeout(() => {
           dispatch(setContests(getCertificateCoursesResponse));
           dispatch(setLoading(false));
-        }, 500);
+        }, 1000);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
@@ -87,8 +88,8 @@ const ContestManagement = () => {
           setType(AlertType.Error);
           setContent("Please authenticate");
         }
-        dispatch(setLoading(false));
         // Show snackbar here
+        dispatch(setLoading(false));
       }
     },
     [dispatch]
@@ -196,6 +197,7 @@ const ContestManagement = () => {
       field: "numOfParticipants",
       headerName: t("common_num_of_participants"),
       flex: 0.4,
+      minWidth: 100,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -358,10 +360,16 @@ const ContestManagement = () => {
   }, [i18next.language]);
 
   useEffect(() => {
-    handleGetContests({
-      searchName: "",
-      startTimeFilter: ContestStartTimeFilterEnum.ALL
-    });
+    const fetchContests = async () => {
+      dispatch(setInititalLoading(true));
+      await handleGetContests({
+        searchName: "",
+        startTimeFilter: ContestStartTimeFilterEnum.ALL
+      });
+      dispatch(setInititalLoading(false));
+    };
+
+    fetchContests();
   }, [handleGetContests]);
 
   return (

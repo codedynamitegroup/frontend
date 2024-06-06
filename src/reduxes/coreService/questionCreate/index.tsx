@@ -1,4 +1,3 @@
-import { cl } from "@fullcalendar/core/internal-common";
 import { createSlice } from "@reduxjs/toolkit";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 
@@ -19,10 +18,14 @@ const questionCreateSlice = createSlice({
     },
     clearQuestionCreate: (state) => {
       state.questionCreate = [];
+    },
+    setQuestionCreateFromBank(state, action: { payload: QuestionEntity[] }) {
+      state.questionCreate.push(...action.payload);
     }
   }
 });
 
-export const { setQuestionCreate, clearQuestionCreate } = questionCreateSlice.actions;
+export const { setQuestionCreate, clearQuestionCreate, setQuestionCreateFromBank } =
+  questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;

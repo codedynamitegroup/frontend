@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { CourseUserResponse } from "models/courseService/entity/UserCourseEntity";
 
 interface InitialState {
@@ -8,15 +9,23 @@ interface InitialState {
   totalItems: number;
   totalPages: number;
   amountStudent: number;
+  courses: CourseEntity[];
+  currentPageCourse: number;
+  totalItemsCourse: number;
+  totalPagesCourse: number;
 }
 
 const initialState: InitialState = {
   isLoading: false,
   users: [],
+  courses: [],
   currentPage: 0,
   totalItems: 0,
   totalPages: 0,
-  amountStudent: 0
+  amountStudent: 0,
+  currentPageCourse: 0,
+  totalItemsCourse: 0,
+  totalPagesCourse: 0
 };
 
 const courseUserSlice = createSlice({
@@ -34,10 +43,16 @@ const courseUserSlice = createSlice({
     },
     setAmountStudent: (state, action) => {
       state.amountStudent = action.payload.amountStudent;
+    },
+    setCourses: (state, action) => {
+      state.courses = action.payload.courses;
+      state.currentPageCourse = action.payload.currentPageCourse;
+      state.totalItemsCourse = action.payload.totalItemsCourse;
+      state.totalPagesCourse = action.payload.totalPagesCourse;
     }
   }
 });
 
-export const { setLoading, setCourseUser, setAmountStudent } = courseUserSlice.actions;
+export const { setLoading, setCourseUser, setAmountStudent, setCourses } = courseUserSlice.actions;
 
 export default courseUserSlice.reducer;

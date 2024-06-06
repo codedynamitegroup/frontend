@@ -110,6 +110,9 @@ const StudentCourseParticipant = () => {
           onSelectData={rowSelectionHandler}
           visibleColumn={visibleColumnList}
           dataGridToolBar={dataGridToolbar}
+          getRowClassName={(params) => {
+            return params.row.id === 0 ? "even-row" : "odd-row";
+          }}
           page={currentPage}
           pageSize={rowsPerPage}
           totalElement={courseUserState.totalItems}

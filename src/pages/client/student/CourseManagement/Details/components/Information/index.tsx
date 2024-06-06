@@ -130,7 +130,6 @@ const StudentCourseInformation = () => {
         return ECourseResourceType.file;
     }
   };
-  console.log(typeof sectionState.sections);
 
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
