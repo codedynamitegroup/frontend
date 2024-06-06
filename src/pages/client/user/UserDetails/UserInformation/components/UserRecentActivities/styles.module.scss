@@ -51,3 +51,14 @@
   padding: 20px 40px;
   gap: 15px;
 }
+
+.textLink {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+}

@@ -4,6 +4,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
 import {
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   MenuItem,
@@ -51,6 +52,7 @@ import ProblemDetailSubmission from "./components/Submission";
 import TestCase from "./components/TestCase";
 import classes from "./styles.module.scss";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { setLoading } from "reduxes/Loading";
 
 export default function DetailProblem() {
   const { problemId, courseId, lessonId } = useParams<{
@@ -65,6 +67,8 @@ export default function DetailProblem() {
   const dispatch = useAppDispatch();
 
   const currentExecuteData = useAppSelector((state) => state.executeData);
+
+  const [submissionLoading, setSubmisisonLoading] = useState(false);
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -90,12 +94,15 @@ export default function DetailProblem() {
   });
 
   useEffect(() => {
-    if (problemId !== undefined)
+    if (problemId !== undefined) {
+      dispatch(setLoading(true));
       CodeQuestionService.getDetailCodeQuestion(problemId)
         .then((data: CodeQuestionEntity) => {
           dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => dispatch(setLoading(false)));
+    }
   }, [dispatch]);
 
   const [selectedLanguage, setSelectedLanguage] = useState<{ id: string; bodyCode: string }>({
@@ -232,7 +239,8 @@ export default function DetailProblem() {
       currentExecuteData.head_code !== undefined &&
       currentExecuteData.tail_code !== undefined &&
       currentExecuteData.system_language_id !== undefined
-    )
+    ) {
+      setSubmisisonLoading(true);
       CodeSubmissionService.createCodeSubmission(
         problemId,
         currentExecuteData.system_language_id,
@@ -247,7 +255,9 @@ export default function DetailProblem() {
         })
         .catch((err) => {
           console.log(err);
-        });
+        })
+        .finally(() => setSubmisisonLoading(false));
+    }
   };
 
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -359,8 +369,8 @@ export default function DetailProblem() {
               translation-key='detail_problem_submit'
               onClick={handleSubmitCode}
             >
-              <PublishIcon />
-              {t("detail_problem_submit")}
+              {submissionLoading && <CircularProgress size={20} />}
+              {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
             </Button>
           </Box>
           <Box

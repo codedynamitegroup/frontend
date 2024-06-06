@@ -14,7 +14,8 @@ import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmis
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { useIsMounted } from "utils/isMounted";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
-import { roundedNumber } from "utils/number";
+import { kiloByteToMegaByte, roundedNumber } from "utils/number";
+import { CircularProgress, Stack } from "@mui/material";
 
 export default function ProblemDetailSubmission() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function ProblemDetailSubmission() {
   const pageNum = 0;
 
   const [codeSubmissions, setCodeSubmissions] = useState<CodeSubmissionDetailEntity[]>();
+  const [codeSubmissionLoading, setCodeSubmissionLoading] = useState(false);
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
@@ -36,38 +38,18 @@ export default function ProblemDetailSubmission() {
   });
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
   const isMounted = useIsMounted();
-  const cronGrading = async () => {
-    let isGrading = false;
-    if (codeSubmissions !== undefined)
-      for (let i = 0; i < codeSubmissions.length; ++i) {
-        console.log("looping");
-        if (codeSubmissions[i].gradingStatus === "GRADING") isGrading = true;
-      }
-
-    if (isGrading === true) {
-      await sleep(2500);
-      if (codeQuestion !== null && codeQuestion.id !== undefined)
-        CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
-          .then((data: CodeSubmissionPaginationList) => {
-            if (!isMounted) setCodeSubmissions(undefined);
-            // console.log("data", data);
-            else setCodeSubmissions(data.codeSubmissions);
-          })
-          .catch((err) => console.log(err));
-    }
-  };
-  useEffect(() => {
-    cronGrading();
-  }, [codeSubmissions]);
 
   useEffect(() => {
-    if (codeQuestion !== null && codeQuestion.id !== undefined)
+    if (codeQuestion !== null && codeQuestion.id !== undefined) {
+      setCodeSubmissionLoading(true);
       CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
         .then((data: CodeSubmissionPaginationList) => {
           // console.log("data", data);
           setCodeSubmissions(data.codeSubmissions);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => setCodeSubmissionLoading(false));
+    }
   }, []);
 
   const customHeading = t("detail_problem_submission_customHeading", {
@@ -95,7 +77,12 @@ export default function ProblemDetailSubmission() {
                       : "--green-600"
                 }
               >
-                {value.gradingStatus === "GRADING" ? value.gradingStatus : value.description}
+                {value.gradingStatus === "GRADING"
+                  ? value.gradingStatus
+                  : value.description ??
+                    (value.gradingStatus === "GRADING_SYSTEM_UNAVAILABLE"
+                      ? "GRADING SYSTEM UNAVAILABLE"
+                      : "")}
               </ParagraphBody>
             ),
             language: language === undefined ? "N/A" : language.pLanguage.name,
@@ -106,7 +93,7 @@ export default function ProblemDetailSubmission() {
             memory:
               value.avgMemory === undefined || value.gradingStatus === "GRADING"
                 ? "N/A"
-                : `${value.avgMemory}kB`
+                : `${roundedNumber(kiloByteToMegaByte(value.avgMemory), 3)}MB`
           };
         });
   // [
@@ -192,31 +179,37 @@ export default function ProblemDetailSubmission() {
 
   return (
     <Box className={classes.container}>
-      {submissionDetail === true ? (
-        <Box className={classes.submissionTable}>
-          <UserTableTemplate
-            translation-key='detail_problem_submission_customHeading'
-            customHeading={customHeading}
-            customColumns={customColumns}
-            data={data}
-            isActionColumn={false}
-            onViewDetailsClick={handlesubmissionDetail}
-          />
-        </Box>
-      ) : languageName !== undefined && codeQuestion !== null ? (
-        <Box className={classes.detailSubmission}>
-          <DetailSolution
-            codeSubmissionDetail={detail}
-            languageName={languageName}
-            codeQuestion={codeQuestion}
-            handleSubmissionDetail={() => {
-              setsubmissionDetail(!submissionDetail);
-            }}
-          />
-        </Box>
-      ) : (
-        <></>
+      {codeSubmissionLoading && (
+        <Stack alignItems={"center"}>
+          <CircularProgress />
+        </Stack>
       )}
+      {!codeSubmissionLoading &&
+        (submissionDetail === true ? (
+          <Box className={classes.submissionTable}>
+            <UserTableTemplate
+              translation-key='detail_problem_submission_customHeading'
+              customHeading={customHeading}
+              customColumns={customColumns}
+              data={data}
+              isActionColumn={false}
+              onViewDetailsClick={handlesubmissionDetail}
+            />
+          </Box>
+        ) : languageName !== undefined && codeQuestion !== null ? (
+          <Box className={classes.detailSubmission}>
+            <DetailSolution
+              codeSubmissionDetail={detail}
+              languageName={languageName}
+              codeQuestion={codeQuestion}
+              handleSubmissionDetail={() => {
+                setsubmissionDetail(!submissionDetail);
+              }}
+            />
+          </Box>
+        ) : (
+          <></>
+        ))}
     </Box>
   );
 }

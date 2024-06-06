@@ -1,26 +1,27 @@
 .container {
-    background-color: var(--gray-2);
-    .courseDetail {
-        margin: 10px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        .exportButton {
-            height: 40px;
-        }
+  background-color: var(--gray-2);
+  border: 1px solid black;
+  box-shadow: none !important;
+  .courseDetail {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .exportButton {
+      height: 40px;
     }
-    .textBadge {
-        width: 50px;
-        height: 50px;
+  }
+  .textBadge {
+    width: 50px;
+    height: 50px;
 
-        border-radius: 50%;
-        display: flex;
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-        .badgeTypoText {
-            font-weight: 900;
-        }
+    border-radius: 50%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    .badgeTypoText {
+      font-weight: 900;
     }
-    
+  }
 }
