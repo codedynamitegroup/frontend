@@ -46,7 +46,6 @@ const UserHomepage = (props: Props) => {
             <Route path={""} element={<HomePage />} />
             <Route path={"course-certificates"} element={<CourseCertificates />} />
             <Route path={"course-certificates/:courseId/*"} element={<CourseCertificateDetail />} />
-            <Route path={"home"} element={<UserDashboard />} />
             <Route path={"problems"} element={<ListProblem />} />
             <Route path={"contests"} element={<ContestList />} />
             <Route path={"contests/:contestId"} element={<ContestDetails />} />
@@ -57,6 +56,7 @@ const UserHomepage = (props: Props) => {
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
             <Route element={<RequireAuth availableRoles={[ERoleName.USER]} />}>
               <Route path={"user/information"} element={<UserInformation />} />
+              <Route path={"home"} element={<UserDashboard />} />
             </Route>
             <Route path={"forbidden"} element={<ForbiddenPage />} />
             <Route path={"*"} element={<NotFoundPage />} />

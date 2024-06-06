@@ -7,6 +7,7 @@ import ContestManagement from "./ContestManagement/ContestManagement";
 import CreateContest from "./ContestManagement/CreateContest";
 import EditContestDetails from "./ContestManagement/EditContestDetails";
 import SidebarSystemAdmin from "components/common/sidebars/SidebarSystemAdmin";
+import UserInformation from "pages/client/user/UserDetails/UserInformation";
 
 type Props = {};
 
@@ -21,6 +22,7 @@ const SystemAdminHomepage = (props: Props) => {
                 <Route path={"contests"} element={<ContestManagement />} />
                 <Route path={"contests/create"} element={<CreateContest />} />
                 <Route path={"contests/edit/:contestId/*"} element={<EditContestDetails />} />
+                <Route path={"information"} element={<UserInformation />} />
               </Route>
             </Routes>
           </Box>

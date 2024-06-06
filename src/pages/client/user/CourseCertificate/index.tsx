@@ -46,6 +46,8 @@ const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
 
+  const [isTopicsLoading, setIsTopicsLoading] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
   const topicState = useSelector((state: RootState) => state.topic);
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
@@ -102,13 +104,6 @@ const CourseCertificates = () => {
     }
     return [];
   }, [currentTopic]);
-
-  const defaultProgrammingLanguage = useMemo(() => {
-    if (supportedProgrammingLanguages.length > 0) {
-      return supportedProgrammingLanguages[0].id;
-    }
-    return "";
-  }, [supportedProgrammingLanguages]);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -209,8 +204,13 @@ const CourseCertificates = () => {
   );
 
   useEffect(() => {
-    handleGetTopics();
-    handleGetMostEnrolledCertificateCourses();
+    const fetchDefaultData = async () => {
+      setIsTopicsLoading(true);
+      await handleGetTopics();
+      setIsTopicsLoading(false);
+      await handleGetMostEnrolledCertificateCourses();
+    };
+    fetchDefaultData();
   }, []);
 
   useEffect(() => {
@@ -253,40 +253,57 @@ const CourseCertificates = () => {
               </Box>
               <Heading5 translation-key='common_topics'>{t("common_topics")}</Heading5>
               <Box className={classes.couseCertificatesByTopic}>
-                <ToggleButtonGroup
-                  orientation='vertical'
-                  color='primary'
-                  value={catalogActive}
-                  exclusive
-                  onChange={(e, value) => handleChangeCatalog(value as string)}
-                  aria-label='Platform'
-                  fullWidth
-                >
-                  {topicState.topics.map((topic: TopicEntity, index: number) => (
-                    <AnimatedToggleButton
-                      key={index}
-                      value={topic.topicId}
-                      isActive={catalogActive === topic.topicId}
-                    >
-                      <Stack
-                        direction='row'
-                        alignItems='center'
-                        justifyContent='flex-start'
-                        textAlign={"left"}
-                        gap={1}
+                {isTopicsLoading ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      width: "100%",
+                      gap: "10px"
+                    }}
+                  >
+                    <CircularProgress />
+                    <ParagraphBody>{t("common_loading")}</ParagraphBody>
+                  </Box>
+                ) : (
+                  <ToggleButtonGroup
+                    orientation='vertical'
+                    color='primary'
+                    value={catalogActive}
+                    exclusive
+                    onChange={(e, value) => handleChangeCatalog(value as string)}
+                    aria-label='Platform'
+                    fullWidth
+                  >
+                    {topicState.topics.map((topic: TopicEntity, index: number) => (
+                      <AnimatedToggleButton
+                        key={index}
+                        value={topic.topicId}
+                        isActive={catalogActive === topic.topicId}
                       >
-                        <img
-                          style={{ width: "20px", height: "20px" }}
-                          src={topic.thumbnailUrl}
-                          alt={topic.name}
-                        />
-                        <ParagraphBody>
-                          {topic.name} ({topic.numOfCertificateCourses})
-                        </ParagraphBody>
-                      </Stack>
-                    </AnimatedToggleButton>
-                  ))}
-                </ToggleButtonGroup>
+                        <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='flex-start'
+                          textAlign={"left"}
+                          gap={1}
+                        >
+                          <img
+                            style={{ width: "20px", height: "20px" }}
+                            src={topic.thumbnailUrl}
+                            alt={topic.name}
+                          />
+                          <ParagraphBody>
+                            {topic.name} ({topic.numOfCertificateCourses})
+                          </ParagraphBody>
+                        </Stack>
+                      </AnimatedToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
+                )}
               </Box>
             </Grid>
             <Grid item xs={0.5}></Grid>
