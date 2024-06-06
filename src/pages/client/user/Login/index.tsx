@@ -243,14 +243,12 @@ export default function Login() {
                   {t("register_login_alternative")}
                 </ParagraphBody>
                 <Box className={classes.social}>
-                  {googleClientId && (
-                    <Button
-                      onClick={() => {}}
-                      className={`${classes.socialIconGoogle} ${classes.socialIcon}`}
-                    >
-                      <FontAwesomeIcon icon={faGoogle} />
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => signInWithGoogle()}
+                    className={`${classes.socialIconGoogle} ${classes.socialIcon}`}
+                  >
+                    <FontAwesomeIcon icon={faGoogle} />
+                  </Button>
 
                   <MicrosoftLogin
                     clientId={microsoftClientId}

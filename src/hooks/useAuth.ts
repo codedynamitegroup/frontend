@@ -1,11 +1,11 @@
 import { ERoleName } from "models/authService/entity/role";
 import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
-import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { logOut, selectCurrentUser, selectLoginStatus } from "reduxes/Auth";
+import { setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 
@@ -16,6 +16,7 @@ export default function useAuth() {
   const navigate = useNavigate();
 
   const logout = async () => {
+    dispatch(setLoading(true));
     UserService.logout()
       .then(() => {
         localStorage.removeItem("access_token");
@@ -36,6 +37,9 @@ export default function useAuth() {
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
         });
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
   return {
