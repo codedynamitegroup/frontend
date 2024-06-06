@@ -163,15 +163,15 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      await handleGetRegisteredCertificateCourses();
-
-      await handleGetCertificateCourses({
-        courseName: "",
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.ALL
-      });
-
-      await handleGetMostPopularContests();
+      Promise.all([
+        handleGetRegisteredCertificateCourses(),
+        handleGetCertificateCourses({
+          courseName: "",
+          filterTopicIds: [],
+          isRegisteredFilter: IsRegisteredFilterEnum.ALL
+        }),
+        handleGetMostPopularContests()
+      ]);
     };
 
     fetchInitialData();
