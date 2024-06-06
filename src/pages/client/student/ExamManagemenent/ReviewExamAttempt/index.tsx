@@ -646,9 +646,9 @@ export default function StudentReviewExamAttempt() {
 
                         setInputIndexValue(value);
 
-                        if (value !== undefined && value !== null) {
+                        if (value !== undefined || value !== null || isNaN(value)) {
                           if (isShowAllQuesionsInOnePage === "0") {
-                            if (courseId && examId && submissionId)
+                            if (courseId && examId && submissionId && value - 1 >= 0)
                               navigate(
                                 `${routes.student.exam.review
                                   .replace(":courseId", courseId)
@@ -666,11 +666,13 @@ export default function StudentReviewExamAttempt() {
                               // navigate();
                             }
                           } else {
-                            const slug = convertUuidToHashSlug(
-                              questions[value - 1].data.question.id
-                            );
-                            const element = document.getElementById(slug);
-                            element?.scrollIntoView({ behavior: "smooth" });
+                            if (questions[value - 1]) {
+                              const slug = convertUuidToHashSlug(
+                                questions[value - 1].data.question.id
+                              );
+                              const element = document.getElementById(slug);
+                              element?.scrollIntoView({ behavior: "smooth" });
+                            }
                           }
                         }
                       }}
