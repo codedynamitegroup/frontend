@@ -1,5 +1,5 @@
 export interface OrganizationEntity {
-  id: string;
+  organizationId: string;
   name: string;
   description: string;
 }

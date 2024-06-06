@@ -31,7 +31,7 @@ import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntit
 import { QuestionService } from "services/coreService/QuestionService";
 import AlertDialog from "../BlockingDialog";
 import { Helmet } from "react-helmet";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 import question from "reduxes/courseService/question";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
@@ -43,6 +43,8 @@ import JoyButton from "@mui/joy/Button";
 import Footer from "components/Footer";
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
 
 interface Props {
   qtype: String;
@@ -166,14 +168,18 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
   const [openAlertDiaglog, setOpenAlertDiaglog] = useState(true);
 
+  const user: User = useSelector(selectCurrentUser);
+
   const submitHandler = async (data: any) => {
+    console.log(user);
+    console.log("user", user);
     setOpenAlertDiaglog(false);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
     const newQuestion: PostShortAnswerQuestion = {
-      organizationId: "08b65a39-394f-4977-a5fa-3fe145b620f8",
-      createdBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7",
-      updatedBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7",
+      organizationId: user.organization.organizationId,
+      createdBy: user.userId,
+      updatedBy: user.userId,
       difficulty: "EASY",
       name: formSubmittedData.questionName,
       questionText: formSubmittedData.questionDescription,
