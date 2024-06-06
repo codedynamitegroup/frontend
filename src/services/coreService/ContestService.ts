@@ -208,4 +208,22 @@ export class ContestService {
       });
     }
   }
+
+  static async registerContestById(contestId: string) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CONTEST.JOIN_CONTEST.replace(":id", contestId)}`);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

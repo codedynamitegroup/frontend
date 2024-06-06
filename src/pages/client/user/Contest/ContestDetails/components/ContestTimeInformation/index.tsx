@@ -1,5 +1,5 @@
 import Paper from "@mui/material/Paper";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
 import CalendarIcon from "@mui/icons-material/DateRange";
@@ -13,6 +13,10 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useTranslation } from "react-i18next";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
+import { ContestService } from "services/coreService/ContestService";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "store";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface PropsData {
   startDate: string;
@@ -20,9 +24,11 @@ interface PropsData {
   status: ContestStartTimeFilterEnum;
   joinContest: boolean;
   contestName: string;
+  contestId: string;
 }
 
 const ContestTimeInformation = (props: PropsData) => {
+  const dispatch = useDispatch<AppDispatch>();
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { startDate, status, endDate, joinContest, contestName } = props;
@@ -56,6 +62,24 @@ const ContestTimeInformation = (props: PropsData) => {
   };
 
   const { t } = useTranslation();
+
+  const handleJoinContest = useCallback(
+    async (id: string) => {
+      try {
+        const joinContestsResponse = await ContestService.registerContestById(id);
+        console.log("joinContestsResponse", joinContestsResponse);
+        dispatch(setSuccessMess("Join contest successfully"));
+      } catch (error: any) {
+        console.error("Failed to join contest", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        dispatch(setErrorMess("Failed to join contest"));
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const interval = setInterval(() => getTimeUntil(inputDate), 1000);
@@ -115,7 +139,11 @@ const ContestTimeInformation = (props: PropsData) => {
             </Heading1>
           )
         ) : (
-          <Button variant='contained' translation-key='contest_detail_join_button'>
+          <Button
+            variant='contained'
+            translation-key='contest_detail_join_button'
+            onClick={() => handleJoinContest(props.contestId)}
+          >
             {t("contest_detail_join_button")}
           </Button>
         )}

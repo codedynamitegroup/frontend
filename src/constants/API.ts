@@ -30,7 +30,8 @@ export const API = {
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular",
       LEADERBOARD: "/core/contests/:id/leaderboard",
-      GET_USERS_OF_CONTEST: "/core/contests/:id/users"
+      GET_USERS_OF_CONTEST: "/core/contests/:id/users",
+      JOIN_CONTEST: "/core/contests/:id/register"
     },
     QUESTION: {
       DEFAULT: "/core/questions",
