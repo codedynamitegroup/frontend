@@ -58,6 +58,7 @@ type Props = {
   submitCount?: number;
   maxLines?: number;
   width?: string;
+  defaultvalue?: string;
 };
 
 const TextEditor: React.FC<Props> = ({
@@ -71,7 +72,7 @@ const TextEditor: React.FC<Props> = ({
 }) => {
   const reactQuillRef: any = useRef(null);
   const dialogQuillRef: any = useRef(null);
-  const { error, openDialog, title, submitCount, maxLines } = props;
+  const { error, openDialog, title, submitCount, maxLines, defaultvalue } = props;
   const modules = React.useMemo(
     () => ({
       toolbar: props?.noToolbar
@@ -150,6 +151,14 @@ const TextEditor: React.FC<Props> = ({
       reactQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
   }, [reactQuillRef, placeholder]);
 
+  // set default value when load component
+  useEffect(() => {
+    if (reactQuillRef.current && defaultvalue) {
+      const quillInstance = reactQuillRef.current.getEditor(); // Get the Quill instance
+      quillInstance.setContents(quillInstance.clipboard.convert(defaultvalue)); // Set the value
+    }
+  }, []);
+
   useEffect(() => {
     if (dialogQuillRef.current)
       dialogQuillRef.current.getEditor().root.dataset.placeholder = placeholder || "";
@@ -165,13 +174,14 @@ const TextEditor: React.FC<Props> = ({
   const handleClose = () => {
     setOpen(false);
   };
-
+  console.log(defaultvalue);
   return (
     <>
       {openDialog && (
         <>
           <div style={{ position: "relative", height: "100%" }}>
             <ReactQuill
+              defaultValue={defaultvalue}
               style={{
                 height: maxLines ? `${maxLines * 24}px` : undefined // Maximum height equivalent to maxRows
               }}
@@ -223,6 +233,7 @@ const TextEditor: React.FC<Props> = ({
                 <Grid container>
                   <Grid item xs={12}>
                     <ReactQuill
+                      defaultValue={defaultvalue}
                       ref={dialogQuillRef}
                       theme={readOnly ? "bubble" : "snow"}
                       readOnly={readOnly}
@@ -254,13 +265,14 @@ const TextEditor: React.FC<Props> = ({
       {!openDialog && (
         <Box width={width || "100%"}>
           <ReactQuill
+            defaultValue={defaultvalue}
             style={{
               height: maxLines ? `${maxLines * 24}px` : undefined
             }}
             ref={reactQuillRef}
             theme={readOnly ? "bubble" : "snow"}
             readOnly={readOnly}
-            value={convertQuillValue(value)}
+            value={value}
             modules={modules}
             formats={formats}
             onChange={onChange}
@@ -275,6 +287,15 @@ const TextEditor: React.FC<Props> = ({
                   : ""
             } ${roundedBorder ? `rounded-border` : ""}`}
             {...props}
+            // onKeyDown={(event) => {
+            //   if (reactQuillRef && event.key === " " && reactQuillRef.current) {
+            //     const editor = reactQuillRef.current.getEditor();
+            //     const { index } = editor.getSelection(true);
+            //     if (index === editor.getLength() - 1) {
+            //       editor.insertText(index, "\u200B", "user");
+            //     }
+            //   }
+            // }}
           />
         </Box>
       )}

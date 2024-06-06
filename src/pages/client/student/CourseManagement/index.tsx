@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { setCourses, setLoading } from "reduxes/courseService/courseUser";
 
-import { CourseService } from "services/courseService/CourseService";
 import { CourseTypeService } from "services/courseService/CourseTypeService";
 import { setCourseTypes } from "reduxes/courseService/course_type";
 import { CircularProgress } from "@mui/material";

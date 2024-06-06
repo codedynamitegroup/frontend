@@ -102,7 +102,8 @@ export const API = {
       CREATE: "/course/exam",
       START: "/course/exam/question/start-exam",
       END: "/course/exam/question/end-exam",
-      SUBMIT: "/course/exam/question/submit"
+      SUBMIT: "/course/exam/question/submit",
+      SUBMISSION: "/course/exam/question/submit/:id"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
