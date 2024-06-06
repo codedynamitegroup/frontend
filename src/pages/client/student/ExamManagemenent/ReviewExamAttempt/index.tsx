@@ -1,31 +1,25 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,
-  Card,
   CssBaseline,
   Divider,
   Drawer,
   Grid,
-  IconButton,
-  Toolbar,
-  Pagination,
   InputAdornment,
+  Stack,
   TextField
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import EssayExamQuestion from "./components/ExamQuestion/EssayExamQuestion";
@@ -35,7 +29,43 @@ import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuesti
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-const drawerWidth = 350;
+import { ExamService } from "services/courseService/ExamService";
+import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
+import Button from "@mui/joy/Button";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { useTranslation } from "react-i18next";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import IconButton from "@mui/joy/IconButton";
+import DateRangeRoundedIcon from "@mui/icons-material/DateRangeRounded";
+import ExamReviewBoxContent from "./components/BoxContent";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import { QuestionService } from "services/coreService/QuestionService";
+import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
+import { useDispatch } from "react-redux";
+import { setLoading } from "reduxes/Loading";
+import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
+
+interface SubmissionData {
+  examSubmissionId: string;
+  examId: string;
+  userId: string;
+  startTime: Date;
+  submitTime: Date;
+  status: string;
+  questionSubmissionResponses: {
+    questionId: string;
+    examSubmissionId: string;
+    userId: string;
+    passStatus: string;
+    grade: number;
+    content: string;
+    rightAnswer: string;
+    numFile: number;
+  }[];
+}
+
+const drawerWidth = 370;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -95,39 +125,36 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function StudentReviewExamAttempt() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const examId = useParams<{ examId: string }>().examId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const submissionId = useParams<{ submissionId: string }>().submissionId;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
   const questionPageIndex = parseInt(searchParams.get("page") || "0");
   const isShowAllQuesionsInOnePage = searchParams.get("showall");
   const [open, setOpen] = React.useState(true);
-  const [questions, setQuestions] = React.useState([
-    {
-      id: "0",
-      type: qtype.essay
-    },
-    {
-      id: "1",
-      type: qtype.short_answer
-    },
-    {
-      id: "2",
-      type: qtype.multiple_choice
-    },
-    {
-      id: "3",
-      type: qtype.true_false
-    },
-    {
-      id: "4",
-      type: qtype.true_false
-    },
-    {
-      id: "5",
-      type: qtype.multiple_choice
-    }
-  ]);
+  const [inputIndexValue, setInputIndexValue] = React.useState(1);
+  const [questions, setQuestions] = React.useState<any[]>([]);
+  const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
+  const [submissionData, setSubmissionData] = React.useState<SubmissionData | undefined>(undefined);
+  const [questionDetailList, setQuestionDetailList] = React.useState<any[]>([]); // [questionId, questionDetail
+  const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
+  const [timeClose, setTimeClose] = React.useState<Date>(new Date());
+  const [timeTaken, setTimeTaken] = React.useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,112 +178,337 @@ export default function StudentReviewExamAttempt() {
     ref: headerRef
   });
 
+  React.useEffect(() => {
+    dispatch(setLoading(true));
+    if (examId) {
+      // Get exam data
+      ExamService.getExamById(examId)
+        .then((res) => {
+          setExamData(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      // Get exam questions
+      ExamService.getExamQuestionById(examId, null)
+        .then((res) => {
+          const questionIds = res.questions.map((question: GetQuestionExam) => ({
+            questionId: question.id,
+            qtype: question.qtype
+          }));
+          const postQuestionDetailList: PostQuestionDetailList = {
+            questionCommands: questionIds
+          };
+
+          // Get question detail
+          QuestionService.getQuestionDetail(postQuestionDetailList)
+            .then((res) => {
+              const transformList = res.questionResponses.map((question: any) => {
+                const data = question.qtypeEssayQuestion
+                  ? question.qtypeEssayQuestion
+                  : question.qtypeShortAnswerQuestion
+                    ? question.qtypeShortAnswerQuestion
+                    : question.qtypeMultichoiceQuestion
+                      ? question.qtypeMultichoiceQuestion
+                      : question.qtypeTrueFalseQuestion
+                        ? question.qtypeTrueFalseQuestion
+                        : question.qtypeCodeQuestion;
+                return {
+                  data
+                };
+              });
+              setQuestions(transformList);
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+            .finally(() => {
+              dispatch(setLoading(false));
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          dispatch(setLoading(false));
+        });
+
+      // Get exam submission data
+      if (submissionId !== undefined)
+        ExamService.getExamSubmissionById(submissionId)
+          .then((res) => {
+            setSubmissionData(res);
+
+            // Calculate time taken
+            const openTime = new Date(res.startTime);
+            const closeTime = new Date(res.submitTime);
+
+            const diffMs = closeTime.getTime() - openTime.getTime(); // milliseconds between openTime & closeTime
+            const diffDays = Math.floor(diffMs / 86400000); // days
+            const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+            const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+            const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000); // seconds
+            setTimeOpen(openTime);
+            setTimeClose(closeTime);
+
+            setTimeTaken({
+              days: diffDays,
+              hours: diffHrs,
+              minutes: diffMins,
+              seconds: diffSecs
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {});
+    }
+  }, []);
+
+  const [drawerVariant, setDrawerVariant] = React.useState<
+    "temporary" | "permanent" | "persistent"
+  >(width < 1080 ? "temporary" : "permanent");
+  React.useEffect(() => {
+    if (width < 1080) {
+      setDrawerVariant("temporary");
+    } else {
+      setDrawerVariant("persistent");
+    }
+  }, [width]);
+
+  const monthNames = [
+    t("common_january"),
+    t("common_february"),
+    t("common_march"),
+    t("common_april"),
+    t("common_may"),
+    t("common_june"),
+    t("common_july"),
+    t("common_august"),
+    t("common_september"),
+    t("common_october"),
+    t("common_november"),
+    t("common_december")
+  ];
+
+  const weekdayNames = [
+    t("common_sunday"),
+    t("common_monday"),
+    t("common_tuesday"),
+    t("common_wednesday"),
+    t("common_thursday"),
+    t("common_friday"),
+    t("common_saturday")
+  ];
+
   return (
-    <Grid className={classes.root}>
-      <Header ref={headerRef} />
-      <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
-        <CssBaseline />
-        <AppBar
-          position='fixed'
-          sx={{
-            // margin top to avoid appbar overlap with content
-            marginTop: "64px",
-            backgroundColor: "white"
-          }}
-          open={open}
-        >
-          <Toolbar>
-            <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.exam.detail)}
-              >
-                Bài kiểm tra 1
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
-            </Box>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              edge='end'
-              onClick={handleDrawerOpen}
-              sx={{ ...(open && { display: "none" }) }}
+    <>
+      <Grid className={classes.root}>
+        <Header ref={headerRef} />
+        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+          <CssBaseline />
+
+          <CssBaseline />
+          {/* <DrawerHeader /> */}
+          <Button
+            // aria-label='open drawer'
+            onClick={handleDrawerOpen}
+            sx={{
+              ...(open && { display: "none" }),
+              position: "fixed",
+              top: `${headerHeight + 10}px`,
+              right: 0,
+              height: "44px",
+              width: "49px"
+            }}
+            size='sm'
+            endDecorator={<MenuIcon color='action' />}
+            variant='soft'
+          />
+          <Box className={classes.formBody} width={"100%"}>
+            <Heading1 fontWeight={"500"}>{examData?.name}</Heading1>
+            <Button
+              onClick={() => {
+                if (courseId && examId)
+                  navigate(
+                    routes.student.exam.detail
+                      .replace(":courseId", courseId)
+                      .replace(":examId", examId)
+                  );
+              }}
+              startDecorator={<ChevronLeftIcon fontSize='small' />}
+              color='neutral'
+              variant='soft'
+              size='md'
+              sx={{ width: "fit-content" }}
             >
-              <MenuIcon color='action' />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Main open={open} className={classes.mainContent}>
-          <DrawerHeader />
-          <Card>
-            <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"}>Bài kiểm tra Cuối Kì</Heading1>
-              <Button
-                btnType={BtnType.Primary}
-                onClick={() => {
-                  navigate(routes.student.exam.detail);
-                }}
-                startIcon={
-                  <ChevronLeftIcon
+              {t("common_back")}
+            </Button>
+            <Stack direction={"row"} spacing={1}>
+              <ExamReviewBoxContent
+                textTitle={t("exam_review_started_on")}
+                textContent={t("common_show_time", {
+                  weekDay: weekdayNames[timeOpen.getDay()],
+                  day: timeOpen.getDate(),
+                  month: monthNames[timeOpen.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                  year: timeOpen.getFullYear(),
+                  time: `${timeOpen.getHours() < 10 ? `0${timeOpen.getHours()}` : timeOpen.getHours()}:${timeOpen.getMinutes() < 10 ? `0${timeOpen.getMinutes()}` : timeOpen.getMinutes()}`
+                })}
+                icon={
+                  <DateRangeRoundedIcon
                     sx={{
-                      color: "white"
+                      fontSize: "15px",
+                      marginBottom: "3px"
                     }}
                   />
                 }
-                width='fit-content'
-              >
-                <ParagraphBody>Quay lại</ParagraphBody>
-              </Button>
+              />
+              <ExamReviewBoxContent
+                textTitle={t("exam_review_completed_on")}
+                textContent={t("common_show_time", {
+                  weekDay: weekdayNames[timeClose.getDay()],
+                  day: timeClose.getDate(),
+                  month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                  year: timeClose.getFullYear(),
+                  time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
+                })}
+                icon={
+                  <CheckCircleOutlineRoundedIcon
+                    sx={{
+                      fontSize: "15px",
+                      marginBottom: "3px"
+                    }}
+                  />
+                }
+              />
+              <ExamReviewBoxContent
+                textTitle={t("exam_review_time_taken")}
+                textContent={
+                  timeTaken.days > 0
+                    ? t("common_show_time_no_date_no_day", {
+                        hour: t("hour", { count: timeTaken.hours }),
+                        minute: t("min", { count: timeTaken.minutes }),
+                        sec: t("sec", { count: timeTaken.seconds })
+                      })
+                    : timeTaken.minutes > 0
+                      ? t("common_show_time_no_date_no_hour", {
+                          minute: t("min", { count: timeTaken.minutes }),
+                          sec: t("sec", { count: timeTaken.seconds })
+                        })
+                      : t("common_show_time_no_date_no_min", {
+                          sec: t("sec", { count: timeTaken.seconds })
+                        })
+                }
+                icon={
+                  <AccessTimeRoundedIcon
+                    sx={{
+                      fontSize: "15px",
+                      marginBottom: "3px"
+                    }}
+                  />
+                }
+              />
+            </Stack>
+            <Box
+              sx={{
+                borderRadius: "5px",
+                border: "1px solid #E1E1E1",
+                padding: "20px"
+              }}
+            >
               {isShowAllQuesionsInOnePage !== "0" ? (
-                questions.map((question, index) => (
-                  <Box key={index}>
-                    {question.type === qtype.essay ? (
-                      <EssayExamQuestion readOnly value='Cha của SE là ...' />
-                    ) : question.type === qtype.short_answer ? (
-                      <ShortAnswerExamQuestion value='Hyper Text' readOnly />
-                    ) : question.type === qtype.multiple_choice ? (
-                      <MultipleChoiceExamQuestion value='1' readOnly />
-                    ) : question.type === qtype.true_false ? (
-                      <TrueFalseExamQuestion value='1' readOnly />
-                    ) : null}
-                  </Box>
-                ))
-              ) : questions[questionPageIndex].type === qtype.essay ? (
-                <EssayExamQuestion readOnly value='Cha của SE là ...' />
-              ) : questions[questionPageIndex].type === qtype.short_answer ? (
-                <ShortAnswerExamQuestion value='Hyper Text' readOnly />
-              ) : questions[questionPageIndex].type === qtype.multiple_choice ? (
-                <MultipleChoiceExamQuestion value='1' readOnly />
-              ) : questions[questionPageIndex].type === qtype.true_false ? (
-                <TrueFalseExamQuestion value='1' readOnly />
+                // show all questions in one page
+                <Grid container spacing={7}>
+                  {questions.map((question, index) => (
+                    <React.Fragment key={index}>
+                      <Grid item xs={12} id={convertUuidToHashSlug(question.data.question.id)}>
+                        {question.data.question.qtype === qtype.essay.code ? (
+                          <EssayExamQuestion
+                            questionIndex={index}
+                            questionEssayQuestion={question.data}
+                            questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.short_answer.code ? (
+                          <ShortAnswerExamQuestion
+                            questionIndex={index}
+                            questionShortAnswer={question.data}
+                            questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.multiple_choice.code ? (
+                          <MultipleChoiceExamQuestion
+                            questionIndex={index}
+                            questionMultiChoice={question.data}
+                            questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
+                          />
+                        ) : question.data.question.qtype === qtype.true_false.code ? (
+                          <TrueFalseExamQuestion
+                            questionIndex={index}
+                            questionTrueFalse={question.data}
+                            questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
+                          />
+                        ) : null}
+                      </Grid>
+                      <Grid item xs={12} display={"flex"} justifyContent={"center"}>
+                        <Divider
+                          sx={{
+                            width: "100px"
+                          }}
+                        />
+                      </Grid>
+                    </React.Fragment>
+                  ))}
+                </Grid>
+              ) : questions[questionPageIndex].data.question.qtype === qtype.essay.code ? (
+                <EssayExamQuestion
+                  questionIndex={questionPageIndex}
+                  questionEssayQuestion={questions[questionPageIndex].data}
+                  questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId === questions[questionPageIndex].data.question.id
+                  )}
+                />
+              ) : questions[questionPageIndex].data.question.qtype === qtype.short_answer.code ? (
+                <ShortAnswerExamQuestion
+                  questionIndex={questionPageIndex}
+                  questionShortAnswer={questions[questionPageIndex].data}
+                  questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId === questions[questionPageIndex].data.question.id
+                  )}
+                />
+              ) : questions[questionPageIndex].data.question.qtype ===
+                qtype.multiple_choice.code ? (
+                <MultipleChoiceExamQuestion
+                  questionIndex={questionPageIndex}
+                  questionMultiChoice={questions[questionPageIndex].data}
+                  questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId === questions[questionPageIndex].data.question.id
+                  )}
+                />
+              ) : questions[questionPageIndex].data.question.qtype === qtype.true_false.code ? (
+                <TrueFalseExamQuestion
+                  questionIndex={questionPageIndex}
+                  questionTrueFalse={questions[questionPageIndex].data}
+                  questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId === questions[questionPageIndex].data.question.id
+                  )}
+                />
               ) : null}
-
               {isShowAllQuesionsInOnePage !== "0" ? (
                 <Grid container spacing={1}>
                   <Grid item xs={6}></Grid>
@@ -269,18 +521,32 @@ export default function StudentReviewExamAttempt() {
                     }}
                   >
                     <Button
-                      btnType={BtnType.Text}
                       onClick={() => {
-                        navigate(routes.student.exam.detail);
+                        if (courseId && examId)
+                          navigate(
+                            routes.student.exam.detail
+                              .replace(":courseId", courseId)
+                              .replace(":examId", examId),
+                            { replace: true }
+                          );
+                        else {
+                          // navigate to unknown page
+                          // navigate();
+                        }
                       }}
-                      padding='0'
                     >
-                      <ParagraphBody>Hoàn thành xem đánh giá...</ParagraphBody>
+                      {t("exam_finish_review")}
                     </Button>
                   </Grid>
                 </Grid>
               ) : (
-                <Grid container spacing={1}>
+                <Grid
+                  container
+                  spacing={1}
+                  sx={{
+                    marginTop: "10px"
+                  }}
+                >
                   <Grid item xs={6}>
                     {questionPageIndex !== 0 && (
                       <Link
@@ -289,7 +555,9 @@ export default function StudentReviewExamAttempt() {
                           search: `?showall=0&page=${questionPageIndex - 1}`
                         }}
                       >
-                        Trang trước
+                        <Button variant='soft'>
+                          {t("course_management_exam_preview_prev_page")}
+                        </Button>
                       </Link>
                     )}
                   </Grid>
@@ -308,121 +576,216 @@ export default function StudentReviewExamAttempt() {
                           search: `?showall=0&page=${questionPageIndex + 1}`
                         }}
                       >
-                        Trang sau
+                        <Button>{t("course_management_exam_preview_next_page")}</Button>
                       </Link>
                     ) : (
                       <Button
-                        btnType={BtnType.Text}
                         onClick={() => {
                           navigate(routes.student.exam.detail);
                         }}
-                        padding='0'
+                        translation-key='exam_finish_review'
                       >
-                        <ParagraphBody>Hoàn thành xem đánh giá...</ParagraphBody>
+                        {t("exam_finish_review")}
                       </Button>
                     )}
                   </Grid>
                 </Grid>
               )}
             </Box>
-          </Card>
-        </Main>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
+          </Box>
+          <Drawer
+            sx={{
+              display: open ? "block" : "none",
               width: drawerWidth,
-              position: "fixed",
-              top: "64px"
-            }
-          }}
-          variant='persistent'
-          anchor='right'
-          open={open}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <Box className={classes.drawerBody}>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle className={classes.drawerTextTitle}>Chuyển hướng câu hỏi</TextTitle>
-              <TextField
-                placeholder='Nhập số thứ tự câu hỏi'
-                size='small'
-                type='number'
-                fullWidth
-                sx={{ marginBottom: "10px" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton>
-                        <KeyboardReturnIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <Grid container spacing={1} className={classes.pageNavigationDrawer}>
-                {questions.map((question, index) => (
-                  <Grid item key={index}>
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                borderTop: "1px solid #E1E1E1",
+                borderRadius: "12px 0px",
+                width: drawerWidth,
+                top: `${headerHeight + 10}px `
+              }
+            }}
+            variant={drawerVariant}
+            anchor='right'
+            open={open}
+          >
+            <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
+              <IconButton onClick={handleDrawerClose} variant='soft'>
+                {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            </Box>
+            <Box className={classes.drawerBody}>
+              <Box className={classes.drawerFieldContainer}>
+                <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
+                  <Grid item xs={12}>
+                    <TextTitle className={classes.drawerTextTitle}>
+                      {t("take_exam_question_navigation_title")}
+                    </TextTitle>
+
+                    <TitleWithInfoTip
+                      title={t("take_exam_question_name")}
+                      fontSize='13px'
+                      fontWeight='500'
+                    />
+                    <TextField
+                      placeholder={t("exam_enter_question_index")}
+                      size='small'
+                      type='number'
+                      fullWidth
+                      sx={{ marginBottom: "10px" }}
+                      value={inputIndexValue}
+                      InputProps={{
+                        inputProps: { min: 1, max: questions.length }
+                      }}
+                      onChange={(e) => {
+                        var value = parseInt(e.target.value, 10);
+                        const max = questions.length;
+
+                        if (value > max) value = max;
+                        if (value < 1) value = 1;
+
+                        setInputIndexValue(value);
+
+                        if (value !== undefined && value !== null) {
+                          if (isShowAllQuesionsInOnePage === "0") {
+                            if (courseId && examId && submissionId)
+                              navigate(
+                                `${routes.student.exam.review
+                                  .replace(":courseId", courseId)
+                                  .replace(":examId", examId)
+                                  .replace(
+                                    ":submissionId",
+                                    submissionId
+                                  )}?showall=0&page=${value - 1}`,
+                                {
+                                  replace: true
+                                }
+                              );
+                            else {
+                              // navigate to unknown page
+                              // navigate();
+                            }
+                          } else {
+                            const slug = convertUuidToHashSlug(
+                              questions[value - 1].data.question.id
+                            );
+                            const element = document.getElementById(slug);
+                            element?.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1} className={classes.pageNavigationDrawer}>
+                  {questions.map((question, index) => (
+                    <Grid item key={index}>
+                      <Button
+                        variant={"outlined"}
+                        sx={{
+                          borderRadius: "1000px",
+                          width: "40px",
+                          height: "40px"
+                          // backgroundColor: question.answered ? "#e1e1e1" : ""
+                        }}
+                        onClick={() => {
+                          if (isShowAllQuesionsInOnePage === "0") {
+                            if (courseId && examId && submissionId)
+                              navigate(
+                                `${routes.student.exam.review
+                                  .replace(":courseId", courseId)
+                                  .replace(":examId", examId)
+                                  .replace(":submissionId", submissionId)}?showall=0&page=${index}`,
+                                {
+                                  replace: true
+                                }
+                              );
+                            else {
+                              // navigate to unknown page
+                              // navigate();
+                            }
+                          } else {
+                            const slug = convertUuidToHashSlug(question.data.question.id);
+                            const element = document.getElementById(slug);
+                            element?.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                      >
+                        {index + 1}
+                      </Button>
+                    </Grid>
+                  ))}
+                </Grid>
+
+                <Grid container spacing={2} sx={{ marginTop: "10px" }}>
+                  <Grid item xs={12} justifyContent={"center"} display={"flex"}>
                     <Button
-                      btnType={BtnType.Outlined}
+                      fullWidth
+                      variant='soft'
                       onClick={() => {
-                        if (isShowAllQuesionsInOnePage === "0") {
-                          navigate(`${routes.student.exam.review}?showall=0&page=${index}`, {
-                            replace: true
-                          });
+                        if (courseId && examId && submissionId) {
+                          if (isShowAllQuesionsInOnePage !== "0")
+                            navigate(
+                              `${`${routes.student.exam.review
+                                .replace(":courseId", courseId)
+                                .replace(":examId", examId)
+                                .replace(":submissionId", submissionId)}?showall=0`}`,
+                              {
+                                replace: true
+                              }
+                            );
+                          else {
+                            navigate(
+                              `${routes.student.exam.review
+                                .replace(":courseId", courseId)
+                                .replace(":examId", examId)
+                                .replace(":submissionId", submissionId)}`,
+                              {
+                                replace: true
+                              }
+                            );
+                          }
+                        } else {
+                          // navigate to unknown page
+                          // navigate();
                         }
                       }}
                     >
-                      <ParagraphBody>{index + 1}</ParagraphBody>
+                      {isShowAllQuesionsInOnePage
+                        ? t("exam_view_multiple_page")
+                        : t("exam_view_one_page")}
                     </Button>
                   </Grid>
-                ))}
-              </Grid>
-
-              <Pagination count={10} showFirstButton showLastButton size='small' />
-              <Grid container>
-                <Grid item xs={12}>
-                  <Button
-                    btnType={BtnType.Text}
-                    onClick={() => {
-                      navigate(
-                        `${isShowAllQuesionsInOnePage !== "0" ? `${routes.student.exam.review}?showall=0` : `${routes.student.exam.review}`}`,
-                        {
-                          replace: true
+                  <Grid item xs={12} justifyContent={"center"} display={"flex"}>
+                    <Button
+                      fullWidth
+                      onClick={() => {
+                        if (courseId && examId)
+                          navigate(
+                            routes.student.exam.detail
+                              .replace(":courseId", courseId)
+                              .replace(":examId", examId),
+                            {
+                              replace: true
+                            }
+                          );
+                        else {
+                          // navigate to unknown page
+                          // navigate();
                         }
-                      );
-                    }}
-                    padding='10px 0'
-                  >
-                    <ParagraphBody>
-                      {isShowAllQuesionsInOnePage
-                        ? "Hiện 1 câu hỏi 1 trang"
-                        : "Xem tất cả câu hỏi trong 1 trang"}
-                    </ParagraphBody>
-                  </Button>
+                      }}
+                      translation-key='exam_finish_review'
+                    >
+                      {t("exam_finish_review")}
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    btnType={BtnType.Text}
-                    onClick={() => {
-                      navigate(routes.student.exam.detail);
-                    }}
-                    padding='10px 0'
-                  >
-                    <ParagraphBody>Hoàn thành xem đánh giá...</ParagraphBody>
-                  </Button>
-                </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
-        </Drawer>
-      </Box>
-    </Grid>
+          </Drawer>
+        </Box>
+      </Grid>
+    </>
   );
 }

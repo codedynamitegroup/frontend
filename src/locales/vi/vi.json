@@ -850,5 +850,22 @@
   "common_wednesday": "Thứ tư",
   "common_thursday": "Thứ năm",
   "common_friday": "Thứ sáu",
-  "common_saturday": "Thứ bảy"
+  "common_saturday": "Thứ bảy",
+
+  "exam_review_started_on": "Bắt đầu lúc",
+  "exam_review_completed_on": "Hoàn thành lúc",
+  "exam_review_time_taken": "Thời gian làm",
+  "common_show_time": "{{weekDay}}, {{day}} {{month}} {{year}}, {{time}}",
+  "common_show_time_no_date_full": "{{day}} {{hour}} {{min}} {{sec}}",
+  "common_show_time_no_date_no_day": "{{hour}} {{min}} {{sec}}",
+  "common_show_time_no_date_no_hour": "{{min}} {{sec}}",
+  "common_show_time_no_date_no_min": "{{sec}}",
+  "hour": "{{count}} h",
+  "min": "{{count}} p",
+  "sec": "{{count}} s",
+  "day": "{{count}} n",
+  "exam_finish_review": "Hoàn thành xem lại",
+  "exam_view_one_page": "Xem tất cả trong một trang",
+  "exam_view_multiple_page": "Xem trong nhiều trang",
+  "exam_enter_question_index": "Nhập số thứ tự câu hỏi"
 }

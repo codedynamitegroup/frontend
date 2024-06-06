@@ -1,37 +1,38 @@
 .root {
-  display: flex;
-  flex-direction: column !important;
-  gap: 20px;
   padding-bottom: 20px;
-  background-color: var(--blue-1);
-  height: 100vh;
+  background-color: white;
 }
 
 .container {
   display: flex;
+  height: 100%;
 }
 
 .mainContent {
   background-color: var(--blue-1);
+  height: 100%;
 }
 
 .formBody {
   display: flex;
   flex-direction: column;
-  padding: 20px 40px;
+  padding: 20px 60px;
   gap: 15px;
+  height: fit-content;
 }
 
 .drawerBody {
   padding: 20px;
+  height: 100%;
 }
 
 .drawerFieldContainer {
   margin-bottom: 20px;
+  height: fit-content;
+  border-radius: 12px;
+  border: 1px solid #E1E1E1;
+  padding: 1.25rem 1.25rem;
   .drawerTextTitle {
-    margin-bottom: 10px;
-  }
-  .pageNavigationDrawer {
     margin-bottom: 10px;
   }
 }

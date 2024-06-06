@@ -1,13 +1,8 @@
 import { Box, Grid, Stack, Divider } from "@mui/material";
-import FlagIcon from "@mui/icons-material/Flag";
-import Button from "@mui/joy/Button";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
-import { useDispatch } from "react-redux";
-import { setAnswered, setFlag } from "reduxes/TakeExam";
 import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
 
 interface PreviewMultipleChoiceProps {
