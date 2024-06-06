@@ -1,4 +1,3 @@
-import { User } from "models/courseService/user";
 import classes from "./styles.module.scss";
 
 import Paper from "@mui/material/Paper";
@@ -8,7 +7,6 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
 import Avatar from "@mui/material/Avatar";
-import Heading5 from "components/text/Heading5";
 import Heading4 from "components/text/Heading4";
 import { routes } from "routes/routes";
 import { Box } from "@mui/material";
@@ -25,23 +23,21 @@ interface ListProps {
 
 const CourseList = (props: ListProps) => {
   return (
-    <Paper className={classes.container}>
+    <Grid className={classes.container}>
       <Grid container spacing={1}>
         <Grid item xs={12} container direction='column'>
           <Grid item xs className={classes.courseInfo}>
             <Box className={classes.courseInfoWrapper}>
-              <Link
-                component={RouterLink}
-                to={routes.student.course.information.replace(":courseId", props.courseId)}
-                underline='hover'
-                color='inherit'
-              >
-                <Heading4 gutterBottom variant='subtitle1' colorname='--blue-600'>
-                  {props.courseName}
-                </Heading4>
-              </Link>
-
-              <Heading5>{props.courseCategory}</Heading5>
+              <Heading4 gutterBottom variant='subtitle1' colorname='--blue-3'>
+                <Link
+                  component={RouterLink}
+                  to={routes.student.course.information.replace(":courseId", props.courseId)}
+                  underline='hover'
+                  color='inherit'
+                >
+                  {props.courseName} - {props.courseCategory}
+                </Link>
+              </Heading4>
             </Box>
           </Grid>
           <Grid item xs className={classes.teacherListGridContainer}>
@@ -67,7 +63,7 @@ const CourseList = (props: ListProps) => {
           </Grid>
         </Grid>
       </Grid>
-    </Paper>
+    </Grid>
   );
 };
 

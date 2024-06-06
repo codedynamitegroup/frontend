@@ -1,4 +1,3 @@
-import { User } from "models/courseService/user";
 import classes from "./styles.module.scss";
 
 import Paper from "@mui/material/Paper";
@@ -27,28 +26,22 @@ interface ListProps {
 
 const CourseList = (props: ListProps) => {
   return (
-    <Paper className={classes.container}>
+    <Grid className={classes.container}>
       <Grid container spacing={1}>
         <Grid item xs={12} container direction='column'>
           <Grid item xs className={classes.courseInfo}>
-            <Box>
-              <Link
-                underline='hover'
-                color='inherit'
-                component={RouterLink}
-                to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
-              >
-                <Heading4 gutterBottom variant='subtitle1' colorname='--blue-600'>
-                  {props.courseName}
-                </Heading4>
-              </Link>
-
-              <Heading5>{props.courseCategory}</Heading5>
+            <Box className={classes.courseInfoWrapper}>
+              <Heading4 gutterBottom variant='subtitle1' colorname='--blue-3'>
+                <Link
+                  component={RouterLink}
+                  to={routes.student.course.information.replace(":courseId", props.courseId)}
+                  underline='hover'
+                  color='inherit'
+                >
+                  {props.courseName} - {props.courseCategory}
+                </Link>
+              </Heading4>
             </Box>
-
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
           </Grid>
           <Grid item xs className={classes.teacherListGridContainer}>
             {props.teacherList.map((teacher) => (
@@ -63,7 +56,7 @@ const CourseList = (props: ListProps) => {
                   }}
                   primary={
                     <Link component={RouterLink} to='#' underline='hover'>
-                      {teacher.firstName + " " + teacher.lastName}
+                      {teacher.lastName} {teacher.firstName}
                     </Link>
                   }
                   secondary='Giảng viên'
@@ -73,7 +66,7 @@ const CourseList = (props: ListProps) => {
           </Grid>
         </Grid>
       </Grid>
-    </Paper>
+    </Grid>
   );
 };
 
