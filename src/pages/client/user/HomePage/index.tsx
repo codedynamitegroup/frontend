@@ -76,19 +76,19 @@ export default function HomePage() {
 
   const handleGetCertificateCourses = async ({
     courseName,
-    filterTopicIds,
+    filterTopicId,
     isRegisteredFilter
   }: {
     courseName: string;
-    filterTopicIds: string[];
+    filterTopicId?: string;
     isRegisteredFilter: IsRegisteredFilterEnum;
   }) => {
     dispatch(setLoading({ isLoading: true }));
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName: courseName,
-        filterTopicIds: filterTopicIds,
-        isRegisteredFilter: isRegisteredFilter
+        courseName,
+        filterTopicId,
+        isRegisteredFilter
       });
       setTimeout(() => {
         dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
@@ -108,7 +108,7 @@ export default function HomePage() {
   useEffect(() => {
     handleGetCertificateCourses({
       courseName: "",
-      filterTopicIds: [],
+      filterTopicId: undefined,
       isRegisteredFilter: IsRegisteredFilterEnum.ALL
     });
   }, []);

@@ -65,18 +65,18 @@ export default function UserDashboard() {
 
   const handleGetCertificateCourses = async ({
     courseName,
-    filterTopicIds,
+    filterTopicId,
     isRegisteredFilter
   }: {
     courseName: string;
-    filterTopicIds: string[];
+    filterTopicId?: string;
     isRegisteredFilter: IsRegisteredFilterEnum;
   }) => {
     setIsCertificateCoursesLoading(true);
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
         courseName,
-        filterTopicIds,
+        filterTopicId,
         isRegisteredFilter
       });
       setIsCertificateCoursesLoading(false);
@@ -95,15 +95,12 @@ export default function UserDashboard() {
   const handleGetRegisteredCertificateCourses = async () => {
     setIsCertificateCoursesLoading(true);
     try {
-      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName: "",
-        filterTopicIds: [],
-        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
-      });
+      const getCertificateCoursesResponse =
+        await CertificateCourseService.getMyCertificateCourses("");
       setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
       setIsCertificateCoursesLoading(false);
     } catch (error: any) {
-      console.error("Failed to fetch certificate courses", {
+      console.error("Failed to fetch my certificate courses", {
         code: error.code || 503,
         status: error.status || "Service Unavailable",
         message: error.message
@@ -134,12 +131,10 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return (
-      registeredCertificateCourses
-        // .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
-        .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
-        .slice(0, 4)
-    );
+    return registeredCertificateCourses
+      .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
+      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
+      .slice(0, 3);
   }, [registeredCertificateCourses]);
 
   console.log("ongoingRegisteredCourses", ongoingRegisteredCourses);
@@ -165,7 +160,7 @@ export default function UserDashboard() {
         handleGetRegisteredCertificateCourses(),
         handleGetCertificateCourses({
           courseName: "",
-          filterTopicIds: [],
+          filterTopicId: undefined,
           isRegisteredFilter: IsRegisteredFilterEnum.ALL
         }),
         handleGetMostPopularContests()

@@ -9,20 +9,20 @@ const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 export class CertificateCourseService {
   static async getCertificateCourses({
     courseName = "",
-    filterTopicIds = [],
+    filterTopicId,
     isRegisteredFilter = IsRegisteredFilterEnum.ALL
   }: {
     courseName: string;
-    filterTopicIds: string[];
+    filterTopicId?: string;
     isRegisteredFilter: IsRegisteredFilterEnum;
   }) {
     try {
       const response = await api({
         baseURL: coreServiceApiUrl
       }).post(`${API.CORE.CERTIFICATE_COURSE.DEFAULT}`, {
-        courseName: courseName,
-        filterTopicIds: filterTopicIds,
-        isRegisteredFilter: isRegisteredFilter
+        courseName,
+        filterTopicId,
+        isRegisteredFilter
       });
       if (response.status === 200) {
         return response.data;
@@ -41,6 +41,28 @@ export class CertificateCourseService {
       const response = await api({
         baseURL: coreServiceApiUrl
       }).post(`${API.CORE.CERTIFICATE_COURSE.MOST_ENROLLED}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async getMyCertificateCourses(courseName: string) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CERTIFICATE_COURSE.MY_COURSES}`, {
+        courseName,
+        filterTopicId: null,
+        isRegisteredFilter: IsRegisteredFilterEnum.REGISTERED
+      });
       if (response.status === 200) {
         return response.data;
       }

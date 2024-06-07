@@ -23,7 +23,7 @@ interface PropsData {
   renderOption?: (props: any, option: CertificateCourseEntity, { inputValue }: any) => JSX.Element;
 }
 
-export default function CustomAutocomplete({
+const CustomAutocomplete = ({
   value,
   setValue,
   options,
@@ -32,7 +32,7 @@ export default function CustomAutocomplete({
   maxWidth,
   size = "small",
   renderOption
-}: PropsData) {
+}: PropsData) => {
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
   const { t } = useTranslation();
 
@@ -121,4 +121,6 @@ export default function CustomAutocomplete({
       </Grid>
     </Grid>
   );
-}
+};
+
+export default CustomAutocomplete;
