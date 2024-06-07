@@ -115,7 +115,6 @@ const SubmitExamSummary = lazy(
   () => import("pages/client/student/ExamManagemenent/SubmitExamReview")
 );
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
-
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
 const router = createHashRouter(
