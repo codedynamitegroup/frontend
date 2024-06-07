@@ -30,10 +30,11 @@ const TrueFalseExamQuestion = (props: Props) => {
     }
   ];
   const dispatch = useDispatch();
-  const isFlagged = questionState.flag;
+  const isFlagged = questionState?.flag;
 
   const flagQuestionHandle = () => {
-    dispatch(setFlag({ id: questionTrueFalseQuestion.question.id, flag: !isFlagged }));
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionTrueFalseQuestion.question.id, flag: !isFlagged }));
   };
 
   const handleRadioChange = (value: string) => {
@@ -60,12 +61,12 @@ const TrueFalseExamQuestion = (props: Props) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -108,7 +109,7 @@ const TrueFalseExamQuestion = (props: Props) => {
         )}
         <JoyRadioGroup
           color='primary'
-          value={questionState.content}
+          value={questionState?.content}
           onChange={handleRadioChange}
           values={answerList}
           orientation='vertical'

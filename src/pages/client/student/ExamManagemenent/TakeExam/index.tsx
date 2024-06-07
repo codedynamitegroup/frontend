@@ -43,12 +43,14 @@ import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { parse as uuidParse } from "uuid";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "hooks";
-import { setExam } from "reduxes/TakeExam";
+import { cleanTakeExamState, setExam } from "reduxes/TakeExam";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import Checkbox from "@mui/joy/Checkbox";
 import Heading2 from "components/text/Heading2";
 import moment from "moment";
+import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
+import { setLoading } from "reduxes/Loading";
 
 const drawerWidth = 370;
 
@@ -84,6 +86,7 @@ const drawerWidth = 370;
 export default function TakeExam() {
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
+  const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
 
   const courseId = useParams<{ courseId: string }>().courseId;
 
@@ -94,12 +97,20 @@ export default function TakeExam() {
   const { t } = useTranslation();
   const location = useLocation();
   const [currentQuestionList, setCurrentQuestionList] = React.useState<any>([]);
+
   let questionPageIndex = Number(searchParams.get("page"));
   if (isNaN(questionPageIndex) || questionPageIndex < 0) {
     questionPageIndex = 0;
   }
+
   const dispatch = useDispatch();
   const questionList = useAppSelector((state) => state.takeExam.questionList);
+  const questionListRef = React.useRef(questionList);
+  // Update the ref whenever questionList changes
+  React.useEffect(() => {
+    questionListRef.current = questionList;
+  }, [questionList]);
+
   const examData = useAppSelector((state) => state.takeExam.examData);
   const startTime = useAppSelector((state) => state.takeExam.startAt);
   const [open, setOpen] = React.useState(true);
@@ -125,8 +136,59 @@ export default function TakeExam() {
       return;
     }
     const time = moment(inputTime).diff(moment().utc(), "milliseconds");
-    console.log("inputTime", inputTime);
+
     if (time < 0) {
+      dispatch(setLoading(true));
+      const endTime = new Date(
+        new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
+      ).toISOString();
+
+      // if enable auto submit ==> submit exam
+      if (examData.overdueHanding === "AUTOSUBMIT") {
+        const questions = questionListRef.current.map((question) => {
+          return {
+            questionId: question.questionData.id,
+            content: question.content,
+            numFile: question.files?.length || 0
+          };
+        });
+
+        console.log("questions", questions);
+
+        const startAtTime = new Date(
+          new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
+        ).toISOString();
+        const submitData: SubmitExamRequest = {
+          examId: examId || storageExamID,
+          userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
+          questions: questions,
+          startTime: startAtTime,
+          submitTime: endTime
+        };
+
+        ExamService.submitExam(submitData)
+          .then((response) => {
+            dispatch(setLoading(false));
+            dispatch(cleanTakeExamState());
+            navigate(
+              routes.student.exam.review
+                .replace(":courseId", courseId || examData.courseId)
+                .replace(":examId", examId || examData.id)
+                .replace(":submissionId", response.examSubmissionId)
+            );
+          })
+          .catch((error) => {})
+          .finally(() => {});
+      } else {
+        // else ==> abandon exam
+        dispatch(cleanTakeExamState());
+        navigate(
+          routes.student.exam.detail
+            .replace(":courseId", courseId || examData.courseId)
+            .replace(":examId", examId || examData.id)
+        );
+      }
+
       return;
     } else {
       setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
@@ -136,7 +198,7 @@ export default function TakeExam() {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
+    const interval = setInterval(() => getTimeUntil(timeLimit), 500);
 
     return () => clearInterval(interval);
   }, [timeLimit]);
@@ -498,13 +560,8 @@ export default function TakeExam() {
                       selectedQtype.includes(question.data.question.qtype)
                   )
                   .map((question: any, index: number) => (
-                    <>
-                      <Grid
-                        item
-                        xs={12}
-                        id={convertIdToSlug(question.data.question.id)}
-                        key={question.data.question.id}
-                      >
+                    <React.Fragment key={question.data.question.id}>
+                      <Grid item xs={12} id={convertIdToSlug(question.data.question.id)}>
                         {question.data.question.qtype === qtype.essay.code ? (
                           <EssayExamQuestion
                             page={questionList.findIndex(
@@ -562,7 +619,7 @@ export default function TakeExam() {
                           }}
                         />
                       </Grid>
-                    </>
+                    </React.Fragment>
                   ))}
 
                 <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>

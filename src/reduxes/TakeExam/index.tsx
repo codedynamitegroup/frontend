@@ -1,12 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 
 export interface InitialState {
   examId: string;
   startAt?: string;
   endAt?: string;
-  examData: ExamEntity;
+  examData: ReduxExamEntity;
   questionList: {
     flag: boolean;
     answered: boolean;
@@ -27,8 +27,8 @@ const initState: InitialState = {
     name: "",
     scores: 0,
     maxScores: 0,
-    timeOpen: new Date(),
-    timeClose: new Date(),
+    timeOpen: "",
+    timeClose: "",
     timeLimit: 0,
     intro: "",
     overdueHanding: "",
@@ -36,8 +36,8 @@ const initState: InitialState = {
     maxAttempts: 0,
     shuffleAnswers: false,
     gradeMethod: "",
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: "",
+    updatedAt: ""
   },
   startAt: undefined,
   endAt: undefined,
@@ -70,7 +70,7 @@ const takeExamSlice = createSlice({
       state.questionList = action.payload.questionList;
       return state;
     },
-    setExamData: (state, action: PayloadAction<ExamEntity>) => {
+    setExamData: (state, action: PayloadAction<ReduxExamEntity>) => {
       state.examData = action.payload;
       return state;
     },
@@ -149,6 +149,15 @@ const takeExamSlice = createSlice({
         state.questionList[index].files = [];
       }
       return state;
+    },
+    cleanTakeExamState: (state) => {
+      state.examId = "";
+      state.startAt = undefined;
+      state.endAt = undefined;
+      state.examData = initState.examData;
+      state.questionList = [];
+
+      return state;
     }
   }
 });
@@ -162,7 +171,8 @@ export const {
   addFileToExamQuesiton,
   removeFileFromExamQuestion,
   removeAllFilesFromExamQuestion,
-  setExamData
+  setExamData,
+  cleanTakeExamState
 } = takeExamSlice.actions;
 
 export default takeExamSlice.reducer;

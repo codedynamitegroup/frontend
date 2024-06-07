@@ -169,4 +169,22 @@ export class ExamService {
       });
     }
   }
+
+  static async getExamSubmissionById(examSubmissionId: string) {
+    try {
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.EXAM.SUBMISSION.replace(":id", examSubmissionId)}`
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch exam submission", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

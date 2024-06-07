@@ -5,16 +5,16 @@
   overflow: auto;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--blue-1);
+  background-color: var(--gray-2);
 }
 
 .container {
   display: flex;
-  background-color: var(--blue-1);
+  background-color: var(--gray-2);
 }
 
 .mainContent {
-  background-color: var(--blue-1);
+  background-color: var(--gray-2);
   margin-top: -10px;
   width: 100%;
 }

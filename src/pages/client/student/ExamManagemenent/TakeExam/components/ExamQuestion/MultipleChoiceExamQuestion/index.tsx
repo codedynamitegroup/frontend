@@ -24,7 +24,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
   const { t } = useTranslation();
   const { page, questionState, questionMultiChoice } = props;
   const dispatch = useDispatch();
-  const isFlagged = questionState.flag;
+  const isFlagged = questionState?.flag;
 
   // convert answer got from API to JoyRadioGroup format
   // value is answer ID, label is answer content aka answer
@@ -36,7 +36,8 @@ const MultipleChoiceExamQuestion = (props: Props) => {
   );
 
   const flagQuestionHandle = () => {
-    dispatch(setFlag({ id: questionMultiChoice.question.id, flag: !isFlagged }));
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionMultiChoice.question.id, flag: !isFlagged }));
   };
 
   const handleRadioChange = (value: string) => {
@@ -44,7 +45,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let selectedList: string[] = questionState.content.split(", ");
+    let selectedList: string[] = questionState?.content.split(", ");
     selectedList = selectedList.filter((uuid) => uuid !== "" && uuid !== "null");
 
     if (event.target.checked) {
@@ -93,7 +94,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -144,7 +145,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
         {Boolean(questionMultiChoice.single) ? (
           <JoyRadioGroup
             color='primary'
-            value={questionState.content}
+            value={questionState?.content}
             onChange={handleRadioChange}
             values={answerList}
             orientation='vertical'
@@ -169,7 +170,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
                 <Checkbox
                   onChange={handleCheckboxChange}
                   value={answer.value}
-                  checked={questionState.content.includes(answer.value)}
+                  checked={questionState?.content.includes(answer.value)}
                   size='sm'
                   overlay
                   label={

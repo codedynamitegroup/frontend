@@ -54,9 +54,9 @@ const UserHomepage = (props: Props) => {
             <Route path={"forgot-password"} element={<ForgotPassword />} />
             <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
+            <Route path={"home"} element={<UserDashboard />} />
             <Route element={<RequireAuth availableRoles={[ERoleName.USER]} />}>
               <Route path={"user/information"} element={<UserInformation />} />
-              <Route path={"home"} element={<UserDashboard />} />
             </Route>
             <Route path={"forbidden"} element={<ForbiddenPage />} />
             <Route path={"*"} element={<NotFoundPage />} />

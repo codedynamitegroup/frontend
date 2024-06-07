@@ -13,7 +13,7 @@ import {
 import classes from "./stytles.module.scss";
 import Heading1 from "components/text/Heading1";
 import ContestTimeInformation from "./components/ContestTimeInformation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -73,33 +73,39 @@ const ContestDetails = () => {
 
   const { t } = useTranslation();
 
-  const handleGetContestLeaderboard = async (id: string) => {
-    try {
-      const getContestsResponse = await ContestService.getContestLeaderboard(id);
-      dispatch(setContestLeaderboard(getContestsResponse));
-    } catch (error: any) {
-      console.error("Failed to fetch contests", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-    }
-  };
+  const handleGetContestLeaderboard = useCallback(
+    async (id: string) => {
+      try {
+        const getContestsResponse = await ContestService.getContestLeaderboard(id);
+        dispatch(setContestLeaderboard(getContestsResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch contests", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        // Show snackbar here
+      }
+    },
+    [dispatch]
+  );
 
-  const handleGetContestById = async (id: string) => {
-    try {
-      const getContestsResponse = await ContestService.getContestById(id);
-      dispatch(setContestDetails(getContestsResponse));
-    } catch (error: any) {
-      console.error("Failed to fetch contests", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-    }
-  };
+  const handleGetContestById = useCallback(
+    async (id: string) => {
+      try {
+        const getContestsResponse = await ContestService.getContestById(id);
+        dispatch(setContestDetails(getContestsResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch contests", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        // Show snackbar here
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -111,7 +117,7 @@ const ContestDetails = () => {
       }
     };
     fetchInitialData();
-  }, [contestId]);
+  }, [contestId, dispatch, handleGetContestById, handleGetContestLeaderboard]);
 
   if (!contestDetails) {
     return null;
@@ -125,6 +131,7 @@ const ContestDetails = () => {
         endDate={contestDetails.endTime}
         joinContest={contestDetails.isRegistered || false}
         contestName={contestDetails.name || ""}
+        contestId={contestId || ""}
       />
       <Container className={classes.bodyContainer}>
         <Grid container spacing={1}>
