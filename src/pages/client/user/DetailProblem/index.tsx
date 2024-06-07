@@ -25,7 +25,7 @@ import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQues
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import { Resizable } from "re-resizable";
-import React, { lazy, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -46,14 +46,13 @@ import { routes } from "routes/routes";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import ProblemDetailDescription from "./components/Description";
+import ProblemDetailSolution from "./components/ListSolution";
 import Result from "./components/Result";
+import ProblemDetailSubmission from "./components/Submission";
 import TestCase from "./components/TestCase";
 import classes from "./styles.module.scss";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setLoading } from "reduxes/Loading";
-
-const ProblemDetailSolution = lazy(() => import("./components/ListSolution"));
-const ProblemDetailSubmission = lazy(() => import("./components/Submission"));
 
 export default function DetailProblem() {
   const { problemId, courseId, lessonId } = useParams<{
