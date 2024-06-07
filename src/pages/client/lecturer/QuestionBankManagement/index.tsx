@@ -5,7 +5,8 @@ import {
   DialogActions,
   IconButton,
   DialogTitle,
-  Dialog} from "@mui/material";
+  Dialog
+} from "@mui/material";
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
@@ -30,6 +31,8 @@ import { QuestionBankCategoryService } from "services/courseService/QuestionBank
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
+import { selectCurrentUser } from "reduxes/Auth";
+import { User } from "models/authService/entity/user";
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -74,12 +77,14 @@ const QuestionBankManagement = () => {
     }
   };
 
+  const user: User = useSelector(selectCurrentUser);
+
   const handleCreate = async () => {
     try {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
-        createdBy: "8c98e9e1-a9e7-49ee-b9fd-0cb5bd7814f7"
+        createdBy: user.userId
       });
       handleGetQuestionBankCategories({ search: searchText });
     } catch (error) {

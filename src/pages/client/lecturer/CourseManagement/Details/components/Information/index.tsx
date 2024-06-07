@@ -200,6 +200,8 @@ const LecturerCourseInformation = () => {
               <AccordionDetails className={classes.accordDetail}>
                 {topic.modules.map((resource, index) => (
                   <CourseResource
+                    courseId={courseId || ""}
+                    assignmentId={resource.assignmentId}
                     name={resource.name}
                     type={type(resource.typeModule)}
                     key={index}

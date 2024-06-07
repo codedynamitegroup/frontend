@@ -40,9 +40,9 @@ const ListProblem = () => {
     TagService.getAlgorithmTag(true)
       .then((data: TagEntity[]) => {
         dispatch(setAlgorithmTagList(data));
-        dispatch(setLoadingAlgorithm(false));
       })
-      .catch((reason) => console.log(reason));
+      .catch((reason) => console.log(reason))
+      .finally(() => dispatch(setLoadingAlgorithm(false)));
   }, [dispatch]);
 
   const [timer, setTimer] = useState<number | undefined>(undefined);

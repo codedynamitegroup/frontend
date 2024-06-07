@@ -3,7 +3,8 @@ import { UUID } from "crypto";
 export interface CodeSubmissionEntity {
   id: string;
   languageId: UUID;
-  headCode: string;
-  bodyCode: string;
-  tailCode: string;
+  // headCode: string;
+  // bodyCode: string;
+  // tailCode: string;
+  sourceCode: string;
 }

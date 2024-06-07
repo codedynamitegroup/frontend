@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import images from "config/images";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import ParagraphSmall from "components/text/ParagraphSmall";
@@ -14,6 +14,7 @@ const langList = ["en", "vi"];
 const LanguageSelector = () => {
   const { i18n } = useTranslation();
   const changeLanguageHandler = (nextLang: string, popupState: any) => {
+    console.log(nextLang);
     i18n.changeLanguage(nextLang);
     popupState.close();
     setCurrentLang(nextLang);
@@ -88,4 +89,4 @@ const LanguageSelector = () => {
   );
 };
 
-export default LanguageSelector;
+export default memo(LanguageSelector);

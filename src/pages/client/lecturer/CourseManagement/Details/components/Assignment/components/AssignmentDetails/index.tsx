@@ -76,15 +76,13 @@ const LecturerCourseAssignmentDetails = () => {
       console.log(error);
     }
   };
-  const handleGetSubmissionAssignment = async (userId: string, assignmentId: string) => {
+  const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
     try {
-      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
-        userId,
-        assignmentId
-      );
-      dispatch(setSubmissionAssignmentDetails(response));
+      const response =
+        await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+      dispatch(setSubmissionAssignments(response));
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch submission assignment", error);
     }
   };
 
@@ -97,7 +95,7 @@ const LecturerCourseAssignmentDetails = () => {
     handleCountStudentInCourse(courseId ?? "");
     handleCountSubmissionToGrade(assignmentId ?? "");
     handleCountSubmission(assignmentId ?? "");
-    handleGetSubmissionAssignment("9090d7b2-3b20-46a8-9700-6ea8699c7696", assignmentId ?? "");
+    handleGetSubmissionAssignmentByAssignment(assignmentId ?? "");
   }, []);
 
   function calculateTimeDifference(
@@ -274,7 +272,15 @@ const LecturerCourseAssignmentDetails = () => {
         <Button
           btnType={BtnType.Primary}
           onClick={() => {
-            navigate(routes.lecturer.assignment.grading);
+            navigate(
+              routes.lecturer.assignment.grading
+                .replace(":assignmentId", assignmentId ?? "")
+                .replace(":courseId", courseId ?? "")
+                .replace(
+                  ":submissionId",
+                  submissionAssignmentState.submissionAssignments[0].id ?? ""
+                )
+            );
           }}
         >
           <ParagraphBody translation-key='course_lecturer_assignment_grading'>

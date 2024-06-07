@@ -456,6 +456,11 @@
   "course_lecturer_sub_last_submission_time": "Last submission time",
   "course_lecturer_sub_last_grading_time": "Last grading time",
 
+  "course_lecturer_submission_online_text": "Online text submission",
+  "course_lecturer_submission_file": "File submission",
+
+  "no_data": "No data",
+
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",
   "asingment_management_allow_time": "Allow submission from",
@@ -878,5 +883,25 @@
   "exam_finish_review": "Finish review",
   "exam_view_one_page": "View all in one page",
   "exam_view_multiple_page": "View in multiple pages",
-  "exam_enter_question_index": "Enter question index"
+  "exam_enter_question_index": "Enter question index",
+  "exam_summary": "Exam summary",
+  "exam_submit_and_finish": "Submit and finish",
+  "exam_submit_success": "Exam submitted successfully",
+  "exam_submit_fail": "Failed to submit exam",
+
+  "exam_detail_time_limit": "Time limit",
+  "exam_detail_grading_method": "Grading method",
+  "exam_detail_grading_method_high_score": "Highest score",
+  "exam_detail_grading_method_average_score": "Average score",
+  "exam_detail_grading_method_last_submit": "Last submit",
+  "exam_detail_grading_method_first_submit": "First submit",
+
+  "exam_detail_summary_previous_attempt": "Previous attempt summary",
+  "exam_detail_summary_attempt": "Attempt",
+  "exam_detail_summary_score": "Grade",
+  "exam_detail_summary_review": "Review",
+  "exam_detail_summary_state": "State",
+  "exam_detail_summary_open_review": "Open review",
+  "exam_detail_start": "Start exam",
+  "exam_detail_continue": "Continue exam"
 }

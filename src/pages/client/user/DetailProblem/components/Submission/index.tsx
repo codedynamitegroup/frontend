@@ -210,7 +210,7 @@ export default function ProblemDetailSubmission({
             })
             .catch((err) => console.log(err));
         }
-      }, 5000); // Poll every 5 seconds
+      }, 4000); // Poll every 4 seconds
 
       return () => window.clearInterval(intervalId);
     } // Cleanup interval on unmount
