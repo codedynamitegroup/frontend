@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import Link from "@mui/material/Link";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { useEffect, useState } from "react";
 import { CourseUserService } from "services/courseService/CourseUserService";
-import { setCourseUser } from "reduxes/courseService/courseUser";
+import { setLoading, setCourseUser } from "reduxes/courseService/courseUser";
 
 const StudentCourseParticipant = () => {
   const [searchText, setSearchText] = useState("");
@@ -37,16 +37,18 @@ const StudentCourseParticipant = () => {
     pageNo?: number;
     pageSize?: number;
   }) => {
+    dispatch(setLoading(true));
     try {
       const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId ?? "", {
         search,
         pageNo,
         pageSize
       });
-      console.log(getCourseUserResponse);
       dispatch(setCourseUser(getCourseUserResponse));
+      dispatch(setLoading(false));
     } catch (error) {
       console.error("Failed to fetch course user", error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -98,29 +100,45 @@ const StudentCourseParticipant = () => {
       <Grid item xs={12}>
         <CourseParticipantFeatureBar />
       </Grid>
-      <Grid item xs={12}>
-        <CustomDataGrid
-          dataList={courseUserState.users.map((user, index) => ({
-            id: user.userId,
-            name: user.firstName + " " + user.lastName,
-            email: user.email,
-            roles: user.role
-          }))}
-          tableHeader={tableHeading}
-          onSelectData={rowSelectionHandler}
-          visibleColumn={visibleColumnList}
-          dataGridToolBar={dataGridToolbar}
-          getRowClassName={(params) => {
-            return params.row.id === 0 ? "even-row" : "odd-row";
+
+      {!courseUserState.isLoading ? (
+        <Grid item xs={12}>
+          <CustomDataGrid
+            dataList={courseUserState.users.map((user, index) => ({
+              id: user.userId,
+              name: user.firstName + " " + user.lastName,
+              email: user.email,
+              roles: user.role
+            }))}
+            tableHeader={tableHeading}
+            onSelectData={rowSelectionHandler}
+            visibleColumn={visibleColumnList}
+            dataGridToolBar={dataGridToolbar}
+            getRowClassName={(params) => {
+              return params.row.id === 0 ? "even-row" : "odd-row";
+            }}
+            page={currentPage}
+            pageSize={rowsPerPage}
+            totalElement={courseUserState.totalItems}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={false}
+            onClickRow={rowClickHandler}
+          />
+        </Grid>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
           }}
-          page={currentPage}
-          pageSize={rowsPerPage}
-          totalElement={courseUserState.totalItems}
-          onPaginationModelChange={pageChangeHandler}
-          showVerticalCellBorder={false}
-          onClickRow={rowClickHandler}
-        />
-      </Grid>
+        >
+          <CircularProgress />
+        </Box>
+      )}
     </Grid>
   );
 };

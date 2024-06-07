@@ -455,6 +455,11 @@
   "course_lecturer_sub_last_submission_time": "Last submission time",
   "course_lecturer_sub_last_grading_time": "Last grading time",
 
+  "course_lecturer_submission_online_text": "Online text submission",
+  "course_lecturer_submission_file": "File submission",
+
+  "no_data": "No data",
+
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",
   "asingment_management_allow_time": "Allow submission from",

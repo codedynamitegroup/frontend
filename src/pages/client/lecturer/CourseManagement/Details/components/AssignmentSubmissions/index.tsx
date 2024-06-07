@@ -53,7 +53,9 @@ const LecturerCourseAssignmentSubmissions = () => {
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {};
+  ) => {
+    console.log(selectedRowId);
+  };
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };
@@ -185,7 +187,7 @@ const LecturerCourseAssignmentSubmissions = () => {
           ? submissionAssignment.submissionAssignmentFile
           : null,
         submission_online_text: submissionAssignment.submissionAssignmentOnlineText
-          ? submissionAssignment.submissionAssignmentOnlineText
+          ? submissionAssignment.submissionAssignmentOnlineText.content
           : null,
         grade: {
           grade_status: submissionAssignment.isGraded
@@ -264,7 +266,12 @@ const LecturerCourseAssignmentSubmissions = () => {
       renderCell: (params) => {
         return (
           <Box>
-            <Link to={routes.lecturer.assignment.grading}>
+            <Link
+              to={routes.lecturer.assignment.grading
+                .replace(":submissionId", params.row.id)
+                .replace(":courseId", courseId ?? "")
+                .replace(":assignmentId", assignmentId ?? "")}
+            >
               <Button btnType={BtnType.Primary}>Chấm điểm</Button>
             </Link>
             <Box
@@ -290,8 +297,9 @@ const LecturerCourseAssignmentSubmissions = () => {
       field: "submission_online_text",
       headerName: "Online text",
       width: 200,
-      renderCell: (params) =>
-        params.value ? <div dangerouslySetInnerHTML={{ __html: params.value }} /> : <Box>-</Box>
+      renderCell: (params) => {
+        return <div dangerouslySetInnerHTML={{ __html: params.value }} />;
+      }
     },
     {
       field: "submission_file",

@@ -5,7 +5,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--blue-1);
+  background-color: var(--gray-5);
 }
 
 .container {
@@ -31,11 +31,8 @@
 }
 
 .drawerFieldContainer {
-  margin-bottom: 20px;
-}
-
-.textEditor {
-  height: 200px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #breadcumpWrapper {
@@ -56,4 +53,21 @@
       text-decoration: underline;
     }
   }
+}
+.contentContainer {
+  overflow: hidden;
+  overflow-y: auto;
+}
+.gradeContainer {
+  background-color: white;
+}
+.stickyBottom {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding: 10px;
+  z-index: 100;
+  // center the button
+  display: flex;
+  justify-content: center;
 }

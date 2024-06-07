@@ -1,7 +1,19 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Card, CssBaseline, Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Container,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Toolbar
+} from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
@@ -22,65 +34,20 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-
-const drawerWidth = 450;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  width: `calc(100% - ${drawerWidth}px)`,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }),
-  /**
-   * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-   * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-   * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-   * proper interaction with the underlying content.
-   */
-  position: "relative"
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open"
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: drawerWidth
-  })
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-start"
-}));
+import Heading1 from "components/text/Heading1";
+import { Height } from "@mui/icons-material";
+import { SubmissionAssignmentService } from "services/courseService/SubmissionAssignmentService";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading, setSubmissionAssignments } from "reduxes/courseService/submission_assignment";
+import { RootState } from "store";
+import { useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
+import { SubmissionAssignmentFileEntity } from "models/courseService/entity/SubmissionAssignmentFileEntity";
+import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
+import assignment from "reduxes/courseService/assignment";
 
 export default function AssignmentGrading() {
   const { t } = useTranslation();
@@ -89,26 +56,19 @@ export default function AssignmentGrading() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận", "Nộp tệp"]);
-  const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
-  const [loading, setLoading] = React.useState(false);
+  const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState("");
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState("0");
+  const { courseId, assignmentId, submissionId } = useParams<{
+    courseId: string;
+    assignmentId: string;
+    submissionId: string;
+  }>();
+  const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState(
+    submissionId?.toString() ?? ""
+  );
 
-  function handleClick() {
-    setLoading(true);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
+  const dispatch = useDispatch();
 
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {
@@ -124,209 +84,257 @@ export default function AssignmentGrading() {
     ref: headerRef
   });
 
-  const header2Ref = React.useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({
-    ref: header2Ref
-  });
+  const handleGetSubmissionAssignmentByAssignment = useCallback(
+    async (assignmentId: string) => {
+      dispatch(setLoading(true));
+      try {
+        const response =
+          await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+        dispatch(setSubmissionAssignments(response));
+      } catch (error) {
+        console.error("Failed to fetch submission assignment", error);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (assignmentId) {
+      handleGetSubmissionAssignmentByAssignment(assignmentId);
+    }
+  }, [assignmentId, handleGetSubmissionAssignmentByAssignment]);
+
+  useEffect(() => {
+    if (assignmentSubmissionStudent) {
+      navigate(
+        routes.lecturer.assignment.grading
+          .replace(":assignmentId", assignmentId ?? "")
+          .replace(":courseId", courseId ?? "")
+          .replace(":submissionId", assignmentSubmissionStudent)
+      );
+    }
+  }, [assignmentSubmissionStudent, assignmentId, courseId, navigate]);
+
+  useEffect(() => {
+    if (submissionAssignmentState.submissionAssignments) {
+      const grade =
+        submissionAssignmentState.submissionAssignments.find(
+          (submission) => submission.id === assignmentSubmissionStudent
+        )?.grade ?? -1;
+      setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
+      setAssignmentFeedback(
+        submissionAssignmentState.submissionAssignments.find(
+          (submission) => submission.id === assignmentSubmissionStudent
+        )?.content ?? ""
+      );
+    }
+  }, [submissionAssignmentState.submissionAssignments, assignmentSubmissionStudent]);
 
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
-      <Box
-        className={classes.container}
-        sx={{
-          marginTop: `${headerHeight}px`
-        }}
-      >
-        <CssBaseline />
-        <AppBar
-          position='fixed'
+      {submissionAssignmentState.isLoading ? (
+        <Box
           sx={{
-            top: `${headerHeight}px`,
-            backgroundColor: "white"
-          }}
-          ref={header2Ref}
-          open={open}
-        >
-          <Toolbar>
-            <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
-              >
-                CS202 - Nhập môn lập trình
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.assignment.detail)}
-              >
-                Bài tập 1
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Đánh giá</ParagraphSmall>
-            </Box>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              edge='end'
-              onClick={handleDrawerOpen}
-              sx={{ ...(open && { display: "none" }) }}
-            >
-              <MenuIcon color='action' />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Main
-          open={open}
-          className={classes.mainContent}
-          sx={{
-            height: `calc(100% - ${header2Height}px)`,
-            marginTop: `${header2Height}px`
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
           }}
         >
-          <Card>
-            <iframe
-              title='grading-pdf'
-              style={{ width: "100%", height: "100vh" }}
-              src={`${window.location.origin}/#/grading-pdf`}
-            />
-          </Card>
-        </Main>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              position: "fixed",
-              top: `${headerHeight}px`,
-              height: `calc(100% - ${headerHeight}px)`,
-              overflowY: "hidden"
-            }
-          }}
-          variant='persistent'
-          anchor='right'
-          open={open}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <Box className={classes.drawerBody}>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='course_lecturer_grading_assignment_type'>
-                {t("course_lecturer_grading_assignment_type")}
-              </TextTitle>
-              <ChipMultipleFilter
-                label=''
-                defaultChipList={["Tự luận", "Nộp tệp"]}
-                filterList={assignmentTypes}
-                onFilterListChangeHandler={setAssignmentTypes}
-                readOnly={true}
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Box
+            className={classes.toolbar}
+            sx={{
+              backgroundColor: "white",
+              marginTop: `${headerHeight}px`,
+              padding: "16px"
+            }}
+          >
+            <Toolbar>
+              <Box id={classes.breadcumpWrapper}>
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.lecturer.course.management)}
+                >
+                  Quản lý khoá học
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() => navigate(routes.lecturer.course.information)}
+                >
+                  CS202 - Nhập môn lập trình
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() =>
+                    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
+                  }
+                >
+                  Danh sách bài tập
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  className={classes.cursorPointer}
+                  onClick={() =>
+                    navigate(
+                      routes.lecturer.assignment.detail
+                        .replace(":assignmentId", assignmentId ?? "")
+                        .replace(":courseId", courseId ?? "")
+                    )
+                  }
+                >
+                  {submissionAssignmentState.submissionAssignments[0]?.assignmentName}
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                <ParagraphSmall colorname='--blue-500'>Đánh giá</ParagraphSmall>
+              </Box>
+            </Toolbar>
+          </Box>
+          <Box className={classes.contentContainer}>
+            <Container className={classes.drawerFieldContainer}>
               <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
               <BasicSelect
                 labelId='select-assignment-submission-student-label'
                 value={assignmentSubmissionStudent}
                 onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
-                items={[
-                  {
-                    value: "0",
-                    label: "Nguyễn Văn A",
-                    customNode: (
-                      <Box>
-                        <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
-                      </Box>
-                    )
-                  },
-                  {
-                    value: "1",
-                    label: "Nguyễn Văn B",
-                    customNode: (
-                      <Box>
-                        <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
-                      </Box>
-                    )
-                  },
-                  {
-                    value: "2",
-                    label: "Nguyễn Văn C",
-                    customNode: (
-                      <Box>
-                        <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                        <ParagraphBody colorname='--gray-50'>MSSV: 123456789</ParagraphBody>
-                      </Box>
-                    )
-                  }
-                ]}
+                items={submissionAssignmentState.submissionAssignments.map((submission) => ({
+                  value: submission.id,
+                  label: submission.user.fullName,
+                  customNode: (
+                    <Box>
+                      <TextTitle fontWeight={"500"}>{submission.user.fullName}</TextTitle>
+                      <ParagraphBody colorname='--gray-500'>{submission.user.email}</ParagraphBody>
+                    </Box>
+                  )
+                }))}
                 backgroundColor='#D9E2ED'
               />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='course_lecturer_score_on_range'>
-                {t("course_lecturer_score_on_range", { range: 100 })}
-              </TextTitle>
-              <InputTextField
-                type='number'
-                value={assignmentMaximumGrade}
-                onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
-                placeholder='Nhập điểm tối đa'
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='course_lecturer_grade_comment'>
-                {t("course_lecturer_grade_comment")}
-              </TextTitle>
-              <Box className={classes.textEditor}>
-                <TextEditor
-                  style={{
-                    marginTop: "10px"
-                  }}
-                  value={assignmentFeedback}
-                  onChange={setAssignmentFeedback}
+            </Container>
+            <Container
+              sx={{
+                backgroundColor: "white",
+                marginTop: "16px",
+                height: "fit-content",
+                padding: "16px"
+              }}
+              className={classes.gradeContainer}
+            >
+              <Box className={classes.drawerFieldContainer}>
+                <TextTitle translation-key='course_lecturer_grading_assignment_type'>
+                  {t("course_lecturer_grading_assignment_type")}
+                </TextTitle>
+                <ChipMultipleFilter
+                  label=''
+                  defaultChipList={["Tự luận", "Nộp tệp"]}
+                  filterList={assignmentTypes}
+                  onFilterListChangeHandler={setAssignmentTypes}
+                  readOnly={true}
+                  backgroundColor='white'
                 />
               </Box>
-            </Box>
-            <LoadButton
-              btnType={BtnType.Outlined}
-              fullWidth
-              style={{ marginTop: "20px" }}
-              padding='10px'
-              loading={loading}
-              onClick={handleClick}
-              translation-key='course_lecturer_evaluate'
-            >
-              {t("course_lecturer_evaluate")}{" "}
-            </LoadButton>
+              <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                <TextTitle translation-key='course_lecturer_submission_online_text'>
+                  {t("course_lecturer_submission_online_text")}
+                </TextTitle>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      submissionAssignmentState.submissionAssignments.find(
+                        (submission) => submission.id === assignmentSubmissionStudent
+                      )?.submissionAssignmentOnlineText?.content ??
+                      `<span style="color: red;">${t("no_data")}</span>`
+                  }}
+                />
+              </Box>
+              <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                <TextTitle translation-key='course_lecturer_submission_file'>
+                  {t("course_lecturer_submission_file")}
+                </TextTitle>
+                {submissionAssignmentState.submissionAssignments.find(
+                  (submission) => submission.id === assignmentSubmissionStudent
+                )?.submissionAssignmentFile?.files ? (
+                  <CustomFileList
+                    files={
+                      submissionAssignmentState.submissionAssignments
+                        .find((submission) => submission.id === assignmentSubmissionStudent)
+                        ?.submissionAssignmentFile?.files.map(
+                          (attachment: AssignmentResourceEntity) => ({
+                            id: attachment.id,
+                            name: attachment.fileName,
+                            downloadUrl: attachment.fileUrl,
+                            size: attachment.fileSize,
+                            type: attachment.mimetype,
+                            lastModified: new Date(attachment.timemodified).toLocaleString(
+                              "en-US",
+                              {
+                                timeZone: "Asia/Ho_Chi_Minh"
+                              }
+                            )
+                          })
+                        ) ?? []
+                    }
+                    treeView={false}
+                  />
+                ) : (
+                  <span style={{ color: "red" }}>{t("no_data")}</span>
+                )}
+              </Box>
+              <Box className={classes.drawerFieldContainer}>
+                <TextTitle translation-key='course_lecturer_score_on_range'>
+                  {t("course_lecturer_score_on_range", { range: 100 })}
+                </TextTitle>
+                <InputTextField
+                  type='number'
+                  value={assignmentMaximumGrade}
+                  onChange={(e) => setAssignmentMaximumGrade(e.target.value)}
+                  placeholder='Nhập điểm tối đa'
+                  backgroundColor='white'
+                />
+              </Box>
+              <Box className={classes.feedbackContainer}>
+                <TextTitle translation-key='course_lecturer_grade_comment'>
+                  {t("course_lecturer_grade_comment")}
+                </TextTitle>
+                <Box className={classes.textEditor}>
+                  <TextEditor
+                    style={{
+                      marginTop: "10px",
+                      height: "300px" // Updated height for TextEditor
+                    }}
+                    value={assignmentFeedback}
+                    onChange={setAssignmentFeedback}
+                  />
+                </Box>
+              </Box>
+            </Container>
           </Box>
-        </Drawer>
+        </>
+      )}
+      <Box className={classes.stickyBottom}>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.btnGrade}
+          onClick={() => {
+            console.log("Grade");
+          }}
+        >
+          Lưu thay đổi
+        </Button>
       </Box>
     </Grid>
   );

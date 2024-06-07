@@ -7,8 +7,11 @@ import Typography from "@mui/material/Typography";
 import images from "config/images";
 import { ECourseResourceType } from "models/courseService/course";
 import { inherits } from "util";
+import { routes } from "routes/routes";
 
 interface PropsData {
+  courseId: string;
+  assignmentId: string;
   name: string;
   type: ECourseResourceType;
 }
@@ -29,7 +32,14 @@ const CourseResource = (props: PropsData) => {
   return (
     <Box className={classes.container}>
       <Grid container>
-        <Link component={RouterLink} to='#' underline='hover' className={classes.linkContainer}>
+        <Link
+          component={RouterLink}
+          to={routes.lecturer.assignment.detail
+            .replace(":assignmentId", props.assignmentId)
+            .replace(":courseId", props.courseId)}
+          underline='hover'
+          className={classes.linkContainer}
+        >
           <Grid item>
             <img src={resourceImage} alt='Resource' />
           </Grid>

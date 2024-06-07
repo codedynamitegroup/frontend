@@ -448,6 +448,11 @@
   "course_lecturer_sub_last_submission_time": "Thời gian nộp cuối",
   "course_lecturer_sub_last_grading_time": "Thời gian chấm cuối",
 
+  "course_lecturer_submission_online_text": "Nội dung nộp",
+  "course_lecturer_submission_file": "Tệp nộp",
+
+  "no_data": "Không có dữ liệu",
+
   "assignment_management_max_score": "Điểm tối đa",
   "assignment_management_create_assignment": "Tạo bài tập",
   "asingment_management_allow_time": "Cho phép nộp bài kể từ",
