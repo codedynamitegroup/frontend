@@ -5,17 +5,17 @@
   overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--gray-2);
+  background-color: white;
 }
 
 .container {
   display: flex;
-  overflow: hidden;
+  flex-direction: column !important;
+  overflow: auto;
 }
 
 .mainContent {
   background-color: var(--gray-2);
-  overflow: auto;
 }
 
 .formBody {
@@ -28,7 +28,9 @@
     height: 200px;
   }
 }
-
+.toolBar {
+  background-color: white;
+}
 #breadcumpWrapper {
   display: flex;
   align-items: center;
