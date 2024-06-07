@@ -102,12 +102,13 @@ const SubmitExamSummary = () => {
     setTimeLeft(time);
 
     if (time < 0) {
-      if (examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
+      if (examData.id !== "" && examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
       else {
         navigate(
           routes.student.exam.detail
             .replace(":courseId", courseId || examData.courseId)
-            .replace(":examId", examId || examData.id)
+            .replace(":examId", examId || examData.id),
+          { replace: true }
         );
       }
 
@@ -125,6 +126,19 @@ const SubmitExamSummary = () => {
     return () => clearInterval(interval);
   }, [timeLimit]);
 
+  React.useEffect(() => {
+    if (examData.id === "") {
+      navigate(
+        routes.student.exam.detail
+          .replace(":courseId", courseId || examData.courseId)
+          .replace(":examId", examId || examData.id),
+        {
+          replace: true
+        }
+      );
+    }
+  }, []);
+
   const questionList = useAppSelector((state) => state.takeExam.questionList);
   const handleQuestionNavigateButton = (question: any) => {
     const slug = convertUuidToHashSlug(question.questionData.id);
@@ -133,17 +147,14 @@ const SubmitExamSummary = () => {
       navigate(
         `${routes.student.exam.take
           .replace(":courseId", courseId)
-          .replace(":examId", examId)}?page=${question.questionData.page}#${slug}`,
-        {
-          replace: true
-        }
+          .replace(":examId", examId)}?page=${question.questionData.page}#${slug}`
       );
   };
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
 
   const tableHead = [
-    { value: "Câu hỏi", width: "40%" },
-    { value: "Trạng thái", width: "" }
+    { value: t("common_question"), width: "40%" },
+    { value: t("common_status"), width: "" }
   ];
 
   const submitExamHandler = async () => {
@@ -184,7 +195,10 @@ const SubmitExamSummary = () => {
           routes.student.exam.review
             .replace(":courseId", courseId || examData.courseId)
             .replace(":examId", examId || examData.id)
-            .replace(":submissionId", response.examSubmissionId)
+            .replace(":submissionId", response.examSubmissionId),
+          {
+            replace: true
+          }
         );
       })
       .catch((error) => {
@@ -196,18 +210,6 @@ const SubmitExamSummary = () => {
         dispatch(setLoading(false));
       });
   };
-
-  React.useEffect(() => {
-    if (examId !== storageExamID) {
-      // navigate(routes.student.exam.take.replace(":courseId", courseId).replace(":examId", examId));
-    }
-  }, []);
-
-  React.useEffect(() => {
-    if (timeLeft <= 0) {
-      // navigate(routes.student.exam.result.replace(":courseId", courseId).replace(":examId", examId));
-    }
-  }, [timeLeft]);
 
   const monthNames = [
     t("common_january"),
@@ -348,7 +350,7 @@ const SubmitExamSummary = () => {
                 padding: "20px"
               }}
             >
-              <TextTitle>Temp bảng tóm tắt bài kiểm tra</TextTitle>
+              <TextTitle>{t("exam_summary")}</TextTitle>
               <Table
                 size='lg'
                 hoverRow
@@ -407,7 +409,7 @@ const SubmitExamSummary = () => {
                           }}
                         >
                           <ParagraphBody fontSize={"14px"} color={"#212121"} fontWeight={"400"}>
-                            {question.answered ? t("common_answer") : t("common_not_answered")}
+                            {question.answered ? t("common_answered") : t("common_not_answered")}
                           </ParagraphBody>
                         </Chip>
                       </td>
@@ -432,7 +434,7 @@ const SubmitExamSummary = () => {
               })}
             </ParagraphBody>
             <Button sx={{ width: "fit-content" }} onClick={submitExamHandler}>
-              Nộp bài và hoàn thành
+              {t("exam_submit_and_finish")}
             </Button>
           </Box>
 

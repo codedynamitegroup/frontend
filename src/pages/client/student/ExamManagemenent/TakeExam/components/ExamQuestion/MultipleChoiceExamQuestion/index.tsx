@@ -89,7 +89,7 @@ const MultipleChoiceExamQuestion = (props: Props) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >

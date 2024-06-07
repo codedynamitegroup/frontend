@@ -869,5 +869,25 @@
   "exam_finish_review": "Hoàn thành xem lại",
   "exam_view_one_page": "Xem tất cả trong một trang",
   "exam_view_multiple_page": "Xem trong nhiều trang",
-  "exam_enter_question_index": "Nhập số thứ tự câu hỏi"
+  "exam_enter_question_index": "Nhập số thứ tự câu hỏi",
+  "exam_summary": "Tóm tắt bài kiểm tra",
+  "exam_submit_and_finish": "Nộp bài và hoàn thành",
+  "exam_submit_success": "Nộp bài kiểm tra thành công",
+  "exam_submit_fail": "Nộp bài kiểm tra thất bại",
+
+  "exam_detail_time_limit": "Thời gian làm",
+  "exam_detail_grading_method": "Cách tính điểm",
+  "exam_detail_grading_method_high_score": "Điểm cao nhất",
+  "exam_detail_grading_method_average_score": "Trung bình cộng",
+  "exam_detail_grading_method_last_submit": "Lần nộp cuối cùng",
+  "exam_detail_grading_method_first_submit": "Lần nộp đầu tiên",
+
+  "exam_detail_summary_previous_attempt": "Tóm tắt những lần làm bài trước",
+  "exam_detail_summary_attempt": "Lần thử",
+  "exam_detail_summary_score": "Điểm",
+  "exam_detail_summary_review": "Đánh giá",
+  "exam_detail_summary_state": "Trạng thái",
+  "exam_detail_summary_open_review": "Xem đánh giá",
+  "exam_detail_start": "Bắt đầu làm bài",
+  "exam_detail_continue": "Tiếp tục làm bài"
 }

@@ -50,43 +50,12 @@ import Checkbox from "@mui/joy/Checkbox";
 import Heading2 from "components/text/Heading2";
 import moment from "moment";
 import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
-import { setLoading } from "reduxes/Loading";
 
 const drawerWidth = 370;
-
-// const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-//   open?: boolean;
-// }>(({ theme, open }) => ({
-//   flexGrow: 1,
-//   width: `calc(100% - ${drawerWidth}px)`,
-//   padding: theme.spacing(3),
-//   transition: theme.transitions.create("margin", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen
-//   }),
-//   marginRight: -drawerWidth,
-//   ...(open && {
-//     transition: theme.transitions.create("margin", {
-//       easing: theme.transitions.easing.easeOut,
-//       duration: theme.transitions.duration.enteringScreen
-//     }),
-//     marginRight: 0
-//   }),
-//   position: "relative"
-// }));
-
-// interface AppBarProps extends MuiAppBarProps {
-//   open?: boolean;
-// }
-
-// interface FormData {
-//   response: { content: string }[];
-// }
 
 export default function TakeExam() {
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
-  const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
 
   const courseId = useParams<{ courseId: string }>().courseId;
 
@@ -124,6 +93,7 @@ export default function TakeExam() {
   const [hours, setHours] = React.useState(0);
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
+  const [submitted, setSubmitted] = React.useState(false);
   const [timeLimit, setTimeLimit] = React.useState(() => {
     if (!startTime) return 0;
 
@@ -138,13 +108,13 @@ export default function TakeExam() {
     const time = moment(inputTime).diff(moment().utc(), "milliseconds");
 
     if (time < 0) {
-      dispatch(setLoading(true));
       const endTime = new Date(
         new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
       ).toISOString();
 
       // if enable auto submit ==> submit exam
-      if (examData.overdueHanding === "AUTOSUBMIT") {
+      if (examData.overdueHanding === "AUTOSUBMIT" && !submitted) {
+        setSubmitted(true);
         const questions = questionListRef.current.map((question) => {
           return {
             questionId: question.questionData.id,
@@ -168,7 +138,6 @@ export default function TakeExam() {
 
         ExamService.submitExam(submitData)
           .then((response) => {
-            dispatch(setLoading(false));
             dispatch(cleanTakeExamState());
             navigate(
               routes.student.exam.review
@@ -180,6 +149,7 @@ export default function TakeExam() {
           .catch((error) => {})
           .finally(() => {});
       } else {
+        console.log("abandon exam");
         // else ==> abandon exam
         dispatch(cleanTakeExamState());
         navigate(
@@ -396,62 +366,6 @@ export default function TakeExam() {
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
           <CssBaseline />
 
-          {/* <AppBar
-            position='fixed'
-            sx={{
-              // margin top to avoid appbar overlap with content
-              marginTop: `${headerHeight}px`,
-              backgroundColor: "white"
-            }}
-            open={open}
-          >
-            <Toolbar>
-              <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.student.course.management)}
-                >
-                  Quản lý khoá học
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.student.course.information)}
-                >
-                  CS202 - Nhập môn lập trình
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.student.course.assignment)}
-                >
-                  Danh sách bài tập
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.student.exam.detail)}
-                >
-                  Bài kiểm tra 1
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorname='--blue-500'>Xem trước</ParagraphSmall>
-              </Box>
-              <IconButton
-                color='inherit'
-                aria-label='open drawer'
-                edge='end'
-                onClick={handleDrawerOpen}
-                sx={{ ...(open && { display: "none" }) }}
-              >
-                <MenuIcon color='action' />
-              </IconButton>
-            </Toolbar>
-          </AppBar> */}
           {/* <DrawerHeader /> */}
           <Button
             // aria-label='open drawer'
