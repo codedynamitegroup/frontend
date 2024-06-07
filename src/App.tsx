@@ -3,6 +3,7 @@ import {
   Route,
   RouterProvider,
   createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements
 } from "react-router-dom";
 import { lazy } from "react";
@@ -117,7 +118,7 @@ const SubmitExamSummary = lazy(
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route element={<PersistLogin />}>
