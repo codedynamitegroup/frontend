@@ -136,7 +136,7 @@ const StudentCourseDetail = memo((props: Props) => {
     }
   ];
   const location = useLocation();
-  const isGradeRoute = location.pathname.includes("grade");
+  const isInformationRoute = location.pathname.includes("information");
   return (
     <>
       <Box
@@ -163,7 +163,7 @@ const StudentCourseDetail = memo((props: Props) => {
 
       <Box id={classes.courseDetailBody}>
         <Grid container spacing={2}>
-          <Grid item xs={isGradeRoute ? 12 : 7.2}>
+          <Grid item xs={!isInformationRoute ? 12 : 7.2}>
             <Routes>
               <Route path={"information"} element={<StudentCourseInformation />} />
               <Route path={"assignments"} element={<StudentCourseAssignment />} />
@@ -176,7 +176,7 @@ const StudentCourseDetail = memo((props: Props) => {
               <Route path={"participant"} element={<StudentCourseParticipant />} />
             </Routes>
           </Grid>
-          {!isGradeRoute && (
+          {isInformationRoute && (
             <Grid item xs={4.8}>
               <StudentEventCalendar />
               <Paper className={classes.eventContainer}>

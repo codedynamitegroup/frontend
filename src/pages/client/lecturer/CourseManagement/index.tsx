@@ -13,17 +13,13 @@ import CourseList from "./components/CouseList";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import Heading1 from "components/text/Heading1";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
-import { CourseService } from "services/courseService/CourseService";
-import { CourseTypeService } from "services/courseService/CourseTypeService";
-import { setCourseTypes } from "reduxes/courseService/course_type";
-import { CircularProgress } from "@mui/material";
-import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
-import { setCourses, setLoading } from "reduxes/courseService/courseUser";
 import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
+import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
+import { CircularProgress } from "@mui/material";
 import { CourseUserService } from "services/courseService/CourseUserService";
+import { CourseTypeService } from "services/courseService/CourseTypeService";
+import useAuth from "hooks/useAuth";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
 
 enum EView {
   cardView = 1,
@@ -31,140 +27,168 @@ enum EView {
 }
 
 const LecturerCourses = () => {
-  const [searchText, setSearchText] = useState("");
-  const [courseTypes, setCourseTypesState] = useState<CourseTypeEntity[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+  const [courseTypes, setCourseTypes] = useState<CourseTypeEntity[]>([]);
+  const [courses, setCourses] = useState<CourseEntity[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const dispatch = useDispatch<AppDispatch>();
-  const user: User = useSelector(selectCurrentUser);
-  const courseState = useSelector((state: RootState) => state.courseUser);
-  const courseTypeState = useSelector((state: RootState) => state.courseType);
+  const [viewType, setViewType] = useState<EView>(EView.listView);
 
-  const searchHandle = async (searchText: string) => {
-    setSearchText(searchText);
-  };
+  const { loggedUser } = useAuth();
 
-  const handleGetCourseTypes = useCallback(async () => {
+  const fetchCourseTypes = useCallback(async () => {
+    setIsLoading(true);
     try {
       const getCourseTypeResponse = await CourseTypeService.getCourseTypes();
-      setCourseTypesState(getCourseTypeResponse.courseTypes);
-      dispatch(setCourseTypes(getCourseTypeResponse));
+      setCourseTypes(getCourseTypeResponse.courseTypes);
     } catch (error) {
       console.error("Failed to fetch course types", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [dispatch]);
+  }, []);
 
-  const handleGetCourses = useCallback(
+  const fetchCourses = useCallback(
     async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
-      if (!user?.userId) return;
+      if (!loggedUser?.userId) return;
 
-      dispatch(setLoading({ isLoading: true }));
+      setIsLoading(true);
 
       try {
-        const getCourseResponse = await CourseUserService.getAllCourseByUserId(user.userId, {
+        const getCourseResponse = await CourseUserService.getAllCourseByUserId(loggedUser.userId, {
           search,
           courseType,
           pageNo,
           pageSize
         });
-        dispatch(setCourses(getCourseResponse));
+        setCourses(getCourseResponse.courses);
       } catch (error) {
         console.error("Failed to fetch courses", error);
       } finally {
-        dispatch(setLoading({ isLoading: false }));
+        setIsLoading(false);
       }
     },
-    [dispatch, searchText, selectedCategories, user?.userId]
+    [searchText, selectedCategories, loggedUser?.userId]
   );
 
   useEffect(() => {
-    handleGetCourseTypes();
-  }, [handleGetCourseTypes]);
+    fetchCourseTypes();
+  }, []);
 
   useEffect(() => {
-    if (user?.userId) {
-      handleGetCourses({ search: searchText, courseType: selectedCategories });
+    if (loggedUser?.userId) {
+      fetchCourses({ search: searchText, courseType: selectedCategories });
     }
-  }, [handleGetCourses, searchText, selectedCategories, user?.userId]);
+  }, [searchText, selectedCategories, loggedUser?.userId, fetchCourses]);
 
-  const [viewType, setViewType] = useState(EView.listView);
-
-  const handleViewChange = (event: React.MouseEvent<HTMLElement>, nextView: number) => {
+  const handleViewChange = useCallback((event: React.MouseEvent<HTMLElement>, nextView: EView) => {
     setViewType(nextView);
-  };
+  }, []);
+
   const handleCategoryFilterChange = useCallback(
-    (selectedCategoryList: Array<string>) => {
+    (selectedCategoryList: string[]) => {
       setSelectedCategories(selectedCategoryList);
-      handleGetCourses({ search: searchText, courseType: selectedCategoryList });
+      fetchCourses({ search: searchText, courseType: selectedCategoryList });
     },
-    [handleGetCourses, searchText]
+    [fetchCourses, searchText]
   );
+
   const { t } = useTranslation();
+
+  const filteredCourses = useMemo(() => {
+    if (!selectedCategories.length) return courses;
+    return courses.filter((course) => selectedCategories.includes(course.courseType.name));
+  }, [courses, selectedCategories]);
 
   return (
     <Box id={classes.coursesBody}>
       <Heading1 className={classes.pageTitle} translation-key='course_list_title'>
         {t("course_list_title")}
       </Heading1>
-      <SearchBar onSearchClick={searchHandle} />
-
-      <Box className={classes.featureGroup}>
-        <Box className={classes.filterContainer}>
-          <ChipMultipleFilter
-            label={t("course_filter")}
-            defaultChipList={courseTypeState.courseTypes.map((courseType) => courseType.name)}
-            filterList={selectedCategories}
-            onFilterListChangeHandler={handleCategoryFilterChange}
-            translation-key='course_filter'
-          />
-        </Box>
-
-        <ToggleButtonGroup
-          className={classes.changeViewButtonGroup}
-          value={viewType}
-          exclusive
-          onChange={handleViewChange}
+      <SearchBar onSearchClick={setSearchText} />
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
         >
-          <ToggleButton value={EView.listView} aria-label='list'>
-            <ViewListIcon />
-          </ToggleButton>
-          <ToggleButton value={EView.cardView} aria-label='module'>
-            <ViewCardIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-
-      {viewType === EView.cardView ? (
-        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-          <Grid container spacing={2}>
-            {courseState.courses.map((course, index) => (
-              <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
-                <CourseCard
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <CircularProgress />
         </Box>
       ) : (
-        <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
-          <Grid container spacing={4}>
-            {courseState.courses.map((course) => (
-              <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
-                <CourseList
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
+        <>
+          <Box className={classes.featureGroup}>
+            <Box className={classes.filterContainer}>
+              <ChipMultipleFilter
+                label={t("course_filter")}
+                defaultChipList={courseTypes.map((courseType) => courseType.name)}
+                filterList={selectedCategories}
+                onFilterListChangeHandler={handleCategoryFilterChange}
+                translation-key='course_filter'
+              />
+            </Box>
+
+            <ToggleButtonGroup
+              className={classes.changeViewButtonGroup}
+              value={viewType}
+              exclusive
+              onChange={handleViewChange}
+            >
+              <ToggleButton value={EView.listView} aria-label='list'>
+                <ViewListIcon />
+              </ToggleButton>
+              <ToggleButton value={EView.cardView} aria-label='module'>
+                <ViewCardIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          {viewType === EView.cardView ? (
+            <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+              <Grid container spacing={2}>
+                {filteredCourses.map((course) => (
+                  <Grid
+                    className={classes.gridItem}
+                    item
+                    key={course.id}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                  >
+                    <CourseCard
+                      courseId={course.id}
+                      courseAvatarUrl={"https://picsum.photos/200"}
+                      courseCategory={course.courseType.name}
+                      courseName={course.name}
+                      teacherList={course.teachers}
+                    />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
+            </Box>
+          ) : (
+            <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
+              <Grid container spacing={4}>
+                {filteredCourses.map((course) => (
+                  <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
+                    <CourseList
+                      courseId={course.id}
+                      courseAvatarUrl={"https://picsum.photos/200"}
+                      courseCategory={course.courseType.name}
+                      courseName={course.name}
+                      teacherList={course.teachers}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

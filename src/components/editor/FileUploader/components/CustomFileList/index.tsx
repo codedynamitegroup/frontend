@@ -27,7 +27,7 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
   };
 
   return (
-    <Box sx={{ flexGrow: 1, maxWidth: 300 }}>
+    <Box sx={{ flexGrow: 1 }}>
       {treeView ? (
         <TreeView
           aria-label='file system navigator'

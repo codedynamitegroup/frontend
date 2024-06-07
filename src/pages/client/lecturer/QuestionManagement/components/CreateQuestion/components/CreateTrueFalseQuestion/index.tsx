@@ -25,8 +25,11 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
+
+import { selectCurrentUser } from "reduxes/Auth";
+import { User } from "models/authService/entity/user";
 
 interface Props {
   qtype: String;
@@ -128,22 +131,23 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
 
+ const user: User = useSelector(selectCurrentUser);
+
   const submitHandler = async (data: any) => {
     console.log(data);
     setSubmitLoading(true);
 
     const formSubmittedData: FormData = { ...data };
     const newQuestion: PostMultipleChoiceQuestion = {
-      organizationId: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      createdBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
-      updatedBy: "9ba179ed-d26d-4828-a0f6-8836c2063992",
+      organizationId: user.organization.organizationId,
+      createdBy: user.userId,
+      updatedBy: user.userId,
       difficulty: "EASY",
       name: formSubmittedData.questionName,
       questionText: formSubmittedData.questionDescription,
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "TRUE_FALSE",
-
       answers: undefined,
       questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       single: true,
