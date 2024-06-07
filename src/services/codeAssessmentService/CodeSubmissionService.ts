@@ -25,27 +25,23 @@ export class CodeSubmissionService {
     }
   }
 
-  static async createCodeSubmission(
-    codeQuestionId: UUID,
-    languageId: UUID,
-    headCode: string,
-    bodyCode: string,
-    tailCode: string
-  ) {
-    const headCode64 = encodeBase64(headCode);
-    const tailCode64 = encodeBase64(tailCode);
-    const bodyCode64 = encodeBase64(bodyCode);
+  static async createCodeSubmission(codeQuestionId: UUID, languageId: UUID, sourceCode: string) {
+    // const headCode64 = encodeBase64(headCode);
+    // const tailCode64 = encodeBase64(tailCode);
+    // const bodyCode64 = encodeBase64(bodyCode);
+    const sourceCode64 = encodeBase64(sourceCode);
     const callbackUrl = `${gateWayServiceApiUrl}/code-assessment/code-submission/test-case-token`;
     try {
       const response = await api({
-        baseURL: codeAssessmentServiceApiUrl
-        // isAuthorization: true
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
       }).post(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.DEFAULT}`, {
         codeQuestionId,
         languageId,
-        headCode: headCode64,
-        tailCode: tailCode64,
-        bodyCode: bodyCode64,
+        sourceCode: sourceCode64,
+        // headCode: headCode64,
+        // tailCode: tailCode64,
+        // bodyCode: bodyCode64,
         callbackUrl
       });
       if (response.status === 202) {

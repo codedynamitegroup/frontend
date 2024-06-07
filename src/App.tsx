@@ -2,46 +2,122 @@ import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAs
 import {
   Route,
   RouterProvider,
-  createHashRouter,
+  createBrowserRouter,
   createRoutesFromElements
 } from "react-router-dom";
+import { lazy } from "react";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
-import AssignmentCreated from "pages/client/lecturer/AssignmentManagement/CreateAssigment";
-import AssignmentGrading from "pages/client/lecturer/AssignmentManagement/GradingAssignment";
-import CreateExam from "pages/client/lecturer/ExamManagemenent/CreateExam";
-import PreviewAssignmentSubmission from "pages/client/lecturer/AssignmentManagement/PreviewAssignmentSubmission";
-import PreviewExam from "pages/client/lecturer/ExamManagemenent/PreviewExam";
-import GradingExam from "pages/client/lecturer/ExamManagemenent/GradingExam";
-import ReviewExamAttempt from "pages/client/lecturer/ExamManagemenent/ReviewExamAttempt";
-import StudentReviewExamAttempt from "pages/client/student/ExamManagemenent/ReviewExamAttempt";
-import TakeExam from "pages/client/student/ExamManagemenent/TakeExam";
-import AIQuestionCreated from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-import LecturerSourceCodePlagiarismManagement from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview";
-import StudentCoursesManagement from "pages/client/student";
-import LecturerCoursesManagement from "pages/client/lecturer";
-import UserHomepage from "pages/client/user";
-import AIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring";
-import DetailAIScoring from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring";
-import DetailProblem from "pages/client/user/DetailProblem";
-import ShareSolution from "pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution";
-import LecturerSourceCodePlagiarismPairs from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairs";
-import LecturerSourceCodePlagiarismPairDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairDetails";
-import LecturerSourceCodePlagiarismFileSubmissions from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissions";
-import LecturerSourceCodePlagiarismFileSubmissionDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails";
-import LecturerSourceCodePlagiarismClusters from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters";
-import LecturerSourceCodePlagiarismClustersDetails from "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails";
-import GradingConfig from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig";
-import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
-import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
-import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
-import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
-import PersistLogin from "components/common/PersistLogin";
-import SubmitExamSummary from "pages/client/student/ExamManagemenent/SubmitExamReview";
-import SystemAdminHomepage from "pages/admin";
+const AssignmentCreated = lazy(
+  () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
+);
+const AssignmentGrading = lazy(
+  () => import("pages/client/lecturer/AssignmentManagement/GradingAssignment")
+);
+const CreateExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/CreateExam"));
+const PreviewAssignmentSubmission = lazy(
+  () => import("pages/client/lecturer/AssignmentManagement/PreviewAssignmentSubmission")
+);
+const PreviewExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/PreviewExam"));
+const GradingExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/GradingExam"));
+const ReviewExamAttempt = lazy(
+  () => import("pages/client/lecturer/ExamManagemenent/ReviewExamAttempt")
+);
+const StudentReviewExamAttempt = lazy(
+  () => import("pages/client/student/ExamManagemenent/ReviewExamAttempt")
+);
+const TakeExam = lazy(() => import("pages/client/student/ExamManagemenent/TakeExam"));
+const AIQuestionCreated = lazy(
+  () => import("pages/client/lecturer/QuestionManagement/components/AICreateQuestion")
+);
+const LecturerSourceCodePlagiarismManagement = lazy(
+  () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview")
+);
+const StudentCoursesManagement = lazy(() => import("pages/client/student"));
+const LecturerCoursesManagement = lazy(() => import("pages/client/lecturer"));
+const UserHomepage = lazy(() => import("pages/client/user"));
+const AIScoring = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring"
+    )
+);
+const DetailAIScoring = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring"
+    )
+);
+const ShareSolution = lazy(
+  () => import("pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution")
+);
+const LecturerSourceCodePlagiarismPairs = lazy(
+  () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairs")
+);
+const LecturerSourceCodePlagiarismPairDetails = lazy(
+  () =>
+    import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairDetails")
+);
+const LecturerSourceCodePlagiarismFileSubmissions = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissions"
+    )
+);
+const LecturerSourceCodePlagiarismFileSubmissionDetails = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails"
+    )
+);
+const LecturerSourceCodePlagiarismClusters = lazy(
+  () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters")
+);
+const LecturerSourceCodePlagiarismClustersDetails = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails"
+    )
+);
+const GradingConfig = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig"
+    )
+);
+const CreateEssayQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+    )
+);
+const CreateMultichoiceQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+    )
+);
+const CreateShortAnswerQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+    )
+);
+const CreateTrueFalseQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+    )
+);
+const PersistLogin = lazy(() => import("components/common/PersistLogin"));
+const SubmitExamSummary = lazy(
+  () => import("pages/client/student/ExamManagemenent/SubmitExamReview")
+);
+const SystemAdminHomepage = lazy(() => import("pages/admin"));
+const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
-const router = createHashRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route element={<PersistLogin />}>
