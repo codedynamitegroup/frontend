@@ -2,6 +2,7 @@ import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAs
 import {
   Route,
   RouterProvider,
+  createBrowserRouter,
   createHashRouter,
   createRoutesFromElements
 } from "react-router-dom";
