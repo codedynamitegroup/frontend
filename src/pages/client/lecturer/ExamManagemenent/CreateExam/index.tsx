@@ -60,21 +60,27 @@ import {
   QuestionEntity
 } from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
-import { clearQuestionCreate, setQuestionCreate, setQuestionCreateFromBank } from "reduxes/coreService/questionCreate";
-import ParagraphBody from "components/text/ParagraphBody";
-import qtype from "utils/constant/Qtype";
+import {
+  clearQuestionCreate,
+  setExamDescriptionCreate,
+  setExamNameCreate,
+  setMaxAttemptCreate,
+  setMaxScoreCreate,
+  setOverdueHandlingCreate,
+  setQuestionCreateFromBank,
+  setTimeCloseCreate,
+  setTimeLimitCreate,
+  setTimeOpenCreate
+} from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
-
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { QuestionService } from "services/coreService/QuestionService";
-import { di } from "@fullcalendar/core/internal-common";
-import { create } from "domain";
 import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { di, ex } from "@fullcalendar/core/internal-common";
 
 const drawerWidth = 400;
 
@@ -160,7 +166,7 @@ export default function ExamCreated() {
       maxScore: examMaximumGrade,
       timeOpen: examOpenTime ? examOpenTime.toDate() : new Date(),
       timeClose: examCloseTime ? examCloseTime.toDate() : new Date(),
-      timeLimit: examTimeLimitNumber * 60 * 1000,
+      timeLimit: examTimeLimitNumber,
       overdueHandling: overdueHandling.toUpperCase(),
       canRedoQuestions: true,
       maxAttempts: maxAttempts,
@@ -454,10 +460,6 @@ export default function ExamCreated() {
     ref: header2Ref
   });
 
-  // React.useEffect(() => {
-  //   handleGetQuestionBankCategories({});
-  // }, []);
-
   const handleCategoryPick = (value: string) => {
     console.log(value);
   };
@@ -614,8 +616,11 @@ export default function ExamCreated() {
                 <InputTextField
                   type='text'
                   title={t("common_exam_name")}
-                  value={examName}
-                  onChange={(e) => setExamName(e.target.value)}
+                  value={questionCreate.examName}
+                  onChange={(e) => {
+                    setExamName(e.target.value);
+                    dispatch(setExamNameCreate(e.target.value));
+                  }}
                   placeholder={t("exam_management_create_enter_exam_name")}
                   backgroundColor='white'
                   translation-key={["common_exam_name", "exam_management_create_enter_exam_name"]}
@@ -627,7 +632,13 @@ export default function ExamCreated() {
                     </TextTitle>
                   </Grid>
                   <Grid item xs={9} className={classes.textEditor}>
-                    <TextEditor value={examDescription} onChange={setExamDescription} />
+                    <TextEditor
+                      value={questionCreate.examDescription}
+                      onChange={(value) => {
+                        setExamDescription(value);
+                        dispatch(setExamDescriptionCreate(value));
+                      }}
+                    />
                   </Grid>
                 </Grid>
                 <MenuPopup
@@ -737,8 +748,11 @@ export default function ExamCreated() {
                 </TextTitle>
                 <InputTextField
                   type='number'
-                  value={examMaximumGrade}
-                  onChange={(e) => setExamMaximumGrade(parseInt(e.target.value))}
+                  value={questionCreate.maxScore}
+                  onChange={(e) => {
+                    setExamMaximumGrade(parseInt(e.target.value));
+                    dispatch(setMaxScoreCreate(parseInt(e.target.value)));
+                  }}
                   placeholder={t("exam_management_create_enter_score")}
                   backgroundColor='#D9E2ED'
                   translation-key='exam_management_create_enter_score'
@@ -752,9 +766,10 @@ export default function ExamCreated() {
                   {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_open_time"), "lowercase")}`}
                 </TextTitle>
                 <CustomDateTimePicker
-                  value={examOpenTime}
+                  value={moment(questionCreate.timeOpen)}
                   onHandleValueChange={(newValue) => {
                     setExamOpenTime(newValue);
+                    dispatch(setTimeOpenCreate(newValue?.toDate() ?? new Date()));
                   }}
                   backgroundColor='#D9E2ED'
                 />
@@ -767,9 +782,10 @@ export default function ExamCreated() {
                   {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_close_time"), "lowercase")}`}
                 </TextTitle>
                 <CustomDateTimePicker
-                  value={examCloseTime}
+                  value={moment(questionCreate.timeClose)}
                   onHandleValueChange={(newValue) => {
                     setExamCloseTime(newValue);
+                    dispatch(setTimeCloseCreate(newValue?.toDate() ?? new Date()));
                   }}
                   backgroundColor='#D9E2ED'
                 />
@@ -780,8 +796,11 @@ export default function ExamCreated() {
                   <Grid item xs={4}>
                     <InputTextField
                       type='number'
-                      value={examTimeLimitNumber}
-                      onChange={(e) => setExamTimeLimitNumber(parseInt(e.target.value))}
+                      value={questionCreate.timeLimit}
+                      onChange={(e) => {
+                        setExamTimeLimitNumber(parseInt(e.target.value));
+                        dispatch(setTimeLimitCreate(parseInt(e.target.value)));
+                      }}
                       placeholder={t("common_enter_quan")}
                       disabled={!examTimeLimitEnabled}
                       backgroundColor='#D9E2ED'
@@ -851,17 +870,20 @@ export default function ExamCreated() {
                 </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-overdue-handling-label'
-                  value={overdueHandling}
-                  onHandleChange={(value) => setOverdueHandling(value)}
+                  value={questionCreate.overdueHandling}
+                  onHandleChange={(value) => {
+                    setOverdueHandling(value);
+                    dispatch(setOverdueHandlingCreate(value));
+                  }}
                   items={[
                     {
                       value: OVERDUE_HANDLING.AUTOSUBMIT,
                       label: t("exam_management_create_when_time_end_auto")
                     },
-                    {
-                      value: OVERDUE_HANDLING.GRACEPERIOD,
-                      label: t("exam_management_create_when_time_end_spare")
-                    },
+                    // {
+                    //   value: OVERDUE_HANDLING.GRACEPERIOD,
+                    //   label: t("exam_management_create_when_time_end_spare")
+                    // },
                     {
                       value: OVERDUE_HANDLING.AUTOABANDON,
                       label: t("exam_management_create_when_time_end_delete")
