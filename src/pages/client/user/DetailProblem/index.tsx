@@ -72,14 +72,17 @@ export default function DetailProblem() {
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
-  const updateLanguageBodyCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
-    const submissinMapWithLangIdKeyAndBodyCodeValue = new Map<UUID, string>();
+  const updateLanguageSourceCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
+    const submissinMapWithLangIdKeyAndSourceCodeValue = new Map<UUID, string>();
     data.codeSubmissions?.forEach((value) => {
-      submissinMapWithLangIdKeyAndBodyCodeValue.set(value.languageId, value.bodyCode);
+      submissinMapWithLangIdKeyAndSourceCodeValue.set(value.languageId, value.sourceCode);
     });
     data.languages = data.languages.map((value) => {
-      const bodyCode: string | undefined = submissinMapWithLangIdKeyAndBodyCodeValue.get(value.id);
-      if (bodyCode !== undefined) value.bodyCode = bodyCode;
+      const sourceCode: string | undefined = submissinMapWithLangIdKeyAndSourceCodeValue.get(
+        value.id
+      );
+      if (sourceCode !== undefined) value.sourceCode = sourceCode;
+      else value.sourceCode = `${value.headCode}\n${value.bodyCode}\n${value.tailCode}`;
       return value;
     });
     return data;
@@ -98,23 +101,26 @@ export default function DetailProblem() {
       dispatch(setLoading(true));
       CodeQuestionService.getDetailCodeQuestion(problemId)
         .then((data: CodeQuestionEntity) => {
-          dispatch(setCodeQuestion(updateLanguageBodyCode(data)));
+          dispatch(setCodeQuestion(updateLanguageSourceCode(data)));
         })
         .catch((err) => console.log(err))
         .finally(() => dispatch(setLoading(false)));
     }
   }, [dispatch]);
 
-  const [selectedLanguage, setSelectedLanguage] = useState<{ id: string; bodyCode: string }>({
+  const [selectedLanguage, setSelectedLanguage] = useState<{ id: string; sourceCode: string }>({
     id: "",
-    bodyCode: ""
+    sourceCode: ""
   });
 
   useEffect(() => {
     setSelectedLanguage(
       codeQuestion?.languages !== undefined && codeQuestion?.languages.length > 0
-        ? { id: codeQuestion?.languages[0].id, bodyCode: codeQuestion?.languages[0].bodyCode }
-        : { id: "", bodyCode: "" }
+        ? {
+            id: codeQuestion?.languages[0].id,
+            sourceCode: codeQuestion?.languages[0].sourceCode ?? ""
+          }
+        : { id: "", sourceCode: "" }
     );
     setLanguageList(codeQuestion?.languages);
   }, [codeQuestion?.languages]);
@@ -124,13 +130,14 @@ export default function DetailProblem() {
     if (
       language !== undefined &&
       language.pLanguage.headCode !== undefined &&
-      language.pLanguage.tailCode != undefined
+      language.pLanguage.tailCode !== undefined
     ) {
-      const headCode: string = language.pLanguage.headCode;
-      const bodyCode: string = selectedLanguage.bodyCode;
-      const tailCode: string = language.pLanguage.tailCode;
-      dispatch(setSourceCode(`${headCode}\n${bodyCode}\n${tailCode}`));
-      dispatch(setHeadBodyTailCode({ headCode, bodyCode, tailCode }));
+      // const headCode: string = language.pLanguage.headCode;
+      // const bodyCode: string = selectedLanguage.sourceCode;
+      // const tailCode: string = language.pLanguage.tailCode;
+      const sourceCode: string = selectedLanguage.sourceCode;
+      dispatch(setSourceCode(sourceCode));
+      // dispatch(setHeadBodyTailCode({ headCode, bodyCode, tailCode }));
       dispatch(setLanguageId(language.pLanguage.judge0Id));
       dispatch(setSystemLanguageId(language.pLanguage.id));
       dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
@@ -142,9 +149,10 @@ export default function DetailProblem() {
     const newSelectedLanguageId = event.target.value;
     const oldLanguage = mapLanguages.get(selectedLanguage.id);
     if (oldLanguage !== undefined && languageList !== undefined) {
-      console.log(selectedLanguage.bodyCode);
+      console.log(selectedLanguage.sourceCode);
       let newLangList = languageList.map((value, index) => {
-        if (index === oldLanguage.index) return { ...value, bodyCode: selectedLanguage.bodyCode };
+        if (index === oldLanguage.index)
+          return { ...value, sourceCode: selectedLanguage.sourceCode };
         return value;
       });
       setLanguageList(newLangList);
@@ -153,11 +161,11 @@ export default function DetailProblem() {
     const newLanguage = mapLanguages.get(newSelectedLanguageId);
     setSelectedLanguage({
       id: newSelectedLanguageId,
-      bodyCode: newLanguage?.pLanguage.bodyCode !== undefined ? newLanguage?.pLanguage.bodyCode : ""
+      sourceCode: newLanguage?.pLanguage.sourceCode ? newLanguage?.pLanguage.sourceCode : ""
     });
   };
-  const onBodyCodeChange = (value: string) => {
-    setSelectedLanguage({ id: selectedLanguage.id, bodyCode: value });
+  const onSourceCodeChange = (value: string) => {
+    setSelectedLanguage({ id: selectedLanguage.id, sourceCode: value });
   };
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
@@ -235,18 +243,14 @@ export default function DetailProblem() {
   const handleSubmitCode = () => {
     if (
       problemId !== undefined &&
-      currentExecuteData.body_code !== undefined &&
-      currentExecuteData.head_code !== undefined &&
-      currentExecuteData.tail_code !== undefined &&
+      currentExecuteData.source_code !== undefined &&
       currentExecuteData.system_language_id !== undefined
     ) {
       setSubmisisonLoading(true);
       CodeSubmissionService.createCodeSubmission(
         problemId,
         currentExecuteData.system_language_id,
-        currentExecuteData.head_code,
-        currentExecuteData.body_code,
-        currentExecuteData.tail_code
+        currentExecuteData.source_code
       )
         .then((data) => {
           console.log("create submit response", data);
@@ -287,12 +291,18 @@ export default function DetailProblem() {
   const [width001, setWidth001] = useState("50%");
   const [width002, setWidth002] = useState("50%");
 
-  const handleResize001 = (e: any, direction: any, ref: any, d: any) => {
-    const newWidth001 = ref.style.width;
-    const newWidth002 = `${100 - parseFloat(newWidth001)}%`;
+  const [timer, setTimer] = useState<number | undefined>(undefined);
 
-    setWidth001(newWidth001);
-    setWidth002(newWidth002);
+  const handleResize001 = (e: any, direction: any, ref: any, d: any) => {
+    clearTimeout(timer);
+    const newTimer = window.setTimeout(() => {
+      const newWidth001 = ref.style.width;
+      const newWidth002 = `${100 - parseFloat(newWidth001)}%`;
+
+      setWidth001(newWidth001);
+      setWidth002(newWidth002);
+    }, 100);
+    setTimer(newTimer);
   };
 
   const marginRef = useRef<number>(10);
@@ -487,7 +497,7 @@ export default function DetailProblem() {
                     overflow: "auto"
                   }}
                 >
-                  <CodeEditor value={selectedLanguage.bodyCode} onChange={onBodyCodeChange} />
+                  <CodeEditor value={selectedLanguage.sourceCode} onChange={onSourceCodeChange} />
                 </Box>
               </Box>
               <Box className={classes.codeTestcaseContainer}>
