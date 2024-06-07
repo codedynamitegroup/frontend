@@ -77,15 +77,20 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
       <Grid item xs={12} md={12}>
         <Box>
           <ParagraphBody
-            gutterBottom
+            sx={{
+              padding: 0,
+              height: "fit-content"
+            }}
+            className='ql-editor'
             fontSize={"1rem"}
             textAlign={"left"}
             fontWeight={"400"}
             color={"#212121"}
             lineHeight={"1.5"}
-          >
-            {questionEssayQuestion.question.questionText}
-          </ParagraphBody>
+            dangerouslySetInnerHTML={{
+              __html: questionEssayQuestion.question.questionText
+            }}
+          />
           <ParagraphBody
             fontSize={".875rem"}
             textAlign={"left"}

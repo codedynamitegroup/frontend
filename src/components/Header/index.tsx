@@ -458,4 +458,4 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     </AppBar>
   );
 });
-export default Header;
+export default React.memo(Header);

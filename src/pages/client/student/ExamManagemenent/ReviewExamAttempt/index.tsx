@@ -1,21 +1,10 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Box,
-  CssBaseline,
-  Divider,
-  Drawer,
-  Grid,
-  InputAdornment,
-  Stack,
-  TextField
-} from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import { Box, CssBaseline, Divider, Drawer, Grid, Skeleton, Stack, TextField } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
@@ -28,7 +17,6 @@ import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQu
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import Button from "@mui/joy/Button";
@@ -42,8 +30,6 @@ import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlin
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
-import { useDispatch } from "react-redux";
-import { setLoading } from "reduxes/Loading";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 
 interface SubmissionData {
@@ -67,70 +53,12 @@ interface SubmissionData {
 
 const drawerWidth = 370;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  width: `calc(100% - ${drawerWidth}px)`,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }),
-  /**
-   * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-   * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-   * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-   * proper interaction with the underlying content.
-   */
-  position: "relative"
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open"
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: drawerWidth
-  })
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-start"
-}));
-
 export default function StudentReviewExamAttempt() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const examId = useParams<{ examId: string }>().examId;
   const courseId = useParams<{ courseId: string }>().courseId;
   const submissionId = useParams<{ submissionId: string }>().submissionId;
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
@@ -141,9 +69,9 @@ export default function StudentReviewExamAttempt() {
   const [questions, setQuestions] = React.useState<any[]>([]);
   const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
   const [submissionData, setSubmissionData] = React.useState<SubmissionData | undefined>(undefined);
-  const [questionDetailList, setQuestionDetailList] = React.useState<any[]>([]); // [questionId, questionDetail
   const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
   const [timeClose, setTimeClose] = React.useState<Date>(new Date());
+  const [mainSkeleton, setMainSkeleton] = React.useState<boolean>(true);
   const [timeTaken, setTimeTaken] = React.useState<{
     days: number;
     hours: number;
@@ -179,11 +107,11 @@ export default function StudentReviewExamAttempt() {
   });
 
   React.useEffect(() => {
-    dispatch(setLoading(true));
     if (examId) {
       // Get exam data
       ExamService.getExamById(examId)
         .then((res) => {
+          console.log("Get exam data");
           setExamData(res);
         })
         .catch((error) => {
@@ -193,6 +121,7 @@ export default function StudentReviewExamAttempt() {
       // Get exam questions
       ExamService.getExamQuestionById(examId, null)
         .then((res) => {
+          console.log("Get exam questions");
           const questionIds = res.questions.map((question: GetQuestionExam) => ({
             questionId: question.id,
             qtype: question.qtype
@@ -204,6 +133,7 @@ export default function StudentReviewExamAttempt() {
           // Get question detail
           QuestionService.getQuestionDetail(postQuestionDetailList)
             .then((res) => {
+              console.log("Get question detail");
               const transformList = res.questionResponses.map((question: any) => {
                 const data = question.qtypeEssayQuestion
                   ? question.qtypeEssayQuestion
@@ -223,21 +153,21 @@ export default function StudentReviewExamAttempt() {
             .catch((error) => {
               console.error(error);
             })
-            .finally(() => {
-              dispatch(setLoading(false));
-            });
+            .finally(() => {});
         })
         .catch((error) => {
+          setMainSkeleton(false);
           console.error(error);
         })
         .finally(() => {
-          dispatch(setLoading(false));
+          setMainSkeleton(false);
         });
 
       // Get exam submission data
       if (submissionId !== undefined)
         ExamService.getExamSubmissionById(submissionId)
           .then((res) => {
+            console.log("Get exam submission data");
             setSubmissionData(res);
 
             // Calculate time taken
@@ -346,69 +276,79 @@ export default function StudentReviewExamAttempt() {
               {t("common_back")}
             </Button>
             <Stack direction={"row"} spacing={1}>
-              <ExamReviewBoxContent
-                textTitle={t("exam_review_started_on")}
-                textContent={t("common_show_time", {
-                  weekDay: weekdayNames[timeOpen.getDay()],
-                  day: timeOpen.getDate(),
-                  month: monthNames[timeOpen.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
-                  year: timeOpen.getFullYear(),
-                  time: `${timeOpen.getHours() < 10 ? `0${timeOpen.getHours()}` : timeOpen.getHours()}:${timeOpen.getMinutes() < 10 ? `0${timeOpen.getMinutes()}` : timeOpen.getMinutes()}`
-                })}
-                icon={
-                  <DateRangeRoundedIcon
-                    sx={{
-                      fontSize: "15px",
-                      marginBottom: "3px"
-                    }}
+              {mainSkeleton ? (
+                <>
+                  <Skeleton variant='rectangular' width={200} height={50} />
+                  <Skeleton variant='rectangular' width={200} height={50} />
+                  <Skeleton variant='rectangular' width={200} height={50} />
+                </>
+              ) : (
+                <>
+                  <ExamReviewBoxContent
+                    textTitle={t("exam_review_started_on")}
+                    textContent={t("common_show_time", {
+                      weekDay: weekdayNames[timeOpen.getDay()],
+                      day: timeOpen.getDate(),
+                      month: monthNames[timeOpen.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                      year: timeOpen.getFullYear(),
+                      time: `${timeOpen.getHours() < 10 ? `0${timeOpen.getHours()}` : timeOpen.getHours()}:${timeOpen.getMinutes() < 10 ? `0${timeOpen.getMinutes()}` : timeOpen.getMinutes()}`
+                    })}
+                    icon={
+                      <DateRangeRoundedIcon
+                        sx={{
+                          fontSize: "15px",
+                          marginBottom: "3px"
+                        }}
+                      />
+                    }
                   />
-                }
-              />
-              <ExamReviewBoxContent
-                textTitle={t("exam_review_completed_on")}
-                textContent={t("common_show_time", {
-                  weekDay: weekdayNames[timeClose.getDay()],
-                  day: timeClose.getDate(),
-                  month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
-                  year: timeClose.getFullYear(),
-                  time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
-                })}
-                icon={
-                  <CheckCircleOutlineRoundedIcon
-                    sx={{
-                      fontSize: "15px",
-                      marginBottom: "3px"
-                    }}
+                  <ExamReviewBoxContent
+                    textTitle={t("exam_review_completed_on")}
+                    textContent={t("common_show_time", {
+                      weekDay: weekdayNames[timeClose.getDay()],
+                      day: timeClose.getDate(),
+                      month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                      year: timeClose.getFullYear(),
+                      time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
+                    })}
+                    icon={
+                      <CheckCircleOutlineRoundedIcon
+                        sx={{
+                          fontSize: "15px",
+                          marginBottom: "3px"
+                        }}
+                      />
+                    }
                   />
-                }
-              />
-              <ExamReviewBoxContent
-                textTitle={t("exam_review_time_taken")}
-                textContent={
-                  timeTaken.days > 0
-                    ? t("common_show_time_no_date_no_day", {
-                        hour: t("hour", { count: timeTaken.hours }),
-                        minute: t("min", { count: timeTaken.minutes }),
-                        sec: t("sec", { count: timeTaken.seconds })
-                      })
-                    : timeTaken.minutes > 0
-                      ? t("common_show_time_no_date_no_hour", {
-                          minute: t("min", { count: timeTaken.minutes }),
-                          sec: t("sec", { count: timeTaken.seconds })
-                        })
-                      : t("common_show_time_no_date_no_min", {
-                          sec: t("sec", { count: timeTaken.seconds })
-                        })
-                }
-                icon={
-                  <AccessTimeRoundedIcon
-                    sx={{
-                      fontSize: "15px",
-                      marginBottom: "3px"
-                    }}
+                  <ExamReviewBoxContent
+                    textTitle={t("exam_review_time_taken")}
+                    textContent={
+                      timeTaken.days > 0
+                        ? t("common_show_time_no_date_no_day", {
+                            hour: t("hour", { count: timeTaken.hours }),
+                            min: t("min", { count: timeTaken.minutes }),
+                            sec: t("sec", { count: timeTaken.seconds })
+                          })
+                        : timeTaken.minutes > 0
+                          ? t("common_show_time_no_date_no_hour", {
+                              min: t("min", { count: timeTaken.minutes }),
+                              sec: t("sec", { count: timeTaken.seconds })
+                            })
+                          : t("common_show_time_no_date_no_min", {
+                              sec: t("sec", { count: timeTaken.seconds })
+                            })
+                    }
+                    icon={
+                      <AccessTimeRoundedIcon
+                        sx={{
+                          fontSize: "15px",
+                          marginBottom: "3px"
+                        }}
+                      />
+                    }
                   />
-                }
-              />
+                </>
+              )}
             </Stack>
             <Box
               sx={{
@@ -526,8 +466,7 @@ export default function StudentReviewExamAttempt() {
                           navigate(
                             routes.student.exam.detail
                               .replace(":courseId", courseId)
-                              .replace(":examId", examId),
-                            { replace: true }
+                              .replace(":examId", examId)
                           );
                         else {
                           // navigate to unknown page
@@ -656,10 +595,7 @@ export default function StudentReviewExamAttempt() {
                                   .replace(
                                     ":submissionId",
                                     submissionId
-                                  )}?showall=0&page=${value - 1}`,
-                                {
-                                  replace: true
-                                }
+                                  )}?showall=0&page=${value - 1}`
                               );
                             else {
                               // navigate to unknown page
@@ -698,10 +634,7 @@ export default function StudentReviewExamAttempt() {
                                 `${routes.student.exam.review
                                   .replace(":courseId", courseId)
                                   .replace(":examId", examId)
-                                  .replace(":submissionId", submissionId)}?showall=0&page=${index}`,
-                                {
-                                  replace: true
-                                }
+                                  .replace(":submissionId", submissionId)}?showall=0&page=${index}`
                               );
                             else {
                               // navigate to unknown page
@@ -732,20 +665,14 @@ export default function StudentReviewExamAttempt() {
                               `${`${routes.student.exam.review
                                 .replace(":courseId", courseId)
                                 .replace(":examId", examId)
-                                .replace(":submissionId", submissionId)}?showall=0`}`,
-                              {
-                                replace: true
-                              }
+                                .replace(":submissionId", submissionId)}?showall=0`}`
                             );
                           else {
                             navigate(
                               `${routes.student.exam.review
                                 .replace(":courseId", courseId)
                                 .replace(":examId", examId)
-                                .replace(":submissionId", submissionId)}`,
-                              {
-                                replace: true
-                              }
+                                .replace(":submissionId", submissionId)}`
                             );
                           }
                         } else {
@@ -767,10 +694,7 @@ export default function StudentReviewExamAttempt() {
                           navigate(
                             routes.student.exam.detail
                               .replace(":courseId", courseId)
-                              .replace(":examId", examId),
-                            {
-                              replace: true
-                            }
+                              .replace(":examId", examId)
                           );
                         else {
                           // navigate to unknown page

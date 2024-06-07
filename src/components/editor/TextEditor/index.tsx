@@ -174,7 +174,7 @@ const TextEditor: React.FC<Props> = ({
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(defaultvalue);
+
   return (
     <>
       {openDialog && (

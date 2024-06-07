@@ -1,7 +1,6 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { Card, Divider, Grid } from "@mui/material";
+import { Divider, Grid, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -19,13 +18,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { setExamDetail, setExamOverview } from "reduxes/courseService/exam";
 import { setExamData } from "reduxes/TakeExam";
+import Button from "@mui/joy/Button";
+import { useTranslation } from "react-i18next";
+import StartRoundedIcon from "@mui/icons-material/StartRounded";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import Card from "@mui/joy/Card";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import GradeRoundedIcon from "@mui/icons-material/GradeRounded";
 
 const StudentCourseExamDetails = () => {
+  const { t } = useTranslation();
   const { examId } = useParams<{ examId: string }>();
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
   const startAt = useSelector((state: RootState) => state.takeExam.startAt);
+  const [mainSkeleton, setMainSkeleton] = useState(true);
+  const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
+  const [timeCloseString, setTimeCloseString] = useState<Date>(new Date());
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -46,11 +56,6 @@ const StudentCourseExamDetails = () => {
     updatedAt: new Date()
   });
 
-  const [examOverviews, setExamOverviews] = useState<ExamOverview>({
-    numberOfStudents: 0,
-    submitted: 0
-  });
-
   const handleGetExamById = async (id: string) => {
     try {
       const response = await ExamService.getExamById(id);
@@ -61,11 +66,11 @@ const StudentCourseExamDetails = () => {
     }
   };
 
-  const handleGetOverviews = async (id: string) => {
+  const handleGetSubmissions = async (examId: string, userId: string) => {
     try {
-      const response = await ExamService.getOverviewsByExamId(id);
-      setExamOverviews(response);
-      dispatch(setExamOverview(response));
+      const response = await ExamService.getAllAttemptByExamIdAndUserId(examId, userId);
+      console.log("all attempts", response);
+      // dispatch(setExamOverview(response));
     } catch (error) {
       console.error(error);
     }
@@ -74,9 +79,18 @@ const StudentCourseExamDetails = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await handleGetExamById(examId ?? examState.examDetail.id);
-      await handleGetOverviews(examId ?? examState.examDetail.id);
+      await handleGetSubmissions(
+        examId ?? examState.examDetail.id,
+        "2d7ed5a0-fb21-4927-9a25-647c17d29668"
+      );
+      setMainSkeleton(false);
     };
     fetchInitialData();
+
+    const tempTimeOpen = new Date(exam.timeOpen) ? new Date(exam.timeOpen) : new Date();
+    const tempTimeClose = new Date(exam.timeClose) ? new Date(exam.timeClose) : new Date();
+    setTimeOpenString(tempTimeOpen);
+    setTimeCloseString(tempTimeClose);
   }, []);
 
   const navigate = useNavigate();
@@ -113,114 +127,200 @@ const StudentCourseExamDetails = () => {
     );
   };
 
+  const monthNames = [
+    t("common_january"),
+    t("common_february"),
+    t("common_march"),
+    t("common_april"),
+    t("common_may"),
+    t("common_june"),
+    t("common_july"),
+    t("common_august"),
+    t("common_september"),
+    t("common_october"),
+    t("common_november"),
+    t("common_december")
+  ];
+
+  const weekdayNames = [
+    t("common_sunday"),
+    t("common_monday"),
+    t("common_tuesday"),
+    t("common_wednesday"),
+    t("common_thursday"),
+    t("common_friday"),
+    t("common_saturday")
+  ];
+
   return (
     <Box className={classes.assignmentBody}>
+      <Heading1>{exam.name}</Heading1>
+
       <Button
-        btnType={BtnType.Primary}
+        variant='soft'
+        color='neutral'
         onClick={() => {
           navigate(
             routes.student.course.assignment.replace(":courseId", examState.examDetail.courseId)
           );
         }}
-        startIcon={
-          <ChevronLeftIcon
-            sx={{
-              color: "white"
-            }}
-          />
-        }
-        width='fit-content'
-      >
-        <ParagraphBody>Quay lại</ParagraphBody>
-      </Button>
-      <Heading1>{exam.name}</Heading1>
-      <Card
-        className={classes.pageActivityHeader}
+        startDecorator={<ChevronLeftIcon />}
+        translation-key='common_back'
         sx={{
-          padding: "10px",
-          backgroundColor: "#F8F9FA"
+          width: "fit-content"
         }}
       >
-        <Grid container direction='row' alignItems='center' gap={1}>
-          <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian mở:</ParagraphSmall>
-          </Grid>
-          <Grid item>
-            <ParagraphBody>
-              <ParagraphBody> {dayjs(exam.timeOpen).format("DD/MM/YYYY HH:mm")} </ParagraphBody>
-            </ParagraphBody>
+        {t("common_back")}
+      </Button>
+      <Card
+        variant='outlined'
+        color='neutral'
+        sx={{
+          padding: "10px"
+          // backgroundColor: "#F8F9FA"
+        }}
+      >
+        <Grid container>
+          <Grid item xs={12} md={12}>
+            <Stack direction='row' spacing={1.5} alignItems={"center"}>
+              <StartRoundedIcon sx={{ color: "#707070", fontSize: "20px" }} />
+              <Stack direction='row' spacing={0.5}>
+                <ParagraphBody
+                  fontWeight={"bolder"}
+                  translation-key='course_assignment_detail_open_time'
+                  color={"#434343"}
+                  fontSize={"12px"}
+                >
+                  {`${t("course_assignment_detail_open_time")}: `}
+                </ParagraphBody>
+                <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                  {" "}
+                  {t("common_show_time", {
+                    weekDay: weekdayNames[timeOpenString.getDay()],
+                    day: timeOpenString.getDate(),
+                    month: monthNames[timeOpenString.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                    year: timeOpenString.getFullYear(),
+                    time: `${timeOpenString.getHours() < 10 ? `0${timeOpenString.getHours()}` : timeOpenString.getHours()}:${timeOpenString.getMinutes() < 10 ? `0${timeOpenString.getMinutes()}` : timeOpenString.getMinutes()}`
+                  })}
+                </ParagraphBody>
+              </Stack>
+              <MoreHorizRoundedIcon
+                sx={{
+                  color: "#707070",
+                  fontSize: "20px"
+                }}
+              />{" "}
+              <Stack direction='row' spacing={0.5}>
+                <ParagraphBody
+                  fontWeight={"bolder"}
+                  color={"#434343"}
+                  fontSize={"12px"}
+                  translation-key='course_assignment_detail_close_time'
+                >
+                  {`${t("course_assignment_detail_close_time")}: `}
+                </ParagraphBody>
+                <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                  {t("common_show_time", {
+                    weekDay: weekdayNames[timeCloseString.getDay()],
+                    day: timeCloseString.getDate(),
+                    month: monthNames[timeCloseString.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                    year: timeCloseString.getFullYear(),
+                    time: `${timeCloseString.getHours() < 10 ? `0${timeCloseString.getHours()}` : timeCloseString.getHours()}:${timeCloseString.getMinutes() < 10 ? `0${timeCloseString.getMinutes()}` : timeCloseString.getMinutes()}`
+                  })}
+                </ParagraphBody>
+              </Stack>{" "}
+            </Stack>
           </Grid>
         </Grid>
-        <Grid container direction='row' alignItems='center' gap={1}>
-          <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian đóng:</ParagraphSmall>
-          </Grid>
-          <Grid item>
-            <ParagraphBody>
-              <ParagraphBody>{dayjs(exam.timeClose).format("DD/MM/YYYY HH:mm")}</ParagraphBody>
-            </ParagraphBody>
-          </Grid>
-        </Grid>
-        <Grid container direction='row' alignItems='center' gap={1}>
-          <Grid item>
-            <ParagraphSmall fontWeight={"600"}>Thời gian làm bài:</ParagraphSmall>
-          </Grid>
-          <Grid item>
-            <ParagraphBody>{millisToFormatTimeString(exam.timeLimit ?? 0)}</ParagraphBody>
-          </Grid>
-        </Grid>
-        <Divider
-          style={{
-            marginTop: "10px",
-            marginBottom: "10px"
-          }}
-        />
-        <Box className={classes.assignmentDescription}>
-          <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
-          <ParagraphBody>
-            Cách thức tính điểm:{" "}
-            <b>
-              {" "}
-              {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
-                ? "Điểm cao nhất"
-                : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
-                  ? "Trung bình cộng"
-                  : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
-                    ? "Lần nộp đầu tiên"
-                    : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
-                      ? "Lần nộp cuối cùng"
-                      : ""}
-            </b>
-          </ParagraphBody>
-          {/* <CustomFileList
-            files={[
-              {
-                id: "1",
-                name: "test1.jpg",
-                size: 1024,
-                type: "image/jpg",
-                uploadStatus: "success",
-                downloadUrl:
-                  "https://res.cloudinary.com/doofq4jvp/image/upload/v1707044303/ulvrbytveqv8injpzliy.jpg"
-              },
-              {
-                id: "2",
-                name: "dummy.pdf",
-                size: 1024,
-                type: "application/pdf",
-                uploadStatus: "success",
-                downloadUrl:
-                  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-              }
-            ]}
-          /> */}
-        </Box>
       </Card>
-      <Heading2>Tóm tắt những lần làm bài trước</Heading2>
+      <Box className={classes.assignmentDescription}>
+        <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
+      </Box>
+      <Button
+        onClick={startAttemptButtonHandler}
+        sx={{
+          width: "fit-content"
+        }}
+      >
+        {startAt ? t("exam_detail_continue") : t("exam_detail_start")}
+      </Button>
+      <Card
+        variant='soft'
+        color='neutral'
+        sx={{
+          padding: "10px"
+          // backgroundColor: "#F8F9FA"
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Stack direction='row' spacing={1.5} alignItems={"center"}>
+            <AccessTimeRoundedIcon
+              sx={{
+                color: "#707070",
+                fontSize: "20px"
+              }}
+            />
+            <Stack direction='row' spacing={0.5}>
+              <ParagraphBody
+                translation-key='exam_detail_time_limit'
+                fontWeight={"bolder"}
+                color={"#434343"}
+                fontSize={"12px"}
+              >
+                {t("exam_detail_time_limit")}
+                {": "}
+              </ParagraphBody>
+              <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                {exam.timeLimit ?? 0}
+              </ParagraphBody>
+            </Stack>
+          </Stack>
+
+          <Stack direction='row' spacing={1.5} alignItems={"center"}>
+            <GradeRoundedIcon
+              sx={{
+                color: "#707070",
+                fontSize: "20px"
+              }}
+            />
+            <Stack direction='row' spacing={0.5}>
+              <ParagraphBody
+                translation-key='exam_detail_grading_method'
+                fontWeight={"bolder"}
+                color={"#434343"}
+                fontSize={"12px"}
+              >
+                {t("exam_detail_grading_method")}
+                {": "}
+              </ParagraphBody>
+              <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
+                  ? t("exam_detail_grading_method_high_score")
+                  : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
+                    ? t("exam_detail_grading_method_average_score")
+                    : exam.gradeMethod === "QUIZ_ATTEMPTFIRST"
+                      ? t("exam_detail_grading_method_first_submit")
+                      : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
+                        ? t("exam_detail_grading_method_last_submit")
+                        : ""}
+              </ParagraphBody>
+            </Stack>
+          </Stack>
+        </Stack>
+      </Card>
+
+      <Heading2 translation-key='exam_detail_summary_previous_attempt'>
+        {t("exam_detail_summary_previous_attempt")}
+      </Heading2>
       <ExamAttemptSummaryTable
         examId={examId || examState.examDetail.id}
         courseId={courseId || examState.examDetail.courseId}
-        headers={["Lần thử", "Trạng thái", "Điểm / 10.0", "Xem đánh giá"]}
+        headers={[
+          t("exam_detail_summary_attempt"),
+          t("exam_detail_summary_state"),
+          `${t("exam_detail_summary_score")} / ${exam.maxScores}`,
+          t("exam_detail_summary_review")
+        ]}
         rows={[
           {
             no: "1",
@@ -242,12 +342,13 @@ const StudentCourseExamDetails = () => {
           }
         ]}
       />
-      <Heading2>
-        Điểm cao nhất: <span style={{ color: "red" }}>{exam.maxScores}</span>
+      <Heading2 translation-key='exam_detail_grading_method_high_score'>
+        {t("exam_detail_grading_method_high_score")}
+        {": "}
+        <span style={{ color: "red" }}>tempscore</span>
+        {" / "}
+        {exam.maxScores}
       </Heading2>
-      <Button btnType={BtnType.Primary} onClick={startAttemptButtonHandler} width='fit-content'>
-        <ParagraphBody>{startAt ? "Tiếp tục làm bài" : "Bắt đầu làm bài"}</ParagraphBody>
-      </Button>
     </Box>
   );
 };

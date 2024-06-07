@@ -109,7 +109,7 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
         {Boolean(questionMultiChoice.single) ? (
           <JoyRadioGroup
             color='primary'
-            value={questionSubmitContent.content}
+            value={questionSubmitContent?.content}
             onChange={() => {}}
             disabled
             values={answerList}
