@@ -192,6 +192,7 @@
   "common_advanced_settings": "Advanced settings",
   "common_no": "No",
   "common_email": "Email",
+  "common_my_courses": "My courses",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest": "Contest management",
@@ -326,7 +327,7 @@
   "certificate_registered": "Registered",
   "certificate_not_registered": "Not registered",
 
-  "dashboard_continue_title": "Let continue your courses",
+  "dashboard_continue_title": "Let's continue your courses",
   "dashboard_happening_contest": "Happening contests",
   "dashboard_other_course": "Other courses",
   "dashboard_current_lesson": "Current lesson",

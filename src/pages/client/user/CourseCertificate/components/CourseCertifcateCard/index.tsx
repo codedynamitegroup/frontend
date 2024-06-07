@@ -1,11 +1,9 @@
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Box, Divider, Grid, Rating, Stack } from "@mui/material";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
-import useAuth from "hooks/useAuth";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { useTranslation } from "react-i18next";
@@ -16,8 +14,6 @@ type Props = {
 };
 
 const CourseCertificateCard = ({ course }: Props) => {
-  // const user: User = useSelector(selectCurrentUser);
-  const { isLoggedIn } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -75,37 +71,6 @@ const CourseCertificateCard = ({ course }: Props) => {
                     : ""}
             </ParagraphBody>
           </Box>
-          {isLoggedIn && course?.isRegistered === true ? (
-            <Box className={classes.iconCourse}>
-              <CheckCircleOutlineIcon
-                sx={{
-                  width: "20px",
-                  height: "20px",
-                  color: "var(--green-600)",
-                  marginRight: "-5px"
-                }}
-              />
-              <ParagraphBody translate-key='certificate_registered'>
-                {t("certificate_registered")}
-              </ParagraphBody>
-            </Box>
-          ) : (
-            isLoggedIn && (
-              <Box className={classes.iconCourse}>
-                <CheckCircleOutlineIcon
-                  sx={{
-                    width: "20px",
-                    height: "20px",
-                    color: "var(--gray-50)",
-                    marginRight: "-5px"
-                  }}
-                />
-                <ParagraphBody translate-key='certificate_not_registered'>
-                  {t("certificate_not_registered")}
-                </ParagraphBody>
-              </Box>
-            )
-          )}
         </Grid>
       </Grid>
     </Box>
