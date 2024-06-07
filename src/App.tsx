@@ -2,7 +2,7 @@ import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAs
 import {
   Route,
   RouterProvider,
-  createHashRouter,
+  createBrowserRouter,
   createRoutesFromElements
 } from "react-router-dom";
 import { lazy } from "react";
@@ -117,7 +117,7 @@ const SubmitExamSummary = lazy(
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
-const router = createHashRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route element={<PersistLogin />}>
