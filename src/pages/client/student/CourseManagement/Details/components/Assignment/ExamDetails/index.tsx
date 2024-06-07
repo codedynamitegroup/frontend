@@ -13,7 +13,7 @@ import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
-import { ExamEntity, ExamOverview } from "models/courseService/entity/ExamEntity";
+import { ExamEntity, ExamOverview, ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
@@ -25,6 +25,7 @@ const StudentCourseExamDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
+  const startAt = useSelector((state: RootState) => state.takeExam.startAt);
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -79,6 +80,38 @@ const StudentCourseExamDetails = () => {
   }, []);
 
   const navigate = useNavigate();
+
+  const startAttemptButtonHandler = () => {
+    const timeOpen = exam.timeOpen ? new Date(exam.timeOpen) : new Date();
+    const timeClose = exam.timeClose ? new Date(exam.timeClose) : new Date();
+    const createdAt = exam.createdAt ? new Date(exam.createdAt) : new Date();
+    const updatedAt = exam.updatedAt ? new Date(exam.updatedAt) : new Date();
+
+    const examStateData: ReduxExamEntity = {
+      id: exam.id,
+      courseId: exam.courseId,
+      name: exam.name,
+      scores: exam.scores,
+      maxScores: exam.maxScores,
+      timeOpen: timeOpen.toISOString(),
+      timeClose: timeClose.toISOString(),
+      timeLimit: exam.timeLimit,
+      intro: exam.intro,
+      overdueHanding: exam.overdueHanding,
+      canRedoQuestions: exam.canRedoQuestions,
+      maxAttempts: exam.maxAttempts,
+      shuffleAnswers: exam.shuffleAnswers,
+      gradeMethod: exam.gradeMethod,
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString()
+    };
+    dispatch(setExamData(examStateData));
+    navigate(
+      routes.student.exam.take
+        .replace(":courseId", courseId || examState.examDetail.courseId)
+        .replace(":examId", examId || examState.examDetail.id)
+    );
+  };
 
   return (
     <Box className={classes.assignmentBody}>
@@ -185,6 +218,8 @@ const StudentCourseExamDetails = () => {
       </Card>
       <Heading2>Tóm tắt những lần làm bài trước</Heading2>
       <ExamAttemptSummaryTable
+        examId={examId || examState.examDetail.id}
+        courseId={courseId || examState.examDetail.courseId}
         headers={["Lần thử", "Trạng thái", "Điểm / 10.0", "Xem đánh giá"]}
         rows={[
           {
@@ -210,19 +245,8 @@ const StudentCourseExamDetails = () => {
       <Heading2>
         Điểm cao nhất: <span style={{ color: "red" }}>{exam.maxScores}</span>
       </Heading2>
-      <Button
-        btnType={BtnType.Primary}
-        onClick={() => {
-          dispatch(setExamData(exam));
-          navigate(
-            routes.student.exam.take
-              .replace(":courseId", courseId || examState.examDetail.courseId)
-              .replace(":examId", examId || examState.examDetail.id)
-          );
-        }}
-        width='fit-content'
-      >
-        <ParagraphBody>Làm bài kiểm tra</ParagraphBody>
+      <Button btnType={BtnType.Primary} onClick={startAttemptButtonHandler} width='fit-content'>
+        <ParagraphBody>{startAt ? "Tiếp tục làm bài" : "Bắt đầu làm bài"}</ParagraphBody>
       </Button>
     </Box>
   );

@@ -8,12 +8,17 @@ import { routes } from "routes/routes";
 
 export default function StudentExamAttemptSummaryTable({
   rows,
-  headers
+  headers,
+  examId,
+  courseId
 }: {
   rows: any[];
   headers: string[];
+  examId: string;
+  courseId: string;
 }) {
   const navigate = useNavigate();
+
   return (
     <Sheet variant='outlined'>
       <Table variant='soft' borderAxis='bothBetween' hoverRow>
@@ -37,7 +42,12 @@ export default function StudentExamAttemptSummaryTable({
                 <Button
                   btnType={BtnType.Text}
                   onClick={() => {
-                    navigate(routes.student.exam.review);
+                    navigate(
+                      `${routes.student.exam.review
+                        .replace(":courseId", courseId)
+                        .replace(":examId", examId)
+                        .replace(":submissionId", "f1fd9a68-9269-4cc6-bc45-c6928cc8f6e5")}`
+                    );
                   }}
                 >
                   Xem đánh giá

@@ -1,16 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
-import { setExam } from "reduxes/TakeExam";
+import { ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 
 interface InitialState {
   isLoading: boolean;
   exams: {
-    exams: ExamEntity[];
+    exams: ReduxExamEntity[];
     currentPage: number;
     totalItems: number;
     totalPages: number;
   };
-  examDetail: ExamEntity;
+  examDetail: ReduxExamEntity;
   examOverview: {
     numberOfStudents: number;
     submitted: number;
@@ -31,8 +30,8 @@ const initialState: InitialState = {
     name: "",
     scores: 0,
     maxScores: 0,
-    timeOpen: new Date(),
-    timeClose: new Date(),
+    timeOpen: "",
+    timeClose: "",
     timeLimit: 0,
     intro: "",
     overdueHanding: "",
@@ -40,8 +39,8 @@ const initialState: InitialState = {
     maxAttempts: 0,
     shuffleAnswers: false,
     gradeMethod: "",
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: "",
+    updatedAt: ""
   },
   examOverview: {
     numberOfStudents: 0,

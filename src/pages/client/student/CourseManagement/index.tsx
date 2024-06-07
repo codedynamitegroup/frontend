@@ -23,6 +23,7 @@ import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 import { CourseUserService } from "services/courseService/CourseUserService";
+import useAuth from "hooks/useAuth";
 
 enum EView {
   cardView = 1,
@@ -37,11 +38,11 @@ const StudentCourses = () => {
 
   const courseTypeState = useSelector((state: RootState) => state.courseType);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const user: User = useSelector(selectCurrentUser);
-
   const searchHandle = useCallback(async (searchText: string) => {
     setSearchText(searchText);
   }, []);
+
+  const { loggedUser } = useAuth();
 
   const handleGetCourseTypes = useCallback(async () => {
     dispatch(setLoading({ isLoading: true }));
@@ -59,12 +60,12 @@ const StudentCourses = () => {
 
   const handleGetCourses = useCallback(
     async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
-      if (!user?.userId) return;
+      if (!loggedUser?.userId) return;
 
       dispatch(setLoading({ isLoading: true }));
 
       try {
-        const getCourseResponse = await CourseUserService.getAllCourseByUserId(user.userId, {
+        const getCourseResponse = await CourseUserService.getAllCourseByUserId(loggedUser.userId, {
           search,
           courseType,
           pageNo,
@@ -77,7 +78,7 @@ const StudentCourses = () => {
         dispatch(setLoading({ isLoading: false }));
       }
     },
-    [dispatch, searchText, selectedCategories, user?.userId]
+    [dispatch, searchText, selectedCategories, loggedUser?.userId]
   );
 
   useEffect(() => {
@@ -85,10 +86,10 @@ const StudentCourses = () => {
   }, [handleGetCourseTypes]);
 
   useEffect(() => {
-    if (user?.userId) {
+    if (loggedUser?.userId) {
       handleGetCourses({ search: searchText, courseType: selectedCategories });
     }
-  }, [searchText, selectedCategories, user?.userId]);
+  }, [searchText, selectedCategories, loggedUser?.userId]);
 
   // Ensure handleGetCourses is called on component mount if userId is available
 

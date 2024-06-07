@@ -106,65 +106,89 @@ const LecturerCourses = () => {
         {t("course_list_title")}
       </Heading1>
       <SearchBar onSearchClick={searchHandle} />
-
-      <Box className={classes.featureGroup}>
-        <Box className={classes.filterContainer}>
-          <ChipMultipleFilter
-            label={t("course_filter")}
-            defaultChipList={courseTypeState.courseTypes.map((courseType) => courseType.name)}
-            filterList={selectedCategories}
-            onFilterListChangeHandler={handleCategoryFilterChange}
-            translation-key='course_filter'
-          />
-        </Box>
-
-        <ToggleButtonGroup
-          className={classes.changeViewButtonGroup}
-          value={viewType}
-          exclusive
-          onChange={handleViewChange}
+      {courseState.isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
         >
-          <ToggleButton value={EView.listView} aria-label='list'>
-            <ViewListIcon />
-          </ToggleButton>
-          <ToggleButton value={EView.cardView} aria-label='module'>
-            <ViewCardIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-
-      {viewType === EView.cardView ? (
-        <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-          <Grid container spacing={2}>
-            {courseState.courses.map((course, index) => (
-              <Grid className={classes.gridItem} item key={course.id} xs={12} sm={6} md={4} lg={3}>
-                <CourseCard
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <CircularProgress />
         </Box>
       ) : (
-        <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
-          <Grid container spacing={4}>
-            {courseState.courses.map((course) => (
-              <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
-                <CourseList
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
+        <>
+          <Box className={classes.featureGroup}>
+            <Box className={classes.filterContainer}>
+              <ChipMultipleFilter
+                label={t("course_filter")}
+                defaultChipList={courseTypeState.courseTypes.map((courseType) => courseType.name)}
+                filterList={selectedCategories}
+                onFilterListChangeHandler={handleCategoryFilterChange}
+                translation-key='course_filter'
+              />
+            </Box>
+
+            <ToggleButtonGroup
+              className={classes.changeViewButtonGroup}
+              value={viewType}
+              exclusive
+              onChange={handleViewChange}
+            >
+              <ToggleButton value={EView.listView} aria-label='list'>
+                <ViewListIcon />
+              </ToggleButton>
+              <ToggleButton value={EView.cardView} aria-label='module'>
+                <ViewCardIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          {viewType === EView.cardView ? (
+            <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
+              <Grid container spacing={2}>
+                {courseState.courses.map((course, index) => (
+                  <Grid
+                    className={classes.gridItem}
+                    item
+                    key={course.id}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                  >
+                    <CourseCard
+                      courseId={course.id}
+                      courseAvatarUrl={"https://picsum.photos/200"}
+                      courseCategory={course.courseType.name}
+                      courseName={course.name}
+                      teacherList={course.teachers}
+                    />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
+            </Box>
+          ) : (
+            <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
+              <Grid container spacing={4}>
+                {courseState.courses.map((course) => (
+                  <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
+                    <CourseList
+                      courseId={course.id}
+                      courseAvatarUrl={"https://picsum.photos/200"}
+                      courseCategory={course.courseType.name}
+                      courseName={course.name}
+                      teacherList={course.teachers}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

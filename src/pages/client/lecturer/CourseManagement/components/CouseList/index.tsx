@@ -34,7 +34,7 @@ const CourseList = (props: ListProps) => {
               <Heading4 gutterBottom variant='subtitle1' colorname='--blue-3'>
                 <Link
                   component={RouterLink}
-                  to={routes.student.course.information.replace(":courseId", props.courseId)}
+                  to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
                   underline='hover'
                   color='inherit'
                 >

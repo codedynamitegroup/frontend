@@ -8,7 +8,15 @@ import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
-import { Accordion, AccordionDetails, AccordionSummary, Divider, List, Paper } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CircularProgress,
+  Divider,
+  List,
+  Paper
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import { useState, useEffect } from "react";
@@ -20,7 +28,7 @@ import { AppDispatch, RootState } from "store";
 import { useParams } from "react-router-dom";
 import { CourseService } from "services/courseService/CourseService";
 import { di } from "@fullcalendar/core/internal-common";
-import { setSections } from "reduxes/courseService/section";
+import { setLoading, setSections } from "reduxes/courseService/section";
 
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
@@ -100,15 +108,19 @@ const StudentCourseInformation = () => {
   const sectionState = useSelector((state: RootState) => state.section);
   const { courseId } = useParams<{ courseId: string }>();
   const handleGetSections = async () => {
+    dispatch(setLoading(true));
     try {
       if (courseId) {
         const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
         dispatch(setSections(getSectionsResponse));
+        dispatch(setLoading(false));
       } else {
         console.error("courseId is undefined");
+        dispatch(setLoading(false));
       }
     } catch (error) {
       console.error("Failed to fetch sections", error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -146,50 +158,53 @@ const StudentCourseInformation = () => {
         </Card>
       </Grid>
 
-      <Grid item xs={12}>
-        <Box margin={1} padding={0}>
-          <Grid container className={classes.gridBodyContainer}>
-            <Grid item className={classes.topicWrapper} xs={12}>
-              {sectionState.sections.map((topic, index) => {
-                const isOpen =
-                  isTopicOpen[index] === undefined ? true : Boolean(isTopicOpen[index]);
-                return (
-                  <Box key={index}>
-                    <Accordion expanded={isOpen} className={classes.resourceAccordionContainer}>
-                      <AccordionSummary
-                        expandIcon={
-                          <Box>
-                            <IconButton
-                              onClick={() => toggleItem(index)}
-                              style={{ transform: `rotate(${isOpen ? 0 : 180}deg)` }}
-                            >
-                              <ExpandMoreIcon />
-                            </IconButton>
-                          </Box>
-                        }
-                        className={classes.resourceSummaryContainer}
-                      >
-                        <Typography className={classes.resourceSummaryText} align='center'>
-                          {topic.name}
-                        </Typography>
-                      </AccordionSummary>
+      {!sectionState.isLoading ? (
+        <Grid item xs={12}>
+          <Box margin={1} padding={0}>
+            <Grid container className={classes.gridBodyContainer}>
+              <Grid item className={classes.topicWrapper} xs={12}>
+                {sectionState.sections.map((topic, index) => {
+                  const isOpen =
+                    isTopicOpen[index] === undefined ? true : Boolean(isTopicOpen[index]);
+                  return (
+                    <Box key={index}>
+                      <Accordion expanded={isOpen} className={classes.resourceAccordionContainer}>
+                        <AccordionSummary
+                          expandIcon={
+                            <Box>
+                              <IconButton
+                                onClick={() => toggleItem(index)}
+                                style={{ transform: `rotate(${isOpen ? 0 : 180}deg)` }}
+                              >
+                                <ExpandMoreIcon />
+                              </IconButton>
+                            </Box>
+                          }
+                          className={classes.resourceSummaryContainer}
+                        >
+                          <Typography className={classes.resourceSummaryText} align='center'>
+                            {topic.name}
+                          </Typography>
+                        </AccordionSummary>
 
-                      <AccordionDetails className={classes.accordDetail}>
-                        {topic.modules.map((resource, index) => (
-                          <CourseResource
-                            name={resource.name}
-                            type={type(resource.typeModule)}
-                            content={resource.content}
-                            key={index}
-                          />
-                        ))}
-                      </AccordionDetails>
-                    </Accordion>
-                  </Box>
-                );
-              })}
-            </Grid>
-            {/* <Grid item xs={0.5}></Grid>
+                        <AccordionDetails className={classes.accordDetail}>
+                          {topic.modules.map((resource, index) => (
+                            <CourseResource
+                              courseId={courseId || ""}
+                              assignmentId={resource.assignmentId}
+                              name={resource.name}
+                              type={type(resource.typeModule)}
+                              content={resource.content}
+                              key={index}
+                            />
+                          ))}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Box>
+                  );
+                })}
+              </Grid>
+              {/* <Grid item xs={0.5}></Grid>
             <Grid item xs={3.5}>
               <Paper className={classes.eventContainer}>
                 <Typography
@@ -217,9 +232,23 @@ const StudentCourseInformation = () => {
                 </List>
               </Paper>
             </Grid> */}
-          </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
+        >
+          <CircularProgress />
         </Box>
-      </Grid>
+      )}
     </Grid>
   );
 };

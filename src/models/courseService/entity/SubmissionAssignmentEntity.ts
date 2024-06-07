@@ -4,6 +4,7 @@ import { SubmissionGradeEntity } from "./SubmissionGradeEntity";
 import { UserResponseEntity } from "./UserResponseEntity";
 export interface SubmissionAssignmentEntity {
   id: string;
+  assignmentName: string;
   user: UserResponseEntity;
   isGraded: boolean;
   submissionAssignmentFile: SubmissionAssignmentFileEntity;

@@ -13,6 +13,7 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
       formData
     );
     const url = data.url;
+    console.log("Uploaded to Cloudinary", url);
     return url;
   } catch (error) {
     console.error("Error uploading file to Cloudinary", error);
@@ -20,23 +21,27 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
   }
 };
 
-export const uploadToCloudinaryByObjectUrl = async (objectUrl: string): Promise<string> => {
-  // Convert the object URL to a Blob
-  const response = await fetch(objectUrl);
-  const blob = await response.blob();
+// export const uploadToCloudinaryByObjectUrl = async (
+//   objectUrl: string,
+//   fileName: string
+// ): Promise<string> => {
+//   const file: File = await convertToFile(objectUrl, fileName);
 
-  const formData = new FormData();
-  formData.append("file", blob);
-  formData.append("upload_preset", cloudinaryPreset);
-  try {
-    const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudinaryName}/upload`,
-      formData
-    );
-    const url = data.url;
-    return url;
-  } catch (error) {
-    console.error("Error uploading file to Cloudinary", error);
-    throw error;
-  }
-};
+//   const prest = "ml_default";
+//   const cdnName = "dacvpgdfi";
+//   const formData = new FormData();
+//   formData.append("file", file);
+//   formData.append("upload_preset", prest);
+
+//   try {
+//     const { data } = await axios.post(
+//       `https://api.cloudinary.com/v1_1/${cdnName}/raw/upload`,
+//       formData
+//     );
+//     const url = data.url;
+//     return url;
+//   } catch (error) {
+//     console.error("Error uploading file to Cloudinary", error);
+//     throw error;
+//   }
+// };

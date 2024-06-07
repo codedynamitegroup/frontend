@@ -30,7 +30,8 @@ export const API = {
       REGISTER_BY_ID: "/core/contests/:id/register",
       MOST_POPULAR: "/core/contests/popular",
       LEADERBOARD: "/core/contests/:id/leaderboard",
-      GET_USERS_OF_CONTEST: "/core/contests/:id/users"
+      GET_USERS_OF_CONTEST: "/core/contests/:id/users",
+      JOIN_CONTEST: "/core/contests/:id/register"
     },
     QUESTION: {
       DEFAULT: "/core/questions",
@@ -101,7 +102,8 @@ export const API = {
       CREATE: "/course/exam",
       START: "/course/exam/question/start-exam",
       END: "/course/exam/question/end-exam",
-      SUBMIT: "/course/exam/question/submit"
+      SUBMIT: "/course/exam/question/submit",
+      SUBMISSION: "/course/exam/question/submit/:id"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"

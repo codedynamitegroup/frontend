@@ -12,10 +12,13 @@ import {
   addFileToExamQuesiton,
   removeAllFilesFromExamQuestion,
   removeFileFromExamQuestion,
+  setAnswered,
   setFlag
 } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
 import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
+import { debounce } from "lodash";
+import { useState } from "react";
 
 interface Props {
   page: number;
@@ -26,7 +29,8 @@ interface Props {
 
 const EssayExamQuestion = (props: Props) => {
   const { page, questionEssayQuestion, questionState } = props;
-  const isFlagged = questionState.flag;
+  const isFlagged = questionState?.flag;
+  const [textValue, setTextValue] = useState<string>("");
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const fileTypeList =
@@ -46,7 +50,26 @@ const EssayExamQuestion = (props: Props) => {
     : undefined;
 
   const flagQuestionHandle = () => {
-    dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+  };
+
+  const debouncedHandleOnInputChange = debounce((value: string) => {
+    let isAnswered = true;
+    if (value === "") isAnswered = false;
+
+    dispatch(
+      setAnswered({
+        id: questionEssayQuestion.question.id,
+        answered: isAnswered,
+        content: value
+      })
+    );
+  }, 250);
+
+  const HandleInputChange = (value: string) => {
+    setTextValue(value);
+    debouncedHandleOnInputChange(value);
   };
 
   return (
@@ -67,12 +90,12 @@ const EssayExamQuestion = (props: Props) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{ backgroundColor: questionState.answered ? "#e6eaf7" : "#FDF6EA" }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionState.answered ? t("common_answer_saved") : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -109,7 +132,9 @@ const EssayExamQuestion = (props: Props) => {
           </ParagraphBody>
           {questionEssayQuestion.responseFormat === "editor" && (
             <TextEditor
-              value=''
+              value={textValue}
+              defaultvalue={questionState?.content}
+              onChange={HandleInputChange}
               roundedBorder
               maxLines={questionEssayQuestion.responseFieldLines}
             />
@@ -132,7 +157,7 @@ const EssayExamQuestion = (props: Props) => {
             relatedId={questionEssayQuestion.question.id}
             relatedDispatch={addFileToExamQuesiton}
             relatedRemoveDispatch={removeFileFromExamQuestion}
-            filesFromUrl={questionState.files}
+            filesFromUrl={questionState?.files}
             relatedRemoveAllDispatch={removeAllFilesFromExamQuestion}
           />
         </Grid>

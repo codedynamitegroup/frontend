@@ -370,7 +370,7 @@ const ContestManagement = () => {
     };
 
     fetchContests();
-  }, [handleGetContests]);
+  }, [dispatch, handleGetContests]);
 
   return (
     <>

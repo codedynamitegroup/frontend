@@ -8,8 +8,11 @@ import images from "config/images";
 import { ECourseResourceType } from "models/courseService/course";
 import { inherits } from "util";
 import { Link as RouterLink } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface PropsData {
+  courseId: string;
+  assignmentId: string;
   name: string;
   type: ECourseResourceType;
   content: string;
@@ -72,7 +75,9 @@ const CourseResource = (props: PropsData) => {
   const getPath = (type: ECourseResourceType) => {
     switch (type) {
       case ECourseResourceType.assignment:
-        return "/path-for-assignment";
+        return routes.student.assignment.detail
+          .replace(":assignmentId", props.assignmentId)
+          .replace(":courseId", props.courseId);
       case ECourseResourceType.file:
         return props.content;
       case ECourseResourceType.url:
