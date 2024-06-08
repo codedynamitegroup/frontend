@@ -63,8 +63,8 @@ export interface PostShortAnswerQuestion {
   defaultMark: number;
   qType: string;
   questionBankCategoryId?: string;
+  isOrgQuestionBank?: boolean;
   answers: PostAnswer[];
-
   caseSensitive: boolean;
 }
 
@@ -79,6 +79,7 @@ export interface PostEssayQuestion {
   defaultMark: number;
   qType: string;
   questionBankCategoryId?: string;
+  isOrgQuestionBank?: boolean;
   responseFormat: string;
   responseRequired?: number;
   responseFieldLines: number;
@@ -106,6 +107,7 @@ export interface PostMultipleChoiceQuestion {
   qType: string;
   answers?: PostAnswer[];
   questionBankCategoryId?: string;
+  isOrgQuestionBank?: boolean;
   single: boolean;
   shuffleAnswers?: boolean;
   correctFeedback?: string;

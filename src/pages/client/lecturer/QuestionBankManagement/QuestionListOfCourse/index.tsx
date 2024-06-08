@@ -1,4 +1,4 @@
-import { Box, Stack, Container } from "@mui/material";
+import { Box, Stack, Container, Tabs, Tab } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -242,8 +242,15 @@ const QuestionListOfCourse = () => {
   };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
+
+    const tab = categoryState.tab === "1" ? true : false;
+
     navigate(`create/${typeToCreateNewQuestion}`, {
-      state: { isQuestionBank: true, categoryName: categoryState.categoryDetails?.name }
+      state: {
+        isQuestionBank: true,
+        isOrgQuestionBank: tab,
+        categoryName: categoryState.categoryDetails?.name
+      }
     });
   };
 
