@@ -4,6 +4,7 @@ import { QuestionBankCategoryEntity } from "models/courseService/entity/Question
 
 interface InitialState {
   isLoading: boolean;
+  tab: string;
   categories: {
     questionBankCategories: QuestionBankCategoryEntity[];
     currentPage: number;
@@ -21,6 +22,7 @@ interface InitialState {
 
 const initialState: InitialState = {
   isLoading: false,
+  tab: "1",
   categories: {
     questionBankCategories: [],
     currentPage: 0,
@@ -57,11 +59,14 @@ const questionBankCategorySlice = createSlice({
       state.questions.currentPage = action.payload.currentPage;
       state.questions.totalItems = action.payload.totalItems;
       state.questions.totalPages = action.payload.totalPages;
+    },
+    setTab: (state, action: { payload: string }) => {
+      state.tab = action.payload;
     }
   }
 });
 
-export const { setLoading, setCategories, setCategoryDetails, setQuestionsBank } =
+export const { setLoading, setCategories, setCategoryDetails, setQuestionsBank, setTab } =
   questionBankCategorySlice.actions;
 
 export default questionBankCategorySlice.reducer;

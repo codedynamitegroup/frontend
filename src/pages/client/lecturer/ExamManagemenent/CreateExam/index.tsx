@@ -155,7 +155,7 @@ export default function ExamCreated() {
   const submitHandler = () => {
     const questionIds = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
-      page: 1
+      page: 0
     }));
 
     const timeLimit = (() => {
@@ -824,7 +824,7 @@ export default function ExamCreated() {
                       type='number'
                       value={questionCreate.timeLimit}
                       onChange={(e) => {
-                        setExamTimeLimitNumber(parseInt(e.target.value));
+                        // setExamTimeLimitNumber(parseInt(e.target.value));
                         dispatch(setTimeLimitCreate(parseInt(e.target.value)));
                       }}
                       placeholder={t("common_enter_quan")}

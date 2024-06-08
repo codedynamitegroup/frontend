@@ -8,6 +8,10 @@ import { useTranslation } from "react-i18next";
 
 import classes from "./styles.module.scss";
 import { styled } from "@mui/material/styles";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { set } from "lodash";
+import { setTab } from "reduxes/courseService/questionBankCategory";
 
 const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) => ({
   textTransform: "none",
@@ -19,8 +23,10 @@ const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) =>
 const QuestionBankManagementLayout = () => {
   const { t } = useTranslation();
   const [value, setValue] = useState("1");
+  const dispatch = useDispatch<AppDispatch>();
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
+    dispatch(setTab(newValue));
   };
 
   return (

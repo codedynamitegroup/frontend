@@ -128,6 +128,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
+  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
 
@@ -150,6 +151,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
       qType: "TRUE_FALSE",
       answers: undefined,
       questionBankCategoryId: isQuestionBank ? categoryId : undefined,
+      isOrgQuestionBank: isOrgQuestionBank,
       single: true,
       shuffleAnswers: false,
       showStandardInstructions: formSubmittedData.showInstructions.toString(),
