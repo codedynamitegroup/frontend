@@ -81,3 +81,13 @@ export interface ExamQuestionSubmission {
   content: string;
   numFile: number;
 }
+
+export interface ExamSubmissionDetail {
+  examId: string;
+  examSubmissionId: string;
+  markTotal: number;
+  startTime: Date;
+  submitTime: Date;
+  status: string;
+  userId: string;
+}

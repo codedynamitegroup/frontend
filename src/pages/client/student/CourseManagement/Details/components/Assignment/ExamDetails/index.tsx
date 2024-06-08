@@ -12,7 +12,12 @@ import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
-import { ExamEntity, ExamOverview, ReduxExamEntity } from "models/courseService/entity/ExamEntity";
+import {
+  ExamEntity,
+  ExamOverview,
+  ExamSubmissionDetail,
+  ReduxExamEntity
+} from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
@@ -25,6 +30,12 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import Card from "@mui/joy/Card";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import GradeRoundedIcon from "@mui/icons-material/GradeRounded";
+import { EHtmlStatusCode } from "models/general";
+import CourseErrorPage from "pages/client/student/CourseError";
+import { Helmet } from "react-helmet";
+import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
+import i18next from "i18next";
+import { CircularProgress } from "@mui/joy";
 
 const StudentCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -33,9 +44,13 @@ const StudentCourseExamDetails = () => {
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
   const startAt = useSelector((state: RootState) => state.takeExam.startAt);
+  const [examSubmissions, setExamSubmissions] = useState<ExamSubmissionDetail[]>([]);
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
   const [timeCloseString, setTimeCloseString] = useState<Date>(new Date());
+  const [errorPage, setErrorPage] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [highestScore, setHighestScore] = useState<number>(0);
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -61,20 +76,46 @@ const StudentCourseExamDetails = () => {
       const response = await ExamService.getExamById(id);
       setExam(response);
       dispatch(setExamDetail(response));
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.code === EHtmlStatusCode.notFound || error.code === EHtmlStatusCode.serverError) {
+        setErrorPage(true);
+        setErrorTitle(t("course_error_exam_not_found"));
+      }
     }
   };
 
   const handleGetSubmissions = async (examId: string, userId: string) => {
     try {
       const response = await ExamService.getAllAttemptByExamIdAndUserId(examId, userId);
-      console.log("all attempts", response);
-      // dispatch(setExamOverview(response));
+      setExamSubmissions(response);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const calculateHighestGrade = () => {
+    let highestGrade = 0;
+
+    if (exam.gradeMethod === "QUIZ_GRADEHIGHEST") {
+      const tempMark = Math.max(...examSubmissions.map((submission) => submission.markTotal));
+      highestGrade = (tempMark / (exam.scores || 1)) * (exam.maxScores || 0);
+    } else if (exam.gradeMethod === "QUIZ_GRADEAVERAGE") {
+      highestGrade =
+        examSubmissions.reduce((acc, submission) => acc + submission.markTotal, 0) /
+        examSubmissions.length;
+    } else if (exam.gradeMethod === "QUIZ_ATTEMPTFIRST") {
+      highestGrade = examSubmissions[0].markTotal;
+    }
+    if (exam.gradeMethod === "QUIZ_ATTEMPTLAST") {
+      highestGrade = examSubmissions[examSubmissions.length - 1].markTotal;
+    }
+
+    setHighestScore(highestGrade);
+  };
+
+  useEffect(() => {
+    calculateHighestGrade();
+  }, [examSubmissions]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -152,8 +193,17 @@ const StudentCourseExamDetails = () => {
     t("common_saturday")
   ];
 
-  return (
+  return errorPage ? (
+    <CourseErrorPage errorTitle={errorTitle} />
+  ) : (
     <Box className={classes.assignmentBody}>
+      <Helmet translation-key='course_detail_exam'>
+        <title>
+          {t("course_detail_exam")}
+          {" | "}
+          {exam.name}
+        </title>
+      </Helmet>
       <Heading1>{exam.name}</Heading1>
 
       <Button
@@ -228,7 +278,7 @@ const StudentCourseExamDetails = () => {
                     time: `${timeCloseString.getHours() < 10 ? `0${timeCloseString.getHours()}` : timeCloseString.getHours()}:${timeCloseString.getMinutes() < 10 ? `0${timeCloseString.getMinutes()}` : timeCloseString.getMinutes()}`
                   })}
                 </ParagraphBody>
-              </Stack>{" "}
+              </Stack>
             </Stack>
           </Grid>
         </Grid>
@@ -236,14 +286,34 @@ const StudentCourseExamDetails = () => {
       <Box className={classes.assignmentDescription}>
         <div dangerouslySetInnerHTML={{ __html: exam.intro }}></div>
       </Box>
-      <Button
-        onClick={startAttemptButtonHandler}
-        sx={{
-          width: "fit-content"
-        }}
-      >
-        {startAt ? t("exam_detail_continue") : t("exam_detail_start")}
-      </Button>
+      <Stack direction='row' spacing={1.5} alignItems={"center"}>
+        <Button
+          disabled={examSubmissions.length === exam.maxAttempts}
+          onClick={startAttemptButtonHandler}
+          sx={{
+            width: "fit-content",
+            height: "fit-content"
+          }}
+        >
+          {startAt ? t("exam_detail_continue") : t("exam_detail_start")}
+        </Button>
+        <CircularProgress
+          thickness={3}
+          sx={{
+            fontWeight: "bolder",
+            textAlign: "center"
+          }}
+          size='lg'
+          determinate
+          value={(examSubmissions.length / (exam.maxAttempts || 1)) * 100}
+          translation-key='exam_detail_summary_attempt'
+        >
+          {`${examSubmissions.length} / ${exam.maxAttempts}`}
+          <br />
+          {t("exam_detail_summary_attempt")}
+        </CircularProgress>
+      </Stack>
+
       <Card
         variant='soft'
         color='neutral'
@@ -271,7 +341,7 @@ const StudentCourseExamDetails = () => {
                 {": "}
               </ParagraphBody>
               <ParagraphBody color={"#434343"} fontSize={"12px"}>
-                {exam.timeLimit ?? 0}
+                {millisToFormatTimeString((exam.timeLimit ?? 0) * 1000, i18next.language)}
               </ParagraphBody>
             </Stack>
           </Stack>
@@ -306,6 +376,27 @@ const StudentCourseExamDetails = () => {
               </ParagraphBody>
             </Stack>
           </Stack>
+          <Stack direction='row' spacing={1.5} alignItems={"center"}>
+            <ReplayRoundedIcon
+              sx={{
+                color: "#707070",
+                fontSize: "20px"
+              }}
+            />
+            <Stack direction='row' spacing={0.5}>
+              <ParagraphBody
+                fontWeight={"bolder"}
+                color={"#434343"}
+                fontSize={"12px"}
+                translation-key='exam_detail_max_attempt'
+              >
+                {`${t("exam_detail_max_attempt")}: `}
+              </ParagraphBody>
+              <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                {exam.maxAttempts}
+              </ParagraphBody>
+            </Stack>
+          </Stack>
         </Stack>
       </Card>
 
@@ -318,37 +409,23 @@ const StudentCourseExamDetails = () => {
         headers={[
           t("exam_detail_summary_attempt"),
           t("exam_detail_summary_state"),
-          `${t("exam_detail_summary_score")} / ${exam.maxScores}`,
+          `${t("exam_detail_mark")} / ${exam.scores}`,
+          `${t("common_final_grade")} / ${exam.maxScores}`,
           t("exam_detail_summary_review")
         ]}
-        rows={[
-          {
-            no: "1",
-            state: "Đã nộp",
-            grade: "10.0",
-            submitted_at: dayjs().toString()
-          },
-          {
-            no: "2",
-            state: "Chưa nộp",
-            grade: "Chưa có điểm",
-            submitted_at: dayjs().toString()
-          },
-          {
-            no: "3",
-            state: "Chưa nộp",
-            grade: "Chưa có điểm",
-            submitted_at: dayjs().toString()
-          }
-        ]}
+        rows={examSubmissions}
+        examMark={exam.scores || 0}
+        examGrade={exam.maxScores || 0}
       />
-      <Heading2 translation-key='exam_detail_grading_method_high_score'>
-        {t("exam_detail_grading_method_high_score")}
-        {": "}
-        <span style={{ color: "red" }}>tempscore</span>
-        {" / "}
-        {exam.maxScores}
-      </Heading2>
+      {examSubmissions.length !== 0 && (
+        <Heading2 translation-key='exam_detail_grading_method_high_score'>
+          {t("exam_detail_grading_method_high_score")}
+          {": "}
+          <span style={{ color: "red" }}>{highestScore}</span>
+          {" / "}
+          {exam.maxScores}
+        </Heading2>
+      )}
     </Box>
   );
 };

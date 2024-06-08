@@ -2,3 +2,10 @@ export enum EOrder {
   asc = 1,
   desc = 2
 }
+
+export enum EHtmlStatusCode {
+  success = 200,
+  serverError = 500,
+  notFound = 404,
+  badRequest = 400
+}

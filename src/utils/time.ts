@@ -22,21 +22,23 @@ const millisToFormatTimeString = (millis: number, currentLang = "en") => {
     if (hours > 0) {
       result += `${hours} giờ `;
     }
-    result += `${minutes} phút ${remainingSeconds} giây `;
+    if (minutes > 0) result += `${minutes} phút `;
+    result += `${remainingSeconds} giây `;
   } else {
     if (years > 0) {
-      result += `${years} years `;
+      result += `${years} ${years > 1 ? "years" : "year"}`;
     }
     if (months > 0) {
-      result += `${months} months `;
+      result += `${months} ${months > 1 ? "months" : "month"}`;
     }
     if (days > 0) {
-      result += `${days} days `;
+      result += `${days} ${days > 1 ? "days" : "day"}`;
     }
     if (hours > 0) {
-      result += `${hours}h `;
+      result += `${hours} ${hours > 1 ? "hrs" : "hr"}`;
     }
-    result += `${minutes}m ${remainingSeconds}s `;
+    if (minutes > 0) result += `${minutes} ${minutes > 1 ? "mins" : "min"}`;
+    result += `${remainingSeconds} secs`;
   }
   return result.trim();
 };

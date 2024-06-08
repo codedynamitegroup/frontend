@@ -35,6 +35,7 @@ import { setLoading } from "reduxes/Loading";
 import { useDispatch } from "react-redux";
 import { cleanTakeExamState } from "reduxes/TakeExam";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { Helmet } from "react-helmet";
 
 const drawerWidth = 370;
 
@@ -238,6 +239,13 @@ const SubmitExamSummary = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {t("exam_summary")}
+          {" | "}
+          {examData.name}
+        </title>
+      </Helmet>
       <Grid className={classes.root}>
         <SnackbarAlert
           open={openSnackAlert}
