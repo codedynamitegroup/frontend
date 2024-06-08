@@ -61,6 +61,7 @@ import {
 } from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
 import {
+  clearExamCreate,
   clearQuestionCreate,
   setExamDescriptionCreate,
   setExamNameCreate,
@@ -194,6 +195,7 @@ export default function ExamCreated() {
       .then((response) => {
         console.log(response);
         dispatch(clearQuestionCreate());
+        dispatch(clearExamCreate());
       })
       .catch((error) => {
         console.log(error);
