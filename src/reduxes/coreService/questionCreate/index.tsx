@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "date-fns";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
-import { Moment } from "moment";
 import { OVERDUE_HANDLING } from "pages/client/lecturer/ExamManagemenent/CreateExam";
 
 interface InitialState {
@@ -64,6 +62,17 @@ const questionCreateSlice = createSlice({
     },
     setQuestionCreateFromBank(state, action: { payload: QuestionEntity[] }) {
       state.questionCreate.push(...action.payload);
+    },
+    clearExamCreate: (state) => {
+      state.examName = "";
+      state.examDescription = "";
+      state.maxScore = 10;
+      state.timeOpen = new Date().toISOString();
+      state.timeClose = new Date().toISOString();
+      state.timeLimit = 0;
+      state.overdueHandling = OVERDUE_HANDLING.AUTOSUBMIT;
+      state.maxAttempt = 0;
+      state.questionCreate = [];
     }
   }
 });
@@ -79,7 +88,8 @@ export const {
   setTimeCloseCreate,
   setTimeLimitCreate,
   setOverdueHandlingCreate,
-  setMaxAttemptCreate
+  setMaxAttemptCreate,
+  clearExamCreate
 } = questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;
