@@ -125,11 +125,13 @@ export class QuestionService {
 
   static async getQuestionsByCategoryId({
     categoryId,
+    isOrgQuestionBank,
     search = "",
     pageNo = 0,
     pageSize = 10
   }: {
     categoryId: string;
+    isOrgQuestionBank?: boolean;
     search?: string;
     pageNo?: number;
     pageSize?: number;
@@ -139,6 +141,7 @@ export class QuestionService {
         `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`,
         {
           params: {
+            isOrgQuestionBank,
             search,
             pageNo,
             pageSize
@@ -175,7 +178,6 @@ export class QuestionService {
       });
     }
   }
-
 
   static async cloneQuestionByIdIn(questions: QuestionCloneRequest) {
     try {

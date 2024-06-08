@@ -1,5 +1,5 @@
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import { Box, Tab, TabProps } from "@mui/material";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { set } from "lodash";
 import { setTab } from "reduxes/courseService/questionBankCategory";
+import { di } from "@fullcalendar/core/internal-common";
 
 const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) => ({
   textTransform: "none",
@@ -22,11 +23,13 @@ const CustomTab = styled((props: TabProps) => <Tab {...props} />)(({ theme }) =>
 }));
 const QuestionBankManagementLayout = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [value, setValue] = useState("1");
   const dispatch = useDispatch<AppDispatch>();
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
     dispatch(setTab(newValue));
+    navigate("/lecturer/question-bank-management");
   };
 
   return (

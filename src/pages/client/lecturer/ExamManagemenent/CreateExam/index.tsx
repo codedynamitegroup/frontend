@@ -201,6 +201,9 @@ export default function ExamCreated() {
         console.log(error);
       });
   };
+
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+
   const handleGetQuestionBankCategories = async ({
     search = "",
     pageNo = 0,
@@ -213,6 +216,7 @@ export default function ExamCreated() {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
+          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
           search,
           pageNo,
           pageSize
