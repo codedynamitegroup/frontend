@@ -61,6 +61,7 @@ import {
 } from "models/coreService/entity/QuestionEntity";
 import moment, { Moment } from "moment";
 import {
+  clearExamCreate,
   clearQuestionCreate,
   setExamDescriptionCreate,
   setExamNameCreate,
@@ -80,7 +81,6 @@ import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
-import { di, ex } from "@fullcalendar/core/internal-common";
 
 const drawerWidth = 400;
 
@@ -158,18 +158,35 @@ export default function ExamCreated() {
       page: 1
     }));
 
+    const timeLimit = (() => {
+      switch (examTimeLimitUnit) {
+        case "weeks":
+          return questionCreate.timeLimit * 604800;
+        case "days":
+          return questionCreate.timeLimit * 86400;
+        case "hours":
+          return questionCreate.timeLimit * 3600;
+        case "minutes":
+          return questionCreate.timeLimit * 60;
+        case "seconds":
+          return questionCreate.timeLimit;
+        default:
+          return 0;
+      }
+    })();
+
     const newExam: ExamCreateRequest = {
       courseId: courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290",
-      name: examName,
-      intro: examDescription,
-      score: examMaximumGrade,
-      maxScore: examMaximumGrade,
-      timeOpen: examOpenTime ? examOpenTime.toDate() : new Date(),
-      timeClose: examCloseTime ? examCloseTime.toDate() : new Date(),
-      timeLimit: examTimeLimitNumber,
-      overdueHandling: overdueHandling.toUpperCase(),
+      name: questionCreate.examName,
+      intro: questionCreate.examDescription,
+      score: questionCreate.maxScore,
+      maxScore: questionCreate.maxScore,
+      timeOpen: new Date(questionCreate.timeOpen),
+      timeClose: new Date(questionCreate.timeClose),
+      timeLimit: timeLimit,
+      overdueHandling: questionCreate.overdueHandling.toUpperCase(),
       canRedoQuestions: true,
-      maxAttempts: maxAttempts,
+      maxAttempts: questionCreate.maxAttempt,
       shuffleQuestions: true,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds
@@ -178,6 +195,7 @@ export default function ExamCreated() {
       .then((response) => {
         console.log(response);
         dispatch(clearQuestionCreate());
+        dispatch(clearExamCreate());
       })
       .catch((error) => {
         console.log(error);
@@ -618,7 +636,7 @@ export default function ExamCreated() {
                   title={t("common_exam_name")}
                   value={questionCreate.examName}
                   onChange={(e) => {
-                    setExamName(e.target.value);
+                    // setExamName(e.target.value);
                     dispatch(setExamNameCreate(e.target.value));
                   }}
                   placeholder={t("exam_management_create_enter_exam_name")}
@@ -635,7 +653,7 @@ export default function ExamCreated() {
                     <TextEditor
                       value={questionCreate.examDescription}
                       onChange={(value) => {
-                        setExamDescription(value);
+                        // setExamDescription(value);
                         dispatch(setExamDescriptionCreate(value));
                       }}
                     />
@@ -750,7 +768,7 @@ export default function ExamCreated() {
                   type='number'
                   value={questionCreate.maxScore}
                   onChange={(e) => {
-                    setExamMaximumGrade(parseInt(e.target.value));
+                    // setExamMaximumGrade(parseInt(e.target.value));
                     dispatch(setMaxScoreCreate(parseInt(e.target.value)));
                   }}
                   placeholder={t("exam_management_create_enter_score")}
@@ -768,8 +786,12 @@ export default function ExamCreated() {
                 <CustomDateTimePicker
                   value={moment(questionCreate.timeOpen)}
                   onHandleValueChange={(newValue) => {
-                    setExamOpenTime(newValue);
-                    dispatch(setTimeOpenCreate(newValue?.toDate() ?? new Date()));
+                    // setExamOpenTime(newValue);
+                    dispatch(
+                      setTimeOpenCreate(
+                        newValue?.toDate().toISOString() ?? new Date().toISOString()
+                      )
+                    );
                   }}
                   backgroundColor='#D9E2ED'
                 />
@@ -784,8 +806,12 @@ export default function ExamCreated() {
                 <CustomDateTimePicker
                   value={moment(questionCreate.timeClose)}
                   onHandleValueChange={(newValue) => {
-                    setExamCloseTime(newValue);
-                    dispatch(setTimeCloseCreate(newValue?.toDate() ?? new Date()));
+                    // setExamCloseTime(newValue);
+                    dispatch(
+                      setTimeCloseCreate(
+                        newValue?.toDate().toISOString() ?? new Date().toISOString()
+                      )
+                    );
                   }}
                   backgroundColor='#D9E2ED'
                 />
@@ -872,7 +898,7 @@ export default function ExamCreated() {
                   labelId='select-assignment-overdue-handling-label'
                   value={questionCreate.overdueHandling}
                   onHandleChange={(value) => {
-                    setOverdueHandling(value);
+                    // setOverdueHandling(value);
                     dispatch(setOverdueHandlingCreate(value));
                   }}
                   items={[
@@ -906,8 +932,10 @@ export default function ExamCreated() {
                 </TextTitle>
                 <BasicSelect
                   labelId='select-assignment-max-attempts-label'
-                  value={maxAttempts.toString()}
-                  onHandleChange={(value) => setMaxAttempts(Number(value))}
+                  value={questionCreate.maxAttempt.toString()}
+                  onHandleChange={(value) => {
+                    dispatch(setMaxAttemptCreate(parseInt(value)));
+                  }}
                   items={[
                     {
                       value: "0",

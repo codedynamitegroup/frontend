@@ -1,15 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "date-fns";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
-import { Moment } from "moment";
 import { OVERDUE_HANDLING } from "pages/client/lecturer/ExamManagemenent/CreateExam";
 
 interface InitialState {
   examName: string;
   examDescription: string;
   maxScore: number;
-  timeOpen: Date;
-  timeClose: Date;
+  timeOpen: string;
+  timeClose: string;
   timeLimit: number;
   overdueHandling: string;
   maxAttempt: number;
@@ -20,8 +18,8 @@ const initState: InitialState = {
   examName: "",
   examDescription: "",
   maxScore: 10,
-  timeOpen: new Date(),
-  timeClose: new Date(),
+  timeOpen: new Date().toISOString(),
+  timeClose: new Date().toISOString(),
   timeLimit: 0,
   overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
   maxAttempt: 0,
@@ -41,10 +39,10 @@ const questionCreateSlice = createSlice({
     setMaxScoreCreate: (state, action: { payload: number }) => {
       state.maxScore = action.payload;
     },
-    setTimeOpenCreate: (state, action: { payload: Date }) => {
+    setTimeOpenCreate: (state, action: { payload: string }) => {
       state.timeOpen = action.payload;
     },
-    setTimeCloseCreate: (state, action: { payload: Date }) => {
+    setTimeCloseCreate: (state, action: { payload: string }) => {
       state.timeClose = action.payload;
     },
     setTimeLimitCreate: (state, action: { payload: number }) => {
@@ -64,6 +62,17 @@ const questionCreateSlice = createSlice({
     },
     setQuestionCreateFromBank(state, action: { payload: QuestionEntity[] }) {
       state.questionCreate.push(...action.payload);
+    },
+    clearExamCreate: (state) => {
+      state.examName = "";
+      state.examDescription = "";
+      state.maxScore = 10;
+      state.timeOpen = new Date().toISOString();
+      state.timeClose = new Date().toISOString();
+      state.timeLimit = 0;
+      state.overdueHandling = OVERDUE_HANDLING.AUTOSUBMIT;
+      state.maxAttempt = 0;
+      state.questionCreate = [];
     }
   }
 });
@@ -79,7 +88,8 @@ export const {
   setTimeCloseCreate,
   setTimeLimitCreate,
   setOverdueHandlingCreate,
-  setMaxAttemptCreate
+  setMaxAttemptCreate,
+  clearExamCreate
 } = questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;
