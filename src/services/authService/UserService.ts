@@ -161,11 +161,14 @@ export class UserService {
       });
     }
   }
-  static async forgotPassword(email: string) {
+  static async forgotPassword(email: string, redirectUrl: string) {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).get(`${API.AUTH.FORGOT_PASSWORD.replace(":email", email)}`);
+      }).put(`${API.AUTH.FORGOT_PASSWORD}`, {
+        email: email,
+        redirectUrl: redirectUrl
+      });
       if (response.status === 200) {
         return response.data;
       }
