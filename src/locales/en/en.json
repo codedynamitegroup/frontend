@@ -907,5 +907,7 @@
 
   "course_error_page": "Error | Course",
   "course_error": "Course Error",
-  "course_error_exam_not_found": "Exam with the provided ID cant not be found"
+  "course_error_exam_not_found": "Exam with the provided ID cant not be found",
+  "exam_take_exam_title": "Take exam",
+  "exam_review_attempt_title": "Review attempt"
 }

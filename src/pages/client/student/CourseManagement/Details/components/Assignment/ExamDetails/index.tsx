@@ -164,8 +164,12 @@ const StudentCourseExamDetails = () => {
     <CourseErrorPage errorTitle={errorTitle} />
   ) : (
     <Box className={classes.assignmentBody}>
-      <Helmet>
-        <title>{exam.name}</title>
+      <Helmet translation-key='course_detail_exam'>
+        <title>
+          {t("course_detail_exam")}
+          {" | "}
+          {exam.name}
+        </title>
       </Helmet>
       <Heading1>{exam.name}</Heading1>
 

@@ -31,6 +31,7 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
+import { Helmet } from "react-helmet";
 
 interface SubmissionData {
   examSubmissionId: string;
@@ -234,6 +235,9 @@ export default function StudentReviewExamAttempt() {
 
   return (
     <>
+      <Helmet>
+        <title>{`${t("exam_review_attempt_title")} | ${examData?.name}`}</title>
+      </Helmet>
       <Grid className={classes.root}>
         <Header ref={headerRef} />
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>

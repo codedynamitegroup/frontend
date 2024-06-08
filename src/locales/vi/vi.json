@@ -895,5 +895,7 @@
   "exam_detail_summary_state": "Trạng thái",
   "exam_detail_summary_open_review": "Xem đánh giá",
   "exam_detail_start": "Bắt đầu làm bài",
-  "exam_detail_continue": "Tiếp tục làm bài"
+  "exam_detail_continue": "Tiếp tục làm bài",
+  "exam_take_exam_title": "Làm bài kiểm tra",
+  "exam_review_attempt_title": "Xem lại lần làm bài"
 }
