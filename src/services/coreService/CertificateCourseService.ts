@@ -115,9 +115,7 @@ export class CertificateCourseService {
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
-      }).post(`${API.CORE.CERTIFICATE_COURSE.REGISTER_BY_ID.replace(":id", id)}`, {
-        userId: "9ba179ed-d26d-4828-a0f6-8836c2063992"
-      });
+      }).post(`${API.CORE.CERTIFICATE_COURSE.REGISTER_BY_ID.replace(":id", id)}`);
       if (response.status === 201) {
         return response.data;
       }

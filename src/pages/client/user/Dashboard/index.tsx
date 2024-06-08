@@ -63,36 +63,39 @@ export default function UserDashboard() {
     return contestState.mostPopularContests.mostPopularContests[0];
   }, [contestState.mostPopularContests]);
 
-  const handleGetCertificateCourses = async ({
-    courseName,
-    filterTopicId,
-    isRegisteredFilter
-  }: {
-    courseName: string;
-    filterTopicId?: string;
-    isRegisteredFilter: IsRegisteredFilterEnum;
-  }) => {
-    setIsCertificateCoursesLoading(true);
-    try {
-      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName,
-        filterTopicId,
-        isRegisteredFilter
-      });
-      setIsCertificateCoursesLoading(false);
-      setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-    } catch (error: any) {
-      console.error("Failed to fetch certificate courses", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-      setIsCertificateCoursesLoading(false);
-      // Show snackbar here
-    }
-  };
+  const handleGetCertificateCourses = useCallback(
+    async ({
+      courseName,
+      filterTopicId,
+      isRegisteredFilter
+    }: {
+      courseName: string;
+      filterTopicId?: string;
+      isRegisteredFilter: IsRegisteredFilterEnum;
+    }) => {
+      setIsCertificateCoursesLoading(true);
+      try {
+        const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+          courseName,
+          filterTopicId,
+          isRegisteredFilter
+        });
+        setIsCertificateCoursesLoading(false);
+        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+      } catch (error: any) {
+        console.error("Failed to fetch certificate courses", {
+          code: error.code || 503,
+          status: error.status || "Service Unavailable",
+          message: error.message
+        });
+        setIsCertificateCoursesLoading(false);
+        // Show snackbar here
+      }
+    },
+    []
+  );
 
-  const handleGetRegisteredCertificateCourses = async () => {
+  const handleGetRegisteredCertificateCourses = useCallback(async () => {
     setIsCertificateCoursesLoading(true);
     try {
       const getCertificateCoursesResponse =
@@ -108,7 +111,7 @@ export default function UserDashboard() {
       setIsCertificateCoursesLoading(false);
       // Show snackbar here
     }
-  };
+  }, []);
 
   const handleGetMostPopularContests = useCallback(async () => {
     setIsMostPopularContestsLoading(true);
@@ -168,16 +171,30 @@ export default function UserDashboard() {
     };
 
     fetchInitialData();
-  }, []);
+  }, [
+    handleGetCertificateCourses,
+    handleGetMostPopularContests,
+    handleGetRegisteredCertificateCourses
+  ]);
 
   return (
     <Grid id={classes.userDashboardRoot}>
       <Container className={classes.container}>
         <Grid container className={classes.sectionContentImage}>
           <Grid item sm={12} md={7} className={classes.sectionContent}>
-            <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
+            <Box
+              className={classes.currentCourse}
+              translation-key={
+                ongoingRegisteredCourses.length === 0
+                  ? "dashboard_start_title"
+                  : "dashboard_continue_title"
+              }
+            >
               <Heading2>
-                {t("dashboard_continue_title")}, {loggedUser?.firstName}
+                {ongoingRegisteredCourses.length === 0
+                  ? t("dashboard_start_title")
+                  : t("dashboard_continue_title")}
+                , {loggedUser?.firstName}
               </Heading2>
               <Box className={classes.courseLearningList}>
                 {ongoingRegisteredCourses.length === 0 ? (
