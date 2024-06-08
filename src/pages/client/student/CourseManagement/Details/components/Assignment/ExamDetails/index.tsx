@@ -25,6 +25,9 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import Card from "@mui/joy/Card";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import GradeRoundedIcon from "@mui/icons-material/GradeRounded";
+import { EHtmlStatusCode } from "models/general";
+import CourseErrorPage from "pages/client/student/CourseError";
+import { Helmet } from "react-helmet";
 
 const StudentCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -36,6 +39,8 @@ const StudentCourseExamDetails = () => {
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
   const [timeCloseString, setTimeCloseString] = useState<Date>(new Date());
+  const [errorPage, setErrorPage] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -61,8 +66,11 @@ const StudentCourseExamDetails = () => {
       const response = await ExamService.getExamById(id);
       setExam(response);
       dispatch(setExamDetail(response));
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.code === EHtmlStatusCode.notFound || error.code === EHtmlStatusCode.serverError) {
+        setErrorPage(true);
+        setErrorTitle(t("course_error_exam_not_found"));
+      }
     }
   };
 
@@ -152,8 +160,13 @@ const StudentCourseExamDetails = () => {
     t("common_saturday")
   ];
 
-  return (
+  return errorPage ? (
+    <CourseErrorPage errorTitle={errorTitle} />
+  ) : (
     <Box className={classes.assignmentBody}>
+      <Helmet>
+        <title>{exam.name}</title>
+      </Helmet>
       <Heading1>{exam.name}</Heading1>
 
       <Button

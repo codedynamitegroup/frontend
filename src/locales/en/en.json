@@ -903,5 +903,9 @@
   "exam_detail_summary_state": "State",
   "exam_detail_summary_open_review": "Open review",
   "exam_detail_start": "Start exam",
-  "exam_detail_continue": "Continue exam"
+  "exam_detail_continue": "Continue exam",
+
+  "course_error_page": "Error | Course",
+  "course_error": "Course Error",
+  "course_error_exam_not_found": "Exam with the provided ID cant not be found"
 }
