@@ -909,5 +909,9 @@
   "course_error": "Course Error",
   "course_error_exam_not_found": "Exam with the provided ID cant not be found",
   "exam_take_exam_title": "Take exam",
-  "exam_review_attempt_title": "Review attempt"
+  "exam_review_attempt_title": "Review attempt",
+  "exam_detail_mark": "Mark",
+  "exam_detail_graded": "Graded",
+  "exam_detail_summary_no_attempt": "Haven't done any attempt",
+  "exam_detail_max_attempt": "Maximum attempt"
 }

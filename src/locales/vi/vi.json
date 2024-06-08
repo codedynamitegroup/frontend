@@ -889,7 +889,7 @@
   "exam_detail_grading_method_first_submit": "Lần nộp đầu tiên",
 
   "exam_detail_summary_previous_attempt": "Tóm tắt những lần làm bài trước",
-  "exam_detail_summary_attempt": "Lần thử",
+  "exam_detail_summary_attempt": "Lần làm",
   "exam_detail_summary_score": "Điểm",
   "exam_detail_summary_review": "Đánh giá",
   "exam_detail_summary_state": "Trạng thái",
@@ -897,5 +897,9 @@
   "exam_detail_start": "Bắt đầu làm bài",
   "exam_detail_continue": "Tiếp tục làm bài",
   "exam_take_exam_title": "Làm bài kiểm tra",
-  "exam_review_attempt_title": "Xem lại lần làm bài"
+  "exam_review_attempt_title": "Xem lại lần làm bài",
+  "exam_detail_mark": "Số điểm",
+  "exam_detail_graded": "Đã chấm",
+  "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
+  "exam_detail_max_attempt": "Số lần làm bài tối đa"
 }
