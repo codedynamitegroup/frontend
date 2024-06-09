@@ -224,7 +224,7 @@ export default function HomePage() {
                                 translation-key='common_view_this_course'
                                 onClick={() =>
                                   navigate(
-                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                    routes.user.course_certificate.detail.introduction.replace(
                                       ":courseId",
                                       certificateCourse.certificateCourseId
                                     )
@@ -326,7 +326,7 @@ export default function HomePage() {
                                 translation-key='common_view_this_course'
                                 onClick={() =>
                                   navigate(
-                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                    routes.user.course_certificate.detail.introduction.replace(
                                       ":courseId",
                                       certificateCourse.certificateCourseId
                                     )

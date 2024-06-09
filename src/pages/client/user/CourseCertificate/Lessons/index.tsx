@@ -1,0 +1,515 @@
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArticleIcon from "@mui/icons-material/Article";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CodeIcon from "@mui/icons-material/Code";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MenuIcon from "@mui/icons-material/Menu";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import JoyButton from "@mui/joy/Button";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Toolbar
+} from "@mui/material";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+import Header from "components/Header";
+import Heading3 from "components/text/Heading3";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import TextTitle from "components/text/TextTitle";
+import useBoxDimensions from "hooks/useBoxDimensions";
+import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import YouTube, { YouTubeProps } from "react-youtube";
+import { setErrorMess } from "reduxes/AppStatus";
+import { setChapters } from "reduxes/coreService/Chapter";
+import { routes } from "routes/routes";
+import { ChapterService } from "services/coreService/ChapterService";
+import { AppDispatch, RootState } from "store";
+import classes from "./styles.module.scss";
+
+const drawerWidth = 300;
+
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: 0
+  })
+}));
+
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open"
+})<AppBarProps>(({ theme, open }) => ({
+  transition: theme.transitions.create(["margin", "width"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}));
+
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: "flex-start"
+}));
+
+export default function Lessons() {
+  const { courseId } = useParams<{ courseId: string }>();
+  const { lessonId } = useParams<{ lessonId: string }>();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
+    // access to player in all event handlers via event.target
+    event.target.pauseVideo();
+  };
+
+  const opts: YouTubeProps["opts"] = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      // https://developers.google.com/youtube/player_parameters
+      //   autoplay: 0
+    }
+  };
+
+  const getVideoId = (url: string) => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[7].length === 11 ? match[7] : null;
+  };
+
+  const [isChapterExpanded, setIsChapterExpanded] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const chapterState = useSelector((state: RootState) => state.chapter);
+
+  const [open, setOpen] = React.useState(true);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
+
+  const header2Ref = React.useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({
+    ref: header2Ref
+  });
+
+  const currentLesson = useMemo(() => {
+    if (chapterState.chapters && chapterState.chapters.length > 0) {
+      for (let i = 0; i < chapterState.chapters.length; i++) {
+        if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
+          for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+            if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+              return chapterState.chapters[i].resources[j];
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }, [chapterState.chapters, lessonId]);
+
+  const handleGetChaptersByCertificateCourseId = useCallback(
+    async (id: string) => {
+      try {
+        const getChaptersByCertificateCourseIdResponse =
+          await ChapterService.getChaptersByCertificateCourseIdResponse(id);
+        dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch chapters by certificate course id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        dispatch(setErrorMess(error.response?.message || error.message));
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    // Initialize the chapter expanded state
+    if (chapterState.chapters && chapterState.chapters.length > 0) {
+      const newIsChapterExpanded: { [key: string]: boolean } = {};
+      chapterState.chapters.forEach((chapter: ChapterEntity) => {
+        newIsChapterExpanded[chapter.chapterId] = false;
+        if (chapter.resources && chapter.resources.length > 0) {
+          for (let i = 0; i < chapter.resources.length; i++) {
+            if (chapter.resources[i].chapterResourceId === lessonId) {
+              newIsChapterExpanded[chapter.chapterId] = true;
+              break;
+            }
+          }
+        }
+      });
+      setIsChapterExpanded(newIsChapterExpanded);
+    }
+  }, [chapterState.chapters, lessonId]);
+
+  useEffect(() => {
+    if (courseId) {
+      handleGetChaptersByCertificateCourseId(courseId);
+    }
+  }, [courseId, handleGetChaptersByCertificateCourseId]);
+
+  if (!courseId || !lessonId || !currentLesson) {
+    return null;
+  }
+  return (
+    <Grid className={classes.root}>
+      <Header ref={headerRef} />
+      <Box
+        className={classes.container}
+        sx={{
+          marginTop: "65px"
+        }}
+      >
+        <CssBaseline />
+        <AppBar
+          position='fixed'
+          sx={{
+            // top: `${headerHeight + 1}px`,
+            top: "65px",
+            backgroundColor: "white"
+          }}
+          ref={header2Ref}
+          open={open}
+        >
+          <Toolbar>
+            <IconButton
+              color='inherit'
+              aria-label='open drawer'
+              edge='start'
+              onClick={open ? handleDrawerClose : handleDrawerOpen}
+            >
+              <MenuIcon color='action' />
+            </IconButton>
+            <Divider
+              orientation='vertical'
+              flexItem
+              sx={{
+                marginLeft: 1
+              }}
+            />
+            <JoyButton
+              variant='plain'
+              color='neutral'
+              disabled={
+                chapterState.chapters &&
+                chapterState.chapters.length > 0 &&
+                chapterState.chapters[0].resources &&
+                chapterState.chapters[0].resources.length > 0 &&
+                chapterState.chapters[0].resources[0].chapterResourceId === lessonId
+              }
+              startDecorator={
+                <ArrowBackIosNewIcon
+                  sx={{
+                    width: "18px",
+                    height: "18px"
+                  }}
+                />
+              }
+              onClick={() => {
+                const currentChapterIndex = chapterState.chapters.findIndex((chapter) =>
+                  chapter.resources.some((resource) => resource.chapterResourceId === lessonId)
+                );
+                console.log("currentChapterIndex", currentChapterIndex);
+                if (currentChapterIndex > 0) {
+                  navigate(
+                    routes.user.course_certificate.detail.lesson.detail
+                      .replace(":courseId", courseId)
+                      .replace(
+                        ":lessonId",
+                        chapterState.chapters[currentChapterIndex - 1].resources[0]
+                          .chapterResourceId
+                      )
+                  );
+                }
+              }}
+            >
+              {t("common_previous")}
+            </JoyButton>
+            <JoyButton
+              variant='plain'
+              color='neutral'
+              disabled={
+                chapterState.chapters &&
+                chapterState.chapters.length > 0 &&
+                chapterState.chapters[chapterState.chapters.length - 1].resources &&
+                chapterState.chapters[chapterState.chapters.length - 1].resources.length > 0 &&
+                chapterState.chapters[chapterState.chapters.length - 1].resources[
+                  chapterState.chapters[chapterState.chapters.length - 1].resources.length - 1
+                ].chapterResourceId === lessonId
+              }
+              endDecorator={
+                <ArrowForwardIosIcon
+                  sx={{
+                    width: "18px",
+                    height: "18px"
+                  }}
+                />
+              }
+            >
+              {t("common_next")}
+            </JoyButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+              //   marginTop: `${header2Height + 1}px`
+              marginTop: "65px"
+            }
+          }}
+          variant='persistent'
+          anchor='left'
+          open={open}
+        >
+          <DrawerHeader>
+            <JoyButton
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start"
+              }}
+              startDecorator={
+                <ArrowBackIosNewIcon
+                  sx={{
+                    width: "18px",
+                    height: "18px"
+                  }}
+                />
+              }
+              variant='plain'
+              color='neutral'
+              fullWidth
+              onClick={() => {
+                navigate(
+                  routes.user.course_certificate.detail.lesson.root.replace(":courseId", courseId)
+                );
+              }}
+            >
+              {t("common_back_to_chapters")}
+            </JoyButton>
+          </DrawerHeader>
+          <Divider />
+          {chapterState.chapters &&
+            chapterState.chapters.length > 0 &&
+            isChapterExpanded &&
+            Object.keys(isChapterExpanded).length > 0 &&
+            chapterState.chapters.map((chapter: ChapterEntity, index: number) => {
+              return (
+                <Accordion
+                  key={chapter.chapterId}
+                  expanded={isChapterExpanded[chapter.chapterId] || false}
+                  onChange={() => {
+                    setIsChapterExpanded({
+                      ...isChapterExpanded,
+                      [chapter.chapterId]: !isChapterExpanded[chapter.chapterId]
+                    });
+                  }}
+                  sx={{
+                    backgroundColor: `${
+                      chapter.resources && chapter.resources.length > 0
+                        ? chapter.resources.some(
+                            (resource) => resource.chapterResourceId === lessonId
+                          )
+                          ? "var(--gray-3)"
+                          : "white"
+                        : "white"
+                    }`
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls='panel1bh-content'
+                    id='panel1bh-header'
+                  >
+                    <Stack
+                      direction='column'
+                      spacing={1}
+                      alignItems='flex-start'
+                      justifyContent='space-between'
+                    >
+                      <TextTitle>{`${index + 1}. ${chapter.title}`}</TextTitle>
+                      <ParagraphSmall className={classes.chapterDescription}>
+                        {chapter.description}
+                      </ParagraphSmall>
+                    </Stack>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ToggleButtonGroup
+                      orientation='vertical'
+                      value={lessonId}
+                      exclusive
+                      onChange={(e, value) => {
+                        if (value) {
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", courseId)
+                              .replace(":lessonId", value)
+                          );
+                        }
+                      }}
+                      aria-label='Platform'
+                      fullWidth
+                    >
+                      {chapter.resources.map((resource, index) => (
+                        <ToggleButton
+                          key={resource.chapterResourceId}
+                          value={resource.chapterResourceId}
+                          sx={{
+                            border: "none",
+                            justifyContent: "flex-start",
+                            textTransform: "capitalize",
+                            textAlign: "left"
+                          }}
+                        >
+                          <Stack
+                            direction='row'
+                            gap={2}
+                            alignItems='center'
+                            justifyContent='flex-start'
+                          >
+                            {resource.isCompleted === true ? (
+                              <CheckCircleIcon className={classes.icCheck} />
+                            ) : resource.resourceType === ResourceTypeEnum.CODE ? (
+                              <CodeIcon className={classes.icCode} />
+                            ) : resource.resourceType === ResourceTypeEnum.VIDEO ? (
+                              <OndemandVideoIcon className={classes.icVideo} />
+                            ) : (
+                              <ArticleIcon className={classes.icArticle} />
+                            )}
+                            <ParagraphSmall className={classes.chapterDescription}>
+                              {resource?.title || ""}
+                            </ParagraphSmall>
+                          </Stack>
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
+        </Drawer>
+        <Main open={open}>
+          <DrawerHeader />
+          <Card
+            sx={{
+              padding: "20px",
+              width: "100%"
+            }}
+          >
+            {currentLesson.resourceType === ResourceTypeEnum.CODE ? (
+              <CodeIcon className={classes.icCode} />
+            ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
+              <Box>
+                <Stack
+                  direction='row'
+                  gap={2}
+                  alignItems='center'
+                  justifyContent='flex-start'
+                  sx={{
+                    marginBottom: "10px"
+                  }}
+                >
+                  <OndemandVideoIcon className={classes.icVideo} />
+                  <Heading3>{currentLesson.title}</Heading3>
+                </Stack>
+                <Divider
+                  sx={{
+                    marginY: "10px"
+                  }}
+                />
+
+                <YouTube
+                  videoId={getVideoId(currentLesson.youtubeVideoUrl) ?? ""}
+                  opts={opts}
+                  onReady={onPlayerReady}
+                />
+              </Box>
+            ) : (
+              <Box>
+                <Stack
+                  direction='row'
+                  gap={2}
+                  alignItems='center'
+                  justifyContent='flex-start'
+                  sx={{
+                    marginBottom: "10px"
+                  }}
+                >
+                  <ArticleIcon className={classes.icArticle} />
+                  <Heading3>{currentLesson.title}</Heading3>
+                </Stack>
+                <Divider
+                  sx={{
+                    marginY: "10px"
+                  }}
+                />
+                <div dangerouslySetInnerHTML={{ __html: currentLesson?.lessonHtml ?? "" }}></div>
+              </Box>
+            )}
+          </Card>
+        </Main>
+      </Box>
+    </Grid>
+  );
+}

@@ -53,8 +53,6 @@ const CourseCertificates = () => {
   const topicState = useSelector((state: RootState) => state.topic);
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 
-  // const [catalogActive, setCatalogActive] = useState<string>("all");
-
   const catalogActive = useMemo(() => {
     const catalogActive = searchParams.get("catalog") || "all";
     return catalogActive;
@@ -358,7 +356,7 @@ const CourseCertificates = () => {
                                   key={index}
                                   onClick={() =>
                                     navigate(
-                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                      routes.user.course_certificate.detail.introduction.replace(
                                         ":courseId",
                                         course.certificateCourseId
                                       )
@@ -401,7 +399,7 @@ const CourseCertificates = () => {
                             }}
                             onClick={() => {
                               navigate(
-                                `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
+                                `${routes.user.course_certificate.detail.introduction.replace(":courseId", option.certificateCourseId)}`
                               );
                             }}
                           >
@@ -491,7 +489,7 @@ const CourseCertificates = () => {
                                 key={index}
                                 onClick={() =>
                                   navigate(
-                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                    routes.user.course_certificate.detail.introduction.replace(
                                       ":courseId",
                                       course.certificateCourseId
                                     )
@@ -539,7 +537,7 @@ const CourseCertificates = () => {
                                   key={index}
                                   onClick={() =>
                                     navigate(
-                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                      routes.user.course_certificate.detail.introduction.replace(
                                         ":courseId",
                                         course.certificateCourseId
                                       )

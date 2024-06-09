@@ -52,7 +52,7 @@ const CourseCertificateCard = ({ course }: Props) => {
             <FontAwesomeIcon icon={faBook} className={classes.fileIcon} />
             <Stack direction='row' spacing={1} alignItems={"center"}>
               <ParagraphBody fontWeight={550}>
-                {course?.numOfQuestions || 0} {t("common_lessons").toLowerCase()} {" • "}
+                {course?.numOfResources || 0} {t("common_lessons").toLowerCase()} {" • "}
               </ParagraphBody>
               <ParagraphBody>
                 {course?.numOfStudents || 0} {t("common_learners").toLowerCase()}
