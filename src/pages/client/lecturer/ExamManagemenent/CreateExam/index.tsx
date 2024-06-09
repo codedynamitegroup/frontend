@@ -155,7 +155,7 @@ export default function ExamCreated() {
   const submitHandler = () => {
     const questionIds = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
-      page: 1
+      page: 0
     }));
 
     const timeLimit = (() => {
@@ -201,6 +201,9 @@ export default function ExamCreated() {
         console.log(error);
       });
   };
+
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+
   const handleGetQuestionBankCategories = async ({
     search = "",
     pageNo = 0,
@@ -213,6 +216,7 @@ export default function ExamCreated() {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
+          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
           search,
           pageNo,
           pageSize
@@ -824,7 +828,7 @@ export default function ExamCreated() {
                       type='number'
                       value={questionCreate.timeLimit}
                       onChange={(e) => {
-                        setExamTimeLimitNumber(parseInt(e.target.value));
+                        // setExamTimeLimitNumber(parseInt(e.target.value));
                         dispatch(setTimeLimitCreate(parseInt(e.target.value)));
                       }}
                       placeholder={t("common_enter_quan")}

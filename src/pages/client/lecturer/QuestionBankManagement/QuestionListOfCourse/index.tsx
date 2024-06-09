@@ -1,4 +1,4 @@
-import { Box, Stack, Container } from "@mui/material";
+import { Box, Stack, Container, Tabs, Tab } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -174,11 +174,13 @@ const QuestionListOfCourse = () => {
 
   const handleGetQuestions = async ({
     categoryId,
+    isOrgQuestionBank = categoryState.tab === "1" ? true : false,
     search = searchText,
     pageNo = page,
     pageSize = rowsPerPage
   }: {
     categoryId: string;
+    isOrgQuestionBank?: boolean;
     search?: string;
     pageNo?: number;
     pageSize?: number;
@@ -186,6 +188,7 @@ const QuestionListOfCourse = () => {
     try {
       const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
         categoryId,
+        isOrgQuestionBank,
         search,
         pageNo,
         pageSize
@@ -232,7 +235,13 @@ const QuestionListOfCourse = () => {
     setPage(model.page);
     setRowsPerPage(model.pageSize);
     if (categoryId) {
-      handleGetQuestions({ categoryId, search: searchText, pageNo: page, pageSize: rowsPerPage });
+      handleGetQuestions({
+        categoryId,
+        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
+        search: searchText,
+        pageNo: page,
+        pageSize: rowsPerPage
+      });
     }
   };
 
@@ -242,8 +251,15 @@ const QuestionListOfCourse = () => {
   };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
+
+    const tab = categoryState.tab === "1" ? true : false;
+
     navigate(`create/${typeToCreateNewQuestion}`, {
-      state: { isQuestionBank: true, categoryName: categoryState.categoryDetails?.name }
+      state: {
+        isQuestionBank: true,
+        isOrgQuestionBank: tab,
+        categoryName: categoryState.categoryDetails?.name
+      }
     });
   };
 
@@ -254,9 +270,15 @@ const QuestionListOfCourse = () => {
   useEffect(() => {
     if (categoryId) {
       handleGetCategory(categoryId);
-      handleGetQuestions({ categoryId, search: searchText, pageNo: page, pageSize: rowsPerPage });
+      handleGetQuestions({
+        categoryId,
+        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
+        search: searchText,
+        pageNo: page,
+        pageSize: rowsPerPage
+      });
     }
-  }, [categoryId, searchText, page, rowsPerPage]);
+  }, [categoryId, searchText, page, rowsPerPage, categoryState.tab]);
 
   return (
     <div>

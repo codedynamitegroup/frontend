@@ -2,7 +2,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Card, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -48,6 +47,7 @@ const LecturerCourseExamDetails = () => {
   });
 
   const [examOverviews, setExamOverviews] = useState<ExamOverview>({
+    // examSubmissionResponse: [],
     numberOfStudents: 0,
     submitted: 0
   });

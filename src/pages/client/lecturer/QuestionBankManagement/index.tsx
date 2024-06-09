@@ -54,6 +54,7 @@ const QuestionBankManagement = () => {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
+          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
           search,
           pageNo,
           pageSize
@@ -79,11 +80,14 @@ const QuestionBankManagement = () => {
 
   const user: User = useSelector(selectCurrentUser);
 
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+
   const handleCreate = async () => {
     try {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
+        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
         createdBy: user.userId
       });
       handleGetQuestionBankCategories({ search: searchText });
@@ -106,7 +110,7 @@ const QuestionBankManagement = () => {
       await handleGetQuestionBankCategories({ search: searchText });
     };
     fetchInitialQuestionBankCategories();
-  }, [searchText]);
+  }, [searchText, categoryState.tab]);
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
