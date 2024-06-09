@@ -553,9 +553,10 @@
   "question_bank_category_question_list_header_table": [
     "NO.",
     "Question name",
+    "Description",
+    "Type",
     "Created by",
     "Last updated by",
-    "Type",
     "Action"
   ],
   "question_bank_category_question_list_create_by_AI": "Create questions by AI",

@@ -481,10 +481,6 @@ export default function ExamCreated() {
     ref: header2Ref
   });
 
-  const handleCategoryPick = (value: string) => {
-    console.log(value);
-  };
-
   return (
     <>
       <PickQuestionTypeToAddDialog

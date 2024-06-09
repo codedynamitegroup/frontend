@@ -546,9 +546,10 @@
   "question_bank_category_question_list_header_table": [
     "STT",
     "Tên câu hỏi",
-    "Ngày tạo bởi",
-    "Lần chỉnh sửa cuối bởi",
+    "Mô tả câu hỏi",
     "Phân loại",
+    "Ngày tạo bởi",
+    "Cập nhật bởi",
     "Tác vụ"
   ],
   "question_bank_category_question_list_create_by_AI": "Tạo câu hỏi bằng AI",

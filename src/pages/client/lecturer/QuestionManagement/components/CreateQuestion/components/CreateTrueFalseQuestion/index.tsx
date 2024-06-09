@@ -113,7 +113,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      defaultScore: "0",
+      defaultScore: "1",
       generalDescription: "",
       questionDescription: "",
       questionName: "",
