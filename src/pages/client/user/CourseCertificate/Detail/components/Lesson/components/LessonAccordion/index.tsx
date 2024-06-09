@@ -1,20 +1,18 @@
+import ArticleIcon from "@mui/icons-material/Article";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CodeIcon from "@mui/icons-material/Code";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { Box, Grid } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
-import classes from "./styles.module.scss";
-import CodeIcon from "@mui/icons-material/Code";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useNavigate, useParams } from "react-router";
 import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
-import { RootState } from "store";
-import { useSelector } from "react-redux";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
+import classes from "./styles.module.scss";
+import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 
 interface Props {
@@ -25,23 +23,8 @@ interface Props {
 
 export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: Props) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { courseId } = useParams<{ courseId: string }>();
-  const certificateCourseDetails = useSelector(
-    (state: RootState) => state.certifcateCourse.certificateCourseDetails
-  );
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
-
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
       <Accordion defaultExpanded={isExpanded}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} id={classes.accordionHeader}>
           <Grid container alignItems={"center"}>
@@ -51,43 +34,46 @@ export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: 
             <Grid item xs={0.5} md={0.5}></Grid>
             <Grid item xs={10.5} md={10.5}>
               <Heading3>{chapter?.title || ""}</Heading3>
-              <ParagraphBody>{chapter?.description || ""}</ParagraphBody>
+              <ParagraphBody className={classes.description}>
+                {chapter?.description || ""}
+              </ParagraphBody>
             </Grid>
           </Grid>
         </AccordionSummary>
         <AccordionDetails id={classes.accordionDetails}>
           <Box className={classes.chapter}>
-            {chapter.questions.map((question, index) => (
-              <Grid
-                container
-                key={index}
-                className={classes.lesson}
-                onClick={() => {
-                  if (certificateCourseDetails?.isRegistered !== true) {
-                    setOpenSnackbarAlert(true);
-                    setType(AlertType.Error);
-                    setContent(t("not_registered_certificate_course_message"));
-                  } else if (courseId) {
+            {chapter.resources.map((resource, index) => {
+              return (
+                <Grid
+                  container
+                  key={index}
+                  className={classes.lesson}
+                  onClick={() => {
                     navigate(
-                      routes.user.course_certificate.detail.lesson.description
-                        .replace(":courseId", courseId)
-                        .replace(":lessonId", "1")
+                      routes.user.course_certificate.detail.lesson.detail
+                        .replace(":courseId", chapter.certificateCourseId)
+                        .replace(":lessonId", resource.chapterResourceId)
+                        .replace("*", "")
                     );
-                  }
-                }}
-              >
-                <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
-                  {question.pass === true ? (
-                    <CheckCircleIcon className={classes.icCheck} />
-                  ) : (
-                    <CodeIcon className={classes.icCode} />
-                  )}
+                  }}
+                >
+                  <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
+                    {resource.isCompleted === true ? (
+                      <CheckCircleIcon className={classes.icCheck} />
+                    ) : resource.resourceType === ResourceTypeEnum.CODE ? (
+                      <CodeIcon className={classes.icCode} />
+                    ) : resource.resourceType === ResourceTypeEnum.VIDEO ? (
+                      <OndemandVideoIcon className={classes.icVideo} />
+                    ) : (
+                      <ArticleIcon className={classes.icArticle} />
+                    )}
+                  </Grid>
+                  <Grid item xs={11} md={11} className={classes.lessonTitle}>
+                    <ParagraphBody className={classes.title}>{resource?.title || ""}</ParagraphBody>
+                  </Grid>
                 </Grid>
-                <Grid item xs={11} md={11} className={classes.lessonTitle}>
-                  <ParagraphBody className={classes.title}>{question?.name}</ParagraphBody>
-                </Grid>
-              </Grid>
-            ))}
+              );
+            })}
           </Box>
         </AccordionDetails>
       </Accordion>

@@ -21,6 +21,13 @@
   }
 }
 
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 #accordionDetails {
   padding: 0px;
 
@@ -47,7 +54,9 @@
         align-items: center;
 
         .icCode,
-        .icCheck {
+        .icCheck,
+        .icVideo,
+        .icArticle {
           width: 25px;
           height: 25px;
         }

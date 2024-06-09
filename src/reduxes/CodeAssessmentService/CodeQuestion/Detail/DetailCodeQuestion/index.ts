@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { index } from "d3";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 
 interface InitialState {
@@ -20,12 +21,15 @@ export const detailCodeQuestionSlice = createSlice({
       state.codeQuestion = action.payload;
     },
     setProgrammingLanguages: (state, action: PayloadAction<ProgrammingLanguageEntity[]>) => {
-      if (state.codeQuestion !== null && state.codeQuestion.languages !== undefined)
-        state.codeQuestion.languages = action.payload;
+      if (state.codeQuestion !== null) state.codeQuestion.languages = action.payload;
+    },
+    setSampleTestCases: (state, action: PayloadAction<TestCaseEntity[]>) => {
+      if (state.codeQuestion !== null) state.codeQuestion.sampleTestCases = action.payload;
     }
   }
 });
 
-export const { setCodeQuestion, setProgrammingLanguages } = detailCodeQuestionSlice.actions;
+export const { setCodeQuestion, setProgrammingLanguages, setSampleTestCases } =
+  detailCodeQuestionSlice.actions;
 
 export default detailCodeQuestionSlice.reducer;

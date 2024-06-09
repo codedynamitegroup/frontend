@@ -10,6 +10,7 @@ import { lazy } from "react";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
+import Lessons from "pages/client/user/CourseCertificate/Lessons";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
@@ -128,11 +129,6 @@ const router = createHashRouter(
         <Route path={routes.user.root} element={<UserHomepage />} />
 
         <Route
-          path={routes.user.course_certificate.detail.lesson.detail}
-          element={<DetailProblem />}
-        />
-
-        <Route
           path={routes.user.course_certificate.detail.lesson.share_solution}
           element={<ShareSolution />}
         />
@@ -231,6 +227,8 @@ const router = createHashRouter(
         <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
 
         <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
+
+        <Route path={routes.user.course_certificate.detail.lesson.detail} element={<Lessons />} />
       </Route>
     </Route>
   )

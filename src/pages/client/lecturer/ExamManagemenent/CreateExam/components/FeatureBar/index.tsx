@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Checkbox,
   FormControl,
@@ -15,23 +16,28 @@ import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useState } from "react";
 import SearchBar from "components/common/search/SearchBar";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { di } from "@fullcalendar/core/internal-common";
+import { setSearchQuestion, setShuffleQuestionsCreate } from "reduxes/coreService/questionCreate";
 
 interface QuestionsFeatureBarProps {
   colSearchLabel?: string;
   shuffleQuestionsLabel?: string;
-  colItems?: {
-    label: string;
-    value: string;
-  }[];
+  // colItems?: {
+  //   label: string;
+  //   value: string;
+  // }[];
 }
 
 const QuestionsFeatureBar = ({
   colSearchLabel,
-  shuffleQuestionsLabel,
-  colItems
+  shuffleQuestionsLabel
+  // colItems
 }: QuestionsFeatureBarProps) => {
   const searchBarHandler = (val: string) => {
     console.log(val);
+    dispatch(setSearchQuestion(val));
   };
   const [colSearchVal, setColSearchVal] = useState("name");
   const colSearchChangeHandler = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
@@ -41,9 +47,10 @@ const QuestionsFeatureBar = ({
   const [isShuffleQuestions, setIsShuffleQuestions] = useState(false);
 
   const handleShuffleQuestionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsShuffleQuestions(event.target.checked);
+    dispatch(setShuffleQuestionsCreate(event.target.checked));
   };
-
+  const dispatch = useDispatch();
+  const questionCreate = useSelector((state: RootState) => state.questionCreate);
   return (
     <Paper className={classes.container}>
       <Box className={classes.searchWrapper}>
@@ -54,7 +61,7 @@ const QuestionsFeatureBar = ({
           <Grid item xs={3}>
             <FormControl className={classes.colSearchContainer}>
               <InputLabel id='colSearch'>{colSearchLabel}</InputLabel>
-              <Select
+              {/* <Select
                 labelId='colSearch'
                 id='colSearchSelect'
                 value={colSearchVal}
@@ -65,7 +72,7 @@ const QuestionsFeatureBar = ({
                     {item.label}
                   </MenuItem>
                 ))}
-              </Select>
+              </Select> */}
             </FormControl>
           </Grid>
           {shuffleQuestionsLabel && (
@@ -80,7 +87,7 @@ const QuestionsFeatureBar = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={isShuffleQuestions}
+                    checked={questionCreate.shuffleQuestions}
                     onChange={handleShuffleQuestionsChange}
                     name='shuffleQuestions'
                   />

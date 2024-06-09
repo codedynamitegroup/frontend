@@ -30,6 +30,7 @@ const UserHomepage = (props: Props) => {
   const { height: headerHeight } = useBoxDimensions({
     ref: headerRef
   });
+
   return (
     <Grid id={classes.userPageRoot}>
       <Header ref={headerRef} />

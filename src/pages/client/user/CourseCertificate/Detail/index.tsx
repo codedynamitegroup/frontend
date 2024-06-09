@@ -1,32 +1,33 @@
-import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import { routes } from "routes/routes";
-import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import Heading2 from "components/text/Heading2";
-import Button, { BtnType } from "components/common/buttons/Button";
-import { useEffect, useMemo, useState } from "react";
-import CourseCertificateIntroduction from "./components/Introduction";
+import FlagIcon from "@mui/icons-material/Flag";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import SchoolIcon from "@mui/icons-material/School";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
-import FlagIcon from "@mui/icons-material/Flag";
-import SchoolIcon from "@mui/icons-material/School";
-import CertificateDetails from "./components/Certificate";
-import CourseCertificateLesson from "./components/Lesson";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { useTranslation } from "react-i18next";
+import { Box, Container, Divider, Grid, Tab, Tabs, Tooltip } from "@mui/material";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import Heading2 from "components/text/Heading2";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import i18next from "i18next";
-import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
-import { ChapterService } from "services/coreService/ChapterService";
-import { AppDispatch, RootState } from "store";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { setCertificateCourseDetails } from "reduxes/coreService/CertificateCourse";
 import { setChapters } from "reduxes/coreService/Chapter";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { routes } from "routes/routes";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { ChapterService } from "services/coreService/ChapterService";
+import { AppDispatch, RootState } from "store";
+import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
+import CertificateDetails from "./components/Certificate";
+import CourseCertificateIntroduction from "./components/Introduction";
+import CourseCertificateLesson from "./components/Lesson";
+import classes from "./styles.module.scss";
+import JoyButton from "@mui/joy/Button";
+import useAuth from "hooks/useAuth";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -39,34 +40,36 @@ const CourseCertificateDetail = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
 
+  const { isLoggedIn } = useAuth();
+
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [type, setType] = useState<AlertType>(AlertType.INFO);
   const [content, setContent] = useState("");
+
+  const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const certificateCourseDetails = useSelector(
     (state: RootState) => state.certifcateCourse.certificateCourseDetails
   );
-  const chapters = useSelector((state: RootState) => state.chapter.chapters);
+
+  const progress = useMemo(() => {
+    if (!certificateCourseDetails) return 0;
+    return calcCertificateCourseProgress(
+      certificateCourseDetails.numOfCompletedResources || 0,
+      certificateCourseDetails.numOfResources
+    );
+  }, [certificateCourseDetails]);
 
   const certificateCourseCompletedStatus = useMemo(() => {
-    if (!certificateCourseDetails) return CertificateCourseCompletedStatus.START;
-    if (
-      (certificateCourseDetails.numOfCompletedQuestions || 0) > 0 &&
-      (certificateCourseDetails.numOfCompletedQuestions || 0) <
-        certificateCourseDetails.numOfQuestions
-    ) {
+    if (progress > 0 && progress < 85) {
       return CertificateCourseCompletedStatus.CONTINUE;
-    } else if (
-      (certificateCourseDetails.numOfCompletedQuestions || 0) === 0 &&
-      (certificateCourseDetails.numOfCompletedQuestions || 0) <
-        certificateCourseDetails.numOfQuestions
-    ) {
+    } else if (progress === 0) {
       return CertificateCourseCompletedStatus.START;
-    } else {
+    } else if (progress >= 85) {
       return CertificateCourseCompletedStatus.DONE;
     }
-  }, [certificateCourseDetails]);
+  }, [progress]);
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
     if (courseId) navigate(tabs[newTab].replace(":courseId", courseId));
@@ -74,8 +77,8 @@ const CourseCertificateDetail = () => {
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.user.course_certificate.detail.lesson.root,
       routes.user.course_certificate.detail.introduction,
+      routes.user.course_certificate.detail.lesson.root,
       routes.user.course_certificate.detail.certificate
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,86 +100,97 @@ const CourseCertificateDetail = () => {
 
   const { t } = useTranslation();
 
-  const handleGetCertificateCourseById = async (id: string) => {
-    try {
-      const getCertificateCourseByIdResponse =
-        await CertificateCourseService.getCertificateCourseById(id);
-      dispatch(setCertificateCourseDetails(getCertificateCourseByIdResponse));
-    } catch (error: any) {
-      console.error("Failed to fetch certificate course by id", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-      setOpenSnackbarAlert(true);
-      setType(AlertType.Error);
-      setContent(error.response?.message || error.message);
-    }
-  };
-
-  const handleGetChaptersByCertificateCourseId = async (id: string) => {
-    try {
-      const getChaptersByCertificateCourseIdResponse =
-        await ChapterService.getChaptersByCertificateCourseIdResponse(id);
-      dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
-    } catch (error: any) {
-      console.error("Failed to fetch chapters by certificate course id", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-      setOpenSnackbarAlert(true);
-      setType(AlertType.Error);
-      setContent(error.response?.message || error.message);
-    }
-  };
-
-  const handleRegisterCertificateCourseById = async (id: string) => {
-    // Check if isRegistered is true
-    if (certificateCourseDetails?.isRegistered) return;
-
-    try {
-      const registerCertificateCourseByIdResponse =
-        await CertificateCourseService.registerCertificateCourseById(id);
-      if (
-        registerCertificateCourseByIdResponse &&
-        registerCertificateCourseByIdResponse.certificateCourseId === id
-      ) {
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Success);
-        setContent(
-          t("register_certificate_course_success", {
-            courseName: certificateCourseDetails?.name
-          })
-        );
-        dispatch(
-          setCertificateCourseDetails({
-            ...certificateCourseDetails,
-            isRegistered: true
-          })
-        );
-      } else {
+  const handleGetCertificateCourseById = useCallback(
+    async (id: string) => {
+      try {
+        const getCertificateCourseByIdResponse =
+          await CertificateCourseService.getCertificateCourseById(id);
+        dispatch(setCertificateCourseDetails(getCertificateCourseByIdResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch certificate course by id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        // Show snackbar here
         setOpenSnackbarAlert(true);
         setType(AlertType.Error);
-        setContent(
-          t("register_certificate_course_failed", {
-            courseName: certificateCourseDetails?.name
-          })
-        );
+        setContent(error.response?.message || error.message);
       }
-    } catch (error: any) {
-      console.error("Failed to register certificate course by id", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      setOpenSnackbarAlert(true);
-      setType(AlertType.Error);
-      setContent(error.response?.message || error.message);
-    }
-  };
+    },
+    [dispatch]
+  );
+
+  const handleGetChaptersByCertificateCourseId = useCallback(
+    async (id: string) => {
+      try {
+        const getChaptersByCertificateCourseIdResponse =
+          await ChapterService.getChaptersByCertificateCourseIdResponse(id);
+        dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
+      } catch (error: any) {
+        console.error("Failed to fetch chapters by certificate course id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        // Show snackbar here
+        setOpenSnackbarAlert(true);
+        setType(AlertType.Error);
+        setContent(error.response?.message || error.message);
+      }
+    },
+    [dispatch]
+  );
+
+  const handleRegisterCertificateCourseById = useCallback(
+    async (id: string) => {
+      // Check if isRegistered is true
+      if (certificateCourseDetails?.isRegistered) return;
+      setIsRegisterLoading(true);
+      try {
+        const registerCertificateCourseByIdResponse =
+          await CertificateCourseService.registerCertificateCourseById(id);
+        setIsRegisterLoading(false);
+        if (
+          registerCertificateCourseByIdResponse &&
+          registerCertificateCourseByIdResponse.certificateCourseId === id
+        ) {
+          setOpenSnackbarAlert(true);
+          setType(AlertType.Success);
+          setContent(
+            t("register_certificate_course_success", {
+              courseName: certificateCourseDetails?.name
+            })
+          );
+          dispatch(
+            setCertificateCourseDetails({
+              ...certificateCourseDetails,
+              isRegistered: true
+            })
+          );
+        } else {
+          setOpenSnackbarAlert(true);
+          setType(AlertType.Error);
+          setContent(
+            t("register_certificate_course_failed", {
+              courseName: certificateCourseDetails?.name
+            })
+          );
+        }
+      } catch (error: any) {
+        console.error("Failed to register certificate course by id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        setIsRegisterLoading(false);
+        setOpenSnackbarAlert(true);
+        setType(AlertType.Error);
+        setContent(error.response?.message || error.message);
+      }
+    },
+    [certificateCourseDetails, dispatch, t]
+  );
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -188,7 +202,7 @@ const CourseCertificateDetail = () => {
       }
     };
     fetchInitialData();
-  }, []);
+  }, [courseId, dispatch, handleGetCertificateCourseById, handleGetChaptersByCertificateCourseId]);
 
   if (!courseId || !certificateCourseDetails) return null;
 
@@ -264,7 +278,7 @@ const CourseCertificateDetail = () => {
                   >
                     <Box id={classes.numberLesson}>
                       <ParagraphBody fontWeight={"600"} translation-key='certificate_detail_lesson'>
-                        {certificateCourseDetails.numOfQuestions}{" "}
+                        {certificateCourseDetails.numOfResources}{" "}
                         {t("certificate_detail_lesson", { count: 2 })}
                       </ParagraphBody>
                     </Box>
@@ -306,8 +320,8 @@ const CourseCertificateDetail = () => {
                       <ParagraphBody colorname='--gray-80' translation-key={"common_progress"}>
                         {i18next.format(t("common_progress"), "firstUppercase")}:{" "}
                         {calcCertificateCourseProgress(
-                          certificateCourseDetails.numOfCompletedQuestions || 0,
-                          certificateCourseDetails.numOfQuestions
+                          certificateCourseDetails.numOfCompletedResources || 0,
+                          certificateCourseDetails.numOfResources
                         )}
                         %
                       </ParagraphBody>
@@ -316,68 +330,63 @@ const CourseCertificateDetail = () => {
                     <LinearProgress
                       determinate
                       value={calcCertificateCourseProgress(
-                        certificateCourseDetails.numOfCompletedQuestions || 0,
-                        certificateCourseDetails.numOfQuestions
+                        certificateCourseDetails.numOfCompletedResources || 0,
+                        certificateCourseDetails.numOfResources
                       )}
                     />
                   </Box>
                 </Grid>
                 <Grid item md={1}></Grid>
-                {certificateCourseCompletedStatus !== CertificateCourseCompletedStatus.DONE && (
-                  <Grid item xs={12} md={5}>
-                    <Button
-                      startIcon={<SchoolIcon id={classes.icSchool} />}
-                      btnType={BtnType.Primary}
-                      translation-key={
-                        certificateCourseDetails.isRegistered === true
+                <Grid item xs={12} md={5}>
+                  <Tooltip
+                    title={isLoggedIn === false ? t("certificate_detail_register_tooltip") : ""}
+                    placement='top'
+                    arrow
+                  >
+                    <span>
+                      <JoyButton
+                        loading={isRegisterLoading}
+                        disabled={isLoggedIn === false}
+                        color='primary'
+                        startDecorator={<SchoolIcon />}
+                        translation-key={
+                          certificateCourseDetails.isRegistered === true
+                            ? certificateCourseCompletedStatus ===
+                              CertificateCourseCompletedStatus.CONTINUE
+                              ? "certificate_detail_continue_button"
+                              : "certificate_detail_start_button"
+                            : "certificate_detail_register_button"
+                        }
+                        onClick={() => {
+                          if (certificateCourseDetails.isRegistered === true) {
+                            // if (
+                            //   certificateCourseCompletedStatus ===
+                            //   CertificateCourseCompletedStatus.DONE
+                            // ) {
+                            //   console.log("Navigate to lastest lesson");
+                            // } else if (
+                            //   certificateCourseCompletedStatus ===
+                            //   CertificateCourseCompletedStatus.CONTINUE
+                            // ) {
+                            //   console.log("Navigate to ongoing lesson");
+                            // } else {
+                            //   console.log("Navigate to first lesson");
+                            // }
+                          } else {
+                            handleRegisterCertificateCourseById(courseId);
+                          }
+                        }}
+                      >
+                        {certificateCourseDetails.isRegistered === true
                           ? certificateCourseCompletedStatus ===
                             CertificateCourseCompletedStatus.CONTINUE
-                            ? "certificate_detail_continue_button"
-                            : "certificate_detail_start_button"
-                          : "certificate_detail_register_button"
-                      }
-                      onClick={() => {
-                        if (certificateCourseDetails.isRegistered === true) {
-                          if (
-                            certificateCourseCompletedStatus ===
-                            CertificateCourseCompletedStatus.CONTINUE
-                          ) {
-                            for (let i = 0; i < chapters.length; i++) {
-                              if (
-                                chapters[i].questions.some((question) => question.pass !== true)
-                              ) {
-                                navigate(
-                                  routes.user.course_certificate.detail.lesson.description
-                                    .replace(":courseId", courseId)
-                                    .replace(":lessonId", chapters[i].questions[0].id)
-                                );
-                                break;
-                              }
-                            }
-                          } else {
-                            // Start the course with first lesson id
-                            if (chapters.length > 0) {
-                              navigate(
-                                routes.user.course_certificate.detail.lesson.description
-                                  .replace(":courseId", courseId)
-                                  .replace(":lessonId", chapters[0].questions[0].id)
-                              );
-                            }
-                          }
-                        } else {
-                          handleRegisterCertificateCourseById(courseId);
-                        }
-                      }}
-                    >
-                      {certificateCourseDetails.isRegistered === true
-                        ? certificateCourseCompletedStatus ===
-                          CertificateCourseCompletedStatus.CONTINUE
-                          ? t("certificate_detail_continue_button")
-                          : t("certificate_detail_start_button")
-                        : t("certificate_detail_register_button")}
-                    </Button>
-                  </Grid>
-                )}
+                            ? t("certificate_detail_continue_button")
+                            : t("certificate_detail_start_button")
+                          : t("certificate_detail_register_button")}
+                      </JoyButton>
+                    </span>
+                  </Tooltip>
+                </Grid>
               </Grid>
               <Box sx={{ border: 1, borderColor: "divider" }}>
                 <Tabs
@@ -389,8 +398,8 @@ const CourseCertificateDetail = () => {
                   <Tab
                     sx={{ textTransform: "none" }}
                     label={
-                      <ParagraphBody translation-key='certificate_detail_lesson'>
-                        {t("certificate_detail_lesson")}
+                      <ParagraphBody translation-key='common_introduction'>
+                        {t("common_introduction")}
                       </ParagraphBody>
                     }
                     value={0}
@@ -398,8 +407,8 @@ const CourseCertificateDetail = () => {
                   <Tab
                     sx={{ textTransform: "none" }}
                     label={
-                      <ParagraphBody translation-key='common_introduction'>
-                        {t("common_introduction")}
+                      <ParagraphBody translation-key='certificate_detail_lesson'>
+                        {t("certificate_detail_lesson")}
                       </ParagraphBody>
                     }
                     value={1}
@@ -417,7 +426,6 @@ const CourseCertificateDetail = () => {
               </Box>
               <Box>
                 <Routes>
-                  <Route path={"lesson"} element={<CourseCertificateLesson />} />
                   <Route
                     path={"introduction"}
                     element={
@@ -426,6 +434,7 @@ const CourseCertificateDetail = () => {
                       />
                     }
                   />
+                  <Route path={"lesson"} element={<CourseCertificateLesson />} />
                   <Route path={"certificate"} element={<CertificateDetails />} />
                 </Routes>
               </Box>

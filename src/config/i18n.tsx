@@ -8,7 +8,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "vi"
+    fallbackLng: "en"
   });
 
 i18n.services.formatter?.add("firstUppercase", (value, lng, options) => {
