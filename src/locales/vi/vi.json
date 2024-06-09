@@ -183,6 +183,9 @@
   "common_no": "STT",
   "common_email": "Email",
   "common_my_courses": "Khoá học của tôi",
+  "common_next": "Tiếp",
+  "common_previous": "Trước",
+  "common_back_to_chapters": "Quay lại DS chương",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
@@ -326,7 +329,9 @@
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",
   "certificate_registered": "Đã đăng ký",
   "certificate_not_registered": "Chưa đăng ký",
+  "certificate_detail_register_tooltip": "Hãy đăng nhập để có thể đăng ký khóa học này",
 
+  "dashboard_start_title": "Bắt đầu khóa học của bạn",
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
   "dashboard_happening_contest": "Cuộc thi đang diễn ra",
   "dashboard_other_course": "Các khóa học khác",
@@ -334,7 +339,7 @@
   "dashboard_participant_num": "Đang có {{participantNum}} người tham gia",
   "dashboard_contest_end": "Cuộc thi sẽ kết thúc vào ngày",
   "dashboard_this_certificate_course_has_no_lesson": "Khóa học này hiện chưa có bài học nào",
-  "dashboard_no_ongoing_course": "Không có khóa học nào đang diễn ra. Hãy bắt đầu học ngay",
+  "dashboard_no_ongoing_course": "Chưa có khoá học nào được bắt đầu. Hãy bắt đầu học ngay",
 
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",

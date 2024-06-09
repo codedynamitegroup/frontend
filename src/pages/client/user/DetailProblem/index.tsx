@@ -349,7 +349,7 @@ export default function DetailProblem() {
                 onClick={() => {
                   if (courseId)
                     navigate(
-                      routes.user.course_certificate.detail.lesson.root.replace(
+                      routes.user.course_certificate.detail.introduction.replace(
                         ":courseId",
                         courseId
                       )
