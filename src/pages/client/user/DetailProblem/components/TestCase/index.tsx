@@ -33,7 +33,7 @@ export default function TestCase() {
   }, [codeQuestion?.sampleTestCases]);
   const handleDeleteTestCase = (index: number) => {
     if (index >= 0 && index < testCases.length) {
-      if (index <= focusTestCase) setFocusTestCase((value) => value - 1);
+      if (index <= focusTestCase && focusTestCase !== 0) setFocusTestCase((value) => value - 1);
       let newList = cloneDeep(testCases);
       newList.splice(index, 1);
       setTestCases(newList);
