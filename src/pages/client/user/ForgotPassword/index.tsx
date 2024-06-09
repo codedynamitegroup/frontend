@@ -3,7 +3,7 @@ import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
 import { Box, Link } from "@mui/material";
 import images from "config/images";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -41,7 +41,8 @@ export default function ForgotPassword() {
 
   const handleForgotPassword = (data: IFormData) => {
     setIsForgotPasswordLoading(true);
-    UserService.forgotPassword(data.email)
+    const redirectUrl = `${window.location.protocol}//${window.location.host}/frontend/#${routes.user.forgot_password.verify_otp}?email=${data.email}`;
+    UserService.forgotPassword(data.email, redirectUrl)
       .then(async (response) => {
         dispatch(
           setSuccessMess("We have sent an email to your email address. Please check your email.")

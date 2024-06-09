@@ -165,7 +165,7 @@ export default function PickQuestionFromQuestionBankDialog({
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <QuestionsFeatureBar
             colSearchLabel='Tìm kiếm theo cột'
             colItems={[
@@ -173,7 +173,7 @@ export default function PickQuestionFromQuestionBankDialog({
               { label: "Kiểu", value: "type" }
             ]}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <CustomDataGrid
             dataList={questionCategoryState.questions.map((question, index) => ({

@@ -53,6 +53,7 @@ export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: 
                       routes.user.course_certificate.detail.lesson.detail
                         .replace(":courseId", chapter.certificateCourseId)
                         .replace(":lessonId", resource.chapterResourceId)
+                        .replace("*", "")
                     );
                   }}
                 >

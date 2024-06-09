@@ -187,9 +187,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
+  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
- const user: User = useSelector(selectCurrentUser);
+  const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
     console.log(data);
@@ -205,9 +206,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "MULTIPLE_CHOICE",
-
       answers: formSubmittedData.answers,
       questionBankCategoryId: isQuestionBank ? categoryId : undefined,
+      isOrgQuestionBank: isOrgQuestionBank,
       single: Number(formSubmittedData.single) === 1,
       shuffleAnswers: Boolean(Number(formSubmittedData.shuffleAnswer)),
       showStandardInstructions: formSubmittedData.showInstructions.toString(),

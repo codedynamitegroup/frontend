@@ -155,7 +155,7 @@ export default function ExamCreated() {
   const submitHandler = () => {
     const questionIds = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
-      page: 1
+      page: 0
     }));
 
     const timeLimit = (() => {
@@ -187,7 +187,7 @@ export default function ExamCreated() {
       overdueHandling: questionCreate.overdueHandling.toUpperCase(),
       canRedoQuestions: true,
       maxAttempts: questionCreate.maxAttempt,
-      shuffleQuestions: true,
+      shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds
     };
@@ -201,6 +201,9 @@ export default function ExamCreated() {
         console.log(error);
       });
   };
+
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+
   const handleGetQuestionBankCategories = async ({
     search = "",
     pageNo = 0,
@@ -696,32 +699,38 @@ export default function ExamCreated() {
                   </Grid>
                   <Grid item xs={12}>
                     <QuestionsFeatureBar
-                      colSearchLabel='Tìm kiếm theo cột'
+                      // colSearchLabel='Tìm kiếm theo cột'
                       shuffleQuestionsLabel={t("exam_management_create_question_scramble")}
-                      colItems={[
-                        { label: "Tên câu hỏi", value: "name" },
-                        { label: "Kiểu", value: "type" }
-                      ]}
+                      // colItems={[
+                      //   { label: "Tên câu hỏi", value: "name" },
+                      //   { label: "Kiểu", value: "type" }
+                      // ]}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
-                      dataList={questionCreate.questionCreate.map((item, index) => ({
-                        stt: index + 1,
-                        qtypeText:
-                          item.qtype === QuestionTypeEnum.SHORT_ANSWER
-                            ? "câu hỏi ngắn"
-                            : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                              ? "câu hỏi trắc nghiệm"
-                              : item.qtype === QuestionTypeEnum.ESSAY
-                                ? "câu hỏi tự luận"
-                                : item.qtype === QuestionTypeEnum.TRUE_FALSE
-                                  ? "câu hỏi đúng/sai"
-                                  : item.qtype === QuestionTypeEnum.CODE
-                                    ? "câu hỏi code"
-                                    : "",
-                        ...item
-                      }))}
+                      dataList={questionCreate.questionCreate
+                        .filter((item) =>
+                          item.name
+                            .toLowerCase()
+                            .includes(questionCreate.searchQuestion.toLowerCase())
+                        )
+                        .map((item, index) => ({
+                          stt: index + 1,
+                          qtypeText:
+                            item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                              ? "câu hỏi ngắn"
+                              : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                                ? "câu hỏi trắc nghiệm"
+                                : item.qtype === QuestionTypeEnum.ESSAY
+                                  ? "câu hỏi tự luận"
+                                  : item.qtype === QuestionTypeEnum.TRUE_FALSE
+                                    ? "câu hỏi đúng/sai"
+                                    : item.qtype === QuestionTypeEnum.CODE
+                                      ? "câu hỏi code"
+                                      : "",
+                          ...item
+                        }))}
                       tableHeader={tableHeading}
                       onSelectData={rowSelectionHandler}
                       visibleColumn={visibleColumnList}
@@ -824,7 +833,7 @@ export default function ExamCreated() {
                       type='number'
                       value={questionCreate.timeLimit}
                       onChange={(e) => {
-                        setExamTimeLimitNumber(parseInt(e.target.value));
+                        // setExamTimeLimitNumber(parseInt(e.target.value));
                         dispatch(setTimeLimitCreate(parseInt(e.target.value)));
                       }}
                       placeholder={t("common_enter_quan")}

@@ -164,7 +164,7 @@ export const routes = {
         introduction: "/course-certificates/:courseId/introduction",
         lesson: {
           root: "/course-certificates/:courseId/lesson",
-          detail: "/course-certificates/:courseId/lesson/:lessonId",
+          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
           description: "/course-certificates/:courseId/lesson/:lessonId/description",
           solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
           submission: "/course-certificates/:courseId/lesson/:lessonId/submission",

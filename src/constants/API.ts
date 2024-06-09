@@ -147,7 +147,7 @@ export const API = {
     LOGOUT: "/auth/users/logout",
     REGISTER: "/auth/users/register",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email",
-    FORGOT_PASSWORD: "/auth/users/forgot-password/:email",
+    FORGOT_PASSWORD: "/auth/users/forgot-password",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
     UPDATE_PROFILE_USER: "/auth/users",
     CHANGE_PASSWORD: "/auth/users/change-password",

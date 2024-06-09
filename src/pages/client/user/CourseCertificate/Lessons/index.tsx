@@ -43,6 +43,8 @@ import { routes } from "routes/routes";
 import { ChapterService } from "services/coreService/ChapterService";
 import { AppDispatch, RootState } from "store";
 import classes from "./styles.module.scss";
+import CodeQuestionLesson from "./components/CodeQuestionLesson";
+import YouTubeVideo from "./components/YoutubeVideo";
 
 const drawerWidth = 300;
 
@@ -101,26 +103,6 @@ export default function Lessons() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
-  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    // access to player in all event handlers via event.target
-    event.target.pauseVideo();
-  };
-
-  const opts: YouTubeProps["opts"] = {
-    height: "390",
-    width: "640",
-    playerVars: {
-      // https://developers.google.com/youtube/player_parameters
-      //   autoplay: 0
-    }
-  };
-
-  const getVideoId = (url: string) => {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[7].length === 11 ? match[7] : null;
-  };
 
   const [isChapterExpanded, setIsChapterExpanded] = useState<{
     [key: string]: boolean;
@@ -277,6 +259,7 @@ export default function Lessons() {
                         chapterState.chapters[currentChapterIndex - 1].resources[0]
                           .chapterResourceId
                       )
+                      .replace("*", "")
                   );
                 }
               }}
@@ -405,6 +388,7 @@ export default function Lessons() {
                             routes.user.course_certificate.detail.lesson.detail
                               .replace(":courseId", courseId)
                               .replace(":lessonId", value)
+                              .replace("*", "")
                           );
                         }
                       }}
@@ -458,7 +442,26 @@ export default function Lessons() {
             }}
           >
             {currentLesson.resourceType === ResourceTypeEnum.CODE ? (
-              <CodeIcon className={classes.icCode} />
+              <Box>
+                <Stack
+                  direction='row'
+                  gap={2}
+                  alignItems='center'
+                  justifyContent='flex-start'
+                  sx={{
+                    marginBottom: "10px"
+                  }}
+                >
+                  <CodeIcon className={classes.icCode} />
+                  <Heading3>{currentLesson.title}</Heading3>
+                </Stack>
+                <Divider
+                  sx={{
+                    marginY: "10px"
+                  }}
+                />
+                <CodeQuestionLesson />
+              </Box>
             ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
               <Box>
                 <Stack
@@ -478,12 +481,14 @@ export default function Lessons() {
                     marginY: "10px"
                   }}
                 />
-
-                <YouTube
-                  videoId={getVideoId(currentLesson.youtubeVideoUrl) ?? ""}
-                  opts={opts}
-                  onReady={onPlayerReady}
-                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <YouTubeVideo url={currentLesson.youtubeVideoUrl || ""} />
+                </Box>
               </Box>
             ) : (
               <Box>

@@ -54,6 +54,7 @@ const QuestionBankManagement = () => {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
+          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
           search,
           pageNo,
           pageSize
@@ -79,11 +80,14 @@ const QuestionBankManagement = () => {
 
   const user: User = useSelector(selectCurrentUser);
 
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+
   const handleCreate = async () => {
     try {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
+        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
         createdBy: user.userId
       });
       handleGetQuestionBankCategories({ search: searchText });
@@ -106,7 +110,7 @@ const QuestionBankManagement = () => {
       await handleGetQuestionBankCategories({ search: searchText });
     };
     fetchInitialQuestionBankCategories();
-  }, [searchText]);
+  }, [searchText, categoryState.tab]);
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -344,10 +348,14 @@ const QuestionBankManagement = () => {
               </Button>
             </Stack>
 
-            <SearchBar
-              onSearchClick={() => null}
+            <CustomAutocomplete
+              // ={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
+              value={searchText}
+              setValue={setSearchText}
+              options={[]}
+              onHandleChange={searchHandle}
             />
             <DataGrid
               sx={{
@@ -356,11 +364,12 @@ const QuestionBankManagement = () => {
                   cursor: "pointer"
                 }
               }}
+              translation-key-header='question_bank_category_header_table'
               autoHeight
               disableColumnMenu
               getRowHeight={() => "auto"}
               rows={questionBankCategoriesState.categories.questionBankCategories.map(
-                (item: QuestionBankCategoryEntity, index: number) => ({
+                (item, index) => ({
                   stt: index + 1,
                   ...item
                 })
@@ -368,11 +377,13 @@ const QuestionBankManagement = () => {
               rowCount={questionBankCategoriesState.categories.totalItems}
               loading={questionBankCategoriesState.isLoading}
               paginationModel={{
-                page: questionBankCategoriesState.categories.currentPage,
-                pageSize: questionBankCategoriesState.categories.totalPages
+                page: page,
+                pageSize: rowsPerPage
               }}
               onPaginationModelChange={(model, details) => {
                 setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
+                setPage(model.page);
+                setRowsPerPage(model.pageSize);
               }}
               columns={columns}
               pageSizeOptions={[5, 10, 30, 50]}

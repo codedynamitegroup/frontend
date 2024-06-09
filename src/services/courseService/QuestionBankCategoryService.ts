@@ -6,9 +6,11 @@ const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 export class QuestionBankCategoryService {
   static async getQuestionBankCategories({
     search = "",
+    isOrgQuestionBank,
     pageNo = 0,
     pageSize = 10
   }: {
+    isOrgQuestionBank?: boolean;
     search?: string;
     pageNo?: number;
     pageSize?: number;
@@ -18,6 +20,7 @@ export class QuestionBankCategoryService {
         `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.DEFAULT}`,
         {
           params: {
+            isOrgQuestionBank,
             search,
             pageNo,
             pageSize
@@ -74,10 +77,12 @@ export class QuestionBankCategoryService {
   static async createQuestionBankCategory({
     name,
     description,
+    isOrgQuestionBank,
     createdBy
   }: {
     name: string;
     description: string;
+    isOrgQuestionBank: boolean;
     createdBy: string;
   }) {
     try {
@@ -86,6 +91,7 @@ export class QuestionBankCategoryService {
         {
           name,
           description,
+          isOrgQuestionBank,
           createdBy
         }
       );
