@@ -1,58 +1,114 @@
-import React, { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import classes from "./styles.module.scss";
-import { Box, Container, TextField } from "@mui/material";
+import { Box, Chip, Container, IconButton, Stack, TextField } from "@mui/material";
 import Heading5 from "components/text/Heading5";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import { useAppSelector, useAppDispatch } from "hooks";
 import { setStdin, setExpectedOutput } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import cloneDeep from "lodash.clonedeep";
+import { setSampleTestCases } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function TestCase() {
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
+  const [testCases, setTestCases] = useState<TestCaseEntity[]>([]);
+  const [focusTestCase, setFocusTestCase] = useState(0);
   const dispatch = useAppDispatch();
+
+  const onUnmount = useRef<() => void>(() => {});
+  onUnmount.current = () => {
+    dispatch(setSampleTestCases(testCases));
+  };
+  useEffect(() => {
+    return () => onUnmount.current();
+  }, []);
 
   useEffect(() => {
     if (codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0) {
-      dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
-      dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
+      setTestCases(codeQuestion.sampleTestCases);
+      // dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
+      // dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
     }
   }, [codeQuestion?.sampleTestCases]);
+  const handleDeleteTestCase = (index: number) => {
+    if (index >= 0 && index < testCases.length) {
+      if (index <= focusTestCase) setFocusTestCase((value) => value - 1);
+      let newList = cloneDeep(testCases);
+      newList.splice(index, 1);
+      setTestCases(newList);
+    }
+  };
+  const handleAddTestCase = () => {
+    if (testCases.length < 5) {
+      let newList = cloneDeep(testCases);
+      newList.push({
+        inputData: "",
+        outputData: "",
+        id: "sampleid",
+        isSample: true
+      });
+      setTestCases(newList);
+    }
+  };
 
   return (
     <Box id={classes.root}>
-      <Container>
-        <Box className={classes.testCase}>
-          <ParagraphExtraSmall>Input:</ParagraphExtraSmall>
-          <TextField
-            fullWidth
-            multiline
-            id='outlined-basic'
-            variant='outlined'
-            value={
-              codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0
-                ? codeQuestion?.sampleTestCases[0].inputData
-                : ""
-            }
-            size='small'
-            className={classes.input}
-          />
-        </Box>
+      <Container sx={{ marginTop: 1 }}>
+        <Stack direction={"row"} spacing={1} alignItems={"center"}>
+          {testCases.map((_, index) => (
+            <Chip
+              sx={{ border: focusTestCase === index ? 1 : 0 }}
+              label={`Case ${index + 1}`}
+              onDelete={() => handleDeleteTestCase(index)}
+              onClick={() => setFocusTestCase(index)}
+            ></Chip>
+          ))}
+          {testCases.length < 5 && (
+            <IconButton onClick={handleAddTestCase}>
+              <AddIcon />
+            </IconButton>
+          )}
+        </Stack>
+        {testCases.length > 0 && (
+          <>
+            <Box className={classes.testCase}>
+              <ParagraphExtraSmall>Input:</ParagraphExtraSmall>
+              <TextField
+                fullWidth
+                multiline
+                id='outlined-basic'
+                variant='outlined'
+                onChange={(e) => {
+                  let newList = cloneDeep(testCases);
+                  newList[focusTestCase].inputData = e.target.value;
+                  setTestCases(newList);
+                }}
+                value={testCases[focusTestCase].inputData}
+                size='small'
+                className={classes.input}
+              />
+            </Box>
 
-        <Box className={classes.testCase}>
-          <ParagraphExtraSmall>Output:</ParagraphExtraSmall>
-          <TextField
-            fullWidth
-            multiline
-            id='outlined-basic'
-            variant='outlined'
-            size='small'
-            value={
-              codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0
-                ? codeQuestion?.sampleTestCases[0].outputData
-                : ""
-            }
-            className={classes.input}
-          />
-        </Box>
+            <Box className={classes.testCase}>
+              <ParagraphExtraSmall>Output:</ParagraphExtraSmall>
+              <TextField
+                fullWidth
+                multiline
+                id='outlined-basic'
+                variant='outlined'
+                size='small'
+                onChange={(e) => {
+                  let newList = cloneDeep(testCases);
+                  newList[focusTestCase].outputData = e.target.value;
+                  setTestCases(newList);
+                }}
+                value={testCases[focusTestCase].outputData}
+                className={classes.input}
+              />
+            </Box>
+          </>
+        )}
       </Container>
     </Box>
   );
