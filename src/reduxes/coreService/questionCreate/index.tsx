@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { set } from "date-fns";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import { OVERDUE_HANDLING } from "pages/client/lecturer/ExamManagemenent/CreateExam";
 
@@ -11,7 +12,9 @@ interface InitialState {
   timeLimit: number;
   overdueHandling: string;
   maxAttempt: number;
+  shuffleQuestions: boolean;
   questionCreate: QuestionEntity[];
+  searchQuestion: string;
 }
 
 const initState: InitialState = {
@@ -23,7 +26,9 @@ const initState: InitialState = {
   timeLimit: 0,
   overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
   maxAttempt: 0,
-  questionCreate: []
+  shuffleQuestions: false,
+  questionCreate: [],
+  searchQuestion: ""
 };
 
 const questionCreateSlice = createSlice({
@@ -35,6 +40,9 @@ const questionCreateSlice = createSlice({
     },
     setExamDescriptionCreate: (state, action: { payload: string }) => {
       state.examDescription = action.payload;
+    },
+    setShuffleQuestionsCreate: (state, action: { payload: boolean }) => {
+      state.shuffleQuestions = action.payload;
     },
     setMaxScoreCreate: (state, action: { payload: number }) => {
       state.maxScore = action.payload;
@@ -73,6 +81,9 @@ const questionCreateSlice = createSlice({
       state.overdueHandling = OVERDUE_HANDLING.AUTOSUBMIT;
       state.maxAttempt = 0;
       state.questionCreate = [];
+    },
+    setSearchQuestion: (state, action: { payload: string }) => {
+      state.searchQuestion = action.payload;
     }
   }
 });
@@ -83,13 +94,15 @@ export const {
   setQuestionCreateFromBank,
   setExamNameCreate,
   setExamDescriptionCreate,
+  setShuffleQuestionsCreate,
   setMaxScoreCreate,
   setTimeOpenCreate,
   setTimeCloseCreate,
   setTimeLimitCreate,
   setOverdueHandlingCreate,
   setMaxAttemptCreate,
-  clearExamCreate
+  clearExamCreate,
+  setSearchQuestion
 } = questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;
