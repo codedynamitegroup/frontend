@@ -193,6 +193,9 @@
   "common_no": "No",
   "common_email": "Email",
   "common_my_courses": "My courses",
+  "common_next": "Next",
+  "common_previous": "Previous",
+  "common_back_to_chapters": "Back to chapters",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest": "Contest management",
@@ -326,7 +329,9 @@
   "not_registered_certificate_course_message": "You have not registered for this course yet",
   "certificate_registered": "Registered",
   "certificate_not_registered": "Not registered",
+  "certificate_detail_register_tooltip": "Please sign in to register for this course",
 
+  "dashboard_start_title": "Let's start your courses",
   "dashboard_continue_title": "Let's continue your courses",
   "dashboard_happening_contest": "Happening contests",
   "dashboard_other_course": "Other courses",
