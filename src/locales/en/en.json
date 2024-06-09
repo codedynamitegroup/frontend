@@ -913,5 +913,6 @@
   "exam_detail_mark": "Mark",
   "exam_detail_graded": "Graded",
   "exam_detail_summary_no_attempt": "Haven't done any attempt",
-  "exam_detail_max_attempt": "Maximum attempt"
+  "exam_detail_max_attempt": "Maximum attempt",
+  "exam_detail_attempt_unlimited": "Unlimited attempt"
 }

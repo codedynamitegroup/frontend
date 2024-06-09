@@ -141,6 +141,7 @@ export const API = {
     SUBMISSION: "/submissions"
   },
   AUTH: {
+    GET_ALL: "/auth/users",
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
     REFRESH_TOKEN: "/auth/users/refresh-token",

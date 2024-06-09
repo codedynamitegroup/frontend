@@ -288,7 +288,7 @@ const StudentCourseExamDetails = () => {
       </Box>
       <Stack direction='row' spacing={1.5} alignItems={"center"}>
         <Button
-          disabled={examSubmissions.length === exam.maxAttempts}
+          disabled={examSubmissions.length === exam.maxAttempts && exam.maxAttempts !== 0}
           onClick={startAttemptButtonHandler}
           sx={{
             width: "fit-content",
@@ -305,12 +305,20 @@ const StudentCourseExamDetails = () => {
           }}
           size='lg'
           determinate
-          value={(examSubmissions.length / (exam.maxAttempts || 1)) * 100}
-          translation-key='exam_detail_summary_attempt'
+          value={
+            exam.maxAttempts === 0 ? 100 : (examSubmissions.length / (exam.maxAttempts || 1)) * 100
+          }
+          translation-key={["exam_detail_summary_attempt", "exam_detail_attempt_unlimited"]}
         >
-          {`${examSubmissions.length} / ${exam.maxAttempts}`}
-          <br />
-          {t("exam_detail_summary_attempt")}
+          {exam.maxAttempts === 0 ? (
+            <>{t("exam_detail_attempt_unlimited")}</>
+          ) : (
+            <>
+              {`${examSubmissions.length} / ${exam.maxAttempts}`}
+              <br />
+              {t("exam_detail_summary_attempt")}
+            </>
+          )}
         </CircularProgress>
       </Stack>
 
@@ -390,7 +398,7 @@ const StudentCourseExamDetails = () => {
                 fontSize={"12px"}
                 translation-key='exam_detail_max_attempt'
               >
-                {`${t("exam_detail_max_attempt")}: `}
+                {`${exam.maxAttempts === 0 ? t("exam_detail_attempt_unlimited") : t("exam_detail_max_attempt")}: `}
               </ParagraphBody>
               <ParagraphBody color={"#434343"} fontSize={"12px"}>
                 {exam.maxAttempts}

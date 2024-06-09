@@ -9,6 +9,7 @@ import EditContestDetails from "./ContestManagement/EditContestDetails";
 import SidebarSystemAdmin from "components/common/sidebars/SidebarSystemAdmin";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import React from "react";
+import AdminDashboard from "./Dashboard";
 
 type Props = {};
 
@@ -22,21 +23,22 @@ const SystemAdminHomepage = (props: Props) => {
   return (
     <Grid className={classes.root}>
       <SidebarSystemAdmin open={open} toggleDrawer={toggleDrawer}>
-        <Box className={classes.container}>
-          <Box className={classes.body}>
-            <Routes>
-              <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
-                <Route path={"contests"} element={<ContestManagement />} />
-                <Route path={"contests/create"} element={<CreateContest />} />
-                <Route
-                  path={"contests/edit/:contestId/*"}
-                  element={<EditContestDetails isDrawerOpen={open} />}
-                />
-                <Route path={"information"} element={<UserInformation />} />
-              </Route>
-            </Routes>
-          </Box>
+        {/* <Box className={classes.container}> */}
+        <Box className={classes.body}>
+          <Routes>
+            <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
+              <Route path={"contests"} element={<ContestManagement />} />
+              <Route path={"contests/create"} element={<CreateContest />} />
+              <Route
+                path={"contests/edit/:contestId/*"}
+                element={<EditContestDetails isDrawerOpen={open} />}
+              />
+              <Route path={"information"} element={<UserInformation />} />
+              <Route path={"/"} element={<AdminDashboard />} />
+            </Route>
+          </Routes>
         </Box>
+        {/* </Box> */}
       </SidebarSystemAdmin>
     </Grid>
   );
