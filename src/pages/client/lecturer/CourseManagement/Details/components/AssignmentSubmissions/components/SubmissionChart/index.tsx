@@ -14,8 +14,8 @@ export default function SubmissionBarChart({
   height,
   ...props
 }: SubmissionBarChartProps) {
-  const valueFormatter = (value: number) => `${value} sinh viên`;
-
+  const valueFormatter = (value: number | null) =>
+    value === null ? "No data" : `${value} sinh viên`;
   const series = [{ dataKey: "student", label: "Sinh viên", valueFormatter }];
 
   const yAxis = [{ label: "Tổng số sinh viên đạt khoảng điểm" }];
