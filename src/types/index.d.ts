@@ -8,4 +8,3 @@ declare module "quill-image-drop-and-paste";
 declare module "@mui/joy/*";
 declare module "redux-persist/es/persistReducer";
 declare module "redux-persist/es/persistStore";
-declare module "uuid";
