@@ -36,7 +36,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import YouTube, { YouTubeProps } from "react-youtube";
 import { setErrorMess } from "reduxes/AppStatus";
 import { setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
