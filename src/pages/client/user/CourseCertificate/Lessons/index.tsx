@@ -296,8 +296,8 @@ export default function Lessons() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              //   marginTop: `${header2Height + 1}px`
-              marginTop: "65px"
+              marginTop: `${header2Height + 1}px`
+              // marginTop: "65px"
             }
           }}
           variant='persistent'
