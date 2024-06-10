@@ -1,7 +1,7 @@
 import classes from "./styles.module.scss";
 import { Container, Grid } from "@mui/material";
 import { Box, Button, Link } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,6 +36,8 @@ interface IFormData {
 
 export default function Login() {
   const { t } = useTranslation();
+  const { state } = useLocation();
+  const { navigateBack } = state;
   const microsoftClientId = process.env.REACT_APP_MICROSOFT_CLIENT_ID || "";
   const { instance } = useMsal();
   const userLogged: User = useSelector(selectCurrentUser);
@@ -70,7 +72,8 @@ export default function Login() {
 
   useEffect(() => {
     if (userLogged) {
-      navigate(routes.user.dashboard.root);
+      if (navigateBack) navigate(navigateBack);
+      else navigate(routes.user.dashboard.root);
     }
   }, [userLogged, navigate]);
 
@@ -112,7 +115,8 @@ export default function Login() {
         dispatch(loginStatus(true));
         dispatch(setSuccessMess("Login successfully"));
         dispatch(fetchStatus(EFetchingUser.PENDING));
-        navigate(routes.user.dashboard.root);
+        if (navigateBack) navigate(navigateBack);
+        else navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
         dispatch(setErrorMess("Failed to login!! Please try again later"));
@@ -138,7 +142,8 @@ export default function Login() {
           dispatch(loginStatus(true));
           dispatch(setSuccessMess("Login successfully"));
           dispatch(fetchStatus(EFetchingUser.PENDING));
-          navigate(routes.user.dashboard.root);
+          if (navigateBack) navigate(navigateBack);
+          else navigate(routes.user.dashboard.root);
         })
         .catch((error: any) => {
           dispatch(setErrorMess("Failed to login!! Please try again later"));
@@ -171,7 +176,8 @@ export default function Login() {
         dispatch(loginStatus(true));
         dispatch(setSuccessMess("Login successfully"));
         dispatch(fetchStatus(EFetchingUser.PENDING));
-        navigate(routes.user.dashboard.root);
+        if (navigateBack) navigate(navigateBack);
+        else navigate(routes.user.dashboard.root);
       })
       .catch((error: any) => {
         dispatch(setErrorMess("Failed to login!! Please check your email and password"));

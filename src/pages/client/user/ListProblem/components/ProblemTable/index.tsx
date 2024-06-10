@@ -23,12 +23,13 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { routes } from "routes/routes";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import useAuth from "hooks/useAuth";
 
 export default function ProblemTable() {
-  const accessToken = localStorage.getItem("access_token");
-
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
+
+  const auth = useAuth();
 
   const algorithmTag = useAppSelector((state) => state.algorithmnTag);
   const searchAndDifficultyAndSolved = useAppSelector(
@@ -241,7 +242,7 @@ export default function ProblemTable() {
                               ":problemId",
                               row.id
                             )}
-                            style={{ pointerEvents: accessToken === null ? "none" : "auto" }}
+                            style={{ pointerEvents: "auto" }}
                           >
                             {row.name}
                           </StyledLink>
