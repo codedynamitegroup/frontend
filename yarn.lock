@@ -1907,10 +1907,10 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.11"
 
-"@google/generative-ai@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@google/generative-ai/-/generative-ai-0.2.1.tgz"
-  integrity sha512-gNmMFadfwi7qf/6M9gImgyGJXY1jKQ/de8vGOqgJ0PPYgQ7WwzZDavbKrIuXS2zdqZZaYtxW3EFN6aG9x5wtFw==
+"@google/generative-ai@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@google/generative-ai/-/generative-ai-0.12.0.tgz#86e176c783969c613c0a3515dcdb1f075bc52073"
+  integrity sha512-krWjurjEUHSFhCX4lGHMOhbnpBfYZGU31mpHpPBQwcfWm0T+/+wxC4UCAJfkxxc3/HvGJVG8r4AqrffaeDHDlA==
 
 "@hookform/resolvers@^3.4.0":
   version "3.4.0"
@@ -13060,6 +13060,11 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
+
+uuid@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
+  integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
 
 uuid@^8.3.2:
   version "8.3.2"
