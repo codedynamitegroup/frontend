@@ -1,5 +1,4 @@
 import { SkillLevelEnum } from "../enum/SkillLevelEnum";
-import { ChapterQuestionEntity } from "./ChapterQuestionEntity";
 import { ChapterResourceEntity } from "./ChapterResourceEntity";
 import { TopicEntity } from "./TopicEntity";
 import { UserEntity } from "./UserEntity";

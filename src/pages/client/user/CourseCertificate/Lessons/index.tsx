@@ -162,6 +162,56 @@ export default function Lessons() {
     [dispatch]
   );
 
+  const isPreviousButtonDisabled = useMemo(() => {
+    for (let i = 0; i < chapterState.chapters.length; i++) {
+      if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
+        for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+          if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+            if (i === 0 && j === 0) {
+              // Check if this is the first resource of the first chapter
+              return true;
+            } else if (j === 0 && chapterState.chapters[i - 1].resources.length > 0) {
+              return false;
+            } else if (j > 0) {
+              // If this is not the first resource of the chapter, go to the previous resource
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }, [chapterState.chapters, lessonId]);
+
+  const isNextButtonDisabled = useMemo(() => {
+    for (let i = 0; i < chapterState.chapters.length; i++) {
+      if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
+        for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+          if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+            if (
+              i === chapterState.chapters.length - 1 &&
+              j === chapterState.chapters[i].resources.length - 1
+            ) {
+              // Check if this is the last resource of the last chapter
+              return true;
+            } else if (
+              j === chapterState.chapters[i].resources.length - 1 &&
+              chapterState.chapters[i + 1].resources.length > 0
+            ) {
+              return false;
+            } else if (j < chapterState.chapters[i].resources.length - 1) {
+              // If this is not the last resource of the chapter, go to the next resource
+              return false;
+            } else {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }, [chapterState.chapters, lessonId]);
+
   useEffect(() => {
     // Initialize the chapter expanded state
     if (chapterState.chapters && chapterState.chapters.length > 0) {
@@ -229,13 +279,7 @@ export default function Lessons() {
             <JoyButton
               variant='plain'
               color='neutral'
-              disabled={
-                chapterState.chapters &&
-                chapterState.chapters.length > 0 &&
-                chapterState.chapters[0].resources &&
-                chapterState.chapters[0].resources.length > 0 &&
-                chapterState.chapters[0].resources[0].chapterResourceId === lessonId
-              }
+              disabled={isPreviousButtonDisabled}
               startDecorator={
                 <ArrowBackIosNewIcon
                   sx={{
@@ -245,20 +289,46 @@ export default function Lessons() {
                 />
               }
               onClick={() => {
-                const currentChapterIndex = chapterState.chapters.findIndex((chapter) =>
-                  chapter.resources.some((resource) => resource.chapterResourceId === lessonId)
-                );
-                if (currentChapterIndex > 0) {
-                  navigate(
-                    routes.user.course_certificate.detail.lesson.detail
-                      .replace(":courseId", courseId)
-                      .replace(
-                        ":lessonId",
-                        chapterState.chapters[currentChapterIndex - 1].resources[0]
-                          .chapterResourceId
-                      )
-                      .replace("*", "")
-                  );
+                for (let i = 0; i < chapterState.chapters.length; i++) {
+                  if (
+                    chapterState.chapters[i].resources &&
+                    chapterState.chapters[i].resources.length > 0
+                  ) {
+                    for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+                      if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+                        if (i === 0 && j === 0) {
+                          // Check if this is the first resource of the first chapter
+                          return;
+                        } else if (j === 0 && chapterState.chapters[i - 1].resources.length > 0) {
+                          // Check if this is the first resource of the non-first chapter
+                          // Also check if previous chapter has resources. if not, do not navigate
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", courseId)
+                              .replace(
+                                ":lessonId",
+                                chapterState.chapters[i - 1].resources[
+                                  chapterState.chapters[i - 1].resources.length - 1
+                                ].chapterResourceId
+                              )
+                              .replace("*", "")
+                          );
+                          return;
+                        } else if (j > 0) {
+                          // If this is not the first resource of the chapter, go to the previous resource
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", courseId)
+                              .replace(
+                                ":lessonId",
+                                chapterState.chapters[i].resources[j - 1].chapterResourceId
+                              )
+                              .replace("*", "")
+                          );
+                        }
+                      }
+                    }
+                  }
                 }
               }}
             >
@@ -267,15 +337,7 @@ export default function Lessons() {
             <JoyButton
               variant='plain'
               color='neutral'
-              disabled={
-                chapterState.chapters &&
-                chapterState.chapters.length > 0 &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources.length > 0 &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources[
-                  chapterState.chapters[chapterState.chapters.length - 1].resources.length - 1
-                ].chapterResourceId === lessonId
-              }
+              disabled={isNextButtonDisabled}
               endDecorator={
                 <ArrowForwardIosIcon
                   sx={{
@@ -284,6 +346,53 @@ export default function Lessons() {
                   }}
                 />
               }
+              onClick={() => {
+                for (let i = 0; i < chapterState.chapters.length; i++) {
+                  if (
+                    chapterState.chapters[i].resources &&
+                    chapterState.chapters[i].resources.length > 0
+                  ) {
+                    for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+                      if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+                        if (
+                          i === chapterState.chapters.length - 1 &&
+                          j === chapterState.chapters[i].resources.length - 1
+                        ) {
+                          // Check if this is the last resource of the last chapter
+                          return;
+                        } else if (
+                          j === chapterState.chapters[i].resources.length - 1 &&
+                          chapterState.chapters[i + 1].resources.length > 0
+                        ) {
+                          // Check if this is the last resource of the non-last chapter
+                          // Also check if next chapter has resources. if not, do not navigate
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", courseId)
+                              .replace(
+                                ":lessonId",
+                                chapterState.chapters[i + 1].resources[0].chapterResourceId
+                              )
+                              .replace("*", "")
+                          );
+                          return;
+                        } else if (j < chapterState.chapters[i].resources.length - 1) {
+                          // If this is not the last resource of the chapter, go to the next resource
+                          navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", courseId)
+                              .replace(
+                                ":lessonId",
+                                chapterState.chapters[i].resources[j + 1].chapterResourceId
+                              )
+                              .replace("*", "")
+                          );
+                        }
+                      }
+                    }
+                  }
+                }
+              }}
             >
               {t("common_next")}
             </JoyButton>
