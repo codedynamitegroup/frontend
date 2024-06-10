@@ -306,6 +306,9 @@
   "contest_detail_leaderboard_rank": "Rank",
   "contest_detail_leaderboard_participant": "Participant",
   "contest_detail_leaderboard_total_time": "Total time",
+  "contest_detail_join_success": "Join contest successfully",
+  "contest_detail_register_tooltip": "Please sign in to register for this contest",
+  "contest_detail_already_started_message": "This contest has already started. You can't join now",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
@@ -553,9 +556,10 @@
   "question_bank_category_question_list_header_table": [
     "NO.",
     "Question name",
+    "Description",
+    "Type",
     "Created by",
     "Last updated by",
-    "Type",
     "Action"
   ],
   "question_bank_category_question_list_create_by_AI": "Create questions by AI",
@@ -918,5 +922,6 @@
   "exam_detail_mark": "Mark",
   "exam_detail_graded": "Graded",
   "exam_detail_summary_no_attempt": "Haven't done any attempt",
-  "exam_detail_max_attempt": "Maximum attempt"
+  "exam_detail_max_attempt": "Maximum attempt",
+  "exam_detail_attempt_unlimited": "Unlimited attempt"
 }

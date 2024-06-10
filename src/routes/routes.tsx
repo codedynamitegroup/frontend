@@ -199,6 +199,7 @@ export const routes = {
     homepage: {
       root: "/admin/*"
     },
+    dashboard: "/admin",
     information: "/admin/information",
     contest: {
       root: "/admin/contests",

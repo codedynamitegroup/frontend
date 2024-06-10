@@ -277,7 +277,6 @@ const QuestionBankManagement = () => {
             </Stack>
 
             <CustomAutocomplete
-              // ={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
               value={searchText}

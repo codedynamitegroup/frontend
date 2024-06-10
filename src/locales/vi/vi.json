@@ -307,6 +307,9 @@
   "contest_detail_join_button": "Tham gia",
   "contest_detail_leaderboard_rank": "Hạng",
   "contest_detail_leaderboard_total_time": "Tổng thời gian làm",
+  "contest_detail_join_success": "Đăng ký tham gia cuộc thi thành công",
+  "contest_detail_register_tooltip": "Hãy đăng nhập để có thể tham gia cuộc thi này",
+  "contest_detail_already_started_message": "Cuộc thi đã bắt đầu. Bạn không thể tham gia",
 
   "certificate_title": "Khóa học chứng chỉ",
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
@@ -546,9 +549,10 @@
   "question_bank_category_question_list_header_table": [
     "STT",
     "Tên câu hỏi",
-    "Ngày tạo bởi",
-    "Lần chỉnh sửa cuối bởi",
+    "Mô tả câu hỏi",
     "Phân loại",
+    "Ngày tạo bởi",
+    "Cập nhật bởi",
     "Tác vụ"
   ],
   "question_bank_category_question_list_create_by_AI": "Tạo câu hỏi bằng AI",
@@ -906,5 +910,6 @@
   "exam_detail_mark": "Số điểm",
   "exam_detail_graded": "Đã chấm",
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
-  "exam_detail_max_attempt": "Số lần làm bài tối đa"
+  "exam_detail_max_attempt": "Số lần làm bài tối đa",
+  "exam_detail_attempt_unlimited": "Không giới hạn lần làm"
 }
