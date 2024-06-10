@@ -263,7 +263,7 @@ const TextEditor: React.FC<Props> = ({
         </>
       )}
       {!openDialog && (
-        <Box width={width || "100%"}>
+        <Box width={width || "100%"} height={"fit-content"}>
           <ReactQuill
             defaultValue={defaultvalue}
             style={{

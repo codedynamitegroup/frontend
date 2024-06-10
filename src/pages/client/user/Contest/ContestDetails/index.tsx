@@ -33,6 +33,7 @@ import moment from "moment";
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
+import ReactQuill from "react-quill";
 
 const ContestDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -174,50 +175,55 @@ const ContestDetails = () => {
                   </TabList>
                 </Box>
                 <TabPanel value='1'>
-                  <Stack direction='column' gap={2}>
+                  <Stack direction='column' gap={1}>
                     <Heading4 translation-key='common_description'>
                       {t("common_description")}
                     </Heading4>
-                    <div
-                      className={classes.divContainer}
-                      dangerouslySetInnerHTML={{ __html: contestDetails.description || "" }}
-                    ></div>
+                    <ReactQuill
+                      value={contestDetails.description || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
                   </Stack>
                   <Divider
                     sx={{
                       margin: "10px 0"
                     }}
                   />
-                  <Stack direction='column' gap={2}>
+                  <Stack direction='column' gap={1}>
                     <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
-                    <div
-                      className={classes.divContainer}
-                      dangerouslySetInnerHTML={{ __html: contestDetails.prizes || "" }}
-                    ></div>
+
+                    <ReactQuill
+                      value={contestDetails.prizes || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
                   </Stack>
                   <Divider
                     sx={{
                       margin: "10px 0"
                     }}
                   />
-                  <Stack direction='column' gap={2}>
+                  <Stack direction='column' gap={1}>
                     <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
-                    <div
-                      className={classes.divContainer}
-                      dangerouslySetInnerHTML={{ __html: contestDetails.rules || "" }}
-                    ></div>
+                    <ReactQuill
+                      value={contestDetails.rules || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
                   </Stack>
                   <Divider
                     sx={{
                       margin: "10px 0"
                     }}
                   />
-                  <Stack direction='column' gap={2}>
+                  <Stack direction='column' gap={1}>
                     <Heading4 translation-key='common_scoring'>{t("common_scoring")}</Heading4>
-                    <div
-                      className={classes.divContainer}
-                      dangerouslySetInnerHTML={{ __html: contestDetails.scoring || "" }}
-                    ></div>
+                    <ReactQuill
+                      value={contestDetails.scoring || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
                   </Stack>
                 </TabPanel>
                 {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&

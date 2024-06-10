@@ -28,6 +28,7 @@ import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
 import JoyButton from "@mui/joy/Button";
 import useAuth from "hooks/useAuth";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -362,15 +363,27 @@ const CourseCertificateDetail = () => {
                             certificateCourseDetails.isRegistered === true &&
                             certificateCourseDetails.currentResource
                           ) {
-                            navigate(
-                              routes.user.course_certificate.detail.lesson.detail
-                                .replace(":courseId", courseId)
-                                .replace(
-                                  ":lessonId",
-                                  certificateCourseDetails.currentResource?.chapterResourceId || ""
-                                )
-                                .replace("*", "")
-                            );
+                            const url =
+                              certificateCourseDetails.currentResource.resourceType ===
+                              ResourceTypeEnum.CODE
+                                ? routes.user.course_certificate.detail.lesson.description
+                                    .replace(":courseId", courseId)
+                                    .replace(
+                                      ":lessonId",
+                                      certificateCourseDetails.currentResource?.chapterResourceId ||
+                                        ""
+                                    )
+                                    .replace("*", "")
+                                : routes.user.course_certificate.detail.lesson.detail
+                                    .replace(":courseId", courseId)
+                                    .replace(
+                                      ":lessonId",
+                                      certificateCourseDetails.currentResource?.chapterResourceId ||
+                                        ""
+                                    )
+                                    .replace("*", "");
+
+                            navigate(url);
                           } else {
                             handleRegisterCertificateCourseById(courseId);
                           }

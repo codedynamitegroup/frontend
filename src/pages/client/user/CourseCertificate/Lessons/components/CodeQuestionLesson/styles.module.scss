@@ -1,0 +1,146 @@
+// .root {
+//     position: relative;
+//     width: 100dvw;
+//     height: 100dvh;
+//     overflow: auto;
+//     display: flex;
+//     flex-direction: column !important;
+//     background-color: var(--blue-1);
+// }
+
+.body {
+    display: flex;
+    flex-direction: column;
+
+    .breadcump {
+        border-bottom: 1px solid var(--gray-10);
+        display: flex;
+        background-color: white;
+        align-items: center;
+        padding: 10px 15px;
+        justify-content: space-between;
+
+        .submit {
+            display: flex;
+            gap: 10px;
+            .runBtn {
+                background-color: var(--green-600);
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: 0.3s;
+
+                &:hover {
+                    background-color: var(--green-500);
+                }
+            }
+            .submitBtn {
+                border: 1px solid var(--blue-500);
+                color: var(--blue-500);
+                border-radius: 5px;
+                cursor: pointer;
+                transition: 0.3s;
+
+                &:hover {
+                    background-color: var(--blue-500);
+                    color: white;
+                }
+            }
+        }
+        #breadcumpWrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            #icArrow {
+                color: var(--blue-500);
+                width: 20px;
+                height: 15px;
+            }
+            .cursorPointer {
+                &:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .codeContainer {
+        padding-left: 10px;
+        padding-right: 10px;
+        display: flex !important;
+        box-sizing: border-box;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        gap: 2px;
+        .rightBody {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 10px;
+
+            .codeStubContainer {
+                border: 1px solid #dadada;
+                height: 50%;
+                border-bottom: 1px solid var(--gray-30);
+                #codeStubHead {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background-color: var(--gray-4);
+                    padding: 5px 10px;
+                }
+            }
+
+            .codeTestcaseContainer {
+                background-color: white;
+                border: 1px solid #dadada;
+
+                display: flex;
+                flex-direction: column;
+                height: 50%;
+                overflow: auto;
+                gap: 10px;
+            }
+        }
+        .stickyTabList {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #fafafa;
+        }
+        .leftBody {
+            background-color: white !important;
+            border: 1px solid #dadada;
+            height: 100%;
+
+            #tabBody {
+                overflow: auto;
+            }
+            #tabWrapper {
+                background-color: var(--gray-4);
+                .tabs {
+                    & [class~="Mui-selected"] {
+                        & [class~="MuiTypography-root"] {
+                            font-weight: 700;
+                            color: var(--blue-500);
+                        }
+                    }
+
+                    & [class~="MuiTabs-indicator"] {
+                        background-color: var(--blue-500);
+                    }
+                }
+            }
+
+            .tabPanelTopic {
+                overflow: auto;
+                padding: 0px 0 !important;
+            }
+            .tabPanel {
+                padding: 0 !important;
+            }
+        }
+    }
+}

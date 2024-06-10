@@ -142,6 +142,7 @@ export const API = {
   },
   AUTH: {
     GET_ALL: "/auth/users",
+    GET_STATISTICS: "/auth/users/statistics",
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
     REFRESH_TOKEN: "/auth/users/refresh-token",
