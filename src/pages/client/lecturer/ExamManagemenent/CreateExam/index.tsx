@@ -481,10 +481,6 @@ export default function ExamCreated() {
     ref: header2Ref
   });
 
-  const handleCategoryPick = (value: string) => {
-    console.log(value);
-  };
-
   return (
     <>
       <PickQuestionTypeToAddDialog
@@ -563,8 +559,9 @@ export default function ExamCreated() {
           <AppBar
             position='fixed'
             sx={{
-              top: `${headerHeight}px`,
-              backgroundColor: "white"
+              top: `${headerHeight + 1}px`,
+              backgroundColor: "white",
+              boxShadow: "0px 2px 4px #00000026"
             }}
             ref={header2Ref}
             open={open}
@@ -754,8 +751,8 @@ export default function ExamCreated() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
-                height: "calc(100% - 64px)",
-                top: "64px"
+                height: `calc(100% - ${headerHeight + 1}px)`,
+                top: `${headerHeight + 1}px`
               }
             }}
             variant='persistent'

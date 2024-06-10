@@ -37,6 +37,11 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
+import React from "react";
+import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
+import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
+import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,6 +57,11 @@ const QuestionListOfCourse = () => {
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
   const [openAccessDialog, setOpenAccessDialog] = useState(false);
+  const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
+  const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
+  const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
+    React.useState(false);
+  const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
 
   const columnsProps: GridColDef[] = [
     {
@@ -67,16 +77,38 @@ const QuestionListOfCourse = () => {
     {
       field: "questionName",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
-      field: "created",
+      field: "description",
       sortable: false,
       flex: 3,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return (
+          <ParagraphBody>
+            <div dangerouslySetInnerHTML={{ __html: params.row.questionText ?? "" }}></div>
+          </ParagraphBody>
+        );
+      }
+    },
+    {
+      field: "qtype",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.qtypeText}</ParagraphBody>;
+      }
+    },
+    {
+      field: "created",
+      sortable: false,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>
@@ -90,7 +122,7 @@ const QuestionListOfCourse = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>
@@ -101,15 +133,7 @@ const QuestionListOfCourse = () => {
       ),
       headerClassName: classes["table-head"]
     },
-    {
-      field: "qtype",
-      sortable: false,
-      flex: 2,
-      headerClassName: classes["table-head"],
-      renderCell: (params) => {
-        return <ParagraphBody>{params.row.qtypeText}</ParagraphBody>;
-      }
-    },
+
     {
       field: "operation",
       sortable: false,
@@ -117,12 +141,29 @@ const QuestionListOfCourse = () => {
       type: "actions",
       cellClassName: "actions",
 
-      getActions: ({ id }) => {
+      getActions: (params) => {
         return [
           <GridActionsCellItem
             icon={<PreviewIcon />}
             label='Preview'
-            onClick={() => setOpenPreviewEssay(true)}
+            onClick={() => {
+              console.log(params.row, "params.row");
+              switch (params.row.qtype.toString().toUpperCase()) {
+                case "MULTIPLE_CHOICE":
+                  setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
+                  break;
+                case "ESSAY":
+                  setOpenPreviewEssay(!openPreviewEssay);
+                  break;
+                case "SHORT_ANSWER":
+                  setQuestionPreview(params.row);
+                  setOpenPreviewShortAnswer(!openPreviewShortAnswer);
+                  break;
+                case "TRUE_FALSE":
+                  setOpenPreviewTrueFalse(!openPreviewTrueFalse);
+                  break;
+              }
+            }}
           />,
           <GridActionsCellItem
             icon={<EditIcon />}
@@ -139,7 +180,7 @@ const QuestionListOfCourse = () => {
             icon={<DeleteIcon />}
             label='Delete'
             className='textPrimary'
-            onClick={handleDeleteQuestion.bind(null, id.toString())}
+            onClick={handleDeleteQuestion.bind(null, params.row.id.toString())}
             sx={{
               color: red[500]
             }}
@@ -204,7 +245,6 @@ const QuestionListOfCourse = () => {
       const getCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategoryById(categoryId);
       dispatch(setCategoryDetails(getCategoryResponse));
-      console.log(questionCategoryState.questions, "questionCategoryState.questions");
     } catch (error) {
       console.log(error);
     }
@@ -294,6 +334,13 @@ const QuestionListOfCourse = () => {
         questionType={typeToCreateNewQuestion}
         handleChangeQuestionType={setTypeToCreateNewQuestion}
       />
+      <PreviewMultipleChoice
+        open={openPreviewMultipleChoiceDialog}
+        setOpen={setOpenPreviewMultipleChoiceDialog}
+        aria-labelledby={"customized-dialog-title1"}
+        maxWidth='md'
+        fullWidth
+      />
       <PreviewEssay
         open={openPreviewEssay}
         setOpen={setOpenPreviewEssay}
@@ -301,6 +348,22 @@ const QuestionListOfCourse = () => {
         maxWidth='md'
         fullWidth
       />
+      <PreviewShortAnswer
+        open={openPreviewShortAnswer}
+        question={questionPreview}
+        setOpen={setOpenPreviewShortAnswer}
+        aria-labelledby={"customized-dialog-title3"}
+        maxWidth='md'
+        fullWidth
+      />
+      <PreviewTrueFalse
+        open={openPreviewTrueFalse}
+        setOpen={setOpenPreviewTrueFalse}
+        aria-labelledby={"customized-dialog-title4"}
+        maxWidth='md'
+        fullWidth
+      />
+
       <TabPanel value='1' sx={{ padding: 0 }}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>

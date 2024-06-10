@@ -17,17 +17,18 @@ export default function useBoxDimensions({ ref }: BoxDimensionsProps) {
       }
     };
     const resizeObserver = new ResizeObserver(getHeight);
-    if (ref.current) {
-      resizeObserver.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      resizeObserver.observe(currentRef);
     }
 
     getHeight();
     return () => {
-      if (ref.current) {
-        resizeObserver.unobserve(ref.current);
+      if (currentRef) {
+        resizeObserver.unobserve(currentRef);
       }
     };
-  }, [ref]);
+  }, [ref, ref.current]);
 
   return {
     height,

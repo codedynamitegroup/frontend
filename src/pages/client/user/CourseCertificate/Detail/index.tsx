@@ -28,6 +28,7 @@ import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
 import JoyButton from "@mui/joy/Button";
 import useAuth from "hooks/useAuth";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -358,20 +359,31 @@ const CourseCertificateDetail = () => {
                             : "certificate_detail_register_button"
                         }
                         onClick={() => {
-                          if (certificateCourseDetails.isRegistered === true) {
-                            // if (
-                            //   certificateCourseCompletedStatus ===
-                            //   CertificateCourseCompletedStatus.DONE
-                            // ) {
-                            //   console.log("Navigate to lastest lesson");
-                            // } else if (
-                            //   certificateCourseCompletedStatus ===
-                            //   CertificateCourseCompletedStatus.CONTINUE
-                            // ) {
-                            //   console.log("Navigate to ongoing lesson");
-                            // } else {
-                            //   console.log("Navigate to first lesson");
-                            // }
+                          if (
+                            certificateCourseDetails.isRegistered === true &&
+                            certificateCourseDetails.currentResource
+                          ) {
+                            const url =
+                              certificateCourseDetails.currentResource.resourceType ===
+                              ResourceTypeEnum.CODE
+                                ? routes.user.course_certificate.detail.lesson.description
+                                    .replace(":courseId", courseId)
+                                    .replace(
+                                      ":lessonId",
+                                      certificateCourseDetails.currentResource?.chapterResourceId ||
+                                        ""
+                                    )
+                                    .replace("*", "")
+                                : routes.user.course_certificate.detail.lesson.detail
+                                    .replace(":courseId", courseId)
+                                    .replace(
+                                      ":lessonId",
+                                      certificateCourseDetails.currentResource?.chapterResourceId ||
+                                        ""
+                                    )
+                                    .replace("*", "");
+
+                            navigate(url);
                           } else {
                             handleRegisterCertificateCourseById(courseId);
                           }
@@ -434,7 +446,14 @@ const CourseCertificateDetail = () => {
                       />
                     }
                   />
-                  <Route path={"lesson"} element={<CourseCertificateLesson />} />
+                  <Route
+                    path={"lesson"}
+                    element={
+                      <CourseCertificateLesson
+                        isRegistered={certificateCourseDetails.isRegistered || false}
+                      />
+                    }
+                  />
                   <Route path={"certificate"} element={<CertificateDetails />} />
                 </Routes>
               </Box>

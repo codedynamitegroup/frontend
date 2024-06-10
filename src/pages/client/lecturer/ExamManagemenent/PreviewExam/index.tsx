@@ -393,8 +393,9 @@ export default function PreviewExam() {
         <AppBar
           position='fixed'
           sx={{
-            top: `${headerHeight}px`,
-            backgroundColor: "white"
+            top: `${headerHeight + 1}px`,
+            backgroundColor: "white",
+            boxShadow: "0px 2px 4px #00000026"
           }}
           ref={header2Ref}
           open={open}
@@ -574,7 +575,8 @@ export default function PreviewExam() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               position: "fixed",
-              top: `${headerHeight}px`
+              height: `calc(100% - ${headerHeight + 1}px)`,
+              top: `${headerHeight + 1}px`
             }
           }}
           variant='persistent'

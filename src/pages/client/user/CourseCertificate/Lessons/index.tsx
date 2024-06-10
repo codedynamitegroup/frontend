@@ -36,7 +36,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import YouTube, { YouTubeProps } from "react-youtube";
 import { setErrorMess } from "reduxes/AppStatus";
 import { setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
@@ -45,6 +44,9 @@ import { AppDispatch, RootState } from "store";
 import classes from "./styles.module.scss";
 import CodeQuestionLesson from "./components/CodeQuestionLesson";
 import YouTubeVideo from "./components/YoutubeVideo";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import ReactQuill from "react-quill";
 
 const drawerWidth = 300;
 
@@ -163,6 +165,90 @@ export default function Lessons() {
     [dispatch]
   );
 
+  const handleGetCertificateCourseById = useCallback(
+    async (id: string) => {
+      try {
+        const getCertificateCourseByIdResponse =
+          await CertificateCourseService.getCertificateCourseById(id);
+        if (getCertificateCourseByIdResponse) {
+          const certificateCourse = getCertificateCourseByIdResponse as CertificateCourseEntity;
+          // Check if user is registered to the course
+          if (certificateCourse.isRegistered !== true) {
+            dispatch(setErrorMess(t("not_registered_certificate_course_message")));
+            navigate(
+              routes.user.course_certificate.detail.introduction
+                .replace(":courseId", id)
+                .replace("*", "")
+            );
+          }
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch certificate course by id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        dispatch(setErrorMess(error.response?.message || error.message));
+        navigate(
+          routes.user.course_certificate.detail.introduction
+            .replace(":courseId", id)
+            .replace("*", "")
+        );
+      }
+    },
+    [dispatch, navigate, t]
+  );
+
+  const isPreviousButtonDisabled = useMemo(() => {
+    for (let i = 0; i < chapterState.chapters.length; i++) {
+      if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
+        for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+          if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+            if (i === 0 && j === 0) {
+              // Check if this is the first resource of the first chapter
+              return true;
+            } else if (j === 0 && chapterState.chapters[i - 1].resources.length > 0) {
+              return false;
+            } else if (j > 0) {
+              // If this is not the first resource of the chapter, go to the previous resource
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }, [chapterState.chapters, lessonId]);
+
+  const isNextButtonDisabled = useMemo(() => {
+    for (let i = 0; i < chapterState.chapters.length; i++) {
+      if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
+        for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+          if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+            if (
+              i === chapterState.chapters.length - 1 &&
+              j === chapterState.chapters[i].resources.length - 1
+            ) {
+              // Check if this is the last resource of the last chapter
+              return true;
+            } else if (
+              j === chapterState.chapters[i].resources.length - 1 &&
+              chapterState.chapters[i + 1].resources.length > 0
+            ) {
+              return false;
+            } else if (j < chapterState.chapters[i].resources.length - 1) {
+              // If this is not the last resource of the chapter, go to the next resource
+              return false;
+            } else {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }, [chapterState.chapters, lessonId]);
+
   useEffect(() => {
     // Initialize the chapter expanded state
     if (chapterState.chapters && chapterState.chapters.length > 0) {
@@ -183,10 +269,14 @@ export default function Lessons() {
   }, [chapterState.chapters, lessonId]);
 
   useEffect(() => {
-    if (courseId) {
-      handleGetChaptersByCertificateCourseId(courseId);
-    }
-  }, [courseId, handleGetChaptersByCertificateCourseId]);
+    const fetchData = async () => {
+      if (courseId) {
+        await handleGetCertificateCourseById(courseId);
+        await handleGetChaptersByCertificateCourseId(courseId);
+      }
+    };
+    fetchData();
+  }, [courseId, handleGetChaptersByCertificateCourseId, handleGetCertificateCourseById]);
 
   if (!courseId || !lessonId || !currentLesson) {
     return null;
@@ -197,16 +287,16 @@ export default function Lessons() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: "65px"
+          marginTop: `${headerHeight + 1}px`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            // top: `${headerHeight + 1}px`,
-            top: "65px",
-            backgroundColor: "white"
+            top: `${headerHeight + 1}px`,
+            backgroundColor: "white",
+            boxShadow: "0px 2px 4px #00000026"
           }}
           ref={header2Ref}
           open={open}
@@ -230,13 +320,7 @@ export default function Lessons() {
             <JoyButton
               variant='plain'
               color='neutral'
-              disabled={
-                chapterState.chapters &&
-                chapterState.chapters.length > 0 &&
-                chapterState.chapters[0].resources &&
-                chapterState.chapters[0].resources.length > 0 &&
-                chapterState.chapters[0].resources[0].chapterResourceId === lessonId
-              }
+              disabled={isPreviousButtonDisabled}
               startDecorator={
                 <ArrowBackIosNewIcon
                   sx={{
@@ -246,21 +330,67 @@ export default function Lessons() {
                 />
               }
               onClick={() => {
-                const currentChapterIndex = chapterState.chapters.findIndex((chapter) =>
-                  chapter.resources.some((resource) => resource.chapterResourceId === lessonId)
-                );
-                console.log("currentChapterIndex", currentChapterIndex);
-                if (currentChapterIndex > 0) {
-                  navigate(
-                    routes.user.course_certificate.detail.lesson.detail
-                      .replace(":courseId", courseId)
-                      .replace(
-                        ":lessonId",
-                        chapterState.chapters[currentChapterIndex - 1].resources[0]
-                          .chapterResourceId
-                      )
-                      .replace("*", "")
-                  );
+                for (let i = 0; i < chapterState.chapters.length; i++) {
+                  if (
+                    chapterState.chapters[i].resources &&
+                    chapterState.chapters[i].resources.length > 0
+                  ) {
+                    for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+                      if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+                        if (i === 0 && j === 0) {
+                          // Check if this is the first resource of the first chapter
+                          return;
+                        } else if (j === 0 && chapterState.chapters[i - 1].resources.length > 0) {
+                          // Check if this is the first resource of the non-first chapter
+                          // Also check if previous chapter has resources. if not, do not navigate
+                          const url =
+                            chapterState.chapters[i - 1].resources[
+                              chapterState.chapters[i - 1].resources.length - 1
+                            ].resourceType === ResourceTypeEnum.CODE
+                              ? routes.user.course_certificate.detail.lesson.description
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i - 1].resources[
+                                      chapterState.chapters[i - 1].resources.length - 1
+                                    ].chapterResourceId
+                                  )
+                                  .replace("*", "")
+                              : routes.user.course_certificate.detail.lesson.detail
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i - 1].resources[
+                                      chapterState.chapters[i - 1].resources.length - 1
+                                    ].chapterResourceId
+                                  )
+                                  .replace("*", "");
+                          navigate(url);
+                          return;
+                        } else if (j > 0) {
+                          // If this is not the first resource of the chapter, go to the previous resource
+                          const url =
+                            chapterState.chapters[i].resources[j - 1].resourceType ===
+                            ResourceTypeEnum.CODE
+                              ? routes.user.course_certificate.detail.lesson.description
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i].resources[j - 1].chapterResourceId
+                                  )
+                                  .replace("*", "")
+                              : routes.user.course_certificate.detail.lesson.detail
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i].resources[j - 1].chapterResourceId
+                                  )
+                                  .replace("*", "");
+                          navigate(url);
+                        }
+                      }
+                    }
+                  }
                 }
               }}
             >
@@ -269,15 +399,7 @@ export default function Lessons() {
             <JoyButton
               variant='plain'
               color='neutral'
-              disabled={
-                chapterState.chapters &&
-                chapterState.chapters.length > 0 &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources.length > 0 &&
-                chapterState.chapters[chapterState.chapters.length - 1].resources[
-                  chapterState.chapters[chapterState.chapters.length - 1].resources.length - 1
-                ].chapterResourceId === lessonId
-              }
+              disabled={isNextButtonDisabled}
               endDecorator={
                 <ArrowForwardIosIcon
                   sx={{
@@ -286,6 +408,71 @@ export default function Lessons() {
                   }}
                 />
               }
+              onClick={() => {
+                for (let i = 0; i < chapterState.chapters.length; i++) {
+                  if (
+                    chapterState.chapters[i].resources &&
+                    chapterState.chapters[i].resources.length > 0
+                  ) {
+                    for (let j = 0; j < chapterState.chapters[i].resources.length; j++) {
+                      if (chapterState.chapters[i].resources[j].chapterResourceId === lessonId) {
+                        if (
+                          i === chapterState.chapters.length - 1 &&
+                          j === chapterState.chapters[i].resources.length - 1
+                        ) {
+                          // Check if this is the last resource of the last chapter
+                          return;
+                        } else if (
+                          j === chapterState.chapters[i].resources.length - 1 &&
+                          chapterState.chapters[i + 1].resources.length > 0
+                        ) {
+                          // Check if this is the last resource of the non-last chapter
+                          // Also check if next chapter has resources. if not, do not navigate
+                          const url =
+                            chapterState.chapters[i + 1].resources[0].resourceType ===
+                            ResourceTypeEnum.CODE
+                              ? routes.user.course_certificate.detail.lesson.description
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i + 1].resources[0].chapterResourceId
+                                  )
+                                  .replace("*", "")
+                              : routes.user.course_certificate.detail.lesson.detail
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i + 1].resources[0].chapterResourceId
+                                  )
+                                  .replace("*", "");
+                          navigate(url);
+                          return;
+                        } else if (j < chapterState.chapters[i].resources.length - 1) {
+                          // If this is not the last resource of the chapter, go to the next resource
+                          const url =
+                            chapterState.chapters[i].resources[j + 1].resourceType ===
+                            ResourceTypeEnum.CODE
+                              ? routes.user.course_certificate.detail.lesson.description
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i].resources[j + 1].chapterResourceId
+                                  )
+                                  .replace("*", "")
+                              : routes.user.course_certificate.detail.lesson.detail
+                                  .replace(":courseId", courseId)
+                                  .replace(
+                                    ":lessonId",
+                                    chapterState.chapters[i].resources[j + 1].chapterResourceId
+                                  )
+                                  .replace("*", "");
+                          navigate(url);
+                        }
+                      }
+                    }
+                  }
+                }
+              }}
             >
               {t("common_next")}
             </JoyButton>
@@ -298,8 +485,8 @@ export default function Lessons() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              //   marginTop: `${header2Height + 1}px`
-              marginTop: "65px"
+              marginTop: `${header2Height + 1}px`
+              // marginTop: "65px"
             }
           }}
           variant='persistent'
@@ -384,12 +571,21 @@ export default function Lessons() {
                       exclusive
                       onChange={(e, value) => {
                         if (value) {
-                          navigate(
-                            routes.user.course_certificate.detail.lesson.detail
-                              .replace(":courseId", courseId)
-                              .replace(":lessonId", value)
-                              .replace("*", "")
-                          );
+                          const url =
+                            chapter.resources.find(
+                              (resource) => resource.chapterResourceId === value
+                            )?.resourceType === ResourceTypeEnum.CODE
+                              ? routes.user.course_certificate.detail.lesson.description
+                                  .replace(":courseId", courseId)
+                                  .replace(":lessonId", value)
+                                  .replace("*", "")
+                              : routes.user.course_certificate.detail.lesson.detail
+                                  .replace(":courseId", courseId)
+                                  .replace(":lessonId", value)
+                                  .replace("*", "");
+                          navigate(url, {
+                            replace: true
+                          });
                         }
                       }}
                       aria-label='Platform'
@@ -433,7 +629,13 @@ export default function Lessons() {
               );
             })}
         </Drawer>
-        <Main open={open}>
+        <Main
+          open={open}
+          sx={{
+            height: "100%",
+            overflow: "auto"
+          }}
+        >
           <DrawerHeader />
           <Card
             sx={{
@@ -460,7 +662,7 @@ export default function Lessons() {
                     marginY: "10px"
                   }}
                 />
-                <CodeQuestionLesson />
+                <CodeQuestionLesson lesson={currentLesson} />
               </Box>
             ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
               <Box>
@@ -509,7 +711,11 @@ export default function Lessons() {
                     marginY: "10px"
                   }}
                 />
-                <div dangerouslySetInnerHTML={{ __html: currentLesson?.lessonHtml ?? "" }}></div>
+                <ReactQuill
+                  value={currentLesson?.lessonHtml ?? ""}
+                  readOnly={true}
+                  theme={"bubble"}
+                />
               </Box>
             )}
           </Card>

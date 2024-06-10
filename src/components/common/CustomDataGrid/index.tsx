@@ -148,7 +148,7 @@ const CustomDataGrid = (props: DataGridProps) => {
                   cursor: onClickRow ? "pointer" : "default"
                 },
                 "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "var(--gray-10)"
+                  backgroundColor: "var(--gray-2)"
                 },
                 ...sx
               }

@@ -154,7 +154,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
     defaultValues: {
       answers: [],
       caseSensitive: 1,
-      defaultScore: "0",
+      defaultScore: "1",
       generalDescription: "",
       questionDescription: "",
       questionName: ""

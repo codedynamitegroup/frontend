@@ -68,6 +68,7 @@
   padding: 10px;
   z-index: 100;
   // center the button
+  border-top: 1px solid var(--gray-30);
   display: flex;
   justify-content: center;
 }

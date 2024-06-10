@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import i18next from "i18next";
 import { jsonrepair } from "jsonrepair";
+import { ICodeQuestion } from "pages/client/user/DetailProblem/components/Submission/components/DetailSubmission";
 import splitPrompt from "utils/SplitPrompt";
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
@@ -35,21 +36,16 @@ interface IAnalysisFeedback {
   scalability: IScalabilityFeedback;
 }
 
-export interface IFeedbackCode {
+interface IFeedbackCode {
   analysis: IAnalysisFeedback;
   conclusion: string;
 }
 
-export interface IFeedbackCodeByAI {
+interface IFeedbackCodeByAI {
   id: number;
   feedback: string;
   suggestedCode: string;
   explainedCode: string;
-}
-
-export interface ICodeQuestion {
-  title: string;
-  description: string;
 }
 
 export interface ISourceCodeSubmission {
@@ -273,7 +269,7 @@ B. Feedback Language: Use **${language}** to write feedback messages for users.
   //   ${AI_ROLE}
 
   //   ${SYSTEM_INSTRUCTIONS}`;
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   try {
     // // const splittedPrompt = splitPrompt(prompt, 5000).map((part) => part.content);
 
