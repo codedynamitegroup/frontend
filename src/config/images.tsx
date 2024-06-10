@@ -48,6 +48,14 @@ import forbiddenError from "assets/img/error/ForbiddenError.svg";
 
 import contest from "assets/img/admin/contest.svg";
 import adminManagement from "assets/img/admin/adminManagement.svg";
+import onlineUser from "assets/img/admin/online-user.svg";
+import offlineUser from "assets/img/admin/offline-user.svg";
+import totalUser from "assets/img/admin/total-user.svg";
+import loginTodayUser from "assets/img/admin/login-today.svg";
+import course from "assets/img/admin/course.svg";
+import userEnrollment from "assets/img/admin/enrollment.svg";
+import activeCourse from "assets/img/admin/active-course.svg";
+import inactiveCourse from "assets/img/admin/inactive-course.svg";
 
 const images = {
   course: {
@@ -79,7 +87,18 @@ const images = {
   icAlmostEqualTo,
   avatar: { avatarBoyDefault, avatarGirlDefault },
   error: { notFoundError, forbiddenError },
-  admin: { contest, adminManagement }
+  admin: {
+    contest,
+    adminManagement,
+    onlineUser,
+    offlineUser,
+    totalUser,
+    loginTodayUser,
+    course,
+    userEnrollment,
+    activeCourse,
+    inactiveCourse
+  }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
 export { notificaionIcon };
