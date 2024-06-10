@@ -39,6 +39,7 @@ import {
   setSystemLanguageId
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import {
+  setExecuteError,
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
@@ -219,25 +220,35 @@ export default function DetailProblem() {
   const handleExecuteCode = () => {
     setTestCaseTab(1);
     dispatch(setExecuteResultLoading(true));
-    ExecuteService.execute(
-      currentExecuteData.language_id,
-      currentExecuteData.stdin,
-      currentExecuteData.expected_output,
-      currentExecuteData.cpu_time_limit,
-      currentExecuteData.memory_limit,
-      currentExecuteData.source_code
-    )
-      .then((data: Judge0ResponseEntity) => {
-        dispatch(setResult(data));
-        dispatch(setExecuteResultLoading(false));
-
-        // console.log("response data", data);
-      })
-      .catch((err) => {
-        console.log(err);
-        dispatch(setExecuteResultLoading(false));
-        setTestCaseTab(0);
-      });
+    if (currentExecuteData.test_cases) {
+      Promise.all(
+        currentExecuteData.test_cases.map((value) =>
+          ExecuteService.execute(
+            currentExecuteData.language_id,
+            value.inputData,
+            value.outputData,
+            currentExecuteData.cpu_time_limit,
+            currentExecuteData.memory_limit,
+            currentExecuteData.source_code
+          )
+        )
+      )
+        .then((data: Judge0ResponseEntity[]) => {
+          currentExecuteData.test_cases?.forEach((value, index) => {
+            data[index].input_data = value.inputData;
+            data[index].output_data = value.outputData;
+          });
+          // console.log(data);
+          dispatch(setResult(data));
+        })
+        .catch((err) => {
+          console.log("Execute error: ", err);
+          let message: string | undefined = err.message;
+          if (message === undefined) message = "Unexpected error";
+          dispatch(setExecuteError(message));
+        })
+        .finally(() => dispatch(setExecuteResultLoading(false)));
+    }
     // console.log("current data", currentExecuteData);
   };
   const handleSubmitCode = () => {
@@ -301,7 +312,7 @@ export default function DetailProblem() {
 
       setWidth001(newWidth001);
       setWidth002(newWidth002);
-    }, 100);
+    }, 200);
     setTimer(newTimer);
   };
 

@@ -4,15 +4,15 @@ import { Box, Chip, Container, IconButton, Stack, TextField } from "@mui/materia
 import Heading5 from "components/text/Heading5";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import { useAppSelector, useAppDispatch } from "hooks";
-import { setStdin, setExpectedOutput } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
+import { setTestCases as setExeTestCases } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
-import cloneDeep from "lodash.clonedeep";
 import { setSampleTestCases } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import AddIcon from "@mui/icons-material/Add";
+import cloneDeep from "lodash.clonedeep";
 
 export default function TestCase() {
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
-  const [testCases, setTestCases] = useState<TestCaseEntity[]>([]);
+  let [testCases, setTestCases] = useState<TestCaseEntity[]>([]);
   const [focusTestCase, setFocusTestCase] = useState(0);
   const dispatch = useAppDispatch();
 
@@ -31,17 +31,20 @@ export default function TestCase() {
       // dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
     }
   }, [codeQuestion?.sampleTestCases]);
+  useEffect(() => {
+    dispatch(setExeTestCases(testCases));
+  }, [testCases]);
   const handleDeleteTestCase = (index: number) => {
     if (index >= 0 && index < testCases.length) {
       if (index <= focusTestCase && focusTestCase !== 0) setFocusTestCase((value) => value - 1);
-      let newList = cloneDeep(testCases);
+      let newList = [...testCases];
       newList.splice(index, 1);
       setTestCases(newList);
     }
   };
   const handleAddTestCase = () => {
     if (testCases.length < 5) {
-      let newList = cloneDeep(testCases);
+      let newList = [...testCases];
       newList.push({
         inputData: "",
         outputData: "",

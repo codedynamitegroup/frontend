@@ -9,4 +9,6 @@ export interface Judge0ResponseEntity {
     id: number;
     description: string;
   } | null;
+  input_data: string | null;
+  output_data: string | null;
 }

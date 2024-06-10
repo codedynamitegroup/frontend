@@ -4,7 +4,7 @@ interface BoxDimensionsProps {
   ref: React.RefObject<HTMLDivElement>;
 }
 export default function useBoxDimensions({ ref }: BoxDimensionsProps) {
-  const [height, setHeight] = useState<number>(0);
+  const [height, setHeight] = useState<number>(64);
   const [width, setWidth] = useState<number>(0);
 
   useEffect(() => {
@@ -17,17 +17,18 @@ export default function useBoxDimensions({ ref }: BoxDimensionsProps) {
       }
     };
     const resizeObserver = new ResizeObserver(getHeight);
-    if (ref.current) {
-      resizeObserver.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      resizeObserver.observe(currentRef);
     }
 
     getHeight();
     return () => {
-      if (ref.current) {
-        resizeObserver.unobserve(ref.current);
+      if (currentRef) {
+        resizeObserver.unobserve(currentRef);
       }
     };
-  }, [ref]);
+  }, [ref, ref.current]);
 
   return {
     height,
