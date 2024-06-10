@@ -92,28 +92,36 @@ const ContestDetails = () => {
 
   const handleGetContestById = useCallback(
     async (id: string) => {
+      dispatch(setInititalLoading(true));
       try {
         const getContestsResponse = await ContestService.getContestById(id);
+        if (getContestsResponse) {
+          if (
+            getContestsResponse.startTime &&
+            moment().utc().isAfter(getContestsResponse.startTime)
+          ) {
+            await handleGetContestLeaderboard(id);
+          }
+        }
         dispatch(setContestDetails(getContestsResponse));
+        dispatch(setInititalLoading(false));
       } catch (error: any) {
         console.error("Failed to fetch contests", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
         });
+        dispatch(setInititalLoading(false));
         // Show snackbar here
       }
     },
-    [dispatch]
+    [dispatch, handleGetContestLeaderboard]
   );
 
   useEffect(() => {
     const fetchInitialData = async () => {
       if (contestId) {
-        dispatch(setInititalLoading(true));
-        await handleGetContestById(contestId);
-        await handleGetContestLeaderboard(contestId);
-        dispatch(setInititalLoading(false));
+        handleGetContestById(contestId);
       }
     };
     fetchInitialData();
@@ -166,10 +174,51 @@ const ContestDetails = () => {
                   </TabList>
                 </Box>
                 <TabPanel value='1'>
-                  <div
-                    className={classes.divContainer}
-                    dangerouslySetInnerHTML={{ __html: contestDetails.description || "" }}
-                  ></div>
+                  <Stack direction='column' gap={2}>
+                    <Heading4 translation-key='common_description'>
+                      {t("common_description")}
+                    </Heading4>
+                    <div
+                      className={classes.divContainer}
+                      dangerouslySetInnerHTML={{ __html: contestDetails.description || "" }}
+                    ></div>
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={2}>
+                    <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
+                    <div
+                      className={classes.divContainer}
+                      dangerouslySetInnerHTML={{ __html: contestDetails.prizes || "" }}
+                    ></div>
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={2}>
+                    <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
+                    <div
+                      className={classes.divContainer}
+                      dangerouslySetInnerHTML={{ __html: contestDetails.rules || "" }}
+                    ></div>
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={2}>
+                    <Heading4 translation-key='common_scoring'>{t("common_scoring")}</Heading4>
+                    <div
+                      className={classes.divContainer}
+                      dangerouslySetInnerHTML={{ __html: contestDetails.scoring || "" }}
+                    ></div>
+                  </Stack>
                 </TabPanel>
                 {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
                 contestDetails.isRegistered === true ? (
