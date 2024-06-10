@@ -434,7 +434,14 @@ const CourseCertificateDetail = () => {
                       />
                     }
                   />
-                  <Route path={"lesson"} element={<CourseCertificateLesson />} />
+                  <Route
+                    path={"lesson"}
+                    element={
+                      <CourseCertificateLesson
+                        isRegistered={certificateCourseDetails.isRegistered || false}
+                      />
+                    }
+                  />
                   <Route path={"certificate"} element={<CertificateDetails />} />
                 </Routes>
               </Box>

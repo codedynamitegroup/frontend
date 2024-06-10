@@ -102,8 +102,8 @@ const ContestDetails = () => {
           ) {
             await handleGetContestLeaderboard(id);
           }
+          dispatch(setContestDetails(getContestsResponse));
         }
-        dispatch(setContestDetails(getContestsResponse));
         dispatch(setInititalLoading(false));
       } catch (error: any) {
         console.error("Failed to fetch contests", {

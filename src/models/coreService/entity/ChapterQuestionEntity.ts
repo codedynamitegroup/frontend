@@ -4,6 +4,7 @@ import { QuestionTypeEnum } from "../enum/QuestionTypeEnum";
 
 export interface ChapterQuestionEntity {
   id: string;
+  codeQuestionId: string;
   difficulty: QuestionDifficultyEnum;
   name: string;
   questionText: string;

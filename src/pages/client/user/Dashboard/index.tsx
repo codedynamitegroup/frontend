@@ -1,7 +1,6 @@
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinearProgress } from "@mui/joy";
-import JoyButton from "@mui/joy/Button";
 import { CircularProgress, Container, Grid, Skeleton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -9,7 +8,6 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Divider from "@mui/material/Divider";
-import CustomButton, { BtnType } from "components/common/buttons/Button";
 import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
@@ -34,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
+import JoyButton from "@mui/joy/Button";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -134,10 +133,12 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return registeredCertificateCourses
-      .filter((course) => (course?.numOfCompletedResources || 0) > 0)
-      .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
-      .slice(0, 3);
+    return (
+      registeredCertificateCourses
+        // .filter((course) => (course?.numOfCompletedResources || 0) > 0)
+        .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
+        .slice(0, 3)
+    );
   }, [registeredCertificateCourses]);
 
   const otherCertificateCourses = useMemo(() => {
@@ -233,8 +234,7 @@ export default function UserDashboard() {
                         </Box>
                       </Box>
                       <Box className={classes.learnBtn}>
-                        <CustomButton
-                          btnType={BtnType.Primary}
+                        <JoyButton
                           translation-key='common_continue'
                           onClick={() => {
                             navigate(
@@ -245,8 +245,11 @@ export default function UserDashboard() {
                             );
                           }}
                         >
-                          {i18next.format(t("common_continue"), "firstUppercase")}
-                        </CustomButton>
+                          {/* {i18next.format(t("common_continue"), "firstUppercase")} */}
+                          {(course?.numOfCompletedResources || 0) === 0
+                            ? t("common_start")
+                            : t("common_continue")}
+                        </JoyButton>
                       </Box>
                     </Grid>
                   ))
