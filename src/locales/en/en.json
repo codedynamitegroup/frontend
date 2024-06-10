@@ -333,6 +333,7 @@
   "certificate_registered": "Registered",
   "certificate_not_registered": "Not registered",
   "certificate_detail_register_tooltip": "Please sign in to register for this course",
+  "certificate_detail_chapter_resources": "Certificate Course Lessons",
 
   "dashboard_start_title": "Let's start your courses",
   "dashboard_continue_title": "Let's continue your courses",

@@ -175,6 +175,7 @@ const CourseCertificates = () => {
 
   const handleChangeCatalog = useCallback(
     async (value: string) => {
+      if (!value || value === catalogActive) return;
       if (value === "all") {
         setSearchText("");
         navigate(routes.user.course_certificate.root);
@@ -186,7 +187,7 @@ const CourseCertificates = () => {
         navigate(`${routes.user.course_certificate.root}?catalog=${value}`);
       }
     },
-    [navigate]
+    [catalogActive, navigate]
   );
 
   const certificateCoursesByEachTopic = useMemo(() => {

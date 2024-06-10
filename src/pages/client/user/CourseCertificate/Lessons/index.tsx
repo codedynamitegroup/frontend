@@ -36,7 +36,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import YouTube, { YouTubeProps } from "react-youtube";
 import { setErrorMess } from "reduxes/AppStatus";
 import { setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
@@ -249,7 +248,6 @@ export default function Lessons() {
                 const currentChapterIndex = chapterState.chapters.findIndex((chapter) =>
                   chapter.resources.some((resource) => resource.chapterResourceId === lessonId)
                 );
-                console.log("currentChapterIndex", currentChapterIndex);
                 if (currentChapterIndex > 0) {
                   navigate(
                     routes.user.course_certificate.detail.lesson.detail
@@ -460,7 +458,7 @@ export default function Lessons() {
                     marginY: "10px"
                   }}
                 />
-                <CodeQuestionLesson />
+                <CodeQuestionLesson lesson={currentLesson} />
               </Box>
             ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
               <Box>

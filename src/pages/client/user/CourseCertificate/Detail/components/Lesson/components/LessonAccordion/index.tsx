@@ -14,15 +14,27 @@ import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 import classes from "./styles.module.scss";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
+import { AppDispatch } from "store";
+import { useDispatch } from "react-redux";
+import { setErrorMess } from "reduxes/AppStatus";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   chapter: ChapterEntity;
   chapterNumber: number;
   isExpanded?: boolean;
+  isRegistered?: boolean;
 }
 
-export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: Props) {
+export default function LessonAccordion({
+  chapter,
+  chapterNumber,
+  isExpanded,
+  isRegistered
+}: Props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
   return (
     <>
       <Accordion defaultExpanded={isExpanded}>
@@ -49,12 +61,14 @@ export default function LessonAccordion({ chapter, chapterNumber, isExpanded }: 
                   key={index}
                   className={classes.lesson}
                   onClick={() => {
-                    navigate(
-                      routes.user.course_certificate.detail.lesson.detail
-                        .replace(":courseId", chapter.certificateCourseId)
-                        .replace(":lessonId", resource.chapterResourceId)
-                        .replace("*", "")
-                    );
+                    isRegistered === true
+                      ? navigate(
+                          routes.user.course_certificate.detail.lesson.detail
+                            .replace(":courseId", chapter.certificateCourseId)
+                            .replace(":lessonId", resource.chapterResourceId)
+                            .replace("*", "")
+                        )
+                      : dispatch(setErrorMess(t("not_registered_certificate_course_message")));
                   }}
                 >
                   <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
