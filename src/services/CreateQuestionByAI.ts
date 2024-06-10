@@ -111,7 +111,7 @@ async function createQuestionByAI(
 ) {
   // For text-only input, use the gemini-pro model
   const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   let question_type = "";
   if (qtype === EQType.Essay) {
     question_type = "Essay";

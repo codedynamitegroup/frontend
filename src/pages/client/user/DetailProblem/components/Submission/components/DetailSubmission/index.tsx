@@ -12,7 +12,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import { ICodeQuestion, ISourceCodeSubmission, feedbackCodeByAI } from "services/FeedbackCodeByAI";
+import { ISourceCodeSubmission, feedbackCodeByAI } from "services/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
@@ -30,6 +30,11 @@ interface Props {
   languageName: string;
   codeSubmissionDetail: CodeSubmissionDetailEntity | null;
   codeQuestion: CodeQuestionEntity;
+}
+
+export interface ICodeQuestion {
+  title: string;
+  description: string;
 }
 
 export default function DetailSolution({
@@ -52,7 +57,7 @@ export default function DetailSolution({
   OutputFormat: ${convert(codeQuestion.outputFormat ?? "")}
   Constraints: ${convert(codeQuestion.constraints ?? "")}
   `;
-  console.log(codeSubmissionDetail?.bodyCode);
+
   const codeQuestionProblemStatement: ICodeQuestion = {
     title: codeQuestion.name,
     description: plainDescription
