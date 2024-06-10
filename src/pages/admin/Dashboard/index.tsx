@@ -16,9 +16,16 @@ import ChartLengend from "./ChartLegend";
 import images from "config/images";
 import { ScaleLinear } from "d3";
 import useAuth from "hooks/useAuth";
+import { set } from "date-fns";
 
-const accessTokenExpTime = 15; // 15 minutes to Mil
-const ROLE_LIST = ["user", "admin", "student_moodle", "lecturer_moodle", "admin_moodle"];
+interface UserStatistics {
+  totalUsers: number;
+  activeUsers: number;
+  offlineUsers: number;
+  loginToday: number;
+  registerUser: { data: number[]; label: string; area: boolean }[];
+  userByRole: { index: number; value: number; label: string }[];
+}
 const ROLE_PIE_CHART_COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
 const startGradientColor = "#1abc9c";
 const endGradientColor = "#16a085";
@@ -28,8 +35,20 @@ const AdminDashboard = () => {
   const auth = useAuth();
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [dashboardTabValue, setDashboardTabValue] = useState(0);
-  const [userList, setUserList] = useState([]);
-  const [isSevenDays, setIsSevenDays] = useState(true);
+  const [userRegisterChartRangeButtonState, setUserRegisterChartRangeButtonState] = useState(0);
+  const tempDate = new Date();
+  const tempMonth = tempDate.getMonth();
+  const tempYear = tempDate.getFullYear();
+  const [userStatistics, setUserStatistics] = useState<UserStatistics>({
+    totalUsers: 0,
+    activeUsers: 0,
+    offlineUsers: 0,
+    loginToday: 0,
+    registerUser: [],
+    userByRole: []
+  });
+
+  const [daysInMonth, setDaysInMonth] = useState(new Date(tempYear, tempMonth + 1, 0).getDate());
 
   const tabLabels = [
     t("User"),
@@ -41,7 +60,75 @@ const AdminDashboard = () => {
   ];
 
   const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const monthsList = [
+  const dayInMonthList =
+    daysInMonth === 31
+      ? [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31"
+        ]
+      : [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30"
+        ];
+
+  const monthInYearList = [
     "Jan",
     "Feb",
     "Mar",
@@ -57,118 +144,30 @@ const AdminDashboard = () => {
   ];
   const ROLE_NAMES = ["User", "Admin", "Student Course", "Lecturer", "Admin course"];
 
-  const getAllUserHandler = async () => {
+  const getUserStatistics = async () => {
     try {
-      const response = await UserService.getAllUser();
-      console.log(response);
-      setUserList(response.users);
+      const response = await UserService.getUserStatistics();
+      setUserStatistics((prevStats) => ({
+        ...response,
+        registerUser: response.registerUser.map((user: any) => ({ ...user, area: true }))
+      }));
     } catch (error) {
       console.log(error);
     }
   };
 
-  const calculateUserRegisterChart = (isSevenDays: boolean) => {
-    if (userList.length === 0) return [{ data: [] }, { data: [] }]; // return empty data
-    let filteredUserList = [];
-
-    // week
-    if (isSevenDays) {
-      filteredUserList = userList.filter((user: any) => {
-        const createdAt = new Date(user.createdAt);
-        const currentDate = new Date();
-
-        if (
-          currentDate.getMonth() === createdAt.getMonth() &&
-          currentDate.getDate() - createdAt.getDate() <= 7
-        ) {
-          return user;
-        }
-
-        return null; // Add a return statement at the end of the arrow function
-      });
-    } else {
-      // year (aka months)
-      filteredUserList = userList.filter((user: any) => {
-        const createdAt = new Date(user.createdAt);
-        const currentDate = new Date();
-
-        if (createdAt.getFullYear() === currentDate.getFullYear()) {
-          return user;
-        }
-
-        return null;
-      });
-    }
-
-    // Create an array with 7 or 12 elements, each element is 0 for chart series
-    const arraySize = isSevenDays ? 7 : 12;
-    const registerData = new Array(arraySize).fill(0);
-
-    filteredUserList.forEach((user: any) => {
-      const createdAt = new Date(user.createdAt);
-      let dayIndex = isSevenDays ? createdAt.getDay() : createdAt.getMonth();
-
-      if (isSevenDays) dayIndex = dayIndex === 0 ? 6 : dayIndex - 1; // Adjust Sunday to the end
-      registerData[dayIndex]++;
-    });
-
-    return [
-      {
-        data: registerData,
-        area: true,
-        label: "New user"
-      }
-    ];
-  };
-  const calculateUserRole = () => {
-    const roleData = new Array(ROLE_LIST.length).fill(0);
-
-    userList.forEach((user: any) => {
-      user.roles.forEach((role: any) => {
-        roleData[ROLE_LIST.findIndex((value) => value === role.name)]++;
-      });
-    });
-
-    const pieData = roleData.map((value, index) => {
-      return { id: index, value, label: ROLE_NAMES[index] };
-    });
-    return pieData;
-  };
-  const calculateActiveUSer = () => {
-    const activeUser = userList.filter((user: any) => {
-      const lastLogin = new Date(user.lastLogin);
-      const currentDate = new Date();
-      const differenceInMinutes = (currentDate.getTime() - lastLogin.getTime()) / (1000 * 60);
-
-      return differenceInMinutes <= accessTokenExpTime;
-    });
-
-    return activeUser.length;
-  };
-  const calculateLoginToday = () => {
-    const loginToday = userList.filter((user: any) => {
-      const lastLogin = new Date(user.lastLogin);
-      const currentDate = new Date();
-      return (
-        currentDate.getDate() === lastLogin.getDate() &&
-        currentDate.getMonth() === lastLogin.getMonth() &&
-        currentDate.getFullYear() === lastLogin.getFullYear()
-      );
-    });
-
-    return loginToday.length;
-  };
-
   useEffect(() => {
     const fetchData = async () => {
-      await getAllUserHandler();
+      await getUserStatistics();
     };
-    calculateUserRole();
-
     fetchData();
 
     setMainSkeleton(false);
   }, []);
+
+  useEffect(() => {
+    console.log(userStatistics);
+  }, [userStatistics]);
 
   return (
     <>
@@ -277,7 +276,7 @@ const AdminDashboard = () => {
           </Grid>
           <Grid item xs={12}>
             <Card>
-              <ParagraphBody>Hello, {auth.loggedUser.lastName}</ParagraphBody>
+              <ParagraphBody>Hello, tien</ParagraphBody>
             </Card>
           </Grid>
 
@@ -299,7 +298,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Active user"}
-                      value={calculateActiveUSer()}
+                      value={userStatistics.activeUsers}
                       mainColor={"#28a745"}
                     />
                   </Grid>
@@ -313,7 +312,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Offline user"}
-                      value={userList.length - calculateActiveUSer()}
+                      value={userStatistics.offlineUsers}
                       mainColor={"#dc3545"}
                     />
                   </Grid>
@@ -327,7 +326,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Total user"}
-                      value={userList.length}
+                      value={userStatistics.totalUsers}
                       mainColor={"#007bff"}
                     />
                   </Grid>
@@ -341,7 +340,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Total login today"}
-                      value={calculateLoginToday()}
+                      value={userStatistics.loginToday}
                       mainColor={"#ffc107"}
                     />
                   </Grid>
@@ -367,20 +366,30 @@ const AdminDashboard = () => {
                         spacing={2}
                       >
                         <Button
-                          variant={isSevenDays ? "outlined" : "plain"}
+                          variant={userRegisterChartRangeButtonState === 0 ? "outlined" : "plain"}
                           onClick={() => {
-                            if (isSevenDays) return;
-                            setIsSevenDays(!isSevenDays);
+                            if (userRegisterChartRangeButtonState === 0) return;
+                            setUserRegisterChartRangeButtonState(0);
                           }}
                           size='sm'
                         >
                           Week
                         </Button>
                         <Button
-                          variant={!isSevenDays ? "outlined" : "plain"}
+                          variant={userRegisterChartRangeButtonState === 1 ? "outlined" : "plain"}
                           onClick={() => {
-                            if (!isSevenDays) return;
-                            setIsSevenDays(!isSevenDays);
+                            if (userRegisterChartRangeButtonState === 1) return;
+                            setUserRegisterChartRangeButtonState(1);
+                          }}
+                          size='sm'
+                        >
+                          Month
+                        </Button>
+                        <Button
+                          variant={userRegisterChartRangeButtonState === 2 ? "outlined" : "plain"}
+                          onClick={() => {
+                            if (userRegisterChartRangeButtonState === 2) return;
+                            setUserRegisterChartRangeButtonState(2);
                           }}
                           size='sm'
                         >
@@ -429,7 +438,12 @@ const AdminDashboard = () => {
                           xAxis={[
                             {
                               scaleType: "point",
-                              data: isSevenDays ? daysList : monthsList
+                              data:
+                                userRegisterChartRangeButtonState === 0
+                                  ? daysList
+                                  : userRegisterChartRangeButtonState === 1
+                                    ? dayInMonthList
+                                    : monthInYearList
                             }
                           ]}
                           yAxis={[
@@ -438,7 +452,15 @@ const AdminDashboard = () => {
                               disableTicks: true // hide ticks
                             }
                           ]}
-                          series={calculateUserRegisterChart(isSevenDays)}
+                          series={
+                            userStatistics.registerUser.length === 0
+                              ? []
+                              : userRegisterChartRangeButtonState === 0
+                                ? [userStatistics.registerUser[0]]
+                                : userRegisterChartRangeButtonState === 1
+                                  ? [userStatistics.registerUser[1]]
+                                  : [userStatistics.registerUser[2]]
+                          }
                           height={320}
                           grid={{
                             horizontal: true
@@ -487,7 +509,7 @@ const AdminDashboard = () => {
                           colors={ROLE_PIE_CHART_COLORS}
                           series={[
                             {
-                              data: calculateUserRole(),
+                              data: userStatistics.userByRole,
                               innerRadius: 10,
                               cornerRadius: 10
                             }
@@ -568,7 +590,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Active Courses"}
-                      value={userList.length}
+                      value={0}
                       mainColor={"#f39c12"}
                     />
                   </Grid>
@@ -582,7 +604,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Inactive courses"}
-                      value={calculateLoginToday()}
+                      value={0}
                       mainColor={"#e74c3c"}
                     />
                   </Grid>
@@ -607,7 +629,7 @@ const AdminDashboard = () => {
                         direction={"row"}
                         spacing={2}
                       >
-                        <Button
+                        {/* <Button
                           variant={isSevenDays ? "outlined" : "plain"}
                           onClick={() => {
                             if (isSevenDays) return;
@@ -626,7 +648,7 @@ const AdminDashboard = () => {
                           size='sm'
                         >
                           Year
-                        </Button>
+                        </Button> */}
                       </Stack>
                       <Stack
                         direction='column'
@@ -669,8 +691,8 @@ const AdminDashboard = () => {
                           colors={[startGradientColor, endGradientColor]}
                           xAxis={[
                             {
-                              scaleType: "point",
-                              data: isSevenDays ? daysList : monthsList
+                              scaleType: "point"
+                              // data: isSevenDays ? daysList : monthsList
                             }
                           ]}
                           yAxis={[
@@ -679,7 +701,7 @@ const AdminDashboard = () => {
                               disableTicks: true // hide ticks
                             }
                           ]}
-                          series={calculateUserRegisterChart(isSevenDays)}
+                          series={[]}
                           height={320}
                           grid={{
                             horizontal: true
@@ -728,7 +750,7 @@ const AdminDashboard = () => {
                           colors={ROLE_PIE_CHART_COLORS}
                           series={[
                             {
-                              data: calculateUserRole(),
+                              data: [],
                               innerRadius: 10,
                               cornerRadius: 10
                             }
