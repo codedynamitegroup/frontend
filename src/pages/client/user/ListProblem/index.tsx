@@ -52,7 +52,7 @@ const ListProblem = () => {
 
     const newTimer = window.setTimeout(() => {
       dispatch(setSearchKey(e.target.value));
-    }, 1500);
+    }, 1000);
 
     setTimer(newTimer);
   };
