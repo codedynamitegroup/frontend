@@ -62,12 +62,19 @@ export default function LessonAccordion({
                   className={classes.lesson}
                   onClick={() => {
                     isRegistered === true
-                      ? navigate(
-                          routes.user.course_certificate.detail.lesson.detail
-                            .replace(":courseId", chapter.certificateCourseId)
-                            .replace(":lessonId", resource.chapterResourceId)
-                            .replace("*", "")
-                        )
+                      ? resource.resourceType === ResourceTypeEnum.CODE
+                        ? navigate(
+                            routes.user.course_certificate.detail.lesson.description
+                              .replace(":courseId", chapter.certificateCourseId)
+                              .replace(":lessonId", resource.chapterResourceId)
+                              .replace("*", "")
+                          )
+                        : navigate(
+                            routes.user.course_certificate.detail.lesson.detail
+                              .replace(":courseId", chapter.certificateCourseId)
+                              .replace(":lessonId", resource.chapterResourceId)
+                              .replace("*", "")
+                          )
                       : dispatch(setErrorMess(t("not_registered_certificate_course_message")));
                   }}
                 >

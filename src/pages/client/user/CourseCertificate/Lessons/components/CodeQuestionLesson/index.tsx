@@ -73,7 +73,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   // }
   // }, [dispatch]);
 
-  // console.log("lesson", lesson);
+  console.log("lesson", lesson);
 
   return (
     <Resizable
