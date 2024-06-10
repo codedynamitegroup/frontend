@@ -190,7 +190,10 @@ export default function UserDashboard() {
               }
             >
               <Heading2>
-                {ongoingRegisteredCourses.length === 0
+                {ongoingRegisteredCourses.length > 0 &&
+                ongoingRegisteredCourses.every(
+                  (course) => (course?.numOfCompletedResources || 0) === 0
+                )
                   ? t("dashboard_start_title")
                   : t("dashboard_continue_title")}
                 , {loggedUser?.firstName}
@@ -224,7 +227,7 @@ export default function UserDashboard() {
                           </Box>
                           {course.numOfResources ? (
                             <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                              {t("dashboard_current_lesson")}: {course.currentResource?.name || ""}
+                              {t("dashboard_current_lesson")}: {course.currentResource?.title || ""}
                             </ParagraphExtraSmall>
                           ) : (
                             <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
