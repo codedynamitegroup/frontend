@@ -48,7 +48,7 @@ export default function DetailSolution({
   const user = useAppSelector((state) => state.auth.currentUser);
 
   const sourceCodeSubmission: ISourceCodeSubmission = {
-    source_code: codeSubmissionDetail?.bodyCode ?? "",
+    source_code: codeSubmissionDetail?.sourceCode ?? "",
     language: languageName
   };
   const plainDescription = `
