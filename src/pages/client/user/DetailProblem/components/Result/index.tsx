@@ -41,7 +41,6 @@ export default function Result() {
                     <Chip
                       sx={{ border: focusTestCase === index ? 1 : 0 }}
                       label={`Case ${index + 1}`}
-                      onDelete={() => handleDeleteResult(index)}
                       onClick={() => setFocusTestCase(index)}
                     ></Chip>
                   ))}
