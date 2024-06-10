@@ -46,6 +46,7 @@ import CodeQuestionLesson from "./components/CodeQuestionLesson";
 import YouTubeVideo from "./components/YoutubeVideo";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import ReactQuill from "react-quill";
 
 const drawerWidth = 300;
 
@@ -628,7 +629,13 @@ export default function Lessons() {
               );
             })}
         </Drawer>
-        <Main open={open}>
+        <Main
+          open={open}
+          sx={{
+            height: "100%",
+            overflow: "auto"
+          }}
+        >
           <DrawerHeader />
           <Card
             sx={{
@@ -704,7 +711,11 @@ export default function Lessons() {
                     marginY: "10px"
                   }}
                 />
-                <div dangerouslySetInnerHTML={{ __html: currentLesson?.lessonHtml ?? "" }}></div>
+                <ReactQuill
+                  value={currentLesson?.lessonHtml ?? ""}
+                  readOnly={true}
+                  theme={"bubble"}
+                />
               </Box>
             )}
           </Card>
