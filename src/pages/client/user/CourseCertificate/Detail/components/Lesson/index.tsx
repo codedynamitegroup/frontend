@@ -21,7 +21,7 @@ const CourseCertificateLesson = ({ isRegistered }: { isRegistered: boolean }) =>
           chapterNumber={index + 1}
           chapter={chapter}
           isExpanded={index === 0 ? true : false}
-          isRegistered={true}
+          isRegistered={isRegistered}
         />
       ))}
     </Box>
