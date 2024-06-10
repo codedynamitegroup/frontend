@@ -66,7 +66,6 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import { millisToFormatTimeString } from "utils/time";
 import classes from "./styles.module.scss";
-import BasicSelect from "components/common/select/BasicSelect";
 import { grey } from "@mui/material/colors";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
@@ -427,7 +426,7 @@ export default function GradingExam() {
     //   ]
     // }
   ];
-  const [dumvalue, setDumvalue] = React.useState("123456789 - Nguyễn Văn A");
+
   const [gradingStatus, setGradingStatus] = React.useState(0);
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -493,8 +492,9 @@ export default function GradingExam() {
           <AppBar
             position='fixed'
             sx={{
-              top: `${headerHeight}px`,
-              backgroundColor: "white"
+              top: `${headerHeight + 1}px`,
+              backgroundColor: "white",
+              boxShadow: "0px 2px 4px #00000026"
             }}
             ref={header2Ref}
             open={open}
@@ -652,7 +652,8 @@ export default function GradingExam() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
-                top: `${headerHeight}px`
+                height: `calc(100% - ${headerHeight + 1}px)`,
+                top: `${headerHeight + 1}px`
               }
             }}
             variant='persistent'

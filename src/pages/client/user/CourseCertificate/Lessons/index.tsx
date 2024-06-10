@@ -197,16 +197,16 @@ export default function Lessons() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: "65px"
+          marginTop: `${headerHeight + 1}px`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            // top: `${headerHeight + 1}px`,
-            top: "65px",
-            backgroundColor: "white"
+            top: `${headerHeight + 1}px`,
+            backgroundColor: "white",
+            boxShadow: "0px 2px 4px #00000026"
           }}
           ref={header2Ref}
           open={open}

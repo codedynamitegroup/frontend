@@ -121,8 +121,9 @@ export default function PreviewAssignmentSubmission() {
         <AppBar
           position='fixed'
           sx={{
-            top: `${headerHeight}px`,
-            backgroundColor: "white"
+            top: `${headerHeight + 1}px`,
+            backgroundColor: "white",
+            boxShadow: "0px 2px 4px #00000026"
           }}
           ref={header2Ref}
           open={false}
