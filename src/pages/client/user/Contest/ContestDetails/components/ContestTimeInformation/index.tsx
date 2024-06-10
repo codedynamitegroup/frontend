@@ -1,6 +1,6 @@
 import Paper from "@mui/material/Paper";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
 import CalendarIcon from "@mui/icons-material/DateRange";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
@@ -17,6 +17,8 @@ import { ContestService } from "services/coreService/ContestService";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import useAuth from "hooks/useAuth";
+import JoyButton from "@mui/joy/Button";
 
 interface PropsData {
   startDate: string;
@@ -31,8 +33,14 @@ const ContestTimeInformation = (props: PropsData) => {
   const dispatch = useDispatch<AppDispatch>();
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { startDate, status, endDate, joinContest, contestName } = props;
+  const { startDate, status, endDate, contestName } = props;
   const convertedEndDate = new Date(endDate);
+
+  const [isJoinContest, setIsJoinContest] = useState(props.joinContest);
+
+  const { isLoggedIn } = useAuth();
+
+  const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
   const [years, setYears] = useState(0);
   const [months, setMonths] = useState(0);
@@ -65,20 +73,25 @@ const ContestTimeInformation = (props: PropsData) => {
 
   const handleJoinContest = useCallback(
     async (id: string) => {
+      setIsRegisterLoading(true);
       try {
         const joinContestsResponse = await ContestService.registerContestById(id);
-        console.log("joinContestsResponse", joinContestsResponse);
-        dispatch(setSuccessMess("Join contest successfully"));
+        if (joinContestsResponse) {
+          setIsJoinContest(true);
+          setIsRegisterLoading(false);
+          dispatch(setSuccessMess(t("contest_detail_join_success")));
+        }
       } catch (error: any) {
         console.error("Failed to join contest", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
         });
+        setIsRegisterLoading(false);
         dispatch(setErrorMess("Failed to join contest"));
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   useEffect(() => {
@@ -112,7 +125,7 @@ const ContestTimeInformation = (props: PropsData) => {
         >
           {contestName}
         </Typography>
-        {joinContest ? (
+        {isJoinContest ? (
           status === ContestStartTimeFilterEnum.UPCOMING ? (
             <Heading1
               className={classes.currentJoinStatus}
@@ -139,13 +152,33 @@ const ContestTimeInformation = (props: PropsData) => {
             </Heading1>
           )
         ) : (
-          <Button
-            variant='contained'
-            translation-key='contest_detail_join_button'
-            onClick={() => handleJoinContest(props.contestId)}
-          >
-            {t("contest_detail_join_button")}
-          </Button>
+          !isJoinContest &&
+          (status === ContestStartTimeFilterEnum.UPCOMING ? (
+            <Tooltip
+              title={isLoggedIn === false ? t("contest_detail_register_tooltip") : ""}
+              placement='top'
+              arrow
+            >
+              <span>
+                <JoyButton
+                  loading={isRegisterLoading}
+                  disabled={!isLoggedIn}
+                  translation-key='contest_detail_join_button'
+                  onClick={() => handleJoinContest(props.contestId)}
+                >
+                  {t("contest_detail_join_button")}
+                </JoyButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <Heading1
+              className={classes.currentJoinStatus}
+              color={"var(--warning) !important"}
+              translation-key='contest_detail_already_started_message'
+            >
+              {t("contest_detail_already_started_message")}
+            </Heading1>
+          ))
         )}
       </Box>
 
