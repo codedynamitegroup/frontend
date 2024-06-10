@@ -4,41 +4,24 @@ import Heading1 from "components/text/Heading1";
 import LessonAccordion from "pages/client/user/CourseCertificate/Detail/components/Lesson/components/LessonAccordion";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import { useTranslation } from "react-i18next";
 
-const CourseCertificateLesson = () => {
+const CourseCertificateLesson = ({ isRegistered }: { isRegistered: boolean }) => {
   const chapters = useSelector((state: RootState) => state.chapter.chapters);
-  // const chapters: Chapter[] = [
-  //   {
-  //     chapterTitle: "Outputting & Math Operators",
-  //     chapterDescription:
-  //       "Learn how to make C++ print whatever you want, and learn to use it as a basic calculator.",
-  //     lessons: [
-  //       { title: "Introducing printing - cout", status: true },
-  //       { title: "Printing on multiple lines", status: false },
-  //       { title: "Multiple prints using single cout", status: false },
-  //       { title: "Math Operators and overall code structure", status: false }
-  //     ]
-  //   },
-  //   {
-  //     chapterTitle: "Variables and Data Types",
-  //     chapterDescription: "Learn how to make C++ store data and manipulate them",
-  //     lessons: [
-  //       { title: "Introduction to Variables and Data Types", status: false },
-  //       { title: "Quiz on Variables", status: false },
-  //       { title: "More Data Types", status: false }
-  //     ]
-  //   }
-  // ];
+  const { t } = useTranslation();
 
   return (
     <Box id={classes.certificateDetails}>
-      <Heading1 colorname='--blue-600'>Các bài học ở khóa học</Heading1>
+      <Heading1 colorname='--blue-600' translate-key='certificate_detail_chapter_resources'>
+        {t("certificate_detail_chapter_resources")}
+      </Heading1>
       {chapters.map((chapter, index) => (
         <LessonAccordion
           key={index}
           chapterNumber={index + 1}
           chapter={chapter}
           isExpanded={index === 0 ? true : false}
+          isRegistered={isRegistered}
         />
       ))}
     </Box>

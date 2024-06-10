@@ -2,19 +2,24 @@ import { Box, Tab, Tabs } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Resizable } from "re-resizable";
 import classes from "./styles.module.scss";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import ProblemDetailSubmission from "pages/client/user/DetailProblem/components/Submission";
 import ProblemDetailSolution from "pages/client/user/DetailProblem/components/ListSolution";
 import ProblemDetailDescription from "pages/client/user/DetailProblem/components/Description";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "hooks";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import cloneDeep from "lodash.clonedeep";
+import { ChapterResourceEntity } from "models/coreService/entity/ChapterResourceEntity";
 
-const CodeQuestionLesson = () => {
+const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
   const { t } = useTranslation();
+  const { courseId, lessonId } = useParams<{
+    courseId: string;
+    lessonId: string;
+  }>();
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
@@ -55,6 +60,20 @@ const CodeQuestionLesson = () => {
     }, 100);
     setTimer(newTimer);
   };
+
+  // useEffect(() => {
+  // if (problemId !== undefined) {
+  // dispatch(setLoading(true));
+  // CodeQuestionService.getDetailCodeQuestion(problemId)
+  //   .then((data: CodeQuestionEntity) => {
+  //     dispatch(setCodeQuestion(updateLanguageSourceCode(data)));
+  //   })
+  //   .catch((err) => console.log(err))
+  //   .finally(() => dispatch(setLoading(false)));
+  // }
+  // }, [dispatch]);
+
+  // console.log("lesson", lesson);
 
   return (
     <Resizable
@@ -111,10 +130,10 @@ const CodeQuestionLesson = () => {
           <Routes>
             <Route path={"description"} element={<ProblemDetailDescription />} />
             <Route path={"solution"} element={<ProblemDetailSolution />} />
-            {/* <Route
+            <Route
               path={"submission"}
               element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
-            /> */}
+            />
           </Routes>
         </Box>
       </Box>
