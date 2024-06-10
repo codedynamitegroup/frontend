@@ -54,8 +54,10 @@ import TestCase from "./components/TestCase";
 import classes from "./styles.module.scss";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setLoading } from "reduxes/Loading";
+import useAuth from "hooks/useAuth";
 
 export default function DetailProblem() {
+  const auth = useAuth();
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -374,25 +376,51 @@ export default function DetailProblem() {
             </Box>
           )}
           <Box className={classes.submit}>
-            <Button
-              className={classes.runBtn}
-              variant='contained'
-              color='primary'
-              translation-key='detail_problem_execute'
-              onClick={handleExecuteCode}
-            >
-              <PlayArrowIcon />
-              {t("detail_problem_execute")}
-            </Button>
-            <Button
-              className={classes.submitBtn}
-              color='primary'
-              translation-key='detail_problem_submit'
-              onClick={handleSubmitCode}
-            >
-              {submissionLoading && <CircularProgress size={20} />}
-              {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
-            </Button>
+            {!auth.isLoggedIn && (
+              <Button
+                className={classes.runBtn}
+                variant='contained'
+                color='primary'
+                translation-key='header_login_button'
+                onClick={() =>
+                  navigate(routes.user.login.root, {
+                    state: {
+                      navigateBack: problemId
+                        ? routes.user.problem.detail.description.replace(":problemId", problemId)
+                        : undefined
+                    }
+                  })
+                }
+                disabled={auth.isLoggedIn}
+              >
+                {t("header_login_button")}
+              </Button>
+            )}
+            {auth.isLoggedIn && (
+              <>
+                <Button
+                  className={classes.runBtn}
+                  variant='contained'
+                  color='primary'
+                  translation-key='detail_problem_execute'
+                  onClick={handleExecuteCode}
+                  disabled={!auth.isLoggedIn}
+                >
+                  <PlayArrowIcon />
+                  {t("detail_problem_execute")}
+                </Button>
+                <Button
+                  className={classes.submitBtn}
+                  color='primary'
+                  translation-key='detail_problem_submit'
+                  onClick={handleSubmitCode}
+                  disabled={!auth.isLoggedIn}
+                >
+                  {submissionLoading && <CircularProgress size={20} />}
+                  {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+                </Button>
+              </>
+            )}
           </Box>
           <Box
             style={{
@@ -437,18 +465,22 @@ export default function DetailProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_discussion'
-                    label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                    value={1}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_submission'
-                    label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                    value={2}
-                  />
+                  {auth.isLoggedIn && (
+                    <>
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        translation-key='detail_problem_discussion'
+                        label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                        value={1}
+                      />
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        translation-key='detail_problem_submission'
+                        label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                        value={2}
+                      />
+                    </>
+                  )}
                 </Tabs>
               </Box>
 
@@ -460,11 +492,15 @@ export default function DetailProblem() {
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route path={"solution"} element={<ProblemDetailSolution />} />
-                  <Route
-                    path={"submission"}
-                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
-                  />
+                  {auth.isLoggedIn && (
+                    <>
+                      <Route path={"solution"} element={<ProblemDetailSolution />} />
+                      <Route
+                        path={"submission"}
+                        element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                      />
+                    </>
+                  )}
                 </Routes>
               </Box>
             </Box>
@@ -526,12 +562,14 @@ export default function DetailProblem() {
                           label={<ParagraphBody>Test Cases</ParagraphBody>}
                           value={0}
                         />
-                        <Tab
-                          sx={{ textTransform: "none" }}
-                          translation-key='detail_problem_result'
-                          label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
-                          value={1}
-                        />
+                        {auth.isLoggedIn && (
+                          <Tab
+                            sx={{ textTransform: "none" }}
+                            translation-key='detail_problem_result'
+                            label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
+                            value={1}
+                          />
+                        )}
                       </Tabs>
                     </Box>
 

@@ -10,11 +10,12 @@ import { styled } from "@mui/material/styles";
 import RecommendedProblem from "../RecommendedProblem";
 import { Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import useAuth from "hooks/useAuth";
 
 export default function LabTabs() {
   const { t } = useTranslation();
   const [value, setValue] = React.useState("0");
-  const topics = [t("common_all"), "Thuật toán", "Cơ sở dữ liệu", "Javascript"];
+  const auth = useAuth();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -59,6 +60,7 @@ export default function LabTabs() {
         <TabPanel value='0' className={classes.tabPanel}>
           <Stack spacing={spacingInTabPanel}>
             <RecommendedProblem />
+            <ProblemTable />
           </Stack>
         </TabPanel>
         <TabPanel value='1' className={classes.tabPanel}>

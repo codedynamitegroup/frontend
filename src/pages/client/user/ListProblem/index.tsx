@@ -25,8 +25,10 @@ import {
 import { TagService } from "services/codeAssessmentService/TagService";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
+import useAuth from "hooks/useAuth";
 
 const ListProblem = () => {
+  const auth = useAuth();
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
   const { t } = useTranslation();
@@ -101,9 +103,7 @@ const ListProblem = () => {
             <Grid container>
               <Grid item xs={2.5}>
                 <Box className={classes.algorithmContainer}>
-                  <Heading3 translation-key='list_problem_type_of_algorithm'>
-                    {t("list_problem_type_of_algorithm")}:
-                  </Heading3>
+                  <Heading3 translation-key='common_topic'>{t("common_topic")}:</Heading3>
 
                   <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
                     {algorithmTag.isLoading && (
@@ -209,38 +209,44 @@ const ListProblem = () => {
                       onChange={searchChange}
                       className={classes.searchInput}
                     />
-                    <BasicSelect
-                      labelId='select-assignment-section-label'
-                      value={statusProblem}
-                      onHandleChange={(value) => handleChangeSolved(value)}
-                      sx={{ maxWidth: "200px" }}
-                      translation-key={[
-                        "common_all",
-                        "list_problem_solved_done",
-                        "list_problem_solved_not_done"
-                      ]}
-                      items={[
-                        {
-                          value: "0",
-                          label: t("common_all")
-                        },
-                        {
-                          value: "1",
-                          label: t("list_problem_solved_done")
-                        },
-                        {
-                          value: "2",
-                          label: t("list_problem_solved_not_done")
-                        }
-                      ]}
-                      backgroundColor='#FFFFFF'
-                    />
+                    {auth.isLoggedIn && (
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        label={t("common_status")}
+                        value={statusProblem}
+                        onHandleChange={(value) => handleChangeSolved(value)}
+                        sx={{ maxWidth: "200px" }}
+                        translation-key={[
+                          "common_status",
+                          "common_all",
+                          "list_problem_solved_done",
+                          "list_problem_solved_not_done"
+                        ]}
+                        items={[
+                          {
+                            value: "0",
+                            label: t("common_all")
+                          },
+                          {
+                            value: "1",
+                            label: t("list_problem_solved_done")
+                          },
+                          {
+                            value: "2",
+                            label: t("list_problem_solved_not_done")
+                          }
+                        ]}
+                        backgroundColor='#FFFFFF'
+                      />
+                    )}
                     <BasicSelect
                       labelId='select-assignment-section-label'
                       value={levelProblem}
+                      label={t("common_difficult_level")}
                       onHandleChange={(value) => handleChangeDifficulty(value)}
                       sx={{ maxWidth: "200px" }}
                       translation-key={[
+                        "common_difficult_level",
                         "common_all",
                         "common_easy",
                         "common_medium",
