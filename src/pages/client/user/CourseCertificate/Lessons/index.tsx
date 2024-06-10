@@ -44,6 +44,8 @@ import { AppDispatch, RootState } from "store";
 import classes from "./styles.module.scss";
 import CodeQuestionLesson from "./components/CodeQuestionLesson";
 import YouTubeVideo from "./components/YoutubeVideo";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 
 const drawerWidth = 300;
 
@@ -162,6 +164,40 @@ export default function Lessons() {
     [dispatch]
   );
 
+  const handleGetCertificateCourseById = useCallback(
+    async (id: string) => {
+      try {
+        const getCertificateCourseByIdResponse =
+          await CertificateCourseService.getCertificateCourseById(id);
+        if (getCertificateCourseByIdResponse) {
+          const certificateCourse = getCertificateCourseByIdResponse as CertificateCourseEntity;
+          // Check if user is registered to the course
+          if (certificateCourse.isRegistered !== true) {
+            dispatch(setErrorMess(t("not_registered_certificate_course_message")));
+            navigate(
+              routes.user.course_certificate.detail.introduction
+                .replace(":courseId", id)
+                .replace("*", "")
+            );
+          }
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch certificate course by id", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+        dispatch(setErrorMess(error.response?.message || error.message));
+        navigate(
+          routes.user.course_certificate.detail.introduction
+            .replace(":courseId", id)
+            .replace("*", "")
+        );
+      }
+    },
+    [dispatch, navigate, t]
+  );
+
   const isPreviousButtonDisabled = useMemo(() => {
     for (let i = 0; i < chapterState.chapters.length; i++) {
       if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
@@ -232,10 +268,14 @@ export default function Lessons() {
   }, [chapterState.chapters, lessonId]);
 
   useEffect(() => {
-    if (courseId) {
-      handleGetChaptersByCertificateCourseId(courseId);
-    }
-  }, [courseId, handleGetChaptersByCertificateCourseId]);
+    const fetchData = async () => {
+      if (courseId) {
+        await handleGetCertificateCourseById(courseId);
+        await handleGetChaptersByCertificateCourseId(courseId);
+      }
+    };
+    fetchData();
+  }, [courseId, handleGetChaptersByCertificateCourseId, handleGetCertificateCourseById]);
 
   if (!courseId || !lessonId || !currentLesson) {
     return null;
