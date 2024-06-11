@@ -303,7 +303,9 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
                     sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                   >
                     {codeQuestion?.languages.map((value: ProgrammingLanguageEntity) => (
-                      <MenuItem value={value.id}>{value.name}</MenuItem>
+                      <MenuItem key={value.id} value={value.id}>
+                        {value.name}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
