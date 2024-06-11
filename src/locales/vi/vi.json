@@ -586,6 +586,7 @@
   "detail_problem_output": "Đầu ra",
   "detail_problem_actual_result": "Kết quả",
   "detail_problem_submission_accepted": "Chấp nhận",
+  "detail_problem_submission_failed_test_case": "Trường hợp thất bại",
   "detail_problem_submission_wrong_answer": "Trả lời sai",
   "detail_problem_submission_customHeading": [
     "Trạng thái",

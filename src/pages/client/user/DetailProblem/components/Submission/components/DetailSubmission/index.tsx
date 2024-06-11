@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Container, Grid } from "@mui/material";
+import { Button, CircularProgress, Container, Grid, TextField } from "@mui/material";
 import i18next from "i18next";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
@@ -24,6 +24,9 @@ import { useAppSelector } from "hooks";
 import { convert } from "html-to-text";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
+import useAuth from "hooks/useAuth";
+import images from "config/images";
+import { decodeBase64, removeNewLine } from "utils/base64";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -169,12 +172,16 @@ export default function DetailSolution({
               >
                 {codeSubmissionDetail.gradingStatus === "GRADING" ||
                 codeSubmissionDetail.description === undefined
-                  ? codeSubmissionDetail.gradingStatus
+                  ? codeSubmissionDetail.gradingStatus.replace("_", " ")
                   : codeSubmissionDetail.description}
               </ParagraphBody>
             )}
             <Box className={classes.submissionAuthor}>
-              <img src={user?.avatarUrl} alt='User' className={classes.avatar} />
+              <img
+                src={user?.avatarUrl ?? images.avatar.avatarBoyDefault}
+                alt='User'
+                className={classes.avatar}
+              />
               <ParagraphExtraSmall fontWeight={"700"}>
                 {i18next.language === "vi"
                   ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`
@@ -196,6 +203,138 @@ export default function DetailSolution({
             {t("detail_problem_submission_detail_share_solution")}
           </Button>
         </Box>
+        {codeSubmissionDetail?.firstFailTestCase?.message &&
+          codeSubmissionDetail.firstFailTestCase.message.length > 0 && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Message
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.message ?? ""}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+        {codeSubmissionDetail?.firstFailTestCase?.stderr &&
+          codeSubmissionDetail.firstFailTestCase.stderr.length > 0 && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Stderr
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.stderr.length}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+        {codeSubmissionDetail?.firstFailTestCase?.compileOutput &&
+          codeSubmissionDetail.firstFailTestCase.compileOutput.length > 0 && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Complie output
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.compileOutput}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+        {codeSubmissionDetail?.firstFailTestCase &&
+          codeSubmissionDetail.description !== "Compilation Error" && (
+            <Box sx={{ marginY: 1 }}>
+              <ParagraphBody
+                fontWeight={700}
+                translation-key='detail_problem_submission_failed_test_case'
+              >
+                {t("detail_problem_submission_failed_test_case")}
+              </ParagraphBody>
+            </Box>
+          )}
+
+        {codeSubmissionDetail?.firstFailTestCase?.input &&
+          codeSubmissionDetail.description !== "Compilation Error" && (
+            <Box className={classes.result}>
+              <ParagraphExtraSmall translation-key='detail_problem_input'>
+                {t("detail_problem_input")}
+                {": "}
+              </ParagraphExtraSmall>
+              <TextField
+                multiline
+                InputProps={{ readOnly: true }}
+                fullWidth
+                id='outlined-basic'
+                variant='outlined'
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.input}
+              />
+            </Box>
+          )}
+        {codeSubmissionDetail?.firstFailTestCase?.output &&
+          codeSubmissionDetail.description !== "Compilation Error" && (
+            <Box className={classes.result}>
+              <ParagraphExtraSmall translation-key='detail_problem_output'>
+                {t("detail_problem_output")}
+                {": "}
+              </ParagraphExtraSmall>
+              <TextField
+                multiline
+                fullWidth
+                InputProps={{ readOnly: true }}
+                id='outlined-basic'
+                variant='outlined'
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.output}
+              />
+            </Box>
+          )}
+        {codeSubmissionDetail?.firstFailTestCase?.actualOutput &&
+          codeSubmissionDetail.description !== "Compilation Error" && (
+            <Box className={classes.result}>
+              <ParagraphExtraSmall translation-key='detail_problem_actual_result'>
+                {t("detail_problem_actual_result")}
+                {": "}
+              </ParagraphExtraSmall>
+              <TextField
+                multiline
+                InputProps={{ readOnly: true }}
+                fullWidth
+                id='outlined-basic'
+                variant='outlined'
+                size='small'
+                className={classes.input}
+                value={codeSubmissionDetail.firstFailTestCase.actualOutput}
+              />
+            </Box>
+          )}
         <Grid container className={classes.submissionStatistical}>
           <Grid item xs={5.75} className={classes.statisticalTime}>
             <Container className={classes.title}>
@@ -287,3 +426,10 @@ export default function DetailSolution({
     </Grid>
   );
 }
+const styles = {
+  errorBox: {
+    backgroundColor: "var(--red-background)",
+    borderRadius: 1,
+    paddingX: 1
+  }
+};

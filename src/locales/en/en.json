@@ -593,6 +593,7 @@
   "detail_problem_output": "Output",
   "detail_problem_actual_result": "Result",
   "detail_problem_submission_accepted": "Accepted",
+  "detail_problem_submission_failed_test_case": "Failed test case",
   "detail_problem_submission_wrong_answer": "Wrong answer",
   "detail_problem_submission_customHeading": ["Status", "Language", "Runtime", "Memory"],
   "detail_problem_submission_detail_runtime": "Runtime",
