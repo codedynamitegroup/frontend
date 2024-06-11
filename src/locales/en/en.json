@@ -1,4 +1,5 @@
 {
+  "common_please_login": "Please login",
   "common_easy": "Easy",
   "common_medium": "Medium",
   "common_hard": "Hard",
@@ -327,6 +328,7 @@
   "certificate_detail_continue_button": "Continue learning",
   "certificate_detail_lesson_title": "Lessons in this course",
   "certificate_detail_certification_title": "Course certification",
+  "certificate_detail_certification_information": "Course certification information",
   "certificate_detail_certification_description": "You will receive a course certificate when you complete at least 85% of the course content",
   "certificate_detail_breadcrump": "Course list",
   "not_registered_certificate_course_message": "You have not registered for this course yet",

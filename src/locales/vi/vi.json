@@ -1,4 +1,5 @@
 {
+  "common_please_login": "Vui lòng đăng nhập",
   "common_easy": "Dễ",
   "common_medium": "Trung bình",
   "common_hard": "Khó",
@@ -327,6 +328,7 @@
   "certificate_detail_continue_button": "Tiếp tục học",
   "certificate_detail_lesson_title": "Các bài học ở khóa học",
   "certificate_detail_certification_title": "Chứng chỉ khóa học",
+  "certificate_detail_certification_information": "Thông tin của khóa học",
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",

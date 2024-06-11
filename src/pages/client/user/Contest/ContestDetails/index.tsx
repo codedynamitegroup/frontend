@@ -148,9 +148,9 @@ const ContestDetails = () => {
             item
             xs={value !== "3" && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
           >
-            <Paper>
+            <Box className={classes.bodyWrapper}>
               <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{ borderBottom: "1px solid var(--gray-10)" }}>
                   <TabList onChange={handleChange} aria-label='lab API tabs example'>
                     <Tab
                       label={t("contest_detail_description")}
@@ -257,7 +257,7 @@ const ContestDetails = () => {
                   </TabPanel>
                 ) : null}
               </TabContext>
-            </Paper>
+            </Box>
           </Grid>
           {value !== "3" ? (
             <Grid item xs={3}>

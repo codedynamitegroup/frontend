@@ -1,9 +1,8 @@
-import { Box, CircularProgress, Stack, Tooltip } from "@mui/material";
+import { Box, CircularProgress, Link, Stack, Tooltip } from "@mui/material";
 import React, { useEffect } from "react";
 import classes from "./styles.module.scss";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { styled } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -19,17 +18,18 @@ import { PaginationList } from "models/codeAssessmentService/entity/PaginationLi
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
 import { routes } from "routes/routes";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import useAuth from "hooks/useAuth";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import Heading6 from "components/text/Heading6";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 export default function ProblemTable() {
   const { t } = useTranslation();
   const customHeading = ["Trạng thái", "Tên bài toán", "Độ khó"];
 
-  const auth = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const algorithmTag = useAppSelector((state) => state.algorithmnTag);
   const searchAndDifficultyAndSolved = useAppSelector(
@@ -44,7 +44,7 @@ export default function ProblemTable() {
   const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  // console.log("page", page, "row perpage", rowsPerPage);
+  const navigate = useNavigate();
 
   const choosenTagList = algorithmTag.tagList.filter((value) => value.isChoosen);
 
@@ -83,22 +83,22 @@ export default function ProblemTable() {
   const renderLevel = (level: QuestionDifficultyEnum) => {
     if (level === QuestionDifficultyEnum.EASY) {
       return (
-        <ParagraphBody fontWeight={700} colorname={"--green-easy"}>
+        <Heading6 fontWeight={600} colorname={"--green-500"}>
           {t("common_easy")}
-        </ParagraphBody>
+        </Heading6>
       );
     }
     if (level === QuestionDifficultyEnum.MEDIUM) {
       return (
-        <ParagraphBody fontWeight={700} colorname={"--orange-medium"}>
+        <Heading6 fontWeight={600} colorname={"--orange-5"}>
           {t("common_medium")}
-        </ParagraphBody>
+        </Heading6>
       );
     }
     return (
-      <ParagraphBody fontWeight={700} colorname={"--red-hard"}>
+      <Heading6 fontWeight={600} colorname={"--red-hard"}>
         {t("common_hard")}
-      </ParagraphBody>
+      </Heading6>
     );
   };
   const data = codeQuestionList.codeQuestions.map((value) => ({
@@ -107,68 +107,6 @@ export default function ProblemTable() {
     status: renderStatus(value.done === true ? 1 : 0),
     level: renderLevel(value.difficulty)
   }));
-  // = [
-  //   {
-  //     id: 1,
-  //     status: renderStatus(0),
-  //     name: "Tổng 2 số",
-  //     level: renderLevel(0)
-  //   },
-  //   {
-  //     id: 2,
-  //     status: renderStatus(1),
-  //     name: "Trung bình cộng",
-  //     level: renderLevel(1)
-  //   },
-  //   {
-  //     id: 3,
-  //     status: renderStatus(0),
-  //     name: "Phân số tối giản",
-  //     level: renderLevel(1)
-  //   },
-  //   {
-  //     id: 4,
-  //     status: renderStatus(0),
-  //     name: "Sắp xếp mảng tăng dần",
-  //     level: renderLevel(2)
-  //   },
-  //   {
-  //     id: 5,
-  //     status: renderStatus(1),
-  //     name: "Kiểm tra số nguyên tố",
-  //     level: renderLevel(2)
-  //   },
-  //   {
-  //     id: 6,
-  //     status: renderStatus(1),
-  //     name: "Đảo chuỗi",
-  //     level: renderLevel(2)
-  //   },
-  //   {
-  //     id: 7,
-  //     status: renderStatus(0),
-  //     name: "Tìm phần tử lớn nhất trong mảng",
-  //     level: renderLevel(2)
-  //   },
-  //   {
-  //     id: 8,
-  //     status: renderStatus(1),
-  //     name: "Số Fibonacci",
-  //     level: renderLevel(0)
-  //   },
-  //   {
-  //     id: 9,
-  //     status: renderStatus(0),
-  //     name: "Thuật toán tìm kiếm nhị phân",
-  //     level: renderLevel(2)
-  //   },
-  //   {
-  //     id: 10,
-  //     status: renderStatus(0),
-  //     name: "Đếm số lần xuất hiện của phần tử trong mảng",
-  //     level: renderLevel(1)
-  //   }
-  // ];
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -180,20 +118,9 @@ export default function ProblemTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const navigate = useNavigate();
-
-  const StyledLink = styled(Link)`
-    text-decoration: none;
-    color: black;
-    &:hover,
-    &:active {
-      color: blue;
-    }
-  `;
 
   return (
     <Box className={classes.container}>
-      {/* <Heading2 translation-key='list_problem'>{t("list_problem")}</Heading2> */}
       <Box className={classes.table}>
         {loading && (
           <Stack alignItems={"center"}>
@@ -207,19 +134,19 @@ export default function ProblemTable() {
                 <TableHead className={classes["table-head"]}>
                   <TableRow>
                     <TableCell align='center' className={classes.status}>
-                      <ParagraphBody fontWeight={700} translation-key='common_status'>
+                      <Heading6 fontWeight={"700"} translation-key='common_status'>
                         {t("common_status")}
-                      </ParagraphBody>
+                      </Heading6>
                     </TableCell>
                     <TableCell align='left'>
-                      <ParagraphBody fontWeight={700} translation-key='list_problem_problem_name'>
+                      <Heading6 fontWeight={"700"} translation-key='list_problem_problem_name'>
                         {t("list_problem_problem_name")}
-                      </ParagraphBody>
+                      </Heading6>
                     </TableCell>
                     <TableCell align='left' className={classes.status}>
-                      <ParagraphBody fontWeight={700} translation-key='common_difficult_level'>
+                      <Heading6 fontWeight={"700"} translation-key='common_difficult_level'>
                         {t("common_difficult_level")}
-                      </ParagraphBody>
+                      </Heading6>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -237,15 +164,32 @@ export default function ProblemTable() {
                       >
                         <TableCell align='center'>{row.status}</TableCell>
                         <TableCell className={classes.tableCell}>
-                          <StyledLink
-                            to={routes.user.problem.detail.description.replace(
-                              ":problemId",
-                              row.id
-                            )}
-                            style={{ pointerEvents: "auto" }}
+                          <Tooltip
+                            title={!isLoggedIn ? t("common_please_login") : ""}
+                            placement='left-start'
+                            arrow
                           >
-                            {row.name}
-                          </StyledLink>
+                            <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
+                              <Link
+                                component='button'
+                                onClick={() => {
+                                  if (!isLoggedIn) {
+                                    return;
+                                  }
+                                  navigate(
+                                    routes.user.problem.detail.description.replace(
+                                      ":problemId",
+                                      row.id
+                                    )
+                                  );
+                                }}
+                                underline='hover'
+                                color='inherit'
+                              >
+                                {row.name}
+                              </Link>
+                            </ParagraphSmall>
+                          </Tooltip>
                         </TableCell>
                         <TableCell>{row.level}</TableCell>
                       </TableRow>

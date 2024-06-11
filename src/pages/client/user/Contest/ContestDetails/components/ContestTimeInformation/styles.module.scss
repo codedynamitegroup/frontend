@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid var(--gray-10);
   .currentJoinStatus {
     font-size: 20px;
     font-weight: bold;
