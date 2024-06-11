@@ -64,6 +64,7 @@ export const API = {
     COURSE: {
       DEFAULT: "/course/course",
       SECTION: "/course/section",
+      GET_STATISTICS: "/course/course/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
