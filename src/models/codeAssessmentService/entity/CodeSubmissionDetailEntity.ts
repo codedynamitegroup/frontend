@@ -17,6 +17,7 @@ export interface CodeSubmissionDetailEntity {
   headCode: string | undefined;
   bodyCode: string | undefined;
   tailCode: string | undefined;
+  sourceCode: string | undefined;
 
   firstFailTestCase: FirstFailTestCaseEntity | undefined;
 }

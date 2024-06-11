@@ -1,4 +1,5 @@
 {
+  "common_please_login": "Please login",
   "common_easy": "Easy",
   "common_medium": "Medium",
   "common_hard": "Hard",
@@ -29,6 +30,7 @@
   "common_send": "Send",
   "common_password_confirm": "Confirm password",
   "common_fullname": "Fullname",
+  "common_last_login": "Last login",
   "common_DOB": "Date of birth",
   "common_sex": "Sex",
   "common_back": "Back",
@@ -117,7 +119,9 @@
   "common_add_new": "add new",
   "common_logout": "Log out",
   "common_account_info": "Account information",
-  "common_admin_page": "Administration",
+  "common_admin_page": "Administration page",
+  "common_user_page": "Client page",
+  "common_dashboard": "Dashboard",
   "common_notification": "Notification",
   "common_event": "Event",
   "common_sync": "Sync",
@@ -327,6 +331,7 @@
   "certificate_detail_continue_button": "Continue learning",
   "certificate_detail_lesson_title": "Lessons in this course",
   "certificate_detail_certification_title": "Course certification",
+  "certificate_detail_certification_information": "Course certification information",
   "certificate_detail_certification_description": "You will receive a course certificate when you complete at least 85% of the course content",
   "certificate_detail_breadcrump": "Course list",
   "not_registered_certificate_course_message": "You have not registered for this course yet",
@@ -468,7 +473,27 @@
   "course_lecturer_submission_online_text": "Online text submission",
   "course_lecturer_submission_file": "File submission",
 
+  "assignment_name_required": "Assignment name is required",
+  "assignment_start_time_required": "Start time is required",
+  "assignment_end_time_required": "End time is required",
+  "assignment_max_grade_required": "Max grade is required",
+  "assignment_create_success": "Create assignment successfully",
+
   "no_data": "No data",
+
+  "common_time_setting": "Time setting",
+  "common_submission_type": "Submission types",
+  "common_enter_description": "Enter description",
+  "common_enter_guideline": "Enter guideline",
+  "common_enter_word_limit": "Enter number of words",
+
+  "common_allow_submission_after_end_time": "Allow submission after end time",
+
+  "common_submission_type_online_text": "Online text",
+  "common_submission_type_file": "File submissions",
+  "common_word_limit": "Word limit",
+  "common_max_upload_file": "Maximum number of uploaded files",
+  "common_max_submission_file_size": "Maximum submission size",
 
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",
@@ -593,6 +618,7 @@
   "detail_problem_output": "Output",
   "detail_problem_actual_result": "Result",
   "detail_problem_submission_accepted": "Accepted",
+  "detail_problem_submission_failed_test_case": "Failed test case",
   "detail_problem_submission_wrong_answer": "Wrong answer",
   "detail_problem_submission_customHeading": ["Status", "Language", "Runtime", "Memory"],
   "detail_problem_submission_detail_runtime": "Runtime",

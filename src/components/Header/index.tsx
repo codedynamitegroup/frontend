@@ -194,7 +194,13 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             <Box className={classes.logo}>
               <Link
                 component={RouterLink}
-                to={loggedUser ? routes.user.dashboard.root : routes.user.homepage.root}
+                to={
+                  loggedUser && !activeRoute(routes.admin.homepage.root)
+                    ? routes.user.dashboard.root
+                    : loggedUser && activeRoute(routes.admin.homepage.root)
+                      ? routes.admin.dashboard
+                      : routes.user.homepage.root
+                }
                 className={classes.textLink}
               >
                 <img src={images.logo.appLogo} alt='logo' />
@@ -370,9 +376,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </ListItemIcon>
             {t("common_account_info")}
           </MenuItem>
-          {isSystemAdmin && (
+          {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
             <MenuItem
-              onClick={() => navigate(routes.admin.contest.root)}
+              onClick={() => navigate(routes.admin.dashboard)}
               translation-key='common_admin_page'
             >
               <ListItemIcon>
@@ -382,6 +388,20 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </ListItemIcon>
 
               {t("common_admin_page")}
+            </MenuItem>
+          )}
+          {isSystemAdmin && activeRoute(routes.admin.homepage.root) && (
+            <MenuItem
+              onClick={() => navigate(routes.user.dashboard.root)}
+              translation-key='common_user_page'
+            >
+              <ListItemIcon>
+                <Box className={classes.imgIcon}>
+                  <img src={images.admin.clientPage} alt='client page img' />
+                </Box>
+              </ListItemIcon>
+
+              {t("common_user_page")}
             </MenuItem>
           )}
           {/* {isMoodleAdmin && (

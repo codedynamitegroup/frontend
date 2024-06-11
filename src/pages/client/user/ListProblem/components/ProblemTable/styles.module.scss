@@ -19,16 +19,13 @@
   margin-right: 10px;
 }
 .iconCheck {
-  color: green;
+  color: var(--green-600);
 }
 .pagination {
   background-color: white !important;
 }
 .table-head {
-  background-color: #f7f8fa;
-  p {
-    color: var(--gray-80);
-  }
+  background-color: var(--gray-1);
   .table-cell {
     min-width: 180px;
     color: #fff !important;
@@ -41,13 +38,13 @@
   // cursor: pointer;
 }
 
+.linkText {
+  &:hover {
+    color: var(--blue-3);
+  }
+}
+
 .row1 {
   // cursor: pointer;
-  background-color: var(--gray-2);
-}
-.tableCell {
-  &:hover {
-    color: var(--blue-500);
-    font-weight: 700;
-  }
+  background-color: var(--gray-1);
 }

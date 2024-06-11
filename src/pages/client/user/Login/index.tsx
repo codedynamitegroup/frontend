@@ -37,7 +37,7 @@ interface IFormData {
 export default function Login() {
   const { t } = useTranslation();
   const { state } = useLocation();
-  const { navigateBack } = state;
+  const navigateBack = state ? state.navigateBack : null;
   const microsoftClientId = process.env.REACT_APP_MICROSOFT_CLIENT_ID || "";
   const { instance } = useMsal();
   const userLogged: User = useSelector(selectCurrentUser);

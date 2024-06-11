@@ -466,20 +466,20 @@ export default function DetailProblem() {
                     value={0}
                   />
                   {auth.isLoggedIn && (
-                    <>
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        translation-key='detail_problem_discussion'
-                        label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                        value={1}
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        translation-key='detail_problem_submission'
-                        label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                        value={2}
-                      />
-                    </>
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_discussion'
+                      label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                      value={1}
+                    />
+                  )}
+                  {auth.isLoggedIn && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_submission'
+                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                      value={2}
+                    />
                   )}
                 </Tabs>
               </Box>
@@ -492,15 +492,11 @@ export default function DetailProblem() {
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  {auth.isLoggedIn && (
-                    <>
-                      <Route path={"solution"} element={<ProblemDetailSolution />} />
-                      <Route
-                        path={"submission"}
-                        element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
-                      />
-                    </>
-                  )}
+                  <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  <Route
+                    path={"submission"}
+                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                  />
                 </Routes>
               </Box>
             </Box>

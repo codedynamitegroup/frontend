@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import images from "config/images";
 import Header from "components/Header";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import PersonIcon from "@mui/icons-material/Person";
 
 const drawerWidth = 300;
 
@@ -56,13 +57,13 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
         </Box>
       ),
       link: routes.admin.contest.root
+    },
+    {
+      name: t("side_bar_user_management"),
+      "translation-key": "side_bar_user_management",
+      icon: <PersonIcon className={classes.itemIcon} />,
+      link: routes.admin.users.root
     }
-    // {
-    //   name: t("side_bar_user_management"),
-    //   "translation-key": "side_bar_user_management",
-    //   icon: <PersonIcon className={classes.itemIcon} />,
-    //   link: routes.admin.contest.root
-    // }
   ];
   // const [open, setOpen] = React.useState(true);
 
