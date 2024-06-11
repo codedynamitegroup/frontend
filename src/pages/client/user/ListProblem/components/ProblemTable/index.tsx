@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import { routes } from "routes/routes";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import useAuth from "hooks/useAuth";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
 
@@ -44,7 +44,6 @@ export default function ProblemTable() {
   const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const navigate = useNavigate();
 
   const choosenTagList = algorithmTag.tagList.filter((value) => value.isChoosen);
 
@@ -165,24 +164,17 @@ export default function ProblemTable() {
                         <TableCell align='center'>{row.status}</TableCell>
                         <TableCell className={classes.tableCell}>
                           <Tooltip
-                            title={!isLoggedIn ? t("common_please_login") : ""}
+                            title={isLoggedIn ? t("common_please_login") : ""}
                             placement='left-start'
                             arrow
                           >
                             <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
                               <Link
-                                component='button'
-                                onClick={() => {
-                                  if (!isLoggedIn) {
-                                    return;
-                                  }
-                                  navigate(
-                                    routes.user.problem.detail.description.replace(
-                                      ":problemId",
-                                      row.id
-                                    )
-                                  );
-                                }}
+                                component={RouterLink}
+                                to={routes.user.problem.detail.description.replace(
+                                  ":problemId",
+                                  row.id
+                                )}
                                 underline='hover'
                                 color='inherit'
                               >
