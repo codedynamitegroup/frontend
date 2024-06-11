@@ -39,6 +39,7 @@ import {
   setSystemLanguageId
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import {
+  setExecuteError,
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
@@ -53,8 +54,10 @@ import TestCase from "./components/TestCase";
 import classes from "./styles.module.scss";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setLoading } from "reduxes/Loading";
+import useAuth from "hooks/useAuth";
 
 export default function DetailProblem() {
+  const auth = useAuth();
   const { problemId, courseId, lessonId } = useParams<{
     problemId: UUID;
     courseId: string;
@@ -219,25 +222,35 @@ export default function DetailProblem() {
   const handleExecuteCode = () => {
     setTestCaseTab(1);
     dispatch(setExecuteResultLoading(true));
-    ExecuteService.execute(
-      currentExecuteData.language_id,
-      currentExecuteData.stdin,
-      currentExecuteData.expected_output,
-      currentExecuteData.cpu_time_limit,
-      currentExecuteData.memory_limit,
-      currentExecuteData.source_code
-    )
-      .then((data: Judge0ResponseEntity) => {
-        dispatch(setResult(data));
-        dispatch(setExecuteResultLoading(false));
-
-        // console.log("response data", data);
-      })
-      .catch((err) => {
-        console.log(err);
-        dispatch(setExecuteResultLoading(false));
-        setTestCaseTab(0);
-      });
+    if (currentExecuteData.test_cases) {
+      Promise.all(
+        currentExecuteData.test_cases.map((value) =>
+          ExecuteService.execute(
+            currentExecuteData.language_id,
+            value.inputData,
+            value.outputData,
+            currentExecuteData.cpu_time_limit,
+            currentExecuteData.memory_limit,
+            currentExecuteData.source_code
+          )
+        )
+      )
+        .then((data: Judge0ResponseEntity[]) => {
+          currentExecuteData.test_cases?.forEach((value, index) => {
+            data[index].input_data = value.inputData;
+            data[index].output_data = value.outputData;
+          });
+          // console.log(data);
+          dispatch(setResult(data));
+        })
+        .catch((err) => {
+          console.log("Execute error: ", err);
+          let message: string | undefined = err.message;
+          if (message === undefined) message = "Unexpected error";
+          dispatch(setExecuteError(message));
+        })
+        .finally(() => dispatch(setExecuteResultLoading(false)));
+    }
     // console.log("current data", currentExecuteData);
   };
   const handleSubmitCode = () => {
@@ -301,7 +314,7 @@ export default function DetailProblem() {
 
       setWidth001(newWidth001);
       setWidth002(newWidth002);
-    }, 100);
+    }, 200);
     setTimer(newTimer);
   };
 
@@ -349,7 +362,7 @@ export default function DetailProblem() {
                 onClick={() => {
                   if (courseId)
                     navigate(
-                      routes.user.course_certificate.detail.lesson.root.replace(
+                      routes.user.course_certificate.detail.introduction.replace(
                         ":courseId",
                         courseId
                       )
@@ -363,25 +376,51 @@ export default function DetailProblem() {
             </Box>
           )}
           <Box className={classes.submit}>
-            <Button
-              className={classes.runBtn}
-              variant='contained'
-              color='primary'
-              translation-key='detail_problem_execute'
-              onClick={handleExecuteCode}
-            >
-              <PlayArrowIcon />
-              {t("detail_problem_execute")}
-            </Button>
-            <Button
-              className={classes.submitBtn}
-              color='primary'
-              translation-key='detail_problem_submit'
-              onClick={handleSubmitCode}
-            >
-              {submissionLoading && <CircularProgress size={20} />}
-              {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
-            </Button>
+            {!auth.isLoggedIn && (
+              <Button
+                className={classes.runBtn}
+                variant='contained'
+                color='primary'
+                translation-key='header_login_button'
+                onClick={() =>
+                  navigate(routes.user.login.root, {
+                    state: {
+                      navigateBack: problemId
+                        ? routes.user.problem.detail.description.replace(":problemId", problemId)
+                        : undefined
+                    }
+                  })
+                }
+                disabled={auth.isLoggedIn}
+              >
+                {t("header_login_button")}
+              </Button>
+            )}
+            {auth.isLoggedIn && (
+              <>
+                <Button
+                  className={classes.runBtn}
+                  variant='contained'
+                  color='primary'
+                  translation-key='detail_problem_execute'
+                  onClick={handleExecuteCode}
+                  disabled={!auth.isLoggedIn}
+                >
+                  <PlayArrowIcon />
+                  {t("detail_problem_execute")}
+                </Button>
+                <Button
+                  className={classes.submitBtn}
+                  color='primary'
+                  translation-key='detail_problem_submit'
+                  onClick={handleSubmitCode}
+                  disabled={!auth.isLoggedIn}
+                >
+                  {submissionLoading && <CircularProgress size={20} />}
+                  {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+                </Button>
+              </>
+            )}
           </Box>
           <Box
             style={{
@@ -426,18 +465,22 @@ export default function DetailProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_discussion'
-                    label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                    value={1}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_submission'
-                    label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                    value={2}
-                  />
+                  {auth.isLoggedIn && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_discussion'
+                      label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                      value={1}
+                    />
+                  )}
+                  {auth.isLoggedIn && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_submission'
+                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                      value={2}
+                    />
+                  )}
                 </Tabs>
               </Box>
 
@@ -515,12 +558,14 @@ export default function DetailProblem() {
                           label={<ParagraphBody>Test Cases</ParagraphBody>}
                           value={0}
                         />
-                        <Tab
-                          sx={{ textTransform: "none" }}
-                          translation-key='detail_problem_result'
-                          label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
-                          value={1}
-                        />
+                        {auth.isLoggedIn && (
+                          <Tab
+                            sx={{ textTransform: "none" }}
+                            translation-key='detail_problem_result'
+                            label={<ParagraphBody>{t("detail_problem_result")}</ParagraphBody>}
+                            value={1}
+                          />
+                        )}
                       </Tabs>
                     </Box>
 

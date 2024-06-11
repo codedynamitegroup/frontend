@@ -25,8 +25,11 @@ import {
 import { TagService } from "services/codeAssessmentService/TagService";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
+import useAuth from "hooks/useAuth";
+import Heading2 from "components/text/Heading2";
 
 const ListProblem = () => {
+  const auth = useAuth();
   const [levelProblem, setlevelProblem] = useState("0");
   const [statusProblem, setstatusProblem] = useState("0");
   const { t } = useTranslation();
@@ -52,7 +55,7 @@ const ListProblem = () => {
 
     const newTimer = window.setTimeout(() => {
       dispatch(setSearchKey(e.target.value));
-    }, 1500);
+    }, 1000);
 
     setTimer(newTimer);
   };
@@ -101,9 +104,7 @@ const ListProblem = () => {
             <Grid container>
               <Grid item xs={2.5}>
                 <Box className={classes.algorithmContainer}>
-                  <Heading3 translation-key='list_problem_type_of_algorithm'>
-                    {t("list_problem_type_of_algorithm")}:
-                  </Heading3>
+                  <Heading3 translation-key='common_topic'>{t("common_topic")}:</Heading3>
 
                   <Box className={classes.algorithm} translation-key='list_problem_algorithms'>
                     {algorithmTag.isLoading && (
@@ -114,7 +115,7 @@ const ListProblem = () => {
                     {!algorithmTag.isLoading && (
                       <>
                         {algorithmTag.tagList.map(
-                          (algorithm, index) =>
+                          (algorithm: any, index) =>
                             algorithm.isChoosen && (
                               <Chip
                                 key={index}
@@ -125,7 +126,7 @@ const ListProblem = () => {
                                 sx={{
                                   border: 1,
                                   padding: "15px 8px",
-                                  backgroundColor: "#C7D6EA",
+                                  backgroundColor: "var(--gray-3)",
                                   fontFamily: "Montserrat"
                                 }}
                                 // label={algorithm.numOfCodeQuestion}
@@ -155,7 +156,7 @@ const ListProblem = () => {
                                 }}
                                 sx={{
                                   padding: "15px 8px",
-                                  backgroundColor: "var(--blue-50)",
+                                  backgroundColor: "var(--gray-2)",
                                   fontFamily: "Montserrat"
                                 }}
                                 // label={algorithm.numOfCodeQuestion}
@@ -193,9 +194,9 @@ const ListProblem = () => {
                   >
                     <RecommendedProblem />
                   </Box>
-                  <Heading1>Problem list</Heading1>
+                  <Heading1 translation-key='list_problem'>{t("list_problem")}</Heading1>
 
-                  <Stack direction={"row"} spacing={2} paddingY={2}>
+                  <Stack direction={"row"} spacing={2}>
                     <OutlinedInput
                       size='small'
                       fullWidth
@@ -209,38 +210,44 @@ const ListProblem = () => {
                       onChange={searchChange}
                       className={classes.searchInput}
                     />
-                    <BasicSelect
-                      labelId='select-assignment-section-label'
-                      value={statusProblem}
-                      onHandleChange={(value) => handleChangeSolved(value)}
-                      sx={{ maxWidth: "200px" }}
-                      translation-key={[
-                        "common_all",
-                        "list_problem_solved_done",
-                        "list_problem_solved_not_done"
-                      ]}
-                      items={[
-                        {
-                          value: "0",
-                          label: t("common_all")
-                        },
-                        {
-                          value: "1",
-                          label: t("list_problem_solved_done")
-                        },
-                        {
-                          value: "2",
-                          label: t("list_problem_solved_not_done")
-                        }
-                      ]}
-                      backgroundColor='#FFFFFF'
-                    />
+                    {auth.isLoggedIn && (
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        label={t("common_status")}
+                        value={statusProblem}
+                        onHandleChange={(value) => handleChangeSolved(value)}
+                        sx={{ maxWidth: "200px" }}
+                        translation-key={[
+                          "common_status",
+                          "common_all",
+                          "list_problem_solved_done",
+                          "list_problem_solved_not_done"
+                        ]}
+                        items={[
+                          {
+                            value: "0",
+                            label: t("common_all")
+                          },
+                          {
+                            value: "1",
+                            label: t("list_problem_solved_done")
+                          },
+                          {
+                            value: "2",
+                            label: t("list_problem_solved_not_done")
+                          }
+                        ]}
+                        backgroundColor='#FFFFFF'
+                      />
+                    )}
                     <BasicSelect
                       labelId='select-assignment-section-label'
                       value={levelProblem}
+                      label={t("common_difficult_level")}
                       onHandleChange={(value) => handleChangeDifficulty(value)}
                       sx={{ maxWidth: "200px" }}
                       translation-key={[
+                        "common_difficult_level",
                         "common_all",
                         "common_easy",
                         "common_medium",

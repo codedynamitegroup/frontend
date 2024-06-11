@@ -35,11 +35,32 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
 
   const contestStatusChipLabel = useMemo(() => {
     if (startTime && moment().utc().isBefore(startTime)) {
-      return t("common_upcoming");
+      return (
+        <Chip
+          size='small'
+          sx={{ color: "var(--blue-2)", borderColor: "var(--blue-2)" }}
+          label={t("common_upcoming")}
+          variant='outlined'
+        />
+      );
     } else if (endTime && moment().utc().isAfter(endTime)) {
-      return t("common_ended");
+      return (
+        <Chip
+          size='small'
+          sx={{ color: "var(--red-hard)", borderColor: "var(--red-hard)" }}
+          label={t("common_ended")}
+          variant='outlined'
+        />
+      );
     } else {
-      return t("common_in_progress");
+      return (
+        <Chip
+          size='small'
+          sx={{ color: "var(--green-500)", borderColor: "var(--green-500)" }}
+          label={t("common_in_progress")}
+          variant='outlined'
+        />
+      );
     }
   }, [startTime, endTime, t]);
 
@@ -51,7 +72,7 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
             <Grid container>
               <Grid item xs={12}>
                 <Stack className={classes.contestTypeContainer} direction='row' spacing={0.5}>
-                  <Chip size='small' label={contestStatusChipLabel} variant='outlined' />
+                  {contestStatusChipLabel}
                 </Stack>
               </Grid>
               <Grid item xs={12}>

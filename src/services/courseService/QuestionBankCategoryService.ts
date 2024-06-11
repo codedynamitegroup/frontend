@@ -10,7 +10,7 @@ export class QuestionBankCategoryService {
     pageNo = 0,
     pageSize = 10
   }: {
-    isOrgQuestionBank: boolean;
+    isOrgQuestionBank?: boolean;
     search?: string;
     pageNo?: number;
     pageSize?: number;

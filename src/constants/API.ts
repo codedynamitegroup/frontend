@@ -19,7 +19,8 @@ export const API = {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
       UPDATE_BY_ID: "/core/chapters/:id",
-      DELETE_BY_ID: "/core/chapters/:id"
+      DELETE_BY_ID: "/core/chapters/:id",
+      MARK_VIEWED_BY_CHAPTER_RESOURCE_ID: "/core/chapters/chapter-resource-users/:id"
     },
     CONTEST: {
       DEFAULT: "/core/contests",
@@ -142,6 +143,8 @@ export const API = {
     SUBMISSION: "/submissions"
   },
   AUTH: {
+    GET_ALL: "/auth/users",
+    GET_STATISTICS: "/auth/users/statistics",
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
     REFRESH_TOKEN: "/auth/users/refresh-token",

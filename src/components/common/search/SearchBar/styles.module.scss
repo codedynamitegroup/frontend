@@ -4,7 +4,7 @@
     width: 100%;
     .container {
       border-radius: 5px;
-      border: 1px solid black;
+      border: 1px solid var(--gray-30);
       //remove box-shadow;
       box-shadow: none;
       .inputField {

@@ -9,6 +9,7 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import images from "config/images";
 import Header from "components/Header";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 
 const drawerWidth = 300;
 
@@ -36,6 +37,16 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any) {
   const { t } = useTranslation();
   const sideBarItemListData: SidebarItem[] = [
+    {
+      name: t("common_dashboard"),
+      "translation-key": "common_dashboard",
+      icon: (
+        <Box className={classes.img}>
+          <DashboardRoundedIcon />
+        </Box>
+      ),
+      link: routes.admin.dashboard
+    },
     {
       name: t("side_bar_contest_management"),
       "translation-key": "side_bar_contest_management",

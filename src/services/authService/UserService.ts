@@ -219,4 +219,40 @@ export class UserService {
       });
     }
   }
+
+  static async getAllUser() {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.GET_ALL}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async getUserStatistics() {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.GET_STATISTICS}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

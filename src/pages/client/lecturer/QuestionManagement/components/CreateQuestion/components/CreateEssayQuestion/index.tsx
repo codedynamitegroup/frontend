@@ -209,7 +209,7 @@ const CreateEssayQuestion = (props: Props) => {
     defaultValues: {
       questionName: "",
       questionDescription: "",
-      defaultScore: "0",
+      defaultScore: "1",
       generalDescription: "",
       responseFormat: "editor",
       responseRequired: "0",

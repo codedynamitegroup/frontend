@@ -18,7 +18,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 
-export default function ProblemDetailSolution() {
+export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: number }) {
   const navigate = useNavigate();
 
   const tags = [
@@ -202,7 +202,11 @@ export default function ProblemDetailSolution() {
   };
 
   return (
-    <Box className={classes.containerListSolution}>
+    <Box
+      className={classes.containerListSolution}
+      style={{ maxHeight: maxHeight ? `${maxHeight}px` : "100%" }}
+      overflow={"auto"}
+    >
       {solutionDetail === true ? (
         <Stack height={"100%"}>
           <Box

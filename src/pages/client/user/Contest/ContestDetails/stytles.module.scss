@@ -5,6 +5,13 @@
 
 .bodyContainer {
   margin-top: 20px;
+  min-height: 500px;
+
+  .bodyWrapper {
+    border: 1px solid var(--gray-10);
+    border-radius: 8px;
+    background-color: white;
+  }
   .divContainer {
     padding: 20px;
     padding-top: 0;

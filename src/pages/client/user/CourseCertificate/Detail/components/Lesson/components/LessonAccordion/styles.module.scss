@@ -7,7 +7,7 @@
     justify-content: center;
 
     #circle {
-      background: var(--blue-500);
+      background: var(--blue-3);
       border-radius: 1.5em;
       -moz-border-radius: 1.5em;
       -webkit-border-radius: 1.5em;
@@ -19,6 +19,13 @@
       width: 3em;
     }
   }
+}
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 #accordionDetails {
@@ -33,7 +40,7 @@
 
       &:hover {
         cursor: pointer;
-        background-color: var(--blue-50);
+        background-color: var(--blue-1);
       }
 
       .lessonTitle {
@@ -47,7 +54,9 @@
         align-items: center;
 
         .icCode,
-        .icCheck {
+        .icCheck,
+        .icVideo,
+        .icArticle {
           width: 25px;
           height: 25px;
         }

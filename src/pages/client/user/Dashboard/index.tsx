@@ -1,7 +1,6 @@
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinearProgress } from "@mui/joy";
-import JoyButton from "@mui/joy/Button";
 import { CircularProgress, Container, Grid, Skeleton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -9,7 +8,6 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Divider from "@mui/material/Divider";
-import CustomButton, { BtnType } from "components/common/buttons/Button";
 import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
@@ -34,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
+import JoyButton from "@mui/joy/Button";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -63,36 +62,39 @@ export default function UserDashboard() {
     return contestState.mostPopularContests.mostPopularContests[0];
   }, [contestState.mostPopularContests]);
 
-  const handleGetCertificateCourses = async ({
-    courseName,
-    filterTopicId,
-    isRegisteredFilter
-  }: {
-    courseName: string;
-    filterTopicId?: string;
-    isRegisteredFilter: IsRegisteredFilterEnum;
-  }) => {
-    setIsCertificateCoursesLoading(true);
-    try {
-      const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
-        courseName,
-        filterTopicId,
-        isRegisteredFilter
-      });
-      setIsCertificateCoursesLoading(false);
-      setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-    } catch (error: any) {
-      console.error("Failed to fetch certificate courses", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-      setIsCertificateCoursesLoading(false);
-      // Show snackbar here
-    }
-  };
+  const handleGetCertificateCourses = useCallback(
+    async ({
+      courseName,
+      filterTopicId,
+      isRegisteredFilter
+    }: {
+      courseName: string;
+      filterTopicId?: string;
+      isRegisteredFilter: IsRegisteredFilterEnum;
+    }) => {
+      setIsCertificateCoursesLoading(true);
+      try {
+        const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
+          courseName,
+          filterTopicId,
+          isRegisteredFilter
+        });
+        setIsCertificateCoursesLoading(false);
+        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
+      } catch (error: any) {
+        console.error("Failed to fetch certificate courses", {
+          code: error.code || 503,
+          status: error.status || "Service Unavailable",
+          message: error.message
+        });
+        setIsCertificateCoursesLoading(false);
+        // Show snackbar here
+      }
+    },
+    []
+  );
 
-  const handleGetRegisteredCertificateCourses = async () => {
+  const handleGetRegisteredCertificateCourses = useCallback(async () => {
     setIsCertificateCoursesLoading(true);
     try {
       const getCertificateCoursesResponse =
@@ -108,7 +110,7 @@ export default function UserDashboard() {
       setIsCertificateCoursesLoading(false);
       // Show snackbar here
     }
-  };
+  }, []);
 
   const handleGetMostPopularContests = useCallback(async () => {
     setIsMostPopularContestsLoading(true);
@@ -131,13 +133,13 @@ export default function UserDashboard() {
     if (!registeredCertificateCourses) {
       return [];
     }
-    return registeredCertificateCourses
-      .filter((course) => (course?.numOfCompletedQuestions || 0) > 0)
-      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
-      .slice(0, 3);
+    return (
+      registeredCertificateCourses
+        // .filter((course) => (course?.numOfCompletedResources || 0) > 0)
+        .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
+        .slice(0, 3)
+    );
   }, [registeredCertificateCourses]);
-
-  console.log("ongoingRegisteredCourses", ongoingRegisteredCourses);
 
   const otherCertificateCourses = useMemo(() => {
     if (!certificateCourses) {
@@ -150,7 +152,7 @@ export default function UserDashboard() {
             (ongoingCourse) => ongoingCourse.certificateCourseId === course.certificateCourseId
           )
       )
-      .sort((a, b) => (b.numOfCompletedQuestions || 0) - (a.numOfCompletedQuestions || 0))
+      .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
       .slice(0, 3);
   }, [certificateCourses, ongoingRegisteredCourses]);
 
@@ -168,16 +170,33 @@ export default function UserDashboard() {
     };
 
     fetchInitialData();
-  }, []);
+  }, [
+    handleGetCertificateCourses,
+    handleGetMostPopularContests,
+    handleGetRegisteredCertificateCourses
+  ]);
 
   return (
     <Grid id={classes.userDashboardRoot}>
       <Container className={classes.container}>
         <Grid container className={classes.sectionContentImage}>
           <Grid item sm={12} md={7} className={classes.sectionContent}>
-            <Box className={classes.currentCourse} translation-key='dashboard_continue_title'>
+            <Box
+              className={classes.currentCourse}
+              translation-key={
+                ongoingRegisteredCourses.length === 0
+                  ? "dashboard_start_title"
+                  : "dashboard_continue_title"
+              }
+            >
               <Heading2>
-                {t("dashboard_continue_title")}, {loggedUser?.firstName}
+                {ongoingRegisteredCourses.length > 0 &&
+                ongoingRegisteredCourses.every(
+                  (course) => (course?.numOfCompletedResources || 0) === 0
+                )
+                  ? t("dashboard_start_title")
+                  : t("dashboard_continue_title")}
+                , {loggedUser?.firstName}
               </Heading2>
               <Box className={classes.courseLearningList}>
                 {ongoingRegisteredCourses.length === 0 ? (
@@ -201,14 +220,14 @@ export default function UserDashboard() {
                             <LinearProgress
                               determinate
                               value={calcCertificateCourseProgress(
-                                course.numOfCompletedQuestions || 0,
-                                course.numOfQuestions
+                                course.numOfCompletedResources || 0,
+                                course.numOfResources
                               )}
                             />
                           </Box>
-                          {course.numOfQuestions ? (
+                          {course.numOfResources ? (
                             <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
-                              {t("dashboard_current_lesson")}: {course.currentQuestion?.name || ""}
+                              {t("dashboard_current_lesson")}: {course.currentResource?.title || ""}
                             </ParagraphExtraSmall>
                           ) : (
                             <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
@@ -218,20 +237,22 @@ export default function UserDashboard() {
                         </Box>
                       </Box>
                       <Box className={classes.learnBtn}>
-                        <CustomButton
-                          btnType={BtnType.Primary}
+                        <JoyButton
                           translation-key='common_continue'
                           onClick={() => {
                             navigate(
-                              routes.user.course_certificate.detail.lesson.root.replace(
+                              routes.user.course_certificate.detail.introduction.replace(
                                 ":courseId",
                                 course.certificateCourseId.toString()
                               )
                             );
                           }}
                         >
-                          {i18next.format(t("common_continue"), "firstUppercase")}
-                        </CustomButton>
+                          {/* {i18next.format(t("common_continue"), "firstUppercase")} */}
+                          {(course?.numOfCompletedResources || 0) === 0
+                            ? t("common_start")
+                            : t("common_continue")}
+                        </JoyButton>
                       </Box>
                     </Grid>
                   ))
@@ -276,7 +297,7 @@ export default function UserDashboard() {
                           className={classes.courseCerticate}
                           onClick={() => {
                             navigate(
-                              routes.user.course_certificate.detail.lesson.root.replace(
+                              routes.user.course_certificate.detail.introduction.replace(
                                 ":courseId",
                                 course.certificateCourseId.toString()
                               )
@@ -301,7 +322,7 @@ export default function UserDashboard() {
                               <Box className={classes.iconCourse}>
                                 <FontAwesomeIcon icon={faFile} className={classes.fileIcon} />
                                 <ParagraphBody translation-key='certificate_detail_lesson'>
-                                  {course.numOfQuestions}{" "}
+                                  {course.numOfResources}{" "}
                                   {i18next.format(
                                     t("certificate_detail_lesson", { count: 2 }),
                                     "lowercase"

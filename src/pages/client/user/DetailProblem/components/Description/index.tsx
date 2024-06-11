@@ -5,6 +5,7 @@ import classes from "./styles.module.scss";
 import Heading3 from "components/text/Heading3";
 import { useAppSelector } from "hooks";
 import Heading5 from "components/text/Heading5";
+import ReactQuill from "react-quill";
 
 type Props = {};
 
@@ -17,19 +18,23 @@ const ProblemDetailDescription = (props: Props) => {
         <Stack spacing={2}>
           <Box>
             <Heading3>{codeQuestion?.name}</Heading3>
-            <TextEditor value={codeQuestion?.problemStatement} readOnly={true} />
+            <ReactQuill
+              value={codeQuestion?.problemStatement || ""}
+              readOnly={true}
+              theme={"bubble"}
+            />
           </Box>
 
           <Box>
             <Heading5>Input format</Heading5>
-            <TextEditor value={codeQuestion?.inputFormat} readOnly={true} />
+            <ReactQuill value={codeQuestion?.inputFormat || ""} readOnly={true} theme={"bubble"} />
             <Heading5>Output format</Heading5>
-            <TextEditor value={codeQuestion?.outputFormat} readOnly={true} />
+            <ReactQuill value={codeQuestion?.outputFormat || ""} readOnly={true} theme={"bubble"} />
           </Box>
 
           <Box>
             <Heading5>Constraint</Heading5>
-            <TextEditor value={codeQuestion?.constraints} readOnly={true} />
+            <ReactQuill value={codeQuestion?.constraints || ""} readOnly={true} theme={"bubble"} />
           </Box>
         </Stack>
       </Box>

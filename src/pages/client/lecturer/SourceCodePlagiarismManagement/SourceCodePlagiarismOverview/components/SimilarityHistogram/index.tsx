@@ -123,17 +123,18 @@ const SimilarityHistogram = ({
           {
             scaleType: "band",
             data: xAxisData,
-            barGapRatio: 0,
-            categoryGapRatio: 0.1,
+            // barGapRatio: 0,
+            // categoryGapRatio: 0.1,
             valueFormatter: (value: number) => `${value}%-${value + 5}%`
-          } as AxisConfig<"band">
+          }
+          // as AxisConfig<"band">
         ]}
         series={[
           {
             type: "bar",
             data: y,
             valueFormatter(value) {
-              return t("code_plagiarism_report_analyzed_submissions_count", { count: value });
+              return t("code_plagiarism_report_analyzed_submissions_count", { count: value || 0 });
             }
           }
         ]}

@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next";
 export default function LabTabs() {
   const { t } = useTranslation();
   const [value, setValue] = React.useState("0");
-  const topics = [t("common_all"), "Thuật toán", "Cơ sở dữ liệu", "Javascript"];
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -59,6 +58,7 @@ export default function LabTabs() {
         <TabPanel value='0' className={classes.tabPanel}>
           <Stack spacing={spacingInTabPanel}>
             <RecommendedProblem />
+            <ProblemTable />
           </Stack>
         </TabPanel>
         <TabPanel value='1' className={classes.tabPanel}>

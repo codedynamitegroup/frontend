@@ -46,7 +46,7 @@ export class CodeQuestionService {
     }
   }
 
-  static async getDetailCodeQuestion(codeQuestionId: UUID) {
+  static async getDetailCodeQuestion(codeQuestionId: UUID | string) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl

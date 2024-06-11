@@ -1,5 +1,5 @@
 import { SkillLevelEnum } from "../enum/SkillLevelEnum";
-import { QuestionEntity } from "./QuestionEntity";
+import { ChapterResourceEntity } from "./ChapterResourceEntity";
 import { TopicEntity } from "./TopicEntity";
 import { UserEntity } from "./UserEntity";
 
@@ -13,10 +13,10 @@ export interface CertificateCourseEntity {
   endTime: string;
   topic: TopicEntity;
   numOfStudents: number;
-  numOfQuestions: number;
-  numOfCompletedQuestions?: number;
+  numOfResources: number;
+  numOfCompletedResources?: number;
   numOfReviews: number;
-  currentQuestion?: QuestionEntity;
+  currentResource?: ChapterResourceEntity;
   isRegistered?: boolean;
   createdBy: UserEntity;
   createdAt: string;

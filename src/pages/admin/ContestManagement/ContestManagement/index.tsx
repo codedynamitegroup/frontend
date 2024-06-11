@@ -32,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { setErrorMess } from "reduxes/AppStatus";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -82,9 +83,7 @@ const ContestManagement = () => {
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
-          setOpenSnackbarAlert(true);
-          setType(AlertType.Error);
-          setContent("Please authenticate");
+          dispatch(setErrorMess("Please sign in to continue"));
         }
         // Show snackbar here
         dispatch(setLoading(false));

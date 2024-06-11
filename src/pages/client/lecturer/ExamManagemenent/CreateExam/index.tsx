@@ -187,7 +187,7 @@ export default function ExamCreated() {
       overdueHandling: questionCreate.overdueHandling.toUpperCase(),
       canRedoQuestions: true,
       maxAttempts: questionCreate.maxAttempt,
-      shuffleQuestions: true,
+      shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds
     };
@@ -216,7 +216,6 @@ export default function ExamCreated() {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
-          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
           search,
           pageNo,
           pageSize
@@ -482,10 +481,6 @@ export default function ExamCreated() {
     ref: header2Ref
   });
 
-  const handleCategoryPick = (value: string) => {
-    console.log(value);
-  };
-
   return (
     <>
       <PickQuestionTypeToAddDialog
@@ -564,8 +559,9 @@ export default function ExamCreated() {
           <AppBar
             position='fixed'
             sx={{
-              top: `${headerHeight}px`,
-              backgroundColor: "white"
+              top: `${headerHeight + 1}px`,
+              backgroundColor: "white",
+              boxShadow: "0px 2px 4px #00000026"
             }}
             ref={header2Ref}
             open={open}
@@ -700,32 +696,38 @@ export default function ExamCreated() {
                   </Grid>
                   <Grid item xs={12}>
                     <QuestionsFeatureBar
-                      colSearchLabel='Tìm kiếm theo cột'
+                      // colSearchLabel='Tìm kiếm theo cột'
                       shuffleQuestionsLabel={t("exam_management_create_question_scramble")}
-                      colItems={[
-                        { label: "Tên câu hỏi", value: "name" },
-                        { label: "Kiểu", value: "type" }
-                      ]}
+                      // colItems={[
+                      //   { label: "Tên câu hỏi", value: "name" },
+                      //   { label: "Kiểu", value: "type" }
+                      // ]}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomDataGrid
-                      dataList={questionCreate.questionCreate.map((item, index) => ({
-                        stt: index + 1,
-                        qtypeText:
-                          item.qtype === QuestionTypeEnum.SHORT_ANSWER
-                            ? "câu hỏi ngắn"
-                            : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                              ? "câu hỏi trắc nghiệm"
-                              : item.qtype === QuestionTypeEnum.ESSAY
-                                ? "câu hỏi tự luận"
-                                : item.qtype === QuestionTypeEnum.TRUE_FALSE
-                                  ? "câu hỏi đúng/sai"
-                                  : item.qtype === QuestionTypeEnum.CODE
-                                    ? "câu hỏi code"
-                                    : "",
-                        ...item
-                      }))}
+                      dataList={questionCreate.questionCreate
+                        .filter((item) =>
+                          item.name
+                            .toLowerCase()
+                            .includes(questionCreate.searchQuestion.toLowerCase())
+                        )
+                        .map((item, index) => ({
+                          stt: index + 1,
+                          qtypeText:
+                            item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                              ? "câu hỏi ngắn"
+                              : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                                ? "câu hỏi trắc nghiệm"
+                                : item.qtype === QuestionTypeEnum.ESSAY
+                                  ? "câu hỏi tự luận"
+                                  : item.qtype === QuestionTypeEnum.TRUE_FALSE
+                                    ? "câu hỏi đúng/sai"
+                                    : item.qtype === QuestionTypeEnum.CODE
+                                      ? "câu hỏi code"
+                                      : "",
+                          ...item
+                        }))}
                       tableHeader={tableHeading}
                       onSelectData={rowSelectionHandler}
                       visibleColumn={visibleColumnList}
@@ -749,8 +751,8 @@ export default function ExamCreated() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
-                height: "calc(100% - 64px)",
-                top: "64px"
+                height: `calc(100% - ${headerHeight + 1}px)`,
+                top: `${headerHeight + 1}px`
               }
             }}
             variant='persistent'

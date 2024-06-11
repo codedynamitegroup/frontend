@@ -33,6 +33,7 @@ import moment from "moment";
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
+import ReactQuill from "react-quill";
 
 const ContestDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -92,28 +93,36 @@ const ContestDetails = () => {
 
   const handleGetContestById = useCallback(
     async (id: string) => {
+      dispatch(setInititalLoading(true));
       try {
         const getContestsResponse = await ContestService.getContestById(id);
-        dispatch(setContestDetails(getContestsResponse));
+        if (getContestsResponse) {
+          if (
+            getContestsResponse.startTime &&
+            moment().utc().isAfter(getContestsResponse.startTime)
+          ) {
+            await handleGetContestLeaderboard(id);
+          }
+          dispatch(setContestDetails(getContestsResponse));
+        }
+        dispatch(setInititalLoading(false));
       } catch (error: any) {
         console.error("Failed to fetch contests", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
         });
+        dispatch(setInititalLoading(false));
         // Show snackbar here
       }
     },
-    [dispatch]
+    [dispatch, handleGetContestLeaderboard]
   );
 
   useEffect(() => {
     const fetchInitialData = async () => {
       if (contestId) {
-        dispatch(setInititalLoading(true));
-        await handleGetContestById(contestId);
-        await handleGetContestLeaderboard(contestId);
-        dispatch(setInititalLoading(false));
+        handleGetContestById(contestId);
       }
     };
     fetchInitialData();
@@ -139,9 +148,9 @@ const ContestDetails = () => {
             item
             xs={value !== "3" && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
           >
-            <Paper>
+            <Box className={classes.bodyWrapper}>
               <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{ borderBottom: "1px solid var(--gray-10)" }}>
                   <TabList onChange={handleChange} aria-label='lab API tabs example'>
                     <Tab
                       label={t("contest_detail_description")}
@@ -166,10 +175,56 @@ const ContestDetails = () => {
                   </TabList>
                 </Box>
                 <TabPanel value='1'>
-                  <div
-                    className={classes.divContainer}
-                    dangerouslySetInnerHTML={{ __html: contestDetails.description || "" }}
-                  ></div>
+                  <Stack direction='column' gap={1}>
+                    <Heading4 translation-key='common_description'>
+                      {t("common_description")}
+                    </Heading4>
+                    <ReactQuill
+                      value={contestDetails.description || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={1}>
+                    <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
+
+                    <ReactQuill
+                      value={contestDetails.prizes || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={1}>
+                    <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
+                    <ReactQuill
+                      value={contestDetails.rules || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                  </Stack>
+                  <Divider
+                    sx={{
+                      margin: "10px 0"
+                    }}
+                  />
+                  <Stack direction='column' gap={1}>
+                    <Heading4 translation-key='common_scoring'>{t("common_scoring")}</Heading4>
+                    <ReactQuill
+                      value={contestDetails.scoring || ""}
+                      readOnly={true}
+                      theme={"bubble"}
+                    />
+                  </Stack>
                 </TabPanel>
                 {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
                 contestDetails.isRegistered === true ? (
@@ -202,7 +257,7 @@ const ContestDetails = () => {
                   </TabPanel>
                 ) : null}
               </TabContext>
-            </Paper>
+            </Box>
           </Grid>
           {value !== "3" ? (
             <Grid item xs={3}>

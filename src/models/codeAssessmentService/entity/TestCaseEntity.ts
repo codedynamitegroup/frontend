@@ -1,7 +1,5 @@
-import { UUID } from "crypto";
-
 export interface TestCaseEntity {
-  id: UUID;
+  id: string;
 
   inputData: string;
 

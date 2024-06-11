@@ -1,24 +1,7 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Box,
-  Button,
-  Card,
-  CircularProgress,
-  Container,
-  CssBaseline,
-  Divider,
-  Drawer,
-  Grid,
-  IconButton,
-  Toolbar
-} from "@mui/material";
+import { Box, Button, CircularProgress, Container, Grid, Toolbar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Header from "components/Header";
-import { BtnType } from "components/common/buttons/Button";
-import LoadButton from "components/common/buttons/LoadingButton";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -42,12 +25,8 @@ import { setLoading, setSubmissionAssignments } from "reduxes/courseService/subm
 import { RootState } from "store";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import { AssignmentService } from "services/courseService/AssignmentService";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
-import { SubmissionAssignmentFileEntity } from "models/courseService/entity/SubmissionAssignmentFileEntity";
 import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
-import assignment from "reduxes/courseService/assignment";
 
 export default function AssignmentGrading() {
   const { t } = useTranslation();
@@ -155,7 +134,7 @@ export default function AssignmentGrading() {
             sx={{
               backgroundColor: "white",
               marginTop: `${headerHeight}px`,
-              padding: "16px"
+              boxShadow: "0px 2px 4px #00000026"
             }}
           >
             <Toolbar>
@@ -204,8 +183,21 @@ export default function AssignmentGrading() {
               </Box>
             </Toolbar>
           </Box>
-          <Box className={classes.contentContainer}>
-            <Container className={classes.drawerFieldContainer}>
+          <Box
+            className={classes.contentContainer}
+            sx={{
+              marginTop: `${1}px`
+            }}
+          >
+            <Container
+              sx={{
+                backgroundColor: "white",
+                marginTop: "16px",
+                height: "fit-content",
+                padding: "16px"
+              }}
+              className={classes.gradeContainer}
+            >
               <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
               <BasicSelect
                 labelId='select-assignment-submission-student-label'
@@ -221,18 +213,8 @@ export default function AssignmentGrading() {
                     </Box>
                   )
                 }))}
-                backgroundColor='#D9E2ED'
+                backgroundColor='var(--gray-2)'
               />
-            </Container>
-            <Container
-              sx={{
-                backgroundColor: "white",
-                marginTop: "16px",
-                height: "fit-content",
-                padding: "16px"
-              }}
-              className={classes.gradeContainer}
-            >
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_grading_assignment_type'>
                   {t("course_lecturer_grading_assignment_type")}

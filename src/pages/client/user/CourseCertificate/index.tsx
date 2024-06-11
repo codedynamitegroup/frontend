@@ -53,8 +53,6 @@ const CourseCertificates = () => {
   const topicState = useSelector((state: RootState) => state.topic);
   const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
 
-  // const [catalogActive, setCatalogActive] = useState<string>("all");
-
   const catalogActive = useMemo(() => {
     const catalogActive = searchParams.get("catalog") || "all";
     return catalogActive;
@@ -177,6 +175,7 @@ const CourseCertificates = () => {
 
   const handleChangeCatalog = useCallback(
     async (value: string) => {
+      if (!value || value === catalogActive) return;
       if (value === "all") {
         setSearchText("");
         navigate(routes.user.course_certificate.root);
@@ -188,7 +187,7 @@ const CourseCertificates = () => {
         navigate(`${routes.user.course_certificate.root}?catalog=${value}`);
       }
     },
-    [navigate]
+    [catalogActive, navigate]
   );
 
   const certificateCoursesByEachTopic = useMemo(() => {
@@ -358,7 +357,7 @@ const CourseCertificates = () => {
                                   key={index}
                                   onClick={() =>
                                     navigate(
-                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                      routes.user.course_certificate.detail.introduction.replace(
                                         ":courseId",
                                         course.certificateCourseId
                                       )
@@ -401,7 +400,7 @@ const CourseCertificates = () => {
                             }}
                             onClick={() => {
                               navigate(
-                                `${routes.user.course_certificate.detail.lesson.root.replace(":courseId", option.certificateCourseId)}`
+                                `${routes.user.course_certificate.detail.introduction.replace(":courseId", option.certificateCourseId)}`
                               );
                             }}
                           >
@@ -491,7 +490,7 @@ const CourseCertificates = () => {
                                 key={index}
                                 onClick={() =>
                                   navigate(
-                                    routes.user.course_certificate.detail.lesson.root.replace(
+                                    routes.user.course_certificate.detail.introduction.replace(
                                       ":courseId",
                                       course.certificateCourseId
                                     )
@@ -539,7 +538,7 @@ const CourseCertificates = () => {
                                   key={index}
                                   onClick={() =>
                                     navigate(
-                                      routes.user.course_certificate.detail.lesson.root.replace(
+                                      routes.user.course_certificate.detail.introduction.replace(
                                         ":courseId",
                                         course.certificateCourseId
                                       )
@@ -553,172 +552,6 @@ const CourseCertificates = () => {
                       )}
                     </Box>
                   )}
-
-                {/* <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_basic'>
-                    {t("certificate_basic")} ({basicCertificateCourses.length})
-                  </Heading3>
-                  {certificateCourseState.isLoading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        gap: "10px"
-                      }}
-                    >
-                      <CircularProgress />
-                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
-                    </Box>
-                  ) : (
-                    <Grid container spacing={3}>
-                      {basicCertificateCourses.map(
-                        (course: CertificateCourseEntity, index: number) => (
-                          <Grid
-                            item
-                            xs={4}
-                            key={index}
-                            onClick={() =>
-                              navigate(
-                                routes.user.course_certificate.detail.lesson.root.replace(
-                                  ":courseId",
-                                  course.certificateCourseId
-                                )
-                              )
-                            }
-                          >
-                            <CourseCertificateCard course={course} />
-                          </Grid>
-                        )
-                      )}
-                    </Grid>
-                  )}
-                </Box> */}
-
-                {/* <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_basic'>
-                    {t("certificate_basic")} ({basicCertificateCourses.length})
-                  </Heading3>
-                  {certificateCourseState.isLoading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        gap: "10px"
-                      }}
-                    >
-                      <CircularProgress />
-                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
-                    </Box>
-                  ) : (
-                    <Grid container spacing={3}>
-                      {basicCertificateCourses.map(
-                        (course: CertificateCourseEntity, index: number) => (
-                          <Grid
-                            item
-                            xs={4}
-                            key={index}
-                            onClick={() =>
-                              navigate(
-                                routes.user.course_certificate.detail.lesson.root.replace(
-                                  ":courseId",
-                                  course.certificateCourseId
-                                )
-                              )
-                            }
-                          >
-                            <CourseCertificateCard course={course} />
-                          </Grid>
-                        )
-                      )}
-                    </Grid>
-                  )}
-                </Box>
-                <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_intermediate'>
-                    {t("certificate_intermediate")} ({intermediateCertificateCourses.length})
-                  </Heading3>
-                  {certificateCourseState.isLoading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        gap: "10px"
-                      }}
-                    >
-                      <CircularProgress />
-                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
-                    </Box>
-                  ) : (
-                    <Grid container spacing={3}>
-                      {intermediateCertificateCourses.map((course, index) => (
-                        <Grid
-                          item
-                          xs={4}
-                          key={index}
-                          onClick={() =>
-                            navigate(
-                              routes.user.course_certificate.detail.lesson.root.replace(
-                                ":courseId",
-                                course.certificateCourseId
-                              )
-                            )
-                          }
-                        >
-                          <CourseCertificateCard course={course} />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  )}
-                </Box>
-                <Box className={classes.couseCertificatesByTopic}>
-                  <Heading3 translation-key='certificate_advance'>
-                    {t("certificate_advance")} ({advancedCertificateCourses.length})
-                  </Heading3>
-                  {certificateCourseState.isLoading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        gap: "10px"
-                      }}
-                    >
-                      <CircularProgress />
-                      <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
-                    </Box>
-                  ) : (
-                    <Grid container spacing={3}>
-                      {advancedCertificateCourses.map((course, index) => (
-                        <Grid
-                          item
-                          xs={4}
-                          key={index}
-                          onClick={() =>
-                            navigate(
-                              routes.user.course_certificate.detail.lesson.root.replace(
-                                ":courseId",
-                                course.certificateCourseId
-                              )
-                            )
-                          }
-                        >
-                          <CourseCertificateCard course={course} />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  )}
-                </Box> */}
               </Box>
             </Grid>
           </Grid>

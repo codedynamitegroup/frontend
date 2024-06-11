@@ -165,7 +165,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
     resolver: yupResolver(schema),
     defaultValues: {
       answers: [],
-      defaultScore: "0",
+      defaultScore: "1",
       generalDescription: "",
       questionDescription: "",
       questionName: "",
