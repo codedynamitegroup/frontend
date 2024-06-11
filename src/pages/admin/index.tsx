@@ -11,6 +11,7 @@ import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import React from "react";
 import AdminDashboard from "./Dashboard";
 import Footer from "components/Footer";
+import UserManagement from "./UserManagement/UserManagement";
 
 type Props = {};
 
@@ -35,7 +36,8 @@ const SystemAdminHomepage = (props: Props) => {
               element={<EditContestDetails isDrawerOpen={open} />}
             />
             <Route path={"information"} element={<UserInformation />} />
-            <Route path={"/"} element={<AdminDashboard />} />
+            <Route path={"/dashboard"} element={<AdminDashboard />} />
+            <Route path={"users"} element={<UserManagement />} />
             {/* </Route> */}
           </Routes>
         </Box>

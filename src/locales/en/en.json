@@ -30,6 +30,7 @@
   "common_send": "Send",
   "common_password_confirm": "Confirm password",
   "common_fullname": "Fullname",
+  "common_last_login": "Last login",
   "common_DOB": "Date of birth",
   "common_sex": "Sex",
   "common_back": "Back",
@@ -118,7 +119,9 @@
   "common_add_new": "add new",
   "common_logout": "Log out",
   "common_account_info": "Account information",
-  "common_admin_page": "Administration",
+  "common_admin_page": "Administration page",
+  "common_user_page": "Client page",
+  "common_dashboard": "Dashboard",
   "common_notification": "Notification",
   "common_event": "Event",
   "common_sync": "Sync",
@@ -478,7 +481,6 @@
 
   "no_data": "No data",
 
-  "common_general": "General",
   "common_time_setting": "Time setting",
   "common_submission_type": "Submission types",
   "common_enter_description": "Enter description",
