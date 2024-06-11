@@ -637,34 +637,34 @@ export default function Lessons() {
           }}
         >
           <DrawerHeader />
-          <Card
-            sx={{
-              padding: "20px",
-              width: "100%"
-            }}
-          >
-            {currentLesson.resourceType === ResourceTypeEnum.CODE ? (
-              <Box>
-                <Stack
-                  direction='row'
-                  gap={2}
-                  alignItems='center'
-                  justifyContent='flex-start'
-                  sx={{
-                    marginBottom: "10px"
-                  }}
-                >
-                  <CodeIcon className={classes.icCode} />
-                  <Heading3>{currentLesson.title}</Heading3>
-                </Stack>
-                <Divider
-                  sx={{
-                    marginY: "10px"
-                  }}
-                />
-                <CodeQuestionLesson lesson={currentLesson} />
-              </Box>
-            ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
+          {currentLesson.resourceType === ResourceTypeEnum.CODE ? (
+            <Box>
+              <Stack
+                direction='row'
+                gap={2}
+                alignItems='center'
+                justifyContent='flex-start'
+                sx={{
+                  marginBottom: "10px"
+                }}
+              >
+                <CodeIcon className={classes.icCode} />
+                <Heading3>{currentLesson.title}</Heading3>
+              </Stack>
+              <Divider
+                sx={{
+                  marginY: "10px"
+                }}
+              />
+              <CodeQuestionLesson lesson={currentLesson} />
+            </Box>
+          ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
+            <Card
+              sx={{
+                padding: "20px",
+                width: "100%"
+              }}
+            >
               <Box>
                 <Stack
                   direction='row'
@@ -692,7 +692,14 @@ export default function Lessons() {
                   <YouTubeVideo url={currentLesson.youtubeVideoUrl || ""} />
                 </Box>
               </Box>
-            ) : (
+            </Card>
+          ) : (
+            <Card
+              sx={{
+                padding: "20px",
+                width: "100%"
+              }}
+            >
               <Box>
                 <Stack
                   direction='row'
@@ -717,8 +724,8 @@ export default function Lessons() {
                   theme={"bubble"}
                 />
               </Box>
-            )}
-          </Card>
+            </Card>
+          )}
         </Main>
       </Box>
     </Grid>
