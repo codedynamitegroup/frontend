@@ -85,7 +85,6 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     const match = matchPath(pathname, routeName);
     return !!match;
   };
-
   const activeTab = useMemo(() => {
     if (courseId && lessonId) {
       const index = tabs.findIndex((it) =>
@@ -104,25 +103,11 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   };
 
   const [timer, setTimer] = useState<number | undefined>(undefined);
-  const [width001, setWidth001] = useState("100%");
-  const [width002, setWidth002] = useState("50%");
 
   const tabRef = useRef<HTMLDivElement>(null);
   const { height: tabHeight } = useBoxDimensions({
     ref: tabRef
   });
-
-  const handleResize001 = (e: any, direction: any, ref: any, d: any) => {
-    clearTimeout(timer);
-    const newTimer = window.setTimeout(() => {
-      const newWidth001 = ref.style.width;
-      const newWidth002 = `${100 - parseFloat(newWidth001)}%`;
-
-      setWidth001(newWidth001);
-      setWidth002(newWidth002);
-    }, 100);
-    setTimer(newTimer);
-  };
 
   const updateLanguageSourceCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
     const submissinMapWithLangIdKeyAndSourceCodeValue = new Map<UUID, string>();
@@ -243,7 +228,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
         ) : (
           <Card>
             <Box className={classes.leftBody}>
-              <Box id={classes.tabWrapper} ref={tabRef}>
+              <Box className={classes.tabWrapper} ref={tabRef}>
                 <Tabs
                   value={activeTab}
                   onChange={handleChange}
