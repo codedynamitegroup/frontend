@@ -192,7 +192,6 @@
   "common_advanced_settings": "Advanced settings",
   "common_no": "No",
   "common_email": "Email",
-  "common_my_courses": "My courses",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest": "Contest management",
@@ -327,7 +326,7 @@
   "certificate_registered": "Registered",
   "certificate_not_registered": "Not registered",
 
-  "dashboard_continue_title": "Let's continue your courses",
+  "dashboard_continue_title": "Let continue your courses",
   "dashboard_happening_contest": "Happening contests",
   "dashboard_other_course": "Other courses",
   "dashboard_current_lesson": "Current lesson",
@@ -459,7 +458,28 @@
   "course_lecturer_submission_online_text": "Online text submission",
   "course_lecturer_submission_file": "File submission",
 
+  "assignment_name_required": "Assignment name is required",
+  "assignment_start_time_required": "Start time is required",
+  "assignment_end_time_required": "End time is required",
+  "assignment_max_grade_required": "Max grade is required",
+  "assignment_create_success": "Create assignment successfully",
+
   "no_data": "No data",
+
+  "common_general": "General",
+  "common_time_setting": "Time setting",
+  "common_submission_type": "Submission types",
+  "common_enter_description": "Enter description",
+  "common_enter_guideline": "Enter guideline",
+  "common_enter_word_limit": "Enter number of words",
+
+  "common_allow_submission_after_end_time": "Allow submission after end time",
+
+  "common_submission_type_online_text": "Online text",
+  "common_submission_type_file": "File submissions",
+  "common_word_limit": "Word limit",
+  "common_max_upload_file": "Maximum number of uploaded files",
+  "common_max_submission_file_size": "Maximum submission size",
 
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",
@@ -883,35 +903,5 @@
   "exam_finish_review": "Finish review",
   "exam_view_one_page": "View all in one page",
   "exam_view_multiple_page": "View in multiple pages",
-  "exam_enter_question_index": "Enter question index",
-  "exam_summary": "Exam summary",
-  "exam_submit_and_finish": "Submit and finish",
-  "exam_submit_success": "Exam submitted successfully",
-  "exam_submit_fail": "Failed to submit exam",
-
-  "exam_detail_time_limit": "Time limit",
-  "exam_detail_grading_method": "Grading method",
-  "exam_detail_grading_method_high_score": "Highest score",
-  "exam_detail_grading_method_average_score": "Average score",
-  "exam_detail_grading_method_last_submit": "Last submit",
-  "exam_detail_grading_method_first_submit": "First submit",
-
-  "exam_detail_summary_previous_attempt": "Previous attempt summary",
-  "exam_detail_summary_attempt": "Attempt",
-  "exam_detail_summary_score": "Grade",
-  "exam_detail_summary_review": "Review",
-  "exam_detail_summary_state": "State",
-  "exam_detail_summary_open_review": "Open review",
-  "exam_detail_start": "Start exam",
-  "exam_detail_continue": "Continue exam",
-
-  "course_error_page": "Error | Course",
-  "course_error": "Course Error",
-  "course_error_exam_not_found": "Exam with the provided ID cant not be found",
-  "exam_take_exam_title": "Take exam",
-  "exam_review_attempt_title": "Review attempt",
-  "exam_detail_mark": "Mark",
-  "exam_detail_graded": "Graded",
-  "exam_detail_summary_no_attempt": "Haven't done any attempt",
-  "exam_detail_max_attempt": "Maximum attempt"
+  "exam_enter_question_index": "Enter question index"
 }

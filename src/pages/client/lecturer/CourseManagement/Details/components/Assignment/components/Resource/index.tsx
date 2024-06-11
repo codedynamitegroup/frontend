@@ -85,8 +85,8 @@ const AssignmentResource = ({
             {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("hh:mm DD/MM/YYYY")}
           </ParagraphBody>
         </AccordionSummary>
-        <AccordionDetails>
-          <TextEditor value={intro} readOnly={true} />
+        <AccordionDetails className={classes.accordionDetailsContent}>
+          <div dangerouslySetInnerHTML={{ __html: intro || `` }}></div>
         </AccordionDetails>
         <AccordionActions>
           <Button

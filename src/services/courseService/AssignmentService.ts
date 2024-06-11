@@ -1,5 +1,7 @@
 import axios from "axios";
 import { API } from "constants/API";
+import { CreateAssignmentCommand } from "models/courseService/entity/create/CreateAssignmentCommand";
+import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
@@ -33,6 +35,64 @@ export class AssignmentService {
       }
     } catch (error: any) {
       console.error("Failed to fetch assignment by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createAssignment(assignment: CreateAssignmentCommand) {
+    try {
+      const response = await axios.post(
+        `${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.CREATE}`,
+        assignment
+      );
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create assignment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createIntroAttachment(introAttachment: CreateIntroAttachmentCommand) {
+    try {
+      const response = await axios.post(
+        `${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.CREATE_INTRO_ATTACHMENT}`,
+        introAttachment
+      );
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create intro attachment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async updateIntroAttachment(
+    introAttachment: CreateIntroAttachmentCommand,
+    assignmentId: string
+  ) {
+    try {
+      const response = await axios.put(
+        `${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.CREATE_INTRO_ATTACHMENT}/${assignmentId}`,
+        //không có sử dụng params
+        introAttachment
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to update intro attachment", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

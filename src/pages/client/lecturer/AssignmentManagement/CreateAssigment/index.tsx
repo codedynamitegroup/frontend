@@ -2,16 +2,28 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import * as React from "react";
+
 import {
   Box,
   Card,
+  Collapse,
   Container,
   CssBaseline,
   Divider,
   Drawer,
   Grid,
   IconButton,
-  Toolbar
+  Toolbar,
+  Typography,
+  Button,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
@@ -28,7 +40,6 @@ import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import dayjs, { Dayjs } from "dayjs";
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -36,46 +47,264 @@ import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import moment, { Moment } from "moment";
-import { ExtFile } from "@files-ui/react";
+import { ExtFile, ServerResponse, UPLOADSTATUS } from "@files-ui/react";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import Heading2 from "components/text/Heading2";
+import { NavigateNext } from "@mui/icons-material";
+import { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import JoySelect from "components/common/JoySelect";
+import { Select } from "@mui/joy";
+import Heading3 from "components/text/Heading3";
+import { idID } from "@mui/material/locale";
+import download from "downloadjs";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+import { max } from "d3";
+import i18next from "i18next";
+import { CreateAssignmentCommand } from "models/courseService/entity/create/CreateAssignmentCommand";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { useParams } from "react-router-dom";
+import { co, ex } from "@fullcalendar/core/internal-common";
+import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
+import CloseIcon from "@mui/icons-material/Close";
+
+interface FormData {
+  name: string;
+  intro: string;
+  activity: string;
+}
+
+interface IFormDataType {
+  name: string;
+  intro?: string;
+  activity?: string;
+  maxScore: number;
+  timeOpen: string;
+  timeClose: string;
+  wordLimit?: string;
+  maxUploadedFile: string;
+  maxFileSize: string;
+}
+
+const extFileSchema = yup.object().shape({
+  id: yup.mixed().required(),
+  file: yup.mixed(),
+  name: yup.string(),
+  type: yup.string(),
+  size: yup.number(),
+  valid: yup.boolean(),
+  errors: yup.array().of(yup.string()),
+  uploadStatus: yup.mixed<UPLOADSTATUS>(),
+  uploadMessage: yup.string(),
+  imageUrl: yup.string(),
+  xhr: yup.mixed(),
+  progress: yup.number(),
+  extraUploadData: yup.object(),
+  extraData: yup.object(),
+  serverResponse: yup.mixed<ServerResponse>(),
+  videoUrl: yup.string(),
+  uploadUrl: yup.string()
+});
 
 export default function AssignmentCreated() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
-  const [assignmentName, setAssignmentName] = React.useState("");
-  const [assignmentDescription, setAssignmentDescription] = React.useState("");
-  const [activityInstructions, setActivityInstructions] = React.useState("");
-  const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận", "Nộp tệp"]);
-  const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState(100);
-  const [assignmentAllowSubmissionFromDate, setAssignmentAllowSubmissionFromDate] =
-    React.useState<Moment | null>(moment());
-  const [assignmentSubmissionDueDate, setAssignmentSubmissionDueDate] =
-    React.useState<Moment | null>(moment());
-  const [assignmentSection, setAssignmentSection] = React.useState("0");
-  const [loading, setLoading] = React.useState(false);
-  const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
-  const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
+  const [open, setOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [extFiles, setExtFiles] = useState<ExtFile[]>([]);
+  const [collapseOpen, setCollapseOpen] = useState(true);
+  const [submissionTimeCollapseOpen, setSubmissionTimeCollapseOpen] = useState(false);
+  const [submissionTypeCollapseOpen, setSubmissionTypeCollapseOpen] = useState(false);
 
-  function handleClick() {
+  const [textSubmission, setTextSubmission] = useState<boolean>(false);
+  const [fileSubmission, setFileSubmission] = useState<boolean>(true);
+  const [allowSubmissionAfterEndTime, setAllowSubmissionAfterEndTime] = useState<boolean>(true);
+
+  const { courseId } = useParams<{ courseId: string }>();
+
+  const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextSubmission(event.target.checked);
+  };
+
+  const handleFileSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFileSubmission(event.target.checked);
+  };
+
+  useEffect(() => {
+    if (i18n.language !== currentLang && errors?.name) {
+      trigger();
+      setCurrentLang(i18n.language);
+    }
+  }, [i18n.language]);
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      name: yup.string().required("assignment_name_required"),
+      intro: yup.string(),
+      activity: yup.string(),
+      maxScore: yup.number().required("assignment_management_max_score_required"),
+      timeOpen: yup.string().required("assignment_management_allow_submission_from_date_required"),
+      timeClose: yup.string().required("assignment_management_submission_due_date_required"),
+      wordLimit: yup
+        .string()
+        .test("wordLimit", "assignment_management_limit_word_required", (value) => {
+          if (textSubmission && value === "" && value === null) {
+            return false;
+          }
+          return true;
+        }),
+      maxUploadedFile: yup.string().required("assignment_management_max_uploaded_file_required"),
+      maxFileSize: yup.string().required("assignment_management_max_file_size_required")
+    });
+  }, [t]);
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    trigger,
+    setValue
+  } = useForm<IFormDataType>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      intro: "",
+      activity: "",
+      maxScore: 100,
+      timeOpen: moment.utc().add(0, "days").toISOString(),
+      timeClose: moment.utc().add(7, "days").toISOString(),
+      wordLimit: "",
+      maxUploadedFile: "20",
+      maxFileSize: "40000"
+    }
+  });
+
+  const createIntroAttachment = useCallback(
+    async (introAttachment: CreateIntroAttachmentCommand) => {
+      try {
+        const response = await AssignmentService.createIntroAttachment(introAttachment);
+        if (response) {
+          console.log("Create intro attachment successfully");
+          return response;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return null;
+    },
+    []
+  );
+
+  const updateIntroAttachment = useCallback(
+    async (introAttachment: CreateIntroAttachmentCommand, assignmentId: string) => {
+      try {
+        const response = await AssignmentService.updateIntroAttachment(
+          introAttachment,
+          assignmentId
+        );
+        if (response) {
+          console.log("Update intro attachment successfully");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    []
+  );
+
+  const createAssignment = useCallback(async (assignmentData: CreateAssignmentCommand) => {
+    try {
+      const response = await AssignmentService.createAssignment(assignmentData);
+      if (response) {
+        console.log("Create assignment successfully");
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  }, []);
+
+  const submitHandler = async (data: any) => {
     setLoading(true);
+    const formSubmittedData: IFormDataType = { ...data };
+    const {
+      name,
+      intro,
+      activity,
+      maxScore,
+      timeOpen,
+      timeClose,
+      wordLimit,
+      maxUploadedFile,
+      maxFileSize
+    } = formSubmittedData;
 
-    setTimeout(() => {
+    let introAttachments: CreateIntroAttachmentCommand[] = [];
+    let attachmentIdArray: string[] = [];
+
+    try {
+      for (const file of extFiles) {
+        const attachmentData = {
+          fileName: file.name || "",
+          fileUrl: file.downloadUrl || "",
+          fileSize: file.size || 0,
+          mimeType: file.type || "",
+          timeModified: new Date().toISOString()
+        };
+
+        const attachmentResponse = await createIntroAttachment(attachmentData);
+        if (attachmentResponse) {
+          introAttachments.push(attachmentData);
+          attachmentIdArray.push(attachmentResponse.id);
+        }
+      }
+
+      const assignmentResponse = await createAssignment({
+        courseId: courseId ?? "",
+        title: name,
+        intro,
+        activity,
+        wordLimit,
+        maxUploadFiles: maxUploadedFile,
+        maxFileSize,
+        maxScore,
+        timeOpen,
+        timeClose,
+        type: textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
+        visible: true,
+        allowSubmitLate: allowSubmissionAfterEndTime
+      });
+
+      if (assignmentResponse && introAttachments.length > 0) {
+        for (let i = 0; i < introAttachments.length; i++) {
+          const temp = {
+            ...introAttachments[i],
+            assignmentId: assignmentResponse.assignmentId
+          };
+          console.log("temp", temp);
+          await updateIntroAttachment(temp, attachmentIdArray[i]);
+        }
+      }
+    } catch (error) {
+      setOpenErrorSnackbar(true);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
+      setOpenSuccessSnackbar(true);
+      setTimeout(() => {
+        navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
+      }, 2000);
+    }
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
-  React.useEffect(() => {
+  useEffect(() => {
     if (width < 1080) {
       setOpen(false);
     } else {
@@ -83,25 +312,37 @@ export default function AssignmentCreated() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({ ref: headerRef });
 
-  const header2Ref = React.useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({
-    ref: header2Ref
-  });
+  const header2Ref = useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
+
+  const maxNumberOfUploadedFilesOptionsData = Array.from({ length: 20 }, (_, index) => ({
+    value: (index + 1).toString(),
+    label: (index + 1).toString()
+  }));
+
+  const maxBytesList = [
+    { value: "10", label: "10 KB" },
+    { value: "50", label: "50 KB" },
+    { value: "100", label: "100 KB" },
+    { value: "500", label: "500 KB" },
+    { value: "1000", label: "1 MB" },
+    { value: "2000", label: "2 MB" },
+    { value: "5000", label: "5 MB" },
+    { value: "10000", label: "10 MB" },
+    { value: "20000", label: "20 MB" },
+    { value: "40000", label: "40 MB" }
+  ];
+
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
-      <Box
-        sx={{
-          marginTop: `${headerHeight}px`
-        }}
-        className={classes.container}
-      >
+      <Box sx={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Container>
           <Toolbar className={classes.toolBar}>
             <Box id={classes.breadcumpWrapper}>
@@ -117,7 +358,9 @@ export default function AssignmentCreated() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.information)}
+                onClick={() =>
+                  navigate(routes.lecturer.course.information.replace(":courseId", courseId ?? ""))
+                }
               >
                 CS202 - Nhập môn lập trình
               </ParagraphSmall>
@@ -125,7 +368,9 @@ export default function AssignmentCreated() {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.assignment)}
+                onClick={() =>
+                  navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
+                }
                 translation-key='course_detail_assignment_list'
               >
                 {t("course_detail_assignment_list")}
@@ -138,190 +383,447 @@ export default function AssignmentCreated() {
                 {t("assignment_management_create_assignment")}
               </ParagraphSmall>
             </Box>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              edge='end'
-              onClick={handleDrawerOpen}
-              sx={{ ...(open && { display: "none" }) }}
-            >
-              <MenuIcon color='action' />
-            </IconButton>
           </Toolbar>
-          <Box
+          <form
             className={classes.mainContent}
-            sx={{
-              height: `calc(100% - ${header2Height}px)`,
+            style={{
+              height: `calc(100% - ${header2Height + headerHeight}px)`,
               marginTop: `${header2Height}px`
             }}
+            onSubmit={handleSubmit(submitHandler)}
           >
-            <Card>
-              <Box component='form' className={classes.formBody} autoComplete='off'>
-                <Heading1
-                  fontWeight={"500"}
-                  translation-key='assignment_management_create_assignment'
-                >
-                  {t("assignment_management_create_assignment")}
-                </Heading1>
-                <InputTextField
-                  type='text'
-                  title={t("common_assignment_name")}
-                  value={assignmentName}
-                  onChange={(e) => setAssignmentName(e.target.value)}
-                  placeholder={t("common_assignment_enter_name")}
-                  translation-key={["common_assignment_name", "common_assignment_enter_name"]}
-                />
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={3}>
-                    <TextTitle translation-key='common_assignment_description'>
-                      {t("common_assignment_description")}
-                    </TextTitle>
-                  </Grid>
-                  <Grid item xs={9} className={classes.textEditor}>
-                    <TextEditor value={assignmentDescription} onChange={setAssignmentDescription} />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={3}>
-                    <TextTitle translation-key='common_assignment_guide'>
-                      {t("common_assignment_guide")}
-                    </TextTitle>
-                  </Grid>
-                  <Grid item xs={9} className={classes.textEditor}>
-                    <TextEditor value={activityInstructions} onChange={setActivityInstructions} />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={3}>
-                    <TextTitle translation-key='asingment_management_attach_file'>
-                      {t("asingment_management_attach_file")}
-                    </TextTitle>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
-                  </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </Box>
-          {/* <Box className={classes.drawerBody}>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='course_lecturer_grading_assignment_type'>
-                {t("course_lecturer_grading_assignment_type")}
-              </TextTitle>
-              <ChipMultipleFilter
-                label=''
-                defaultChipList={["Tự luận", "Nộp tệp"]}
-                filterList={assignmentTypes}
-                onFilterListChangeHandler={setAssignmentTypes}
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='assignment_management_max_score'>
-                {t("assignment_management_max_score")}
-              </TextTitle>
-              <InputTextField
-                type='number'
-                value={assignmentMaximumGrade}
-                onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
-                placeholder='Nhập điểm tối đa'
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='asingment_management_allow_time'>
-                {t("asingment_management_allow_time")}
-              </TextTitle>
-              <CustomDateTimePicker
-                value={assignmentAllowSubmissionFromDate}
-                onHandleValueChange={(newValue) => {
-                  setAssignmentAllowSubmissionFromDate(newValue);
-                }}
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='asingment_management_deadline'>
-                {t("asingment_management_deadline")}
-              </TextTitle>
-              <CustomDateTimePicker
-                value={assignmentSubmissionDueDate}
-                onHandleValueChange={(newValue) => {
-                  setAssignmentSubmissionDueDate(newValue);
-                }}
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='common_filter_topic'>
-                {t("common_filter_topic")}
-              </TextTitle>
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={assignmentSection}
-                onHandleChange={(value) => setAssignmentSection(value)}
-                items={[
-                  {
-                    value: "0",
-                    label: "Chủ đề 1"
-                  },
-                  {
-                    value: "1",
-                    label: "Chủ đề 2"
-                  },
-                  {
-                    value: "2",
-                    label: "Chủ đề 3"
-                  }
-                ]}
-                backgroundColor='#D9E2ED'
-              />
-            </Box>
-            <Box className={classes.drawerFieldContainer}>
-              <TextTitle translation-key='asingment_management_possibility'>
-                {t("asingment_management_possibility")}
-              </TextTitle>
-              <BasicSelect
-                labelId='select-assignment-availability-label'
-                value={assignmentAvailability}
-                onHandleChange={(value) => setAssignmentAvailability(value)}
-                items={[
-                  {
-                    value: "0",
-                    label: t("asingment_management_possibility_show")
-                  },
-                  {
-                    value: "1",
-                    label: t("asingment_management_possibility_hind_can_not_access")
-                  },
-                  {
-                    value: "2",
-                    label: t("asingment_management_possibility_hide_can_access")
-                  }
-                ]}
-                backgroundColor='#D9E2ED'
-                translation-key={[
-                  "asingment_management_possibility_show",
-                  "asingment_management_possibility_hind_can_not_access",
-                  "asingment_management_possibility_hide_can_access"
-                ]}
-              />
-            </Box>
-            <LoadButton
-              btnType={BtnType.Outlined}
-              fullWidth
-              style={{ marginTop: "20px" }}
-              padding='10px'
-              loading={loading}
-              onClick={handleClick}
-              translation-key='assignment_management_create_assignment'
-            >
+            <Heading2 translation-key='assignment_management_create_assignment'>
               {t("assignment_management_create_assignment")}
-            </LoadButton>
-          </Box> */}
+            </Heading2>
+            <Box className={classes.generalInfo}>
+              <Box display='flex' alignItems='center' margin={1}>
+                {collapseOpen ? (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setCollapseOpen(!collapseOpen)}
+                  >
+                    <ExpandLessIcon style={{ fontSize: 30 }} />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setCollapseOpen(!collapseOpen)}
+                  >
+                    <NavigateNext style={{ fontSize: 30 }} />
+                  </IconButton>
+                )}
+                <Heading3 fontWeight={500} translation-key='common_general'>
+                  {t("common_general")}
+                </Heading3>
+              </Box>
+              <Collapse in={collapseOpen} timeout='auto' unmountOnExit>
+                <Box
+                  display='flex'
+                  flexDirection={"column"}
+                  alignItems='center'
+                  gap={2}
+                  marginLeft={3}
+                  marginBottom={2}
+                >
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='name'
+                    rules={{ required: true }}
+                    render={({ field: { ref, ...field } }) => (
+                      <InputTextFieldColumn
+                        titleAlignment='horizontal'
+                        error={Boolean(errors?.name)}
+                        errorMessage={errors.name?.message}
+                        title={t("common_assignment_name")}
+                        type='text'
+                        placeholder={t("common_assignment_enter_name")}
+                        titleRequired={true}
+                        translation-key={[
+                          "common_assignment_name",
+                          "common_assignment_enter_name",
+                          "assignment_name_required"
+                        ]}
+                        inputRef={ref}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <ParagraphSmall translation-key='common_assignment_description'>
+                        {t("common_assignment_description")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={9}
+                      className={classes.textEditor}
+                      translation-key='common_enter_description'
+                    >
+                      <Controller
+                        control={control}
+                        name='intro'
+                        render={({ field }) => (
+                          <TextEditor
+                            openDialog
+                            roundedBorder
+                            placeholder={t("common_enter_description") + "..."}
+                            onChange={field.onChange}
+                            value={field.value || ""} // use empty string as default value when field.value is null
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <ParagraphSmall translation-key='common_assignment_guide'>
+                        {t("common_assignment_guide")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={9}
+                      className={classes.textEditor}
+                      translation-key='common_enter_guideline'
+                    >
+                      <Controller
+                        control={control}
+                        name='activity'
+                        render={({ field }) => (
+                          <TextEditor
+                            openDialog
+                            roundedBorder
+                            placeholder={t("common_enter_guideline") + "..."}
+                            {...field}
+                            value={field.value || ""} // use empty string as default value when field.value is null
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <ParagraphSmall translation-key='asingment_management_attach_file'>
+                        {t("asingment_management_attach_file")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Collapse>
+            </Box>
+            <Divider />
+            <Box className={classes.submissionTime}>
+              <Box display='flex' alignItems='center' margin={1}>
+                {submissionTimeCollapseOpen ? (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setSubmissionTimeCollapseOpen(!submissionTimeCollapseOpen)}
+                  >
+                    <ExpandLessIcon style={{ fontSize: 30 }} />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setSubmissionTimeCollapseOpen(!submissionTimeCollapseOpen)}
+                  >
+                    <NavigateNext style={{ fontSize: 30 }} />
+                  </IconButton>
+                )}
+                <Heading3 translation-key='common_time_setting' fontWeight={500}>
+                  {t("common_time_setting")}
+                </Heading3>
+              </Box>
+              <Collapse in={submissionTimeCollapseOpen} timeout='auto' unmountOnExit>
+                <Box
+                  display='flex'
+                  flexDirection={"column"}
+                  alignItems='center'
+                  gap={2}
+                  marginLeft={3}
+                  marginBottom={2}
+                >
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <ParagraphSmall translation-key='asingment_management_allow_time'>
+                        {t("asingment_management_allow_time")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Controller
+                        control={control}
+                        name='timeOpen'
+                        rules={{ required: true }}
+                        render={({ field: { ref, ...field } }) => (
+                          <CustomDateTimePicker
+                            value={moment(field.value)}
+                            onHandleValueChange={(newValue) => {
+                              if (newValue) {
+                                setValue("timeOpen", newValue.toISOString());
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}>
+                      <ParagraphSmall translation-key='asingment_management_deadline'>
+                        {t("asingment_management_deadline")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Controller
+                        control={control}
+                        name='timeClose'
+                        rules={{ required: true }}
+                        render={({ field: { ref, ...field } }) => (
+                          <CustomDateTimePicker
+                            value={moment(field.value)}
+                            onHandleValueChange={(newValue) => {
+                              if (newValue) {
+                                setValue("timeClose", newValue.toISOString());
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={1} columns={12}>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={9}>
+                      <FormGroup style={{ flexDirection: "row" }}>
+                        <FormControlLabel
+                          translation-key='common_allow_submission_after_end_time'
+                          control={
+                            <Checkbox
+                              checked={allowSubmissionAfterEndTime}
+                              onChange={(e) => setAllowSubmissionAfterEndTime(e.target.checked)}
+                              name='textSubmission'
+                            />
+                          }
+                          label={t("common_allow_submission_after_end_time")}
+                        />
+                      </FormGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Collapse>
+            </Box>
+            <Divider />
+            <Box className={classes.submissionType}>
+              <Box display='flex' alignItems='center' margin={1}>
+                {submissionTypeCollapseOpen ? (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setSubmissionTypeCollapseOpen(!submissionTypeCollapseOpen)}
+                  >
+                    <ExpandLessIcon style={{ fontSize: 30 }} />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    onClick={() => setSubmissionTypeCollapseOpen(!submissionTypeCollapseOpen)}
+                  >
+                    <NavigateNext style={{ fontSize: 30 }} />
+                  </IconButton>
+                )}
+                <Heading3 translation-key='common_submission_type' fontWeight={500}>
+                  {t("common_submission_type")}
+                </Heading3>
+              </Box>
+              <Collapse in={submissionTypeCollapseOpen} timeout='auto' unmountOnExit>
+                <Box
+                  display='flex'
+                  flexDirection={"column"}
+                  gap={2}
+                  marginLeft={3}
+                  marginBottom={2}
+                >
+                  <Grid container>
+                    <Grid item xs={3} alignContent={"center"}>
+                      <ParagraphSmall translation-key='common_submission_type'>
+                        {t("common_submission_type")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <FormGroup style={{ flexDirection: "row" }}>
+                        <FormControlLabel
+                          translation-key='common_submission_type_online_text'
+                          control={
+                            <Checkbox
+                              checked={textSubmission}
+                              onChange={handleTextSubmissionChange}
+                              name='textSubmission'
+                            />
+                          }
+                          label={t("common_submission_type_online_text")}
+                        />
+                        <FormControlLabel
+                          translation-key='common_submission_type_file'
+                          control={
+                            <Checkbox
+                              checked={fileSubmission}
+                              onChange={handleFileSubmissionChange}
+                              name='fileSubmission'
+                            />
+                          }
+                          label={t("common_submission_type_file")}
+                        />
+                      </FormGroup>
+                    </Grid>
+                  </Grid>
+                  {textSubmission && (
+                    <Controller
+                      control={control}
+                      name='wordLimit'
+                      render={({ field }) => (
+                        <InputTextFieldColumn
+                          translation-key='common_enter_word_limit'
+                          widthInput='200px'
+                          titleAlignment='horizontal'
+                          title={t("common_word_limit")}
+                          type='number'
+                          placeholder={t("common_enter_word_limit")}
+                          {...field}
+                          value={field.value || ""} // use empty string as default value when field.value is null
+                        />
+                      )}
+                    />
+                  )}
+                  {fileSubmission && (
+                    <Grid container>
+                      <Grid item xs={3} alignContent={"center"}>
+                        <ParagraphSmall translation-key='common_max_upload_file'>
+                          {t("common_max_upload_file")}
+                        </ParagraphSmall>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Controller
+                          control={control}
+                          defaultValue='40000'
+                          name='maxUploadedFile'
+                          render={({ field: { onChange, value } }) => (
+                            <BasicSelect
+                              labelId='maxUploadedFile'
+                              width='50px'
+                              borderRadius='12px'
+                              title='Max number of uploaded files'
+                              onHandleChange={onChange}
+                              value={value}
+                              items={maxNumberOfUploadedFilesOptionsData}
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+                  {fileSubmission && (
+                    <Grid container>
+                      <Grid item xs={3} alignContent={"center"}>
+                        <ParagraphSmall translation-key='common_max_submission_file_size'>
+                          {t("common_max_submission_file_size")}
+                        </ParagraphSmall>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Controller
+                          control={control}
+                          name='maxFileSize'
+                          render={({ field: { onChange, value } }) => (
+                            <BasicSelect
+                              labelId='maxFileSize'
+                              width='50px'
+                              borderRadius='12px'
+                              title='Maximum submission size'
+                              value={value}
+                              onHandleChange={onChange}
+                              items={maxBytesList}
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+                  <Controller
+                    control={control}
+                    name='maxScore'
+                    render={({ field }) => (
+                      <InputTextFieldColumn
+                        widthInput='200px'
+                        titleAlignment='horizontal'
+                        title={t("assignment_management_max_score")}
+                        type='number'
+                        placeholder='Nhập điểm tối đa'
+                        error={Boolean(errors.maxScore)}
+                        errorMessage={errors.maxScore?.message}
+                        {...field}
+                      />
+                    )}
+                  />
+                </Box>
+              </Collapse>
+            </Box>
+            <Divider />
+            <Box className={classes.action}>
+              <Box display='flex' justifyContent='center' gap={2}>
+                <LoadButton
+                  variant='contained'
+                  loading={loading}
+                  type='submit'
+                  translation-key='common_save'
+                >
+                  {t("common_save")}
+                </LoadButton>
+                <Button
+                  type='button'
+                  color='inherit'
+                  onClick={() => navigate(routes.lecturer.course.assignment)}
+                  translation-key='common_cancel'
+                >
+                  {t("common_cancel")}
+                </Button>
+              </Box>
+            </Box>
+          </form>
         </Container>
       </Box>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        open={openSuccessSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccessSnackbar(false)}
+      >
+        <Alert
+          severity='success'
+          sx={{ width: "100%" }}
+          onClose={() => setOpenSuccessSnackbar(false)}
+        >
+          Tạo bài tập thành công
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        open={openErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenErrorSnackbar(false)}
+      >
+        <Alert severity='error' sx={{ width: "100%" }} onClose={() => setOpenErrorSnackbar(false)}>
+          Tạo bài tập thất bại
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }
