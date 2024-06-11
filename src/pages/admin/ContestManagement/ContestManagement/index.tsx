@@ -407,7 +407,7 @@ const ContestManagement = () => {
             </Heading1>
           </Grid>
           <Grid item xs={12}>
-            <CustomSearchFeatureBar
+            {/* <CustomSearchFeatureBar
               isLoading={contestState.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
@@ -445,12 +445,12 @@ const ContestManagement = () => {
               }
               currentFilterKey='Status'
               currentFilterValue={contestStatusFilter}
-              handleFilterValueChange={(value) => {
+              handleFilterValueChange={(value:any) => {
                 setContestStatusFilter(value as ContestStartTimeFilterEnum);
               }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12}>
             {/* #F5F9FB */}

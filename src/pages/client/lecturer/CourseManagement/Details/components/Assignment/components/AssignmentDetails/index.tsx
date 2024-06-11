@@ -30,6 +30,7 @@ import { useEffect } from "react";
 import images from "config/images";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import { setAmountStudent } from "reduxes/courseService/courseUser";
+import TextEditor from "components/editor/TextEditor";
 
 const LecturerCourseAssignmentDetails = () => {
   const { t } = useTranslation();

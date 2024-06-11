@@ -29,6 +29,7 @@ interface BasicSelectProps extends DefaultComponentProps<FormControlTypeMap<{}, 
   backgroundColor?: string;
   searchAble?: boolean;
   width?: string;
+  borderRadius?: string;
 }
 
 const BasicSelect = ({
@@ -42,6 +43,8 @@ const BasicSelect = ({
   readOnly,
   backgroundColor,
   width,
+  borderRadius,
+
   ...props
 }: BasicSelectProps) => {
   var defaultValue: ItemProps | null = null;
@@ -66,7 +69,8 @@ const BasicSelect = ({
       ) : (
         <Select
           style={{
-            backgroundColor: backgroundColor || "white"
+            backgroundColor: backgroundColor || "white",
+            borderRadius: borderRadius || 0
           }}
           labelId={labelId}
           id='select-id'

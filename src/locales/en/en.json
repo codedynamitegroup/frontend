@@ -470,7 +470,28 @@
   "course_lecturer_submission_online_text": "Online text submission",
   "course_lecturer_submission_file": "File submission",
 
+  "assignment_name_required": "Assignment name is required",
+  "assignment_start_time_required": "Start time is required",
+  "assignment_end_time_required": "End time is required",
+  "assignment_max_grade_required": "Max grade is required",
+  "assignment_create_success": "Create assignment successfully",
+
   "no_data": "No data",
+
+  "common_general": "General",
+  "common_time_setting": "Time setting",
+  "common_submission_type": "Submission types",
+  "common_enter_description": "Enter description",
+  "common_enter_guideline": "Enter guideline",
+  "common_enter_word_limit": "Enter number of words",
+
+  "common_allow_submission_after_end_time": "Allow submission after end time",
+
+  "common_submission_type_online_text": "Online text",
+  "common_submission_type_file": "File submissions",
+  "common_word_limit": "Word limit",
+  "common_max_upload_file": "Maximum number of uploaded files",
+  "common_max_submission_file_size": "Maximum submission size",
 
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",

@@ -2,6 +2,7 @@ import { Grid, OutlinedInput, OutlinedInputProps } from "@mui/material";
 import { memo } from "react";
 import ErrorMessage from "components/text/ErrorMessage";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 interface InputsProps extends OutlinedInputProps {
   title?: string;
@@ -24,6 +25,8 @@ interface InputsProps extends OutlinedInputProps {
   fontFamily?: string;
   fontSize?: string;
   fontWeight?: string;
+  titleAlignment?: "horizontal" | "vertical";
+  widthInput?: string;
 }
 
 const InputTextFieldColumn = memo((props: InputsProps) => {
@@ -46,49 +49,91 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
     titleRequired,
     fontFamily,
     fontSize,
-    fontWeight
+    fontWeight,
+    titleAlignment = "vertical",
+    widthInput
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
     <>
       <Grid container>
-        <Grid item xs={12}>
-          {title && (
-            <TitleWithInfoTip
-              title={title}
-              titleRequired={titleRequired}
-              tooltipDescription={tooltipDescription}
-            />
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          <OutlinedInput
-            placeholder={placeholder}
-            fullWidth
-            size='small'
-            readOnly={readOnly}
-            disabled={disabled}
-            name={name}
-            type={type}
-            error={error}
-            style={{
-              backgroundColor: backgroundColor || "white"
-            }}
-            defaultValue={defaultValue}
-            value={value}
-            autoComplete={autoComplete}
-            onChange={onChange}
-            {...inputProps}
-            inputRef={inputRef}
-            sx={{
-              borderRadius: "12px",
-              fontFamily: fontFamily || "Roboto,sans-serif",
-              fontSize: fontSize || "14px",
-              fontWeight: fontWeight || "400",
-              boxShadow: "0px 1px 2px 0px rgba(21, 21, 21, 0.08)"
-            }}
-          />
-        </Grid>
+        {titleAlignment === "vertical" ? (
+          <>
+            <Grid item xs={12}>
+              {title && (
+                <TitleWithInfoTip
+                  title={title}
+                  titleRequired={titleRequired}
+                  tooltipDescription={tooltipDescription}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <OutlinedInput
+                placeholder={placeholder}
+                fullWidth
+                size='small'
+                readOnly={readOnly}
+                disabled={disabled}
+                name={name}
+                type={type}
+                error={error}
+                style={{
+                  backgroundColor: backgroundColor || "white"
+                }}
+                defaultValue={defaultValue}
+                value={value}
+                autoComplete={autoComplete}
+                onChange={onChange}
+                {...inputProps}
+                inputRef={inputRef}
+                sx={{
+                  borderRadius: "12px",
+                  fontFamily: fontFamily || "Roboto,sans-serif",
+                  fontSize: fontSize || "14px",
+                  fontWeight: fontWeight || "400",
+                  boxShadow: "0px 1px 2px 0px rgba(21, 21, 21, 0.08)",
+                  width: widthInput || "100%"
+                }}
+              />
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item xs={3} alignContent={"center"}>
+              {title && <ParagraphSmall>{title}</ParagraphSmall>}
+            </Grid>
+            <Grid item xs={9}>
+              <OutlinedInput
+                placeholder={placeholder}
+                fullWidth
+                size='small'
+                readOnly={readOnly}
+                disabled={disabled}
+                name={name}
+                type={type}
+                error={error}
+                style={{
+                  backgroundColor: backgroundColor || "white"
+                }}
+                defaultValue={defaultValue}
+                value={value}
+                autoComplete={autoComplete}
+                onChange={onChange}
+                {...inputProps}
+                inputRef={inputRef}
+                sx={{
+                  borderRadius: "12px",
+                  fontFamily: fontFamily || "Roboto,sans-serif",
+                  fontSize: fontSize || "14px",
+                  fontWeight: fontWeight || "400",
+                  boxShadow: "0px 1px 2px 0px rgba(21, 21, 21, 0.08)",
+                  width: widthInput || "100%"
+                }}
+              />
+            </Grid>
+          </>
+        )}
         <Grid item xs={title ? 12 : 0} md={0}>
           <></>
         </Grid>

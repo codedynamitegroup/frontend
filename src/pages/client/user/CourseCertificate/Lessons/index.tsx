@@ -571,7 +571,7 @@ export default function Lessons() {
                         ? chapter.resources.some(
                             (resource) => resource.chapterResourceId === lessonId
                           )
-                          ? "var(--gray-3)"
+                          ? "#FBFBFB"
                           : "white"
                         : "white"
                     }`

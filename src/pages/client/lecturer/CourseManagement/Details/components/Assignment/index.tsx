@@ -61,7 +61,7 @@ const LecturerCourseAssignment = () => {
   const navigate = useNavigate();
 
   const onCreateNewAssignment = async (popupState: any) => {
-    navigate(routes.lecturer.assignment.create);
+    navigate(routes.lecturer.assignment.create.replace(":courseId", courseId?.toString() ?? ""));
     popupState.close();
   };
 
