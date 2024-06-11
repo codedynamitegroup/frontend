@@ -19,6 +19,9 @@ import * as yup from "yup";
 import classes from "./styles.module.scss";
 import JoyButton from "@mui/joy/Button";
 import ErrorMessage from "components/text/ErrorMessage";
+import { AppDispatch } from "store";
+import { useDispatch } from "react-redux";
+import { setErrorMess } from "reduxes/AppStatus";
 
 interface IFormDataType {
   isNoEndTime: boolean;
@@ -35,6 +38,7 @@ const CreateContest = () => {
   const [type, setType] = useState<AlertType>(AlertType.INFO);
   const [content, setContent] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const schema = useMemo(() => {
     return yup.object().shape({
       isNoEndTime: yup.boolean().required(t("contest_is_no_end_time_required")),
@@ -117,9 +121,7 @@ const CreateContest = () => {
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
-          setOpenSnackbarAlert(true);
-          setType(AlertType.Error);
-          setContent("Please authenticate");
+          dispatch(setErrorMess("Please sign in to continue"));
         }
         setSubmitLoading(false);
       }
