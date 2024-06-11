@@ -199,7 +199,7 @@ export const routes = {
     homepage: {
       root: "/admin/*"
     },
-    dashboard: "/admin",
+    dashboard: "/admin/dashboard",
     information: "/admin/information",
     contest: {
       root: "/admin/contests",
@@ -212,6 +212,14 @@ export const routes = {
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
       create: "/admin/contests/create"
+    },
+    users: {
+      root: "/admin/users",
+      edit: {
+        root: "/admin/users/edit/:contestId/*",
+        details: "/admin/users/edit/:contestId/details"
+      },
+      create: "/admin/users/create"
     }
   },
   grading_pdf: "/grading-pdf"
