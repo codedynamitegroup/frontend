@@ -19,7 +19,8 @@ export const API = {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
       UPDATE_BY_ID: "/core/chapters/:id",
-      DELETE_BY_ID: "/core/chapters/:id"
+      DELETE_BY_ID: "/core/chapters/:id",
+      MARK_VIEWED_BY_CHAPTER_RESOURCE_ID: "/core/chapters/chapter-resource-users/:id"
     },
     CONTEST: {
       DEFAULT: "/core/contests",

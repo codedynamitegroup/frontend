@@ -37,7 +37,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { setErrorMess } from "reduxes/AppStatus";
-import { setChapters } from "reduxes/coreService/Chapter";
+import { markChapterResourceAsViewed, setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
 import { ChapterService } from "services/coreService/ChapterService";
 import { AppDispatch, RootState } from "store";
@@ -47,6 +47,7 @@ import YouTubeVideo from "./components/YoutubeVideo";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import ReactQuill from "react-quill";
+import { ChapterResourceService } from "services/coreService/ChapterResourceService";
 
 const drawerWidth = 300;
 
@@ -199,6 +200,26 @@ export default function Lessons() {
     [dispatch, navigate, t]
   );
 
+  const handleMarkViewedChapterResourceById = useCallback(async () => {
+    if (
+      currentLesson &&
+      currentLesson.resourceType !== ResourceTypeEnum.CODE &&
+      currentLesson.isCompleted !== true
+    ) {
+      try {
+        await ChapterResourceService.markViewedChapterResource(currentLesson.chapterResourceId);
+        dispatch(
+          markChapterResourceAsViewed({
+            chapterId: currentLesson?.chapterId || "",
+            lessonId: currentLesson?.chapterResourceId || ""
+          })
+        );
+      } catch (error: any) {
+        //do nothing
+      }
+    }
+  }, [currentLesson, dispatch]);
+
   const isPreviousButtonDisabled = useMemo(() => {
     for (let i = 0; i < chapterState.chapters.length; i++) {
       if (chapterState.chapters[i].resources && chapterState.chapters[i].resources.length > 0) {
@@ -294,7 +315,7 @@ export default function Lessons() {
         <AppBar
           position='fixed'
           sx={{
-            top: `${headerHeight + 1}px`,
+            top: `${header2Height + 1}px`,
             backgroundColor: "white",
             boxShadow: "0px 2px 4px #00000026"
           }}
@@ -330,6 +351,8 @@ export default function Lessons() {
                 />
               }
               onClick={() => {
+                handleMarkViewedChapterResourceById();
+
                 for (let i = 0; i < chapterState.chapters.length; i++) {
                   if (
                     chapterState.chapters[i].resources &&
@@ -409,6 +432,8 @@ export default function Lessons() {
                 />
               }
               onClick={() => {
+                handleMarkViewedChapterResourceById();
+
                 for (let i = 0; i < chapterState.chapters.length; i++) {
                   if (
                     chapterState.chapters[i].resources &&
@@ -570,7 +595,12 @@ export default function Lessons() {
                       value={lessonId}
                       exclusive
                       onChange={(e, value) => {
-                        if (value) {
+                        if (
+                          value !== null &&
+                          value !== undefined &&
+                          value !== currentLesson.chapterResourceId
+                        ) {
+                          handleMarkViewedChapterResourceById();
                           const url =
                             chapter.resources.find(
                               (resource) => resource.chapterResourceId === value
