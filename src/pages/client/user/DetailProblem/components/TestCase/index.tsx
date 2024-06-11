@@ -61,6 +61,7 @@ export default function TestCase() {
         <Stack direction={"row"} spacing={1} alignItems={"center"}>
           {testCases.map((_, index) => (
             <Chip
+              key={index}
               sx={{ border: focusTestCase === index ? 1 : 0 }}
               label={`Case ${index + 1}`}
               onDelete={() => handleDeleteTestCase(index)}

@@ -26,6 +26,7 @@ import { TagService } from "services/codeAssessmentService/TagService";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
 import useAuth from "hooks/useAuth";
+import Heading2 from "components/text/Heading2";
 
 const ListProblem = () => {
   const auth = useAuth();
@@ -114,7 +115,7 @@ const ListProblem = () => {
                     {!algorithmTag.isLoading && (
                       <>
                         {algorithmTag.tagList.map(
-                          (algorithm, index) =>
+                          (algorithm: any, index) =>
                             algorithm.isChoosen && (
                               <Chip
                                 key={index}
@@ -125,7 +126,7 @@ const ListProblem = () => {
                                 sx={{
                                   border: 1,
                                   padding: "15px 8px",
-                                  backgroundColor: "#C7D6EA",
+                                  backgroundColor: "var(--gray-3)",
                                   fontFamily: "Montserrat"
                                 }}
                                 // label={algorithm.numOfCodeQuestion}
@@ -155,7 +156,7 @@ const ListProblem = () => {
                                 }}
                                 sx={{
                                   padding: "15px 8px",
-                                  backgroundColor: "var(--blue-50)",
+                                  backgroundColor: "var(--gray-2)",
                                   fontFamily: "Montserrat"
                                 }}
                                 // label={algorithm.numOfCodeQuestion}
@@ -193,9 +194,9 @@ const ListProblem = () => {
                   >
                     <RecommendedProblem />
                   </Box>
-                  <Heading1>Problem list</Heading1>
+                  <Heading1 translation-key='list_problem'>{t("list_problem")}</Heading1>
 
-                  <Stack direction={"row"} spacing={2} paddingY={2}>
+                  <Stack direction={"row"} spacing={2}>
                     <OutlinedInput
                       size='small'
                       fullWidth

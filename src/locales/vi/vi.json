@@ -1,4 +1,5 @@
 {
+  "common_please_login": "Vui lòng đăng nhập",
   "common_easy": "Dễ",
   "common_medium": "Trung bình",
   "common_hard": "Khó",
@@ -153,7 +154,7 @@
   "register_certificate_course_success": "Đăng ký khóa học chứng chỉ {{courseName}} thành công",
   "register_certificate_course_fail": "Đăng ký khóa học chứng chỉ {{courseName}} thất bại",
   "common_view_this_course": "Xem khóa học này",
-  "home_learn_to_code": "Ngôn ngữ lập trình",
+  "home_learn_to_code": "Học lập trình",
   "home_data_structures_and_algorithms": "Cấu trúc dữ liệu và giải thuật",
   "common_all_courses_catalog": "Tất cả khoá học",
   "common_loading_search": "Đang tìm kiếm...",
@@ -327,6 +328,7 @@
   "certificate_detail_continue_button": "Tiếp tục học",
   "certificate_detail_lesson_title": "Các bài học ở khóa học",
   "certificate_detail_certification_title": "Chứng chỉ khóa học",
+  "certificate_detail_certification_information": "Thông tin của khóa học",
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",
@@ -461,7 +463,28 @@
   "course_lecturer_submission_online_text": "Nội dung nộp",
   "course_lecturer_submission_file": "Tệp nộp",
 
+  "assignment_name_required": "Tên bài tập không được để trống",
+  "assignment_start_time_required": "Thời gian bắt đầu không được để trống",
+  "assignment_end_time_required": "Thời gian kết thúc không được để trống",
+  "assignment_max_grade_required": "Điểm tối đa không được để trống",
+  "assignment_create_success": "Tạo bài tập thành công",
+
   "no_data": "Không có dữ liệu",
+
+  "common_general": "Tổng quát",
+  "common_time_setting": "Cài đặt thời gian",
+  "common_submission_type": "Loại bài nộp",
+  "common_enter_description": "Nhập mô tả",
+  "common_enter_guideline": "Nhập hướng dẫn",
+  "common_enter_word_limit": "Nhập số từ",
+
+  "common_allow_submission_after_end_time": "Cho phép nộp bài sau thời gian kết thúc",
+
+  "common_submission_type_online_text": "Văn bản",
+  "common_submission_type_file": "Tệp",
+  "common_word_limit": "Giới hạn từ",
+  "common_max_upload_file": "Số lượng tệp tối đa",
+  "common_max_submission_file_size": "Kích thước tệp tối đa",
 
   "assignment_management_max_score": "Điểm tối đa",
   "assignment_management_create_assignment": "Tạo bài tập",

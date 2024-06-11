@@ -41,7 +41,7 @@ export default function ForgotPassword() {
 
   const handleForgotPassword = (data: IFormData) => {
     setIsForgotPasswordLoading(true);
-    const redirectUrl = `${window.location.protocol}//${window.location.host}/frontend/#${routes.user.forgot_password.verify_otp}?email=${data.email}`;
+    const redirectUrl = `${window.location.protocol}//${window.location.host}/#${routes.user.forgot_password.verify_otp}?email=${data.email}`;
     UserService.forgotPassword(data.email, redirectUrl)
       .then(async (response) => {
         dispatch(

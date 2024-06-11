@@ -88,7 +88,7 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          background-color: var(--gray-4);
+          background-color: var(--gray-1);
           padding: 5px 10px;
         }
       }
@@ -119,17 +119,17 @@
         overflow: auto;
       }
       #tabWrapper {
-        background-color: var(--gray-4);
+        background-color: var(--gray-1);
         .tabs {
           & [class~="Mui-selected"] {
             & [class~="MuiTypography-root"] {
               font-weight: 700;
-              color: var(--blue-500);
+              color: var(--blue-3);
             }
           }
 
           & [class~="MuiTabs-indicator"] {
-            background-color: var(--blue-500);
+            background-color: var(--blue-3);
           }
         }
       }
