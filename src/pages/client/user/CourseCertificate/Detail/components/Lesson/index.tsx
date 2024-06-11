@@ -5,6 +5,7 @@ import LessonAccordion from "pages/client/user/CourseCertificate/Detail/componen
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { useTranslation } from "react-i18next";
+import Heading2 from "components/text/Heading2";
 
 const CourseCertificateLesson = ({ isRegistered }: { isRegistered: boolean }) => {
   const chapters = useSelector((state: RootState) => state.chapter.chapters);
@@ -12,9 +13,9 @@ const CourseCertificateLesson = ({ isRegistered }: { isRegistered: boolean }) =>
 
   return (
     <Box id={classes.certificateDetails}>
-      <Heading1 colorname='--blue-600' translate-key='certificate_detail_chapter_resources'>
+      <Heading2 colorname='--blue-500' translate-key='certificate_detail_chapter_resources'>
         {t("certificate_detail_chapter_resources")}
-      </Heading1>
+      </Heading2>
       {chapters.map((chapter, index) => (
         <LessonAccordion
           key={index}

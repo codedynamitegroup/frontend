@@ -220,7 +220,7 @@ const CourseCertificateDetail = () => {
           <Grid item xs={12} md={12} id={classes.rightBody}>
             <Box id={classes.breadcumpWrapper}>
               <ParagraphSmall
-                colorname='--blue-500'
+                colorname='--blue-3'
                 className={classes.cursorPointer}
                 onClick={() => navigate(routes.user.course_certificate.root)}
                 translation-key='certificate_detail_breadcrump'
@@ -228,11 +228,8 @@ const CourseCertificateDetail = () => {
                 {t("certificate_detail_breadcrump")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>
-                {certificateCourseDetails.name}
-              </ParagraphSmall>
+              <ParagraphSmall colorname='--blue-3'>{certificateCourseDetails.name}</ParagraphSmall>
             </Box>
-            <Divider />
             <Box id={classes.courseInfoWrapper}>
               <Box id={classes.courseTitle}>
                 <Box className={classes.imgCourseRecommend}>
@@ -400,7 +397,7 @@ const CourseCertificateDetail = () => {
                   </Tooltip>
                 </Grid>
               </Grid>
-              <Box sx={{ border: 1, borderColor: "divider" }}>
+              <Box sx={{ border: "1px solid var(--gray-10)" }}>
                 <Tabs
                   value={activeTab}
                   onChange={handleChange}
