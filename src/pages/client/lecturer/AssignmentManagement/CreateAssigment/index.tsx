@@ -68,6 +68,7 @@ import { useParams } from "react-router-dom";
 import { co, ex } from "@fullcalendar/core/internal-common";
 import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
 import CloseIcon from "@mui/icons-material/Close";
+import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 
 interface FormData {
   name: string;
@@ -87,26 +88,6 @@ interface IFormDataType {
   maxFileSize: string;
 }
 
-const extFileSchema = yup.object().shape({
-  id: yup.mixed().required(),
-  file: yup.mixed(),
-  name: yup.string(),
-  type: yup.string(),
-  size: yup.number(),
-  valid: yup.boolean(),
-  errors: yup.array().of(yup.string()),
-  uploadStatus: yup.mixed<UPLOADSTATUS>(),
-  uploadMessage: yup.string(),
-  imageUrl: yup.string(),
-  xhr: yup.mixed(),
-  progress: yup.number(),
-  extraUploadData: yup.object(),
-  extraData: yup.object(),
-  serverResponse: yup.mixed<ServerResponse>(),
-  videoUrl: yup.string(),
-  uploadUrl: yup.string()
-});
-
 export default function AssignmentCreated() {
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(() => {
@@ -125,8 +106,9 @@ export default function AssignmentCreated() {
   const [textSubmission, setTextSubmission] = useState<boolean>(false);
   const [fileSubmission, setFileSubmission] = useState<boolean>(true);
   const [allowSubmissionAfterEndTime, setAllowSubmissionAfterEndTime] = useState<boolean>(true);
+  const [assignment, setAssignment] = useState<AssignmentEntity | null>(null);
 
-  const { courseId } = useParams<{ courseId: string }>();
+  const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);
@@ -135,6 +117,23 @@ export default function AssignmentCreated() {
   const handleFileSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileSubmission(event.target.checked);
   };
+
+  const handleGetAssignmentDetails = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentById(id);
+      if (response) {
+        setAssignment(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (assignmentId) {
+      handleGetAssignmentDetails(assignmentId);
+    }
+  });
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.name) {
@@ -151,14 +150,7 @@ export default function AssignmentCreated() {
       maxScore: yup.number().required("assignment_management_max_score_required"),
       timeOpen: yup.string().required("assignment_management_allow_submission_from_date_required"),
       timeClose: yup.string().required("assignment_management_submission_due_date_required"),
-      wordLimit: yup
-        .string()
-        .test("wordLimit", "assignment_management_limit_word_required", (value) => {
-          if (textSubmission && value === "" && value === null) {
-            return false;
-          }
-          return true;
-        }),
+      wordLimit: yup.string(),
       maxUploadedFile: yup.string().required("assignment_management_max_uploaded_file_required"),
       maxFileSize: yup.string().required("assignment_management_max_file_size_required")
     });
@@ -303,6 +295,42 @@ export default function AssignmentCreated() {
       }, 2000);
     }
   };
+
+  useEffect(() => {
+    if (assignment) {
+      setValue("name", assignment.title);
+      setValue("intro", assignment.intro);
+      setValue("activity", assignment.activity);
+      setValue("maxScore", assignment.maxScore);
+      setValue(
+        "timeOpen",
+        assignment.timeOpen instanceof Date
+          ? assignment.timeOpen.toISOString()
+          : assignment.timeOpen
+      );
+      setValue(
+        "timeClose",
+        assignment.timeClose instanceof Date
+          ? assignment.timeClose.toISOString()
+          : assignment.timeClose
+      );
+      setValue("wordLimit", assignment.wordLimit);
+      setValue("maxUploadedFile", assignment.maxUploadFiles);
+      setValue("maxFileSize", assignment.maxFileSize);
+      setExtFiles(
+        assignment?.introAttachments.map((file) => {
+          return {
+            id: file.id,
+            name: file.fileName,
+            size: file.fileSize,
+            type: file.mimetype,
+            downloadUrl: file.fileUrl,
+            imageUrl: file.fileUrl
+          };
+        })
+      );
+    }
+  }, [assignment, setValue]);
 
   useEffect(() => {
     if (width < 1080) {
@@ -687,6 +715,8 @@ export default function AssignmentCreated() {
                         <InputTextFieldColumn
                           translation-key='common_enter_word_limit'
                           widthInput='200px'
+                          error={Boolean(errors?.wordLimit)}
+                          errorMessage={errors.wordLimit?.message}
                           titleAlignment='horizontal'
                           title={t("common_word_limit")}
                           type='number'

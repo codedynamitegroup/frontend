@@ -58,4 +58,34 @@ export class CourseService {
       });
     }
   }
+  static async getCourseDetail(courseId: string) {
+    try {
+      const response = await axios.get(
+        `${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}/${courseId}`
+      );
+    } catch (error: any) {
+      console.error("Failed to fetch course detail", error);
+      console.error("Failed to fetch sections by course id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async getCourseStatistics() {
+    try {
+      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.GET_STATISTICS}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch course detail", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

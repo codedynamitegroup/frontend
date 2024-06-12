@@ -14,6 +14,9 @@ import Lessons from "pages/client/user/CourseCertificate/Lessons";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
+const AssignmentUpdated = lazy(
+  () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
+);
 const AssignmentGrading = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/GradingAssignment")
 );
@@ -135,6 +138,7 @@ const router = createHashRouter(
 
         <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
         <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
+        <Route path={routes.lecturer.assignment.edit} element={<AssignmentUpdated />} />
         <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
         <Route
           path={routes.lecturer.exam.code_plagiarism_detection}

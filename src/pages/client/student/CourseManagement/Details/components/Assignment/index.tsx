@@ -86,6 +86,7 @@ const StudentCourseAssignment = () => {
               courseId={courseId}
               examId={assignment.id}
               resourceTitle={assignment.title}
+              resourceOpenDate={assignment.timeOpen}
               resourceEndedDate={assignment.timeClose}
               intro={assignment.intro}
               type={ResourceType.assignment}
@@ -99,6 +100,7 @@ const StudentCourseAssignment = () => {
               courseId={courseId}
               examId={exam.id}
               resourceTitle={exam.name}
+              resourceOpenDate={exam.timeOpen}
               resourceEndedDate={exam.timeClose}
               intro={exam.intro}
               type={ResourceType.exam}

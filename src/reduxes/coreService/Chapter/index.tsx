@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 
 interface InitialState {
   isLoading: boolean;
@@ -19,16 +20,24 @@ const chapterSlice = createSlice({
       state.chapters = action.payload.chapters;
     },
     markChapterResourceAsViewed: (state, action) => {
-      const chapterIndex = state.chapters.findIndex(
-        (chapter) => chapter.chapterId === action.payload.chapterId
-      );
-      const lessonIndex = state.chapters[chapterIndex].resources.findIndex(
-        (lesson) => lesson.chapterResourceId === action.payload.lessonId
-      );
+      let chapterIndex = -1;
+      let lessonIndex = -1;
+
+      for (let i = 0; i < state.chapters.length; i++) {
+        for (let j = 0; j < state.chapters[i].resources.length; j++) {
+          if (state.chapters[i].resources[j].chapterResourceId === action.payload.lessonId) {
+            chapterIndex = i;
+            lessonIndex = j;
+            break;
+          }
+        }
+      }
+
       if (
         chapterIndex !== -1 &&
         lessonIndex !== -1 &&
-        state.chapters[chapterIndex].resources[lessonIndex].isCompleted !== true
+        state.chapters[chapterIndex].resources[lessonIndex].isCompleted !== true &&
+        state.chapters[chapterIndex].resources[lessonIndex].resourceType !== ResourceTypeEnum.CODE
       ) {
         state.chapters[chapterIndex].resources[lessonIndex].isCompleted = true;
       }
