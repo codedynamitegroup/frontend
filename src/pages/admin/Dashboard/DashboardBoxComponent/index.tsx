@@ -24,7 +24,8 @@ const DasbboradBoxComponent = (props: PropsData) => {
           paddingRight: "0",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
+          boxShadow: "lg"
         }}
       >
         <Stack

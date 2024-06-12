@@ -50,6 +50,7 @@ import Checkbox from "@mui/joy/Checkbox";
 import Heading2 from "components/text/Heading2";
 import moment from "moment";
 import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
+import { Helmet } from "react-helmet";
 
 const drawerWidth = 370;
 
@@ -199,6 +200,8 @@ export default function TakeExam() {
   // get whole question list if storage is empty (first time load page)
   // start the timer
   React.useEffect(() => {
+    // exam litmit
+    // if(examData)
     if (questionList === undefined || questionList?.length <= 0 || examId !== storageExamID)
       ExamService.getExamQuestionById(examId ?? examData.id, null)
         .then((res) => {
@@ -361,6 +364,13 @@ export default function TakeExam() {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {t("exam_take_exam_title")}
+          {" | "}
+          {examData.name}
+        </title>
+      </Helmet>
       <Grid className={classes.root}>
         <Header ref={headerRef} />
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>

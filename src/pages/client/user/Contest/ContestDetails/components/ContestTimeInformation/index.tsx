@@ -170,13 +170,21 @@ const ContestTimeInformation = (props: PropsData) => {
                 </JoyButton>
               </span>
             </Tooltip>
-          ) : (
+          ) : status === ContestStartTimeFilterEnum.HAPPENING ? (
             <Heading1
               className={classes.currentJoinStatus}
               color={"var(--warning) !important"}
               translation-key='contest_detail_already_started_message'
             >
               {t("contest_detail_already_started_message")}
+            </Heading1>
+          ) : (
+            <Heading1
+              className={classes.currentJoinStatus}
+              color={"var(--orange-4) !important"}
+              translation-key='contest_detail_ended_message'
+            >
+              {t("contest_detail_ended_message")}
             </Heading1>
           ))
         )}

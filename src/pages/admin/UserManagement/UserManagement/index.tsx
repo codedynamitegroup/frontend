@@ -33,13 +33,26 @@ import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { setErrorMess } from "reduxes/AppStatus";
+import { User } from "models/authService/entity/user";
+import { UserService } from "services/authService/UserService";
 
-interface ContestManagementProps extends ContestEntity {
+interface UserManagementProps {
   id: string;
-  status: string;
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  avatarUrl: string;
+  address: string;
+  dob: Date;
+  lastLogin: Date;
+  isLinkedWithGoogle: boolean;
+  isLinkedWithMicrosoft: boolean;
+  createdAt: Date;
 }
 
-const ContestManagement = () => {
+const UserManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -47,6 +60,7 @@ const ContestManagement = () => {
   const [type, setType] = useState<AlertType>(AlertType.INFO);
   const [content, setContent] = useState("");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [userList, setUserList] = useState<User[]>([]);
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
@@ -58,27 +72,24 @@ const ContestManagement = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleGetContests = useCallback(
+  const handleGetUsers = useCallback(
     async ({
       searchName,
-      startTimeFilter = ContestStartTimeFilterEnum.ALL,
       pageNo = 0,
       pageSize = 10
     }: {
       searchName: string;
-      startTimeFilter: ContestStartTimeFilterEnum;
       pageNo?: number;
       pageSize?: number;
     }) => {
       dispatch(setLoading(true));
       try {
-        const getCertificateCoursesResponse = await ContestService.getContestsForAdmin({
+        const getUsersResponse = await UserService.getAllUser({
           searchName,
-          startTimeFilter,
           pageNo,
           pageSize
         });
-        dispatch(setContests(getCertificateCoursesResponse));
+        setUserList(getUsersResponse.users);
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -92,25 +103,25 @@ const ContestManagement = () => {
     [dispatch]
   );
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      handleGetContests({
-        searchName: value,
-        startTimeFilter: contestStatusFilter
-      });
-    },
-    [handleGetContests, contestStatusFilter]
-  );
+  // const handleSearchChange = useCallback(
+  //   (value: string) => {
+  //     handleGetContests({
+  //       searchName: value,
+  //       startTimeFilter: contestStatusFilter
+  //     });
+  //   },
+  //   [handleGetContests, contestStatusFilter]
+  // );
 
   const tableHeading: GridColDef[] = [
     {
-      field: "name",
-      headerName: t("common_name"),
+      field: "email",
+      headerName: "Email",
       flex: 1,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_name")}
+            Email
           </Heading5>
         );
       },
@@ -123,121 +134,55 @@ const ContestManagement = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <Avatar sx={{ bgcolor: grey[500] }} alt={params.row.name} src={params.row.thumbnailUrl}>
-              {params.row.name.charAt(0)}
+            <Avatar
+              sx={{ bgcolor: "var(--green-500)" }}
+              alt={params.row.email}
+              src={params.row.avatarUrl}
+            >
+              {params.row.firstName.charAt(0)}
             </Avatar>
             <ParagraphSmall width={"auto"} fontWeight={500}>
-              {params.row.name}
+              {params.row.email}
             </ParagraphSmall>
           </Stack>
         );
       }
     },
     {
-      field: "createdBy",
-      headerName: t("common_created_by"),
+      field: "fullname",
+      headerName: t("common_fullname"),
       flex: 1,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_created_by")}
+            {t("common_fullname")}
           </Heading5>
         );
       },
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {params.row.createdBy.firstName} {params.row.createdBy.lastName}
+            {params.row.firstName} {params.row.lastName}
           </ParagraphSmall>
         );
       }
     },
     {
-      field: "startTime",
-      headerName: t("common_start_time"),
+      field: "lastLogin",
+      headerName: t("common_last_login"),
       flex: 1,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_start_time")}
+            {t("common_last_login")}
           </Heading5>
         );
       },
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.startTime as string, currentLang)}
+            {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
           </ParagraphSmall>
-        );
-      }
-    },
-    {
-      field: "endTime",
-      headerName: t("common_end_time"),
-      flex: 1,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_end_time")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.endTime as string, currentLang)}
-          </ParagraphSmall>
-        );
-      }
-    },
-    {
-      field: "numOfParticipants",
-      headerName: t("common_num_of_participants"),
-      flex: 0.4,
-      minWidth: 100,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_num_of_participants")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.numOfParticipants}</ParagraphSmall>;
-      }
-    },
-    {
-      field: "status",
-      headerName: t("common_status"),
-      flex: 0.7,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_status")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <Chip
-            size='small'
-            label={
-              params.row.status === ContestStartTimeFilterEnum.UPCOMING
-                ? t("common_upcoming")
-                : params.row.status === ContestStartTimeFilterEnum.HAPPENING
-                  ? t("common_in_progress")
-                  : t("common_ended")
-            }
-            variant='outlined'
-            color={
-              params.row.status === ContestStartTimeFilterEnum.UPCOMING
-                ? "primary"
-                : params.row.status === ContestStartTimeFilterEnum.HAPPENING
-                  ? "success"
-                  : "error"
-            }
-            component={ParagraphSmall}
-          />
         );
       }
     },
@@ -282,42 +227,6 @@ const ContestManagement = () => {
     [contestState.contests]
   );
 
-  const contestList: ContestManagementProps[] = useMemo(
-    () =>
-      contestState.contests.contests.map((contest: any) => {
-        const status =
-          contest.startTime && moment().utc().isBefore(contest.startTime)
-            ? ContestStartTimeFilterEnum.UPCOMING
-            : contest.endTime && moment().utc().isAfter(contest.endTime)
-              ? ContestStartTimeFilterEnum.ENDED
-              : ContestStartTimeFilterEnum.HAPPENING;
-
-        return {
-          id: contest.contestId,
-          contestId: contest.contestId,
-          name: contest.name,
-          description: contest.description,
-          prizes: contest.prizes,
-          rules: contest.rules,
-          scoring: contest.scoring,
-          thumbnailUrl: contest.thumbnailUrl,
-          startTime: contest.startTime,
-          endTime: contest.endTime,
-          questions: contest.questions,
-          numOfParticipants: contest.numOfParticipants,
-          status,
-          isPublic: contest.isPublic,
-          isRestrictedForum: contest.isRestrictedForum,
-          isDisabledForum: contest.isDisabledForum,
-          createdBy: contest.createdBy,
-          createdAt: contest.createdAt,
-          updatedAt: contest.updatedAt,
-          updatedBy: contest.updatedBy
-        };
-      }),
-    [contestState.contests]
-  );
-
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
@@ -326,48 +235,69 @@ const ContestManagement = () => {
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     setPage(model.page);
     setPageSize(model.pageSize);
-    handleGetContests({
+    handleGetUsers({
       searchName: searchValue,
-      startTimeFilter: ContestStartTimeFilterEnum.ALL,
       pageNo: model.page,
       pageSize: model.pageSize
     });
   };
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
 
-  const handleApplyFilter = useCallback(() => {
-    handleGetContests({
-      searchName: searchValue,
-      startTimeFilter: contestStatusFilter
-    });
-  }, [handleGetContests, searchValue, contestStatusFilter]);
+  const userListTable: UserManagementProps[] = useMemo(
+    () =>
+      userList.map((user) => {
+        return {
+          id: user.userId,
+          userId: user.userId,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatarUrl: user.avatarUrl,
+          lastLogin: user.lastLogin,
+          phone: user.phone,
+          address: user.address,
+          dob: user.dob,
+          isLinkedWithGoogle: user.isLinkedWithGoogle,
+          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+          createdAt: user.createdAt
+        };
+      }),
+    [userList]
+  );
 
-  const handleCancelFilter = useCallback(() => {
-    setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
-    handleGetContests({
-      searchName: searchValue,
-      startTimeFilter: ContestStartTimeFilterEnum.ALL
-    });
-  }, [handleGetContests, searchValue]);
+  // const handleApplyFilter = useCallback(() => {
+  //   handleGetContests({
+  //     searchName: searchValue,
+  //     startTimeFilter: contestStatusFilter
+  //   });
+  // }, [handleGetContests, searchValue, contestStatusFilter]);
+
+  // const handleCancelFilter = useCallback(() => {
+  //   setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
+  //   handleGetContests({
+  //     searchName: searchValue,
+  //     startTimeFilter: ContestStartTimeFilterEnum.ALL
+  //   });
+  // }, [handleGetContests, searchValue]);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
   }, [i18next.language]);
 
   useEffect(() => {
-    const fetchContests = async () => {
+    const fetchUsers = async () => {
       dispatch(setInititalLoading(true));
-      await handleGetContests({
-        searchName: "",
-        startTimeFilter: ContestStartTimeFilterEnum.ALL
+      await handleGetUsers({
+        searchName: ""
       });
       dispatch(setInititalLoading(false));
     };
 
-    fetchContests();
-  }, [dispatch, handleGetContests]);
+    fetchUsers();
+  }, [dispatch, handleGetUsers]);
+
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
+  };
 
   return (
     <>
@@ -388,8 +318,8 @@ const ContestManagement = () => {
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
-              {t("contest_management_title")}
+            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
+              {t("user_detail_account_management")}
             </ParagraphSmall>
           </Box>
         </Box>
@@ -402,8 +332,8 @@ const ContestManagement = () => {
           }}
         >
           <Grid item xs={12}>
-            <Heading1 translate-key='contest_management_title'>
-              {t("contest_management_title")}
+            <Heading1 translate-key='user_detail_account_management'>
+              {t("user_detail_account_management")}
             </Heading1>
           </Grid>
           <Grid item xs={12}>
@@ -453,9 +383,10 @@ const ContestManagement = () => {
             /> */}
           </Grid>
           <Grid item xs={12}>
+            {/* #F5F9FB */}
             <CustomDataGrid
               loading={contestState.isLoading}
-              dataList={contestList}
+              dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
               dataGridToolBar={dataGridToolbar}
@@ -486,4 +417,4 @@ const ContestManagement = () => {
   );
 };
 
-export default ContestManagement;
+export default UserManagement;

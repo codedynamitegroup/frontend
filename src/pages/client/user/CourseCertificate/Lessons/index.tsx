@@ -151,9 +151,19 @@ export default function Lessons() {
   const handleGetChaptersByCertificateCourseId = useCallback(
     async (id: string) => {
       try {
-        const getChaptersByCertificateCourseIdResponse =
+        const getChaptersByCertificateCourseIdResponse: { chapters: ChapterEntity[] } =
           await ChapterService.getChaptersByCertificateCourseIdResponse(id);
-        dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
+        if (getChaptersByCertificateCourseIdResponse) {
+          const lesson = getChaptersByCertificateCourseIdResponse.chapters
+            .map((chapter) => chapter.resources)
+            .filter((resource) => resource !== undefined && resource.length > 0)
+            .flat()
+            .find((resource) => resource.chapterResourceId === lessonId);
+          if (lesson && lesson.resourceType !== ResourceTypeEnum.CODE && !lesson.isCompleted) {
+            await ChapterResourceService.markViewedChapterResource(lessonId as string);
+          }
+          dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
+        }
       } catch (error: any) {
         console.error("Failed to fetch chapters by certificate course id", {
           code: error.response?.code || 503,
@@ -163,7 +173,7 @@ export default function Lessons() {
         dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
-    [dispatch]
+    [dispatch, lessonId]
   );
 
   const handleGetCertificateCourseById = useCallback(
@@ -204,16 +214,11 @@ export default function Lessons() {
     if (
       currentLesson &&
       currentLesson.resourceType !== ResourceTypeEnum.CODE &&
-      currentLesson.isCompleted !== true
+      !currentLesson.isCompleted
     ) {
       try {
         await ChapterResourceService.markViewedChapterResource(currentLesson.chapterResourceId);
-        dispatch(
-          markChapterResourceAsViewed({
-            chapterId: currentLesson?.chapterId || "",
-            lessonId: currentLesson?.chapterResourceId || ""
-          })
-        );
+        dispatch(markChapterResourceAsViewed(currentLesson.chapterResourceId));
       } catch (error: any) {
         //do nothing
       }
@@ -566,7 +571,7 @@ export default function Lessons() {
                         ? chapter.resources.some(
                             (resource) => resource.chapterResourceId === lessonId
                           )
-                          ? "var(--gray-3)"
+                          ? "#FBFBFB"
                           : "white"
                         : "white"
                     }`

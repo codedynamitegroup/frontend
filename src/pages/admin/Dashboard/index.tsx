@@ -1,4 +1,4 @@
-import { Grid, Skeleton, Stack } from "@mui/material";
+import { Box, Grid, Skeleton, Stack, TableCell } from "@mui/material";
 import { useEffect, useState } from "react";
 import DasbboradBoxComponent from "./DashboardBoxComponent";
 import Tabs from "@mui/joy/Tabs";
@@ -6,26 +6,62 @@ import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import { useTranslation } from "react-i18next";
 import Heading3 from "components/text/Heading3";
-import { Button, Card } from "@mui/joy";
+import { Button, Card, Table } from "@mui/joy";
 import { UserService } from "services/authService/UserService";
 import Heading6 from "components/text/Heading6";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { LineChart, areaElementClasses, useDrawingArea, useYScale } from "@mui/x-charts";
 import ParagraphBody from "components/text/ParagraphBody";
 import ChartLengend from "./ChartLegend";
 import images from "config/images";
-import { ScaleLinear } from "d3";
 import useAuth from "hooks/useAuth";
-import { set } from "date-fns";
+import { CourseService } from "services/courseService/CourseService";
+import CustomLineChart from "components/common/chart/CustomLineChart";
+
+interface LineChartType {
+  data: number[];
+  label: string;
+  area: boolean;
+}
+interface PieChartType {
+  index: number;
+  value: number;
+  label: string;
+}
 
 interface UserStatistics {
   totalUsers: number;
   activeUsers: number;
   offlineUsers: number;
   loginToday: number;
-  registerUser: { data: number[]; label: string; area: boolean }[];
-  userByRole: { index: number; value: number; label: string }[];
+  registerUser: LineChartType[];
+  userByRole: PieChartType[];
 }
+interface CourseStatistics {
+  activeCourse: number;
+  activeInactiveCourse: PieChartType[];
+  courseType: PieChartType[];
+  inactiveCourse: number;
+  newCourses: undefined;
+  recentAssignments: {
+    courseId: string;
+    courseName: string;
+    createdAt: Date;
+    id: string;
+    title: string;
+    type: string;
+  }[];
+  recentExam: {
+    id: string;
+    courseId: string;
+    courseName: string;
+    examName: string;
+    createdAt: Date;
+  }[];
+  totalCourse: number;
+  totalEnrollments: number;
+  userEnrollments: LineChartType[];
+}
+
 const ROLE_PIE_CHART_COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
 const startGradientColor = "#1abc9c";
 const endGradientColor = "#16a085";
@@ -36,6 +72,8 @@ const AdminDashboard = () => {
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [dashboardTabValue, setDashboardTabValue] = useState(0);
   const [userRegisterChartRangeButtonState, setUserRegisterChartRangeButtonState] = useState(0);
+  const [courseEnrollmentChartRangeButtonState, setCourseEnrollmentChartRangeButtonState] =
+    useState(0);
   const tempDate = new Date();
   const tempMonth = tempDate.getMonth();
   const tempYear = tempDate.getFullYear();
@@ -46,6 +84,18 @@ const AdminDashboard = () => {
     loginToday: 0,
     registerUser: [],
     userByRole: []
+  });
+  const [courseStatistics, setCourseStatistics] = useState<CourseStatistics>({
+    activeCourse: 0,
+    activeInactiveCourse: [],
+    courseType: [],
+    inactiveCourse: 0,
+    newCourses: undefined,
+    recentAssignments: [],
+    recentExam: [],
+    totalCourse: 0,
+    totalEnrollments: 0,
+    userEnrollments: []
   });
 
   const [daysInMonth, setDaysInMonth] = useState(new Date(tempYear, tempMonth + 1, 0).getDate());
@@ -143,6 +193,8 @@ const AdminDashboard = () => {
     "Dec"
   ];
   const ROLE_NAMES = ["User", "Admin", "Student Course", "Lecturer", "Admin course"];
+  const recentAssignmentsHeader = ["Title", "Course name", "Type", "Created at"];
+  const recentExamHeader = ["Exam name", "Course name", "Created at"];
 
   const getUserStatistics = async () => {
     try {
@@ -156,18 +208,41 @@ const AdminDashboard = () => {
     }
   };
 
+  const getCourseStatistics = async () => {
+    try {
+      const response = await CourseService.getCourseStatistics();
+
+      setCourseStatistics((prevStats) => ({
+        ...response,
+        userEnrollments: response.userEnrollments.map((user: any) => ({ ...user, area: true })),
+        activeInactiveCourse: response.activeInactiveCourse.map((course: any) => ({
+          ...course,
+          area: true
+        }))
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await getUserStatistics();
+      await getCourseStatistics();
     };
     fetchData();
 
     setMainSkeleton(false);
   }, []);
 
-  useEffect(() => {
-    console.log(userStatistics);
-  }, [userStatistics]);
+  const data = Array.from({ length: 7 * 24 }).map((_, i) => ({
+    date: new Date(2022, 0, 1, i % 24), // Use the index modulo 24 to get the hour
+    count: Math.floor(Math.random() * 10)
+  }));
+
+  // Define the labels for the days of the week and the hours of the day
+  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const hourLabels = Array.from({ length: 24 }).map((_, i) => `${i}:00`);
 
   return (
     <>
@@ -250,6 +325,7 @@ const AdminDashboard = () => {
             <Tabs
               aria-label='tabs'
               defaultValue={dashboardTabValue}
+              value={dashboardTabValue}
               sx={{ bgcolor: "transparent" }}
               onChange={(e, value) => setDashboardTabValue(Number(value) || 0)}
             >
@@ -356,7 +432,8 @@ const AdminDashboard = () => {
                       sx={{
                         height: "400px",
                         display: "flex",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        boxShadow: "lg"
                       }}
                     >
                       <Stack
@@ -402,56 +479,15 @@ const AdminDashboard = () => {
                         alignItems='center'
                         sx={{ width: "100%" }}
                       >
-                        <LineChart
-                          sx={{
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
-                              stroke: "var(--gray-40)",
-                              strokeWidth: 0.4
-                            },
-                            "& .MuiChartsAxis-left .MuiChartsAxis-line": {
-                              stroke: "white",
-                              strokeWidth: 0.4
-                            },
-                            "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
-                              strokeWidth: "0.4",
-                              fill: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
-                              strokeWidth: "0.4",
-                              fill: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
-                              strokeWidth: "1",
-                              stroke: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            [`& .${areaElementClasses.root}`]: {
-                              fill: "url(#swich-color-id-1)"
-                            }
-                          }}
-                          colors={[startGradientColor, endGradientColor]}
-                          xAxis={[
-                            {
-                              scaleType: "point",
-                              data:
-                                userRegisterChartRangeButtonState === 0
-                                  ? daysList
-                                  : userRegisterChartRangeButtonState === 1
-                                    ? dayInMonthList
-                                    : monthInYearList
-                            }
-                          ]}
-                          yAxis={[
-                            {
-                              scaleType: "linear",
-                              disableTicks: true // hide ticks
-                            }
-                          ]}
+                        <CustomLineChart
+                          scaleType={"point"}
+                          data={
+                            userRegisterChartRangeButtonState === 0
+                              ? daysList
+                              : userRegisterChartRangeButtonState === 1
+                                ? dayInMonthList
+                                : monthInYearList
+                          }
                           series={
                             userStatistics.registerUser.length === 0
                               ? []
@@ -461,30 +497,9 @@ const AdminDashboard = () => {
                                   ? [userStatistics.registerUser[1]]
                                   : [userStatistics.registerUser[2]]
                           }
-                          height={320}
-                          grid={{
-                            horizontal: true
-                          }}
-                          // borderRadius={10}
-                          margin={{
-                            left: 30,
-                            right: 20,
-                            top: 40,
-                            bottom: 30
-                          }}
-                          slotProps={{
-                            legend: {
-                              hidden: true
-                            }
-                          }}
-                        >
-                          <Colorswitch
-                            color1='#11B678'
-                            color2='#FF3143'
-                            threshold={0}
-                            id='swich-color-id-1'
-                          />
-                        </LineChart>
+                          startGradientColor={["#11B678"]}
+                          endGradientColor={["#FF3143"]}
+                        />
                         <ChartLengend label={"New user"} color={startGradientColor} />
                       </Stack>
                     </Card>
@@ -496,7 +511,8 @@ const AdminDashboard = () => {
                       color='neutral'
                       variant='outlined'
                       sx={{
-                        height: "400px"
+                        height: "400px",
+                        boxShadow: "lg"
                       }}
                     >
                       <Stack
@@ -531,9 +547,9 @@ const AdminDashboard = () => {
                           }}
                         />
                       </Stack>
-                      <Grid container spacing={1} alignItems={"center"}>
+                      <Grid container spacing={2} alignItems={"center"}>
                         {ROLE_NAMES.map((role, index) => (
-                          <Grid item xs={4} key={index}>
+                          <Grid item key={index}>
                             <ChartLengend label={role} color={ROLE_PIE_CHART_COLORS[index]} />
                           </Grid>
                         ))}
@@ -562,7 +578,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Total courses"}
-                      value={0}
+                      value={courseStatistics.totalCourse}
                       mainColor={"#3498db"}
                     />
                   </Grid>
@@ -575,8 +591,8 @@ const AdminDashboard = () => {
                           style={{ width: "35px" }}
                         />
                       }
-                      title={"Total Enrollments"}
-                      value={0}
+                      title={"Enrollments"}
+                      value={courseStatistics.totalEnrollments}
                       mainColor={"#2ecc71"}
                     />
                   </Grid>
@@ -590,7 +606,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Active Courses"}
-                      value={0}
+                      value={courseStatistics.activeCourse}
                       mainColor={"#f39c12"}
                     />
                   </Grid>
@@ -604,7 +620,7 @@ const AdminDashboard = () => {
                         />
                       }
                       title={"Inactive courses"}
-                      value={0}
+                      value={courseStatistics.inactiveCourse}
                       mainColor={"#e74c3c"}
                     />
                   </Grid>
@@ -612,15 +628,16 @@ const AdminDashboard = () => {
               </Grid>
               <Grid item xs={12} md={12}>
                 <Grid container spacing={4}>
-                  <Grid item xs={12} md={12} lg={8}>
-                    <Heading6>User register</Heading6>
+                  <Grid item xs={12} md={12} lg={12}>
+                    <Heading6>Course Enrollment</Heading6>
                     <Card
                       color='neutral'
                       variant='outlined'
                       sx={{
                         height: "400px",
                         display: "flex",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        boxShadow: "lg"
                       }}
                     >
                       <Stack
@@ -629,26 +646,42 @@ const AdminDashboard = () => {
                         direction={"row"}
                         spacing={2}
                       >
-                        {/* <Button
-                          variant={isSevenDays ? "outlined" : "plain"}
+                        <Button
+                          variant={
+                            courseEnrollmentChartRangeButtonState === 0 ? "outlined" : "plain"
+                          }
                           onClick={() => {
-                            if (isSevenDays) return;
-                            setIsSevenDays(!isSevenDays);
+                            if (courseEnrollmentChartRangeButtonState === 0) return;
+                            setCourseEnrollmentChartRangeButtonState(0);
                           }}
                           size='sm'
                         >
                           Week
                         </Button>
                         <Button
-                          variant={!isSevenDays ? "outlined" : "plain"}
+                          variant={
+                            courseEnrollmentChartRangeButtonState === 1 ? "outlined" : "plain"
+                          }
                           onClick={() => {
-                            if (!isSevenDays) return;
-                            setIsSevenDays(!isSevenDays);
+                            if (courseEnrollmentChartRangeButtonState === 1) return;
+                            setCourseEnrollmentChartRangeButtonState(1);
+                          }}
+                          size='sm'
+                        >
+                          Month
+                        </Button>
+                        <Button
+                          variant={
+                            courseEnrollmentChartRangeButtonState === 2 ? "outlined" : "plain"
+                          }
+                          onClick={() => {
+                            if (courseEnrollmentChartRangeButtonState === 2) return;
+                            setCourseEnrollmentChartRangeButtonState(2);
                           }}
                           size='sm'
                         >
                           Year
-                        </Button> */}
+                        </Button>
                       </Stack>
                       <Stack
                         direction='column'
@@ -656,88 +689,39 @@ const AdminDashboard = () => {
                         alignItems='center'
                         sx={{ width: "100%" }}
                       >
-                        <LineChart
-                          sx={{
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
-                              stroke: "var(--gray-40)",
-                              strokeWidth: 0.4
-                            },
-                            "& .MuiChartsAxis-left .MuiChartsAxis-line": {
-                              stroke: "white",
-                              strokeWidth: 0.4
-                            },
-                            "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
-                              strokeWidth: "0.4",
-                              fill: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
-                              strokeWidth: "0.4",
-                              fill: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
-                              strokeWidth: "1",
-                              stroke: "var(--gray-40)",
-                              fontSize: 12,
-                              fontFamily: "Roboto"
-                            },
-                            [`& .${areaElementClasses.root}`]: {
-                              fill: "url(#swich-color-id-1)"
-                            }
-                          }}
-                          colors={[startGradientColor, endGradientColor]}
-                          xAxis={[
-                            {
-                              scaleType: "point"
-                              // data: isSevenDays ? daysList : monthsList
-                            }
-                          ]}
-                          yAxis={[
-                            {
-                              scaleType: "linear",
-                              disableTicks: true // hide ticks
-                            }
-                          ]}
-                          series={[]}
-                          height={320}
-                          grid={{
-                            horizontal: true
-                          }}
-                          // borderRadius={10}
-                          margin={{
-                            left: 30,
-                            right: 20,
-                            top: 40,
-                            bottom: 30
-                          }}
-                          slotProps={{
-                            legend: {
-                              hidden: true
-                            }
-                          }}
-                        >
-                          <Colorswitch
-                            color1='#11B678'
-                            color2='#FF3143'
-                            threshold={0}
-                            id='swich-color-id-1'
-                          />
-                        </LineChart>
+                        <CustomLineChart
+                          data={
+                            courseEnrollmentChartRangeButtonState === 0
+                              ? daysList
+                              : courseEnrollmentChartRangeButtonState === 1
+                                ? dayInMonthList
+                                : monthInYearList
+                          }
+                          series={
+                            courseStatistics.userEnrollments.length === 0
+                              ? []
+                              : courseEnrollmentChartRangeButtonState === 0
+                                ? [courseStatistics.userEnrollments[0]]
+                                : courseEnrollmentChartRangeButtonState === 1
+                                  ? [courseStatistics.userEnrollments[1]]
+                                  : [courseStatistics.userEnrollments[2]]
+                          }
+                          scaleType='point'
+                          startGradientColor={["#11B678"]}
+                          endGradientColor={["#FF3143"]}
+                        />
                         <ChartLengend label={"New user"} color={startGradientColor} />
                       </Stack>
                     </Card>
                   </Grid>
-                  <Grid item xs={12} md={12} lg={4}>
-                    <Heading6>User role</Heading6>
-
+                  <Grid item xs={12} md={12} lg={6}>
+                    <Heading6>Active / Inactive course</Heading6>
                     <Card
                       color='neutral'
                       variant='outlined'
                       sx={{
-                        height: "400px"
+                        height: "400px",
+                        boxShadow: "lg"
                       }}
                     >
                       <Stack
@@ -750,7 +734,7 @@ const AdminDashboard = () => {
                           colors={ROLE_PIE_CHART_COLORS}
                           series={[
                             {
-                              data: [],
+                              data: courseStatistics.activeInactiveCourse,
                               innerRadius: 10,
                               cornerRadius: 10
                             }
@@ -772,13 +756,285 @@ const AdminDashboard = () => {
                           }}
                         />
                       </Stack>
-                      <Grid container spacing={1} alignItems={"center"}>
-                        {ROLE_NAMES.map((role, index) => (
-                          <Grid item xs={4} key={index}>
-                            <ChartLengend label={role} color={ROLE_PIE_CHART_COLORS[index]} />
+                      <Grid container spacing={2} alignItems={"center"}>
+                        <Grid item>
+                          <ChartLengend label={"Active"} color={ROLE_PIE_CHART_COLORS[0]} />
+                        </Grid>
+                        <Grid item>
+                          <ChartLengend label={"Inactive"} color={ROLE_PIE_CHART_COLORS[1]} />
+                        </Grid>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={12} lg={6}>
+                    <Heading6>Course type</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Stack
+                        direction='column'
+                        spacing={1}
+                        alignItems='center'
+                        sx={{ width: "100%" }}
+                      >
+                        <PieChart
+                          colors={ROLE_PIE_CHART_COLORS}
+                          series={[
+                            {
+                              data: courseStatistics.courseType,
+                              innerRadius: 10,
+                              cornerRadius: 10
+                            }
+                          ]}
+                          height={300}
+                          sx={{
+                            maxWidth: "100%"
+                          }}
+                          margin={{
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0
+                          }}
+                          slotProps={{
+                            legend: {
+                              hidden: true
+                            }
+                          }}
+                        />
+                      </Stack>
+                      <Grid container spacing={2} alignItems={"center"}>
+                        {courseStatistics.courseType.map((role, index) => (
+                          <Grid item key={index}>
+                            <ChartLengend label={role.label} color={ROLE_PIE_CHART_COLORS[index]} />
                           </Grid>
                         ))}
                       </Grid>
+                    </Card>
+                  </Grid>
+
+                  <Grid item xs={12} md={12} lg={6}>
+                    <Heading6>Recent assignment</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        boxShadow: "lg",
+                        height: "400px"
+                      }}
+                    >
+                      <Table
+                        variant='soft'
+                        size='lg'
+                        hoverRow
+                        sx={{
+                          backgroundColor: "#FBFCFE",
+                          "& tbody tr:hover": {
+                            backgroundColor: "#f3f3f3" // Change this to your desired color
+                          }
+                        }}
+                      >
+                        <thead>
+                          <tr>
+                            {recentAssignmentsHeader.map((header, index) => (
+                              <th
+                                key={index}
+                                style={{
+                                  borderBottom: "2px solid rgb(128,128,128)"
+                                }}
+                              >
+                                <ParagraphBody
+                                  fontSize={"12px"}
+                                  color={"#525151"}
+                                  fontWeight={"500"}
+                                >
+                                  {header}
+                                </ParagraphBody>
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {courseStatistics.recentAssignments.length !== 0 && (
+                            <>
+                              {courseStatistics.recentAssignments.map((assignment, index) => (
+                                <tr key={index}>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {assignment.title}
+                                    </ParagraphBody>
+                                  </td>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {assignment.courseName}
+                                    </ParagraphBody>
+                                  </td>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {assignment.type === "FILE"
+                                        ? "File"
+                                        : assignment.type === "TEXT_ONLINE"
+                                          ? "Text online"
+                                          : "Both"}
+                                    </ParagraphBody>
+                                  </td>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {new Date(assignment.createdAt).toLocaleDateString()}
+                                    </ParagraphBody>
+                                  </td>
+                                </tr>
+                              ))}
+                            </>
+                          )}
+
+                          {courseStatistics.recentAssignments.length === 0 && (
+                            <tr>
+                              <TableCell colSpan={recentAssignmentsHeader.length}>
+                                <Box
+                                  display='flex'
+                                  alignItems='center'
+                                  justifyContent='center'
+                                  height='300px' // Or any other height that suits your needs
+                                >
+                                  <ParagraphBody
+                                    fontSize={".875rem"}
+                                    color={"#212121"}
+                                    fontWeight={"600"}
+                                  >
+                                    No data to display
+                                  </ParagraphBody>
+                                </Box>
+                              </TableCell>
+                            </tr>
+                          )}
+                        </tbody>
+                      </Table>
+                    </Card>
+                  </Grid>
+
+                  <Grid item xs={12} md={12} lg={6}>
+                    <Heading6>Recent exam</Heading6>
+
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Table
+                        variant='soft'
+                        size='lg'
+                        hoverRow
+                        sx={{
+                          backgroundColor: "#FBFCFE",
+                          "& tbody tr:hover": {
+                            backgroundColor: "#f3f3f3" // Change this to your desired color
+                          }
+                        }}
+                      >
+                        <thead>
+                          <tr>
+                            {recentExamHeader.map((header, index) => (
+                              <th
+                                key={index}
+                                style={{
+                                  borderBottom: "2px solid rgb(128,128,128)"
+                                }}
+                              >
+                                <ParagraphBody
+                                  fontSize={"12px"}
+                                  color={"#525151"}
+                                  fontWeight={"500"}
+                                >
+                                  {header}
+                                </ParagraphBody>
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {courseStatistics.recentExam.length !== 0 && (
+                            <>
+                              {courseStatistics.recentExam.map((exam, index) => (
+                                <tr key={index}>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {exam.examName}
+                                    </ParagraphBody>
+                                  </td>
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {exam.courseName}
+                                    </ParagraphBody>
+                                  </td>
+
+                                  <td>
+                                    <ParagraphBody
+                                      fontSize={".875rem"}
+                                      color={"#212121"}
+                                      fontWeight={"600"}
+                                    >
+                                      {new Date(exam.createdAt).toLocaleDateString()}
+                                    </ParagraphBody>
+                                  </td>
+                                </tr>
+                              ))}
+                            </>
+                          )}
+                          {courseStatistics.recentExam.length === 0 && (
+                            <tr>
+                              <TableCell colSpan={recentExamHeader.length}>
+                                <Box
+                                  display='flex'
+                                  alignItems='center'
+                                  justifyContent='center'
+                                  height='300px' // Or any other height that suits your needs
+                                >
+                                  <ParagraphBody
+                                    fontSize={".875rem"}
+                                    color={"#212121"}
+                                    fontWeight={"600"}
+                                  >
+                                    No data to display
+                                  </ParagraphBody>
+                                </Box>
+                              </TableCell>
+                            </tr>
+                          )}
+                        </tbody>
+                      </Table>
                     </Card>
                   </Grid>
                 </Grid>
@@ -787,40 +1043,6 @@ const AdminDashboard = () => {
           )}
         </Grid>
       )}
-    </>
-  );
-};
-
-type ColorSwichProps = {
-  threshold: number;
-  color1: string;
-  color2: string;
-  id: string;
-};
-
-const Colorswitch = ({ threshold, id }: ColorSwichProps) => {
-  const { top, height, bottom } = useDrawingArea();
-  const svgHeight = top + bottom + height;
-
-  const scale = useYScale() as ScaleLinear<number, number>; // You can provide the axis Id if you have multiple ones
-  const y0 = scale(threshold); // The coordinate of of the origine
-  const off = y0 !== undefined ? y0 / svgHeight : 0;
-
-  return (
-    <>
-      <defs>
-        <linearGradient
-          id={id}
-          x1='0'
-          x2='0'
-          y1='0'
-          y2={`${svgHeight}px`}
-          gradientUnits='userSpaceOnUse' // Use the SVG coordinate instead of the component ones.
-        >
-          <stop offset={off} stopColor={startGradientColor} stopOpacity={0.4} />
-          <stop offset={off} stopColor={endGradientColor} stopOpacity={0} />
-        </linearGradient>
-      </defs>
     </>
   );
 };

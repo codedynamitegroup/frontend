@@ -29,16 +29,18 @@
 .contestListContainer {
   padding-top: 40px;
   .contestListButtonGroup {
+    .listStateButton {
+      background-color: rgb(255, 255, 255);
+      border-radius: 12px;
+      border: 1px solid var(--gray-30);
+      margin-right: 10px;
+    }
+
     & [class~="MuiToggleButtonGroup-root"] {
-      & [class~="MuiButtonBase-root"] {
-        background-color: rgb(255, 255, 255);
-        border-radius: 12px;
-        border: 0;
-        margin-right: 10px;
-      }
       & [class~="Mui-selected"] {
         background-color: #ecf4fd;
         color: #1976d2;
+        border: 1px solid #1976d2;
       }
     }
   }

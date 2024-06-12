@@ -24,6 +24,7 @@ export const API = {
     },
     CONTEST: {
       DEFAULT: "/core/contests",
+      MY_CONTEST: "/core/contests/me",
       CONTEST_MANAGEMENT_FOR_ADMIN: "/core/contests/admin",
       CREATE: "/core/contests/create",
       GET_BY_ID: "/core/contests/:id",
@@ -65,6 +66,7 @@ export const API = {
     COURSE: {
       DEFAULT: "/course/course",
       SECTION: "/course/section",
+      GET_STATISTICS: "/course/course/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
