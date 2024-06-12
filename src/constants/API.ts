@@ -152,6 +152,7 @@ export const API = {
     REFRESH_TOKEN: "/auth/users/refresh-token",
     LOGOUT: "/auth/users/logout",
     REGISTER: "/auth/users/register",
+    CREATE_USER_BY_ADMIN: "/auth/users",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email",
     FORGOT_PASSWORD: "/auth/users/forgot-password",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",

@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Container, Grid, TextField } from "@mui/material";
+import { Avatar, Button, CircularProgress, Container, Grid, TextField } from "@mui/material";
 import i18next from "i18next";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
@@ -177,11 +177,10 @@ export default function DetailSolution({
               </ParagraphBody>
             )}
             <Box className={classes.submissionAuthor}>
-              <img
-                src={user?.avatarUrl ?? images.avatar.avatarBoyDefault}
-                alt='User'
-                className={classes.avatar}
-              />
+              <Avatar sx={{ bgcolor: "var(--green-500)" }} alt={user?.email} src={user?.avatarUrl}>
+                {user?.firstName.charAt(0)}
+              </Avatar>
+
               <ParagraphExtraSmall fontWeight={"700"}>
                 {i18next.language === "vi"
                   ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`

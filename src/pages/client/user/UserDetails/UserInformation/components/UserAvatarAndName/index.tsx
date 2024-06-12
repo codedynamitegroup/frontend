@@ -13,10 +13,12 @@ const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
   return (
     <>
       <Avatar
-        sx={{ width: 150, height: 150 }}
-        variant='circular'
-        src={props.avatarUrl ? props.avatarUrl : images.avatar.avatarBoyDefault}
-      />
+        sx={{ bgcolor: "var(--green-500)", width: 150, height: 150, fontSize: "60px" }}
+        alt={displayName}
+        src={props.avatarUrl}
+      >
+        {displayName?.charAt(0)}
+      </Avatar>
       <TextTitle className={classes.userFullName}>{displayName}</TextTitle>
     </>
   );

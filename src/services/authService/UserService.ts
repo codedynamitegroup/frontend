@@ -1,5 +1,6 @@
 import { API } from "constants/API";
 import {
+  CreatedUserByAdminRequest,
   LoginRequest,
   RegisteredRequest,
   ResetPasswordUserRequest,
@@ -108,6 +109,23 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl
       }).post(`${API.AUTH.REGISTER}`, registeredData);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createUserByAdmin(createdUserByAdminRequest: CreatedUserByAdminRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.AUTH.CREATE_USER_BY_ADMIN}`, createdUserByAdminRequest);
       if (response.status === 201) {
         return response.data;
       }
