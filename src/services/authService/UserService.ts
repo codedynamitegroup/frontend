@@ -220,12 +220,26 @@ export class UserService {
     }
   }
 
-  static async getAllUser() {
+  static async getAllUser({
+    searchName,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    searchName?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
     try {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_ALL}`);
+      }).get(`${API.AUTH.GET_ALL}`, {
+        params: {
+          searchName,
+          pageNo,
+          pageSize
+        }
+      });
       if (response.status === 200) {
         return response.data;
       }

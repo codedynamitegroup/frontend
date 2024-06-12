@@ -56,6 +56,7 @@ import course from "assets/img/admin/course.svg";
 import userEnrollment from "assets/img/admin/enrollment.svg";
 import activeCourse from "assets/img/admin/active-course.svg";
 import inactiveCourse from "assets/img/admin/inactive-course.svg";
+import clientPage from "assets/img/admin/clientPage.svg";
 
 const images = {
   course: {
@@ -97,7 +98,8 @@ const images = {
     course,
     userEnrollment,
     activeCourse,
-    inactiveCourse
+    inactiveCourse,
+    clientPage
   }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };

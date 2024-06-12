@@ -23,7 +23,6 @@ export default function Result() {
     result.forEach((value) => console.log(decodeBase64(removeNewLine(value.compile_output ?? ""))));
   }, [result]);
 
-  const handleDeleteResult = (id: number) => {};
   return (
     <Box id={classes.root}>
       <Container className={classes.container}>
@@ -32,7 +31,7 @@ export default function Result() {
           <>
             {loading === true && <CircularProgress />}
             {result.length < 1 && loading === false && (
-              <ParagraphBody>No test case found</ParagraphBody>
+              <ParagraphBody>No result found</ParagraphBody>
             )}
             {result.length > 0 && loading === false && (
               <>

@@ -3,7 +3,7 @@ import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity
 import { RoleEntity } from "./role";
 
 export interface User {
-  userId: UUID;
+  userId: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -11,6 +11,7 @@ export interface User {
   avatarUrl: string;
   address: string;
   dob: Date;
+  lastLogin: Date;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
   organization: OrganizationEntity;
