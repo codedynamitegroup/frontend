@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from "react";
+import React, { lazy, memo, useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import {
@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRef } from "react";
-import DetailSolution from "./components/DetailSolution";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faComment, faEye, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
@@ -37,6 +36,8 @@ import { SharedSolutionEntity } from "models/codeAssessmentService/entity/Shared
 import images from "config/images";
 import i18next from "i18next";
 
+const DetailSolution = lazy(() => import("./components/DetailSolution"));
+
 export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: number }) {
   const navigate = useNavigate();
 
@@ -48,6 +49,7 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
   const [pageNum, setPageNum] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [solutionItem, setSolutionItem] = useState<SharedSolutionEntity[]>([]);
+  const [selectedSolutionId, setSelectedSolutionId] = useState<string | null>(null);
 
   useEffect(() => {
     setTagLoading(true);
@@ -403,14 +405,21 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
               </Button>
             </Box>
           </Box>
-          {itemLoading && <CircularProgress />}
+          {itemLoading && (
+            <Stack marginTop={3} alignItems={"center"}>
+              <CircularProgress />
+            </Stack>
+          )}
           {!itemLoading && (
             <Stack overflow={"auto"}>
               {solutionItem.map((item) => {
                 return (
                   <>
                     <ButtonBase
-                      onClick={handleSolutionDetail}
+                      onClick={() => {
+                        setSelectedSolutionId(item.sharedSolutionId);
+                        handleSolutionDetail();
+                      }}
                       focusRipple
                       sx={{
                         justifyContent: "flex-start",
@@ -482,7 +491,10 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
         </Stack>
       ) : (
         <Box className={classes.detailSolution}>
-          <DetailSolution handleSolutionDetail={handleSolutionDetail} />
+          <DetailSolution
+            selectedSolutionId={selectedSolutionId}
+            handleSolutionDetail={handleSolutionDetail}
+          />
         </Box>
       )}
     </Box>
