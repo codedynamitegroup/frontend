@@ -34,6 +34,7 @@ import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import appStatus from "reduxes/AppStatus";
+import user from "reduxes/authService/user";
 
 const persistConfig = {
   key: "takeExam",
@@ -77,7 +78,8 @@ const store = configureStore({
     takeExam: takeExamPersistedReducer,
     questionCategory: questionCategory,
     loading: loading,
-    appStatus: appStatus
+    appStatus: appStatus,
+    user: user
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

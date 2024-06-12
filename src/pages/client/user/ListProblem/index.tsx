@@ -40,7 +40,7 @@ const ListProblem = () => {
 
   useEffect(() => {
     dispatch(setLoadingAlgorithm(true));
-    TagService.getAlgorithmTag(true)
+    TagService.getAllTag(true)
       .then((data: TagEntity[]) => {
         dispatch(setAlgorithmTagList(data));
       })
@@ -51,13 +51,16 @@ const ListProblem = () => {
   const [timer, setTimer] = useState<number | undefined>(undefined);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    clearTimeout(timer);
+    if (/\S/.test(e.target.value)) {
+      //not blank
+      clearTimeout(timer);
 
-    const newTimer = window.setTimeout(() => {
-      dispatch(setSearchKey(e.target.value));
-    }, 1000);
+      const newTimer = window.setTimeout(() => {
+        dispatch(setSearchKey(e.target.value));
+      }, 1000);
 
-    setTimer(newTimer);
+      setTimer(newTimer);
+    }
   };
 
   const handleFilterAlgorithm = (index: number) => {

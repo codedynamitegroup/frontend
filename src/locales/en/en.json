@@ -202,8 +202,7 @@
   "common_back_to_chapters": "Back to chapters",
 
   "side_bar_dashboard": "Dashboard",
-  "side_bar_contest": "Contest management",
-  "side_bar_user_management": "User management",
+  "side_bar_contest_management": "Contest management",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -308,7 +307,7 @@
   "contest_detail_problems": "Problems",
   "contest_detail_leaderboard": "Leaderboard",
   "contest_detail_grade": "Score",
-  "contest_detail_leaderboard_no_data": "No data",
+  "contest_detail_leaderboard_no_data": "Rankings will be updated soon, please wait!",
   "contest_detail_join_button": "Join contest",
   "contest_detail_leaderboard_rank": "Rank",
   "contest_detail_leaderboard_participant": "Participant",
@@ -316,6 +315,7 @@
   "contest_detail_join_success": "Join contest successfully",
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",
+  "contest_detail_no_problems_messsage": "No problems available",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
@@ -359,6 +359,14 @@
   "forget_password_back_link": "Back to login page",
   "forget_password_description": "Enter registerd email, we will send a change password email to this email",
 
+  "role_system_admin": "System admin",
+  "role_org_admin": "Org admin",
+  "role_lecturer": "Lecturer",
+  "role_student": "Student",
+  "role_user": "User",
+
+  "user_management": "User management",
+  "user_create": "Create user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",
@@ -630,9 +638,10 @@
   "detail_problem_submission_detail_user_submission_time": "submited at {{time}}",
   "detail_problem_submission_detail_share_solution": "Share solution",
   "detail_problem_submission_detail_your_solution": "Your solution",
-  "detail_problem_discussion_your_solution_rank": "Your solution beats {{percent}}% other people's solution in term of runtime",
+  "detail_problem_discussion_share_solution_to_help": "Share your solution with others",
   "detail_problem_discussion_share_your_solution": "Share solution",
   "detail_problem_discussion_filter_newest": "Newest",
+  "detail_problem_discussion_filter_oldest": "Oldest",
   "detail_problem_discussion_detail_comment_count": "Comment ({{commentNumber}})",
   "detail_problem_discussion_detail_comment": "Comment",
   "detail_problem_discussion_your_comment": "Your comment",

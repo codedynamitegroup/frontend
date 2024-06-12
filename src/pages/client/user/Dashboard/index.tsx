@@ -408,7 +408,7 @@ export default function UserDashboard() {
                       translation-key='common_view_details'
                       onClick={() => {
                         navigate(
-                          routes.user.contest.detail.replace(
+                          routes.user.contest.detail.information.replace(
                             ":contestId",
                             firstMostPopularContest?.contestId.toString() || ""
                           )

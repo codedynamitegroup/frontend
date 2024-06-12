@@ -121,11 +121,6 @@
 .solutionInfo {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid var(--gray-10);
-
-  &:hover {
-    cursor: pointer;
-  }
 }
 .solutionTitle {
   display: flex;

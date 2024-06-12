@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid, Link } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -312,13 +312,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   aria-haspopup='true'
                   aria-expanded={open ? "true" : undefined}
                 >
-                  <img
-                    className={classes.imageProfile}
-                    src={
-                      loggedUser.avatarUrl ? loggedUser.avatarUrl : images.avatar.avatarBoyDefault
-                    }
-                    alt='avatar'
-                  ></img>
+                  <Avatar
+                    sx={{ bgcolor: "var(--green-500)" }}
+                    alt={loggedUser.email}
+                    src={loggedUser.avatarUrl}
+                    className={classes.avatarProfile}
+                  >
+                    {loggedUser.firstName.charAt(0)}
+                  </Avatar>
+
                   <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
                     {`${loggedUser.firstName} ${loggedUser.lastName}`}
                   </ParagraphSmall>
