@@ -1,14 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import RemoveIcon from "@mui/icons-material/Cancel";
 import FormControl from "@mui/material/FormControl";
-import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Icon from "@mui/material/Icon";
 
 import classes from "./styles.module.scss";
-import { Divider, Grid, InputAdornment } from "@mui/material";
+import { Divider, Grid, InputAdornment, Paper } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 interface PropsData {
@@ -21,22 +20,31 @@ interface PropsData {
 
 const AutoSearchBar = ({ value, setValue, onHandleChange, placeHolder, maxWidth }: PropsData) => {
   const { t } = useTranslation();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); // To store the timeout
 
   const handleOnChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
     setValue(e.target.value);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current); // Clear any existing timeout
+    }
+    timeoutRef.current = setTimeout(() => {
+      onHandleChange(value);
+    }, 800);
   };
 
   const handleRemoveAllTextButton = () => {
     setValue("");
+    onHandleChange("");
   };
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      onHandleChange(value);
-    }, 700);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [onHandleChange, value]);
+    // Cleanup function to clear the timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Grid

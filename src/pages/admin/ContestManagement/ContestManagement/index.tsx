@@ -284,7 +284,7 @@ const ContestManagement = () => {
 
   const contestList: ContestManagementProps[] = useMemo(
     () =>
-      contestState.contests.contests.map((contest) => {
+      contestState.contests.contests.map((contest: any) => {
         const status =
           contest.startTime && moment().utc().isBefore(contest.startTime)
             ? ContestStartTimeFilterEnum.UPCOMING
@@ -453,7 +453,6 @@ const ContestManagement = () => {
             /> */}
           </Grid>
           <Grid item xs={12}>
-            {/* #F5F9FB */}
             <CustomDataGrid
               loading={contestState.isLoading}
               dataList={contestList}

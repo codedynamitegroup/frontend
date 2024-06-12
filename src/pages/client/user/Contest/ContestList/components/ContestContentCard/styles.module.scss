@@ -1,7 +1,10 @@
 .container {
   margin-top: 10px;
+  padding-top: 10px;
   cursor: pointer;
   color: #2a2a2a;
+  border-radius: 12px;
+  border: 1px solid var(--gray-30);
 
   .contestInfo {
     margin-left: 10px;
