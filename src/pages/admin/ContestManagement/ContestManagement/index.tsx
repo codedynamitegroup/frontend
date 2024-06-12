@@ -31,7 +31,6 @@ import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { setErrorMess } from "reduxes/AppStatus";
 
 interface ContestManagementProps extends ContestEntity {
@@ -43,9 +42,6 @@ const ContestManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -130,25 +126,6 @@ const ContestManagement = () => {
               {params.row.name}
             </ParagraphSmall>
           </Stack>
-        );
-      }
-    },
-    {
-      field: "createdBy",
-      headerName: t("common_created_by"),
-      flex: 1,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_created_by")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <ParagraphSmall width={"auto"}>
-            {params.row.createdBy.firstName} {params.row.createdBy.lastName}
-          </ParagraphSmall>
         );
       }
     },
@@ -371,12 +348,6 @@ const ContestManagement = () => {
 
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
       <Card
         sx={{
           margin: "20px",
@@ -407,7 +378,7 @@ const ContestManagement = () => {
             </Heading1>
           </Grid>
           <Grid item xs={12}>
-            {/* <CustomSearchFeatureBar
+            <CustomSearchFeatureBar
               isLoading={contestState.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
@@ -445,12 +416,12 @@ const ContestManagement = () => {
               }
               currentFilterKey='Status'
               currentFilterValue={contestStatusFilter}
-              handleFilterValueChange={(value:any) => {
+              handleFilterValueChange={(value: any) => {
                 setContestStatusFilter(value as ContestStartTimeFilterEnum);
               }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
-            /> */}
+            />
           </Grid>
           <Grid item xs={12}>
             <CustomDataGrid

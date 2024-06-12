@@ -2,7 +2,6 @@ import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAs
 import {
   Route,
   RouterProvider,
-  createBrowserRouter,
   createHashRouter,
   createRoutesFromElements
 } from "react-router-dom";
@@ -11,6 +10,7 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import Lessons from "pages/client/user/CourseCertificate/Lessons";
+import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
@@ -233,6 +233,8 @@ const router = createHashRouter(
         <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
 
         <Route path={routes.user.course_certificate.detail.lesson.detail} element={<Lessons />} />
+
+        <Route path={routes.user.contest.detail.problems.detail} element={<TakeContestProblem />} />
       </Route>
     </Route>
   )

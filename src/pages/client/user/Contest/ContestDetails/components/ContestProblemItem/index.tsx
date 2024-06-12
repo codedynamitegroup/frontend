@@ -1,8 +1,11 @@
-import { Box, Chip, Divider, Grid, Link, Paper, Stack, Typography } from "@mui/material";
-import classes from "./styles.module.scss";
+import { Box, Chip, Divider, Grid, Link, Paper, Stack } from "@mui/material";
 import clsx from "clsx";
-import { Link as RouterLink } from "react-router-dom";
+import ParagraphBody from "components/text/ParagraphBody";
+import TextTitle from "components/text/TextTitle";
 import { useTranslation } from "react-i18next";
+import { Link as RouterLink } from "react-router-dom";
+import { routes } from "routes/routes";
+import classes from "./styles.module.scss";
 
 export enum EContestProblemDifficulty {
   easy = "easy",
@@ -11,6 +14,8 @@ export enum EContestProblemDifficulty {
 }
 
 interface PropsData {
+  contestId: string;
+  problemId: string;
   name: string;
   maxScore: number;
   point?: number;
@@ -20,7 +25,8 @@ interface PropsData {
 }
 
 const ContestProblemItem = (props: PropsData) => {
-  const { name, maxScore, point, difficulty, submission, maxSubmission } = props;
+  const { contestId, problemId, name, maxScore, point, difficulty, submission, maxSubmission } =
+    props;
   const scoreClickHandler = () => {
     console.log("score click");
   };
@@ -33,18 +39,15 @@ const ContestProblemItem = (props: PropsData) => {
     <Paper className={classes.container}>
       <Grid container alignItems={"center"} justifyContent='space-between'>
         <Grid item xs={9}>
-          <Link component={RouterLink} to='#' underline='none'>
+          <Link
+            component={RouterLink}
+            to={routes.user.contest.detail.problems.detail
+              .replace(":contestId", contestId)
+              .replace(":problemId", problemId)}
+            underline='none'
+          >
             <Stack direction={"column"} className={classes.problemDetailContainer}>
-              <Typography
-                fontWeight={400}
-                lineHeight={1.4}
-                color='#2a2a2a'
-                fontSize='21px'
-                fontFamily={"OpenSans, Arial, Helvetica, sans - serif"}
-                className={classes.problemNameText}
-              >
-                {name}
-              </Typography>
+              <TextTitle className={classes.problemNameText}>{name}</TextTitle>
 
               <Chip
                 size='small'
@@ -77,35 +80,33 @@ const ContestProblemItem = (props: PropsData) => {
               className={clsx(classes.submissionContainer, classes.roundContainer)}
               onClick={scoreClickHandler}
             >
-              <Typography fontSize={"20px"} className={classes.roundedInfoText}>
-                {/* {submission !== undefined ? `${submission}/` : ""}
-                {maxSubmission} */}
+              <ParagraphBody fontSize={"20px"} className={classes.roundedInfoText}>
                 {submission !== undefined ? `${submission}` : ""}
-              </Typography>
-              <Typography
+              </ParagraphBody>
+              <ParagraphBody
                 fontSize={"12px"}
                 className={classes.roundedInfoText}
                 translation-key='common_submit'
               >
                 {t("common_submit")}
-              </Typography>
+              </ParagraphBody>
             </Box>
 
             <Box
               className={clsx(classes.scoreContainer, classes.roundContainer)}
               onClick={submissionTryClickHandler}
             >
-              <Typography fontSize={"20px"} className={classes.roundedInfoText}>
+              <ParagraphBody fontSize={"20px"} className={classes.roundedInfoText}>
                 {point !== undefined ? `${point}/` : ""}
                 {maxScore}
-              </Typography>
-              <Typography
+              </ParagraphBody>
+              <ParagraphBody
                 fontSize={"12px"}
                 className={classes.roundedInfoText}
                 translation-key='common_score'
               >
                 {t("common_score")}
-              </Typography>
+              </ParagraphBody>
             </Box>
           </Stack>
         </Grid>

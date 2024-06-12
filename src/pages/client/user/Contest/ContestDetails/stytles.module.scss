@@ -6,6 +6,7 @@
 .bodyContainer {
   margin-top: 20px;
   min-height: 500px;
+  width: 80%;
 
   .bodyWrapper {
     border: 1px solid var(--gray-10);
@@ -18,7 +19,6 @@
   }
 }
 .topUserText {
-  font-size: 18px;
   color: var(--blue-link);
 }
 .topUserText:hover {

@@ -308,7 +308,7 @@
   "contest_detail_problems": "Problems",
   "contest_detail_leaderboard": "Leaderboard",
   "contest_detail_grade": "Score",
-  "contest_detail_leaderboard_no_data": "No data",
+  "contest_detail_leaderboard_no_data": "Rankings will be updated soon, please wait!",
   "contest_detail_join_button": "Join contest",
   "contest_detail_leaderboard_rank": "Rank",
   "contest_detail_leaderboard_participant": "Participant",
@@ -316,6 +316,7 @@
   "contest_detail_join_success": "Join contest successfully",
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",
+  "contest_detail_no_problems_messsage": "No problems available",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
