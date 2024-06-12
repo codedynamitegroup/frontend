@@ -15,7 +15,7 @@ interface InitialState {
     numOfParticipants: number;
     numOfContests: number;
   };
-  contestDetails: ContestEntity | null;
+  // contestDetails: ContestEntity | null;
   contestLeaderboard: ContestLeaderboardEntity | null;
 }
 
@@ -32,7 +32,7 @@ const initState: InitialState = {
     numOfParticipants: 0,
     numOfContests: 0
   },
-  contestDetails: null,
+  // contestDetails: null,
   contestLeaderboard: null
 };
 
@@ -54,9 +54,9 @@ const contestSlice = createSlice({
       state.mostPopularContests.numOfParticipants = action.payload.numOfParticipants;
       state.mostPopularContests.numOfContests = action.payload.numOfContests;
     },
-    setContestDetails: (state, action) => {
-      state.contestDetails = action.payload;
-    },
+    // setContestDetails: (state, action) => {
+    //   state.contestDetails = action.payload;
+    // },
     setContestLeaderboard: (state, action) => {
       state.contestLeaderboard = action.payload;
     }
@@ -67,7 +67,7 @@ export const {
   setLoading,
   setContests,
   setMostPopularContests,
-  setContestDetails,
+  // setContestDetails,
   setContestLeaderboard
 } = contestSlice.actions;
 

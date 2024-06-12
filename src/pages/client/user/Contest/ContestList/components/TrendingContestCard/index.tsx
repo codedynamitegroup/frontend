@@ -25,7 +25,7 @@ interface PropsData {
 const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: PropsData) => {
   const navigate = useNavigate();
   const clickHandler = () => {
-    navigate(routes.user.contest.detail.replace(":contestId", contestId.toString()));
+    navigate(routes.user.contest.detail.information.replace(":contestId", contestId.toString()));
   };
 
   // Count down base on start time if start time is not exceed current time
