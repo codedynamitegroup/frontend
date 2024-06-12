@@ -235,6 +235,15 @@ const AdminDashboard = () => {
     setMainSkeleton(false);
   }, []);
 
+  const data = Array.from({ length: 7 * 24 }).map((_, i) => ({
+    date: new Date(2022, 0, 1, i % 24), // Use the index modulo 24 to get the hour
+    count: Math.floor(Math.random() * 10)
+  }));
+
+  // Define the labels for the days of the week and the hours of the day
+  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const hourLabels = Array.from({ length: 24 }).map((_, i) => `${i}:00`);
+
   return (
     <>
       {mainSkeleton && (
@@ -488,8 +497,8 @@ const AdminDashboard = () => {
                                   ? [userStatistics.registerUser[1]]
                                   : [userStatistics.registerUser[2]]
                           }
-                          startGradientColor='#11B678'
-                          endGradientColor='#FF3143'
+                          startGradientColor={["#11B678"]}
+                          endGradientColor={["#FF3143"]}
                         />
                         <ChartLengend label={"New user"} color={startGradientColor} />
                       </Stack>
@@ -698,8 +707,8 @@ const AdminDashboard = () => {
                                   : [courseStatistics.userEnrollments[2]]
                           }
                           scaleType='point'
-                          startGradientColor='#11B678'
-                          endGradientColor='#FF3143'
+                          startGradientColor={["#11B678"]}
+                          endGradientColor={["#FF3143"]}
                         />
                         <ChartLengend label={"New user"} color={startGradientColor} />
                       </Stack>

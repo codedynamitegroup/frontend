@@ -1,21 +1,34 @@
 import { LineChart, areaElementClasses, useDrawingArea, useYScale } from "@mui/x-charts";
 import { ScaleLinear } from "d3";
+import { start } from "repl";
 
 interface PropsData {
   scaleType: "time" | "point" | "linear" | "band" | "log" | "pow" | "sqrt" | "utc" | undefined;
   data: string[];
   series: { data: number[]; label: string; area: boolean }[];
-  startGradientColor: string;
-  endGradientColor: string;
+  startGradientColor: string[];
+  endGradientColor: string[];
 }
 
 const CustomLineChart = (props: PropsData) => {
   const { scaleType, data, startGradientColor, endGradientColor, series } = props;
-  const maxSeries = series.reduce((acc, curr) => {
-    const max = Math.max(...curr.data);
-    return max > acc ? max : acc;
-  }, -99999999);
 
+  const finalSeries = series.map((serie, index) => {
+    if (!serie || !serie.data || serie.data.length === 0)
+      return {
+        id: index,
+        data: [],
+        label: "",
+        area: false
+      };
+
+    return {
+      id: index,
+      data: serie.data,
+      label: serie.label,
+      area: serie.area
+    };
+  });
   return (
     <LineChart
       sx={{
@@ -45,11 +58,18 @@ const CustomLineChart = (props: PropsData) => {
           fontSize: 12,
           fontFamily: "Roboto"
         },
-        [`& .${areaElementClasses.root}`]: {
-          fill: "url(#swich-color-id-1)"
-        }
+
+        ...startGradientColor.reduce(
+          (acc, color, index) => ({
+            ...acc,
+            [`& .MuiAreaElement-series-${index}`]: {
+              fill: `url(#swich-color-id-${index})`
+            }
+          }),
+          {}
+        )
       }}
-      colors={[startGradientColor, endGradientColor]}
+      colors={startGradientColor}
       xAxis={[
         {
           scaleType: scaleType,
@@ -62,7 +82,7 @@ const CustomLineChart = (props: PropsData) => {
           disableTicks: true // hide ticks
         }
       ]}
-      series={series.length === 0 ? [] : series}
+      series={finalSeries}
       height={320}
       grid={{
         horizontal: true
@@ -80,12 +100,16 @@ const CustomLineChart = (props: PropsData) => {
         }
       }}
     >
-      <Colorswitch
-        startGradientColor={startGradientColor}
-        endGradientColor={endGradientColor}
-        threshold={0}
-        id='swich-color-id-1'
-      />
+      {startGradientColor.length !== 0 &&
+        endGradientColor.length !== 0 &&
+        startGradientColor.map((color, index) => (
+          <Colorswitch
+            startGradientColor={color}
+            endGradientColor={endGradientColor[index]}
+            threshold={0}
+            id={`swich-color-id-${index}`}
+          />
+        ))}
     </LineChart>
   );
 };
