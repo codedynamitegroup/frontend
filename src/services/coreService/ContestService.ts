@@ -41,6 +41,38 @@ export class ContestService {
     }
   }
 
+  static async getMyContests({
+    searchName,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    searchName?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CONTEST.MY_CONTEST}`, {
+        params: {
+          searchName,
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
   static async getContestsForAdmin({
     searchName,
     startTimeFilter = ContestStartTimeFilterEnum.ALL,

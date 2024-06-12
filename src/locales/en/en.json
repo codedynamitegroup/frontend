@@ -258,6 +258,7 @@
   "contest_preview_contest_details_page": "Preview contest details page",
   "contest_forum": "Forum",
   "contest_sign_up_date": "Sign up date",
+  "contest_no_contests_found_message": "No contests found...",
 
   "contest_management_title": "Contest Management",
   "contest_details": "Contest details",
@@ -291,6 +292,8 @@
   "contest_detail_joined_feature_status": "You have registerd for this contest",
   "contest_detail_joined_happening_status": "You are joining this contest",
   "contest_detail_joined_ended_status": "You joined this contest",
+  "contest_my_contests_button": "My contests",
+  "contest_detail_ended_message": "This contest has ended",
   "contest_detail_happening_status": "This contest will end in",
   "contest_detail_ended_status": "This contest ended on",
   "contest_detail_feature_status": "This contest will start in",
