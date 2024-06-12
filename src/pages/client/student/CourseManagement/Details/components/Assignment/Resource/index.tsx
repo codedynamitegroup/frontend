@@ -4,29 +4,54 @@ import classes from "./styles.module.scss";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import { Box } from "@mui/material";
 import { useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
-import Button, { BtnType } from "components/common/buttons/Button";
 import TextEditor from "components/editor/TextEditor";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import { useTranslation } from "react-i18next";
-import { string } from "yup";
-import images from "config/images";
 import dayjs from "dayjs";
+import images from "config/images";
+import UploadIcon from "@mui/icons-material/Upload";
+import React from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Box,
+  Grid,
+  Avatar,
+  IconButton,
+  Tooltip
+} from "@mui/material";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Link from "@mui/material/Link";
+import { Delete, Edit } from "@mui/icons-material";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import "dayjs/locale/vi";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+export enum ResourceType {
+  assignment = "assignment",
+  exam = "exam"
+}
 
 interface Props {
   courseId?: string;
   examId?: string;
   resourceTitle: string;
+  resourceOpenDate: Date | string;
   resourceEndedDate: Date | string;
   intro?: string;
   type?: ResourceType;
 }
 const AssignmentResource = ({
   resourceTitle,
+  resourceOpenDate,
   resourceEndedDate,
   courseId,
   examId,
@@ -58,50 +83,48 @@ const AssignmentResource = ({
   };
 
   return (
-    <Box className={classes.container}>
-      <Accordion expanded={resourceExpansion} className={classes.accordionContainer}>
-        <AccordionSummary
-          className={classes.accordionDetails}
-          onClick={() => {
-            setResourceExpansion(true);
-          }}
-        >
-          <Box className={classes.titleContainer}>
-            <img
-              src={
-                type == ResourceType.assignment
-                  ? images.course.assignmentIcon
-                  : images.course.quizIcon
-              }
-              className={classes.imageResource}
-              alt='assignment'
-            />
-            <ParagraphBody>{resourceTitle}</ParagraphBody>
-          </Box>
-          <ParagraphBody translation-key='course_assignment_deadline'>
-            {t("course_assignment_deadline")}: {dayjs(resourceEndedDate).format("DD/MM/YYYY")}
-          </ParagraphBody>
-        </AccordionSummary>
-        <AccordionDetails>
-          <TextEditor value={intro} readOnly={true} />
-        </AccordionDetails>
-        <AccordionActions>
-          <Button
-            btnType={BtnType.Text}
-            onClick={cancelResourceHandler}
-            translation-key='common_cancel'
+    <Box className={classes.cardWrapper}>
+      <Grid container alignItems='center'>
+        <Grid item xs={12} className={classes.timeWrapper}>
+          <Grid container alignItems='center'>
+            <Grid item md={0.6}></Grid>
+            <Grid item md={11.4}>
+              <Box className={classes.deadline}>
+                <Typography variant='body2' color='textSecondary'>
+                  {t("course_assignment_open")}:{" "}
+                  {dayjs(resourceOpenDate).format("dddd, DD MMMM YYYY, h:mm A")}
+                </Typography>
+                <Typography>...</Typography>
+                <Typography variant='body2' color='textSecondary'>
+                  {t("course_assignment_deadline")}:{" "}
+                  {dayjs(resourceEndedDate).format("dddd, DD MMMM YYYY, h:mm A")}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Box className={classes.content} style={{ display: "flex", alignItems: "center" }}>
+          <Avatar sx={{ bgcolor: type === ResourceType.assignment ? "#eb66a2" : "#0077be" }}>
+            {type === ResourceType.assignment ? <AssignmentIcon /> : <AccessTimeFilledIcon />}
+          </Avatar>
+          <Link
+            href={
+              type === ResourceType.assignment
+                ? routes.student.assignment.detail
+                    .replace(":courseId", courseId ?? "")
+                    .replace(":assignmentId", examId ?? "")
+                : routes.student.exam.detail
+                    .replace(":courseId", courseId ?? "")
+                    .replace(":examId", examId ?? "")
+            }
+            underline='none'
+            style={{ marginLeft: "12px" }}
           >
-            {t("common_cancel")}
-          </Button>
-          <Button
-            btnType={BtnType.Primary}
-            onClick={onDetailClick}
-            translation-key='course_assignment_detail'
-          >
-            {t("course_assignment_detail")}
-          </Button>
-        </AccordionActions>
-      </Accordion>
+            {resourceTitle}
+          </Link>
+        </Box>
+      </Grid>
     </Box>
   );
 };

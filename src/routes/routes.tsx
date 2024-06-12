@@ -28,6 +28,7 @@ export const routes = {
     assignment: {
       detail: "/lecturer/courses/:courseId/assignments/:assignmentId",
       create: "/lecturer/courses/:courseId/assignments/create",
+      edit: "/lecturer/courses/:courseId/assignments/edit/:assignmentId",
       grading:
         "/lecturer/courses/:courseId/assignments/:assignmentId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions",

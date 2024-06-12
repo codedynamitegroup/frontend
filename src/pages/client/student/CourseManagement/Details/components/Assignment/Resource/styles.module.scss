@@ -1,36 +1,30 @@
-.container {
-  border: 1px solid var(--gray-40);
-  border-radius: 5px;
-  [class~="MuiAccordionSummary-content"] {
+.cardWrapper {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid #e1e1e1;
+  .timeWrapper {
+    padding: 10px;
+    border-bottom: 1px dashed #e1e1e1;
+  }
+  .deadline {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  [class~="MuiAccordionDetails-root"] {
-    max-height: 220px;
-    background-color: var(--gray-3);
-    border-top: 1px solid var(--gray-40);
-    border-bottom: 1px solid var(--gray-40);
-  }
-  .accordionContainer {
-    .announcementSubject {
-      margin-bottom: 10px;
-      .MuiInputBase-root {
-        border-radius: 20px solid;
-      }
-    }
-  }
-  .imageResource {
-    width: 40px;
-    height: 40px;
-  }
-  .titleContainer {
-    display: flex;
+    justify-content: start;
     align-items: center;
     gap: 10px;
-    .title {
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
   }
+  .content {
+    padding: 10px;
+  }
+}
+.action {
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+}
+
+.iconEdit {
+  color: #1976d2;
+}
+.iconDelete {
+  color: #f44336;
 }

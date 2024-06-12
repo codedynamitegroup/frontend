@@ -139,6 +139,7 @@ const LecturerCourseAssignmentDetails = () => {
     submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
   );
   const submitTime = calculateTimeDifference(timeCloseDate, submitTimeDate);
+  const timeRemaining = calculateTimeDifference(new Date(), timeCloseDate);
   const formatTime = (time: { days: number; hours: number; minutes: number; seconds: number }) => {
     if (time.days > 0) {
       return time.days + " " + t("days") + " " + time.hours + " " + t("hours");
@@ -150,7 +151,6 @@ const LecturerCourseAssignmentDetails = () => {
   };
 
   const checkTimeSubmission = (): number => {
-    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return 0;
     let submitTime = new Date(
       submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
     );

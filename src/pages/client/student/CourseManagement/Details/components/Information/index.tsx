@@ -13,6 +13,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   CircularProgress,
+  Collapse,
   Divider,
   List,
   Paper
@@ -29,7 +30,14 @@ import { useParams } from "react-router-dom";
 import { CourseService } from "services/courseService/CourseService";
 import { di } from "@fullcalendar/core/internal-common";
 import { setLoading, setSections } from "reduxes/courseService/section";
-
+import { NavigateNext } from "@mui/icons-material";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import Heading3 from "components/text/Heading3";
+import Heading4 from "components/text/Heading4";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import AssignmentResource from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
+import dayjs from "dayjs";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
   const topicList = [
@@ -89,15 +97,15 @@ const StudentCourseInformation = () => {
       status: ECourseEventStatus.submitted
     }
   ];
-  const [isTopicOpen, setIsTopicOpen] = useState<Array<Boolean>>([]);
+
   const toggleItem = (index: number) => {
-    if (isTopicOpen[index] === undefined)
-      setIsTopicOpen((prevState: Array<Boolean>) => ({
+    if (collapseOpen[index] === undefined)
+      setCollapseOpen((prevState: Array<Boolean>) => ({
         ...prevState,
         [index]: false
       }));
     else {
-      setIsTopicOpen((prevState: any) => ({
+      setCollapseOpen((prevState: any) => ({
         ...prevState,
         [index]: !Boolean(prevState[index])
       }));
@@ -123,6 +131,9 @@ const StudentCourseInformation = () => {
       dispatch(setLoading(false));
     }
   };
+  const initialCollapseState = Array(sectionState.sections.length).fill(false);
+
+  const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>(initialCollapseState);
 
   useEffect(() => {
     handleGetSections();
@@ -165,41 +176,44 @@ const StudentCourseInformation = () => {
               <Grid item className={classes.topicWrapper} xs={12}>
                 {sectionState.sections.map((topic, index) => {
                   const isOpen =
-                    isTopicOpen[index] === undefined ? true : Boolean(isTopicOpen[index]);
-                  return (
-                    <Box key={index}>
-                      <Accordion expanded={isOpen} className={classes.resourceAccordionContainer}>
-                        <AccordionSummary
-                          expandIcon={
-                            <Box>
-                              <IconButton
-                                onClick={() => toggleItem(index)}
-                                style={{ transform: `rotate(${isOpen ? 0 : 180}deg)` }}
-                              >
-                                <ExpandMoreIcon />
-                              </IconButton>
-                            </Box>
-                          }
-                          className={classes.resourceSummaryContainer}
-                        >
-                          <Typography className={classes.resourceSummaryText} align='center'>
-                            {topic.name}
-                          </Typography>
-                        </AccordionSummary>
+                    collapseOpen[index] === undefined ? true : Boolean(collapseOpen[index]);
 
-                        <AccordionDetails className={classes.accordDetail}>
-                          {topic.modules.map((resource, index) => (
-                            <CourseResource
-                              courseId={courseId || ""}
-                              assignmentId={resource.assignmentId}
-                              name={resource.name}
-                              type={type(resource.typeModule)}
-                              content={resource.content}
-                              key={index}
-                            />
-                          ))}
-                        </AccordionDetails>
-                      </Accordion>
+                  return (
+                    <Box className={classes.generalInfo}>
+                      <Box display='flex' alignItems='center' margin={1}>
+                        {isOpen ? (
+                          <IconButton
+                            className={classes.iconButtonActive}
+                            sx={{ padding: "5px" }}
+                            onClick={() => toggleItem(index)}
+                          >
+                            <ArrowDropDownIcon style={{ fontSize: 20 }} />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            className={classes.iconButton}
+                            sx={{ padding: "5px" }}
+                            onClick={() => toggleItem(index)}
+                          >
+                            <ArrowRightIcon style={{ fontSize: 20 }} />
+                          </IconButton>
+                        )}
+                        <Heading4 fontWeight={500} translation-key='common_general'>
+                          {topic.name}
+                        </Heading4>
+                      </Box>
+                      <Collapse in={isOpen} timeout='auto' unmountOnExit>
+                        {topic.modules.map((resource, index) => (
+                          <CourseResource
+                            courseId={courseId || ""}
+                            assignmentId={resource.assignmentId}
+                            name={resource.name}
+                            type={type(resource.typeModule)}
+                            content={resource.content}
+                            key={index}
+                          />
+                        ))}
+                      </Collapse>
                     </Box>
                   );
                 })}
