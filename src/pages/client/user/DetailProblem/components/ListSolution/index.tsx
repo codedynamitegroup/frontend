@@ -1,7 +1,18 @@
-import React, { useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
-import { Grid, Pagination, Stack } from "@mui/material";
+import {
+  ButtonBase,
+  Chip,
+  CircularProgress,
+  Divider,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Pagination,
+  Stack
+} from "@mui/material";
 import { useState } from "react";
 import { useRef } from "react";
 import DetailSolution from "./components/DetailSolution";
@@ -17,44 +28,36 @@ import SearchBar from "components/common/search/SearchBar";
 import TuneIcon from "@mui/icons-material/Tune";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
+import cloneDeep from "lodash.clonedeep";
+import { SharedSolutionService } from "services/codeAssessmentService/SharedSolutionService";
+import { SharedSolutionPaginationList } from "models/codeAssessmentService/entity/SharedSolutionPaginationList";
+import { SharedSolutionEntity } from "models/codeAssessmentService/entity/SharedSolutionEntity";
+import images from "config/images";
+import i18next from "i18next";
 
 export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: number }) {
   const navigate = useNavigate();
 
-  const tags = [
-    "Java",
-    "C++",
-    "Javascript",
-    "ReactJS",
-    "NodeJS",
-    "Python",
-    "Ruby",
-    "C#",
-    "C",
-    "C++",
-    "PHP",
-    "Kotlin",
-    "Rust"
-  ];
+  const [tags, setTags] = useState<TagEntity[]>([]);
+  const [newestSearch, setNewestSearch] = useState<boolean>(true);
+  const [tagLoading, setTagLoading] = useState<boolean>(false);
+  const [itemLoading, setItemLoading] = useState<boolean>(false);
+  const pageSize = 2;
+  const [pageNum, setPageNum] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [solutionItem, setSolutionItem] = useState<SharedSolutionEntity[]>([]);
 
-  const algorithmTag = [
-    "Sorting",
-    "Searching",
-    "Array",
-    "String",
-    "Linked List",
-    "Stack",
-    "Queue",
-    "Binary Tree",
-    "Binary Search Tree",
-    "Heap",
-    "Hashing",
-    "Graph",
-    "Matrix",
-    "Advanced Data Structure",
-    "Backtracking",
-    "Dynamic Programming"
-  ];
+  useEffect(() => {
+    setTagLoading(true);
+    TagService.getAllTag(false)
+      .then((data: TagEntity[]) => {
+        setTags(data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setTagLoading(false));
+  }, []);
 
   const users1 = [
     {
@@ -180,9 +183,19 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
   const handleSolutionDetail = () => {
     setSolutionDetail(!solutionDetail);
   };
+  const [searchKey, setSearchKey] = useState<string>("");
+  const [timer, setTimer] = useState<number | undefined>(undefined);
 
   const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
+    setSearchKey(searchVal);
+
+    // clearTimeout(timer);
+    // const newTimer = window.setTimeout(() => {
+    //   console.log(searchVal);
+    //   setSearchKey(searchVal);
+    // }, 1000);
+
+    // setTimer(newTimer);
   };
 
   const { problemId, courseId, lessonId } = useParams<{
@@ -199,6 +212,51 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
           .replace(":courseId", courseId)
           .replace(":lessonId", lessonId)
       );
+  };
+  const displayTag = [
+    ...tags.filter((item) => item.isChoosen),
+    ...tags.filter((item) => !item.isChoosen)
+  ];
+  const handleSelectTag = (id: string) => {
+    let newTagList = cloneDeep(tags);
+    newTagList.forEach((value) => {
+      if (value.id === id) value.isChoosen = !value.isChoosen;
+    });
+    setTags(newTagList);
+  };
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openFilterNewest = Boolean(anchorEl);
+  const handleCloseFilterNewest = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenFilterNewest = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const choosenTagList = tags.filter((item) => item.isChoosen);
+  useEffect(() => {
+    if (problemId) {
+      setItemLoading(true);
+      SharedSolutionService.getSharedSolution(
+        problemId,
+        {
+          searchKey,
+          newest: newestSearch,
+          filterTags: choosenTagList.length > 0 ? choosenTagList : null
+        },
+        { pageSize, pageNum }
+      )
+        .then((data: SharedSolutionPaginationList) => {
+          setSolutionItem(data.sharedSolution);
+          setTotalPage(data.totalPages);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => setItemLoading(false));
+    }
+  }, [problemId, searchKey, tags, pageNum, newestSearch]);
+  const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPageNum(value - 1);
   };
 
   return (
@@ -221,10 +279,54 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
               </Grid>
               <Grid item xs={0.5}></Grid>
               <Grid item xs={2} className={classes.filter}>
-                <TuneIcon />
-                <ParagraphBody translation-key='detail_problem_discussion_filter_newest'>
-                  {t("detail_problem_discussion_filter_newest")}
-                </ParagraphBody>
+                <IconButton id='newest-button' onClick={handleOpenFilterNewest}>
+                  <TuneIcon />
+                  <ParagraphBody
+                    translation-key={
+                      newestSearch
+                        ? "detail_problem_discussion_filter_newest"
+                        : "detail_problem_discussion_filter_oldest"
+                    }
+                  >
+                    {t(
+                      newestSearch
+                        ? "detail_problem_discussion_filter_newest"
+                        : "detail_problem_discussion_filter_oldest"
+                    )}
+                  </ParagraphBody>
+                </IconButton>
+                <Menu
+                  id='newest-menu'
+                  aria-labelledby='newest-button'
+                  anchorEl={anchorEl}
+                  open={openFilterNewest}
+                  onClose={handleCloseFilterNewest}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left"
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left"
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      setNewestSearch(true);
+                      handleCloseFilterNewest();
+                    }}
+                  >
+                    {t("detail_problem_discussion_filter_newest")}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      setNewestSearch(false);
+                      handleCloseFilterNewest();
+                    }}
+                  >
+                    {t("detail_problem_discussion_filter_oldest")}
+                  </MenuItem>
+                </Menu>
               </Grid>
             </Grid>
             <Box className={classes.tagItem}>
@@ -233,26 +335,47 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
               </Box>
               <Box className={classes.tag}>
                 <Box className={classes.tagLanguage}>
-                  {tags.map((tag, index) => {
-                    return (
-                      <Box key={index} className={classes.item}>
-                        {tag}
-                      </Box>
-                    );
-                  })}
+                  {displayTag.map(
+                    (tag, index) =>
+                      index < 7 && (
+                        <Chip
+                          key={tag.id}
+                          onClick={() => handleSelectTag(tag.id)}
+                          sx={{
+                            border: tag.isChoosen ? 1 : 0,
+                            padding: "15px 8px",
+                            backgroundColor: "var(--gray-10)",
+                            fontFamily: "Montserrat"
+                          }}
+                          // label={algorithm.numOfCodeQuestion}
+                          label={tag.name}
+                          size='small'
+                        />
+                      )
+                  )}
                 </Box>
-
                 <Box
                   className={classes.tagAlgorithm}
                   style={{ display: isExpanded ? "flex" : "none" }}
                 >
-                  {algorithmTag.map((tag, index) => {
-                    return (
-                      <Box key={index} className={classes.item}>
-                        {tag}
-                      </Box>
-                    );
-                  })}
+                  {displayTag.map(
+                    (tag, index) =>
+                      index > 7 && (
+                        <Chip
+                          key={tag.id}
+                          onClick={() => handleSelectTag(tag.id)}
+                          sx={{
+                            border: tag.isChoosen ? 1 : 0,
+                            padding: "15px 8px",
+                            backgroundColor: "var(--gray-10)",
+                            fontFamily: "Montserrat"
+                          }}
+                          // label={algorithm.numOfCodeQuestion}
+                          label={tag.name}
+                          size='small'
+                        />
+                      )
+                  )}
                 </Box>
               </Box>
               <ExpandMoreIcon
@@ -264,9 +387,9 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
             <Box className={classes.shareSolution}>
               <Box
                 className={classes.shareSolutionTitle}
-                translation-key='detail_problem_discussion_your_solution_rank'
+                translation-key='detail_problem_discussion_share_solution_to_help'
               >
-                {t("detail_problem_discussion_your_solution_rank", { percent: 82 })}
+                {t("detail_problem_discussion_share_solution_to_help")}
               </Box>
               <Button
                 component='label'
@@ -280,48 +403,82 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
               </Button>
             </Box>
           </Box>
-          <Stack overflow={"auto"}>
-            {users.map((user) => {
-              return (
-                <Box onClick={handleSolutionDetail} className={classes.solutionInfo} key={user.id}>
-                  <Box className={classes.solutionTitle}>
-                    <Box className={classes.avatar}>
-                      <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
-                    </Box>
-                    <Box className={classes.nameTitleContainer}>
-                      <Box className={classes.name}>{user.name}</Box>
-                      <Box className={classes.title}>{user.title}</Box>
-                    </Box>
-                  </Box>
-                  <Box className={classes.tagLanguageSolution}>
-                    {user.tags.slice(0, 3).map((tag, index) => {
-                      return (
-                        <Box key={index} className={classes.item}>
-                          {tag}
+          {itemLoading && <CircularProgress />}
+          {!itemLoading && (
+            <Stack overflow={"auto"}>
+              {solutionItem.map((item) => {
+                return (
+                  <>
+                    <ButtonBase
+                      onClick={handleSolutionDetail}
+                      focusRipple
+                      sx={{
+                        justifyContent: "flex-start",
+                        fontFamily: "Montserrat, sans-serif",
+                        textAlign: "left",
+                        fontSize: "16px",
+                        "&:hover": {
+                          background: "var(--gray-2)"
+                        }
+                      }}
+                    >
+                      <Box className={classes.solutionInfo} key={item.sharedSolutionId}>
+                        <Box className={classes.solutionTitle}>
+                          <Box className={classes.avatar}>
+                            <img
+                              className={classes.imgAvatar}
+                              src={item.user.avatarUrl ?? images.avatar.avatarBoyDefault}
+                              alt='avatar'
+                            ></img>
+                          </Box>
+                          <Box className={classes.nameTitleContainer}>
+                            <Box className={classes.name}>
+                              {i18next.language === "vi"
+                                ? `${item.user?.lastName ?? ""} ${item.user?.firstName ?? ""}`
+                                : `${item.user?.firstName ?? ""} ${item.user?.lastName ?? ""}`}
+                            </Box>
+                            <Box className={classes.title}>{item.title}</Box>
+                          </Box>
                         </Box>
-                      );
-                    })}
-                  </Box>
-                  <Box className={classes.solutionButton}>
-                    <Box className={classes.upVote}>
-                      <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
-                      <Box className={classes.upVoteNumber}>{user.upVote}</Box>
-                    </Box>
-                    <Box className={classes.view}>
-                      <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
-                      <Box className={classes.viewNumber}>{user.view}</Box>
-                    </Box>
-                    <Box className={classes.comment}>
-                      <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
-                      <Box className={classes.commentNumber}>{user.comment}</Box>
-                    </Box>
-                  </Box>
-                </Box>
-              );
-            })}
-            {/* <Button onClick={() => setUser([...users, ...users1])}>Load more</Button> */}
-            <Pagination count={10} />
-          </Stack>
+                        <Box className={classes.tagLanguageSolution}>
+                          {item.tags.slice(0, 3).map((tag) => {
+                            return (
+                              <Box key={tag.id} className={classes.item}>
+                                {tag.name}
+                              </Box>
+                            );
+                          })}
+                        </Box>
+                        <Box className={classes.solutionButton}>
+                          {/* <Box className={classes.upVote}>
+                          <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
+                          <Box className={classes.upVoteNumber}>{user.upVote}</Box>
+                        </Box> */}
+                          <Box className={classes.view}>
+                            <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
+                            <Box className={classes.viewNumber}>{item.totalView}</Box>
+                          </Box>
+                          <Box className={classes.comment}>
+                            <FontAwesomeIcon icon={faComment} className={classes.solutionIcon} />
+                            <Box className={classes.commentNumber}>{item.totalComment}</Box>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </ButtonBase>
+                    <Divider flexItem />
+                  </>
+                );
+              })}
+              {/* <Button onClick={() => setUser([...users, ...users1])}>Load more</Button> */}
+              <Stack alignItems={"center"}>
+                <Pagination
+                  count={totalPage}
+                  onChange={handleChangePagination}
+                  page={pageNum + 1}
+                />
+              </Stack>
+            </Stack>
+          )}
         </Stack>
       ) : (
         <Box className={classes.detailSolution}>
