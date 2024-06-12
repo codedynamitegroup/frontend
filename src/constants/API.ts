@@ -139,6 +139,10 @@ export const API = {
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
       GET_BY_ID: "/code-assessment/code-submission/:id"
+    },
+    SHARED_SOLUTION: {
+      DEFAULT: "/code-assessment/shared-solution",
+      GET_BY_ID: "code-assessment/shared-solution/:id"
     }
   },
   JUDGE0: {

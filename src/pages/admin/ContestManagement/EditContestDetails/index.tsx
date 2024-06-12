@@ -391,7 +391,9 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
           <JoyButton
             variant='outlined'
             translation-key='contest_preview_contest_details_page'
-            onClick={() => navigate(routes.user.contest.detail.replace(":contestId", contestId))}
+            onClick={() =>
+              navigate(routes.user.contest.detail.information.replace(":contestId", contestId))
+            }
           >
             {t("contest_preview_contest_details_page")}
           </JoyButton>

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -22,45 +22,45 @@ import Button from "@mui/material/Button";
 import MDEditor from "@uiw/react-md-editor";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "hooks";
+import { setLoading } from "reduxes/Loading";
+import { SharedSolutionService } from "services/codeAssessmentService/SharedSolutionService";
+import { SharedSolutionEntity } from "models/codeAssessmentService/entity/SharedSolutionEntity";
+import images from "config/images";
+import i18next from "i18next";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
 
 interface Props {
   handleSolutionDetail: () => void;
+  selectedSolutionId: string | null;
 }
-export default function DetailSolution({ handleSolutionDetail }: Props) {
-  const tags = [
-    "Java",
-    "C++",
-    "Javascript",
-    "ReactJS",
-    "NodeJS",
-    "Python",
-    "Ruby",
-    "C#",
-    "C",
-    "C++",
-    "PHP",
-    "Kotlin",
-    "Rust"
-  ];
+const toDateFormate = (str: string | undefined, format: string) => {
+  try {
+    if (str === undefined) return str;
 
-  const algorithmTag = [
-    "Sorting",
-    "Searching",
-    "Array",
-    "String",
-    "Linked List",
-    "Stack",
-    "Queue",
-    "Binary Tree",
-    "Binary Search Tree",
-    "Heap",
-    "Hashing",
-    "Graph",
-    "Matrix",
-    "Advanced Data Structure",
-    "Backtracking",
-    "Dynamic Programming"
-  ];
+    return standardlizeUTCStringToLocaleString(str, format);
+  } catch (err) {
+    console.error(err);
+    return str;
+  }
+};
+export default function DetailSolution({ handleSolutionDetail, selectedSolutionId }: Props) {
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector((state) => state.loading);
+  const [solution, setSolution] = useState<SharedSolutionEntity | null>(null);
+  useEffect(() => {
+    if (selectedSolutionId) {
+      dispatch(setLoading(true));
+      SharedSolutionService.getDetailSharedSolution(selectedSolutionId)
+        .then((data: SharedSolutionEntity) => {
+          setSolution(data);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          dispatch(setLoading(false));
+        });
+    }
+  }, []);
 
   const markdownContent = `
   ### Approaches
@@ -160,115 +160,125 @@ public:
           height: `calc(100% - ${stickyBackHeight}px)`
         }}
       >
-        <Box className={classes.solutionTitle}>
-          <Heading4>Cách giải đánh bại 100%</Heading4>
-        </Box>
-        <Box className={classes.userInfo}>
-          <Box className={classes.avatar}>
-            <img
-              className={classes.imgAvatar}
-              src='https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg'
-              alt='avatar'
-            ></img>
-          </Box>
-          <Box className={classes.nameInfoContainer}>
-            <Box className={classes.name}>Nguyễn Văn A</Box>
-            <Box className={classes.solutionButton}>
-              <Box className={classes.upVote}>
-                <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
-                <Box className={classes.upVoteNumber}>1000</Box>
+        {solution && (
+          <>
+            <Box className={classes.solutionTitle}>
+              <Heading4>{solution.title}</Heading4>
+            </Box>
+            <Box className={classes.userInfo}>
+              <Box className={classes.avatar}>
+                <img
+                  className={classes.imgAvatar}
+                  src={solution.user?.avatarUrl ?? images.avatar.avatarBoyDefault}
+                  alt='avatar'
+                ></img>
               </Box>
-              <Box className={classes.view}>
-                <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
-                <Box className={classes.viewNumber}>25504</Box>
-              </Box>
-              <Box className={classes.calendar}>
-                <FontAwesomeIcon icon={faCalendar} className={classes.solutionIcon} />
-                <Box className={classes.calendarNumber}>12-12-2022</Box>
+              <Box className={classes.nameInfoContainer}>
+                <Box className={classes.name}>
+                  {i18next.language === "vi"
+                    ? `${solution.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
+                    : `${solution.user?.firstName ?? ""} ${solution.user?.lastName ?? ""}`}
+                </Box>
+                <Box className={classes.solutionButton}>
+                  {/* <Box className={classes.upVote}>
+                    <FontAwesomeIcon icon={faThumbsUp} className={classes.solutionIcon} />
+                    <Box className={classes.upVoteNumber}>1000</Box>
+                  </Box> */}
+                  <Box className={classes.view}>
+                    <FontAwesomeIcon icon={faEye} className={classes.solutionIcon} />
+                    <Box className={classes.viewNumber}>{solution.totalView}</Box>
+                  </Box>
+                  <Box className={classes.calendar}>
+                    <FontAwesomeIcon icon={faCalendar} className={classes.solutionIcon} />
+                    <Box className={classes.calendarNumber}>
+                      {toDateFormate(solution.createdAt, i18next.language) ?? ""}
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </Box>
-        <Box className={classes.tagLanguageSolution}>
-          {tags.slice(0, 3).map((tag, index) => {
-            return (
-              <Box className={classes.item} key={index}>
-                {tag}
-              </Box>
-            );
-          })}
-        </Box>
-        <Box data-color-mode='light'>
-          <MDEditor.Markdown source={markdownContent} className={classes.markdown} />
-        </Box>
-
-        <Box className={classes.commentContainer}>
-          <Box className={classes.commentTitleContainer}>
-            <Box className={classes.commentTitle}>
-              <FontAwesomeIcon icon={faComments} className={classes.commentIcon} />
-              <Box
-                className={classes.commentNumber}
-                translation-key='detail_problem_discussion_detail_comment_count'
-              >
-                {t("detail_problem_discussion_detail_comment_count", { commentNumber: 10 })}
-              </Box>
-            </Box>
-            <Box className={classes.filterComment}>Lọc theo: Mới nhất</Box>
-          </Box>
-          <Box className={classes.commentBox}>
-            <TextareaAutosize
-              aria-label='empty textarea'
-              translation-key='detail_problem_discussion_your_comment'
-              placeholder={t("detail_problem_discussion_your_comment")}
-              className={classes.textArea}
-              minRows={5}
-            />
-            <Button
-              variant='contained'
-              className={classes.commentButton}
-              translation-key='detail_problem_discussion_detail_comment'
-            >
-              {t("detail_problem_discussion_detail_comment")}
-            </Button>
-          </Box>
-          <Box className={classes.commentList}>
-            <Box className={classes.commentItem}>
-              {users.map((user) => {
+            <Box className={classes.tagLanguageSolution}>
+              {solution.tags.map((tag) => {
                 return (
-                  <Box className={classes.commentInfo} key={user.id}>
-                    <Box className={classes.commentInfoUser}>
-                      <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
-                      <Box className={classes.commentName}>{user.name}</Box>
-                    </Box>
-                    <Box className={classes.commentText}>
-                      <Markdown children={user.comment} remarkPlugins={[gfm]} />
-                    </Box>
-                    <Box className={classes.commentAction}>
-                      <Box className={classes.upVote}>
-                        <FontAwesomeIcon icon={faThumbsUp} className={classes.commentIcon} />
-                        <span>{user.upVote}</span>
-                      </Box>
-                      <Box className={classes.downVote}>
-                        <FontAwesomeIcon icon={faThumbsDown} className={classes.commentIcon} />
-                      </Box>
-
-                      <Box className={classes.commentIcon}>
-                        <FontAwesomeIcon icon={faComment} className={classes.commentIcon} />
-                      </Box>
-
-                      <Box className={classes.reply}>
-                        <FontAwesomeIcon icon={faReply} className={classes.commentIcon} />
-                        <span translation-key='detail_problem_discussion_detail_reply'>
-                          {t("detail_problem_discussion_detail_reply")}
-                        </span>
-                      </Box>
-                    </Box>
+                  <Box className={classes.item} key={tag.id}>
+                    {tag.name}
                   </Box>
                 );
               })}
             </Box>
-          </Box>
-        </Box>
+            <Box data-color-mode='light'>
+              <MDEditor.Markdown source={solution.content ?? ""} className={classes.markdown} />
+            </Box>
+
+            <Box className={classes.commentContainer}>
+              <Box className={classes.commentTitleContainer}>
+                <Box className={classes.commentTitle}>
+                  <FontAwesomeIcon icon={faComments} className={classes.commentIcon} />
+                  <Box
+                    className={classes.commentNumber}
+                    translation-key='detail_problem_discussion_detail_comment_count'
+                  >
+                    {t("detail_problem_discussion_detail_comment_count", { commentNumber: 10 })}
+                  </Box>
+                </Box>
+                <Box className={classes.filterComment}>Lọc theo: Mới nhất</Box>
+              </Box>
+              <Box className={classes.commentBox}>
+                <TextareaAutosize
+                  aria-label='empty textarea'
+                  translation-key='detail_problem_discussion_your_comment'
+                  placeholder={t("detail_problem_discussion_your_comment")}
+                  className={classes.textArea}
+                  minRows={5}
+                />
+                <Button
+                  variant='contained'
+                  className={classes.commentButton}
+                  translation-key='detail_problem_discussion_detail_comment'
+                >
+                  {t("detail_problem_discussion_detail_comment")}
+                </Button>
+              </Box>
+              <Box className={classes.commentList}>
+                <Box className={classes.commentItem}>
+                  {users.map((user) => {
+                    return (
+                      <Box className={classes.commentInfo} key={user.id}>
+                        <Box className={classes.commentInfoUser}>
+                          <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
+                          <Box className={classes.commentName}>{user.name}</Box>
+                        </Box>
+                        <Box className={classes.commentText}>
+                          <Markdown children={user.comment} remarkPlugins={[gfm]} />
+                        </Box>
+                        <Box className={classes.commentAction}>
+                          <Box className={classes.upVote}>
+                            <FontAwesomeIcon icon={faThumbsUp} className={classes.commentIcon} />
+                            <span>{user.upVote}</span>
+                          </Box>
+                          <Box className={classes.downVote}>
+                            <FontAwesomeIcon icon={faThumbsDown} className={classes.commentIcon} />
+                          </Box>
+
+                          <Box className={classes.commentIcon}>
+                            <FontAwesomeIcon icon={faComment} className={classes.commentIcon} />
+                          </Box>
+
+                          <Box className={classes.reply}>
+                            <FontAwesomeIcon icon={faReply} className={classes.commentIcon} />
+                            <span translation-key='detail_problem_discussion_detail_reply'>
+                              {t("detail_problem_discussion_detail_reply")}
+                            </span>
+                          </Box>
+                        </Box>
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Box>
+            </Box>
+          </>
+        )}
       </Box>
       {/* <Box className={classes.stickyUpvote}>
         <Box className={classes.upvoteButton}>

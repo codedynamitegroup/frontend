@@ -176,7 +176,15 @@ export const routes = {
     },
     contest: {
       root: "/contests",
-      detail: "/contests/:contestId"
+      detail: {
+        root: "/contests/:contestId/*",
+        information: "/contests/:contestId/information",
+        problems: {
+          root: "/contests/:contestId/problems",
+          detail: "/contests/:contestId/problems/:problemId"
+        },
+        leaderboard: "/contests/:contestId/leaderboard"
+      }
     },
     homepage: {
       root: "/"

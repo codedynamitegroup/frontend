@@ -1,8 +1,7 @@
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useEffect, useRef, useState } from "react";
-import DetailSolution from "./components/DetailSubmission";
+import { useEffect, useRef, useState, lazy } from "react";
 import { useNavigate } from "react-router";
 import UserTableTemplate from "components/common/table/UserTableTemplate";
 import { useTranslation } from "react-i18next";
@@ -19,6 +18,8 @@ import { CircularProgress, Stack } from "@mui/material";
 import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
 import { clearInterval } from "timers";
 import { setLoading } from "reduxes/Loading";
+
+const DetailSolution = lazy(() => import("./components/DetailSubmission"));
 
 export default function ProblemDetailSubmission({
   submissionLoading
@@ -220,7 +221,7 @@ export default function ProblemDetailSubmission({
   return (
     <Box className={classes.container}>
       {codeSubmissionLoading && (
-        <Stack alignItems={"center"}>
+        <Stack marginTop={3} alignItems={"center"}>
           <CircularProgress />
         </Stack>
       )}

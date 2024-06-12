@@ -49,7 +49,7 @@ const UserHomepage = (props: Props) => {
             <Route path={"course-certificates/:courseId/*"} element={<CourseCertificateDetail />} />
             <Route path={"problems"} element={<ListProblem />} />
             <Route path={"contests"} element={<ContestList />} />
-            <Route path={"contests/:contestId"} element={<ContestDetails />} />
+            <Route path={"contests/:contestId/*"} element={<ContestDetails />} />
             <Route path={"login"} element={<Login />} />
             <Route path={"register"} element={<Register />} />
             <Route path={"forgot-password"} element={<ForgotPassword />} />
