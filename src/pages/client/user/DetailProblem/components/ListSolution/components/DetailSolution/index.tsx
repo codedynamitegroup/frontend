@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Divider } from "@mui/material";
+import { Avatar, Divider } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -167,11 +167,13 @@ public:
             </Box>
             <Box className={classes.userInfo}>
               <Box className={classes.avatar}>
-                <img
-                  className={classes.imgAvatar}
-                  src={solution.user?.avatarUrl ?? images.avatar.avatarBoyDefault}
-                  alt='avatar'
-                ></img>
+                <Avatar
+                  sx={{ bgcolor: "var(--green-500)" }}
+                  alt={solution.user?.firstName}
+                  src={solution.user?.avatarUrl}
+                >
+                  {solution.user?.firstName.charAt(0)}
+                </Avatar>
               </Box>
               <Box className={classes.nameInfoContainer}>
                 <Box className={classes.name}>
