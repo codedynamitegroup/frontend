@@ -7,6 +7,7 @@ import {
   CircularProgress,
   FormControl,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -403,6 +404,7 @@ export default function DetailProblem() {
                   variant='contained'
                   color='primary'
                   translation-key='detail_problem_execute'
+                  focusRipple
                   onClick={handleExecuteCode}
                   disabled={!auth.isLoggedIn}
                 >
@@ -414,6 +416,7 @@ export default function DetailProblem() {
                   color='primary'
                   translation-key='detail_problem_submit'
                   onClick={handleSubmitCode}
+                  focusRipple
                   disabled={!auth.isLoggedIn}
                 >
                   {submissionLoading && <CircularProgress size={20} />}

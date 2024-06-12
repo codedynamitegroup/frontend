@@ -6,4 +6,15 @@ export interface SharedSolutionEntity {
   totalView: number;
   totalComment: number;
   createdAt: string;
+  title: string;
+  user: {
+    id: UUID;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string;
+  };
+  tags: {
+    id: UUID;
+    name: string;
+  }[];
 }

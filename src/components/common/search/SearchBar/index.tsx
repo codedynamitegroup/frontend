@@ -60,6 +60,13 @@ const SearchBar = (props: PropsData) => {
               placeholder={placeHolder ? placeHolder : t("common_search")}
               onChange={handleOnChange}
               value={searchText}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  // Do code here
+                  ev.preventDefault();
+                  handleClickSearchButton();
+                }
+              }}
               startAdornment={
                 <InputAdornment position='start'>
                   <Tooltip title={t("search_bar_click")} arrow disableInteractive>
