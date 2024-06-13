@@ -34,6 +34,7 @@ import "dayjs/locale/vi";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { Link as RouterLink } from "react-router-dom";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -128,7 +129,8 @@ const AssignmentResource = ({
         </Grid>
         <Grid item xs={7.3}>
           <Link
-            href={
+            component={RouterLink}
+            to={
               type === ResourceType.assignment
                 ? routes.lecturer.assignment.detail
                     .replace(":courseId", courseId ?? "")

@@ -203,8 +203,7 @@
   "common_cannot_be_blank": "cannot be blank",
 
   "side_bar_dashboard": "Dashboard",
-  "side_bar_contest": "Contest management",
-  "side_bar_user_management": "User management",
+  "side_bar_contest_management": "Contest management",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -361,6 +360,14 @@
   "forget_password_back_link": "Back to login page",
   "forget_password_description": "Enter registerd email, we will send a change password email to this email",
 
+  "role_system_admin": "System admin",
+  "role_org_admin": "Org admin",
+  "role_lecturer": "Lecturer",
+  "role_student": "Student",
+  "role_user": "User",
+
+  "user_management": "User management",
+  "user_create": "Create user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",

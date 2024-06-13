@@ -17,17 +17,15 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setContests, setLoading } from "reduxes/coreService/Contest";
+import { setUsers, setLoading } from "reduxes/authService/user";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
-import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
@@ -35,6 +33,7 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { setErrorMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
+import { ERoleName } from "models/authService/entity/role";
 
 interface UserManagementProps {
   id: string;
@@ -50,17 +49,14 @@ interface UserManagementProps {
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
   createdAt: Date;
+  roleName: string;
 }
 
 const UserManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [userList, setUserList] = useState<User[]>([]);
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
@@ -68,7 +64,7 @@ const UserManagement = () => {
     ContestStartTimeFilterEnum.ALL
   );
 
-  const contestState = useSelector((state: RootState) => state.contest);
+  const userState = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -89,7 +85,7 @@ const UserManagement = () => {
           pageNo,
           pageSize
         });
-        setUserList(getUsersResponse.users);
+        dispatch(setUsers(getUsersResponse));
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -103,21 +99,20 @@ const UserManagement = () => {
     [dispatch]
   );
 
-  // const handleSearchChange = useCallback(
-  //   (value: string) => {
-  //     handleGetContests({
-  //       searchName: value,
-  //       startTimeFilter: contestStatusFilter
-  //     });
-  //   },
-  //   [handleGetContests, contestStatusFilter]
-  // );
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      handleGetUsers({
+        searchName: value
+      });
+    },
+    [handleGetUsers]
+  );
 
   const tableHeading: GridColDef[] = [
     {
       field: "email",
       headerName: "Email",
-      flex: 1,
+      flex: 2,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -151,7 +146,7 @@ const UserManagement = () => {
     {
       field: "fullname",
       headerName: t("common_fullname"),
-      flex: 1,
+      flex: 2,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -187,10 +182,25 @@ const UserManagement = () => {
       }
     },
     {
+      field: "roleName",
+      headerName: t("common_role"),
+      flex: 1,
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_role")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return <ParagraphSmall width={"auto"}>{params.row.roleName}</ParagraphSmall>;
+      }
+    },
+    {
       field: "action",
       headerName: t("common_action"),
       type: "actions",
-      flex: 0.6,
+      flex: 0.8,
       renderHeader: () => {
         return (
           <TextTitle width={"auto"} sx={{ textAlign: "left" }}>
@@ -222,10 +232,7 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(
-    () => contestState.contests.totalItems || 0,
-    [contestState.contests]
-  );
+  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -242,9 +249,29 @@ const UserManagement = () => {
     });
   };
 
+  const roleMapping = useMemo(
+    () => [
+      { name: ERoleName.ADMIN, label: t("role_system_admin") },
+      { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
+      { name: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
+      { name: ERoleName.STUDENT_MOODLE, label: t("role_student") }
+    ],
+    [t]
+  );
+
+  const isMatchedRoles = useCallback(
+    (user: User) => {
+      const matchedRole = roleMapping.find((role) =>
+        user?.roles.some((userRole) => userRole?.name === role.name)
+      );
+      return matchedRole ? matchedRole.label : t("role_user");
+    },
+    [roleMapping, t]
+  );
+
   const userListTable: UserManagementProps[] = useMemo(
     () =>
-      userList.map((user) => {
+      userState.users.users.map((user) => {
         return {
           id: user.userId,
           userId: user.userId,
@@ -258,26 +285,25 @@ const UserManagement = () => {
           dob: user.dob,
           isLinkedWithGoogle: user.isLinkedWithGoogle,
           isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt
+          createdAt: user.createdAt,
+          roleName: isMatchedRoles(user)
         };
       }),
-    [userList]
+    [isMatchedRoles, userState.users]
   );
 
-  // const handleApplyFilter = useCallback(() => {
-  //   handleGetContests({
-  //     searchName: searchValue,
-  //     startTimeFilter: contestStatusFilter
-  //   });
-  // }, [handleGetContests, searchValue, contestStatusFilter]);
+  const handleApplyFilter = useCallback(() => {
+    handleGetUsers({
+      searchName: searchValue
+    });
+  }, [handleGetUsers, searchValue, contestStatusFilter]);
 
-  // const handleCancelFilter = useCallback(() => {
-  //   setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
-  //   handleGetContests({
-  //     searchName: searchValue,
-  //     startTimeFilter: ContestStartTimeFilterEnum.ALL
-  //   });
-  // }, [handleGetContests, searchValue]);
+  const handleCancelFilter = useCallback(() => {
+    setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
+    handleGetUsers({
+      searchName: searchValue
+    });
+  }, [handleGetUsers, searchValue]);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -285,6 +311,8 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      console.log("Hello", userState.users.users.length);
+      if (userState.users.users.length > 0) return;
       dispatch(setInititalLoading(true));
       await handleGetUsers({
         searchName: ""
@@ -293,7 +321,7 @@ const UserManagement = () => {
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers]);
+  }, [dispatch, handleGetUsers, userState.users.users]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -301,12 +329,6 @@ const UserManagement = () => {
 
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
       <Card
         sx={{
           margin: "20px",
@@ -332,19 +354,17 @@ const UserManagement = () => {
           }}
         >
           <Grid item xs={12}>
-            <Heading1 translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </Heading1>
+            <Heading1 translate-key='user_management'>{t("user_management")}</Heading1>
           </Grid>
           <Grid item xs={12}>
-            {/* <CustomSearchFeatureBar
-              isLoading={contestState.isLoading}
+            <CustomSearchFeatureBar
+              isLoading={userState.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
-              createBtnText={t("contest_create")}
+              createBtnText={t("user_create")}
               onClickCreate={() => {
-                navigate(routes.admin.contest.create);
+                navigate(routes.admin.users.create);
               }}
               numOfResults={totalElement}
               filterKeyList={[
@@ -375,17 +395,17 @@ const UserManagement = () => {
               }
               currentFilterKey='Status'
               currentFilterValue={contestStatusFilter}
-              handleFilterValueChange={(value:any) => {
+              handleFilterValueChange={(value: any) => {
                 setContestStatusFilter(value as ContestStartTimeFilterEnum);
               }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
-            /> */}
+            />
           </Grid>
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={contestState.isLoading}
+              loading={userState.isLoading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

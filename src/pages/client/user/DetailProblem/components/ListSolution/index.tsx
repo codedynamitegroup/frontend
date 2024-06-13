@@ -2,6 +2,7 @@ import React, { lazy, memo, useCallback, useEffect } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import {
+  Avatar,
   ButtonBase,
   Chip,
   CircularProgress,
@@ -324,11 +325,13 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
                       <Box className={classes.solutionInfo} key={item.sharedSolutionId}>
                         <Box className={classes.solutionTitle}>
                           <Box className={classes.avatar}>
-                            <img
-                              className={classes.imgAvatar}
-                              src={item.user.avatarUrl ?? images.avatar.avatarBoyDefault}
-                              alt='avatar'
-                            ></img>
+                            <Avatar
+                              sx={{ bgcolor: "var(--green-500)" }}
+                              alt={item.user.firstName}
+                              src={item.user.avatarUrl}
+                            >
+                              {item.user.firstName.charAt(0)}
+                            </Avatar>
                           </Box>
                           <Box className={classes.nameTitleContainer}>
                             <Box className={classes.name}>

@@ -22,9 +22,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { UserService } from "services/authService/UserService";
-import LoadButton from "components/common/buttons/LoadingButton";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import ErrorMessage from "components/text/ErrorMessage";
+import JoyButton from "@mui/joy/Button";
 interface IFormDataUpdateProfileUser {
   firstName: string;
   lastName: string;
@@ -62,20 +64,9 @@ const UserInformationDetailsDialog = ({
   const accessToken = localStorage.getItem("access_token");
   const provider = localStorage.getItem("provider");
 
-  // const onHandleChangeGender = (value: string) => {
-  //   setData((pre) => ({
-  //     ...pre,
-  //     gender: value
-  //   }));
-  // };
-
   const schema = useMemo(() => {
     return yup.object().shape({
       firstName: yup.string().required(t("first_name_required")),
-      // .matches(
-      //   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-      //   t("email_invalid")
-      // ),
       lastName: yup.string().required(t("last_name_required")),
       dob: yup.string(),
       phone: yup.string().matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
@@ -107,6 +98,7 @@ const UserInformationDetailsDialog = ({
   const dispatch = useDispatch();
 
   const handleUpdateProfileUser = async (data: IFormDataUpdateProfileUser) => {
+    console.log(data);
     setIsUpdateProfileLoading(true);
     UserService.updateProfileUser({
       firstName: data.firstName,
@@ -175,14 +167,28 @@ const UserInformationDetailsDialog = ({
           width='100%'
           errorMessage={errors?.lastName?.message}
         />
-        <InputTextField
-          type='text'
-          title={t("common_phone")}
-          inputRef={register("phone")}
-          translation-key='common_phone'
-          width='100%'
-          errorMessage={errors?.phone?.message}
-        />
+        <Grid container spacing={1} columns={12}>
+          <Grid item xs={3}>
+            <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
+          </Grid>
+          <Grid item xs={9} display={"flex"} flexDirection={"column"} gap={"10px"}>
+            <Controller
+              control={control}
+              name='phone'
+              render={({ field }) => {
+                return (
+                  <PhoneInput
+                    placeholder='Enter phone number'
+                    value={field.value}
+                    onChange={field.onChange}
+                    className={classes.phoneInput}
+                  />
+                );
+              }}
+            />
+            {errors.phone?.message && <ErrorMessage>{errors.phone?.message}</ErrorMessage>}
+          </Grid>
+        </Grid>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
@@ -208,54 +214,21 @@ const UserInformationDetailsDialog = ({
                 );
               }}
             />
-            {/* <CustomDatePicker
-              value={dayjs(format(data?.dob, "dd-MM-yyyy"), "DD/MM/YYYY")}
-              onHandleValueChange={(newValue) => {
-                // setData((pre) => ({
-                //   ...pre,
-                //   dob: newValue?.format("DD/MM/YYYY") || ""
-                // }));
-              }}
-            /> */}
+            {errors.dob?.message && <ErrorMessage>{errors.dob?.message}</ErrorMessage>}
           </Grid>
         </Grid>
-        {/* <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
-            <TextTitle translation-key='common_sex'>{t("common_sex")}</TextTitle>
-          </Grid>
-          <Grid item xs={9}>
-            <BasicRadioGroup
-              ariaLabel='gender'
-              value={data.gender}
-              handleChange={onHandleChangeGender}
-              items={[
-                {
-                  value: "0",
-                  label: t("common_male")
-                },
-                {
-                  value: "1",
-                  label: t("common_female")
-                }
-              ]}
-              translation-key={["common_female", "common_male"]}
-            />
-          </Grid>
-        </Grid> */}
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}></Grid>
           <Grid item xs={9}>
-            <LoadButton
+            <JoyButton
               loading={isUpdateProfileLoading}
-              btnType={BtnType.Primary}
-              colorname='--white'
-              autoFocus
+              variant='solid'
+              type='submit'
               translation-key='common_update'
-              isTypeSubmit
-              width='100%'
+              sx={{ padding: "10px 40px" }}
             >
               {t("common_update")}
-            </LoadButton>
+            </JoyButton>
           </Grid>
         </Grid>
 
@@ -311,22 +284,6 @@ const UserInformationDetailsDialog = ({
                   </ParagraphBody>
                 )}
               </Grid>
-              {/* <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <Button
-              btnType={BtnType.Text}
-              onClick={() => {}}
-              translation-key='user_detail_dialog_remove_link'
-            >
-              {t("user_detail_dialog_remove_link")}
-            </Button>
-          </Grid> */}
             </Grid>
             <Divider />
 
@@ -375,22 +332,6 @@ const UserInformationDetailsDialog = ({
                   </ParagraphBody>
                 )}
               </Grid>
-              {/* <Grid
-            item
-            xs={3}
-            sx={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <Button
-              btnType={BtnType.Text}
-              onClick={() => {}}
-              translation-key='user_detail_dialog_link'
-            >
-              {t("user_detail_dialog_link")}
-            </Button>
-          </Grid> */}
             </Grid>
             <Divider />
           </>

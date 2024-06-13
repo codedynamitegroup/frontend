@@ -50,7 +50,7 @@ const CustomSearchFeatureBar = ({
     <Stack direction='column' gap={2}>
       {showFilter && filterKeyList.length > 0 && filterValueList.length > 0 && (
         <Paper className={classes.container}>
-          <Paper
+          <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -76,7 +76,7 @@ const CustomSearchFeatureBar = ({
                 items={filterValueList}
               />
             </Stack>
-          </Paper>
+          </Box>
           <Stack
             direction='row'
             gap={2}

@@ -112,11 +112,9 @@ const CreateContest = () => {
           setType(AlertType.Success);
           setContent(t("contest_create_success"));
           setSubmitLoading(false);
-          navigate(routes.admin.contest.edit.details, {
-            state: {
-              contestName: name
-            }
-          });
+          navigate(
+            routes.admin.contest.edit.details.replace(":contestId", createContestResponse.contestId)
+          );
         }
       } catch (error: any) {
         console.error("error", error);

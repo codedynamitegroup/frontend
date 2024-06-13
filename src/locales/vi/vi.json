@@ -193,7 +193,6 @@
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
-  "side_bar_user_management": "Quản lý người dùng",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -355,6 +354,14 @@
   "dashboard_this_certificate_course_has_no_lesson": "Khóa học này hiện chưa có bài học nào",
   "dashboard_no_ongoing_course": "Chưa có khoá học nào được bắt đầu. Hãy bắt đầu học ngay",
 
+  "role_system_admin": "QTV hệ thống",
+  "role_org_admin": "QTV tổ chức",
+  "role_lecturer": "Giảng viên",
+  "role_student": "Sinh viên",
+  "role_user": "Người dùng",
+
+  "user_management": "Quản lý người dùng",
+  "user_create": "Tạo người dùng",
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",
   "user_detail": "Chi tiết người dùng",

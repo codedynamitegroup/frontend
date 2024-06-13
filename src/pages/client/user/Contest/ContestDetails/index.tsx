@@ -47,7 +47,8 @@ const ContestDetails = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  console.log("pathname", pathname);
+  const [leaderboardPage, setLeaderboardPage] = useState<number>(0);
+  const [leaderboardPageSize, setLeaderboardPageSize] = useState<number>(5);
   const contestState = useSelector((state: RootState) => state.contest);
   const { contestId } = useParams<{ contestId: string }>();
   // const contestDetails = useMemo(() => contestState.contestDetails, [contestState.contestDetails]);
@@ -189,17 +190,10 @@ const ContestDetails = () => {
         contestId={contestId || ""}
       />
       <Container className={classes.bodyContainer}>
-        <Grid
-          container
-          gap={2}
-          // sx={{
-          //   display: "flex",
-          //   justifyContent: "center"
-          // }}
-        >
+        <Grid container gap={2}>
           <Grid
             item
-            xs={activeTab !== 3 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
+            xs={activeTab !== 2 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
           >
             <Box className={classes.bodyWrapper}>
               {/* <TabContext value={activeTab}> */}
@@ -209,7 +203,6 @@ const ContestDetails = () => {
                   onChange={handleChange}
                   aria-label='basic tabs example'
                   className={classes.tabs}
-                  variant='fullWidth'
                 >
                   <Tab
                     label={t("contest_detail_description")}
@@ -356,9 +349,15 @@ const ContestDetails = () => {
                           <>
                             <Heading1>{t("contest_detail_leaderboard")}</Heading1>
                             <ContestLeaderboard
+                              page={leaderboardPage}
+                              pageSize={leaderboardPageSize}
+                              setPage={setLeaderboardPage}
+                              setPageSize={setLeaderboardPageSize}
                               currentUserRank={contestLeaderboard?.participantRank}
                               rankingList={contestLeaderboard?.contestLeaderboard || []}
                               problemList={contestDetails.questions}
+                              totalPages={contestLeaderboard?.totalPages || 0}
+                              totalItems={contestLeaderboard?.totalItems || 0}
                             />
                           </>
                         ) : null}
