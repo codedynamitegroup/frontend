@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
@@ -16,17 +17,17 @@ export class QuestionBankCategoryService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.DEFAULT}`,
-        {
-          params: {
-            isOrgQuestionBank,
-            search,
-            pageNo,
-            pageSize
-          }
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.QUESTION_BANK_CATEGORY.DEFAULT}`, {
+        params: {
+          isOrgQuestionBank,
+          search,
+          pageNo,
+          pageSize
         }
-      );
+      });
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -41,8 +42,11 @@ export class QuestionBankCategoryService {
   }
   static async getQuestionBankCategoryById(questionBankCategoryId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.GET_BY_ID.replace(":id", questionBankCategoryId)}`
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(
+        `${API.COURSE.QUESTION_BANK_CATEGORY.GET_BY_ID.replace(":id", questionBankCategoryId)}`
       );
       if (response.status === 200) {
         return Promise.resolve(response.data);
@@ -59,8 +63,11 @@ export class QuestionBankCategoryService {
 
   static async deleteQuestionBankCategory(questionBankCategoryId: string) {
     try {
-      const response = await axios.delete(
-        `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.DELETE_BY_ID.replace(":id", questionBankCategoryId)}`
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).delete(
+        `${API.COURSE.QUESTION_BANK_CATEGORY.DELETE_BY_ID.replace(":id", questionBankCategoryId)}`
       );
       if (response.status === 204) {
         return Promise.resolve();
@@ -86,15 +93,15 @@ export class QuestionBankCategoryService {
     createdBy: string;
   }) {
     try {
-      const response = await axios.post(
-        `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.CREATE}`,
-        {
-          name,
-          description,
-          isOrgQuestionBank,
-          createdBy
-        }
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.QUESTION_BANK_CATEGORY.CREATE}`, {
+        name,
+        description,
+        isOrgQuestionBank,
+        createdBy
+      });
       if (response.status === 201) {
         return Promise.resolve(response.data);
       }
@@ -117,13 +124,13 @@ export class QuestionBankCategoryService {
     description: string;
   }) {
     try {
-      const response = await axios.put(
-        `${courseServiceApiUrl}${API.COURSE.QUESTION_BANK_CATEGORY.UPDATE_BY_ID.replace(":id", id)}`,
-        {
-          name,
-          description
-        }
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.COURSE.QUESTION_BANK_CATEGORY.UPDATE_BY_ID.replace(":id", id)}`, {
+        name,
+        description
+      });
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 import {
   ExamCreateRequest,
   StartEndExamRequest,
@@ -22,9 +23,10 @@ export class ExamService {
     // }
   ) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.DEFAULT.replace(":courseId", courseId)}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.EXAM.DEFAULT.replace(":courseId", courseId)}`);
       // params: {
       //   search,
       //   pageNo,
@@ -47,9 +49,10 @@ export class ExamService {
 
   static async getExamById(examId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.GET_BY_ID.replace(":id", examId)}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${courseServiceApiUrl}${API.COURSE.EXAM.GET_BY_ID.replace(":id", examId)}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -66,7 +69,10 @@ export class ExamService {
   static async getExamQuestionById(examId: string, currentPage: number | null) {
     try {
       const tempPage = currentPage !== null ? currentPage : "";
-      const response = await axios.get(
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(
         `${courseServiceApiUrl}${API.COURSE.EXAM_QUESTION.DEFAULT.replace(":examId", examId)}?currentPage=${tempPage}`
       );
       if (response.status === 200) {
@@ -102,10 +108,10 @@ export class ExamService {
 
   static async createExam(examData: ExamCreateRequest) {
     try {
-      const response = await axios.post(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.CREATE}`,
-        examData
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.EXAM.CREATE}`, examData);
       if (response.status === 200) {
         return response.data;
       }
@@ -121,7 +127,10 @@ export class ExamService {
 
   static async startExam(examData: StartEndExamRequest) {
     try {
-      const response = await axios.post(`${courseServiceApiUrl}${API.COURSE.EXAM.START}`, examData);
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.EXAM.START}`, examData);
       if (response.status === 200) {
         return response.data;
       }
@@ -137,7 +146,10 @@ export class ExamService {
 
   static async endExam(examData: StartEndExamRequest) {
     try {
-      const response = await axios.post(`${courseServiceApiUrl}${API.COURSE.EXAM.END}`, examData);
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.EXAM.END}`, examData);
       if (response.status === 200) {
         return response.data;
       }
@@ -153,10 +165,10 @@ export class ExamService {
 
   static async submitExam(examData: SubmitExamRequest) {
     try {
-      const response = await axios.post(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.SUBMIT}`,
-        examData
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.EXAM.SUBMIT}`, examData);
       if (response.status === 200) {
         return response.data;
       }
@@ -172,9 +184,10 @@ export class ExamService {
 
   static async getExamSubmissionById(examSubmissionId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.SUBMISSION.replace(":id", examSubmissionId)}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.EXAM.SUBMISSION.replace(":id", examSubmissionId)}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -190,9 +203,10 @@ export class ExamService {
 
   static async getAllAttemptByExamIdAndUserId(examId: string, userId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.SUBMISSION_STUDENT.replace(":id", examId)}?userId=${userId}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.EXAM.SUBMISSION_STUDENT.replace(":id", examId)}?userId=${userId}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }

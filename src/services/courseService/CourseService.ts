@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "constants/API";
 import qs from "qs";
 import api from "utils/api";
@@ -18,7 +17,10 @@ export class CourseService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(`${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}`, {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE.DEFAULT}`, {
         params: {
           search,
           courseType,
@@ -44,9 +46,10 @@ export class CourseService {
 
   static async getSectionsByCourseId(courseId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE.SECTION}/${courseId}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE.SECTION}/${courseId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -61,9 +64,13 @@ export class CourseService {
   }
   static async getCourseDetail(courseId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE.DEFAULT}/${courseId}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE.DEFAULT}/${courseId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
     } catch (error: any) {
       console.error("Failed to fetch course detail", error);
       console.error("Failed to fetch sections by course id", error);

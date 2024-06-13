@@ -7,16 +7,17 @@ import {
   PostShortAnswerQuestion,
   QuestionCloneRequest
 } from "models/coreService/entity/QuestionEntity";
+import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class QuestionService {
   static async createShortAnswerQuestion(shortAnswerQuestionData: PostShortAnswerQuestion) {
     try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.SHORT_ANSWER_QUESTION.CREATE}`,
-        shortAnswerQuestionData
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.QUESTION.SHORT_ANSWER_QUESTION.CREATE}`, shortAnswerQuestionData);
       if (response.status === 201) {
         return response.data;
       }
@@ -32,10 +33,10 @@ export class QuestionService {
 
   static async createEssayQuestion(essayQuestionData: PostEssayQuestion) {
     try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.ESSAY_QUESTION.CREATE}`,
-        essayQuestionData
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.QUESTION.ESSAY_QUESTION.CREATE}`, essayQuestionData);
       if (response.status === 201) {
         return response.data;
       }
@@ -51,10 +52,10 @@ export class QuestionService {
 
   static async createMultichoiceQuestion(multipleChoiceQuestionData: PostMultipleChoiceQuestion) {
     try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.CREATE}`,
-        multipleChoiceQuestionData
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.CREATE}`, multipleChoiceQuestionData);
       if (response.status === 201) {
         return response.data;
       }
@@ -70,10 +71,10 @@ export class QuestionService {
 
   static async getQuestionDetail(questionDetailList: PostQuestionDetailList) {
     try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.QUESTION_DETAIL}`,
-        questionDetailList
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.QUESTION.QUESTION_DETAIL}`, questionDetailList);
       if (response.status === 200) {
         return response.data;
       }
@@ -89,8 +90,11 @@ export class QuestionService {
 
   static async getMultiChoiceQuestionByQuestionId(questionId: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.GET_BY_QUESTION_ID.replace(":questionId", questionId)}`
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(
+        `${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.GET_BY_QUESTION_ID.replace(":questionId", questionId)}`
       );
       if (response.status === 200) {
         return response.data;
@@ -107,9 +111,10 @@ export class QuestionService {
 
   static async getQuestionsByQuestionId(questionId: string) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_ID.replace(":id", questionId)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.QUESTION.GET_BY_ID.replace(":id", questionId)}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -137,17 +142,17 @@ export class QuestionService {
     pageSize?: number;
   }) {
     try {
-      const response = await axios.get(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`,
-        {
-          params: {
-            isOrgQuestionBank,
-            search,
-            pageNo,
-            pageSize
-          }
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.QUESTION.GET_BY_CATEGORY_ID.replace(":categoryId", categoryId)}`, {
+        params: {
+          isOrgQuestionBank,
+          search,
+          pageNo,
+          pageSize
         }
-      );
+      });
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -163,9 +168,10 @@ export class QuestionService {
 
   static async deleteQuestionById(questionId: string) {
     try {
-      const response = await axios.delete(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.DELETE_BY_ID.replace(":id", questionId)}`
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.CORE.QUESTION.DELETE_BY_ID.replace(":id", questionId)}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -181,10 +187,10 @@ export class QuestionService {
 
   static async cloneQuestionByIdIn(questions: QuestionCloneRequest) {
     try {
-      const response = await axios.post(
-        `${coreServiceApiUrl}${API.CORE.QUESTION.CLONE}`,
-        questions
-      );
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.QUESTION.CLONE}`, questions);
       if (response.status === 201) {
         return Promise.resolve(response.data);
       }

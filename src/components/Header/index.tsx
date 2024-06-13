@@ -400,21 +400,21 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {t("common_admin_page")}
             </MenuItem>
           )}
-          {(isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
-            (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root) && (
-              <MenuItem
-                onClick={() => navigate(routes.user.dashboard.root)}
-                translation-key='common_user_page'
-              >
-                <ListItemIcon>
-                  <Box className={classes.imgIcon}>
-                    <img src={images.admin.clientPage} alt='client page img' />
-                  </Box>
-                </ListItemIcon>
+          {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
+            (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
+            <MenuItem
+              onClick={() => navigate(routes.user.dashboard.root)}
+              translation-key='common_user_page'
+            >
+              <ListItemIcon>
+                <Box className={classes.imgIcon}>
+                  <img src={images.admin.clientPage} alt='client page img' />
+                </Box>
+              </ListItemIcon>
 
-                {t("common_user_page")}
-              </MenuItem>
-            ))}
+              {t("common_user_page")}
+            </MenuItem>
+          )}
           {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
             <MenuItem
               onClick={() => navigate(routes.org_admin.users.root)}
