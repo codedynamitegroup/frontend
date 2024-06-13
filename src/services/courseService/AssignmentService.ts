@@ -79,6 +79,26 @@ export class AssignmentService {
       });
     }
   }
+
+  static async deleteAssignment(id: string) {
+    try {
+      const response = await axios.delete(
+        `${courseServiceApiUrl}${API.COURSE.ASSIGNMENT.DELETE_BY_ID}`.replace(":id", id)
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to delete assignment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  // intro attachment
   static async createIntroAttachment(introAttachment: CreateIntroAttachmentCommand) {
     try {
       const response = await axios.post(

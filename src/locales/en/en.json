@@ -114,7 +114,7 @@
   "common_delete": "Delete",
   "common_answer": "Answer",
   "common_question_bank": "question bank",
-  "common_general": "general",
+  "common_general": "General",
   "common_personal": "personal",
   "common_add_new": "add new",
   "common_logout": "Log out",
@@ -509,6 +509,7 @@
 
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",
+  "assignment_management_update_assignment": "Update assignment",
   "asingment_management_allow_time": "Allow submission from",
   "asingment_management_deadline": "Submission deadline",
   "asingment_management_possibility": "Possibility",
@@ -516,6 +517,15 @@
   "asingment_management_possibility_hind_can_not_access": "Hidden and can't access on main page",
   "asingment_management_possibility_hide_can_access": "Hidden but can access on main page if allowed",
   "asingment_management_attach_file": "File attachment (if any)",
+
+  "create_successful_assignment": "Create successful assignment",
+  "update_successful_assignment": "Update successful assignment",
+  "create_failed_assignment": "Create failed assignment",
+
+  "common_confirm_deletion": "Confirm Deletion",
+  "assignment_management_delete_assignment": "Are you sure you want to delete this assignment?",
+  "common_confirm": "Confirm",
+  "common_cancel": "Cancel",
 
   "exam_management_create_retry_num": "Maximum retry times",
   "exam_management_create_when_time_end": "When due",

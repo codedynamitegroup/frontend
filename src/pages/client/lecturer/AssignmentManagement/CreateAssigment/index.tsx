@@ -1,23 +1,15 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import MenuIcon from "@mui/icons-material/Menu";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import * as React from "react";
 
 import {
   Box,
-  Card,
   Collapse,
   Container,
-  CssBaseline,
   Divider,
-  Drawer,
   Grid,
   IconButton,
   Toolbar,
-  Typography,
   Button,
   Checkbox,
   FormGroup,
@@ -25,21 +17,14 @@ import {
   Snackbar,
   Alert
 } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Header from "components/Header";
-import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
-import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
-import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
 import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
-import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
-import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -52,8 +37,6 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import Heading2 from "components/text/Heading2";
 import { NavigateNext } from "@mui/icons-material";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
-import JoySelect from "components/common/JoySelect";
-import { Select } from "@mui/joy";
 import Heading3 from "components/text/Heading3";
 import { idID } from "@mui/material/locale";
 import download from "downloadjs";
@@ -70,6 +53,8 @@ import { CreateIntroAttachmentCommand } from "models/courseService/entity/create
 import CloseIcon from "@mui/icons-material/Close";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface FormData {
   name: string;
@@ -110,7 +95,7 @@ export default function AssignmentCreated() {
   const [assignment, setAssignment] = useState<AssignmentEntity | null>(null);
 
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
-
+  const courseState = useSelector((state: RootState) => state.course);
   console.log(allowSubmissionAfterEndTime);
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -266,15 +251,9 @@ export default function AssignmentCreated() {
     let introAttachments: CreateIntroAttachmentCommand[] = [];
     let attachmentIdArray: string[] = [];
 
-    // check extFiles với assignment.introAttachment
-    // nếu extFiles có id thì update, không có thì create
-
     try {
       if (assignment) {
-        // Retrieve existing attachments
         const existingAttachments = assignment.introAttachments || [];
-
-        // Find files to update, create, and delete
 
         const filesToCreate = extFiles.filter(
           (file) => !existingAttachments.some((existingFile) => existingFile.id === file.id)
@@ -487,7 +466,7 @@ export default function AssignmentCreated() {
                   navigate(routes.lecturer.course.information.replace(":courseId", courseId ?? ""))
                 }
               >
-                CS202 - Nhập môn lập trình
+                {courseState.courseDetail?.name}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
@@ -501,12 +480,21 @@ export default function AssignmentCreated() {
                 {t("course_detail_assignment_list")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                translation-key='assignment_management_create_assignment'
-              >
-                {t("assignment_management_create_assignment")}
-              </ParagraphSmall>
+              {assignment ? (
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  translation-key='assignment_management_update_assignment'
+                >
+                  {t("assignment_management_update_assignment")}
+                </ParagraphSmall>
+              ) : (
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  translation-key='assignment_management_create_assignment'
+                >
+                  {t("assignment_management_create_assignment")}
+                </ParagraphSmall>
+              )}
             </Box>
           </Toolbar>
           <form
@@ -517,9 +505,16 @@ export default function AssignmentCreated() {
             }}
             onSubmit={handleSubmit(submitHandler)}
           >
-            <Heading2 translation-key='assignment_management_create_assignment'>
-              {t("assignment_management_create_assignment")}
-            </Heading2>
+            {assignment ? (
+              <Heading2 translation-key='assignment_management_update_assignment'>
+                {t("assignment_management_update_assignment")}
+              </Heading2>
+            ) : (
+              <Heading2 translation-key='assignment_management_create_assignment'>
+                {t("assignment_management_create_assignment")}
+              </Heading2>
+            )}
+
             <Box className={classes.generalInfo}>
               <Box display='flex' alignItems='center' margin={1}>
                 {collapseOpen ? (
@@ -934,7 +929,7 @@ export default function AssignmentCreated() {
           sx={{ width: "100%" }}
           onClose={() => setOpenSuccessSnackbar(false)}
         >
-          Tạo bài tập thành công
+          {assignment ? t("update_successful_assignment") : t("create_successful_assignment")}
         </Alert>
       </Snackbar>
 
@@ -948,7 +943,7 @@ export default function AssignmentCreated() {
         onClose={() => setOpenErrorSnackbar(false)}
       >
         <Alert severity='error' sx={{ width: "100%" }} onClose={() => setOpenErrorSnackbar(false)}>
-          Tạo bài tập thất bại
+          {t("create_failed_assignment")}
         </Alert>
       </Snackbar>
     </Grid>

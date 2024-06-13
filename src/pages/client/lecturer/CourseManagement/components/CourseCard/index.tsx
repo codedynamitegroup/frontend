@@ -18,7 +18,10 @@ import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 import { Grid } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import Heading5 from "components/text/Heading5";
-
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "store";
+import { useEffect } from "react";
+import { setCourseDetail } from "reduxes/courseService/course";
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -32,6 +35,7 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 interface CardProps {
+  index: number;
   courseId: string;
   courseAvatarUrl: string;
   courseCategory: string;

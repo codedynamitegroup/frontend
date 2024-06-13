@@ -503,6 +503,7 @@
 
   "assignment_management_max_score": "Điểm tối đa",
   "assignment_management_create_assignment": "Tạo bài tập",
+  "assignment_management_update_assignment": "Chỉnh sửa bài tập",
   "asingment_management_allow_time": "Cho phép nộp bài kể từ",
   "asingment_management_deadline": "Hạn nộp bài",
   "asingment_management_possibility": "Tính khả dụng",
@@ -510,6 +511,15 @@
   "asingment_management_possibility_hind_can_not_access": "Ẩn và không thể truy cập trên trang khoá học",
   "asingment_management_possibility_hide_can_access": "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn",
   "asingment_management_attach_file": "Tệp đính kèm (nếu có)",
+
+  "create_successful_assignment": "Tạo bài tập thành công",
+  "update_successful_assignment": "Cập nhật bài tập thành công",
+  "create_failed_assignment": "Tạo bài tập thất bại",
+
+  "common_confirm_deletion": "Xác nhận xóa",
+  "assignment_management_delete_assignment": "Bạn có chắc chắn muốn xóa bài tập này?",
+  "common_confirm": "Xác nhận",
+  "common_cancel": "Hủy",
 
   "exam_management_create_retry_num": "Số lần làm lại tối đa",
   "exam_management_create_retry_num_infinite": "không giới hạn số lần làm lại",

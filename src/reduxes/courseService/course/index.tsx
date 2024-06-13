@@ -8,7 +8,7 @@ interface InitialState {
   currentPage: number;
   totalItems: number;
   totalPages: number;
-  courseDetail: CourseDetailEntity | null;
+  courseDetail: CourseEntity | null;
 }
 
 const initialState: InitialState = {

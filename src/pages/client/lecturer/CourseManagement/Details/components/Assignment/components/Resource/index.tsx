@@ -4,7 +4,7 @@ import classes from "./styles.module.scss";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,12 @@ import {
   Grid,
   Avatar,
   IconButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -35,6 +40,9 @@ import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Link as RouterLink } from "react-router-dom";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { useCallback } from "react";
+import i18next from "i18next";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -49,6 +57,7 @@ interface Props {
   resourceEndedDate: Date | string;
   intro?: string;
   type?: ResourceType;
+  onDelete: (id: string) => void;
 }
 
 const AssignmentResource = ({
@@ -58,12 +67,16 @@ const AssignmentResource = ({
   courseId,
   examId,
   intro,
-  type
+  type,
+  onDelete
 }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
   const navigate = useNavigate();
   type = type || ResourceType.assignment;
   const [resourceExpansion, setResourceExpansion] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const cancelResourceHandler = () => {
     setResourceExpansion(false);
   };
@@ -82,13 +95,17 @@ const AssignmentResource = ({
           .replace(":examId", examId ?? "")
       );
   };
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
 
-  dayjs.extend(localeData);
-  dayjs.extend(weekday);
-  dayjs.extend(advancedFormat);
-
-  // Thiết lập locale tiếng Việt
-  dayjs.locale("vi");
+  useEffect(() => {
+    dayjs.locale(i18n.language);
+    if (i18n.language !== currentLang) {
+      setCurrentLang(i18n.language);
+      dayjs.locale(currentLang === "vi" ? "en" : "vi");
+    }
+  }, [i18next.language]);
 
   const handleEdit = () => {
     if (type === ResourceType.assignment) {
@@ -100,6 +117,19 @@ const AssignmentResource = ({
     }
   };
 
+  const handleDelete = () => {
+    setDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    onDelete(examId ?? "");
+    setDialogOpen(false);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <Box className={classes.cardWrapper}>
       <Grid container alignItems='center'>
@@ -107,7 +137,10 @@ const AssignmentResource = ({
           <Grid container alignItems='center'>
             <Grid item xs={0.6}></Grid>
             <Grid item xs={11.4}>
-              <Box className={classes.deadline}>
+              <Box
+                translation-key={["course_assignment_open", "course_assignment_deadline"]}
+                className={classes.deadline}
+              >
                 <Typography variant='body2' color='textSecondary'>
                   {t("course_assignment_open")}:{" "}
                   {dayjs(resourceOpenDate).format("dddd, DD MMMM YYYY, h:mm A")}
@@ -145,19 +178,46 @@ const AssignmentResource = ({
           </Link>
         </Grid>
         <Grid item xs={3.8} className={classes.action}>
-          {/* edit and delete icon */}
           <Tooltip title='Edit'>
             <IconButton onClick={handleEdit}>
               <Edit className={classes.iconEdit} />
             </IconButton>
           </Tooltip>
           <Tooltip title='Delete'>
-            <IconButton>
+            <IconButton onClick={handleDelete}>
               <Delete className={classes.iconDelete} />
             </IconButton>
           </Tooltip>
         </Grid>
       </Grid>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+        translation-key={[
+          "common_confirm_deletion",
+          "assignment_management_delete_assignment",
+          "common_cancel",
+          "common_confirm"
+        ]}
+      >
+        <DialogTitle id='alert-dialog-title'>{t("common_confirm_deletion")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            {t("assignment_management_delete_assignment")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary'>
+            {t("common_cancel")}
+          </Button>
+          <Button onClick={confirmDelete} color='primary' autoFocus>
+            {t("common_confirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
