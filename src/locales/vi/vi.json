@@ -286,7 +286,7 @@
   "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
   "contest_is_public": "Công khai",
   "contest_is_restricted_forum": "Hạn chế truy cập diễn đàn",
-  "contest_is_restricted_forum_tooltip": "Người tham gia có thể đăng câu hỏi nhưng không thể đăng câu trả lời. Chỉ người điều hành cuộc thi mới có quyền đăng câu trả lời. Cấu hình này cũng nên được thiết lập cho từng thách thức của cuộc thi.",
+  "contest_is_restricted_forum_tooltip": "Người tham gia không thể đăng bài giải. Chỉ người điều hành cuộc thi mới có quyền đăng bài giải.",
   "contest_is_disabled_forum": "Tắt diễn đàn",
   "contest_is_disabled_forum_tooltip": "Tab thảo luận sẽ bị tắt.",
   "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
