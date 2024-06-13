@@ -1,15 +1,16 @@
 import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
 export class CourseTypeService {
   static async getCourseTypes() {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE_TYPE.DEFAULT}`,
-        {}
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE_TYPE.DEFAULT}`, {});
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }
@@ -25,9 +26,10 @@ export class CourseTypeService {
 
   static async getCourseTypeById(id: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.COURSE_TYPE.GET_BY_ORGANIZATION_ID}`.replace(":id", id)
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE_TYPE.GET_BY_ORGANIZATION_ID}`.replace(":id", id));
 
       if (response.status === 200) {
         return response.data;
