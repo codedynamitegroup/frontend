@@ -27,6 +27,7 @@ import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 export default function AssignmentGrading() {
   const { t } = useTranslation();
@@ -130,69 +131,49 @@ export default function AssignmentGrading() {
       ) : (
         <>
           <Box
-            className={classes.toolbar}
-            sx={{
-              backgroundColor: "white",
-              marginTop: `${headerHeight}px`,
-              boxShadow: "0px 2px 4px #00000026"
-            }}
-          >
-            <Toolbar>
-              <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.management)}
-                >
-                  Quản lý khoá học
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.information)}
-                >
-                  CS202 - Nhập môn lập trình
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() =>
-                    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
-                  }
-                >
-                  Danh sách bài tập
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() =>
-                    navigate(
-                      routes.lecturer.assignment.detail
-                        .replace(":assignmentId", assignmentId ?? "")
-                        .replace(":courseId", courseId ?? "")
-                    )
-                  }
-                >
-                  {submissionAssignmentState.submissionAssignments[0]?.assignmentName}
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorname='--blue-500'>Đánh giá</ParagraphSmall>
-              </Box>
-            </Toolbar>
-          </Box>
-          <Box
             className={classes.contentContainer}
             sx={{
-              marginTop: `${1}px`
+              marginTop: `${headerHeight}px`
             }}
           >
             <Container
               sx={{
+                padding: "0",
+                display: "flex",
+                justifyContent: "flex-start"
+              }}
+            >
+              <CustomBreadCrumb
+                breadCrumbData={[
+                  {
+                    navLink: routes.lecturer.course.management,
+                    label: "Quản lý khoá học"
+                  },
+                  {
+                    navLink: routes.lecturer.course.information.replace(
+                      ":courseId",
+                      courseId ?? ""
+                    ),
+                    label: "CS202 - Nhập môn lập trình"
+                  },
+                  {
+                    navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
+                    label: "Danh sách bài tập"
+                  },
+                  {
+                    navLink: routes.lecturer.assignment.detail
+                      .replace(":assignmentId", assignmentId ?? "")
+                      .replace(":courseId", courseId ?? ""),
+                    label: submissionAssignmentState.submissionAssignments[0]?.assignmentName
+                  }
+                ]}
+                lastBreadCrumbLabel='Đánh giá'
+              />
+            </Container>{" "}
+            <Container
+              sx={{
                 backgroundColor: "white",
-                marginTop: "16px",
+                marginTop: "5px",
                 height: "fit-content",
                 padding: "16px"
               }}
