@@ -88,6 +88,7 @@
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
     "react-typed": "^2.0.12",
     "react-youtube": "^10.1.0",
     "redux-persist": "^6.0.0",

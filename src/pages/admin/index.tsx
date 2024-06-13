@@ -13,6 +13,7 @@ import AdminDashboard from "./Dashboard";
 import Footer from "components/Footer";
 import UserManagement from "./UserManagement/UserManagement";
 import CreateUser from "./UserManagement/CreateUser";
+import EditUserDetails from "./UserManagement/EditUserDetails";
 
 type Props = {};
 
@@ -40,6 +41,7 @@ const SystemAdminHomepage = (props: Props) => {
               <Route path={"/dashboard"} element={<AdminDashboard />} />
               <Route path={"users"} element={<UserManagement />} />
               <Route path={"users/create"} element={<CreateUser />} />
+              <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
             </Route>
           </Routes>
         </Box>

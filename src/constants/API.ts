@@ -142,7 +142,10 @@ export const API = {
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",
-      GET_BY_ID: "code-assessment/shared-solution/:id"
+      GET_BY_ID: "code-assessment/shared-solution/:id",
+      COMMENT: {
+        DEFAULT: "code-assessment/shared-solution/:id/comment"
+      }
     }
   },
   JUDGE0: {
@@ -158,9 +161,11 @@ export const API = {
     REGISTER: "/auth/users/register",
     CREATE_USER_BY_ADMIN: "/auth/users",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email",
+    GET_USER_BY_ID: "/auth/users/:id",
     FORGOT_PASSWORD: "/auth/users/forgot-password",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
-    UPDATE_PROFILE_USER: "/auth/users",
+    UPDATE_PROFILE_USER: "/auth/users/update-profile",
+    UPDATE_USER_BY_ADMIN: "/auth/users/:id",
     CHANGE_PASSWORD: "/auth/users/change-password",
     RESET_PASSWORD: "/auth/users/forgot-password/change-password"
   }
