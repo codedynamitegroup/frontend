@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API } from "constants/API";
+import api from "utils/api";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
