@@ -11,7 +11,7 @@ export interface User {
   avatarUrl: string;
   address: string;
   dob: Date;
-  lastLogin: Date;
+  lastLogin: string;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
   organization: OrganizationEntity;
@@ -35,15 +35,25 @@ export interface CreatedUserByAdminRequest {
   email: string;
   password: string;
   firstName: string;
+  phone: string;
   lastName: string;
   roleName: string;
 }
 
 export interface UpdateProfileUserRequest {
+  email: string;
   firstName: string;
   lastName: string;
   dob?: Date;
-  phone?: string;
+  phone: string;
+}
+
+export interface UpdateUserByAdminRequest {
+  firstName: string;
+  lastName: string;
+  dob?: Date;
+  phone: string;
+  roleName: string;
 }
 
 export interface UpdatePasswordUserRequest {

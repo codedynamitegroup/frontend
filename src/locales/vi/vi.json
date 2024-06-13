@@ -361,6 +361,7 @@
 
   "user_management": "Quản lý người dùng",
   "user_create": "Tạo người dùng",
+  "user_update": "Cập nhật người dùng",
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",
   "user_detail": "Chi tiết người dùng",
@@ -532,6 +533,8 @@
   "email_required": "Email không được để trống",
   "email_invalid": "Email không hợp lệ",
   "phone_number_invalid": "Số điện thoại không hợp lệ",
+  "phone_required": "Số điện thoại không được để trống",
+  "role_required": "Vai trò không được để trống",
 
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",

@@ -367,6 +367,7 @@
 
   "user_management": "User management",
   "user_create": "Create user",
+  "user_update": "Update user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",
@@ -538,6 +539,8 @@
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
   "phone_number_invalid": "Phone number is invalid",
+  "phone_required": "Phone number is required",
+  "role_required": "Role is required",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",

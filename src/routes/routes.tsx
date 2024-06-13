@@ -225,8 +225,8 @@ export const routes = {
     users: {
       root: "/admin/users",
       edit: {
-        root: "/admin/users/edit/:contestId/*",
-        details: "/admin/users/edit/:contestId/details"
+        root: "/admin/users/edit/:userId/*",
+        details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
     }
