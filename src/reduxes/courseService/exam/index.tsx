@@ -61,6 +61,9 @@ const examSlice = createSlice({
       state.exams.totalItems = action.payload.totalItems;
       state.exams.totalPages = action.payload.totalPages;
     },
+    setExamList: (state, action) => {
+      state.exams.exams = action.payload.exams;
+    },
     setExamDetail: (state, action) => {
       state.examDetail = action.payload;
     },
@@ -71,5 +74,6 @@ const examSlice = createSlice({
   }
 });
 
-export const { setLoading, setExams, setExamDetail, setExamOverview } = examSlice.actions;
+export const { setLoading, setExams, setExamList, setExamDetail, setExamOverview } =
+  examSlice.actions;
 export default examSlice.reducer;

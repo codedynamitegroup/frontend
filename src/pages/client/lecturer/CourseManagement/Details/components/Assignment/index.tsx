@@ -17,7 +17,7 @@ import i18next from "i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { ExamService } from "services/courseService/ExamService";
-import { setExams } from "reduxes/courseService/exam";
+import { setExamList, setExams } from "reduxes/courseService/exam";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import assignment, { setAssignments } from "reduxes/courseService/assignment";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
@@ -72,10 +72,11 @@ const LecturerCourseAssignment = () => {
   const handleDeleteExam = useCallback(
     async (id: string) => {
       try {
-        // const response = await ExamService.deleteExam(id);
-        // if (response) {
-        //   dispatch(setExams(examState.exams.exams.filter((e) => e.id !== id)));
-        // }
+        const response = await ExamService.deleteExam(id);
+        if (response) {
+          const result = examState.exams.exams.filter((e) => e.id !== id);
+          dispatch(setExamList({ exams: result }));
+        }
       } catch (error) {
         console.log(error);
       }
@@ -193,7 +194,7 @@ const LecturerCourseAssignment = () => {
             {examState.exams.exams.map((exam) => (
               <AssignmentResource
                 key={exam.id}
-                courseId={courseId ?? ""}
+                courseId={courseId}
                 examId={exam.id}
                 resourceTitle={exam.name}
                 resourceOpenDate={exam.timeOpen}
