@@ -69,6 +69,23 @@ export class UserService {
       });
     }
   }
+  static async deleteUserById(id: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.AUTH.DELETE_USER_BY_ID.replace(":id", id)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
   static async login(loginData: LoginRequest) {
     try {
       const response = await api({

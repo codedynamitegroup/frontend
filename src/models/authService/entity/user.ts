@@ -17,6 +17,7 @@ export interface User {
   organization: OrganizationEntity;
   createdAt: Date;
   roles: RoleEntity[];
+  isDeleted: boolean;
 }
 
 export interface LoginRequest {

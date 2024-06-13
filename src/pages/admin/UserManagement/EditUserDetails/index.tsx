@@ -7,7 +7,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import * as yup from "yup";
 import classes from "./styles.module.scss";
@@ -15,14 +15,9 @@ import JoyButton from "@mui/joy/Button";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import BasicSelect, { ItemProps } from "components/common/select/BasicSelect";
 import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
-import {
-  CreatedUserByAdminRequest,
-  UpdateUserByAdminRequest,
-  User
-} from "models/authService/entity/user";
+import { UpdateUserByAdminRequest, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { clearUsers } from "reduxes/authService/user";
 import { format, parse } from "date-fns";

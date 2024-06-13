@@ -165,6 +165,7 @@ export const API = {
     CREATE_USER_BY_ADMIN: "/auth/users",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email",
     GET_USER_BY_ID: "/auth/users/:id",
+    DELETE_USER_BY_ID: "/auth/users/:id",
     FORGOT_PASSWORD: "/auth/users/forgot-password",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
     UPDATE_PROFILE_USER: "/auth/users/update-profile",

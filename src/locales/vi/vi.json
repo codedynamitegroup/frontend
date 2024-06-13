@@ -1,4 +1,5 @@
 {
+  "common_is_blocked": "Đã khóa",
   "common_organization": "Tổ chức",
   "common_please_login": "Vui lòng đăng nhập",
   "common_easy": "Dễ",
@@ -42,7 +43,6 @@
   "common_year_ago": "{{year}} năm trước",
   "common_type_assignment": "Bài tập",
   "common_deadline": "Thời hạn",
-  "common_cancel": "Hủy",
   "common_data_export": "Xuất dữ liệu",
   "common_percentage": "Phần trăm",
   "common_grade": "Điểm",

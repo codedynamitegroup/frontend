@@ -1,4 +1,5 @@
 {
+  "common_is_blocked": "Is blocked",
   "common_organization": "Organization",
   "common_please_login": "Please login",
   "common_easy": "Easy",
@@ -49,7 +50,6 @@
   "common_year_ago_other": "{{year}} years ago",
   "common_type_assignment": "Assignment",
   "common_deadline": "End",
-  "common_cancel": "Cancel",
   "common_data_export": "Export data",
   "common_percentage": "Percentage",
   "common_grade": "Grade",

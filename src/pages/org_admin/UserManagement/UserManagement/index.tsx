@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Divider, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -48,6 +48,7 @@ interface UserManagementProps {
   isLinkedWithMicrosoft: boolean;
   createdAt: Date;
   roleName: string;
+  isDeleted: boolean;
 }
 
 const UserManagement = () => {
@@ -182,6 +183,34 @@ const UserManagement = () => {
       }
     },
     {
+      field: "isDeleted",
+      headerName: t("common_is_blocked"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_blocked")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isDeleted === true ? true : false}
+            color={params.row.isDeleted ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
       field: "roleName",
       headerName: t("common_role"),
       flex: 1,
@@ -283,7 +312,8 @@ const UserManagement = () => {
           isLinkedWithGoogle: user.isLinkedWithGoogle,
           isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
           createdAt: user.createdAt,
-          roleName: mappingRole(user)
+          roleName: mappingRole(user),
+          isDeleted: user.isDeleted
         };
       }),
     [mappingRole, userState.users]

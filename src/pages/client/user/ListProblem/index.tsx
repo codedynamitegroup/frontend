@@ -188,8 +188,7 @@ const ListProblem = () => {
                 <Box className={classes.topic}>
                   <Box
                     sx={{
-                      backgroundImage:
-                        "linear-gradient(180deg, rgb(255, 204, 128) 48%, rgb(255, 235, 204) 100%)"
+                      background: "linear-gradient(45deg, #DDA0DD, #87CEFA)"
                     }}
                     borderRadius={2}
                     paddingX={5}

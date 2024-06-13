@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Divider, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -20,17 +20,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading } from "reduxes/authService/user";
+import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import { setErrorMess } from "reduxes/AppStatus";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 interface UserManagementProps {
   id: string;
@@ -47,6 +48,7 @@ interface UserManagementProps {
   isLinkedWithMicrosoft: boolean;
   createdAt: Date;
   roleName: string;
+  isDeleted: boolean;
 }
 
 const UserManagement = () => {
@@ -59,7 +61,25 @@ const UserManagement = () => {
   });
 
   const userState = useSelector((state: RootState) => state.user);
-
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedUserId, setDeletedUserId] = useState<string>("");
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+  const onDeleteConfirmDelete = async () => {
+    UserService.deleteUserById(deletedUserId)
+      .then((res) => {
+        dispatch(setSuccessMess("Delete user successfully"));
+        dispatch(clearUsers());
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess("Delete user failed"));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
   const dispatch = useDispatch<AppDispatch>();
 
   const handleGetUsers = useCallback(
@@ -106,10 +126,10 @@ const UserManagement = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 2,
+      flex: 3,
       renderHeader: () => {
         return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
             Email
           </Heading5>
         );
@@ -178,6 +198,34 @@ const UserManagement = () => {
       }
     },
     {
+      field: "isDeleted",
+      headerName: t("common_is_blocked"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_blocked")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isDeleted === true ? true : false}
+            color={params.row.isDeleted ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
       field: "roleName",
       headerName: t("common_role"),
       flex: 1,
@@ -217,7 +265,14 @@ const UserManagement = () => {
               });
             }}
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            onClick={() => {
+              setDeletedUserId(params.row.userId);
+              setIsOpenConfirmDelete(true);
+            }}
+            icon={<DeleteIcon />}
+            label='Delete'
+          />
         ];
       }
     }
@@ -279,7 +334,8 @@ const UserManagement = () => {
           isLinkedWithGoogle: user.isLinkedWithGoogle,
           isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
           createdAt: user.createdAt,
-          roleName: mappingRole(user)
+          roleName: mappingRole(user),
+          isDeleted: user.isDeleted
         };
       }),
     [mappingRole, userState.users]
@@ -320,6 +376,13 @@ const UserManagement = () => {
 
   return (
     <>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this user?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
       <Card
         sx={{
           margin: "20px",

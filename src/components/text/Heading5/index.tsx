@@ -5,6 +5,7 @@ interface Props {
   fontWeight?: number | string;
   fontStyle?: string;
   textWrap?: string;
+  nonoverflow?: boolean;
 }
 
 const Heading5 = styled(Typography)<Props>`
@@ -18,6 +19,15 @@ const Heading5 = styled(Typography)<Props>`
   @media only screen and (max-width: 767px) {
     font-size: 14px;
   }
+
+  ${(props) =>
+    props.nonoverflow &&
+    `
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  `}
 `;
 
 export default Heading5;
