@@ -107,7 +107,7 @@ export default function TakeContestProblem() {
         .catch((err) => console.log(err))
         .finally(() => dispatch(setLoading(false)));
     }
-  }, [dispatch]);
+  }, [dispatch, problemId]);
 
   const [selectedLanguage, setSelectedLanguage] = useState<{ id: string; sourceCode: string }>({
     id: "",
@@ -144,7 +144,7 @@ export default function TakeContestProblem() {
       dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
       dispatch(setMemoryLimit(language.pLanguage.memoryLimit));
     }
-  }, [selectedLanguage]);
+  }, [dispatch, selectedLanguage]);
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     const newSelectedLanguageId = event.target.value;
@@ -170,8 +170,7 @@ export default function TakeContestProblem() {
   };
 
   const handleChange = (_: React.SyntheticEvent, newTab: number) => {
-    if (problemId) navigate(tabs[newTab].replace(":problemId", problemId));
-    else if (contestId && problemId)
+    if (contestId && problemId)
       navigate(tabs[newTab].replace(":contestId", contestId).replace(":problemId", problemId));
   };
 
@@ -190,11 +189,7 @@ export default function TakeContestProblem() {
   };
 
   const activeTab = useMemo(() => {
-    if (problemId) {
-      const index = tabs.findIndex((it) => activeRoute(it.replace(":problemId", problemId)));
-      if (index === -1) return 0;
-      return index;
-    } else if (contestId && problemId) {
+    if (contestId && problemId) {
       const index = tabs.findIndex((it) =>
         activeRoute(it.replace(":contestId", contestId).replace(":problemId", problemId))
       );

@@ -182,6 +182,7 @@ export const routes = {
         problems: {
           root: "/contests/:contestId/problems",
           detail: "/contests/:contestId/problems/:problemId",
+          problem_root: "/contests/:contestId/problems/:problemId/*",
           description: "/contests/:contestId/problems/:problemId/description",
           solution: "/contests/:contestId/problems/:problemId/solution",
           submission: "/contests/:contestId/problems/:problemId/submission",
