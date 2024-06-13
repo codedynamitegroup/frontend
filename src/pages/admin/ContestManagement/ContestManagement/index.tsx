@@ -32,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess } from "reduxes/AppStatus";
+import { Checkbox } from "@mui/joy";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -184,6 +185,27 @@ const ContestManagement = () => {
       }
     },
     {
+      field: "isPublic",
+      headerName: t("contest_is_public"),
+      flex: 0.5,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("contest_is_public")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            checked={params.row.isPublic === true ? true : false}
+            color={params.row.isPublic ? "success" : "danger"}
+          />
+        );
+      }
+    },
+    {
       field: "status",
       headerName: t("common_status"),
       flex: 0.7,
@@ -301,8 +323,8 @@ const ContestManagement = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    setPage(model.page);
     setPageSize(model.pageSize);
+    setPage(model.page);
     handleGetContests({
       searchName: searchValue,
       startTimeFilter: ContestStartTimeFilterEnum.ALL,
@@ -311,7 +333,7 @@ const ContestManagement = () => {
     });
   };
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+    // console.log(params);
   };
 
   const handleApplyFilter = useCallback(() => {
