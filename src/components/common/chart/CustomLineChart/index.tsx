@@ -104,6 +104,7 @@ const CustomLineChart = (props: PropsData) => {
         endGradientColor.length !== 0 &&
         startGradientColor.map((color, index) => (
           <Colorswitch
+            key={index}
             startGradientColor={color}
             endGradientColor={endGradientColor[index]}
             threshold={0}

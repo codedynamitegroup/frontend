@@ -163,4 +163,23 @@ export class CertificateCourseService {
       });
     }
   }
+
+  static async getCertificateCourseStatistics() {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CERTIFICATE_COURSE.GET_STATISTICS}`);
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

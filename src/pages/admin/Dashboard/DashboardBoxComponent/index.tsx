@@ -35,7 +35,11 @@ const DasbboradBoxComponent = (props: PropsData) => {
           display={"flex"}
           justifyContent={"space-between"}
         >
-          <Box>
+          <Box
+            sx={{
+              width: "fit-content"
+            }}
+          >
             <ParagraphBody
               letterSpacing={"0.5px"}
               textTransform={"uppercase"}
@@ -43,6 +47,7 @@ const DasbboradBoxComponent = (props: PropsData) => {
               fontSize={"0.75rem"}
               fontWeight={"500"}
               lineHeight={"2.5"}
+              nonoverflow
             >
               {title}
             </ParagraphBody>

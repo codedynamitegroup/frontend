@@ -7,7 +7,8 @@ export const API = {
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
-      REGISTER_BY_ID: "/core/certificate-courses/:id/register"
+      REGISTER_BY_ID: "/core/certificate-courses/:id/register",
+      GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
@@ -34,7 +35,8 @@ export const API = {
       MOST_POPULAR: "/core/contests/popular",
       LEADERBOARD: "/core/contests/:id/leaderboard",
       GET_USERS_OF_CONTEST: "/core/contests/:id/users",
-      JOIN_CONTEST: "/core/contests/:id/register"
+      JOIN_CONTEST: "/core/contests/:id/register",
+      ADMIN_CONTEST_STATISTICS: "/core/contests/contest/dashboard-statistics"
     },
     QUESTION: {
       DEFAULT: "/core/questions",

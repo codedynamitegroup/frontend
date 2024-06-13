@@ -58,6 +58,17 @@ import activeCourse from "assets/img/admin/active-course.svg";
 import inactiveCourse from "assets/img/admin/inactive-course.svg";
 import clientPage from "assets/img/admin/clientPage.svg";
 
+import certificateCompleted from "assets/img/admin/certificate-course-completed-com.svg";
+import certificateEnrollment from "assets/img/admin/certificate-course-enrollment.svg";
+import certificateRating from "assets/img/admin/certificate-course-rating.svg";
+import certificateCourse from "assets/img/admin/certificate-course.svg";
+
+import closedContest from "assets/img/admin/closed-contest.svg";
+import contestParticipant from "assets/img/admin/contest-participant.svg";
+import happeningContest from "assets/img/admin/happening-contest.svg";
+import upcomingContest from "assets/img/admin/upcomming-contest.svg";
+import contestDashboard from "assets/img/admin/contest-dashboard.svg";
+
 const images = {
   course: {
     courseAssignment,
@@ -99,7 +110,16 @@ const images = {
     userEnrollment,
     activeCourse,
     inactiveCourse,
-    clientPage
+    clientPage,
+    certificateCompleted,
+    certificateEnrollment,
+    certificateRating,
+    certificateCourse,
+    closedContest,
+    contestParticipant,
+    happeningContest,
+    upcomingContest,
+    contestDashboard
   }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };

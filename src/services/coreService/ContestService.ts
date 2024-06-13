@@ -258,4 +258,22 @@ export class ContestService {
       });
     }
   }
+  static async getAdminContestStatistics() {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CONTEST.ADMIN_CONTEST_STATISTICS}`);
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }
