@@ -132,7 +132,7 @@ const ContestEditSignUps = () => {
     }
   };
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+    // console.log(params);
   };
 
   const dataList = useMemo(() => {
@@ -160,7 +160,8 @@ const ContestEditSignUps = () => {
       direction='column'
       sx={{
         margin: "0px 20px 20px 20px",
-        width: "calc(100% - 40px)"
+        width: "calc(100% - 40px)",
+        minHeight: "600px"
       }}
     >
       <Grid

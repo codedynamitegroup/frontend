@@ -1,4 +1,4 @@
-import { Box, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
+import { Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import ErrorMessage from "components/text/ErrorMessage";

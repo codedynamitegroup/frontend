@@ -187,7 +187,7 @@
   "common_details": "Details",
   "common_problems": "Problems",
   "common_moderators": "Moderators",
-  "common_signups": "Thí sinh",
+  "common_signups": "Signups",
   "common_leaderboard": "Leaderboard",
   "common_statistics": "Statistics",
   "common_prizes": "Prizes",
@@ -200,6 +200,7 @@
   "common_next": "Next",
   "common_previous": "Previous",
   "common_back_to_chapters": "Back to chapters",
+  "common_max_score": "Max score",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest management",
@@ -256,6 +257,7 @@
   "contest_end_time_invalid": "End time must be greater than start time",
   "contest_preview_contest_details_page": "Preview contest details page",
   "contest_forum": "Forum",
+  "contest_problems": "Contest Problems",
   "contest_sign_up_date": "Sign up date",
   "contest_no_contests_found_message": "No contests found...",
 
@@ -285,6 +287,7 @@
   "contest_is_public_tooltip": "If this is a public contest, everyone can join",
   "contest_metadata_customization": "Metadata customization",
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
+  "contest_problems_description": "Add questions to your contest by selecting questions from our public library or create and add your own questions here.",
   "contest_metadata_customization_description": "Fill out this information to customize your contest description page.",
   "common_thumbnail": "Thumbnail",
 
@@ -316,6 +319,7 @@
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",
   "contest_detail_no_problems_messsage": "No problems available",
+  "contest_add_problem_button": "Add problem",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
