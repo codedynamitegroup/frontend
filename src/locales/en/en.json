@@ -200,6 +200,7 @@
   "common_next": "Next",
   "common_previous": "Previous",
   "common_back_to_chapters": "Back to chapters",
+  "common_cannot_be_blank": "cannot be blank",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest": "Contest management",

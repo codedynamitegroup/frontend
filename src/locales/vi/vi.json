@@ -206,6 +206,7 @@
   "common_general": "chung",
   "common_personal": "cá nhân",
   "common_add_new": "thêm mới",
+  "common_cannot_be_blank": "không được để trống",
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
 

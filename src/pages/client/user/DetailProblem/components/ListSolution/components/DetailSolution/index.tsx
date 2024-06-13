@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Divider } from "@mui/material";
+import { Divider, FormControl, Pagination, Stack } from "@mui/material";
+import ParagraphBody from "components/text/ParagraphBody";
 import Heading4 from "components/text/Heading4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -29,7 +30,15 @@ import { SharedSolutionEntity } from "models/codeAssessmentService/entity/Shared
 import images from "config/images";
 import i18next from "i18next";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { CommentPaginationList } from "models/codeAssessmentService/entity/CommentPaginationList";
+import { CommentEntity } from "models/codeAssessmentService/entity/CommentEntity";
 
+type FormCommentValue = {
+  comment: string;
+};
 interface Props {
   handleSolutionDetail: () => void;
   selectedSolutionId: string | null;
@@ -45,9 +54,26 @@ const toDateFormate = (str: string | undefined, format: string) => {
   }
 };
 export default function DetailSolution({ handleSolutionDetail, selectedSolutionId }: Props) {
+  const { t } = useTranslation();
+
+  const schema = Yup.object().shape({
+    comment: Yup.string()
+      .required(`${t("detail_problem_discussion_detail_comment")} ${t("common_cannot_be_blank")}`)
+      .test(
+        "not-blank",
+        `${t("detail_problem_discussion_detail_comment")} ${t("common_cannot_be_blank")}`,
+        (value) => value !== undefined && value.trim().length > 0
+      )
+  });
+
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state) => state.loading);
   const [solution, setSolution] = useState<SharedSolutionEntity | null>(null);
+  const [commentLoading, setCommentLoading] = useState(false);
+  const pageSize = 10;
+  const [pageNum, setPageNum] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
+  const [comments, setComments] = useState<CommentEntity[]>([]);
+  const [newest, setNewest] = useState(true);
   useEffect(() => {
     if (selectedSolutionId) {
       dispatch(setLoading(true));
@@ -61,53 +87,82 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
         });
     }
   }, []);
-
-  const markdownContent = `
-  ### Approaches
-(Also explained in the code)
-**Bold text**
-
-1. hehe
-    - The goal is to divide the given array into groups of three consecutive elements. This decision likely comes from the requirement or nature of the problem being solved.
-2. Sorting for Comparison:
-    - Sorting the array is done to simplify the process of comparing the elements within each group. When the array is sorted, the minimum and maximum elements for each group can be easily identified.
-3. Setting a Condition (k):
-    - The condition involving k is introduced to filter out groups based on the difference between the maximum and minimum elements within each group. This condition ensures that the elements in a group are within a certain range.
-4. Iterative Approach:
-    - The code iterates through the sorted array in steps of 3, forming groups and checking the condition for each group. If a group meets the condition, it is added to the result. If any group fails the condition, the function returns an empty result.
-
-
-### Complexity
-- Time complexity: O(nlogn)
-- Space complexity: O(n)
-
-
-### Code
-\`\`\`cpp
-class Solution {
-public:
-    vector<vector<int>> divideArray(vector<int>& nums, int ki) {
-       vector<vector<int>> ans;
-        sort(nums.begin(),nums.end());
-        int i=0;
-        int j=1;
-        int k=2;
-        while(k<nums.size()){
-            if(nums[j]-nums[i]<=ki&&nums[k]-nums[i]<=ki&&nums[k]-nums[j]<=ki){
-                ans.push_back({nums[i],nums[j],nums[k]});
-                i=i+3;
-                j=j+3;
-                k=k+3;
-            }
-            else{
-                return {};
-            }
-        }
-        return ans;
+  useEffect(() => {
+    fetchCommentData();
+  }, [newest, pageNum]);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<FormCommentValue>({
+    resolver: yupResolver(schema)
+  });
+  const fetchCommentData = () => {
+    if (selectedSolutionId) {
+      setCommentLoading(true);
+      SharedSolutionService.getRootComments(selectedSolutionId, pageNum, pageSize, newest)
+        .then((data: CommentPaginationList) => {
+          setTotalPage(data.totalPages);
+          setComments(data.comments);
+        })
+        .catch((err) => console.log(err))
+        .then(() => {
+          setCommentLoading(false);
+        });
     }
-};
-\`\`\`
-`;
+  };
+  const onSubmit: SubmitHandler<FormCommentValue> = (data) => {
+    if (selectedSolutionId !== null)
+      SharedSolutionService.createComment({
+        sharedSolutionId: selectedSolutionId,
+        content: data.comment
+      })
+        .then((data) => {
+          fetchCommentData();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+  //   const markdownContent = `
+  //   ### Approaches
+  // (Also explained in the code)
+  // **Bold text**
+
+  // 1. Step 1
+  //     - Easy solution !!!, everyone knows how to solve this problem.
+
+  // ### Complexity
+  // - Time complexity: O(1)
+
+  // ### Code
+  // \`\`\`cpp
+  // class Solution {
+  // public:
+  //     vector<vector<int>> divideArray(vector<int>& nums, int ki) {
+  //        vector<vector<int>> ans;
+  //         sort(nums.begin(),nums.end());
+  //         int i=0;
+  //         int j=1;
+  //         int k=2;
+  //         while(k<nums.size()){
+  //             if(nums[j]-nums[i]<=ki&&nums[k]-nums[i]<=ki&&nums[k]-nums[j]<=ki){
+  //                 ans.push_back({nums[i],nums[j],nums[k]});
+  //                 i=i+3;
+  //                 j=j+3;
+  //                 k=k+3;
+  //             }
+  //             else{
+  //                 return {};
+  //             }
+  //         }
+  //         return ans;
+  //     }
+  // };
+  // \`\`\`
+  // `;
   const users = [
     {
       id: 1,
@@ -139,11 +194,14 @@ public:
     }
   ];
 
+  const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPageNum(value - 1);
+  };
+
   const stickyBackRef = useRef<HTMLDivElement>(null);
   const { height: stickyBackHeight } = useBoxDimensions({
     ref: stickyBackRef
   });
-  const { t } = useTranslation();
   return (
     <Box className={classes.containerDetailSolution}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
@@ -224,34 +282,52 @@ public:
                 <Box className={classes.filterComment}>Lọc theo: Mới nhất</Box>
               </Box>
               <Box className={classes.commentBox}>
-                <TextareaAutosize
-                  aria-label='empty textarea'
-                  translation-key='detail_problem_discussion_your_comment'
-                  placeholder={t("detail_problem_discussion_your_comment")}
-                  className={classes.textArea}
-                  minRows={5}
-                />
-                <Button
-                  variant='contained'
-                  className={classes.commentButton}
-                  translation-key='detail_problem_discussion_detail_comment'
-                >
-                  {t("detail_problem_discussion_detail_comment")}
-                </Button>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <TextareaAutosize
+                    aria-label='empty textarea'
+                    translation-key='detail_problem_discussion_your_comment'
+                    placeholder={t("detail_problem_discussion_your_comment")}
+                    className={classes.textArea}
+                    minRows={5}
+                    {...register("comment")}
+                    aria-invalid={errors.comment ? true : false}
+                  />
+
+                  <Button
+                    type='submit'
+                    variant='contained'
+                    className={classes.commentButton}
+                    translation-key='detail_problem_discussion_detail_comment'
+                  >
+                    {t("detail_problem_discussion_detail_comment")}
+                  </Button>
+                </form>
               </Box>
+              {errors.comment && (
+                <ParagraphBody colorname='--red-error'>{errors.comment.message}</ParagraphBody>
+              )}
               <Box className={classes.commentList}>
                 <Box className={classes.commentItem}>
-                  {users.map((user) => {
+                  {comments.map((comment) => {
                     return (
-                      <Box className={classes.commentInfo} key={user.id}>
-                        <Box className={classes.commentInfoUser}>
-                          <img className={classes.imgAvatar} src={user.avatar} alt='avatar'></img>
-                          <Box className={classes.commentName}>{user.name}</Box>
-                        </Box>
-                        <Box className={classes.commentText}>
-                          <Markdown children={user.comment} remarkPlugins={[gfm]} />
-                        </Box>
-                        <Box className={classes.commentAction}>
+                      <>
+                        <Box className={classes.commentInfo} key={comment.user.id}>
+                          <Box className={classes.commentInfoUser}>
+                            <img
+                              className={classes.imgAvatar}
+                              src={comment.user?.avatarUrl ?? images.avatar.avatarBoyDefault}
+                              alt='avatar'
+                            ></img>
+                            <Box className={classes.commentName}>
+                              {i18next.language === "vi"
+                                ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
+                                : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                            </Box>
+                          </Box>
+                          <Box className={classes.commentText}>
+                            <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                          </Box>
+                          {/* <Box className={classes.commentAction}>
                           <Box className={classes.upVote}>
                             <FontAwesomeIcon icon={faThumbsUp} className={classes.commentIcon} />
                             <span>{user.upVote}</span>
@@ -270,10 +346,19 @@ public:
                               {t("detail_problem_discussion_detail_reply")}
                             </span>
                           </Box>
+                        </Box> */}
                         </Box>
-                      </Box>
+                        <Divider />
+                      </>
                     );
                   })}
+                  <Stack alignItems={"center"}>
+                    <Pagination
+                      count={totalPage}
+                      onChange={handleChangePagination}
+                      page={pageNum + 1}
+                    />
+                  </Stack>
                 </Box>
               </Box>
             </Box>

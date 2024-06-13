@@ -142,7 +142,10 @@ export const API = {
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",
-      GET_BY_ID: "code-assessment/shared-solution/:id"
+      GET_BY_ID: "code-assessment/shared-solution/:id",
+      COMMENT: {
+        DEFAULT: "code-assessment/shared-solution/:id/comment"
+      }
     }
   },
   JUDGE0: {
