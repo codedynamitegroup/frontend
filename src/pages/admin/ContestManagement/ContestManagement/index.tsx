@@ -32,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess } from "reduxes/AppStatus";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -119,7 +120,11 @@ const ContestManagement = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <Avatar sx={{ bgcolor: grey[500] }} alt={params.row.name} src={params.row.thumbnailUrl}>
+            <Avatar
+              sx={{ bgcolor: `${generateHSLColorByRandomText(`${params.row.name}`)}` }}
+              alt={params.row.name}
+              src={params.row.thumbnailUrl}
+            >
               {params.row.name.charAt(0)}
             </Avatar>
             <ParagraphSmall width={"auto"} fontWeight={500}>

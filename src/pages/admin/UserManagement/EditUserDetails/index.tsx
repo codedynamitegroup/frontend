@@ -38,6 +38,7 @@ import i18next from "i18next";
 import { IOptionItem } from "models/general";
 import InputSelect from "components/common/inputs/InputSelect";
 import images from "config/images";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface IFormDataType {
   firstName: string;
@@ -218,7 +219,12 @@ const EditUserDetails = () => {
           <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
             <Grid container columns={12} justifyContent={"center"}>
               <Avatar
-                sx={{ bgcolor: "var(--green-500)", width: 150, height: 150, fontSize: "60px" }}
+                sx={{
+                  bgcolor: `${generateHSLColorByRandomText(`${user?.firstName} ${user?.lastName}`)}`,
+                  width: 150,
+                  height: 150,
+                  fontSize: "60px"
+                }}
                 alt={user?.email}
                 src={user?.avatarUrl}
               >

@@ -35,6 +35,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { CommentPaginationList } from "models/codeAssessmentService/entity/CommentPaginationList";
 import { CommentEntity } from "models/codeAssessmentService/entity/CommentEntity";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 type FormCommentValue = {
   comment: string;
@@ -226,7 +227,9 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
             <Box className={classes.userInfo}>
               <Box className={classes.avatar}>
                 <Avatar
-                  sx={{ bgcolor: "var(--green-500)" }}
+                  sx={{
+                    bgcolor: `${generateHSLColorByRandomText(`${solution.user?.firstName} ${solution.user?.lastName}`)}`
+                  }}
                   alt={solution.user?.firstName}
                   src={solution.user?.avatarUrl}
                 >
@@ -316,7 +319,9 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                         <Box className={classes.commentInfo} key={comment.user.id}>
                           <Box className={classes.commentInfoUser}>
                             <Avatar
-                              sx={{ bgcolor: "var(--green-500)" }}
+                              sx={{
+                                bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
+                              }}
                               alt={comment.user?.firstName}
                               src={comment.user?.avatarUrl}
                             >

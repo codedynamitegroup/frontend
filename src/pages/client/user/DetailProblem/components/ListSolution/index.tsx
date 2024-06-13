@@ -36,6 +36,7 @@ import { SharedSolutionPaginationList } from "models/codeAssessmentService/entit
 import { SharedSolutionEntity } from "models/codeAssessmentService/entity/SharedSolutionEntity";
 import images from "config/images";
 import i18next from "i18next";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 const DetailSolution = lazy(() => import("./components/DetailSolution"));
 
@@ -326,7 +327,9 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
                         <Box className={classes.solutionTitle}>
                           <Box className={classes.avatar}>
                             <Avatar
-                              sx={{ bgcolor: "var(--green-500)" }}
+                              sx={{
+                                bgcolor: `${generateHSLColorByRandomText(`${item.user.firstName} ${item.user.lastName}`)}`
+                              }}
                               alt={item.user.firstName}
                               src={item.user.avatarUrl}
                             >
