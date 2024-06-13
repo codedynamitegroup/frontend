@@ -211,28 +211,28 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </Box>
           </Box>
           <Box className={classes.navbarItem} ml={2}>
-            {!activeRoute(routes.admin.homepage.root) ||
-              (!activeRoute(routes.org_admin.homepage.root) &&
-                pagesHeader
-                  .filter((page) => page.position === "left")
-                  .map((page, index) => (
-                    <ParagraphSmall
-                      key={index}
-                      className={clsx([page.isActive ? classes.isActive : "", classes.item])}
-                      fontWeight={600}
+            {!activeRoute(routes.admin.homepage.root) &&
+              !activeRoute(routes.org_admin.homepage.root) &&
+              pagesHeader
+                .filter((page) => page.position === "left")
+                .map((page, index) => (
+                  <ParagraphSmall
+                    key={index}
+                    className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                    fontWeight={600}
+                    translation-key={page.name}
+                    colorname={"--gray-50"}
+                  >
+                    <Link
+                      component={RouterLink}
+                      to={page.path}
                       translation-key={page.name}
-                      colorname={"--gray-50"}
+                      className={classes.textLink}
                     >
-                      <Link
-                        component={RouterLink}
-                        to={page.path}
-                        translation-key={page.name}
-                        className={classes.textLink}
-                      >
-                        {t(page.name)}
-                      </Link>
-                    </ParagraphSmall>
-                  )))}
+                      {t(page.name)}
+                    </Link>
+                  </ParagraphSmall>
+                ))}
 
             {isStudent && (
               <ParagraphSmall
