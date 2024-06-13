@@ -315,11 +315,13 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                       <>
                         <Box className={classes.commentInfo} key={comment.user.id}>
                           <Box className={classes.commentInfoUser}>
-                            <img
-                              className={classes.imgAvatar}
-                              src={comment.user?.avatarUrl ?? images.avatar.avatarBoyDefault}
-                              alt='avatar'
-                            ></img>
+                            <Avatar
+                              sx={{ bgcolor: "var(--green-500)" }}
+                              alt={comment.user?.firstName}
+                              src={comment.user?.avatarUrl}
+                            >
+                              {comment.user?.firstName.charAt(0)}
+                            </Avatar>
                             <Box className={classes.commentName}>
                               {i18next.language === "vi"
                                 ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
