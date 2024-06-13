@@ -191,6 +191,7 @@
   "common_next": "Tiếp",
   "common_previous": "Trước",
   "common_back_to_chapters": "Quay lại DS chương",
+  "common_max_score": "Điểm tối đa",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
@@ -261,6 +262,7 @@
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
   "contest_preview_contest_details_page": "Xem trước trang chi tiết cuộc thi",
   "contest_forum": "Diễn đàn",
+  "contest_problems": "Bài toán cuộc thi",
   "contest_sign_up_date": "Ngày đăng ký",
   "contest_no_contests_found_message": "Không tìm thấy cuộc thi nào...",
 
@@ -290,6 +292,7 @@
   "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
   "contest_metadata_customization": "Tùy chỉnh thông tin",
   "contest_details_description": "Tùy chỉnh cuộc thi của bạn bằng cách cung cấp thông tin cần thiết để tạo trang chi tiết cuộc thi của bạn.",
+  "contest_problems_description": "Thêm bài toán vào cuộc thi của bạn bằng cách chọn từ thư viện công khai của chúng tôi hoặc tạo và thêm bài toán của riêng bạn ở đây.",
   "contest_metadata_customization_description": "Điền thông tin này để tùy chỉnh trang mô tả cuộc thi của bạn.",
   "contest_thumbnail": "Ảnh cuộc thi",
 
@@ -319,6 +322,7 @@
   "contest_detail_register_tooltip": "Hãy đăng nhập để có thể tham gia cuộc thi này",
   "contest_detail_already_started_message": "Cuộc thi đã bắt đầu. Bạn không thể tham gia",
   "contest_detail_no_problems_messsage": "Cuộc thi này chưa có đề bài nào",
+  "contest_add_problem_button": "Thêm bài toán",
 
   "certificate_title": "Khóa học chứng chỉ",
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",

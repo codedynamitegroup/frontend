@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Chip, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -32,7 +32,6 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess } from "reduxes/AppStatus";
-import { Checkbox } from "@mui/joy";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -199,8 +198,15 @@ const ContestManagement = () => {
       renderCell: (params) => {
         return (
           <Checkbox
+            disableRipple
             checked={params.row.isPublic === true ? true : false}
-            color={params.row.isPublic ? "success" : "danger"}
+            color={params.row.isPublic ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
           />
         );
       }
