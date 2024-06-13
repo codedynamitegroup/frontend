@@ -9,3 +9,8 @@ export enum EHtmlStatusCode {
   notFound = 404,
   badRequest = 400
 }
+
+export interface IOptionItem {
+  id: string;
+  name: string;
+}

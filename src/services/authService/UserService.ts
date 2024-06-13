@@ -6,6 +6,7 @@ import {
   ResetPasswordUserRequest,
   UpdatePasswordUserRequest,
   UpdateProfileUserRequest,
+  UpdateUserByAdminRequest,
   VerifyOTPUserRequest
 } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
@@ -40,6 +41,23 @@ export class UserService {
         baseURL: authServiceApiUrl,
         isAuthorization: true
       }).get(`${API.AUTH.GET_USER_BY_EMAIL}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+  static async getUserById(id: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.GET_USER_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -143,10 +161,37 @@ export class UserService {
         baseURL: authServiceApiUrl,
         isAuthorization: true
       }).put(`${API.AUTH.UPDATE_PROFILE_USER}`, {
+        email: updateProfileUserRequest.email,
         firstName: updateProfileUserRequest.firstName,
         lastName: updateProfileUserRequest.lastName,
         dob: updateProfileUserRequest.dob,
         phone: updateProfileUserRequest.phone
+      });
+      if (response?.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message
+      });
+    }
+  }
+  static async updateUserByAdmin(
+    userId: string,
+    updateUserByAdminRequest: UpdateUserByAdminRequest
+  ) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.AUTH.UPDATE_USER_BY_ADMIN.replace(":id", userId)}`, {
+        firstName: updateUserByAdminRequest.firstName,
+        lastName: updateUserByAdminRequest.lastName,
+        dob: updateUserByAdminRequest.dob,
+        phone: updateUserByAdminRequest.phone,
+        roleName: updateUserByAdminRequest.roleName
       });
       if (response?.status === 200) {
         return response.data;
