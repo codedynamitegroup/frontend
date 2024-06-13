@@ -171,7 +171,6 @@ const ContestEditSignUps = () => {
         }}
       >
         <Grid item xs={12}>
-          {/* #F5F9FB */}
           <CustomDataGrid
             loading={isLoading}
             dataList={dataList}

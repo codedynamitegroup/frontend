@@ -91,7 +91,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='contest_start_time'
                         title={t("contest_start_time")}
@@ -99,7 +99,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         // tooltipDescription={t("contest_start_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12} md={8}>
                       <CustomDateTimePicker
                         value={moment(field.value)}
                         onHandleValueChange={(newValue) => {
@@ -132,7 +132,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='contest_end_time'
                         title={t("contest_end_time")}
@@ -140,7 +140,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         tooltipDescription={t("contest_end_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12} md={8}>
                       <Stack direction='column' gap={1}>
                         <CustomDateTimePicker
                           value={moment(field.value)}
@@ -189,7 +189,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='contest_is_public'
                         title={t("contest_is_public")}
@@ -197,7 +197,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         tooltipDescription={t("contest_is_public_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12} md={8}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
@@ -242,22 +242,29 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
           </ParagraphSmall>
         </Grid>
         <Grid item xs={12}>
-          <Grid container gap={2} direction='column'>
-            <Grid container spacing={2} columns={12}>
+          <Grid container gap={5} direction='column'>
+            <Grid
+              container
+              spacing={2}
+              columns={12}
+              sx={{
+                marginBottom: "-20px"
+              }}
+            >
               <Controller
                 control={control}
                 name='isPublic'
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='contest_thumbnail'
                         title={t("contest_thumbnail")}
                         titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
@@ -297,14 +304,14 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='common_description'
                         title={t("common_description")}
                         // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
@@ -343,14 +350,14 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='common_prizes'
                         title={t("common_prizes")}
                         // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
@@ -389,14 +396,14 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='common_rules'
                         title={t("common_rules")}
                         // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
@@ -435,14 +442,14 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={4}>
                       <TitleWithInfoTip
                         translate-key='common_scoring'
                         title={t("common_scoring")}
                         // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                       <Stack direction='column' gap={1}>
                         <Controller
                           control={control}
