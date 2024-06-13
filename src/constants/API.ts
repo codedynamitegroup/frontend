@@ -90,7 +90,7 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
-      CREATE_INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
+      INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",
@@ -141,23 +141,34 @@ export const API = {
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
       GET_BY_ID: "/code-assessment/code-submission/:id"
+    },
+    SHARED_SOLUTION: {
+      DEFAULT: "/code-assessment/shared-solution",
+      GET_BY_ID: "code-assessment/shared-solution/:id",
+      COMMENT: {
+        DEFAULT: "code-assessment/shared-solution/:id/comment"
+      }
     }
   },
   JUDGE0: {
     SUBMISSION: "/submissions"
   },
   AUTH: {
-    GET_ALL: "/auth/users",
+    GET_ALL_USERS: "/auth/users",
+    GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
     GET_STATISTICS: "/auth/users/statistics",
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",
     REFRESH_TOKEN: "/auth/users/refresh-token",
     LOGOUT: "/auth/users/logout",
     REGISTER: "/auth/users/register",
+    CREATE_USER_BY_ADMIN: "/auth/users",
     GET_USER_BY_EMAIL: "/auth/users/get-by-email",
+    GET_USER_BY_ID: "/auth/users/:id",
     FORGOT_PASSWORD: "/auth/users/forgot-password",
     VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
-    UPDATE_PROFILE_USER: "/auth/users",
+    UPDATE_PROFILE_USER: "/auth/users/update-profile",
+    UPDATE_USER_BY_ADMIN: "/auth/users/:id",
     CHANGE_PASSWORD: "/auth/users/change-password",
     RESET_PASSWORD: "/auth/users/forgot-password/change-password"
   }

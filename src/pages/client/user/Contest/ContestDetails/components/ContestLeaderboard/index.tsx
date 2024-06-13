@@ -16,19 +16,26 @@ import i18next from "i18next";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import { millisToFormatTimeString } from "utils/time";
+import React from "react";
 
 interface PropsData {
+  page: number;
+  setPage: (value: number) => void;
+  pageSize: number;
+  setPageSize: (value: number) => void;
   problemList: ContestQuestionEntity[];
   rankingList: UserContestRankEntity[];
   currentUserRank?: UserContestRankEntity;
+  totalPages: number;
+  totalItems: number;
 }
 
 export default function ContestLeaderboard(props: PropsData) {
   const { problemList, rankingList, currentUserRank } = props;
-  const isCurrentUserInTable = !!rankingList.filter(
-    (user: any) => JSON.stringify(user) === JSON.stringify(currentUserRank)
-  ).length;
-  const onPageChange = () => {};
+
+  const onPageChange = (event: any, newPage: number) => {
+    props.setPage(newPage);
+  };
   const { t } = useTranslation();
   return (
     <Box>
@@ -90,11 +97,11 @@ export default function ContestLeaderboard(props: PropsData) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!isCurrentUserInTable && currentUserRank ? (
+            {currentUserRank ? (
               <>
                 <TableRow sx={{ backgroundColor: "var(--green-50)" }}>
                   <TableCell className={clsx(classes.tableCell)} align='center'>
-                    {currentUserRank.rank}
+                    {currentUserRank.totalScore > 0 ? currentUserRank.rank : "-"}
                   </TableCell>
                   <TableCell align='center' className={clsx(classes.tableCell)}>
                     <Link
@@ -159,7 +166,7 @@ export default function ContestLeaderboard(props: PropsData) {
             {rankingList.map((row: UserContestRankEntity, index: number) => (
               <TableRow key={index} className={index % 2 === 0 ? classes.grayTableRow : null}>
                 <TableCell className={clsx(classes.tableCell)} align='center'>
-                  {row.rank}
+                  {row.totalScore > 0 ? row.rank : "-"}
                 </TableCell>
                 <TableCell align='center' className={clsx(classes.tableCell)}>
                   <Link
@@ -216,13 +223,17 @@ export default function ContestLeaderboard(props: PropsData) {
 
             <TableRow>
               <TablePagination
-                count={20}
-                page={0}
-                rowsPerPage={5}
+                count={props.totalItems}
+                page={props.page}
+                rowsPerPage={props.pageSize}
                 rowsPerPageOptions={[5, 10, 20]}
-                labelRowsPerPage={t("common_table_row_per_page")} // Thay đổi text ở đây
+                labelRowsPerPage={t("common_table_row_per_page")}
                 colSpan={10000}
                 className={classes.tableCell}
+                onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  props.setPageSize(parseInt(event.target.value, 10));
+                  props.setPage(0);
+                }}
                 onPageChange={onPageChange}
                 labelDisplayedRows={({ from, to, count }) => {
                   return t("common_table_from_to", {

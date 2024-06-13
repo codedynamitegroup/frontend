@@ -12,6 +12,8 @@ import React from "react";
 import AdminDashboard from "./Dashboard";
 import Footer from "components/Footer";
 import UserManagement from "./UserManagement/UserManagement";
+import CreateUser from "./UserManagement/CreateUser";
+import EditUserDetails from "./UserManagement/EditUserDetails";
 
 type Props = {};
 
@@ -28,17 +30,19 @@ const SystemAdminHomepage = (props: Props) => {
         {/* <Box className={classes.container}> */}
         <Box className={classes.body}>
           <Routes>
-            {/* <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}> */}
-            <Route path={"contests"} element={<ContestManagement />} />
-            <Route path={"contests/create"} element={<CreateContest />} />
-            <Route
-              path={"contests/edit/:contestId/*"}
-              element={<EditContestDetails isDrawerOpen={open} />}
-            />
-            <Route path={"information"} element={<UserInformation />} />
-            <Route path={"/dashboard"} element={<AdminDashboard />} />
-            <Route path={"users"} element={<UserManagement />} />
-            {/* </Route> */}
+            <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
+              <Route path={"contests"} element={<ContestManagement />} />
+              <Route path={"contests/create"} element={<CreateContest />} />
+              <Route
+                path={"contests/edit/:contestId/*"}
+                element={<EditContestDetails isDrawerOpen={open} />}
+              />
+              <Route path={"information"} element={<UserInformation />} />
+              <Route path={"/dashboard"} element={<AdminDashboard />} />
+              <Route path={"users"} element={<UserManagement />} />
+              <Route path={"users/create"} element={<CreateUser />} />
+              <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
+            </Route>
           </Routes>
         </Box>
         {/* </Box> */}

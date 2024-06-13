@@ -112,11 +112,9 @@ const CreateContest = () => {
           setType(AlertType.Success);
           setContent(t("contest_create_success"));
           setSubmitLoading(false);
-          navigate(routes.admin.contest.edit.details, {
-            state: {
-              contestName: name
-            }
-          });
+          navigate(
+            routes.admin.contest.edit.details.replace(":contestId", createContestResponse.contestId)
+          );
         }
       } catch (error: any) {
         console.error("error", error);
@@ -126,7 +124,7 @@ const CreateContest = () => {
         setSubmitLoading(false);
       }
     },
-    [t]
+    [dispatch, navigate, t]
   );
 
   return (
@@ -217,7 +215,7 @@ const CreateContest = () => {
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                       <TitleWithInfoTip
                         translate-key='contest_start_time'
                         title={t("contest_start_time")}
@@ -225,7 +223,7 @@ const CreateContest = () => {
                         tooltipDescription={t("contest_start_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={7}>
                       <CustomDateTimePicker
                         value={moment(field.value)}
                         onHandleValueChange={(newValue) => {
@@ -258,7 +256,7 @@ const CreateContest = () => {
               render={({ field: { ref, ...field } }) => (
                 <>
                   <Grid container spacing={1} columns={12}>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                       <TitleWithInfoTip
                         translate-key='contest_end_time'
                         title={t("contest_end_time")}
@@ -266,7 +264,7 @@ const CreateContest = () => {
                         tooltipDescription={t("contest_end_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={7}>
                       <Stack direction='column' gap={1}>
                         <CustomDateTimePicker
                           value={moment(field.value)}

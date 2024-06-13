@@ -1,4 +1,6 @@
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import {
+  Avatar,
   Box,
   Container,
   Divider,
@@ -7,39 +9,73 @@ import {
   Paper,
   Stack,
   Tab,
-  Typography,
-  Avatar
+  Tabs
 } from "@mui/material";
-import classes from "./stytles.module.scss";
 import Heading1 from "components/text/Heading1";
-import ContestTimeInformation from "./components/ContestTimeInformation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import TabPanel from "@mui/lab/TabPanel";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import ContestProblemItem from "./components/ContestProblemItem";
-import ContestLeaderboard from "./components/ContestLeaderboard";
 import Heading4 from "components/text/Heading4";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { useParams } from "react-router-dom";
-import { Link as RouterLink } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { ContestService } from "services/coreService/ContestService";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
-import { setContestDetails, setContestLeaderboard } from "reduxes/coreService/Contest";
+import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
-import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ReactQuill from "react-quill";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Route,
+  Link as RouterLink,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams
+} from "react-router-dom";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { setContestLeaderboard } from "reduxes/coreService/Contest";
+import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch, RootState } from "store";
+import ContestLeaderboard from "./components/ContestLeaderboard";
+import ContestProblemItem from "./components/ContestProblemItem";
+import ContestTimeInformation from "./components/ContestTimeInformation";
+import classes from "./stytles.module.scss";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
+import { routes } from "routes/routes";
 
 const ContestDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const [leaderboardPage, setLeaderboardPage] = useState<number>(0);
+  const [leaderboardPageSize, setLeaderboardPageSize] = useState<number>(5);
   const contestState = useSelector((state: RootState) => state.contest);
   const { contestId } = useParams<{ contestId: string }>();
-  const contestDetails = useMemo(() => contestState.contestDetails, [contestState.contestDetails]);
+  // const contestDetails = useMemo(() => contestState.contestDetails, [contestState.contestDetails]);
+  const tabs: string[] = useMemo(() => {
+    return [
+      routes.user.contest.detail.information,
+      routes.user.contest.detail.problems.root,
+      routes.user.contest.detail.leaderboard
+    ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routes]);
+
+  const activeRoute = (routeName: string) => {
+    const match = pathname.startsWith(routeName);
+    return !!match;
+  };
+
+  const activeTab = useMemo(() => {
+    if (contestId) {
+      const index = tabs.findIndex((it) => activeRoute(it.replace(":contestId", contestId)));
+      if (index === -1) return 0;
+      return index;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, tabs]);
+
+  const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
   const contestLeaderboard = useMemo(
     () => contestState.contestLeaderboard,
     [contestState.contestLeaderboard]
@@ -66,10 +102,22 @@ const ContestDetails = () => {
     return [];
   }, [contestLeaderboard]);
 
-  const [value, setValue] = useState("1");
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    if (contestId) {
+      if (newValue === 0) {
+        navigate(
+          routes.user.contest.detail.information.replace(":contestId", contestId.toString())
+        );
+      } else if (newValue === 1) {
+        navigate(
+          routes.user.contest.detail.problems.root.replace(":contestId", contestId.toString())
+        );
+      } else if (newValue === 2) {
+        navigate(
+          routes.user.contest.detail.leaderboard.replace(":contestId", contestId.toString())
+        );
+      }
+    }
   };
 
   const { t } = useTranslation();
@@ -103,7 +151,7 @@ const ContestDetails = () => {
           ) {
             await handleGetContestLeaderboard(id);
           }
-          dispatch(setContestDetails(getContestsResponse));
+          setContestDetails(getContestsResponse);
         }
         dispatch(setInititalLoading(false));
       } catch (error: any) {
@@ -128,10 +176,9 @@ const ContestDetails = () => {
     fetchInitialData();
   }, [contestId, dispatch, handleGetContestById, handleGetContestLeaderboard]);
 
-  if (!contestDetails) {
+  if (!contestDetails || !contestId) {
     return null;
   }
-
   return (
     <Box id={classes.contestDetailsRoot}>
       <ContestTimeInformation
@@ -143,124 +190,186 @@ const ContestDetails = () => {
         contestId={contestId || ""}
       />
       <Container className={classes.bodyContainer}>
-        <Grid container spacing={1}>
+        <Grid container gap={2}>
           <Grid
             item
-            xs={value !== "3" && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
+            xs={activeTab !== 2 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
           >
             <Box className={classes.bodyWrapper}>
-              <TabContext value={value}>
-                <Box sx={{ borderBottom: "1px solid var(--gray-10)" }}>
-                  <TabList onChange={handleChange} aria-label='lab API tabs example'>
+              {/* <TabContext value={activeTab}> */}
+              <Box sx={{ borderBottom: "1px solid var(--gray-10)" }}>
+                <Tabs
+                  value={activeTab}
+                  onChange={handleChange}
+                  aria-label='basic tabs example'
+                  className={classes.tabs}
+                >
+                  <Tab
+                    label={t("contest_detail_description")}
+                    translation-key='contest_detail_description'
+                    value={0}
+                  />
+                  {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                  contestDetails.isRegistered === true ? (
                     <Tab
-                      label={t("contest_detail_description")}
-                      translation-key='contest_detail_description'
-                      value='1'
+                      label={t("contest_detail_problems")}
+                      translation-key='contest_detail_problems'
+                      value={1}
                     />
-                    {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
-                    contestDetails.isRegistered === true ? (
-                      <Tab
-                        label={t("contest_detail_problems")}
-                        translation-key='contest_detail_problems'
-                        value='2'
-                      />
-                    ) : null}
-                    {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
-                      <Tab
-                        label={t("contest_detail_leaderboard")}
-                        translation-key='contest_detail_leaderboard'
-                        value='3'
-                      />
-                    ) : null}
-                  </TabList>
-                </Box>
-                <TabPanel value='1'>
-                  <Stack direction='column' gap={1}>
-                    <Heading4 translation-key='common_description'>
-                      {t("common_description")}
-                    </Heading4>
-                    <ReactQuill
-                      value={contestDetails.description || ""}
-                      readOnly={true}
-                      theme={"bubble"}
+                  ) : null}
+                  {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
+                    <Tab
+                      label={t("contest_detail_leaderboard")}
+                      translation-key='contest_detail_leaderboard'
+                      value={2}
                     />
-                  </Stack>
-                  <Divider
-                    sx={{
-                      margin: "10px 0"
-                    }}
-                  />
-                  <Stack direction='column' gap={1}>
-                    <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
-
-                    <ReactQuill
-                      value={contestDetails.prizes || ""}
-                      readOnly={true}
-                      theme={"bubble"}
-                    />
-                  </Stack>
-                  <Divider
-                    sx={{
-                      margin: "10px 0"
-                    }}
-                  />
-                  <Stack direction='column' gap={1}>
-                    <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
-                    <ReactQuill
-                      value={contestDetails.rules || ""}
-                      readOnly={true}
-                      theme={"bubble"}
-                    />
-                  </Stack>
-                  <Divider
-                    sx={{
-                      margin: "10px 0"
-                    }}
-                  />
-                  <Stack direction='column' gap={1}>
-                    <Heading4 translation-key='common_scoring'>{t("common_scoring")}</Heading4>
-                    <ReactQuill
-                      value={contestDetails.scoring || ""}
-                      readOnly={true}
-                      theme={"bubble"}
-                    />
-                  </Stack>
-                </TabPanel>
-                {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
-                contestDetails.isRegistered === true ? (
-                  <TabPanel value='2'>
-                    <Grid container spacing={3}>
-                      {contestDetails.questions.map((problem) => (
-                        <Grid item xs={12} key={problem.name}>
-                          <ContestProblemItem
-                            name={problem.name || ""}
-                            point={problem.grade || 0}
-                            maxScore={problem.maxGrade || 0}
-                            difficulty={problem.difficulty}
-                            maxSubmission={0}
-                            submission={problem.numOfSubmissions || 0}
+                  ) : null}
+                </Tabs>
+              </Box>
+              <Box
+                sx={{
+                  padding: "20px",
+                  minHeight: "300px",
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                <Routes>
+                  <Route
+                    path={"information"}
+                    element={
+                      <>
+                        <Stack direction='column' gap={1}>
+                          <Heading4 translation-key='common_description'>
+                            {t("common_description")}
+                          </Heading4>
+                          <ReactQuill
+                            value={contestDetails.description || ""}
+                            readOnly={true}
+                            theme={"bubble"}
                           />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </TabPanel>
-                ) : null}
+                        </Stack>
+                        <Divider
+                          sx={{
+                            margin: "10px 0"
+                          }}
+                        />
+                        <Stack direction='column' gap={1}>
+                          <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
 
-                {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
-                  <TabPanel value='3' translation-key='contest_detail_leaderboard'>
-                    <Heading1>{t("contest_detail_leaderboard")}</Heading1>
-                    <ContestLeaderboard
-                      currentUserRank={contestLeaderboard?.participantRank}
-                      rankingList={contestLeaderboard?.contestLeaderboard || []}
-                      problemList={contestDetails.questions}
-                    />
-                  </TabPanel>
-                ) : null}
-              </TabContext>
+                          <ReactQuill
+                            value={contestDetails.prizes || ""}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
+                        </Stack>
+                        <Divider
+                          sx={{
+                            margin: "10px 0"
+                          }}
+                        />
+                        <Stack direction='column' gap={1}>
+                          <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
+                          <ReactQuill
+                            value={contestDetails.rules || ""}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
+                        </Stack>
+                        <Divider
+                          sx={{
+                            margin: "10px 0"
+                          }}
+                        />
+                        <Stack direction='column' gap={1}>
+                          <Heading4 translation-key='common_scoring'>
+                            {t("common_scoring")}
+                          </Heading4>
+                          <ReactQuill
+                            value={contestDetails.scoring || ""}
+                            readOnly={true}
+                            theme={"bubble"}
+                          />
+                        </Stack>
+                      </>
+                    }
+                  />
+                  <Route
+                    path={"problems"}
+                    element={
+                      <>
+                        {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                        contestDetails.isRegistered === true &&
+                        activeTab === 1 ? (
+                          <Grid container spacing={3}>
+                            {contestDetails.questions && contestDetails.questions.length > 0 ? (
+                              contestDetails.questions.map((problem) => (
+                                <Grid item xs={12} key={problem.name}>
+                                  <ContestProblemItem
+                                    contestId={contestId}
+                                    problemId={problem.codeQuestionId || ""}
+                                    name={problem.name || ""}
+                                    point={problem.grade || 0}
+                                    maxScore={problem.maxGrade || 0}
+                                    difficulty={problem.difficulty}
+                                    maxSubmission={0}
+                                    submission={problem.numOfSubmissions || 0}
+                                  />
+                                </Grid>
+                              ))
+                            ) : (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "100%",
+                                  width: "100%",
+                                  marginTop: "40px",
+                                  gap: "10px"
+                                }}
+                              >
+                                <ParagraphBody translate-key='contest_detail_no_problems_messsage'>
+                                  {t("contest_detail_no_problems_messsage")}
+                                </ParagraphBody>
+                              </Box>
+                            )}
+                          </Grid>
+                        ) : null}
+                      </>
+                    }
+                  />
+                  <Route
+                    path={"leaderboard"}
+                    element={
+                      <>
+                        {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                        activeTab === 2 ? (
+                          <>
+                            <Heading1>{t("contest_detail_leaderboard")}</Heading1>
+                            <ContestLeaderboard
+                              page={leaderboardPage}
+                              pageSize={leaderboardPageSize}
+                              setPage={setLeaderboardPage}
+                              setPageSize={setLeaderboardPageSize}
+                              currentUserRank={contestLeaderboard?.participantRank}
+                              rankingList={contestLeaderboard?.contestLeaderboard || []}
+                              problemList={contestDetails.questions}
+                              totalPages={contestLeaderboard?.totalPages || 0}
+                              totalItems={contestLeaderboard?.totalItems || 0}
+                            />
+                          </>
+                        ) : null}
+                      </>
+                    }
+                  />
+                </Routes>
+              </Box>
             </Box>
           </Grid>
-          {value !== "3" ? (
-            <Grid item xs={3}>
+          {activeTab !== 2 ? (
+            <Grid item xs={2.5}>
               {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
                 <Paper>
                   <Grid container direction='column' alignItems='center' justifyContent='center'>
@@ -270,7 +379,8 @@ const ContestDetails = () => {
                       </Heading4>
                       <Divider orientation='horizontal' />
                     </Grid>
-                    {topUserRank && topUserRank.length !== 0 ? (
+                    {topUserRank &&
+                    topUserRank.filter((user) => user.totalScore > 0).length !== 0 ? (
                       <Stack spacing={1} margin={"10px 0 10px 0"}>
                         {topUserRank.map((user: UserContestRankEntity, index: number) => (
                           <Grid item xs={12} key={user.rank}>
@@ -291,15 +401,10 @@ const ContestDetails = () => {
                                   />
                                   <Stack>
                                     <Stack direction='column' alignItems='left'>
-                                      <Typography
+                                      <ParagraphBody
                                         className={classes.topUserText}
-                                      >{`${user.user.firstName} ${user.user.lastName}`}</Typography>
-                                      <Stack
-                                        direction='row'
-                                        alignItems='center'
-                                        justifyContent='space-between'
-                                        gap={1}
-                                      >
+                                      >{`${user.user.firstName} ${user.user.lastName}`}</ParagraphBody>
+                                      <Stack direction='row' alignItems='center' gap={1}>
                                         <ParagraphExtraSmall>
                                           {`${t("common_rank")}: ${user.rank}`}
                                         </ParagraphExtraSmall>
@@ -316,12 +421,16 @@ const ContestDetails = () => {
                         ))}
                       </Stack>
                     ) : (
-                      <Typography
+                      <ParagraphSmall
+                        sx={{
+                          margin: "10px"
+                        }}
                         color='var(--gray-30)'
+                        textAlign={"center"}
                         translation-key='contest_detail_leaderboard_no_data'
                       >
                         {t("contest_detail_leaderboard_no_data")}
-                      </Typography>
+                      </ParagraphSmall>
                     )}
                   </Grid>
                 </Paper>

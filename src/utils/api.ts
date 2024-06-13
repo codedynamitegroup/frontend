@@ -38,8 +38,8 @@ const createInstance = ({
         const originalRequest = error.config;
         // Handle 401 Unauthorized
         if (
-          error.response &&
-          error.response.status === 401 &&
+          error?.response &&
+          error?.response?.status === 401 &&
           originalRequest &&
           !originalRequest._retry &&
           refreshToken

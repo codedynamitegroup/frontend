@@ -26,18 +26,18 @@ const millisToFormatTimeString = (millis: number, currentLang = "en") => {
     result += `${remainingSeconds} giây `;
   } else {
     if (years > 0) {
-      result += `${years} ${years > 1 ? "years" : "year"}`;
+      result += `${years} ${years > 1 ? "years " : "year "}`;
     }
     if (months > 0) {
-      result += `${months} ${months > 1 ? "months" : "month"}`;
+      result += `${months} ${months > 1 ? "months " : "month "}`;
     }
     if (days > 0) {
-      result += `${days} ${days > 1 ? "days" : "day"}`;
+      result += `${days} ${days > 1 ? "days " : "day "}`;
     }
     if (hours > 0) {
-      result += `${hours} ${hours > 1 ? "hrs" : "hr"}`;
+      result += `${hours} ${hours > 1 ? "hrs " : "hr "}`;
     }
-    if (minutes > 0) result += `${minutes} ${minutes > 1 ? "mins" : "min"}`;
+    if (minutes > 0) result += `${minutes} ${minutes > 1 ? "mins " : "min "}`;
     result += `${remainingSeconds} secs`;
   }
   return result.trim();

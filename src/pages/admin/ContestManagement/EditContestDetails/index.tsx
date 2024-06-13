@@ -22,8 +22,6 @@ import { ContestService } from "services/coreService/ContestService";
 import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 import NotFoundPage from "pages/common/NotFoundPage";
-import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
-import { motion } from "framer-motion";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -146,7 +144,8 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
     handleSubmit,
     watch,
     formState: { errors },
-    setValue
+    setValue,
+    reset
   } = useForm<IFormDataType>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -170,46 +169,80 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
       try {
         const contest = await ContestService.getContestById(id);
         if (contest) {
-          setValue("name", contest.name);
-          setDefaultContestName(contest.name);
-          setValue("startTime", contest.startTime);
-          if (!contest.endTime) {
-            setValue("isNoEndTime", true);
-            setValue("endTime", null);
-          } else {
-            setValue("isNoEndTime", false);
-            setValue("endTime", contest.endTime);
-          }
-          setValue("thumbnailUrl", contest.thumbnailUrl);
           const description = contest.description
             ? contest.description
             : `Please provide a short description of your contest here!`;
-          setValue("description", description);
           const prizes =
             contest.prizes && contest.prizes !== ""
               ? contest.prizes
               : `- Prizes are optional. You may add any prizes that you would like to offer here.`;
-          setValue("prizes", prizes);
           const rules =
             contest.rules && contest.rules !== ""
               ? contest.rules
               : `- Please provide any rules for your contest here.`;
-          setValue("rules", rules);
           const scoring =
             contest.scoring && contest.scoring !== ""
               ? contest.scoring
-              : `- Each challenge has a pre-determined score.
-          - A participant’s score depends on the number of test cases a participant’s code submission successfully passes.
-          - If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved.
-          - Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score`;
-          setValue("scoring", scoring);
-          setValue("isPublic", contest.isPublic);
+              : `- Each challenge has a pre-determined score.<br/>
+              - A participant’s score depends on the number of test cases a participant’s code submission successfully passes.<br/>
+              - If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved.<br/>
+              - Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score`;
+          reset({
+            name: contest.name,
+            startTime: contest.startTime,
+            endTime: !contest.endTime ? null : contest.endTime,
+            isNoEndTime: !contest.endTime ? true : false,
+            thumbnailUrl: contest.thumbnailUrl,
+            description: description,
+            prizes: prizes,
+            rules: rules,
+            scoring: scoring,
+            isPublic: contest.isPublic,
+            isRestrictedForum: contest.isRestrictedForum,
+            isDisabledForum: contest.isDisabledForum
+          });
+          setDefaultContestName(contest.name);
+
+          // setValue("name", contest.name);
+          // setDefaultContestName(contest.name);
+          // setValue("startTime", contest.startTime);
+          // if (!contest.endTime) {
+          //   setValue("isNoEndTime", true);
+          //   setValue("endTime", null);
+          // } else {
+          //   setValue("isNoEndTime", false);
+          //   setValue("endTime", contest.endTime);
+          // }
+          // setValue("thumbnailUrl", contest.thumbnailUrl);
+          // const description = contest.description
+          //   ? contest.description
+          //   : `Please provide a short description of your contest here!`;
+          // setValue("description", description);
+          // const prizes =
+          //   contest.prizes && contest.prizes !== ""
+          //     ? contest.prizes
+          //     : `- Prizes are optional. You may add any prizes that you would like to offer here.`;
+          // setValue("prizes", prizes);
+          // const rules =
+          //   contest.rules && contest.rules !== ""
+          //     ? contest.rules
+          //     : `- Please provide any rules for your contest here.`;
+          // setValue("rules", rules);
+          // const scoring =
+          //   contest.scoring && contest.scoring !== ""
+          //     ? contest.scoring
+          //     : `- Each challenge has a pre-determined score.
+          // - A participant’s score depends on the number of test cases a participant’s code submission successfully passes.
+          // - If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved.
+          // - Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score`;
+          // setValue("scoring", scoring);
+          // setValue("isPublic", contest.isPublic);
         }
       } catch (error: any) {
         console.error("error", error);
       }
     },
-    [setValue]
+    [reset]
   );
 
   const handleUpdateContest = useCallback(async (id: string, data: UpdateContestCommand) => {
@@ -233,7 +266,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   }, []);
 
   const submitHandler = async (data: any) => {
-    console.log(data);
+    console.log("submitHandler", data);
   };
 
   useEffect(() => {
@@ -391,7 +424,9 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
           <JoyButton
             variant='outlined'
             translation-key='contest_preview_contest_details_page'
-            onClick={() => navigate(routes.user.contest.detail.replace(":contestId", contestId))}
+            onClick={() =>
+              navigate(routes.user.contest.detail.information.replace(":contestId", contestId))
+            }
           >
             {t("contest_preview_contest_details_page")}
           </JoyButton>

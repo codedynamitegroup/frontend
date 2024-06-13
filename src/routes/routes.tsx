@@ -176,7 +176,20 @@ export const routes = {
     },
     contest: {
       root: "/contests",
-      detail: "/contests/:contestId"
+      detail: {
+        root: "/contests/:contestId/*",
+        information: "/contests/:contestId/information",
+        problems: {
+          root: "/contests/:contestId/problems",
+          detail: "/contests/:contestId/problems/:problemId",
+          problem_root: "/contests/:contestId/problems/:problemId/*",
+          description: "/contests/:contestId/problems/:problemId/description",
+          solution: "/contests/:contestId/problems/:problemId/solution",
+          submission: "/contests/:contestId/problems/:problemId/submission",
+          share_solution: "/contests/:contestId/problems/:problemId/share-solution"
+        },
+        leaderboard: "/contests/:contestId/leaderboard"
+      }
     },
     homepage: {
       root: "/"
@@ -217,11 +230,23 @@ export const routes = {
     users: {
       root: "/admin/users",
       edit: {
-        root: "/admin/users/edit/:contestId/*",
-        details: "/admin/users/edit/:contestId/details"
+        root: "/admin/users/edit/:userId/*",
+        details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
     }
   },
-  grading_pdf: "/grading-pdf"
+  org_admin: {
+    homepage: {
+      root: "/org-admin/*"
+    },
+    information: "/org-admin/information",
+    users: {
+      root: "/org-admin/users",
+      edit: {
+        root: "/org-admin/users/edit/:userId/*",
+        details: "/org-admin/users/edit/:userId/details"
+      }
+    }
+  }
 };

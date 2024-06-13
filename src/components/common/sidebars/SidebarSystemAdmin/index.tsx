@@ -59,8 +59,8 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.contest.root
     },
     {
-      name: t("side_bar_user_management"),
-      "translation-key": "side_bar_user_management",
+      name: t("user_management"),
+      "translation-key": "user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.admin.users.root
     }

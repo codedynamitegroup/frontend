@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Container, Grid, TextField } from "@mui/material";
+import { Avatar, Button, CircularProgress, Container, Grid, TextField } from "@mui/material";
 import i18next from "i18next";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
@@ -27,6 +27,7 @@ import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import useAuth from "hooks/useAuth";
 import images from "config/images";
 import { decodeBase64, removeNewLine } from "utils/base64";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -177,11 +178,16 @@ export default function DetailSolution({
               </ParagraphBody>
             )}
             <Box className={classes.submissionAuthor}>
-              <img
-                src={user?.avatarUrl ?? images.avatar.avatarBoyDefault}
-                alt='User'
-                className={classes.avatar}
-              />
+              <Avatar
+                sx={{
+                  bgcolor: `${generateHSLColorByRandomText(`${user?.firstName} ${user?.lastName}`)}`
+                }}
+                alt={user?.email}
+                src={user?.avatarUrl}
+              >
+                {user?.firstName.charAt(0)}
+              </Avatar>
+
               <ParagraphExtraSmall fontWeight={"700"}>
                 {i18next.language === "vi"
                   ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`

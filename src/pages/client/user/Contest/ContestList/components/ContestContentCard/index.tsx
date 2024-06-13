@@ -22,7 +22,7 @@ interface PropsData {
 const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: PropsData) => {
   const navigate = useNavigate();
   const clickHandler = () => {
-    navigate(routes.user.contest.detail.replace(":contestId", contestId.toString()));
+    navigate(routes.user.contest.detail.information.replace(":contestId", contestId.toString()));
   };
   const { t } = useTranslation();
   const [currentLang, setCurrentLang] = useState(() => {

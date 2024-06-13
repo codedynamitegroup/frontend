@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import AssignmentResource, { ResourceType } from "./components/Resource";
 import classes from "./styles.module.scss";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import ReusedCourseResourceDialog from "./components/ReuseResourceDialog/CourseDialog";
 import ReusedResourceDialog from "./components/ReuseResourceDialog/ResourceDialog";
 import { useTranslation } from "react-i18next";
@@ -19,16 +19,15 @@ import { AppDispatch, RootState } from "store";
 import { ExamService } from "services/courseService/ExamService";
 import { setExams } from "reduxes/courseService/exam";
 import { AssignmentService } from "services/courseService/AssignmentService";
-import { setAssignments } from "reduxes/courseService/assignment";
+import assignment, { setAssignments } from "reduxes/courseService/assignment";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
+import { ExamEntity } from "models/courseService/entity/ExamEntity";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
   const examState = useSelector((state: RootState) => state.exam);
-  const questionCreate = useSelector((state: RootState) => state.questionCreate);
-
-  const { courseId } = useParams<{ courseId: string }>();
   const assignmentState = useSelector((state: RootState) => state.assignment);
+  const { courseId } = useParams<{ courseId: string }>();
 
   const handleGetExams = async (id: string) => {
     try {
@@ -49,10 +48,40 @@ const LecturerCourseAssignment = () => {
   };
 
   useEffect(() => {
+    console.log("CCC");
     handleGetExams(courseId ?? "");
     handleGetAssignments(courseId ?? "");
-    console.log("examState", examState.exams);
-  }, []);
+  }, [courseId]);
+
+  const handleDeleteAssignment = useCallback(
+    async (id: string) => {
+      try {
+        console.log("HEHE");
+        const response = await AssignmentService.deleteAssignment(id);
+        if (response) {
+          const result = assignmentState.assignments.filter((e) => e.id !== id);
+          dispatch(setAssignments({ assignments: result }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [assignmentState.assignments, dispatch]
+  );
+
+  const handleDeleteExam = useCallback(
+    async (id: string) => {
+      try {
+        // const response = await ExamService.deleteExam(id);
+        // if (response) {
+        //   dispatch(setExams(examState.exams.exams.filter((e) => e.id !== id)));
+        // }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [examState.exams.exams, dispatch]
+  );
 
   const { t } = useTranslation();
   const searchHandle = (searchVal: string) => {
@@ -60,19 +89,19 @@ const LecturerCourseAssignment = () => {
   };
   const navigate = useNavigate();
 
-  const onCreateNewAssignment = async (popupState: any) => {
+  const onCreateNewAssignment = (popupState: any) => {
     navigate(routes.lecturer.assignment.create.replace(":courseId", courseId?.toString() ?? ""));
     popupState.close();
   };
 
-  const onCreateNewExam = async (popupState: any) => {
+  const onCreateNewExam = (popupState: any) => {
     navigate(routes.lecturer.exam.create.replace(":courseId", courseId?.toString() ?? ""));
     popupState.close();
   };
 
   const [isReusedCourseResourceOpen, setIsReusedCourseResourceOpen] = useState(false);
 
-  const onOpenReusedCourseResourceDialog = async (popupState: any) => {
+  const onOpenReusedCourseResourceDialog = (popupState: any) => {
     setIsReusedCourseResourceOpen(true);
     popupState.close();
   };
@@ -83,7 +112,7 @@ const LecturerCourseAssignment = () => {
 
   const [isReusedResourceOpen, setIsReusedResourceOpen] = useState(false);
 
-  const onOpenReusedResourceDialog = async () => {
+  const onOpenReusedResourceDialog = () => {
     setIsReusedCourseResourceOpen(false);
     setIsReusedResourceOpen(true);
   };
@@ -97,6 +126,7 @@ const LecturerCourseAssignment = () => {
     setIsReusedCourseResourceOpen(true);
     setIsReusedResourceOpen(false);
   };
+
   return (
     <>
       <Box className={classes.assignmentBody}>
@@ -143,22 +173,26 @@ const LecturerCourseAssignment = () => {
             <Heading3 translation-key='course_detail_assignment'>
               {t("course_detail_assignment")}
             </Heading3>
-            {assignmentState.assignments.map((assignment: AssignmentEntity) => (
-              <AssignmentResource
-                courseId={courseId}
-                examId={assignment.id}
-                resourceTitle={assignment.title}
-                resourceOpenDate={assignment.timeOpen}
-                resourceEndedDate={assignment.timeClose}
-                intro={assignment.intro}
-                type={ResourceType.assignment}
-              />
-            ))}
+            {assignmentState.assignments &&
+              assignmentState.assignments.map((assignment: AssignmentEntity) => (
+                <AssignmentResource
+                  key={assignment.id}
+                  courseId={courseId}
+                  examId={assignment.id}
+                  resourceTitle={assignment.title}
+                  resourceOpenDate={assignment.timeOpen}
+                  resourceEndedDate={assignment.timeClose}
+                  intro={assignment.intro}
+                  type={ResourceType.assignment}
+                  onDelete={handleDeleteAssignment}
+                />
+              ))}
           </Box>
           <Box className={classes.topic}>
             <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
             {examState.exams.exams.map((exam) => (
               <AssignmentResource
+                key={exam.id}
                 courseId={courseId ?? ""}
                 examId={exam.id}
                 resourceTitle={exam.name}
@@ -166,6 +200,7 @@ const LecturerCourseAssignment = () => {
                 resourceEndedDate={exam.timeClose}
                 intro={exam.intro}
                 type={ResourceType.exam}
+                onDelete={handleDeleteExam}
               />
             ))}
           </Box>

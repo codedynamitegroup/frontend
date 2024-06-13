@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid, Link } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -28,6 +28,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface ILinkMenu {
   name: string;
@@ -80,7 +81,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-
   const pagesHeaderDefault: ILinkMenu[] = [
     {
       name: "header_explore_course",
@@ -172,7 +172,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     });
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
-
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -195,11 +194,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               <Link
                 component={RouterLink}
                 to={
-                  loggedUser && !activeRoute(routes.admin.homepage.root)
+                  loggedUser &&
+                  !activeRoute(routes.admin.homepage.root) &&
+                  !activeRoute(routes.org_admin.homepage.root)
                     ? routes.user.dashboard.root
-                    : loggedUser && activeRoute(routes.admin.homepage.root)
-                      ? routes.admin.dashboard
-                      : routes.user.homepage.root
+                    : loggedUser && activeRoute(routes.org_admin.homepage.root)
+                      ? routes.org_admin.users.root
+                      : loggedUser && activeRoute(routes.admin.homepage.root)
+                        ? routes.admin.dashboard
+                        : routes.user.homepage.root
                 }
                 className={classes.textLink}
               >
@@ -209,6 +212,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
           </Box>
           <Box className={classes.navbarItem} ml={2}>
             {!activeRoute(routes.admin.homepage.root) &&
+              !activeRoute(routes.org_admin.homepage.root) &&
               pagesHeader
                 .filter((page) => page.position === "left")
                 .map((page, index) => (
@@ -312,13 +316,17 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   aria-haspopup='true'
                   aria-expanded={open ? "true" : undefined}
                 >
-                  <img
-                    className={classes.imageProfile}
-                    src={
-                      loggedUser.avatarUrl ? loggedUser.avatarUrl : images.avatar.avatarBoyDefault
-                    }
-                    alt='avatar'
-                  ></img>
+                  <Avatar
+                    sx={{
+                      bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
+                    }}
+                    alt={loggedUser.email}
+                    src={loggedUser.avatarUrl}
+                    className={classes.avatarProfile}
+                  >
+                    {loggedUser.firstName.charAt(0)}
+                  </Avatar>
+
                   <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
                     {`${loggedUser.firstName} ${loggedUser.lastName}`}
                   </ParagraphSmall>
@@ -367,7 +375,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             onClick={() => {
               activeRoute(routes.admin.homepage.root)
                 ? navigate(routes.admin.information)
-                : navigate(routes.user.information);
+                : activeRoute(routes.org_admin.homepage.root)
+                  ? navigate(routes.org_admin.information)
+                  : navigate(routes.user.information);
             }}
             translation-key='common_account_info'
           >
@@ -390,31 +400,35 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {t("common_admin_page")}
             </MenuItem>
           )}
-          {isSystemAdmin && activeRoute(routes.admin.homepage.root) && (
-            <MenuItem
-              onClick={() => navigate(routes.user.dashboard.root)}
-              translation-key='common_user_page'
-            >
-              <ListItemIcon>
-                <Box className={classes.imgIcon}>
-                  <img src={images.admin.clientPage} alt='client page img' />
-                </Box>
-              </ListItemIcon>
+          {(isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
+            (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root) && (
+              <MenuItem
+                onClick={() => navigate(routes.user.dashboard.root)}
+                translation-key='common_user_page'
+              >
+                <ListItemIcon>
+                  <Box className={classes.imgIcon}>
+                    <img src={images.admin.clientPage} alt='client page img' />
+                  </Box>
+                </ListItemIcon>
 
-              {t("common_user_page")}
-            </MenuItem>
-          )}
-          {/* {isMoodleAdmin && (
+                {t("common_user_page")}
+              </MenuItem>
+            ))}
+          {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
             <MenuItem
-              onClick={() => navigate(routes.user.information)}
+              onClick={() => navigate(routes.org_admin.users.root)}
               translation-key='common_admin_page'
             >
               <ListItemIcon>
-                <Person fontSize='small' />
+                <Box className={classes.imgIcon}>
+                  <img src={images.admin.adminManagement} alt='admin management img' />
+                </Box>
               </ListItemIcon>
+
               {t("common_admin_page")}
             </MenuItem>
-          )} */}
+          )}
           <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
             <ListItemIcon>
               <Logout className={classes.iconLogout} fontSize='small' />

@@ -33,6 +33,8 @@ import { setLoading, setSections } from "reduxes/courseService/section";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import dayjs from "dayjs";
+import { setCourseDetail } from "reduxes/courseService/course";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -42,6 +44,16 @@ const LecturerCourseInformation = () => {
 
   const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>([]);
   const [isOpenEditTitle, setIsOpenEditTitle] = useState<Array<Boolean>>([]);
+
+  const courseState = useSelector((state: RootState) => state.course);
+
+  useEffect(() => {
+    const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
+    console.log(course);
+    if (course) {
+      dispatch(setCourseDetail({ courseDetail: course }));
+    }
+  }, [courseId, courseState.courses, dispatch]);
 
   const toggleItem = (index: number) => {
     if (collapseOpen[index] === undefined)

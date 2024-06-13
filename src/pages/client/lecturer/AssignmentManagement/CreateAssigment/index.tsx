@@ -1,23 +1,15 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import MenuIcon from "@mui/icons-material/Menu";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import * as React from "react";
 
 import {
   Box,
-  Card,
   Collapse,
   Container,
-  CssBaseline,
   Divider,
-  Drawer,
   Grid,
   IconButton,
   Toolbar,
-  Typography,
   Button,
   Checkbox,
   FormGroup,
@@ -25,21 +17,14 @@ import {
   Snackbar,
   Alert
 } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Header from "components/Header";
-import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
-import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
-import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
 import FileUploader from "components/editor/FileUploader";
 import TextEditor from "components/editor/TextEditor";
-import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
-import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -52,8 +37,6 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import Heading2 from "components/text/Heading2";
 import { NavigateNext } from "@mui/icons-material";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
-import JoySelect from "components/common/JoySelect";
-import { Select } from "@mui/joy";
 import Heading3 from "components/text/Heading3";
 import { idID } from "@mui/material/locale";
 import download from "downloadjs";
@@ -69,6 +52,9 @@ import { co, ex } from "@fullcalendar/core/internal-common";
 import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
 import CloseIcon from "@mui/icons-material/Close";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
+import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface FormData {
   name: string;
@@ -109,6 +95,8 @@ export default function AssignmentCreated() {
   const [assignment, setAssignment] = useState<AssignmentEntity | null>(null);
 
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
+  const courseState = useSelector((state: RootState) => state.course);
+  console.log(allowSubmissionAfterEndTime);
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);
@@ -128,12 +116,6 @@ export default function AssignmentCreated() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (assignmentId) {
-      handleGetAssignmentDetails(assignmentId);
-    }
-  });
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.name) {
@@ -224,6 +206,33 @@ export default function AssignmentCreated() {
     return null;
   }, []);
 
+  const updateAssignment = useCallback(
+    async (assignment: UpdateAssignmentCommand, assignmentId: string) => {
+      try {
+        const response = await AssignmentService.updateAssignment(assignment, assignmentId);
+        if (response) {
+          console.log("Update assignment successfully");
+          return response;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return null;
+    },
+    []
+  );
+
+  const deleteIntroAttachment = useCallback(async (id: string) => {
+    try {
+      const response = await AssignmentService.deleteIntroAttachment(id);
+      if (response) {
+        console.log("Delete all intro attachment successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const submitHandler = async (data: any) => {
     setLoading(true);
     const formSubmittedData: IFormDataType = { ...data };
@@ -243,37 +252,90 @@ export default function AssignmentCreated() {
     let attachmentIdArray: string[] = [];
 
     try {
-      for (const file of extFiles) {
-        const attachmentData = {
-          fileName: file.name || "",
-          fileUrl: file.downloadUrl || "",
-          fileSize: file.size || 0,
-          mimeType: file.type || "",
-          timeModified: new Date().toISOString()
-        };
+      if (assignment) {
+        const existingAttachments = assignment.introAttachments || [];
 
-        const attachmentResponse = await createIntroAttachment(attachmentData);
-        if (attachmentResponse) {
-          introAttachments.push(attachmentData);
-          attachmentIdArray.push(attachmentResponse.id);
+        const filesToCreate = extFiles.filter(
+          (file) => !existingAttachments.some((existingFile) => existingFile.id === file.id)
+        );
+        const filesToDelete = existingAttachments.filter(
+          (existingFile) => !extFiles.some((file) => file.id === existingFile.id)
+        );
+
+        for (const file of filesToDelete) {
+          await deleteIntroAttachment(file.id);
+        }
+
+        // Create new files
+        for (const file of filesToCreate) {
+          const attachmentData = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimeType: file.type || "",
+            timeModified: new Date().toISOString()
+          };
+          const attachmentResponse = await createIntroAttachment(attachmentData);
+          if (attachmentResponse) {
+            introAttachments.push(attachmentData);
+            attachmentIdArray.push(attachmentResponse.id);
+          }
+        }
+      } else {
+        for (const file of extFiles) {
+          const attachmentData = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimeType: file.type || "",
+            timeModified: new Date().toISOString()
+          };
+
+          const attachmentResponse = await createIntroAttachment(attachmentData);
+          if (attachmentResponse) {
+            introAttachments.push(attachmentData);
+            attachmentIdArray.push(attachmentResponse.id);
+          }
         }
       }
-
-      const assignmentResponse = await createAssignment({
-        courseId: courseId ?? "",
-        title: name,
-        intro,
-        activity,
-        wordLimit,
-        maxUploadFiles: maxUploadedFile,
-        maxFileSize,
-        maxScore,
-        timeOpen,
-        timeClose,
-        type: textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
-        visible: true,
-        allowSubmitLate: allowSubmissionAfterEndTime
-      });
+      let assignmentResponse;
+      if (assignment) {
+        console.log(assignment.id);
+        assignmentResponse = await updateAssignment(
+          {
+            title: name,
+            intro,
+            activity,
+            wordLimit,
+            maxUploadFiles: maxUploadedFile,
+            maxFileSize,
+            maxScore,
+            timeOpen,
+            timeClose,
+            type:
+              textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
+            visible: true,
+            allowSubmitLate: allowSubmissionAfterEndTime
+          },
+          assignment.id
+        );
+      } else {
+        assignmentResponse = await createAssignment({
+          courseId: courseId ?? "",
+          title: name,
+          intro,
+          activity,
+          wordLimit,
+          maxUploadFiles: maxUploadedFile,
+          maxFileSize,
+          maxScore,
+          timeOpen,
+          timeClose,
+          type: textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
+          visible: true,
+          allowSubmitLate: allowSubmissionAfterEndTime
+        });
+      }
 
       if (assignmentResponse && introAttachments.length > 0) {
         for (let i = 0; i < introAttachments.length; i++) {
@@ -297,7 +359,14 @@ export default function AssignmentCreated() {
   };
 
   useEffect(() => {
+    if (assignmentId) {
+      handleGetAssignmentDetails(assignmentId);
+    }
+  }, []);
+
+  useEffect(() => {
     if (assignment) {
+      console.log(assignment);
       setValue("name", assignment.title);
       setValue("intro", assignment.intro);
       setValue("activity", assignment.activity);
@@ -319,18 +388,25 @@ export default function AssignmentCreated() {
       setValue("maxFileSize", assignment.maxFileSize);
       setExtFiles(
         assignment?.introAttachments.map((file) => {
+          let f: File = new File([""], file.fileName, {
+            type: file.mimetype,
+            lastModified: new Date().getTime()
+          });
           return {
             id: file.id,
             name: file.fileName,
             size: file.fileSize,
             type: file.mimetype,
             downloadUrl: file.fileUrl,
-            imageUrl: file.fileUrl
+            imageUrl: file.fileUrl,
+            file: f,
+            uploadStatus: "success"
           };
         })
       );
     }
-  }, [assignment, setValue]);
+    setAllowSubmissionAfterEndTime(assignment?.allowSubmitLate ?? true);
+  }, [assignment]);
 
   useEffect(() => {
     if (width < 1080) {
@@ -390,7 +466,7 @@ export default function AssignmentCreated() {
                   navigate(routes.lecturer.course.information.replace(":courseId", courseId ?? ""))
                 }
               >
-                CS202 - Nhập môn lập trình
+                {courseState.courseDetail?.name}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
               <ParagraphSmall
@@ -404,12 +480,21 @@ export default function AssignmentCreated() {
                 {t("course_detail_assignment_list")}
               </ParagraphSmall>
               <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                translation-key='assignment_management_create_assignment'
-              >
-                {t("assignment_management_create_assignment")}
-              </ParagraphSmall>
+              {assignment ? (
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  translation-key='assignment_management_update_assignment'
+                >
+                  {t("assignment_management_update_assignment")}
+                </ParagraphSmall>
+              ) : (
+                <ParagraphSmall
+                  colorname='--blue-500'
+                  translation-key='assignment_management_create_assignment'
+                >
+                  {t("assignment_management_create_assignment")}
+                </ParagraphSmall>
+              )}
             </Box>
           </Toolbar>
           <form
@@ -420,9 +505,16 @@ export default function AssignmentCreated() {
             }}
             onSubmit={handleSubmit(submitHandler)}
           >
-            <Heading2 translation-key='assignment_management_create_assignment'>
-              {t("assignment_management_create_assignment")}
-            </Heading2>
+            {assignment ? (
+              <Heading2 translation-key='assignment_management_update_assignment'>
+                {t("assignment_management_update_assignment")}
+              </Heading2>
+            ) : (
+              <Heading2 translation-key='assignment_management_create_assignment'>
+                {t("assignment_management_create_assignment")}
+              </Heading2>
+            )}
+
             <Box className={classes.generalInfo}>
               <Box display='flex' alignItems='center' margin={1}>
                 {collapseOpen ? (
@@ -837,7 +929,7 @@ export default function AssignmentCreated() {
           sx={{ width: "100%" }}
           onClose={() => setOpenSuccessSnackbar(false)}
         >
-          Tạo bài tập thành công
+          {assignment ? t("update_successful_assignment") : t("create_successful_assignment")}
         </Alert>
       </Snackbar>
 
@@ -851,7 +943,7 @@ export default function AssignmentCreated() {
         onClose={() => setOpenErrorSnackbar(false)}
       >
         <Alert severity='error' sx={{ width: "100%" }} onClose={() => setOpenErrorSnackbar(false)}>
-          Tạo bài tập thất bại
+          {t("create_failed_assignment")}
         </Alert>
       </Snackbar>
     </Grid>

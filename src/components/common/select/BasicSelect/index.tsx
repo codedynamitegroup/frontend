@@ -12,7 +12,7 @@ import clsx from "clsx";
 import classes from "./styles.module.scss";
 import { DefaultComponentProps } from "@mui/material/OverridableComponent";
 
-interface ItemProps {
+export interface ItemProps {
   value: string;
   label: string;
   customNode?: React.ReactNode;

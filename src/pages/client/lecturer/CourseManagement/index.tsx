@@ -20,6 +20,9 @@ import { CourseUserService } from "services/courseService/CourseUserService";
 import { CourseTypeService } from "services/courseService/CourseTypeService";
 import useAuth from "hooks/useAuth";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "store";
+import { setCourses } from "reduxes/courseService/course";
 
 enum EView {
   cardView = 1,
@@ -29,10 +32,12 @@ enum EView {
 const LecturerCourses = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [courseTypes, setCourseTypes] = useState<CourseTypeEntity[]>([]);
-  const [courses, setCourses] = useState<CourseEntity[]>([]);
+  // const [courses, setCourses] = useState<CourseEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [viewType, setViewType] = useState<EView>(EView.listView);
+  const courseState = useSelector((state: RootState) => state.course);
+  const dispatch = useDispatch();
 
   const { loggedUser } = useAuth();
 
@@ -61,7 +66,7 @@ const LecturerCourses = () => {
           pageNo,
           pageSize
         });
-        setCourses(getCourseResponse.courses);
+        dispatch(setCourses(getCourseResponse));
       } catch (error) {
         console.error("Failed to fetch courses", error);
       } finally {
@@ -96,9 +101,11 @@ const LecturerCourses = () => {
   const { t } = useTranslation();
 
   const filteredCourses = useMemo(() => {
-    if (!selectedCategories.length) return courses;
-    return courses.filter((course) => selectedCategories.includes(course.courseType.name));
-  }, [courses, selectedCategories]);
+    if (!selectedCategories.length) return courseState.courses;
+    return courseState.courses.filter((course) =>
+      selectedCategories.includes(course.courseType.name)
+    );
+  }, [courseState.courses, selectedCategories]);
 
   return (
     <Box id={classes.coursesBody}>
@@ -150,7 +157,7 @@ const LecturerCourses = () => {
           {viewType === EView.cardView ? (
             <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
               <Grid container spacing={2}>
-                {filteredCourses.map((course) => (
+                {filteredCourses.map((course, index) => (
                   <Grid
                     className={classes.gridItem}
                     item
@@ -161,6 +168,7 @@ const LecturerCourses = () => {
                     lg={3}
                   >
                     <CourseCard
+                      index={index}
                       courseId={course.id}
                       courseAvatarUrl={"https://picsum.photos/200"}
                       courseCategory={course.courseType.name}

@@ -40,9 +40,6 @@ import flagVietnam from "assets/img/icon/flag/flag-vietnam.svg";
 import flagUs from "assets/img/icon/flag/flag-us.svg";
 import icAlmostEqualTo from "assets/img/icon/almost_equal_to_icon.svg";
 
-import avatarBoyDefault from "assets/img/avatar/default-avatar-boy.svg";
-import avatarGirlDefault from "assets/img/avatar/default-avatar-girl.svg";
-
 import notFoundError from "assets/img/error/NotFoundError.svg";
 import forbiddenError from "assets/img/error/ForbiddenError.svg";
 
@@ -97,7 +94,6 @@ const images = {
   temp: { contest: { tempContest1, tempContest2, tempContest3, tempContest4, tempContest5 } },
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo,
-  avatar: { avatarBoyDefault, avatarGirlDefault },
   error: { notFoundError, forbiddenError },
   admin: {
     contest,

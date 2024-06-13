@@ -1,4 +1,5 @@
 {
+  "common_organization": "Tổ chức",
   "common_please_login": "Vui lòng đăng nhập",
   "common_easy": "Dễ",
   "common_medium": "Trung bình",
@@ -190,10 +191,10 @@
   "common_next": "Tiếp",
   "common_previous": "Trước",
   "common_back_to_chapters": "Quay lại DS chương",
+  "common_max_score": "Điểm tối đa",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
-  "side_bar_user_management": "Quản lý người dùng",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -206,6 +207,7 @@
   "common_general": "chung",
   "common_personal": "cá nhân",
   "common_add_new": "thêm mới",
+  "common_cannot_be_blank": "không được để trống",
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
 
@@ -260,6 +262,7 @@
   "contest_end_time_invalid": "Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu",
   "contest_preview_contest_details_page": "Xem trước trang chi tiết cuộc thi",
   "contest_forum": "Diễn đàn",
+  "contest_problems": "Bài toán cuộc thi",
   "contest_sign_up_date": "Ngày đăng ký",
   "contest_no_contests_found_message": "Không tìm thấy cuộc thi nào...",
 
@@ -283,12 +286,13 @@
   "this_contest_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
   "contest_is_public": "Công khai",
   "contest_is_restricted_forum": "Hạn chế truy cập diễn đàn",
-  "contest_is_restricted_forum_tooltip": "Người tham gia có thể đăng câu hỏi nhưng không thể đăng câu trả lời. Chỉ người điều hành cuộc thi mới có quyền đăng câu trả lời. Cấu hình này cũng nên được thiết lập cho từng thách thức của cuộc thi.",
+  "contest_is_restricted_forum_tooltip": "Người tham gia không thể đăng bài giải. Chỉ người điều hành cuộc thi mới có quyền đăng bài giải.",
   "contest_is_disabled_forum": "Tắt diễn đàn",
   "contest_is_disabled_forum_tooltip": "Tab thảo luận sẽ bị tắt.",
   "contest_is_public_tooltip": "Nếu cuộc thi này là công khai, mọi người đều có thể tham gia",
   "contest_metadata_customization": "Tùy chỉnh thông tin",
   "contest_details_description": "Tùy chỉnh cuộc thi của bạn bằng cách cung cấp thông tin cần thiết để tạo trang chi tiết cuộc thi của bạn.",
+  "contest_problems_description": "Thêm bài toán vào cuộc thi của bạn bằng cách chọn từ thư viện công khai của chúng tôi hoặc tạo và thêm bài toán của riêng bạn ở đây.",
   "contest_metadata_customization_description": "Điền thông tin này để tùy chỉnh trang mô tả cuộc thi của bạn.",
   "contest_thumbnail": "Ảnh cuộc thi",
 
@@ -310,13 +314,15 @@
   "contest_detail_description": "Mô tả chung",
   "contest_detail_problems": "Đề thi",
   "contest_detail_leaderboard": "Bảng xếp hạng",
-  "contest_detail_leaderboard_no_data": "Không có dữ liệu",
+  "contest_detail_leaderboard_no_data": "Bảng xếp hạng sẽ được cập nhật sớm, vui lòng đợi!",
   "contest_detail_join_button": "Tham gia",
   "contest_detail_leaderboard_rank": "Hạng",
   "contest_detail_leaderboard_total_time": "Tổng thời gian làm",
   "contest_detail_join_success": "Đăng ký tham gia cuộc thi thành công",
   "contest_detail_register_tooltip": "Hãy đăng nhập để có thể tham gia cuộc thi này",
   "contest_detail_already_started_message": "Cuộc thi đã bắt đầu. Bạn không thể tham gia",
+  "contest_detail_no_problems_messsage": "Cuộc thi này chưa có đề bài nào",
+  "contest_add_problem_button": "Thêm bài toán",
 
   "certificate_title": "Khóa học chứng chỉ",
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
@@ -353,6 +359,15 @@
   "dashboard_this_certificate_course_has_no_lesson": "Khóa học này hiện chưa có bài học nào",
   "dashboard_no_ongoing_course": "Chưa có khoá học nào được bắt đầu. Hãy bắt đầu học ngay",
 
+  "role_system_admin": "QTV hệ thống",
+  "role_org_admin": "QTV tổ chức",
+  "role_lecturer": "Giảng viên",
+  "role_student": "Sinh viên",
+  "role_user": "Người dùng",
+
+  "user_management": "Quản lý người dùng",
+  "user_create": "Tạo người dùng",
+  "user_update": "Cập nhật người dùng",
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",
   "user_detail": "Chi tiết người dùng",
@@ -495,6 +510,7 @@
 
   "assignment_management_max_score": "Điểm tối đa",
   "assignment_management_create_assignment": "Tạo bài tập",
+  "assignment_management_update_assignment": "Chỉnh sửa bài tập",
   "asingment_management_allow_time": "Cho phép nộp bài kể từ",
   "asingment_management_deadline": "Hạn nộp bài",
   "asingment_management_possibility": "Tính khả dụng",
@@ -502,6 +518,15 @@
   "asingment_management_possibility_hind_can_not_access": "Ẩn và không thể truy cập trên trang khoá học",
   "asingment_management_possibility_hide_can_access": "Ẩn nhưng có thể truy cập nếu giảng viên cung cấp đường dẫn",
   "asingment_management_attach_file": "Tệp đính kèm (nếu có)",
+
+  "create_successful_assignment": "Tạo bài tập thành công",
+  "update_successful_assignment": "Cập nhật bài tập thành công",
+  "create_failed_assignment": "Tạo bài tập thất bại",
+
+  "common_confirm_deletion": "Xác nhận xóa",
+  "assignment_management_delete_assignment": "Bạn có chắc chắn muốn xóa bài tập này?",
+  "common_confirm": "Xác nhận",
+  "common_cancel": "Hủy",
 
   "exam_management_create_retry_num": "Số lần làm lại tối đa",
   "exam_management_create_retry_num_infinite": "không giới hạn số lần làm lại",
@@ -524,6 +549,8 @@
   "email_required": "Email không được để trống",
   "email_invalid": "Email không hợp lệ",
   "phone_number_invalid": "Số điện thoại không hợp lệ",
+  "phone_required": "Số điện thoại không được để trống",
+  "role_required": "Vai trò không được để trống",
 
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",
@@ -629,9 +656,10 @@
   "detail_problem_submission_detail_user_submission_time": "đã nộp vào {{time}}",
   "detail_problem_submission_detail_share_solution": "Chia sẻ bài giải",
   "detail_problem_submission_detail_your_solution": "Bài làm của bạn",
-  "detail_problem_discussion_your_solution_rank": "Bài làm của bạn đánh bại {{percent}}% bài làm khác về thời gian",
+  "detail_problem_discussion_share_solution_to_help": "Chia sẻ bài giải của bạn với mọi người",
   "detail_problem_discussion_share_your_solution": "Chia sẻ bài giải",
   "detail_problem_discussion_filter_newest": "Mới nhất",
+  "detail_problem_discussion_filter_oldest": "Cũ nhất",
   "detail_problem_discussion_detail_comment_count": "Bình luận ({{commentNumber}})",
   "detail_problem_discussion_your_comment": "Bình luận của bạn",
   "detail_problem_discussion_detail_comment": "Bình luận",
