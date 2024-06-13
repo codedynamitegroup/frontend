@@ -152,7 +152,8 @@ export const API = {
     SUBMISSION: "/submissions"
   },
   AUTH: {
-    GET_ALL: "/auth/users",
+    GET_ALL_USERS: "/auth/users",
+    GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
     GET_STATISTICS: "/auth/users/statistics",
     SOCIAL_LOGIN: "/auth/users/social-login",
     LOGIN: "/auth/users/login",

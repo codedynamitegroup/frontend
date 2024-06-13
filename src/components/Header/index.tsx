@@ -81,7 +81,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-
   const pagesHeaderDefault: ILinkMenu[] = [
     {
       name: "header_explore_course",
@@ -173,7 +172,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     });
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
-
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
       <Container maxWidth='xl'>
@@ -196,11 +194,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               <Link
                 component={RouterLink}
                 to={
-                  loggedUser && !activeRoute(routes.admin.homepage.root)
+                  loggedUser &&
+                  !activeRoute(routes.admin.homepage.root) &&
+                  !activeRoute(routes.org_admin.homepage.root)
                     ? routes.user.dashboard.root
-                    : loggedUser && activeRoute(routes.admin.homepage.root)
-                      ? routes.admin.dashboard
-                      : routes.user.homepage.root
+                    : loggedUser && activeRoute(routes.org_admin.homepage.root)
+                      ? routes.org_admin.users.root
+                      : loggedUser && activeRoute(routes.admin.homepage.root)
+                        ? routes.admin.dashboard
+                        : routes.user.homepage.root
                 }
                 className={classes.textLink}
               >
@@ -209,27 +211,28 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             </Box>
           </Box>
           <Box className={classes.navbarItem} ml={2}>
-            {!activeRoute(routes.admin.homepage.root) &&
-              pagesHeader
-                .filter((page) => page.position === "left")
-                .map((page, index) => (
-                  <ParagraphSmall
-                    key={index}
-                    className={clsx([page.isActive ? classes.isActive : "", classes.item])}
-                    fontWeight={600}
-                    translation-key={page.name}
-                    colorname={"--gray-50"}
-                  >
-                    <Link
-                      component={RouterLink}
-                      to={page.path}
+            {!activeRoute(routes.admin.homepage.root) ||
+              (!activeRoute(routes.org_admin.homepage.root) &&
+                pagesHeader
+                  .filter((page) => page.position === "left")
+                  .map((page, index) => (
+                    <ParagraphSmall
+                      key={index}
+                      className={clsx([page.isActive ? classes.isActive : "", classes.item])}
+                      fontWeight={600}
                       translation-key={page.name}
-                      className={classes.textLink}
+                      colorname={"--gray-50"}
                     >
-                      {t(page.name)}
-                    </Link>
-                  </ParagraphSmall>
-                ))}
+                      <Link
+                        component={RouterLink}
+                        to={page.path}
+                        translation-key={page.name}
+                        className={classes.textLink}
+                      >
+                        {t(page.name)}
+                      </Link>
+                    </ParagraphSmall>
+                  )))}
 
             {isStudent && (
               <ParagraphSmall
@@ -372,7 +375,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
             onClick={() => {
               activeRoute(routes.admin.homepage.root)
                 ? navigate(routes.admin.information)
-                : navigate(routes.user.information);
+                : activeRoute(routes.org_admin.homepage.root)
+                  ? navigate(routes.org_admin.information)
+                  : navigate(routes.user.information);
             }}
             translation-key='common_account_info'
           >
@@ -395,31 +400,35 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {t("common_admin_page")}
             </MenuItem>
           )}
-          {isSystemAdmin && activeRoute(routes.admin.homepage.root) && (
-            <MenuItem
-              onClick={() => navigate(routes.user.dashboard.root)}
-              translation-key='common_user_page'
-            >
-              <ListItemIcon>
-                <Box className={classes.imgIcon}>
-                  <img src={images.admin.clientPage} alt='client page img' />
-                </Box>
-              </ListItemIcon>
+          {(isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
+            (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root) && (
+              <MenuItem
+                onClick={() => navigate(routes.user.dashboard.root)}
+                translation-key='common_user_page'
+              >
+                <ListItemIcon>
+                  <Box className={classes.imgIcon}>
+                    <img src={images.admin.clientPage} alt='client page img' />
+                  </Box>
+                </ListItemIcon>
 
-              {t("common_user_page")}
-            </MenuItem>
-          )}
-          {/* {isMoodleAdmin && (
+                {t("common_user_page")}
+              </MenuItem>
+            ))}
+          {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
             <MenuItem
-              onClick={() => navigate(routes.user.information)}
+              onClick={() => navigate(routes.org_admin.users.root)}
               translation-key='common_admin_page'
             >
               <ListItemIcon>
-                <Person fontSize='small' />
+                <Box className={classes.imgIcon}>
+                  <img src={images.admin.adminManagement} alt='admin management img' />
+                </Box>
               </ListItemIcon>
+
               {t("common_admin_page")}
             </MenuItem>
-          )} */}
+          )}
           <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
             <ListItemIcon>
               <Logout className={classes.iconLogout} fontSize='small' />

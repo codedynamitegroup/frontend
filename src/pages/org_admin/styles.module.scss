@@ -1,0 +1,22 @@
+.root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--gray-1);
+}
+
+.container {
+  display: flex !important;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: white;
+  width: 100%;
+  min-height: 100%;
+  background-color: white;
+}
+
+.body {
+  height: 100%;
+}

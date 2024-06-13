@@ -296,7 +296,41 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_ALL}`, {
+      }).get(`${API.AUTH.GET_ALL_USERS}`, {
+        params: {
+          searchName,
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async getAllUserByOrganization({
+    searchName,
+    pageNo = 0,
+    pageSize = 10,
+    id
+  }: {
+    searchName?: string;
+    pageNo?: number;
+    pageSize?: number;
+    id: string;
+  }) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.GET_ALL_USERS_BY_ORGANIZATION.replace(":id", id)}`, {
         params: {
           searchName,
           pageNo,

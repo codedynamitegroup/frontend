@@ -118,9 +118,11 @@ const CustomSearchFeatureBar = ({
                 width: "100%"
               }}
             >
-              <Button btnType={BtnType.Primary} onClick={onClickCreate}>
-                {createBtnText}
-              </Button>
+              {createBtnText !== "" && (
+                <Button btnType={BtnType.Primary} onClick={onClickCreate}>
+                  {createBtnText}
+                </Button>
+              )}
             </Box>
           )}
         </Stack>

@@ -236,5 +236,17 @@ export const routes = {
       create: "/admin/users/create"
     }
   },
-  grading_pdf: "/grading-pdf"
+  org_admin: {
+    homepage: {
+      root: "/org-admin/*"
+    },
+    information: "/org-admin/information",
+    users: {
+      root: "/org-admin/users",
+      edit: {
+        root: "/org-admin/users/edit/:userId/*",
+        details: "/org-admin/users/edit/:userId/details"
+      }
+    }
+  }
 };
