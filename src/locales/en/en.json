@@ -283,7 +283,7 @@
   "this_contest_has_no_end_time": "This contest has no end time",
   "contest_is_public": "Is public",
   "contest_is_restricted_forum": "Restricted forum",
-  "contest_is_restricted_forum_tooltip": "Participants can post questions but can't post answers. Only contest moderators will have permission to post answers. This configuration should also be set for individual challenge(s) of the contest.",
+  "contest_is_restricted_forum_tooltip": "Participants can't post solutions. Only contest moderators will have permission to post solutions.",
   "contest_is_disabled_forum": "Disabled forum",
   "contest_is_disabled_forum_tooltip": "Discussions tab will be disabled.",
   "contest_is_public_tooltip": "If this is a public contest, everyone can join",
