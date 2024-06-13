@@ -7,7 +7,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisteredRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
@@ -17,6 +17,10 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import TextTitle from "components/text/TextTitle";
+import PhoneInput from "react-phone-number-input";
+import ErrorMessage from "components/text/ErrorMessage";
+import "react-phone-number-input/style.css";
 
 interface IFormData {
   email: string;
@@ -24,6 +28,7 @@ interface IFormData {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  phone: string;
 }
 
 export default function Register() {
@@ -49,13 +54,18 @@ export default function Register() {
         )
         .oneOf([yup.ref("password")], t("password_confirm_not_match")),
       firstName: yup.string().required(t("first_name_required")),
-      lastName: yup.string().required(t("last_name_required"))
+      lastName: yup.string().required(t("last_name_required")),
+      phone: yup
+        .string()
+        .matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
+        .required(t("phone_required"))
     });
   }, [t]);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
@@ -68,7 +78,8 @@ export default function Register() {
       email: data.email,
       password: data.password,
       firstName: data.firstName,
-      lastName: data.lastName
+      lastName: data.lastName,
+      phone: data.phone
     };
     setIsRegisteredLoading(true);
     UserService.register(registerData)
@@ -137,6 +148,22 @@ export default function Register() {
                   errorMessage={errors?.confirmPassword?.message}
                   width='100%'
                 />
+                <Controller
+                  control={control}
+                  name='phone'
+                  render={({ field }) => {
+                    return (
+                      <PhoneInput
+                        value={field.value}
+                        placeholder='Enter phone number'
+                        onChange={field.onChange}
+                        className={classes.phoneInput}
+                        defaultCountry='VN'
+                      />
+                    );
+                  }}
+                />
+                {errors.phone?.message && <ErrorMessage>{errors.phone?.message}</ErrorMessage>}
                 <LoadButton
                   loading={isRegisteredLoading}
                   btnType={BtnType.Primary}

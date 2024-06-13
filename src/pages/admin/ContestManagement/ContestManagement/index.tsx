@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Chip, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -32,6 +32,7 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess } from "reduxes/AppStatus";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -119,7 +120,11 @@ const ContestManagement = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <Avatar sx={{ bgcolor: grey[500] }} alt={params.row.name} src={params.row.thumbnailUrl}>
+            <Avatar
+              sx={{ bgcolor: `${generateHSLColorByRandomText(`${params.row.name}`)}` }}
+              alt={params.row.name}
+              src={params.row.thumbnailUrl}
+            >
               {params.row.name.charAt(0)}
             </Avatar>
             <ParagraphSmall width={"auto"} fontWeight={500}>
@@ -181,6 +186,34 @@ const ContestManagement = () => {
       },
       renderCell: (params) => {
         return <ParagraphSmall width={"auto"}>{params.row.numOfParticipants}</ParagraphSmall>;
+      }
+    },
+    {
+      field: "isPublic",
+      headerName: t("contest_is_public"),
+      flex: 0.5,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("contest_is_public")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isPublic === true ? true : false}
+            color={params.row.isPublic ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
       }
     },
     {
@@ -301,8 +334,8 @@ const ContestManagement = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    setPage(model.page);
     setPageSize(model.pageSize);
+    setPage(model.page);
     handleGetContests({
       searchName: searchValue,
       startTimeFilter: ContestStartTimeFilterEnum.ALL,
@@ -311,7 +344,7 @@ const ContestManagement = () => {
     });
   };
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+    // console.log(params);
   };
 
   const handleApplyFilter = useCallback(() => {

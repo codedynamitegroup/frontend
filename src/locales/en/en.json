@@ -1,4 +1,5 @@
 {
+  "common_organization": "Organization",
   "common_please_login": "Please login",
   "common_easy": "Easy",
   "common_medium": "Medium",
@@ -187,7 +188,7 @@
   "common_details": "Details",
   "common_problems": "Problems",
   "common_moderators": "Moderators",
-  "common_signups": "Thí sinh",
+  "common_signups": "Signups",
   "common_leaderboard": "Leaderboard",
   "common_statistics": "Statistics",
   "common_prizes": "Prizes",
@@ -200,6 +201,8 @@
   "common_next": "Next",
   "common_previous": "Previous",
   "common_back_to_chapters": "Back to chapters",
+  "common_max_score": "Max score",
+  "common_cannot_be_blank": "cannot be blank",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest management",
@@ -256,6 +259,7 @@
   "contest_end_time_invalid": "End time must be greater than start time",
   "contest_preview_contest_details_page": "Preview contest details page",
   "contest_forum": "Forum",
+  "contest_problems": "Contest Problems",
   "contest_sign_up_date": "Sign up date",
   "contest_no_contests_found_message": "No contests found...",
 
@@ -279,12 +283,13 @@
   "this_contest_has_no_end_time": "This contest has no end time",
   "contest_is_public": "Is public",
   "contest_is_restricted_forum": "Restricted forum",
-  "contest_is_restricted_forum_tooltip": "Participants can post questions but can't post answers. Only contest moderators will have permission to post answers. This configuration should also be set for individual challenge(s) of the contest.",
+  "contest_is_restricted_forum_tooltip": "Participants can't post solutions. Only contest moderators will have permission to post solutions.",
   "contest_is_disabled_forum": "Disabled forum",
   "contest_is_disabled_forum_tooltip": "Discussions tab will be disabled.",
   "contest_is_public_tooltip": "If this is a public contest, everyone can join",
   "contest_metadata_customization": "Metadata customization",
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
+  "contest_problems_description": "Add questions to your contest by selecting questions from our public library or create and add your own questions here.",
   "contest_metadata_customization_description": "Fill out this information to customize your contest description page.",
   "common_thumbnail": "Thumbnail",
 
@@ -316,6 +321,7 @@
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",
   "contest_detail_no_problems_messsage": "No problems available",
+  "contest_add_problem_button": "Add problem",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
@@ -367,6 +373,7 @@
 
   "user_management": "User management",
   "user_create": "Create user",
+  "user_update": "Update user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",
@@ -548,6 +555,8 @@
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
   "phone_number_invalid": "Phone number is invalid",
+  "phone_required": "Phone number is required",
+  "role_required": "Role is required",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",

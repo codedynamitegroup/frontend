@@ -181,7 +181,12 @@ export const routes = {
         information: "/contests/:contestId/information",
         problems: {
           root: "/contests/:contestId/problems",
-          detail: "/contests/:contestId/problems/:problemId"
+          detail: "/contests/:contestId/problems/:problemId",
+          problem_root: "/contests/:contestId/problems/:problemId/*",
+          description: "/contests/:contestId/problems/:problemId/description",
+          solution: "/contests/:contestId/problems/:problemId/solution",
+          submission: "/contests/:contestId/problems/:problemId/submission",
+          share_solution: "/contests/:contestId/problems/:problemId/share-solution"
         },
         leaderboard: "/contests/:contestId/leaderboard"
       }
@@ -225,8 +230,8 @@ export const routes = {
     users: {
       root: "/admin/users",
       edit: {
-        root: "/admin/users/edit/:contestId/*",
-        details: "/admin/users/edit/:contestId/details"
+        root: "/admin/users/edit/:userId/*",
+        details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
     }

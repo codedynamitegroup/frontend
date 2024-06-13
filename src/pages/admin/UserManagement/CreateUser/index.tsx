@@ -21,6 +21,10 @@ import TextTitle from "components/text/TextTitle";
 import { CreatedUserByAdminRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { clearUsers } from "reduxes/authService/user";
+import PhoneInput from "react-phone-number-input";
+import ErrorMessage from "components/text/ErrorMessage";
+import InputSelect from "components/common/inputs/InputSelect";
+import { IOptionItem } from "models/general";
 
 interface IFormDataType {
   email: string;
@@ -28,7 +32,8 @@ interface IFormDataType {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  roleName: string;
+  roleName: IOptionItem;
+  phone: string;
 }
 
 const CreateUser = () => {
@@ -57,7 +62,17 @@ const CreateUser = () => {
         .oneOf([yup.ref("password")], t("password_confirm_not_match")),
       firstName: yup.string().required(t("first_name_required")),
       lastName: yup.string().required(t("last_name_required")),
-      roleName: yup.string().required("Role is required")
+      roleName: yup
+        .object()
+        .shape({
+          id: yup.string().required(t("role_required")),
+          name: yup.string().required(t("role_required"))
+        })
+        .required(t("role_required")),
+      phone: yup
+        .string()
+        .matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
+        .required(t("phone_required"))
     });
   }, [t]);
 
@@ -67,15 +82,7 @@ const CreateUser = () => {
     formState: { errors },
     register
   } = useForm<IFormDataType>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      firstName: "",
-      lastName: "",
-      roleName: ERoleName.USER
-    }
+    resolver: yupResolver(schema)
   });
 
   const submitHandler = async (data: any) => {
@@ -85,7 +92,8 @@ const CreateUser = () => {
       password: formSubmittedData.password,
       firstName: formSubmittedData.firstName,
       lastName: formSubmittedData.lastName,
-      roleName: formSubmittedData.roleName
+      roleName: formSubmittedData.roleName.id,
+      phone: formSubmittedData.phone
     };
     await handleCreateUser(createUserByAdminData);
   };
@@ -111,13 +119,13 @@ const CreateUser = () => {
     [t]
   );
 
-  const roleNameList = useMemo(
+  const roleNameList: IOptionItem[] = useMemo(
     () => [
-      { value: ERoleName.ADMIN, label: t("role_system_admin") },
-      { value: ERoleName.USER, label: t("role_user") },
-      { value: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
-      { value: ERoleName.STUDENT_MOODLE, label: t("role_student") },
-      { value: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") }
+      { id: ERoleName.ADMIN, name: t("role_system_admin") },
+      { id: ERoleName.USER, name: t("role_user") },
+      { id: ERoleName.LECTURER_MOODLE, name: t("role_lecturer") },
+      { id: ERoleName.STUDENT_MOODLE, name: t("role_student") },
+      { id: ERoleName.ADMIN_MOODLE, name: t("role_org_admin") }
     ],
     [t]
   );
@@ -158,6 +166,40 @@ const CreateUser = () => {
         >
           <Heading1 translate-key='user_create'>{t("user_create")}</Heading1>
           <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
+            <InputSelect
+              fullWidth
+              title={t("common_role")}
+              name='roleName'
+              control={control}
+              selectProps={{
+                options: roleNameList
+              }}
+              errorMessage={(errors.roleName as any)?.id?.message}
+            />
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={4}>
+                <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
+              </Grid>
+              <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
+                <Controller
+                  control={control}
+                  name='phone'
+                  render={({ field }) => {
+                    return (
+                      <PhoneInput
+                        value={field.value}
+                        placeholder='Enter phone number'
+                        onChange={field.onChange}
+                        className={classes.phoneInput}
+                        defaultCountry='VN'
+                      />
+                    );
+                  }}
+                />
+                {errors.phone?.message && <ErrorMessage>{errors.phone?.message}</ErrorMessage>}
+              </Grid>
+            </Grid>
+
             <InputTextField
               title={t("Email")}
               type='text'
@@ -193,28 +235,6 @@ const CreateUser = () => {
               errorMessage={errors?.confirmPassword?.message}
               width='100%'
             />
-            <Grid container>
-              <Grid item xs={3} alignContent={"center"}>
-                <TextTitle translation-key='common_role'>{t("common_role")}</TextTitle>
-              </Grid>
-              <Grid item xs={9}>
-                <Controller
-                  control={control}
-                  name='roleName'
-                  render={({ field: { onChange, value } }) => (
-                    <BasicSelect
-                      labelId='roleName'
-                      width='200px'
-                      borderRadius='12px'
-                      title={t("common_role")}
-                      value={value}
-                      onHandleChange={onChange}
-                      items={roleNameList}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
 
             <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
               <JoyButton
