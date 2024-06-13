@@ -27,12 +27,12 @@ interface PropsData {
 const ContestProblemItem = (props: PropsData) => {
   const { contestId, problemId, name, maxScore, point, difficulty, submission, maxSubmission } =
     props;
-  const scoreClickHandler = () => {
-    console.log("score click");
-  };
-  const submissionTryClickHandler = () => {
-    console.log("submit click");
-  };
+  // const scoreClickHandler = () => {
+  //   console.log("score click");
+  // };
+  // const submissionTryClickHandler = () => {
+  //   console.log("submit click");
+  // };
   const { t } = useTranslation();
 
   return (
@@ -41,7 +41,7 @@ const ContestProblemItem = (props: PropsData) => {
         <Grid item xs={9}>
           <Link
             component={RouterLink}
-            to={routes.user.contest.detail.problems.detail
+            to={routes.user.contest.detail.problems.description
               .replace(":contestId", contestId)
               .replace(":problemId", problemId)}
             underline='none'
@@ -78,7 +78,7 @@ const ContestProblemItem = (props: PropsData) => {
             <Divider orientation='vertical' flexItem />
             <Box
               className={clsx(classes.submissionContainer, classes.roundContainer)}
-              onClick={scoreClickHandler}
+              // onClick={scoreClickHandler}
             >
               <ParagraphBody fontSize={"20px"} className={classes.roundedInfoText}>
                 {submission !== undefined ? `${submission}` : ""}
@@ -94,7 +94,7 @@ const ContestProblemItem = (props: PropsData) => {
 
             <Box
               className={clsx(classes.scoreContainer, classes.roundContainer)}
-              onClick={submissionTryClickHandler}
+              // onClick={submissionTryClickHandler}
             >
               <ParagraphBody fontSize={"20px"} className={classes.roundedInfoText}>
                 {point !== undefined ? `${point}/` : ""}
