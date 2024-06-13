@@ -30,6 +30,7 @@ import { setErrorMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface UserManagementProps {
   id: string;
@@ -123,7 +124,9 @@ const UserManagement = () => {
             margin={"5px"}
           >
             <Avatar
-              sx={{ bgcolor: "var(--green-500)" }}
+              sx={{
+                bgcolor: `${generateHSLColorByRandomText(`${params.row.firstName} ${params.row.lastName}`)}`
+              }}
               alt={params.row.email}
               src={params.row.avatarUrl}
             >

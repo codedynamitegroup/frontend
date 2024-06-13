@@ -28,6 +28,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface ILinkMenu {
   name: string;
@@ -313,7 +314,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   aria-expanded={open ? "true" : undefined}
                 >
                   <Avatar
-                    sx={{ bgcolor: "var(--green-500)" }}
+                    sx={{
+                      bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
+                    }}
                     alt={loggedUser.email}
                     src={loggedUser.avatarUrl}
                     className={classes.avatarProfile}

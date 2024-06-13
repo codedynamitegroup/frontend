@@ -27,6 +27,7 @@ import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import useAuth from "hooks/useAuth";
 import images from "config/images";
 import { decodeBase64, removeNewLine } from "utils/base64";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -177,7 +178,13 @@ export default function DetailSolution({
               </ParagraphBody>
             )}
             <Box className={classes.submissionAuthor}>
-              <Avatar sx={{ bgcolor: "var(--green-500)" }} alt={user?.email} src={user?.avatarUrl}>
+              <Avatar
+                sx={{
+                  bgcolor: `${generateHSLColorByRandomText(`${user?.firstName} ${user?.lastName}`)}`
+                }}
+                alt={user?.email}
+                src={user?.avatarUrl}
+              >
                 {user?.firstName.charAt(0)}
               </Avatar>
 

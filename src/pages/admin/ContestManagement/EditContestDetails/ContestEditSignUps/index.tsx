@@ -16,6 +16,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { ContestService } from "services/coreService/ContestService";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 
 const ContestEditSignUps = () => {
@@ -70,7 +71,13 @@ const ContestEditSignUps = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <Avatar sx={{ bgcolor: grey[500] }} alt={params.row.email} src={params.row.avatarUrl}>
+            <Avatar
+              sx={{
+                bgcolor: `${generateHSLColorByRandomText(`${params.row.email}`)}`
+              }}
+              alt={params.row.email}
+              src={params.row.avatarUrl}
+            >
               {params.row.email.charAt(0)}
             </Avatar>
             <ParagraphSmall width={"auto"} fontWeight={500}>
