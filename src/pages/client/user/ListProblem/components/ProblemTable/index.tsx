@@ -163,25 +163,19 @@ export default function ProblemTable() {
                       >
                         <TableCell align='center'>{row.status}</TableCell>
                         <TableCell className={classes.tableCell}>
-                          <Tooltip
-                            title={isLoggedIn ? t("common_please_login") : ""}
-                            placement='left-start'
-                            arrow
-                          >
-                            <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
-                              <Link
-                                component={RouterLink}
-                                to={routes.user.problem.detail.description.replace(
-                                  ":problemId",
-                                  row.id
-                                )}
-                                underline='hover'
-                                color='inherit'
-                              >
-                                {row.name}
-                              </Link>
-                            </ParagraphSmall>
-                          </Tooltip>
+                          <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
+                            <Link
+                              component={RouterLink}
+                              to={routes.user.problem.detail.description.replace(
+                                ":problemId",
+                                row.id
+                              )}
+                              underline='hover'
+                              color='inherit'
+                            >
+                              {row.name}
+                            </Link>
+                          </ParagraphSmall>
                         </TableCell>
                         <TableCell>{row.level}</TableCell>
                       </TableRow>

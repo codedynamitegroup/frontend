@@ -31,6 +31,14 @@ export interface RegisteredRequest {
   lastName: string;
 }
 
+export interface CreatedUserByAdminRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  roleName: string;
+}
+
 export interface UpdateProfileUserRequest {
   firstName: string;
   lastName: string;

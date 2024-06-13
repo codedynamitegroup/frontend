@@ -7,6 +7,7 @@ export interface SharedSolutionEntity {
   totalComment: number;
   createdAt: string;
   title: string;
+  content: string;
   user: {
     id: UUID;
     firstName: string;

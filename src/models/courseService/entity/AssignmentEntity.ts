@@ -17,4 +17,5 @@ export interface AssignmentEntity {
   timeLimit: Date;
   type: string;
   visible: boolean;
+  allowSubmitLate: boolean;
 }

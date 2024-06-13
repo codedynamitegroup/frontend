@@ -72,6 +72,10 @@
   margin-right: 10px;
 }
 
+.profile {
+  display: flex;
+  gap: 10px;
+}
 .menuProfile {
   padding: 10px;
   & [class~="MuiPaper-root"] {

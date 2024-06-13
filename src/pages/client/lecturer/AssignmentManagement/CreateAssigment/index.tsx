@@ -69,6 +69,7 @@ import { co, ex } from "@fullcalendar/core/internal-common";
 import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
 import CloseIcon from "@mui/icons-material/Close";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
+import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
 
 interface FormData {
   name: string;
@@ -110,6 +111,8 @@ export default function AssignmentCreated() {
 
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
 
+  console.log(allowSubmissionAfterEndTime);
+
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);
   };
@@ -128,12 +131,6 @@ export default function AssignmentCreated() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (assignmentId) {
-      handleGetAssignmentDetails(assignmentId);
-    }
-  });
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.name) {
@@ -224,6 +221,33 @@ export default function AssignmentCreated() {
     return null;
   }, []);
 
+  const updateAssignment = useCallback(
+    async (assignment: UpdateAssignmentCommand, assignmentId: string) => {
+      try {
+        const response = await AssignmentService.updateAssignment(assignment, assignmentId);
+        if (response) {
+          console.log("Update assignment successfully");
+          return response;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return null;
+    },
+    []
+  );
+
+  const deleteIntroAttachment = useCallback(async (id: string) => {
+    try {
+      const response = await AssignmentService.deleteIntroAttachment(id);
+      if (response) {
+        console.log("Delete all intro attachment successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const submitHandler = async (data: any) => {
     setLoading(true);
     const formSubmittedData: IFormDataType = { ...data };
@@ -242,38 +266,97 @@ export default function AssignmentCreated() {
     let introAttachments: CreateIntroAttachmentCommand[] = [];
     let attachmentIdArray: string[] = [];
 
-    try {
-      for (const file of extFiles) {
-        const attachmentData = {
-          fileName: file.name || "",
-          fileUrl: file.downloadUrl || "",
-          fileSize: file.size || 0,
-          mimeType: file.type || "",
-          timeModified: new Date().toISOString()
-        };
+    // check extFiles với assignment.introAttachment
+    // nếu extFiles có id thì update, không có thì create
 
-        const attachmentResponse = await createIntroAttachment(attachmentData);
-        if (attachmentResponse) {
-          introAttachments.push(attachmentData);
-          attachmentIdArray.push(attachmentResponse.id);
+    try {
+      if (assignment) {
+        // Retrieve existing attachments
+        const existingAttachments = assignment.introAttachments || [];
+
+        // Find files to update, create, and delete
+
+        const filesToCreate = extFiles.filter(
+          (file) => !existingAttachments.some((existingFile) => existingFile.id === file.id)
+        );
+        const filesToDelete = existingAttachments.filter(
+          (existingFile) => !extFiles.some((file) => file.id === existingFile.id)
+        );
+
+        for (const file of filesToDelete) {
+          await deleteIntroAttachment(file.id);
+        }
+
+        // Create new files
+        for (const file of filesToCreate) {
+          const attachmentData = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimeType: file.type || "",
+            timeModified: new Date().toISOString()
+          };
+          const attachmentResponse = await createIntroAttachment(attachmentData);
+          if (attachmentResponse) {
+            introAttachments.push(attachmentData);
+            attachmentIdArray.push(attachmentResponse.id);
+          }
+        }
+      } else {
+        for (const file of extFiles) {
+          const attachmentData = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimeType: file.type || "",
+            timeModified: new Date().toISOString()
+          };
+
+          const attachmentResponse = await createIntroAttachment(attachmentData);
+          if (attachmentResponse) {
+            introAttachments.push(attachmentData);
+            attachmentIdArray.push(attachmentResponse.id);
+          }
         }
       }
-
-      const assignmentResponse = await createAssignment({
-        courseId: courseId ?? "",
-        title: name,
-        intro,
-        activity,
-        wordLimit,
-        maxUploadFiles: maxUploadedFile,
-        maxFileSize,
-        maxScore,
-        timeOpen,
-        timeClose,
-        type: textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
-        visible: true,
-        allowSubmitLate: allowSubmissionAfterEndTime
-      });
+      let assignmentResponse;
+      if (assignment) {
+        console.log(assignment.id);
+        assignmentResponse = await updateAssignment(
+          {
+            title: name,
+            intro,
+            activity,
+            wordLimit,
+            maxUploadFiles: maxUploadedFile,
+            maxFileSize,
+            maxScore,
+            timeOpen,
+            timeClose,
+            type:
+              textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
+            visible: true,
+            allowSubmitLate: allowSubmissionAfterEndTime
+          },
+          assignment.id
+        );
+      } else {
+        assignmentResponse = await createAssignment({
+          courseId: courseId ?? "",
+          title: name,
+          intro,
+          activity,
+          wordLimit,
+          maxUploadFiles: maxUploadedFile,
+          maxFileSize,
+          maxScore,
+          timeOpen,
+          timeClose,
+          type: textSubmission && fileSubmission ? "BOTH" : textSubmission ? "TEXT_ONLINE" : "FILE",
+          visible: true,
+          allowSubmitLate: allowSubmissionAfterEndTime
+        });
+      }
 
       if (assignmentResponse && introAttachments.length > 0) {
         for (let i = 0; i < introAttachments.length; i++) {
@@ -297,7 +380,14 @@ export default function AssignmentCreated() {
   };
 
   useEffect(() => {
+    if (assignmentId) {
+      handleGetAssignmentDetails(assignmentId);
+    }
+  }, []);
+
+  useEffect(() => {
     if (assignment) {
+      console.log(assignment);
       setValue("name", assignment.title);
       setValue("intro", assignment.intro);
       setValue("activity", assignment.activity);
@@ -319,18 +409,25 @@ export default function AssignmentCreated() {
       setValue("maxFileSize", assignment.maxFileSize);
       setExtFiles(
         assignment?.introAttachments.map((file) => {
+          let f: File = new File([""], file.fileName, {
+            type: file.mimetype,
+            lastModified: new Date().getTime()
+          });
           return {
             id: file.id,
             name: file.fileName,
             size: file.fileSize,
             type: file.mimetype,
             downloadUrl: file.fileUrl,
-            imageUrl: file.fileUrl
+            imageUrl: file.fileUrl,
+            file: f,
+            uploadStatus: "success"
           };
         })
       );
     }
-  }, [assignment, setValue]);
+    setAllowSubmissionAfterEndTime(assignment?.allowSubmitLate ?? true);
+  }, [assignment]);
 
   useEffect(() => {
     if (width < 1080) {
