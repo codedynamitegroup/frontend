@@ -421,7 +421,15 @@ const QuestionListOfCourse = () => {
             />
             <CustomDataGrid
               sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" }
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
+                }
               }}
               dataList={questionCategoryState.questions.map((item, index) => ({
                 stt: index + 1,
@@ -511,7 +519,15 @@ const QuestionListOfCourse = () => {
             </Stack>
             <CustomDataGrid
               sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" }
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
+                }
               }}
               dataList={questionCategoryState.questions.map((item, index) => ({
                 stt: index + 1,

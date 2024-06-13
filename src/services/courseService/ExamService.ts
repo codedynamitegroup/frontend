@@ -219,4 +219,23 @@ export class ExamService {
       });
     }
   }
+
+  static async deleteExam(id: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.COURSE.EXAM.DELETE.replace(":id", id)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to delete exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }
