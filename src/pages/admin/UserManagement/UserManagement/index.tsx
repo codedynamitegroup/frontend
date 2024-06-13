@@ -1,7 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Chip, Divider, Grid, Stack } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { Avatar, Box, Card, Divider, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -17,8 +16,6 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +26,6 @@ import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { setErrorMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
@@ -45,7 +41,7 @@ interface UserManagementProps {
   avatarUrl: string;
   address: string;
   dob: Date;
-  lastLogin: Date;
+  lastLogin: string;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
   createdAt: Date;
@@ -60,9 +56,6 @@ const UserManagement = () => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
-  const [contestStatusFilter, setContestStatusFilter] = useState<ContestStartTimeFilterEnum>(
-    ContestStartTimeFilterEnum.ALL
-  );
 
   const userState = useSelector((state: RootState) => state.user);
 
@@ -214,14 +207,11 @@ const UserManagement = () => {
             icon={<EditIcon />}
             label='Edit'
             onClick={() => {
-              navigate(
-                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId),
-                {
-                  state: {
-                    contestName: params.row.name
-                  }
+              navigate(routes.admin.users.edit.details.replace(":userId", params.row.userId), {
+                state: {
+                  contestName: params.row.name
                 }
-              );
+              });
             }}
           />,
           <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
@@ -259,7 +249,7 @@ const UserManagement = () => {
     [t]
   );
 
-  const isMatchedRoles = useCallback(
+  const mappingRole = useCallback(
     (user: User) => {
       const matchedRole = roleMapping.find((role) =>
         user?.roles.some((userRole) => userRole?.name === role.name)
@@ -286,20 +276,19 @@ const UserManagement = () => {
           isLinkedWithGoogle: user.isLinkedWithGoogle,
           isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
           createdAt: user.createdAt,
-          roleName: isMatchedRoles(user)
+          roleName: mappingRole(user)
         };
       }),
-    [isMatchedRoles, userState.users]
+    [mappingRole, userState.users]
   );
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
       searchName: searchValue
     });
-  }, [handleGetUsers, searchValue, contestStatusFilter]);
+  }, [handleGetUsers, searchValue]);
 
   const handleCancelFilter = useCallback(() => {
-    setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
     handleGetUsers({
       searchName: searchValue
     });
@@ -311,7 +300,6 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      console.log("Hello", userState.users.users.length);
       if (userState.users.users.length > 0) return;
       dispatch(setInititalLoading(true));
       await handleGetUsers({
@@ -373,31 +361,7 @@ const UserManagement = () => {
                   value: "Status"
                 }
               ]}
-              filterValueList={
-                [
-                  {
-                    label: t("common_all"),
-                    value: ContestStartTimeFilterEnum.ALL
-                  },
-                  {
-                    label: t("common_upcoming"),
-                    value: ContestStartTimeFilterEnum.UPCOMING
-                  },
-                  {
-                    label: t("common_in_progress"),
-                    value: ContestStartTimeFilterEnum.HAPPENING
-                  },
-                  {
-                    label: t("common_ended"),
-                    value: ContestStartTimeFilterEnum.ENDED
-                  }
-                ] as { label: string; value: string }[]
-              }
               currentFilterKey='Status'
-              currentFilterValue={contestStatusFilter}
-              handleFilterValueChange={(value: any) => {
-                setContestStatusFilter(value as ContestStartTimeFilterEnum);
-              }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
             />

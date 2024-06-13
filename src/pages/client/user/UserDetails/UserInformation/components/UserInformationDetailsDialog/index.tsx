@@ -1,9 +1,7 @@
 import { Avatar, DialogProps, Divider, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import { BtnType } from "components/common/buttons/Button";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
-import BasicRadioGroup from "components/common/radio/BasicRadioGroup";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
@@ -31,7 +29,7 @@ interface IFormDataUpdateProfileUser {
   firstName: string;
   lastName: string;
   dob?: string;
-  phone?: string;
+  phone: string;
 }
 
 interface UserInformationDetailsDialogProps extends DialogProps {
@@ -69,7 +67,10 @@ const UserInformationDetailsDialog = ({
       firstName: yup.string().required(t("first_name_required")),
       lastName: yup.string().required(t("last_name_required")),
       dob: yup.string(),
-      phone: yup.string().matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
+      phone: yup
+        .string()
+        .matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
+        .required(t("phone_required"))
     });
   }, [t]);
 
@@ -89,7 +90,7 @@ const UserInformationDetailsDialog = ({
       reset({
         firstName: user.firstName,
         lastName: user.lastName,
-        dob: format(user.dob, "dd-MM-yyyy"),
+        dob: format(user.dob ? user.dob : Date.now(), "dd-MM-yyyy"),
         phone: user.phone
       });
     }
@@ -101,6 +102,7 @@ const UserInformationDetailsDialog = ({
     console.log(data);
     setIsUpdateProfileLoading(true);
     UserService.updateProfileUser({
+      email: user?.email,
       firstName: data.firstName,
       lastName: data.lastName,
       dob: data.dob ? parse(data.dob, "dd-MM-yyyy", new Date()) : undefined,
@@ -150,7 +152,7 @@ const UserInformationDetailsDialog = ({
         className={classes.formBody}
         onSubmit={handleSubmit(handleUpdateProfileUser)}
       >
-        <InputTextField type='email' title='Email' readOnly width='100%' value={data?.email} />
+        <InputTextField type='email' title='Email' disabled width='100%' value={data?.email} />
         <InputTextField
           type='text'
           title={t("common_name")}
@@ -168,10 +170,10 @@ const UserInformationDetailsDialog = ({
           errorMessage={errors?.lastName?.message}
         />
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
           </Grid>
-          <Grid item xs={9} display={"flex"} flexDirection={"column"} gap={"10px"}>
+          <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
             <Controller
               control={control}
               name='phone'
@@ -190,10 +192,10 @@ const UserInformationDetailsDialog = ({
           </Grid>
         </Grid>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={7}>
             <Controller
               control={control}
               name='dob'
@@ -218,8 +220,8 @@ const UserInformationDetailsDialog = ({
           </Grid>
         </Grid>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}></Grid>
-          <Grid item xs={9}>
+          <Grid item xs={4}></Grid>
+          <Grid item xs={7}>
             <JoyButton
               loading={isUpdateProfileLoading}
               variant='solid'
