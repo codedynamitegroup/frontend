@@ -10,6 +10,6 @@ export interface CommentEntity {
     id: UUID;
     firstName: string;
     lastName: string;
-    avatarUrl: string | null;
+    avatarUrl: string;
   };
 }
