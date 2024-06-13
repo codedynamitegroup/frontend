@@ -88,7 +88,7 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
-      CREATE_INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
+      INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",

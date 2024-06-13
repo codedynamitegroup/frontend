@@ -234,7 +234,10 @@ const router = createHashRouter(
 
         <Route path={routes.user.course_certificate.detail.lesson.detail} element={<Lessons />} />
 
-        <Route path={routes.user.contest.detail.problems.detail} element={<TakeContestProblem />} />
+        <Route
+          path={routes.user.contest.detail.problems.problem_root}
+          element={<TakeContestProblem />}
+        />
       </Route>
     </Route>
   )
