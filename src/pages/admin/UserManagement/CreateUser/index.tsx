@@ -188,8 +188,10 @@ const CreateUser = () => {
                     return (
                       <PhoneInput
                         value={field.value}
+                        placeholder='Enter phone number'
                         onChange={field.onChange}
                         className={classes.phoneInput}
+                        defaultCountry='VN'
                       />
                     );
                   }}

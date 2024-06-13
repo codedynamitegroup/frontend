@@ -90,7 +90,7 @@ const UserInformationDetailsDialog = ({
       reset({
         firstName: user.firstName,
         lastName: user.lastName,
-        dob: format(user.dob, "dd-MM-yyyy"),
+        dob: format(user.dob ? user.dob : Date.now(), "dd-MM-yyyy"),
         phone: user.phone
       });
     }

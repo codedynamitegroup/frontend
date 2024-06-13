@@ -123,7 +123,7 @@ const EditUserDetails = () => {
           reset({
             firstName: userResponse.firstName,
             lastName: userResponse.lastName,
-            dob: format(userResponse.dob, "dd-MM-yyyy"),
+            dob: format(userResponse.dob ? userResponse.dob : Date.now(), "dd-MM-yyyy"),
             phone: userResponse.phone,
             roleName: roleName
           });
@@ -176,7 +176,7 @@ const EditUserDetails = () => {
         setSubmitLoading(false);
       }
     },
-    [t]
+    [t, userId]
   );
 
   return (
@@ -236,6 +236,15 @@ const EditUserDetails = () => {
               }}
               errorMessage={(errors.roleName as any)?.id?.message}
             />
+            {user?.organization && (
+              <InputTextField
+                title={t("common_organization")}
+                type='text'
+                disabled
+                value={user?.organization.name}
+                width='100%'
+              />
+            )}
             <Grid container spacing={1} columns={12}>
               <Grid item xs={4}>
                 <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
