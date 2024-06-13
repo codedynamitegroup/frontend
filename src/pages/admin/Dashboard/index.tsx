@@ -16,6 +16,10 @@ import images from "config/images";
 import useAuth from "hooks/useAuth";
 import { CourseService } from "services/courseService/CourseService";
 import CustomLineChart from "components/common/chart/CustomLineChart";
+import { ContestService } from "services/coreService/ContestService";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import Heading2 from "components/text/Heading2";
 
 interface LineChartType {
   data: number[];
@@ -61,17 +65,40 @@ interface CourseStatistics {
   totalEnrollments: number;
   userEnrollments: LineChartType[];
 }
+interface ContestStatistics {
+  totalContest: number;
+  totalParticipants: number;
+  activeContest: number;
+  closedContest: number;
+  upcomingContest: number;
+  participantTrend: LineChartType[];
+  popularContest: LineChartType[];
+  popularContestName: string[];
+}
+interface CertificateCourseStatistics {
+  totalCertificateCourse: number;
+  totalEnrollments: number;
+  averageRating: number;
+  totalParticipantCompletedCourse: number;
+
+  enrollmentChart: LineChartType[];
+  topEnrolledCourse: LineChartType[];
+  chapterResourceType: PieChartType[];
+}
 
 const ROLE_PIE_CHART_COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
-const startGradientColor = "#1abc9c";
-const endGradientColor = "#16a085";
 
 const AdminDashboard = () => {
+  const currentDateTime = new Date();
   const { t } = useTranslation();
   const auth = useAuth();
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [dashboardTabValue, setDashboardTabValue] = useState(0);
   const [userRegisterChartRangeButtonState, setUserRegisterChartRangeButtonState] = useState(0);
+  const [
+    certificateCourseEnrollmentChartButtonState,
+    setCertificateCourseEnrollmentChartButtonState
+  ] = useState(0);
   const [courseEnrollmentChartRangeButtonState, setCourseEnrollmentChartRangeButtonState] =
     useState(0);
   const tempDate = new Date();
@@ -97,19 +124,55 @@ const AdminDashboard = () => {
     totalEnrollments: 0,
     userEnrollments: []
   });
+  const [contestStatistics, setContestStatistics] = useState<ContestStatistics>({
+    totalContest: 0,
+    totalParticipants: 0,
+    activeContest: 0,
+    closedContest: 0,
+    upcomingContest: 0,
+    participantTrend: [],
+    popularContest: [],
+    popularContestName: []
+  });
+  const [certificateCourseStatistics, setCertificateCourseStatistics] =
+    useState<CertificateCourseStatistics>({
+      totalCertificateCourse: 0,
+      totalEnrollments: 0,
+      averageRating: 0,
+      totalParticipantCompletedCourse: 0,
+      enrollmentChart: [],
+      topEnrolledCourse: [],
+      chapterResourceType: []
+    });
 
   const [daysInMonth, setDaysInMonth] = useState(new Date(tempYear, tempMonth + 1, 0).getDate());
 
-  const tabLabels = [
-    t("User"),
-    t("Course"),
-    t("Organization"),
-    t("Contest"),
-    t("Practice"),
-    t("Certificate course")
-  ];
+  const tabLabels = [t("User"), t("Course"), t("Contest"), t("Certificate course")];
 
   const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const daysListFull = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ];
+  const monthListFull = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
   const dayInMonthList =
     daysInMonth === 31
       ? [
@@ -225,24 +288,48 @@ const AdminDashboard = () => {
     }
   };
 
+  const getContestStatistics = async () => {
+    try {
+      const response = await ContestService.getAdminContestStatistics();
+      setContestStatistics((prevStats) => ({
+        ...response,
+        participantTrend: response.participantTrend.map((trend: any) => ({ ...trend, area: true }))
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCertificateCourseStatistics = async () => {
+    try {
+      const response = await CertificateCourseService.getCertificateCourseStatistics();
+      setCertificateCourseStatistics((prevStats) => ({
+        ...response,
+        enrollmentChart: response.enrollmentChart.map((enrollment: any) => ({
+          ...enrollment,
+          area: true
+        }))
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await getUserStatistics();
       await getCourseStatistics();
+      await getContestStatistics();
+      await getCertificateCourseStatistics();
     };
     fetchData();
 
     setMainSkeleton(false);
   }, []);
 
-  const data = Array.from({ length: 7 * 24 }).map((_, i) => ({
-    date: new Date(2022, 0, 1, i % 24), // Use the index modulo 24 to get the hour
-    count: Math.floor(Math.random() * 10)
-  }));
-
-  // Define the labels for the days of the week and the hours of the day
-  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const hourLabels = Array.from({ length: 24 }).map((_, i) => `${i}:00`);
+  useEffect(() => {
+    console.log(certificateCourseStatistics);
+  }, [certificateCourseStatistics]);
 
   return (
     <>
@@ -311,48 +398,63 @@ const AdminDashboard = () => {
             padding: 3
           }}
         >
-          <Grid item xs={12}>
-            <Skeleton
-              variant='text'
-              sx={{
-                fontSize: "1rem"
-              }}
-            />
-          </Grid>
-
           {/* Dashboard tabs */}
-          <Grid item xs={6}>
-            <Tabs
-              aria-label='tabs'
-              defaultValue={dashboardTabValue}
-              value={dashboardTabValue}
-              sx={{ bgcolor: "transparent" }}
-              onChange={(e, value) => setDashboardTabValue(Number(value) || 0)}
-            >
-              <TabList
-                disableUnderline
-                sx={{
-                  p: 0.5,
-                  gap: 0.5,
-                  borderRadius: "xl",
-                  bgcolor: "background.level1",
-                  [`& .${tabClasses.root}[aria-selected="true"]`]: {
-                    boxShadow: "sm",
-                    bgcolor: "background.surface"
-                  }
-                }}
-              >
-                {tabLabels.map((label, index) => (
-                  <Tab key={index} disableIndicator>
-                    {label}
-                  </Tab>
-                ))}
-              </TabList>
-            </Tabs>
-          </Grid>
           <Grid item xs={12}>
-            <Card>
-              <ParagraphBody>Hello, tien</ParagraphBody>
+            <Card
+              sx={{
+                height: "200px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                background: "linear-gradient(145deg, #EDE7F6 30%, #D1C4E9 90%)",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                color: "#333"
+              }}
+            >
+              <Box>
+                <Heading2 colorname={"--gray-80"}>
+                  Hello, {auth.loggedUser?.firstName}! Welcome back to your dashboard
+                </Heading2>
+                <ParagraphBody colorname='--gray-60'>
+                  Today is {daysListFull[currentDateTime.getDay() - 1]}, {currentDateTime.getDate()}{" "}
+                  {monthListFull[currentDateTime.getMonth()]} {currentDateTime.getFullYear()}
+                </ParagraphBody>
+              </Box>
+
+              <Box>
+                <ParagraphBody colorname={"--gray-60"}>
+                  What stats would you like to view today ?
+                </ParagraphBody>
+                <Tabs
+                  aria-label='tabs'
+                  defaultValue={dashboardTabValue}
+                  value={dashboardTabValue}
+                  sx={{ backgroundColor: "transparent", width: "fit-content", marginTop: "5px" }}
+                  onChange={(e, value) => setDashboardTabValue(Number(value) || 0)}
+                >
+                  <TabList
+                    disableUnderline
+                    sx={{
+                      p: 0.5,
+                      gap: 0.5,
+                      borderRadius: "xl",
+                      bgcolor: "background.level1",
+                      [`& .${tabClasses.root}[aria-selected="true"]`]: {
+                        color: "#FFF",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+
+                        bgcolor: "#2196F3"
+                      }
+                    }}
+                  >
+                    {tabLabels.map((label, index) => (
+                      <Tab key={index} disableIndicator>
+                        {label}
+                      </Tab>
+                    ))}
+                  </TabList>
+                </Tabs>
+              </Box>
             </Card>
           </Grid>
 
@@ -500,7 +602,7 @@ const AdminDashboard = () => {
                           startGradientColor={["#11B678"]}
                           endGradientColor={["#FF3143"]}
                         />
-                        <ChartLengend label={"New user"} color={startGradientColor} />
+                        <ChartLengend label={"New user"} color={"#11B678"} />
                       </Stack>
                     </Card>
                   </Grid>
@@ -547,7 +649,7 @@ const AdminDashboard = () => {
                           }}
                         />
                       </Stack>
-                      <Grid container spacing={2} alignItems={"center"}>
+                      <Grid container spacing={2} alignItems={"center"} marginTop={2}>
                         {ROLE_NAMES.map((role, index) => (
                           <Grid item key={index}>
                             <ChartLengend label={role} color={ROLE_PIE_CHART_COLORS[index]} />
@@ -710,7 +812,7 @@ const AdminDashboard = () => {
                           startGradientColor={["#11B678"]}
                           endGradientColor={["#FF3143"]}
                         />
-                        <ChartLengend label={"New user"} color={startGradientColor} />
+                        <ChartLengend label={"New Enrollment"} color={"#11B678"} />
                       </Stack>
                     </Card>
                   </Grid>
@@ -756,7 +858,7 @@ const AdminDashboard = () => {
                           }}
                         />
                       </Stack>
-                      <Grid container spacing={2} alignItems={"center"}>
+                      <Grid container spacing={2} alignItems={"center"} marginTop={2}>
                         <Grid item>
                           <ChartLengend label={"Active"} color={ROLE_PIE_CHART_COLORS[0]} />
                         </Grid>
@@ -808,7 +910,7 @@ const AdminDashboard = () => {
                           }}
                         />
                       </Stack>
-                      <Grid container spacing={2} alignItems={"center"}>
+                      <Grid container spacing={2} alignItems={"center"} marginTop={2}>
                         {courseStatistics.courseType.map((role, index) => (
                           <Grid item key={index}>
                             <ChartLengend label={role.label} color={ROLE_PIE_CHART_COLORS[index]} />
@@ -852,6 +954,7 @@ const AdminDashboard = () => {
                                   fontSize={"12px"}
                                   color={"#525151"}
                                   fontWeight={"500"}
+                                  nonoverflow
                                 >
                                   {header}
                                 </ParagraphBody>
@@ -869,6 +972,7 @@ const AdminDashboard = () => {
                                       fontSize={".875rem"}
                                       color={"#212121"}
                                       fontWeight={"600"}
+                                      nonoverflow
                                     >
                                       {assignment.title}
                                     </ParagraphBody>
@@ -878,6 +982,7 @@ const AdminDashboard = () => {
                                       fontSize={".875rem"}
                                       color={"#212121"}
                                       fontWeight={"600"}
+                                      nonoverflow
                                     >
                                       {assignment.courseName}
                                     </ParagraphBody>
@@ -887,6 +992,7 @@ const AdminDashboard = () => {
                                       fontSize={".875rem"}
                                       color={"#212121"}
                                       fontWeight={"600"}
+                                      nonoverflow
                                     >
                                       {assignment.type === "FILE"
                                         ? "File"
@@ -900,6 +1006,7 @@ const AdminDashboard = () => {
                                       fontSize={".875rem"}
                                       color={"#212121"}
                                       fontWeight={"600"}
+                                      nonoverflow
                                     >
                                       {new Date(assignment.createdAt).toLocaleDateString()}
                                     </ParagraphBody>
@@ -1038,6 +1145,535 @@ const AdminDashboard = () => {
                     </Card>
                   </Grid>
                 </Grid>
+              </Grid>
+            </>
+          )}
+          {dashboardTabValue === 2 && (
+            <>
+              <Grid item xs={5}>
+                <Heading3>{"Contest"}</Heading3>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.contestDashboard}
+                          alt='Total contest'
+                          style={{ width: "35px", color: "white" }}
+                        />
+                      }
+                      title={"Total contest"}
+                      value={contestStatistics.totalContest}
+                      mainColor={"#4CAF50"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.contestParticipant}
+                          alt='Participant'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Total participants"}
+                      value={contestStatistics.totalParticipants}
+                      mainColor={"#2196F3"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.happeningContest}
+                          alt='active contest'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Happening contest"}
+                      value={contestStatistics.activeContest}
+                      mainColor={"#FFEB3B"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.upcomingContest}
+                          alt='upcomming contest'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Upcomming contest"}
+                      value={contestStatistics.upcomingContest}
+                      mainColor={"#FF9800"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.closedContest}
+                          alt='closed contest'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Closed contest"}
+                      value={contestStatistics.closedContest}
+                      mainColor={"#F44336"}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} md={12} lg={12}>
+                    <Heading6>Contest Participant Trend</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Stack
+                        direction='column'
+                        spacing={1}
+                        alignItems='center'
+                        sx={{ width: "100%" }}
+                      >
+                        <CustomLineChart
+                          data={monthInYearList}
+                          series={
+                            contestStatistics.participantTrend.length === 0
+                              ? []
+                              : [
+                                  contestStatistics.participantTrend[0],
+                                  contestStatistics.participantTrend[1]
+                                ]
+                          }
+                          scaleType='point'
+                          startGradientColor={["#42A5F5", "#66BB6A"]}
+                          endGradientColor={["#1E88E5", "#43A047"]}
+                        />
+
+                        <Stack direction='row' spacing={2}>
+                          <ChartLengend label={"Participant"} color={"#42A5F5"} />
+                          <ChartLengend label={"Average Participant"} color={"#66BB6A"} />
+                        </Stack>
+                      </Stack>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} md={12} lg={12}>
+                    <Heading6>Popular contest</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Stack
+                        direction='column'
+                        spacing={1}
+                        alignItems='center'
+                        sx={{ width: "100%" }}
+                      >
+                        <BarChart
+                          borderRadius={10}
+                          colors={["#42A5F5", "#66BB6A"]}
+                          height={320}
+                          xAxis={[
+                            { scaleType: "band", data: contestStatistics.popularContestName }
+                          ]}
+                          series={
+                            contestStatistics.popularContest.length === 0
+                              ? []
+                              : [
+                                  {
+                                    ...contestStatistics.popularContest[0],
+                                    stack: "A",
+                                    stackOffset: "none"
+                                  },
+                                  {
+                                    ...contestStatistics.popularContest[1],
+                                    stack: "A",
+                                    stackOffset: "none"
+                                  }
+                                ]
+                          }
+                          sx={{
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+                              stroke: "var(--gray-40)",
+                              strokeWidth: 0.4
+                            },
+                            "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+                              stroke: "white",
+                              strokeWidth: 0.4
+                            },
+                            "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+                              strokeWidth: "0.4",
+                              fill: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            },
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+                              strokeWidth: "0.4",
+                              fill: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            },
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+                              strokeWidth: "1",
+                              stroke: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            }
+                          }}
+                          grid={{ horizontal: true }}
+                          yAxis={[
+                            {
+                              scaleType: "linear",
+                              disableTicks: true // hide ticks
+                            }
+                          ]}
+                          margin={{
+                            left: 30,
+                            right: 20,
+                            top: 40,
+                            bottom: 30
+                          }}
+                          slotProps={{
+                            legend: {
+                              hidden: true
+                            }
+                          }}
+                        />
+                        <Stack direction='row' spacing={2}>
+                          <ChartLengend label={"Participant"} color={"#66BB6A"} />
+                          <ChartLengend label={"Submission"} color={"#42A5F5"} />
+                        </Stack>
+                      </Stack>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </>
+          )}
+          {dashboardTabValue === 3 && (
+            <>
+              <Grid item xs={5}>
+                <Heading3>{"Certificate course"}</Heading3>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.certificateCourse}
+                          alt='Total certificate course'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Total certificate course"}
+                      value={certificateCourseStatistics.totalCertificateCourse}
+                      mainColor={"#6A1B9A"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.certificateEnrollment}
+                          alt='Enrollment'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Total enrollment"}
+                      value={certificateCourseStatistics.totalEnrollments}
+                      mainColor={"#2196F3"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.certificateCompleted}
+                          alt='active contest'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"participant completed course"}
+                      value={certificateCourseStatistics.totalParticipantCompletedCourse}
+                      mainColor={"#4CAF50"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={3}>
+                    <DasbboradBoxComponent
+                      icon={
+                        <img
+                          src={images.admin.certificateRating}
+                          alt='upcomming contest'
+                          style={{ width: "35px" }}
+                        />
+                      }
+                      title={"Average rating"}
+                      value={Number(certificateCourseStatistics.averageRating.toFixed(2))}
+                      mainColor={"#FFC107"}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} md={12} lg={12}>
+                    <Heading6>Enrollment chart</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Stack
+                        display={"flex"}
+                        justifyContent={"flex-end"}
+                        direction={"row"}
+                        spacing={2}
+                      >
+                        <Button
+                          variant={
+                            certificateCourseEnrollmentChartButtonState === 0 ? "outlined" : "plain"
+                          }
+                          onClick={() => {
+                            if (certificateCourseEnrollmentChartButtonState === 0) return;
+                            setCertificateCourseEnrollmentChartButtonState(0);
+                          }}
+                          size='sm'
+                        >
+                          Week
+                        </Button>
+                        <Button
+                          variant={
+                            certificateCourseEnrollmentChartButtonState === 1 ? "outlined" : "plain"
+                          }
+                          onClick={() => {
+                            if (certificateCourseEnrollmentChartButtonState === 1) return;
+                            setCertificateCourseEnrollmentChartButtonState(1);
+                          }}
+                          size='sm'
+                        >
+                          Month
+                        </Button>
+                        <Button
+                          variant={
+                            certificateCourseEnrollmentChartButtonState === 2 ? "outlined" : "plain"
+                          }
+                          onClick={() => {
+                            if (certificateCourseEnrollmentChartButtonState === 2) return;
+                            setCertificateCourseEnrollmentChartButtonState(2);
+                          }}
+                          size='sm'
+                        >
+                          Year
+                        </Button>
+                      </Stack>
+                      <Stack
+                        direction='column'
+                        spacing={1}
+                        alignItems='center'
+                        sx={{ width: "100%" }}
+                      >
+                        <CustomLineChart
+                          data={
+                            certificateCourseEnrollmentChartButtonState === 0
+                              ? daysList
+                              : certificateCourseEnrollmentChartButtonState === 1
+                                ? dayInMonthList
+                                : monthInYearList
+                          }
+                          series={
+                            certificateCourseStatistics.enrollmentChart.length === 0
+                              ? []
+                              : certificateCourseEnrollmentChartButtonState === 0
+                                ? [certificateCourseStatistics.enrollmentChart[0]]
+                                : certificateCourseEnrollmentChartButtonState === 1
+                                  ? [certificateCourseStatistics.enrollmentChart[1]]
+                                  : [certificateCourseStatistics.enrollmentChart[2]]
+                          }
+                          scaleType='point'
+                          startGradientColor={["#42A5F5"]}
+                          endGradientColor={["#1E88E5"]}
+                        />
+                        <ChartLengend label={"New Enrollment"} color={"#42A5F5"} />
+                      </Stack>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={8} lg={8}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} md={12} lg={12}>
+                    <Heading6>Top Enrolled Course</Heading6>
+                    <Card
+                      color='neutral'
+                      variant='outlined'
+                      sx={{
+                        height: "400px",
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "lg"
+                      }}
+                    >
+                      <Stack
+                        direction='column'
+                        spacing={1}
+                        alignItems='center'
+                        sx={{ width: "100%" }}
+                      >
+                        <BarChart
+                          borderRadius={10}
+                          colors={["#1E88E5", "#1565C0"]}
+                          height={320}
+                          xAxis={[
+                            {
+                              scaleType: "band",
+                              data: certificateCourseStatistics.topEnrolledCourse.map(
+                                (course) => course.label
+                              )
+                            }
+                          ]}
+                          series={
+                            certificateCourseStatistics.topEnrolledCourse.length === 0
+                              ? []
+                              : [
+                                  {
+                                    data: certificateCourseStatistics.topEnrolledCourse.map(
+                                      (course) => course.data[0]
+                                    ),
+                                    label: "Participant(s)"
+                                  }
+                                ]
+                          }
+                          sx={{
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+                              stroke: "var(--gray-40)",
+                              strokeWidth: 0.4
+                            },
+                            "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+                              stroke: "white",
+                              strokeWidth: 0.4
+                            },
+                            "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+                              strokeWidth: "0.4",
+                              fill: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            },
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+                              strokeWidth: "0.4",
+                              fill: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            },
+                            "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+                              strokeWidth: "1",
+                              stroke: "var(--gray-40)",
+                              fontSize: 12,
+                              fontFamily: "Roboto"
+                            }
+                          }}
+                          grid={{ horizontal: true }}
+                          yAxis={[
+                            {
+                              scaleType: "linear",
+                              disableTicks: true // hide ticks
+                            }
+                          ]}
+                          margin={{
+                            left: 30,
+                            right: 20,
+                            top: 40,
+                            bottom: 30
+                          }}
+                          slotProps={{
+                            legend: {
+                              hidden: true
+                            }
+                          }}
+                        />
+                        <ChartLengend label={"Participant"} color={"#1E88E5"} />
+                      </Stack>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={4} lg={4}>
+                <Heading6>Course Resource Type</Heading6>
+                <Card
+                  color='neutral'
+                  variant='outlined'
+                  sx={{
+                    height: "400px",
+                    boxShadow: "lg"
+                  }}
+                >
+                  <Stack direction='column' spacing={1} alignItems='center' sx={{ width: "100%" }}>
+                    <PieChart
+                      colors={ROLE_PIE_CHART_COLORS}
+                      series={[
+                        {
+                          data: certificateCourseStatistics.chapterResourceType,
+                          innerRadius: 10,
+                          cornerRadius: 10
+                        }
+                      ]}
+                      height={300}
+                      sx={{
+                        maxWidth: "100%"
+                      }}
+                      margin={{
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                      }}
+                      slotProps={{
+                        legend: {
+                          hidden: true
+                        }
+                      }}
+                    />
+                  </Stack>
+                  <Grid container spacing={2} alignItems={"center"} marginTop={2}>
+                    {certificateCourseStatistics.chapterResourceType.map((resourceType, index) => (
+                      <Grid item key={index}>
+                        <ChartLengend
+                          label={resourceType.label}
+                          color={ROLE_PIE_CHART_COLORS[index]}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Card>
               </Grid>
             </>
           )}
