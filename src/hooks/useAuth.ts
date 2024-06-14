@@ -28,8 +28,8 @@ export default function useAuth() {
         }
         localStorage.removeItem("provider");
         dispatch(setSuccessMess("Logout successfully"));
-        window.location.replace("/#/");
-        window.location.reload();
+        navigate(routes.user.homepage.root);
+        navigate(0);
       })
       .catch((error) => {
         dispatch(setErrorMess("Failed to logout, please try again later."));
