@@ -262,7 +262,7 @@ export default function DetailProblem() {
     ) {
       setSubmisisonLoading(true);
       CodeSubmissionService.createCodeSubmission({
-        problemId,
+        codeQuestionId: problemId,
         languageId: currentExecuteData.system_language_id,
         sourceCode: currentExecuteData.source_code
       })
