@@ -167,12 +167,12 @@ const EditUserDetails = () => {
         console.error("error", error);
         dispatch(setErrorMess("User is updated failed!!! please check your input information"));
         if (error.code === 401 || error.code === 403) {
-          dispatch(setErrorMess("Please sign in to continue"));
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         setSubmitLoading(false);
       }
     },
-    [t, userId]
+    [dispatch, t, userId]
   );
 
   return (

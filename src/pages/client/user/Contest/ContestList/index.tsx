@@ -175,12 +175,12 @@ const ContestList = () => {
       } catch (error: any) {
         dispatch(setLoading(false));
         if (error.code === 401 || error.code === 403) {
-          dispatch(setErrorMess("Please sign in to continue"));
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
           navigate(routes.user.contest.root);
         }
       }
     },
-    [dispatch, navigate]
+    [dispatch, navigate, t]
   );
 
   const handleGetMostPopularContests = useCallback(async () => {

@@ -36,7 +36,8 @@ export const API = {
       LEADERBOARD: "/core/contests/:id/leaderboard",
       GET_USERS_OF_CONTEST: "/core/contests/:id/users",
       JOIN_CONTEST: "/core/contests/:id/register",
-      ADMIN_CONTEST_STATISTICS: "/core/contests/contest/dashboard-statistics"
+      ADMIN_CONTEST_STATISTICS: "/core/contests/contest/dashboard-statistics",
+      ADMIN_CONTEST_DETAILS_STATISTICS: "/core/contests/:id/admin/statistics"
     },
     QUESTION: {
       DEFAULT: "/core/questions",

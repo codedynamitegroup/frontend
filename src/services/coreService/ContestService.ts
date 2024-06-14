@@ -201,7 +201,7 @@ export class ContestService {
         baseURL: coreServiceApiUrl,
         isAuthorization: true
       }).delete(`${API.CORE.CONTEST.DELETE_BY_ID.replace(":id", id)}`);
-      if (response.status === 204) {
+      if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
@@ -258,6 +258,25 @@ export class ContestService {
       });
     }
   }
+
+  static async getAdminContestDetailsStatistics(contestId: string) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CONTEST.ADMIN_CONTEST_DETAILS_STATISTICS.replace(":id", contestId)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
   static async getAdminContestStatistics() {
     try {
       const response = await api({
