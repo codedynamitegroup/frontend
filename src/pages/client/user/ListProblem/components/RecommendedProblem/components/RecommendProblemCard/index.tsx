@@ -4,11 +4,12 @@ import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
-import { ELevelProblem, IRecommendedProblem } from "../..";
+import { IRecommendedProblem } from "../..";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import images from "config/images";
 import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 type Props = {
   recommendProblem: IRecommendedProblem;
@@ -16,10 +17,10 @@ type Props = {
 
 const RecommendProblemCard = ({ recommendProblem }: Props) => {
   const { t } = useTranslation();
-  const renderTextLevel = (level: number) => {
-    if (level === ELevelProblem.Easy) {
+  const renderTextLevel = (level: QuestionDifficultyEnum) => {
+    if (level === QuestionDifficultyEnum.EASY) {
       return t("common_easy");
-    } else if (level === ELevelProblem.Medium) {
+    } else if (level === QuestionDifficultyEnum.MEDIUM) {
       return t("common_medium");
     }
     return t("common_hard");

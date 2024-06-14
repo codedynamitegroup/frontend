@@ -137,7 +137,8 @@ export const API = {
     },
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
-      GET_BY_ID: "/code-assessment/code-question/:id"
+      GET_BY_ID: "/code-assessment/code-question/:id",
+      RECOMMENED: "/code-assessment/code-question/most-practicing-recently"
     },
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
