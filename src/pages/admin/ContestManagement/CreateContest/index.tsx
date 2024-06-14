@@ -119,7 +119,7 @@ const CreateContest = () => {
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
-          dispatch(setErrorMess("Please sign in to continue"));
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         setSubmitLoading(false);
       }
