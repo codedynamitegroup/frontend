@@ -25,10 +25,19 @@ export class CodeSubmissionService {
     }
   }
 
-  static async createCodeSubmission(codeQuestionId: UUID, languageId: UUID, sourceCode: string) {
+  static async createCodeSubmission(data: {
+    codeQuestionId: UUID;
+    languageId: UUID;
+    sourceCode: string;
+    contestId?: string;
+    cerCourseId?: string;
+  }) {
     // const headCode64 = encodeBase64(headCode);
     // const tailCode64 = encodeBase64(tailCode);
     // const bodyCode64 = encodeBase64(bodyCode);
+    const sourceCode = data.sourceCode;
+    const languageId = data.languageId;
+    const codeQuestionId = data.codeQuestionId;
     const sourceCode64 = encodeBase64(sourceCode);
     const callbackUrl = `${gateWayServiceApiUrl}/code-assessment/code-submission/test-case-token`;
     try {
@@ -42,7 +51,9 @@ export class CodeSubmissionService {
         // headCode: headCode64,
         // tailCode: tailCode64,
         // bodyCode: bodyCode64,
-        callbackUrl
+        callbackUrl,
+        contestId: data.contestId ?? null,
+        certificateCourseId: data.cerCourseId ?? null
       });
       if (response.status === 202) {
         return response.data;

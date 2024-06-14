@@ -245,11 +245,11 @@ export default function TakeContestProblem() {
       currentExecuteData.system_language_id !== undefined
     ) {
       setSubmisisonLoading(true);
-      CodeSubmissionService.createCodeSubmission(
+      CodeSubmissionService.createCodeSubmission({
         problemId,
-        currentExecuteData.system_language_id,
-        currentExecuteData.source_code
-      )
+        languageId: currentExecuteData.system_language_id,
+        sourceCode: currentExecuteData.source_code
+      })
         .then((data) => {
           console.log("create submit response", data);
           navigate(routes.user.problem.detail.submission.replace(":problemId", problemId));
