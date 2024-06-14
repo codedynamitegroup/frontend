@@ -1,27 +1,30 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import JoyButton from "@mui/joy/Button";
 import { Box, Card, Divider, Tab, Tabs } from "@mui/material";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
+import moment from "moment";
+import NotFoundPage from "pages/common/NotFoundPage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
+import { ContestService } from "services/coreService/ContestService";
+import * as yup from "yup";
+import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 import ContestEditDetails from "./ContestEditDetails";
 import ContestEditProblems from "./ContestEditProblems";
 import ContestEditSignUps from "./ContestEditSignUps";
 import ContestEditStatistics from "./ContestEditStatictics";
 import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
-import moment from "moment";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-import { ContestService } from "services/coreService/ContestService";
-import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
-import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
-import NotFoundPage from "pages/common/NotFoundPage";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "store";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -36,15 +39,15 @@ export interface IFormDataType {
   isPublic: boolean;
   isRestrictedForum: boolean;
   isDisabledForum: boolean;
-  // problems: {
-  //   questionId: string;
-  //   codeQuestionId: string;
-  //   difficulty: string;
-  //   name: string;
-  //   questionText: string;
-  //   defaultMark: number;
-  //   maxGrade: number;
-  // }[];
+  problems: {
+    questionId: string;
+    codeQuestionId: string;
+    difficulty: string;
+    name: string;
+    questionText: string;
+    defaultMark: number;
+    maxGrade: number;
+  }[];
 }
 
 const EditContestDetails = ({ isDrawerOpen }: any) => {
@@ -53,12 +56,16 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
+  const [statistics, setStatistics] = useState<{
+    numOfSignUps: number;
+    numOfParticipantsHavingSubmissions: number;
+    contestQuestions: any[];
+  } | null>(null);
 
   const { contestId } = useParams<{ contestId: string }>();
   const [submitLoading, setSubmitLoading] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const [defaultContestName, setDefaultContestName] = useState("");
 
@@ -124,18 +131,21 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
       scoring: yup.string().trim(""),
       isPublic: yup.boolean().required(t("contest_is_public_required")),
       isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
-      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required"))
-      // problems: yup.array().of(
-      //   yup.object().shape({
-      //     questionId: yup.string().required(t("contest_question_id_required")),
-      //     codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
-      //     difficulty: yup.string().required(t("contest_difficulty_required")),
-      //     name: yup.string().required(t("contest_name_required")),
-      //     questionText: yup.string().required(t("contest_question_text_required")),
-      //     defaultMark: yup.number().required(t("contest_default_mark_required")),
-      //     maxGrade: yup.number().required(t("contest_max_grade_required"))
-      //   })
-      // )
+      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required")),
+      problems: yup
+        .array()
+        .of(
+          yup.object().shape({
+            questionId: yup.string().required(t("contest_question_id_required")),
+            codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
+            difficulty: yup.string().required(t("contest_difficulty_required")),
+            name: yup.string().required(t("contest_name_required")),
+            questionText: yup.string().required(t("contest_question_text_required")),
+            defaultMark: yup.number().required(t("contest_default_mark_required")),
+            maxGrade: yup.number().required(t("contest_max_grade_required"))
+          })
+        )
+        .required(t("contest_problems_required"))
     });
   }, [t]);
 
@@ -160,14 +170,15 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
       scoring: "",
       isPublic: false,
       isRestrictedForum: false,
-      isDisabledForum: false
+      isDisabledForum: false,
+      problems: []
     }
   });
 
   const handleGetContestById = useCallback(
     async (id: string) => {
       try {
-        const contest = await ContestService.getContestById(id);
+        const contest: ContestEntity = await ContestService.getContestById(id);
         if (contest) {
           const description = contest.description
             ? contest.description
@@ -199,44 +210,24 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             scoring: scoring,
             isPublic: contest.isPublic,
             isRestrictedForum: contest.isRestrictedForum,
-            isDisabledForum: contest.isDisabledForum
+            isDisabledForum: contest.isDisabledForum,
+            problems: contest.questions.map((question) => {
+              return {
+                questionId: question.questionId,
+                codeQuestionId: question.codeQuestionId,
+                difficulty: question.difficulty,
+                name: question.name,
+                questionText: question.questionText,
+                defaultMark: question.defaultMark,
+                maxGrade: question.maxGrade
+              };
+            })
           });
           setDefaultContestName(contest.name);
-
-          // setValue("name", contest.name);
-          // setDefaultContestName(contest.name);
-          // setValue("startTime", contest.startTime);
-          // if (!contest.endTime) {
-          //   setValue("isNoEndTime", true);
-          //   setValue("endTime", null);
-          // } else {
-          //   setValue("isNoEndTime", false);
-          //   setValue("endTime", contest.endTime);
-          // }
-          // setValue("thumbnailUrl", contest.thumbnailUrl);
-          // const description = contest.description
-          //   ? contest.description
-          //   : `Please provide a short description of your contest here!`;
-          // setValue("description", description);
-          // const prizes =
-          //   contest.prizes && contest.prizes !== ""
-          //     ? contest.prizes
-          //     : `- Prizes are optional. You may add any prizes that you would like to offer here.`;
-          // setValue("prizes", prizes);
-          // const rules =
-          //   contest.rules && contest.rules !== ""
-          //     ? contest.rules
-          //     : `- Please provide any rules for your contest here.`;
-          // setValue("rules", rules);
-          // const scoring =
-          //   contest.scoring && contest.scoring !== ""
-          //     ? contest.scoring
-          //     : `- Each challenge has a pre-determined score.
-          // - A participant’s score depends on the number of test cases a participant’s code submission successfully passes.
-          // - If a participant submits more than one solution per challenge, then the participant’s score will reflect the highest score achieved.
-          // - Participants are ranked by score. If two or more participants achieve the same score, then the tie is broken by the total time taken to submit the last solution resulting in a higher score`;
-          // setValue("scoring", scoring);
-          // setValue("isPublic", contest.isPublic);
+        }
+        const statistics = await ContestService.getAdminContestDetailsStatistics(id);
+        if (statistics) {
+          setStatistics(statistics);
         }
       } catch (error: any) {
         console.error("error", error);
@@ -245,25 +236,25 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
     [reset]
   );
 
-  const handleUpdateContest = useCallback(async (id: string, data: UpdateContestCommand) => {
-    try {
-      const updateContestResponse = await ContestService.updateContest(id, data);
-      if (updateContestResponse) {
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Success);
-        setContent("Contest updated successfully");
-      } else {
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Error);
-        setContent("Failed to update contest");
+  const handleUpdateContest = useCallback(
+    async (id: string, data: UpdateContestCommand) => {
+      try {
+        const updateContestResponse = await ContestService.updateContest(id, data);
+        if (updateContestResponse) {
+          dispatch(setSuccessMess("Contest updated successfully"));
+        } else {
+          dispatch(setErrorMess("Failed to update contest"));
+        }
+      } catch (error: any) {
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess("You are not authorized to update this contest"));
+        }
+        // Show snackbar here
       }
-    } catch (error: any) {
-      console.error("error", error);
-      if (error.code === 401 || error.code === 403) {
-      }
-      // Show snackbar here
-    }
-  }, []);
+    },
+    [dispatch]
+  );
 
   const submitHandler = async (data: any) => {
     console.log("submitHandler", data);
@@ -277,12 +268,6 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
 
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
       <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
         <Card
           sx={{
@@ -390,7 +375,17 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                   />
                 }
               />
-              <Route path={"problems"} element={<ContestEditProblems />} />
+              <Route
+                path={"problems"}
+                element={
+                  <ContestEditProblems
+                    control={control}
+                    errors={errors}
+                    setValue={setValue}
+                    watch={watch}
+                  />
+                }
+              />
               <Route
                 path={"advanced-settings"}
                 element={
@@ -403,7 +398,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                 }
               />
               <Route path={"signups"} element={<ContestEditSignUps />} />
-              <Route path={"statistics"} element={<ContestEditStatistics />} />
+              <Route path={"statistics"} element={<ContestEditStatistics data={statistics} />} />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>

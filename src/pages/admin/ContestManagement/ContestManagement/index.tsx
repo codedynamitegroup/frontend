@@ -1,7 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
-import { grey } from "@mui/material/colors";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -11,6 +10,7 @@ import {
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
@@ -24,15 +24,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setContests, setLoading } from "reduxes/coreService/Contest";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { setContests, setLoading } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch, RootState } from "store";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import { setErrorMess } from "reduxes/AppStatus";
-import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -50,6 +50,9 @@ const ContestManagement = () => {
   const [contestStatusFilter, setContestStatusFilter] = useState<ContestStartTimeFilterEnum>(
     ContestStartTimeFilterEnum.ALL
   );
+
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const contestState = useSelector((state: RootState) => state.contest);
 
@@ -80,14 +83,41 @@ const ContestManagement = () => {
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
-          dispatch(setErrorMess("Please sign in to continue"));
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
-        // Show snackbar here
         dispatch(setLoading(false));
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedContestId, setDeletedContestId] = useState<string>("");
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+
+  const onDeleteConfirmDelete = async () => {
+    ContestService.deleteContest(deletedContestId)
+      .then((res) => {
+        setPage(0);
+        handleGetContests({
+          searchName: searchValue,
+          startTimeFilter: contestStatusFilter,
+          pageNo: 0,
+          pageSize
+        });
+        dispatch(setSuccessMess(t("contest_delete_contest_success")));
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess(t("contest_delete_contest_fail")));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -279,14 +309,18 @@ const ContestManagement = () => {
               );
             }}
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={() => {
+              setDeletedContestId(params.row.contestId);
+              setIsOpenConfirmDelete(true);
+            }}
+          />
         ];
       }
     }
   ];
-
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
   const totalElement = useMemo(
     () => contestState.contests.totalItems || 0,
     [contestState.contests]
@@ -381,6 +415,13 @@ const ContestManagement = () => {
 
   return (
     <>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={t("dialog_confirm_delete_title")}
+        description={t("dialog_confirm_delete_contest_description")}
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
       <Card
         sx={{
           margin: "20px",
