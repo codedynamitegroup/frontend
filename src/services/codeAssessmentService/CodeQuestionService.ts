@@ -7,6 +7,24 @@ import api from "utils/api";
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class CodeQuestionService {
+  static async getRecommendedCodeQuestion() {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl
+      }).get(API.CODE_ASSESSMENT.CODE_QUESTION.RECOMMENED);
+      console.log(response.data, response.status);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async getCodeQuestion(
     filter: {
       tag: TagEntity[] | null;

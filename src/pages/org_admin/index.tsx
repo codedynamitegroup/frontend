@@ -24,11 +24,9 @@ const OrganizationAdminHomepage = (props: Props) => {
         {/* <Box className={classes.container}> */}
         <Box className={classes.body}>
           <Routes>
-            <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN_MOODLE]} />}>
-              <Route path={"information"} element={<UserInformation />} />
-              <Route path={"users"} element={<UserManagement />} />
-              <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
-            </Route>
+            <Route path={"information"} element={<UserInformation />} />
+            <Route path={"users"} element={<UserManagement />} />
+            <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
           </Routes>
         </Box>
         {/* </Box> */}

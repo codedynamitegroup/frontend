@@ -12,6 +12,7 @@ export interface CodeQuestionEntity {
   outputFormat: string;
   constraints: string;
   done: boolean;
+  numOfPeopleAttend: number;
   difficulty: QuestionDifficultyEnum;
   codeSubmissions: CodeSubmissionEntity[];
   sampleTestCases: TestCaseEntity[];

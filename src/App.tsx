@@ -12,6 +12,8 @@ import "./App.scss";
 import Lessons from "pages/client/user/CourseCertificate/Lessons";
 import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
 import OrganizationAdminHomepage from "pages/org_admin";
+import { ERoleName } from "models/authService/entity/role";
+import RequireAuth from "components/common/RequireAuth";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
@@ -137,102 +139,110 @@ const router = createHashRouter(
           element={<ShareSolution />}
         />
 
-        <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
-        <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
-        <Route path={routes.lecturer.assignment.edit} element={<AssignmentUpdated />} />
-        <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection}
-          element={<LecturerSourceCodePlagiarismManagement />}
-        />
-        <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
-        <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
-        <Route
-          path={routes.lecturer.assignment.preview_submit}
-          element={<PreviewAssignmentSubmission />}
-        />
-        <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
-        <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
-        <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
-        <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection}
-          element={<LecturerSourceCodePlagiarismManagement />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_submissions}
-          element={<LecturerSourceCodePlagiarismFileSubmissions />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_submissions_detail}
-          element={<LecturerSourceCodePlagiarismFileSubmissionDetails />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_pairs}
-          element={<LecturerSourceCodePlagiarismPairs />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_pairs_detail}
-          element={<LecturerSourceCodePlagiarismPairDetails />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_clusters}
-          element={<LecturerSourceCodePlagiarismClusters />}
-        />
-        <Route
-          path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
-          element={<LecturerSourceCodePlagiarismClustersDetails />}
-        />
-        <Route
-          path={routes.lecturer.question.essay.create}
-          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
-        />
-        <Route
-          path={routes.lecturer.question.multiple_choice.create}
-          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
-        />
-        <Route
-          path={routes.lecturer.question.short_answer.create}
-          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
-        />
-        <Route
-          path={routes.lecturer.question.true_false.create}
-          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
-        />
+        <Route element={<RequireAuth availableRoles={[ERoleName.LECTURER_MOODLE]} />}>
+          <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
+          <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
+          <Route path={routes.lecturer.assignment.edit} element={<AssignmentUpdated />} />
+          <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection}
+            element={<LecturerSourceCodePlagiarismManagement />}
+          />
+          <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
+          <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
+          <Route
+            path={routes.lecturer.assignment.preview_submit}
+            element={<PreviewAssignmentSubmission />}
+          />
+          <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
+          <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
+          <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
+          <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection}
+            element={<LecturerSourceCodePlagiarismManagement />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_submissions}
+            element={<LecturerSourceCodePlagiarismFileSubmissions />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_submissions_detail}
+            element={<LecturerSourceCodePlagiarismFileSubmissionDetails />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_pairs}
+            element={<LecturerSourceCodePlagiarismPairs />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_pairs_detail}
+            element={<LecturerSourceCodePlagiarismPairDetails />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_clusters}
+            element={<LecturerSourceCodePlagiarismClusters />}
+          />
+          <Route
+            path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
+            element={<LecturerSourceCodePlagiarismClustersDetails />}
+          />
+          <Route
+            path={routes.lecturer.question.essay.create}
+            element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+          />
+          <Route
+            path={routes.lecturer.question.multiple_choice.create}
+            element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+          />
+          <Route
+            path={routes.lecturer.question.short_answer.create}
+            element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+          />
+          <Route
+            path={routes.lecturer.question.true_false.create}
+            element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+          />
 
-        {/*  question bank */}
-        <Route
-          path={routes.lecturer.question_bank.create_question.essay.create}
-          element={<CreateEssayQuestion qtype={qtype.essay.code} />}
-        />
-        <Route
-          path={routes.lecturer.question_bank.create_question.multiple_choice.create}
-          element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
-        />
-        <Route
-          path={routes.lecturer.question_bank.create_question.short_answer.create}
-          element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
-        />
-        <Route
-          path={routes.lecturer.question_bank.create_question.true_false.create}
-          element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
-        />
+          {/*  question bank */}
+          <Route
+            path={routes.lecturer.question_bank.create_question.essay.create}
+            element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+          />
+          <Route
+            path={routes.lecturer.question_bank.create_question.multiple_choice.create}
+            element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+          />
+          <Route
+            path={routes.lecturer.question_bank.create_question.short_answer.create}
+            element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+          />
+          <Route
+            path={routes.lecturer.question_bank.create_question.true_false.create}
+            element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+          />
 
-        <Route
-          path={routes.lecturer.question.ai.create}
-          element={<AIQuestionCreated />}
-          handle={{ crumbName: "default" }}
-        />
+          <Route
+            path={routes.lecturer.question.ai.create}
+            element={<AIQuestionCreated />}
+            handle={{ crumbName: "default" }}
+          />
 
-        <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
-        <Route path={routes.student.root} element={<StudentCoursesManagement />} />
-        <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
-        <Route path={routes.student.exam.take} element={<TakeExam />} />
-        <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
-        <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
+          <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
+        </Route>
+        <Route element={<RequireAuth availableRoles={[ERoleName.STUDENT_MOODLE]} />}>
+          <Route path={routes.student.root} element={<StudentCoursesManagement />} />
+          <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
+          <Route path={routes.student.exam.take} element={<TakeExam />} />
+          <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
+          <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
+        </Route>
 
-        <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
-        <Route path={routes.org_admin.homepage.root} element={<OrganizationAdminHomepage />} />
+        <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
+          <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
+        </Route>
+        <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN_MOODLE]} />}>
+          <Route path={routes.org_admin.homepage.root} element={<OrganizationAdminHomepage />} />
+        </Route>
 
         <Route path={routes.user.course_certificate.detail.lesson.detail} element={<Lessons />} />
 

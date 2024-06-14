@@ -2,7 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import classes from "./styles.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Divider, FormControl, Pagination, Stack } from "@mui/material";
+import {
+  Avatar,
+  CircularProgress,
+  Divider,
+  FormControl,
+  Menu,
+  MenuItem,
+  Pagination,
+  Stack
+} from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading4 from "components/text/Heading4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,8 +82,17 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const pageSize = 10;
   const [pageNum, setPageNum] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
   const [comments, setComments] = useState<CommentEntity[]>([]);
   const [newest, setNewest] = useState(true);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openFilterNewest = Boolean(anchorEl);
+  const handleCloseFilterNewest = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenFilterNewest = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
   useEffect(() => {
     if (selectedSolutionId) {
       dispatch(setLoading(true));
@@ -105,6 +123,7 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
       SharedSolutionService.getRootComments(selectedSolutionId, pageNum, pageSize, newest)
         .then((data: CommentPaginationList) => {
           setTotalPage(data.totalPages);
+          setTotalItem(data.totalItems);
           setComments(data.comments);
         })
         .catch((err) => console.log(err))
@@ -164,36 +183,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   // };
   // \`\`\`
   // `;
-  const users = [
-    {
-      id: 1,
-      name: "Nguyễn Văn A",
-      avatar: "https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg",
-      comment: "Bài làm của bạn rất hay, cách giải rất chi tiết, nhưng tôi có vài góp ý **hehe**",
-      upVote: 100
-    },
-    {
-      id: 2,
-      name: "Trần Thị B",
-      avatar: "https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg",
-      comment: "Bài làm của bạn rất hay, cách giải rất chi tiết, nhưng tôi có vài góp ý **hehe**",
-      upVote: 100
-    },
-    {
-      id: 3,
-      name: "Nguyễn Văn C",
-      avatar: "https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg",
-      comment: "Bài làm của bạn rất hay, cách giải rất chi tiết, nhưng tôi có vài góp ý **hehe**",
-      upVote: 100
-    },
-    {
-      id: 4,
-      name: "Trần Thị D",
-      avatar: "https://kenhsao.net/wp-content/uploads/2023/09/hieuthuhai-la-ai.jpg",
-      comment: "Bài làm của bạn rất hay, cách giải rất chi tiết, nhưng tôi có vài góp ý **hehe**",
-      upVote: 100
-    }
-  ];
 
   const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageNum(value - 1);
@@ -281,10 +270,64 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                     className={classes.commentNumber}
                     translation-key='detail_problem_discussion_detail_comment_count'
                   >
-                    {t("detail_problem_discussion_detail_comment_count", { commentNumber: 10 })}
+                    {t("detail_problem_discussion_detail_comment_count", {
+                      commentNumber: totalItem
+                    })}
                   </Box>
                 </Box>
-                <Box className={classes.filterComment}>Lọc theo: Mới nhất</Box>
+                <Box className={classes.filterComment}>
+                  <Button
+                    id='newest-button'
+                    onClick={handleOpenFilterNewest}
+                    sx={{ textTransform: "none" }}
+                  >
+                    <ParagraphBody
+                      translation-key={
+                        newest
+                          ? "detail_problem_discussion_filter_newest"
+                          : "detail_problem_discussion_filter_oldest"
+                      }
+                    >
+                      {`${t("common_filter_by")}: ${t(
+                        newest
+                          ? "detail_problem_discussion_filter_newest"
+                          : "detail_problem_discussion_filter_oldest"
+                      )}`}
+                    </ParagraphBody>
+                  </Button>
+                  <Menu
+                    id='newest-menu'
+                    aria-labelledby='newest-button'
+                    anchorEl={anchorEl}
+                    open={openFilterNewest}
+                    onClose={handleCloseFilterNewest}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right"
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right"
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        setNewest(true);
+                        handleCloseFilterNewest();
+                      }}
+                    >
+                      {t("detail_problem_discussion_filter_newest")}
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setNewest(false);
+                        handleCloseFilterNewest();
+                      }}
+                    >
+                      {t("detail_problem_discussion_filter_oldest")}
+                    </MenuItem>
+                  </Menu>
+                </Box>
               </Box>
               <Box className={classes.commentBox}>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -313,30 +356,36 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
               )}
               <Box className={classes.commentList}>
                 <Box className={classes.commentItem}>
-                  {comments.map((comment) => {
-                    return (
-                      <>
-                        <Box className={classes.commentInfo} key={comment.user.id}>
-                          <Box className={classes.commentInfoUser}>
-                            <Avatar
-                              sx={{
-                                bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
-                              }}
-                              alt={comment.user?.firstName}
-                              src={comment.user?.avatarUrl}
-                            >
-                              {comment.user?.firstName.charAt(0)}
-                            </Avatar>
-                            <Box className={classes.commentName}>
-                              {i18next.language === "vi"
-                                ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
-                                : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                  {commentLoading && (
+                    <Stack alignItems={"center"} marginTop={1}>
+                      <CircularProgress />
+                    </Stack>
+                  )}
+                  {!commentLoading &&
+                    comments.map((comment) => {
+                      return (
+                        <>
+                          <Box className={classes.commentInfo} key={comment.user.id}>
+                            <Box className={classes.commentInfoUser}>
+                              <Avatar
+                                sx={{
+                                  bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
+                                }}
+                                alt={comment.user?.firstName}
+                                src={comment.user?.avatarUrl}
+                              >
+                                {comment.user?.firstName.charAt(0)}
+                              </Avatar>
+                              <Box className={classes.commentName}>
+                                {i18next.language === "vi"
+                                  ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
+                                  : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                              </Box>
                             </Box>
-                          </Box>
-                          <Box className={classes.commentText}>
-                            <Markdown children={comment.content} remarkPlugins={[gfm]} />
-                          </Box>
-                          {/* <Box className={classes.commentAction}>
+                            <Box className={classes.commentText}>
+                              <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                            </Box>
+                            {/* <Box className={classes.commentAction}>
                           <Box className={classes.upVote}>
                             <FontAwesomeIcon icon={faThumbsUp} className={classes.commentIcon} />
                             <span>{user.upVote}</span>
@@ -356,11 +405,11 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                             </span>
                           </Box>
                         </Box> */}
-                        </Box>
-                        <Divider />
-                      </>
-                    );
-                  })}
+                          </Box>
+                          <Divider />
+                        </>
+                      );
+                    })}
                   <Stack alignItems={"center"}>
                     <Pagination
                       count={totalPage}
