@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { logOut, selectCurrentUser, selectLoginStatus } from "reduxes/Auth";
 import { setLoading } from "reduxes/Loading";
+import { clearUsers } from "reduxes/authService/user";
 import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 
@@ -26,9 +27,9 @@ export default function useAuth() {
           sessionStorage.clear();
         }
         localStorage.removeItem("provider");
-        dispatch(logOut());
         dispatch(setSuccessMess("Logout successfully"));
-        navigate(routes.user.homepage.root);
+        window.location.replace("/#/");
+        window.location.reload();
       })
       .catch((error) => {
         dispatch(setErrorMess("Failed to logout, please try again later."));

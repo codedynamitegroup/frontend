@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API } from "constants/API";
+
 const AUTH_SERVICE_API_URL = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
 const createInstance = ({
@@ -11,7 +12,6 @@ const createInstance = ({
 }) => {
   const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
-
   const instance = axios.create({
     baseURL,
     headers: {
@@ -65,6 +65,8 @@ const createInstance = ({
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
                 localStorage.removeItem("provider");
+                window.location.replace("/#/");
+                window.location.reload();
               }
             });
         }
