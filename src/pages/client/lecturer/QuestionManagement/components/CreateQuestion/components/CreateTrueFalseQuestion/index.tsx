@@ -65,16 +65,6 @@ const CreateTrueFalseQuestion = (props: Props) => {
     ref: headerRef
   });
   if (props.insideCrumb) headerHeight = 0;
-  // const [initialized, setInitialized] = useState(true);
-  // let outletContext: any = useOutletContext();
-  // let outletTab = outletContext?.value;
-  // useEffect(() => {
-  //   if (initialized) {
-  //     setInitialized(false);
-  //   } else {
-  //     navigate("/lecturer/question-bank-management");
-  //   }
-  // }, [outletTab]);
 
   const urlParams = useParams();
 
@@ -132,7 +122,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
 
- const user: User = useSelector(selectCurrentUser);
+  const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
     console.log(data);
@@ -149,7 +139,13 @@ const CreateTrueFalseQuestion = (props: Props) => {
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "TRUE_FALSE",
-      answers: undefined,
+      answers: [
+        {
+          feedback: "Correct",
+          answer: Number(formSubmittedData.showNumCorrect) === 1 ? "true" : "false",
+          fraction: 1
+        }
+      ],
       questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       isOrgQuestionBank: isOrgQuestionBank,
       single: true,
