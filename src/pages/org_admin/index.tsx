@@ -8,6 +8,15 @@ import React from "react";
 import UserManagement from "./UserManagement/UserManagement";
 import EditUserDetails from "./UserManagement/EditUserDetails";
 import SidebarOrganizationAdmin from "components/common/sidebars/SidebarOrganizationAdmin";
+import OrgAdminQuestionBankManagement from "./QuestionBankManagement";
+import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse";
+import { routes } from "routes/routes";
+import qtype from "utils/constant/Qtype";
+import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
+import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
+import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
+import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
+import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 
 type Props = {};
 
@@ -27,6 +36,33 @@ const OrganizationAdminHomepage = (props: Props) => {
             <Route path={"information"} element={<UserInformation />} />
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
+
+            <Route path={"question-bank-management"} element={<OrgAdminQuestionBankManagement />} />
+            <Route
+              path={"question-bank-management/:categoryId"}
+              element={<QuestionListOfCourse />}
+            />
+            <Route
+              // path={routes.org_admin.question_bank.create_question.short_answer}
+              path={"question-bank-management/:categoryId/create/short-answer"}
+              element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+            />
+            <Route
+              path={"question-bank-management/:categoryId/create/essay"}
+              element={<CreateEssayQuestion qtype={qtype.essay.code} />}
+            />
+            <Route
+              path={"question-bank-management/:categoryId/create/multiple-choice"}
+              element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+            />
+            <Route
+              path={"question-bank-management/:categoryId/create/true-false"}
+              element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+            />
+            <Route
+              path={"question-bank-management/:categoryId/create/code"}
+              element={<LecturerCodeQuestionCreation />}
+            />
           </Routes>
         </Box>
         {/* </Box> */}

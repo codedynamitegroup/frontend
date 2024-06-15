@@ -1,0 +1,58 @@
+.tabWrapper {
+  border-bottom: 1px solid var(--gray-10);
+  display: flex;
+  align-items: center;
+  padding: 15px 40px;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.linkLevel {
+  span:hover {
+    cursor: pointer;
+    color: black;
+  }
+}
+.breadCump {
+  span:hover {
+    cursor: pointer;
+    color: black;
+  }
+}
+.stickyFooterItem {
+  background-color: #ffffff;
+  border-top: 1px solid var(--gray-30);
+  text-align: center;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 60px;
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  z-index: 10;
+}
+
+.phantom {
+  display: block;
+  height: 60px;
+  width: 100%;
+}
+
+.stickyFooterContainer {
+  position: relative;
+}
+
+#questionBanksManagementBody {
+  display: flex;
+  flex-direction: column;
+}
