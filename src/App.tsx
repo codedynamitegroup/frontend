@@ -25,6 +25,7 @@ const AssignmentGrading = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/GradingAssignment")
 );
 const CreateExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/CreateExam"));
+const EditExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/EditExam"));
 const PreviewAssignmentSubmission = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/PreviewAssignmentSubmission")
 );
@@ -156,6 +157,7 @@ const router = createHashRouter(
             element={<PreviewAssignmentSubmission />}
           />
           <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
+          <Route path={routes.lecturer.exam.edit} element={<EditExam />} />
           <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
           <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
           <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />

@@ -474,6 +474,7 @@
 
   "course_lecturer_assignment_create_new_assignment": "Tạo bài tập mới",
   "course_lecturer_assignment_create_exam": "Tạo bài kiểm tra",
+  "course_lecturer_assignment_edit_exam": "Chỉnh sửa bài kiểm tra",
   "course_lecturer_assignment_reuse_resource": "Sử dụng lại tài nguyên",
   "course_lecturer_assignment_see_submit": "Xem danh sách bài nộp",
   "course_lecturer_assignment_grading": "Chấm điểm",

@@ -482,6 +482,7 @@
 
   "course_lecturer_assignment_create_new_assignment": "New assignment",
   "course_lecturer_assignment_create_exam": "New exam",
+  "course_lecturer_assignment_edit_exam": "Edit exam",
   "course_lecturer_assignment_reuse_resource": "Reuse resource",
   "course_lecturer_assignment_see_submit": "View submission list",
   "course_lecturer_assignment_grading": "Grading summary",

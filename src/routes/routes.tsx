@@ -94,6 +94,7 @@ export const routes = {
     },
     exam: {
       create: "/lecturer/courses/:courseId/assignments/exams/create",
+      edit: "/lecturer/courses/:courseId/assignments/exams/:examId/edit",
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
