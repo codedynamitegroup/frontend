@@ -1011,5 +1011,6 @@
   "create_question_multiple_choice": "Create multiple choice question",
   "create_question_essay": "Create essay question",
   "create_question_code": "Create code question",
-  "common_detail": "Detail"
+  "common_detail": "Detail",
+  "question_essay_attachment": "Number of allow attachment(s)"
 }
