@@ -7,5 +7,8 @@ export interface UpdateContestCommand {
   scoring?: string;
   isPublic?: boolean;
   startTime?: string;
-  endTime?: string;
+  endTime?: string | null;
+  isRestrictedForum?: boolean;
+  isDisabledForum?: boolean;
+  questionIds?: string[];
 }

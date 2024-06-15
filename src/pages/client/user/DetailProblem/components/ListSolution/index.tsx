@@ -37,10 +37,17 @@ import { SharedSolutionEntity } from "models/codeAssessmentService/entity/Shared
 import images from "config/images";
 import i18next from "i18next";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { ChapterResourceEntity } from "models/coreService/entity/ChapterResourceEntity";
 
 const DetailSolution = lazy(() => import("./components/DetailSolution"));
 
-export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: number }) {
+export default function ProblemDetailSolution({
+  maxHeight,
+  lessonProblemId
+}: {
+  maxHeight?: number;
+  lessonProblemId?: string;
+}) {
   const navigate = useNavigate();
 
   const [tags, setTags] = useState<TagEntity[]>([]);
@@ -100,7 +107,7 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
 
   const openShareInNewTab = () => {
     if (problemId) navigate(routes.user.problem.solution.share.replace(":problemId", problemId));
-    else if (courseId && lessonId)
+    else if (courseId && lessonId && lessonProblemId)
       navigate(
         routes.user.course_certificate.detail.lesson.share_solution
           .replace(":courseId", courseId)
@@ -132,6 +139,25 @@ export default function ProblemDetailSolution({ maxHeight }: { maxHeight?: numbe
       setItemLoading(true);
       SharedSolutionService.getSharedSolution(
         problemId,
+        {
+          searchKey,
+          newest: newestSearch,
+          filterTags: choosenTagList.length > 0 ? choosenTagList : null
+        },
+        { pageSize, pageNum }
+      )
+        .then((data: SharedSolutionPaginationList) => {
+          setSolutionItem(data.sharedSolution);
+          setTotalPage(data.totalPages);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => setItemLoading(false));
+    } else if (courseId && lessonId && lessonProblemId) {
+      setItemLoading(true);
+      SharedSolutionService.getSharedSolution(
+        lessonProblemId,
         {
           searchKey,
           newest: newestSearch,
