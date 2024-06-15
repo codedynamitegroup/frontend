@@ -246,9 +246,10 @@ export default function TakeContestProblem() {
     ) {
       setSubmisisonLoading(true);
       CodeSubmissionService.createCodeSubmission({
-        problemId,
+        codeQuestionId: problemId,
         languageId: currentExecuteData.system_language_id,
-        sourceCode: currentExecuteData.source_code
+        sourceCode: currentExecuteData.source_code,
+        contestId
       })
         .then((data) => {
           console.log("create submit response", data);
