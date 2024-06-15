@@ -26,7 +26,7 @@ export class CodeSubmissionService {
   }
 
   static async createCodeSubmission(data: {
-    codeQuestionId: UUID;
+    codeQuestionId: UUID | string;
     languageId: UUID;
     sourceCode: string;
     contestId?: string;

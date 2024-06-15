@@ -9,7 +9,6 @@ import ChartLengend from "pages/admin/Dashboard/ChartLegend";
 import Heading5 from "components/text/Heading5";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
 import { useMemo } from "react";
-import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 
 const valueFormatter = (value: number | null) => `${value}%`;

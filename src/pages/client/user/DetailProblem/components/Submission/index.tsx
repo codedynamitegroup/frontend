@@ -22,9 +22,11 @@ import { setLoading } from "reduxes/Loading";
 const DetailSolution = lazy(() => import("./components/DetailSubmission"));
 
 export default function ProblemDetailSubmission({
-  submissionLoading
+  submissionLoading,
+  maxHeight
 }: {
   submissionLoading: boolean;
+  maxHeight?: number;
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -227,7 +229,13 @@ export default function ProblemDetailSubmission({
       )}
       {!codeSubmissionLoading &&
         (submissionDetail === false ? (
-          <Box className={classes.submissionTable}>
+          <Box
+            className={classes.submissionTable}
+            sx={{
+              height: maxHeight ? maxHeight : "auto",
+              overflow: "auto"
+            }}
+          >
             <UserTableTemplate
               translation-key='detail_problem_submission_customHeading'
               customHeading={customHeading}
