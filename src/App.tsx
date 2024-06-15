@@ -14,6 +14,7 @@ import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
 import OrganizationAdminHomepage from "pages/org_admin";
 import { ERoleName } from "models/authService/entity/role";
 import RequireAuth from "components/common/RequireAuth";
+import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
@@ -219,6 +220,10 @@ const router = createHashRouter(
           <Route
             path={routes.lecturer.question_bank.create_question.true_false.create}
             element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+          />
+          <Route
+            path={routes.lecturer.question_bank.create_question.code.create}
+            element={<LecturerCodeQuestionCreation />}
           />
 
           <Route

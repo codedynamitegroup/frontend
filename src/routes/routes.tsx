@@ -70,6 +70,9 @@ export const routes = {
         true_false: {
           create: "/lecturer/question-bank-management/:categoryId/create/true-false"
         },
+        code: {
+          create: "/lecturer/question-bank-management/:categoryId/create/code"
+        },
         ai: {
           create: "/lecturer/question-bank-management/:categoryId/create/ai"
         },
