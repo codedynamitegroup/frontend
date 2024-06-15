@@ -454,7 +454,9 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         render={({ field: { onChange, value } }) => (
                           <JoyRadioGroup
                             value={value}
-                            onChange={onChange}
+                            onChange={(newValue) => {
+                              onChange(newValue);
+                            }}
                             values={showNumCorrectOptions}
                             orientation='horizontal'
                             size='md'
