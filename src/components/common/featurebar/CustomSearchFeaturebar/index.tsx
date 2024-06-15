@@ -104,14 +104,10 @@ const CustomSearchFeatureBar = ({
                     minWidth: "150px",
                     maxWidth: "200px"
                   }}
-                  items={
-                    index === 0
-                      ? filterKeyList
-                      : [...filterKeyList].filter(
-                          (key) =>
-                            !fields.map((f) => f.key).includes(key.value) || key.value === field.key
-                        )
-                  }
+                  items={[...filterKeyList].filter(
+                    (key) =>
+                      !fields.map((f) => f.key).includes(key.value) || key.value === field.key
+                  )}
                 />
                 <BasicSelect
                   labelId={`select-filter-value-${index}`}
@@ -175,60 +171,6 @@ const CustomSearchFeatureBar = ({
           </Stack>
         </form>
       </Paper>
-
-      {/* {showFilter && filterKeyList.length > 0 && filterValueList[currentFilterKey] && (
-        <Paper className={classes.container}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              height: "60px",
-              margin: "10px",
-              padding: "5px 10px"
-            }}
-          >
-            <Stack direction='row' gap={1} display='flex' alignItems='center'>
-              <ParagraphBody width={"80px"}>{t("common_filter_by")}</ParagraphBody>
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={currentFilterKey}
-                onHandleChange={handleFilterKeyChange}
-                width='fit-content'
-                items={filterKeyList}
-              />
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={currentFilterValue}
-                onHandleChange={handleFilterValueChange}
-                width='fit-content'
-                items={filterValueList[currentFilterKey] || []}
-              />
-            </Stack>
-          </Box>
-          <Stack
-            direction='row'
-            gap={2}
-            sx={{ padding: "10px" }}
-            display='flex'
-            justifyContent='flex-end'
-          >
-            <Button
-              btnType={BtnType.Outlined}
-              translate-key='common_cancel_filter'
-              onClick={onHandleCancelFilter}
-            >
-              {t("common_cancel_filter")}
-            </Button>
-            <Button
-              btnType={BtnType.Primary}
-              translate-key='common_apply_filter'
-              onClick={onHandleApplyFilter}
-            >
-              {t("common_apply_filter")}
-            </Button>
-          </Stack>
-        </Paper>
-      )} */}
 
       <Box className={classes.searchWrapper}>
         <Stack direction='row' gap={2}>
