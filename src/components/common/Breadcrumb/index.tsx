@@ -1,7 +1,6 @@
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Button } from "@mui/joy";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import { Typography } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Link } from "react-router-dom";
 
@@ -29,7 +28,9 @@ const CustomBreadCrumb = (props: PropsData) => {
         />
       }
       aria-label='breadcrumbs'
-      sx={{}}
+      sx={{
+        padding: "10px 0"
+      }}
     >
       {breadCrumbData.map((item: BreadCrumbData) => (
         <Link key={item.label} to={item.navLink}>

@@ -27,6 +27,7 @@ interface InputsProps extends OutlinedInputProps {
   fontWeight?: string;
   titleAlignment?: "horizontal" | "vertical";
   widthInput?: string;
+  useDefaultTitleStyle?: boolean;
 }
 
 const InputTextFieldColumn = memo((props: InputsProps) => {
@@ -51,7 +52,8 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
     fontSize,
     fontWeight,
     titleAlignment = "vertical",
-    widthInput
+    widthInput,
+    useDefaultTitleStyle
   } = props;
   const { ref: refInput, ...inputProps } = inputRef || { ref: null };
   return (
@@ -65,6 +67,10 @@ const InputTextFieldColumn = memo((props: InputsProps) => {
                   title={title}
                   titleRequired={titleRequired}
                   tooltipDescription={tooltipDescription}
+                  fontSize={useDefaultTitleStyle ? "12px" : undefined}
+                  color={useDefaultTitleStyle ? "var(--gray-60)" : undefined}
+                  gutterBottom={useDefaultTitleStyle ? true : undefined}
+                  fontWeight={useDefaultTitleStyle ? "600" : undefined}
                 />
               )}
             </Grid>

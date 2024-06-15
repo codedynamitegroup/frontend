@@ -553,7 +553,6 @@
 
   "common_confirm_deletion": "Confirm Deletion",
   "assignment_management_delete_assignment": "Are you sure you want to delete this assignment?",
-  "common_confirm": "Confirm",
   "common_cancel": "Cancel",
 
   "exam_management_create_retry_num": "Maximum retry times",
@@ -1006,5 +1005,11 @@
   "exam_detail_graded": "Graded",
   "exam_detail_summary_no_attempt": "Haven't done any attempt",
   "exam_detail_max_attempt": "Maximum attempt",
-  "exam_detail_attempt_unlimited": "Unlimited attempt"
+  "exam_detail_attempt_unlimited": "Unlimited attempt",
+
+  "create_question_true_false": "Create true / false question",
+  "create_question_multiple_choice": "Create multiple choice question",
+  "create_question_essay": "Create essay question",
+  "create_question_code": "Create code question",
+  "common_detail": "Detail"
 }

@@ -14,6 +14,7 @@ interface PropsData {
   margin?: string;
   fontWeight?: string;
   color?: string;
+  gutterBottom?: boolean;
 }
 
 const TitleWithInfoTip = (props: PropsData) => {
@@ -25,7 +26,8 @@ const TitleWithInfoTip = (props: PropsData) => {
     fontSize,
     margin,
     fontWeight,
-    color
+    color,
+    gutterBottom
   } = props;
   const { t } = useTranslation();
 
@@ -33,13 +35,13 @@ const TitleWithInfoTip = (props: PropsData) => {
     <Box className={classes.titleContainer}>
       <TextTitle
         // className={classes.generalDescription}
-        // sx={{
-        //   fontWeight: fontWeight || "500px",
-        //   color: color || "#162130bf",
-        //   fontSize: fontSize || ".8rem"
-        // }}
+
         fontSize={fontSize}
         fontWeight={fontWeight}
+        color={color}
+        sx={{
+          marginBottom: gutterBottom ? "3px" : "0"
+        }}
       >
         {title} {titleRequired && <span className={classes.errorStar}>*</span>}{" "}
         {optional && (
