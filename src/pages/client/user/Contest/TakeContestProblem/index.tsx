@@ -241,6 +241,7 @@ export default function TakeContestProblem() {
   const handleSubmitCode = () => {
     if (
       problemId !== undefined &&
+      contestId !== undefined &&
       currentExecuteData.source_code !== undefined &&
       currentExecuteData.system_language_id !== undefined
     ) {
@@ -253,7 +254,11 @@ export default function TakeContestProblem() {
       })
         .then((data) => {
           console.log("create submit response", data);
-          navigate(routes.user.problem.detail.submission.replace(":problemId", problemId));
+          navigate(
+            routes.user.contest.detail.problems.submission
+              .replace(":problemId", problemId)
+              .replace(":contestId", contestId)
+          );
           // console.log("response data", data);
         })
         .catch((err) => {

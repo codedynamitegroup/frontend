@@ -27,12 +27,6 @@ interface PropsData {
 const ContestProblemItem = (props: PropsData) => {
   const { contestId, problemId, name, maxScore, point, difficulty, submission, maxSubmission } =
     props;
-  // const scoreClickHandler = () => {
-  //   console.log("score click");
-  // };
-  // const submissionTryClickHandler = () => {
-  //   console.log("submit click");
-  // };
   const { t } = useTranslation();
 
   return (
@@ -76,10 +70,7 @@ const ContestProblemItem = (props: PropsData) => {
         <Grid item justifyContent='end' xs={3}>
           <Stack direction={"row"}>
             <Divider orientation='vertical' flexItem />
-            <Box
-              className={clsx(classes.submissionContainer, classes.roundContainer)}
-              // onClick={scoreClickHandler}
-            >
+            <Box className={clsx(classes.submissionContainer, classes.roundContainer)}>
               <ParagraphBody fontSize={"20px"} className={classes.roundedInfoText}>
                 {submission !== undefined ? `${submission}` : ""}
               </ParagraphBody>

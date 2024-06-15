@@ -237,27 +237,44 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   );
 
   const handleUpdateContest = useCallback(
-    async (id: string, data: UpdateContestCommand) => {
+    async (id: string, data: IFormDataType) => {
+      setSubmitLoading(true);
       try {
-        const updateContestResponse = await ContestService.updateContest(id, data);
+        const updateContestResponse = await ContestService.updateContest(id, {
+          name: data.name,
+          description: data.description,
+          thumbnailUrl: data.thumbnailUrl,
+          prizes: data.prizes,
+          rules: data.rules,
+          scoring: data.scoring,
+          isPublic: data.isPublic,
+          startTime: data.startTime,
+          endTime: data.isNoEndTime ? null : data.endTime,
+          isRestrictedForum: data.isRestrictedForum,
+          isDisabledForum: data.isDisabledForum,
+          questionIds: data.problems.map((problem) => problem.questionId)
+        });
         if (updateContestResponse) {
           dispatch(setSuccessMess("Contest updated successfully"));
         } else {
           dispatch(setErrorMess("Failed to update contest"));
         }
+        setSubmitLoading(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess("You are not authorized to update this contest"));
         }
-        // Show snackbar here
+        setSubmitLoading(false);
       }
     },
     [dispatch]
   );
 
-  const submitHandler = async (data: any) => {
-    console.log("submitHandler", data);
+  const submitHandler = async (data: IFormDataType) => {
+    if (contestId) {
+      handleUpdateContest(contestId, data);
+    }
   };
 
   useEffect(() => {
