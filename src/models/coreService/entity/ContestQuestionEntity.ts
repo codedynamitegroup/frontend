@@ -8,5 +8,6 @@ export interface ContestQuestionEntity {
   maxGrade: number;
   grade?: number;
   numOfSubmissions?: number;
+  numOfCorrectSubmissions?: number;
   doTime?: number;
 }

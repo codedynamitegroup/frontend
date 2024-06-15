@@ -33,6 +33,7 @@ import { AppDispatch, RootState } from "store";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
+import React from "react";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -47,9 +48,18 @@ const ContestManagement = () => {
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
-  const [contestStatusFilter, setContestStatusFilter] = useState<ContestStartTimeFilterEnum>(
-    ContestStartTimeFilterEnum.ALL
-  );
+
+  const [filters, setFilters] = React.useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "Status",
+      value: ContestStartTimeFilterEnum.ALL
+    }
+  ]);
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -104,7 +114,7 @@ const ContestManagement = () => {
         setPage(0);
         handleGetContests({
           searchName: searchValue,
-          startTimeFilter: contestStatusFilter,
+          startTimeFilter: filters[0].value as ContestStartTimeFilterEnum,
           pageNo: 0,
           pageSize
         });
@@ -123,10 +133,10 @@ const ContestManagement = () => {
     (value: string) => {
       handleGetContests({
         searchName: value,
-        startTimeFilter: contestStatusFilter
+        startTimeFilter: filters[0].value as ContestStartTimeFilterEnum
       });
     },
-    [handleGetContests, contestStatusFilter]
+    [handleGetContests, filters]
   );
 
   const tableHeading: GridColDef[] = [
@@ -384,12 +394,17 @@ const ContestManagement = () => {
   const handleApplyFilter = useCallback(() => {
     handleGetContests({
       searchName: searchValue,
-      startTimeFilter: contestStatusFilter
+      startTimeFilter: filters[0].value as ContestStartTimeFilterEnum
     });
-  }, [handleGetContests, searchValue, contestStatusFilter]);
+  }, [handleGetContests, searchValue, filters]);
 
   const handleCancelFilter = useCallback(() => {
-    setContestStatusFilter(ContestStartTimeFilterEnum.ALL);
+    setFilters([
+      {
+        key: "Status",
+        value: ContestStartTimeFilterEnum.ALL
+      }
+    ]);
     handleGetContests({
       searchName: searchValue,
       startTimeFilter: ContestStartTimeFilterEnum.ALL
@@ -468,8 +483,8 @@ const ContestManagement = () => {
                   value: "Status"
                 }
               ]}
-              filterValueList={
-                [
+              filterValueList={{
+                Status: [
                   {
                     label: t("common_all"),
                     value: ContestStartTimeFilterEnum.ALL
@@ -487,11 +502,10 @@ const ContestManagement = () => {
                     value: ContestStartTimeFilterEnum.ENDED
                   }
                 ] as { label: string; value: string }[]
-              }
-              currentFilterKey='Status'
-              currentFilterValue={contestStatusFilter}
-              handleFilterValueChange={(value: any) => {
-                setContestStatusFilter(value as ContestStartTimeFilterEnum);
+              }}
+              filters={filters}
+              handleChangeFilters={(filters: { key: string; value: string }[]) => {
+                setFilters(filters);
               }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}

@@ -275,7 +275,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               border: "1px solid #e0e0e0",
               borderRadius: "4px"
             },
-            margin: "20px",
+            margin: "20px 20px 90px 20px",
             gap: "20px"
           }}
         >

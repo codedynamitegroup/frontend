@@ -7,6 +7,12 @@ import images from "config/images";
 import { BarChart } from "@mui/x-charts/BarChart";
 import ChartLengend from "pages/admin/Dashboard/ChartLegend";
 import Heading5 from "components/text/Heading5";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { useMemo } from "react";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+
+const valueFormatter = (value: number | null) => `${value}%`;
 
 const ContestEditStatistics = ({
   data
@@ -14,10 +20,38 @@ const ContestEditStatistics = ({
   data: {
     numOfSignUps: number;
     numOfParticipantsHavingSubmissions: number;
-    contestQuestions: any[];
+    contestQuestions: ContestQuestionEntity[];
   } | null;
 }) => {
   const { t } = useTranslation();
+
+  const calculateSuccessRate = useMemo(
+    () => (numOfCorrectSubmissions: number, numOfSubmissions: number) => {
+      if (numOfSubmissions === 0) return 0;
+      return (numOfCorrectSubmissions / numOfSubmissions) * 100;
+    },
+    []
+  );
+
+  const xAxisData = useMemo(() => {
+    return data?.contestQuestions.map((question, index) => `Problem ${index + 1}`);
+  }, [data]);
+
+  const seriesData = useMemo(() => {
+    return data?.contestQuestions.map((question) => {
+      return calculateSuccessRate(
+        question.numOfCorrectSubmissions || 0,
+        question.numOfSubmissions || 0
+      );
+    });
+  }, [data, calculateSuccessRate]);
+
+  const colorBars = useMemo(() => {
+    if (!data) return [];
+    return data?.contestQuestions.map((question) => {
+      return generateHSLColorByRandomText(`${question.questionId}${question.name}`);
+    });
+  }, [data]);
 
   if (!data) {
     return (
@@ -38,7 +72,6 @@ const ContestEditStatistics = ({
         <Grid item xs={12}>
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} md={6} lg={3}>
-              =
               <Skeleton
                 variant='rectangular'
                 width='100%'
@@ -47,7 +80,6 @@ const ContestEditStatistics = ({
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={3}>
-              =
               <Skeleton
                 variant='rectangular'
                 width='100%'
@@ -82,7 +114,7 @@ const ContestEditStatistics = ({
               icon={
                 <img src={images.admin.totalUser} alt='online user' style={{ width: "35px" }} />
               }
-              title={"Sign Ups"}
+              title={t("common_signups").toUpperCase()}
               value={data.numOfSignUps}
               mainColor={"#28a745"}
             />
@@ -96,7 +128,7 @@ const ContestEditStatistics = ({
                   style={{ width: "35px" }}
                 />
               }
-              title={"Users Submitted"}
+              title={t("common_users_submitted").toUpperCase()}
               value={data.numOfParticipantsHavingSubmissions}
               mainColor={"#dc3545"}
             />
@@ -106,12 +138,15 @@ const ContestEditStatistics = ({
       <Grid item xs={12} md={6}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={12} lg={12}>
-            <Heading5>Problems Success Rates</Heading5>
+            <Heading5 translate-key='contest_details_problems_success_rates'>
+              {t("contest_details_problems_success_rates")}
+            </Heading5>
             <Card
               color='neutral'
               variant='outlined'
               sx={{
-                height: "400px",
+                marginTop: "10px",
+                height: "500px",
                 display: "flex",
                 justifyContent: "center",
                 boxShadow: "lg",
@@ -123,8 +158,19 @@ const ContestEditStatistics = ({
                   borderRadius={10}
                   colors={["#42A5F5", "#66BB6A"]}
                   height={320}
-                  xAxis={[{ scaleType: "band", data: [] }]}
-                  series={[]}
+                  width={900}
+                  xAxis={[
+                    {
+                      scaleType: "band",
+                      data: xAxisData,
+                      colorMap: {
+                        type: "ordinal",
+                        values: xAxisData,
+                        colors: colorBars
+                      }
+                    }
+                  ]}
+                  series={[{ data: seriesData, valueFormatter, label: "Success Rate (%)" }]}
                   sx={{
                     "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
                       stroke: "var(--gray-40)",
@@ -154,15 +200,7 @@ const ContestEditStatistics = ({
                     }
                   }}
                   grid={{ horizontal: true }}
-                  yAxis={[
-                    {
-                      scaleType: "linear",
-                      disableTicks: true // hide ticks
-                    }
-                  ]}
                   margin={{
-                    left: 30,
-                    right: 20,
                     top: 40,
                     bottom: 30
                   }}
@@ -172,9 +210,14 @@ const ContestEditStatistics = ({
                     }
                   }}
                 />
-                <Stack direction='row' spacing={2}>
-                  <ChartLengend label={"Question 1"} color={"#66BB6A"} />
-                  <ChartLengend label={"Question 2"} color={"#42A5F5"} />
+                <Stack direction='column' spacing={2}>
+                  {data.contestQuestions.map((question, index) => (
+                    <ChartLengend
+                      key={index}
+                      label={`Problem ${index + 1}: ${question.name}`}
+                      color={generateHSLColorByRandomText(`${question.questionId}${question.name}`)}
+                    />
+                  ))}
                 </Stack>
               </Stack>
             </Card>

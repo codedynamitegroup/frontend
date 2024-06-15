@@ -1,4 +1,5 @@
-import { Grid, Link } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Checkbox, Grid, Link, Stack } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import {
   GridActionsCellItem,
@@ -12,15 +13,12 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading3 from "components/text/Heading3";
-import TextTitle from "components/text/TextTitle";
+import Heading6 from "components/text/Heading6";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import JoyButton from "@mui/joy/Button";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
-import Heading6 from "components/text/Heading6";
 
 interface AddContestProblemDialogProps extends DialogProps {
   title?: string;
@@ -57,105 +55,135 @@ export default function AddContestProblemDialog({
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [searchValue, setSearchValue] = React.useState<string>("");
-  const [filterValue, setFilterValue] = React.useState<string>(FilterValue.ALL);
+  const [filters, setFilters] = React.useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "Difficulty level",
+      value: FilterValue.ALL
+    }
+  ]);
 
   const [questionList, setQuestionList] = React.useState<any[]>([
     {
       id: "1",
       no: 1,
       name: "Problem 1",
-      difficulty: "EASY"
+      difficulty: "EASY",
+      isPublic: true
     },
     {
       id: "2",
       no: 2,
       name: "Problem 2",
-      difficulty: "MEDIUM"
+      difficulty: "MEDIUM",
+      isPublic: false
     },
     {
       id: "3",
       no: 3,
       name: "Problem 3",
-      difficulty: "HARD"
+      difficulty: "HARD",
+      isPublic: true
     },
     {
       id: "4",
       no: 4,
       name: "Problem 4",
-      difficulty: "EASY"
+      difficulty: "EASY",
+      isPublic: false
     },
     {
       id: "5",
       no: 5,
       name: "Problem 5",
-      difficulty: "MEDIUM"
+      difficulty: "MEDIUM",
+      isPublic: true
     },
     {
       id: "6",
       no: 6,
       name: "Problem 6",
-      difficulty: "HARD"
+      difficulty: "HARD",
+      isPublic: true
     },
     {
       id: "7",
       no: 7,
       name: "Problem 7",
-      difficulty: "EASY"
+      difficulty: "EASY",
+      isPublic: false
     },
     {
       id: "8",
       no: 8,
       name: "Problem 8",
-      difficulty: "MEDIUM"
+      difficulty: "MEDIUM",
+      isPublic: true
     },
     {
       id: "9",
       no: 9,
       name: "Problem 9",
-      difficulty: "HARD"
+      difficulty: "HARD",
+      isPublic: false
     },
     {
       id: "10",
       no: 10,
       name: "Problem 10",
-      difficulty: "EASY"
+      difficulty: "EASY",
+      isPublic: false
     },
     {
       id: "11",
       no: 11,
       name: "Problem 11",
-      difficulty: "MEDIUM"
+      difficulty: "MEDIUM",
+      isPublic: true
     },
     {
       id: "12",
       no: 12,
       name: "Problem 12",
-      difficulty: "HARD"
+      difficulty: "HARD",
+      isPublic: true
     },
     {
       id: "13",
       no: 13,
       name: "Problem 13",
-      difficulty: "EASY"
+      difficulty: "EASY",
+      isPublic: true
     },
     {
       id: "14",
       no: 14,
       name: "Problem 14",
-      difficulty: "MEDIUM"
+      difficulty: "MEDIUM",
+      isPublic: true
     },
     {
       id: "15",
       no: 15,
       name: "Problem 15",
-      difficulty: "HARD"
+      difficulty: "HARD",
+      isPublic: false
     }
   ]);
 
   const handleApplyFilter = React.useCallback(() => {}, []);
 
   const handleCancelFilter = React.useCallback(() => {
-    setFilterValue(FilterValue.ALL);
+    setFilters([
+      {
+        key: "Difficulty level",
+        value: FilterValue.ALL
+      }
+    ]);
   }, []);
 
   const tableHeading: GridColDef[] = [
@@ -177,7 +205,7 @@ export default function AddContestProblemDialog({
     {
       field: "difficulty",
       headerName: "Difficulty level",
-      flex: 1,
+      flex: 0.8,
       renderCell: (params) => {
         return (
           <Heading6
@@ -202,15 +230,43 @@ export default function AddContestProblemDialog({
       }
     },
     {
+      field: "isPublic",
+      headerName: t("contest_is_public"),
+      flex: 0.5,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading6 width={"auto"} sx={{ textAlign: "left" }}>
+            {t("contest_is_public")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isPublic === true ? true : false}
+            color={params.row.isPublic ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
       field: "action",
       headerName: t("common_action"),
       type: "actions",
       flex: 0.6,
       renderHeader: () => {
         return (
-          <TextTitle width={"auto"} sx={{ textAlign: "left" }}>
+          <Heading6 width={"auto"} sx={{ textAlign: "left" }}>
             {t("common_action")}
-          </TextTitle>
+          </Heading6>
         );
       },
       getActions: (params) => {
@@ -219,13 +275,12 @@ export default function AddContestProblemDialog({
             label='Add'
             onClick={() => {}}
             icon={
-              <JoyButton
-                variant='plain'
-                onClick={() => {}}
-                startDecorator={<AddCircleOutlineIcon />}
-              >
-                {t("common_add")}
-              </JoyButton>
+              <Stack direction='row' gap={1} display='flex' alignItems='center'>
+                <AddCircleOutlineIcon htmlColor='#1976d2' />
+                <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
+                  {t("common_add")}
+                </Heading6>
+              </Stack>
             }
           />
         ];
@@ -239,7 +294,7 @@ export default function AddContestProblemDialog({
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
+    // console.log(model);
   };
   const page = 0;
   const pageSize = 5;
@@ -275,10 +330,14 @@ export default function AddContestProblemDialog({
               {
                 label: t("common_difficulty_level"),
                 value: "Difficulty level"
+              },
+              {
+                label: t("contest_is_public"),
+                value: "Is public"
               }
             ]}
-            filterValueList={
-              [
+            filterValueList={{
+              "Difficulty level": [
                 {
                   label: t("common_all"),
                   value: FilterValue.ALL
@@ -295,12 +354,25 @@ export default function AddContestProblemDialog({
                   label: t("common_hard"),
                   value: FilterValue.HARD
                 }
+              ] as { label: string; value: string }[],
+              "Is public": [
+                {
+                  label: t("common_all"),
+                  value: "ALL"
+                },
+                {
+                  label: t("common_public"),
+                  value: "PUBLIC"
+                },
+                {
+                  label: t("common_private"),
+                  value: "PRIVATER"
+                }
               ] as { label: string; value: string }[]
-            }
-            currentFilterKey='Difficulty level'
-            currentFilterValue={filterValue}
-            handleFilterValueChange={(value: any) => {
-              setFilterValue(value as FilterValue);
+            }}
+            filters={filters}
+            handleChangeFilters={(filters: { key: string; value: string }[]) => {
+              setFilters(filters);
             }}
             onHandleApplyFilter={handleApplyFilter}
             onHandleCancelFilter={handleCancelFilter}

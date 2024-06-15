@@ -35,72 +35,14 @@ const ContestEditAdvancedSettings = ({
       <Grid item xs={12}>
         <Heading4 translate-key='contest_forum'>{t("contest_forum")}</Heading4>
       </Grid>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          marginTop: "10px"
-        }}
-      >
-        {/* IsRestrictedForum */}
-        <Grid container spacing={2} columns={12}>
-          <Controller
-            control={control}
-            name='isRestrictedForum'
-            rules={{ required: true }}
-            render={({ field: { ref, ...field } }) => (
-              <>
-                <Grid item xs={12} md={4}>
-                  <TitleWithInfoTip
-                    translate-key='contest_is_restricted_forum'
-                    title={t("contest_is_restricted_forum")}
-                    // tooltipDescription={t("contest_is_restricted_forum_tooltip")}
-                  />
-                  <ParagraphSmall
-                    sx={{
-                      marginTop: "5px"
-                    }}
-                    fontStyle={"italic"}
-                    translate-key='contest_is_restricted_forum_tooltip'
-                  >
-                    {t("contest_is_restricted_forum_tooltip")}
-                  </ParagraphSmall>
-                </Grid>
-                <Grid item xs={12} md={7}>
-                  <Stack direction='column' gap={1}>
-                    <Controller
-                      control={control}
-                      name='isRestrictedForum'
-                      render={({ field: { ref, ...field } }) => (
-                        <FormControlLabel
-                          control={<Checkbox color='primary' {...field} checked={field.value} />}
-                          label={""}
-                        />
-                      )}
-                    />
-
-                    {/* Show error */}
-                    {errors.isRestrictedForum && (
-                      <Grid item xs={12}>
-                        {errors.isRestrictedForum.message && (
-                          <ErrorMessage>{errors.isRestrictedForum.message || ""}</ErrorMessage>
-                        )}
-                      </Grid>
-                    )}
-                  </Stack>
-                </Grid>
-              </>
-            )}
-          />
-        </Grid>
-
+      <Grid item xs={12}>
         {/* IsDisabledForum */}
         <Grid
           container
           spacing={2}
           columns={12}
           sx={{
-            marginTop: "10px"
+            marginTop: "5px"
           }}
         >
           <Controller

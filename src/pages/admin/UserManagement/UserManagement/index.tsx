@@ -60,6 +60,18 @@ const UserManagement = () => {
     return i18next.language;
   });
 
+  const [filters, setFilters] = useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "Status",
+      value: "ALL"
+    }
+  ]);
+
   const userState = useSelector((state: RootState) => state.user);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedUserId, setDeletedUserId] = useState<string>("");
@@ -427,7 +439,26 @@ const UserManagement = () => {
                   value: "Status"
                 }
               ]}
-              currentFilterKey='Status'
+              filterValueList={{
+                Status: [
+                  {
+                    label: t("common_all"),
+                    value: "ALL"
+                  },
+                  {
+                    label: t("common_active"),
+                    value: "ACTIVE"
+                  },
+                  {
+                    label: t("common_inactive"),
+                    value: "INACTIVE"
+                  }
+                ]
+              }}
+              filters={filters}
+              handleChangeFilters={(filters: { key: string; value: string }[]) => {
+                setFilters(filters);
+              }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
             />
