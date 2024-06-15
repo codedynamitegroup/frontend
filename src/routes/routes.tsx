@@ -70,6 +70,9 @@ export const routes = {
         true_false: {
           create: "/lecturer/question-bank-management/:categoryId/create/true-false"
         },
+        code: {
+          create: "/lecturer/question-bank-management/:categoryId/create/code"
+        },
         ai: {
           create: "/lecturer/question-bank-management/:categoryId/create/ai"
         },
@@ -246,6 +249,47 @@ export const routes = {
       edit: {
         root: "/org-admin/users/edit/:userId/*",
         details: "/org-admin/users/edit/:userId/details"
+      }
+    },
+    question_bank: {
+      root: "/org-admin/question-bank-management",
+      detail: "/org-admin/question-bank-management/:categoryId",
+      questions_list_of_category: {
+        path: ":categoryId"
+      },
+      create_question: {
+        essay: {
+          create: "/org-admin/question-bank-management/:categoryId/create/essay"
+        },
+        multiple_choice: {
+          create: "/org-admin/question-bank-management/:categoryId/create/multiple-choice"
+        },
+        short_answer: {
+          create: "/org-admin/question-bank-management/:categoryId/create/short-answer"
+        },
+        true_false: {
+          create: "/org-admin/question-bank-management/:categoryId/create/true-false"
+        },
+        code: {
+          create: "/org-admin/question-bank-management/:categoryId/create/code"
+        },
+        ai: {
+          create: "/org-admin/question-bank-management/:categoryId/create/ai"
+        },
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/${code === "ai" ? "ai/create" : `create/${code}`}`,
+            code
+          }))
+      },
+      update_question: {
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/update/${code}`,
+            code
+          }))
       }
     }
   }
