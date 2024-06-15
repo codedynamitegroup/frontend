@@ -126,7 +126,7 @@ const LecturerCourseInformation = () => {
             src='https://picsum.photos/1800/300'
           />
           <Typography variant='h1' className={classes.classNameOverlay}>
-            Tên khóa học dài
+            {/* Tên khóa học dài */}
           </Typography>
         </Card>
       </Grid>
