@@ -114,6 +114,12 @@ const AssignmentResource = ({
           .replace(":courseId", courseId ?? "")
           .replace(":assignmentId", examId ?? "")
       );
+    } else {
+      navigate(
+        routes.lecturer.exam.edit
+          .replace(":courseId", courseId ?? "")
+          .replace(":examId", examId ?? "")
+      );
     }
   };
 
