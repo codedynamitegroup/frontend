@@ -1,4 +1,4 @@
-import { Box, Card, Chip, IconButton, Paper, Stack } from "@mui/material";
+import { Box, Chip, Divider, Stack } from "@mui/material";
 import classes from "./style.module.scss";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
+import { Card } from "@mui/joy";
+import IconButton from "@mui/joy/IconButton";
 
 const CustomSearchFeatureBar = ({
   isLoading = false,
@@ -66,18 +68,19 @@ const CustomSearchFeatureBar = ({
 
   return (
     <Stack direction='column' gap={2}>
-      <Paper className={classes.container}>
-        <form>
+      <form>
+        <Stack gap={2}>
           {fields.map((field, index) => (
             <Card
               key={field.id}
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                height: "60px",
-                margin: "10px",
-                padding: "5px 10px"
+                flexDirection: "row",
+                padding: "10px 10px"
               }}
+              variant='outlined'
+              color='neutral'
             >
               <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
                 <ParagraphBody width={"100px"}>
@@ -104,6 +107,7 @@ const CustomSearchFeatureBar = ({
                     minWidth: "150px",
                     maxWidth: "200px"
                   }}
+                  borderRadius='12px'
                   items={[...filterKeyList].filter(
                     (key) =>
                       !fields.map((f) => f.key).includes(key.value) || key.value === field.key
@@ -121,57 +125,63 @@ const CustomSearchFeatureBar = ({
                     });
                     handleChangeFilters(newFields);
                   }}
+                  borderRadius='12px'
                   width='fit-content'
                   items={filterValueList[field.key] || []}
                 />
               </Stack>
               {index > 0 && (
-                <IconButton onClick={() => remove(index)}>
+                <IconButton onClick={() => remove(index)} color='danger' variant='soft'>
                   <CancelIcon />
                 </IconButton>
               )}
             </Card>
           ))}
-          <Button
-            onClick={() => {
-              if (fields.length >= filterKeyList.length) {
-                dispatch(setErrorMess(t("common_max_filter_reach")));
-                return;
-              }
-              append({
-                key: "",
-                value: ""
-              });
-            }}
-            margin='10px'
-          >
+        </Stack>
+        <Button
+          onClick={() => {
+            if (fields.length >= filterKeyList.length) {
+              dispatch(setErrorMess(t("common_max_filter_reach")));
+              return;
+            }
+            append({
+              key: "",
+              value: ""
+            });
+          }}
+          margin='10px 0'
+          variant='outlined'
+        >
+          <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--blue-light'>
             + {t("common_add_condition")}
-          </Button>
-          <Stack
-            direction='row'
-            gap={2}
-            sx={{ padding: "10px" }}
-            display='flex'
-            justifyContent='flex-end'
+          </ParagraphBody>
+        </Button>
+        <Stack
+          direction='row'
+          gap={2}
+          sx={{ padding: "10px" }}
+          display='flex'
+          justifyContent='flex-end'
+        >
+          <Button
+            btnType={BtnType.Outlined}
+            translate-key='common_cancel_filter'
+            onClick={onHandleCancelFilter}
+            color='inherit'
           >
-            <Button
-              btnType={BtnType.Outlined}
-              translate-key='common_cancel_filter'
-              onClick={onHandleCancelFilter}
-            >
-              {t("common_cancel_filter")}
-            </Button>
-            <Button
-              btnType={BtnType.Primary}
-              translate-key='common_apply_filter'
-              onClick={onHandleApplyFilter}
-            >
-              {t("common_apply_filter")}
-            </Button>
-          </Stack>
-        </form>
-      </Paper>
+            {t("common_cancel_filter")}
+          </Button>
+          <Button
+            btnType={BtnType.Primary}
+            translate-key='common_apply_filter'
+            onClick={onHandleApplyFilter}
+          >
+            {t("common_apply_filter")}
+          </Button>
+        </Stack>
+      </form>
 
+      <Divider />
       <Box className={classes.searchWrapper}>
         <Stack direction='row' gap={2}>
           <AutoSearchBar
