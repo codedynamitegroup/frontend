@@ -131,6 +131,7 @@ const ContestManagement = () => {
 
   const handleSearchChange = useCallback(
     (value: string) => {
+      setPage(0);
       handleGetContests({
         searchName: value,
         startTimeFilter: filters[0].value as ContestStartTimeFilterEnum

@@ -207,8 +207,8 @@ const CustomSearchFeatureBar = ({
       {isLoading ? (
         <></>
       ) : (
-        searchValue &&
-        searchValue.length > 0 && (
+        (searchValue && searchValue.length > 0) ||
+        (fields && (
           <Chip
             size='small'
             label={`${numOfResults} results found`}
@@ -221,7 +221,7 @@ const CustomSearchFeatureBar = ({
               color: "white"
             }}
           />
-        )
+        ))
       )}
     </Stack>
   );
