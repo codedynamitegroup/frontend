@@ -8,7 +8,8 @@ export const API = {
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
       REGISTER_BY_ID: "/core/certificate-courses/:id/register",
-      GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics"
+      GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics",
+      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all"
     },
     TOPIC: {
       DEFAULT: "/core/topics",

@@ -63,6 +63,16 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       "translation-key": "user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.admin.users.root
+    },
+    {
+      name: t("certificate_course_management"),
+      "translation-key": "certificate_course_management",
+      icon: (
+        <Box className={classes.img}>
+          <img src={images.admin.certificateCourse} alt='certificate course img' />
+        </Box>
+      ),
+      link: routes.admin.certificate.root
     }
   ];
   // const [open, setOpen] = React.useState(true);

@@ -219,6 +219,9 @@ export const routes = {
     },
     dashboard: "/admin/dashboard",
     information: "/admin/information",
+    certificate: {
+      root: "/admin/certificate-course"
+    },
     contest: {
       root: "/admin/contests",
       edit: {

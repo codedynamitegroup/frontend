@@ -1013,5 +1013,6 @@
   "create_question_code": "Create code question",
   "create_question_short_answer": "Create short answer question",
   "common_detail": "Detail",
-  "question_essay_attachment": "Number of allow attachment(s)"
+  "question_essay_attachment": "Number of allow attachment(s)",
+  "common_avg_rating": "Average rating"
 }
