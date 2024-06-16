@@ -73,7 +73,7 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
         handleClose={handleCloseAddProblemDialog}
         maxWidth='md'
         currentQuestionList={problems}
-        setCurrentQuestionList={(newProblems: ContestQuestionEntity[]) =>
+        changeCurrentQuestionList={(newProblems: ContestQuestionEntity[]) =>
           setValue("problems", newProblems)
         }
       />
