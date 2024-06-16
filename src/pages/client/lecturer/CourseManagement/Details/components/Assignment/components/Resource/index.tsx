@@ -43,6 +43,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import { useCallback } from "react";
 import i18next from "i18next";
+import { clearExamCreate } from "reduxes/coreService/questionCreate";
+import { useDispatch } from "react-redux";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -107,6 +109,8 @@ const AssignmentResource = ({
     }
   }, [i18next.language]);
 
+  const dispatch = useDispatch();
+
   const handleEdit = () => {
     if (type === ResourceType.assignment) {
       navigate(
@@ -115,6 +119,7 @@ const AssignmentResource = ({
           .replace(":assignmentId", examId ?? "")
       );
     } else {
+      dispatch(clearExamCreate());
       navigate(
         routes.lecturer.exam.edit
           .replace(":courseId", courseId ?? "")
