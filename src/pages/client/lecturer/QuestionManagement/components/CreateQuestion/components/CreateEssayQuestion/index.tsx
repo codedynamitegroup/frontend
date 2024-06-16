@@ -6,14 +6,12 @@ import {
   Grid,
   ListItemButton,
   Stack,
-  Typography,
   Checkbox,
   ListItemText
 } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
-import TextTitle from "components/text/TextTitle";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";

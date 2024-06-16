@@ -277,7 +277,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
         content={snackbarContent}
       />
       <Helmet>
-        <title>Create true false question</title>
+        <title>Course | Create true false question</title>
       </Helmet>
 
       <Grid className={classes.root}>
