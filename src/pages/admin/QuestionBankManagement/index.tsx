@@ -186,16 +186,25 @@ const AdminQuestionBankManagement = () => {
     {
       field: "category",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
+      field: "organizationName",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.organizationName}</ParagraphBody>;
+      }
+    },
+    {
       field: "created",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.createdByName}</ParagraphBody>
@@ -207,7 +216,7 @@ const AdminQuestionBankManagement = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
