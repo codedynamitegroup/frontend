@@ -67,7 +67,13 @@ export class CodeSubmissionService {
     }
   }
 
-  static async getCodeSubmissionList(codeQuestionId: UUID, pageNo: number, pageSize: number) {
+  static async getCodeSubmissionList(
+    codeQuestionId: UUID | string,
+    pageNo: number,
+    pageSize: number,
+    contestId?: string,
+    cerCourseId?: string
+  ) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
@@ -76,7 +82,9 @@ export class CodeSubmissionService {
         params: {
           pageNo,
           pageSize,
-          codeQuestionId
+          codeQuestionId,
+          contestId,
+          cerCourseId
         }
       });
       if (response.status === 200) {

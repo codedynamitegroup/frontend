@@ -345,7 +345,7 @@ export default function TakeContestProblem() {
     fetchInitialData();
   }, [contestId, dispatch, handleGetContestById]);
 
-  if (!contestId || !contestDetails) return null;
+  if (!contestId || !contestDetails || !problemId) return null;
   if (contestDetails.isRegistered !== true) {
     dispatch(setErrorMess(t("contest_not_registered")));
     navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
@@ -501,7 +501,15 @@ export default function TakeContestProblem() {
                   <Route path={"solution"} element={<ProblemDetailSolution />} />
                   <Route
                     path={"submission"}
-                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                    element={
+                      <ProblemDetailSubmission
+                        submissionLoading={submissionLoading}
+                        contestInfo={{
+                          contestId: contestId,
+                          problemId: problemId
+                        }}
+                      />
+                    }
                   />
                 </Routes>
               </Box>

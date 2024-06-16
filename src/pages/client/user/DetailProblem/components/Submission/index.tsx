@@ -35,6 +35,7 @@ export default function ProblemDetailSubmission({
   };
   contestInfo?: {
     contestId: string;
+    problemId: string;
   };
 }) {
   const { t } = useTranslation();
@@ -79,12 +80,26 @@ export default function ProblemDetailSubmission({
     if (codeQuestion !== null && codeQuestion.id !== undefined) {
       setCodeSubmissionLoading(true);
       if (cerCourseInfo !== undefined) {
-        CodeSubmissionService.getAdminCodeSubmissionList({
-          codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
-          cerCourseId: cerCourseInfo.cerCourseId,
-          pageNo: pageNum,
-          pageSize
-        })
+        CodeSubmissionService.getCodeSubmissionList(
+          cerCourseInfo.lesson?.question?.codeQuestionId || "",
+          pageNum,
+          pageSize,
+          undefined,
+          cerCourseInfo.cerCourseId
+        )
+          .then((data: CodeSubmissionPaginationList) => {
+            setCodeSubmissions(data.codeSubmissions);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setCodeSubmissionLoading(false));
+      } else if (contestInfo !== undefined) {
+        CodeSubmissionService.getCodeSubmissionList(
+          contestInfo.problemId,
+          pageNum,
+          pageSize,
+          contestInfo.contestId,
+          undefined
+        )
           .then((data: CodeSubmissionPaginationList) => {
             setCodeSubmissions(data.codeSubmissions);
           })
@@ -100,7 +115,7 @@ export default function ProblemDetailSubmission({
           .finally(() => setCodeSubmissionLoading(false));
       }
     }
-  }, [cerCourseInfo, codeQuestion, submissionLoading]);
+  }, [cerCourseInfo, codeQuestion, contestInfo, submissionLoading]);
 
   const customHeading = t("detail_problem_submission_customHeading", {
     returnObjects: true
@@ -246,12 +261,26 @@ export default function ProblemDetailSubmission({
       const intervalId = window.setInterval(function () {
         if (codeQuestion !== null && codeQuestion.id !== undefined) {
           if (cerCourseInfo !== undefined) {
-            CodeSubmissionService.getAdminCodeSubmissionList({
-              codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
-              cerCourseId: cerCourseInfo.cerCourseId,
-              pageNo: pageNum,
-              pageSize
-            })
+            CodeSubmissionService.getCodeSubmissionList(
+              cerCourseInfo.lesson?.question?.codeQuestionId || "",
+              pageNum,
+              pageSize,
+              undefined,
+              cerCourseInfo.cerCourseId
+            )
+              .then((data: CodeSubmissionPaginationList) => {
+                setCodeSubmissions(data.codeSubmissions);
+              })
+              .catch((err) => console.log(err))
+              .finally(() => setCodeSubmissionLoading(false));
+          } else if (contestInfo !== undefined) {
+            CodeSubmissionService.getCodeSubmissionList(
+              contestInfo.problemId,
+              pageNum,
+              pageSize,
+              contestInfo.contestId,
+              undefined
+            )
               .then((data: CodeSubmissionPaginationList) => {
                 setCodeSubmissions(data.codeSubmissions);
               })
@@ -291,7 +320,8 @@ export default function ProblemDetailSubmission({
     cerCourseInfo,
     checkGrading,
     codeQuestion,
-    handleMarkViewedChapterResourceById
+    handleMarkViewedChapterResourceById,
+    contestInfo
   ]);
 
   return (
