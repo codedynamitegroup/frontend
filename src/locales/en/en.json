@@ -629,6 +629,7 @@
   "question_bank_category_header_table": [
     "NO.",
     "Category",
+    "Organization name",
     "Created by",
     "Last updated at",
     "Action"
