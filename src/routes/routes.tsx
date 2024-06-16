@@ -238,6 +238,47 @@ export const routes = {
         details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
+    },
+    question_bank: {
+      root: "/admin/question-bank-management",
+      detail: "/admin/question-bank-management/:categoryId",
+      questions_list_of_category: {
+        path: ":categoryId"
+      },
+      create_question: {
+        essay: {
+          create: "/admin/question-bank-management/:categoryId/create/essay"
+        },
+        multiple_choice: {
+          create: "/admin/question-bank-management/:categoryId/create/multiple-choice"
+        },
+        short_answer: {
+          create: "/admin/question-bank-management/:categoryId/create/short-answer"
+        },
+        true_false: {
+          create: "/admin/question-bank-management/:categoryId/create/true-false"
+        },
+        code: {
+          create: "/admin/question-bank-management/:categoryId/create/code"
+        },
+        ai: {
+          create: "/admin/question-bank-management/:categoryId/create/ai"
+        },
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/${code === "ai" ? "ai/create" : `create/${code}`}`,
+            code
+          }))
+      },
+      update_question: {
+        paths: Object.values(qtype)
+          .map((value) => value.code)
+          .map((code) => ({
+            path: `:categoryId/update/${code}`,
+            code
+          }))
+      }
     }
   },
   org_admin: {

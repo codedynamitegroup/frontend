@@ -49,7 +49,7 @@ import { setLoading as setInititalLoading } from "reduxes/Loading";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
-const OrgAdminQuestionBankManagement = () => {
+const AdminQuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
@@ -489,4 +489,4 @@ const OrgAdminQuestionBankManagement = () => {
   );
 };
 
-export default OrgAdminQuestionBankManagement;
+export default AdminQuestionBankManagement;

@@ -64,6 +64,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
+  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
@@ -177,8 +178,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
     setOpenAlertDiaglog(false);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
+
     const newQuestion: PostShortAnswerQuestion = {
-      organizationId: user.organization.organizationId,
+      organizationId: isAdminQuestionBank ? "" : user.organization.organizationId,
       createdBy: user.userId,
       updatedBy: user.userId,
       difficulty: "EASY",
@@ -218,7 +220,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        if (isQuestionBank)
+        if (isAdminQuestionBank)
+          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });

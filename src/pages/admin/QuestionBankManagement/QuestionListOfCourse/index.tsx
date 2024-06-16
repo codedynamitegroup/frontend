@@ -215,7 +215,7 @@ const QuestionListOfCourse = () => {
 
   const handleGetQuestions = async ({
     categoryId,
-    isOrgQuestionBank = categoryState.tab === "1" ? true : false,
+    isOrgQuestionBank = true,
     search = searchText,
     pageNo = page,
     pageSize = rowsPerPage
@@ -277,7 +277,7 @@ const QuestionListOfCourse = () => {
     if (categoryId) {
       handleGetQuestions({
         categoryId,
-        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
+        isOrgQuestionBank: true,
         search: searchText,
         pageNo: page,
         pageSize: rowsPerPage
@@ -287,7 +287,6 @@ const QuestionListOfCourse = () => {
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     console.log(params);
-    // navigate(`${params.row.id}`);
   };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
@@ -296,7 +295,7 @@ const QuestionListOfCourse = () => {
 
     navigate(`create/${typeToCreateNewQuestion}`, {
       state: {
-        isQuestionBank: true,
+        isAdminQuestionBank: true,
         isOrgQuestionBank: tab,
         categoryName: categoryState.categoryDetails?.name
       }
@@ -306,7 +305,7 @@ const QuestionListOfCourse = () => {
   const handleCreateQuestionAI = () => {
     navigate(`ai/create`);
   };
-  const dataGridToolbar = { enableToolbar: true };
+ const dataGridToolbar = { enableToolbar: true };
   useEffect(() => {
     if (categoryId) {
       handleGetCategory(categoryId);
@@ -364,7 +363,6 @@ const QuestionListOfCourse = () => {
         fullWidth
       />
 
-      {/* <TabPanel value='1' sx={{ padding: 0 }}> */}
       <Box className={classes.tabWrapper}>
         <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
           <span
