@@ -24,13 +24,18 @@ const DetailSolution = lazy(() => import("./components/DetailSubmission"));
 export default function ProblemDetailSubmission({
   submissionLoading,
   maxHeight,
-  cerCourseId,
-  lesson
+  cerCourseInfo,
+  contestInfo
 }: {
   submissionLoading: boolean;
   maxHeight?: number;
-  cerCourseId?: string;
-  lesson?: ChapterResourceEntity | null;
+  cerCourseInfo?: {
+    cerCourseId: string;
+    lesson: ChapterResourceEntity | null;
+  };
+  contestInfo?: {
+    contestId: string;
+  };
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -56,22 +61,27 @@ export default function ProblemDetailSubmission({
   const isMounted = useIsMounted();
 
   const handleMarkViewedChapterResourceById = useCallback(async () => {
-    if (lesson && lesson.resourceType === ResourceTypeEnum.CODE && !lesson.isCompleted) {
+    if (
+      cerCourseInfo !== undefined &&
+      cerCourseInfo.lesson &&
+      cerCourseInfo.lesson.resourceType === ResourceTypeEnum.CODE &&
+      !cerCourseInfo.lesson.isCompleted
+    ) {
       try {
-        dispatch(markChapterResourceAsViewed(lesson.chapterResourceId));
+        dispatch(markChapterResourceAsViewed(cerCourseInfo.lesson.chapterResourceId));
       } catch (error: any) {
         //do nothing
       }
     }
-  }, [lesson, dispatch]);
+  }, [cerCourseInfo, dispatch]);
 
   useEffect(() => {
     if (codeQuestion !== null && codeQuestion.id !== undefined) {
       setCodeSubmissionLoading(true);
-      if (lesson !== undefined) {
+      if (cerCourseInfo !== undefined) {
         CodeSubmissionService.getAdminCodeSubmissionList({
-          codeQuestionId: lesson?.question?.codeQuestionId || "",
-          cerCourseId,
+          codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
+          cerCourseId: cerCourseInfo.cerCourseId,
           pageNo: pageNum,
           pageSize
         })
@@ -90,7 +100,7 @@ export default function ProblemDetailSubmission({
           .finally(() => setCodeSubmissionLoading(false));
       }
     }
-  }, [cerCourseId, codeQuestion, lesson, submissionLoading]);
+  }, [cerCourseInfo, codeQuestion, submissionLoading]);
 
   const customHeading = t("detail_problem_submission_customHeading", {
     returnObjects: true
@@ -235,10 +245,10 @@ export default function ProblemDetailSubmission({
       // console.log("polling");
       const intervalId = window.setInterval(function () {
         if (codeQuestion !== null && codeQuestion.id !== undefined) {
-          if (lesson !== undefined) {
+          if (cerCourseInfo !== undefined) {
             CodeSubmissionService.getAdminCodeSubmissionList({
-              codeQuestionId: lesson?.question?.codeQuestionId || "",
-              cerCourseId,
+              codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
+              cerCourseId: cerCourseInfo.cerCourseId,
               pageNo: pageNum,
               pageSize
             })
@@ -262,7 +272,11 @@ export default function ProblemDetailSubmission({
     } // Cleanup interval on unmount
     else {
       // console.log("not polling");
-      if (lesson?.isCompleted !== true && codeSubmissions !== undefined) {
+      if (
+        cerCourseInfo &&
+        cerCourseInfo.lesson?.isCompleted !== true &&
+        codeSubmissions !== undefined
+      ) {
         const codeSubmissionIndex = codeSubmissions.findIndex(
           (value: CodeSubmissionDetailEntity) =>
             value.gradingStatus === "GRADED" && value.description === "Accepted"
@@ -274,8 +288,7 @@ export default function ProblemDetailSubmission({
     }
   }, [
     codeSubmissions,
-    cerCourseId,
-    lesson,
+    cerCourseInfo,
     checkGrading,
     codeQuestion,
     handleMarkViewedChapterResourceById
