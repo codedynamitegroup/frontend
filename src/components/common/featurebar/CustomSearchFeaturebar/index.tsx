@@ -25,7 +25,8 @@ const CustomSearchFeatureBar = ({
   onHandleApplyFilter = () => {},
   onHandleCancelFilter = () => {},
   createBtnText = "",
-  onClickCreate = () => {}
+  onClickCreate = () => {},
+  isFilter = true
 }: {
   isLoading: boolean;
   searchValue: string;
@@ -49,6 +50,7 @@ const CustomSearchFeatureBar = ({
   onHandleCancelFilter?: () => void;
   createBtnText?: string;
   onClickCreate?: () => void;
+  isFilter?: boolean;
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -66,111 +68,115 @@ const CustomSearchFeatureBar = ({
 
   return (
     <Stack direction='column' gap={2}>
-      <Paper className={classes.container}>
-        <form>
-          {fields.map((field, index) => (
-            <Card
-              key={field.id}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                height: "60px",
-                margin: "10px",
-                padding: "5px 10px"
+      {isFilter ? (
+        <Paper className={classes.container}>
+          <form>
+            {fields.map((field, index) => (
+              <Card
+                key={field.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  height: "60px",
+                  margin: "10px",
+                  padding: "5px 10px"
+                }}
+              >
+                <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
+                  <ParagraphBody width={"100px"}>
+                    {index === 0 ? t("common_filter_by") : t("common_and")}
+                  </ParagraphBody>
+                  <BasicSelect
+                    labelId={`select-filter-key-${index}`}
+                    value={field.key}
+                    onHandleChange={(value: string) => {
+                      const newFields = fields.map((f, i) => {
+                        if (i === index) {
+                          const newField = {
+                            key: value,
+                            value: filterValueList[value]?.[0]?.value || ""
+                          };
+                          return newField;
+                        }
+                        return f;
+                      });
+                      handleChangeFilters(newFields);
+                    }}
+                    width='fit-content'
+                    sx={{
+                      minWidth: "150px",
+                      maxWidth: "200px"
+                    }}
+                    items={[...filterKeyList].filter(
+                      (key) =>
+                        !fields.map((f) => f.key).includes(key.value) || key.value === field.key
+                    )}
+                  />
+                  <BasicSelect
+                    labelId={`select-filter-value-${index}`}
+                    value={field.value}
+                    onHandleChange={(value: string) => {
+                      const newFields = fields.map((f, i) => {
+                        if (i === index) {
+                          return { key: f.key, value };
+                        }
+                        return f;
+                      });
+                      handleChangeFilters(newFields);
+                    }}
+                    width='fit-content'
+                    items={filterValueList[field.key] || []}
+                  />
+                </Stack>
+                {index > 0 && (
+                  <IconButton onClick={() => remove(index)}>
+                    <CancelIcon />
+                  </IconButton>
+                )}
+              </Card>
+            ))}
+            <Button
+              onClick={() => {
+                if (fields.length >= filterKeyList.length) {
+                  dispatch(setErrorMess(t("common_max_filter_reach")));
+                  return;
+                }
+                append({
+                  key: "",
+                  value: ""
+                });
               }}
+              margin='10px'
             >
-              <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
-                <ParagraphBody width={"100px"}>
-                  {index === 0 ? t("common_filter_by") : t("common_and")}
-                </ParagraphBody>
-                <BasicSelect
-                  labelId={`select-filter-key-${index}`}
-                  value={field.key}
-                  onHandleChange={(value: string) => {
-                    const newFields = fields.map((f, i) => {
-                      if (i === index) {
-                        const newField = {
-                          key: value,
-                          value: filterValueList[value]?.[0]?.value || ""
-                        };
-                        return newField;
-                      }
-                      return f;
-                    });
-                    handleChangeFilters(newFields);
-                  }}
-                  width='fit-content'
-                  sx={{
-                    minWidth: "150px",
-                    maxWidth: "200px"
-                  }}
-                  items={[...filterKeyList].filter(
-                    (key) =>
-                      !fields.map((f) => f.key).includes(key.value) || key.value === field.key
-                  )}
-                />
-                <BasicSelect
-                  labelId={`select-filter-value-${index}`}
-                  value={field.value}
-                  onHandleChange={(value: string) => {
-                    const newFields = fields.map((f, i) => {
-                      if (i === index) {
-                        return { key: f.key, value };
-                      }
-                      return f;
-                    });
-                    handleChangeFilters(newFields);
-                  }}
-                  width='fit-content'
-                  items={filterValueList[field.key] || []}
-                />
-              </Stack>
-              {index > 0 && (
-                <IconButton onClick={() => remove(index)}>
-                  <CancelIcon />
-                </IconButton>
-              )}
-            </Card>
-          ))}
-          <Button
-            onClick={() => {
-              if (fields.length >= filterKeyList.length) {
-                dispatch(setErrorMess(t("common_max_filter_reach")));
-                return;
-              }
-              append({
-                key: "",
-                value: ""
-              });
-            }}
-            margin='10px'
-          >
-            + {t("common_add_condition")}
-          </Button>
-          <Stack
-            direction='row'
-            gap={2}
-            sx={{ padding: "10px" }}
-            display='flex'
-            justifyContent='flex-end'
-          >
-            <Button
-              btnType={BtnType.Outlined}
-              translate-key='common_cancel_filter'
-              onClick={onHandleCancelFilter}
-            >
-              {t("common_cancel_filter")}
+              + {t("common_add_condition")}
             </Button>
-            <Button
-              btnType={BtnType.Primary}
-              translate-key='common_apply_filter'
-              onClick={onHandleApplyFilter}
+            <Stack
+              direction='row'
+              gap={2}
+              sx={{ padding: "10px" }}
+              display='flex'
+              justifyContent='flex-end'
             >
-              {t("common_apply_filter")}
-            </Button>
-          </Stack>
-        </form>
-      </Paper>
+              <Button
+                btnType={BtnType.Outlined}
+                translate-key='common_cancel_filter'
+                onClick={onHandleCancelFilter}
+              >
+                {t("common_cancel_filter")}
+              </Button>
+              <Button
+                btnType={BtnType.Primary}
+                translate-key='common_apply_filter'
+                onClick={onHandleApplyFilter}
+              >
+                {t("common_apply_filter")}
+              </Button>
+            </Stack>
+          </form>
+        </Paper>
+      ) : (
+        <></>
+      )}
 
       <Box className={classes.searchWrapper}>
         <Stack direction='row' gap={2}>
