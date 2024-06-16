@@ -118,6 +118,7 @@ const OrgAdminQuestionBankManagement = () => {
         const getQuestionBankCategoryResponse =
           await QuestionBankCategoryService.getQuestionBankCategories({
             isOrgQuestionBank: true,
+            organizationId: user.organization.organizationId,
             search,
             pageNo,
             pageSize
@@ -163,6 +164,7 @@ const OrgAdminQuestionBankManagement = () => {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
+        organizationId: user.organization.organizationId,
         isOrgQuestionBank: true,
         createdBy: user.userId
       });
@@ -186,16 +188,25 @@ const OrgAdminQuestionBankManagement = () => {
     {
       field: "category",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
+      field: "organizationName",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.organizationName}</ParagraphBody>;
+      }
+    },
+    {
       field: "created",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.createdByName}</ParagraphBody>
@@ -207,7 +218,7 @@ const OrgAdminQuestionBankManagement = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
