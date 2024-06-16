@@ -125,6 +125,25 @@ export class ExamService {
     }
   }
 
+  static async editExam(examId: string, examData: ExamCreateRequest) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.COURSE.EXAM.EDIT.replace(":id", examId)}`, examData);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create exam", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async startExam(examData: StartEndExamRequest) {
     try {
       const response = await api({

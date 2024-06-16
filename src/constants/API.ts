@@ -108,6 +108,7 @@ export const API = {
       OVERVIEW: "/course/exam/:id/overview",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam",
+      EDIT: "/course/exam/:id",
       DELETE: "/course/exam/:id",
       START: "/course/exam/question/start-exam",
       END: "/course/exam/question/end-exam",

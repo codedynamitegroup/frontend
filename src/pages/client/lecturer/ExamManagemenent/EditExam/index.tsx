@@ -83,6 +83,7 @@ import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { useEffect, useState } from "react";
 import { setExamDetail } from "reduxes/courseService/exam";
+import { di } from "@fullcalendar/core/internal-common";
 
 const drawerWidth = 400;
 
@@ -194,7 +195,7 @@ export default function ExamEdit() {
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds
     };
-    ExamService.createExam(newExam)
+    ExamService.editExam(examId ?? "", newExam)
       .then((response) => {
         console.log(response);
         dispatch(clearQuestionCreate());
@@ -205,30 +206,38 @@ export default function ExamEdit() {
       });
   };
 
-  const [exam, setExam] = useState<ExamEntity>({
-    id: "",
-    courseId: "",
-    name: "",
-    scores: 0,
-    maxScores: 0,
-    timeOpen: new Date(),
-    timeClose: new Date(),
-    timeLimit: 0,
-    intro: "",
-    overdueHanding: "",
-    canRedoQuestions: false,
-    maxAttempts: 0,
-    shuffleAnswers: false,
-    gradeMethod: "",
-    createdAt: new Date(),
-    updatedAt: new Date()
-  });
+  // const [exam, setExam] = useState<ExamEntity>({
+  //   id: "",
+  //   courseId: "",
+  //   name: "",
+  //   scores: 0,
+  //   maxScores: 0,
+  //   timeOpen: new Date(),
+  //   timeClose: new Date(),
+  //   timeLimit: 0,
+  //   intro: "",
+  //   overdueHanding: "",
+  //   canRedoQuestions: false,
+  //   maxAttempts: 0,
+  //   shuffleAnswers: false,
+  //   gradeMethod: "",
+  //   createdAt: new Date(),
+  //   updatedAt: new Date()
+  // });
 
   const handleGetExamById = async (id: string) => {
     try {
       const response = await ExamService.getExamById(id);
-      setExam(response);
-      dispatch(setExamDetail(response));
+      // setExam(response);
+      // dispatch(setExamDetail(response));
+      dispatch(setExamNameCreate(response.name));
+      dispatch(setExamDescriptionCreate(response.intro));
+      dispatch(setMaxScoreCreate(response.maxScores));
+      dispatch(setTimeOpenCreate(response.timeOpen));
+      dispatch(setTimeCloseCreate(response.timeClose));
+      dispatch(setTimeLimitCreate(response.timeLimit));
+      dispatch(setMaxAttemptCreate(response.maxAttempts));
+      dispatch(setOverdueHandlingCreate(response.overdueHanding));
     } catch (error) {
       console.log(error);
     }
@@ -268,8 +277,8 @@ export default function ExamEdit() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("minutes");
-  const [examTimeLimitEnabled, setExamTimeLimitEnabled] = React.useState(false);
+  const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("seconds");
+  const [examTimeLimitEnabled, setExamTimeLimitEnabled] = React.useState(true);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = React.useState(false);
   const [isAddQuestionFromBankDialogOpen, setIsAddQuestionFromBankDialogOpen] =
     React.useState(false);
@@ -654,7 +663,7 @@ export default function ExamEdit() {
                 <InputTextField
                   type='text'
                   title={t("common_exam_name")}
-                  value={exam.name}
+                  value={questionCreate.examName}
                   onChange={(e) => {
                     // setExamName(e.target.value);
                     dispatch(setExamNameCreate(e.target.value));
@@ -671,7 +680,7 @@ export default function ExamEdit() {
                   </Grid>
                   <Grid item xs={9} className={classes.textEditor}>
                     <TextEditor
-                      value={exam.intro}
+                      value={questionCreate.examDescription}
                       onChange={(value) => {
                         // setExamDescription(value);
                         dispatch(setExamDescriptionCreate(value));
@@ -792,7 +801,7 @@ export default function ExamEdit() {
                 </TextTitle>
                 <InputTextField
                   type='number'
-                  value={exam.maxScores?.toString()}
+                  value={questionCreate.maxScore}
                   onChange={(e) => {
                     // setExamMaximumGrade(parseInt(e.target.value));
                     dispatch(setMaxScoreCreate(parseInt(e.target.value)));
@@ -810,7 +819,7 @@ export default function ExamEdit() {
                   {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_open_time"), "lowercase")}`}
                 </TextTitle>
                 <CustomDateTimePicker
-                  value={moment(exam.timeOpen)}
+                  value={moment(questionCreate.timeOpen)}
                   onHandleValueChange={(newValue) => {
                     // setExamOpenTime(newValue);
                     dispatch(
@@ -830,7 +839,7 @@ export default function ExamEdit() {
                   {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_close_time"), "lowercase")}`}
                 </TextTitle>
                 <CustomDateTimePicker
-                  value={moment(exam.timeClose)}
+                  value={moment(questionCreate.timeClose)}
                   onHandleValueChange={(newValue) => {
                     // setExamCloseTime(newValue);
                     dispatch(
@@ -848,7 +857,7 @@ export default function ExamEdit() {
                   <Grid item xs={4}>
                     <InputTextField
                       type='number'
-                      value={exam.timeLimit}
+                      value={questionCreate.timeLimit}
                       onChange={(e) => {
                         // setExamTimeLimitNumber(parseInt(e.target.value));
                         dispatch(setTimeLimitCreate(parseInt(e.target.value)));
