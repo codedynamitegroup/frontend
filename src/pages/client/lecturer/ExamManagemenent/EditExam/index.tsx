@@ -68,6 +68,7 @@ import {
   setMaxAttemptCreate,
   setMaxScoreCreate,
   setOverdueHandlingCreate,
+  setQuestionCreate,
   setQuestionCreateFromBank,
   setTimeCloseCreate,
   setTimeLimitCreate,
@@ -243,11 +244,30 @@ export default function ExamEdit() {
     }
   };
 
+  const handleGetExamQuestionById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamQuestionById(id, null);
+      dispatch(setQuestionCreateFromBank(response.questions));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchInitialData = async () => {
-      await handleGetExamById(examId ?? "");
-    };
-    fetchInitialData();
+    ExamService.getExamById(examId ?? "").then((result) => {
+      dispatch(setExamNameCreate(result.name));
+      dispatch(setExamDescriptionCreate(result.intro));
+      dispatch(setMaxScoreCreate(result.maxScores));
+      dispatch(setTimeOpenCreate(result.timeOpen));
+      dispatch(setTimeCloseCreate(result.timeClose));
+      dispatch(setTimeLimitCreate(result.timeLimit));
+      dispatch(setMaxAttemptCreate(result.maxAttempts));
+      dispatch(setOverdueHandlingCreate(result.overdueHanding));
+    });
+
+    ExamService.getExamQuestionById(examId ?? "", null).then((result) => {
+      dispatch(setQuestionCreateFromBank(result.questions));
+    });
   }, []);
 
   const handleGetQuestionBankCategories = async ({
