@@ -43,6 +43,14 @@ import classes from "./styles.module.scss";
 import JoyButton from "@mui/joy/Button";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import {
+  setExecuteError,
+  setExecuteResultLoading,
+  setResult
+} from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 
 const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
   const { t } = useTranslation();
@@ -208,6 +216,71 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     setSelectedLanguage({ id: selectedLanguage.id, sourceCode: value });
   };
 
+  const handleExecuteCode = () => {
+    setTestCaseTab(1);
+    dispatch(setExecuteResultLoading(true));
+    if (currentExecuteData.test_cases) {
+      Promise.all(
+        currentExecuteData.test_cases.map((value) =>
+          ExecuteService.execute(
+            currentExecuteData.language_id,
+            value.inputData,
+            value.outputData,
+            currentExecuteData.cpu_time_limit,
+            currentExecuteData.memory_limit,
+            currentExecuteData.source_code
+          )
+        )
+      )
+        .then((data: Judge0ResponseEntity[]) => {
+          currentExecuteData.test_cases?.forEach((value, index) => {
+            data[index].input_data = value.inputData;
+            data[index].output_data = value.outputData;
+          });
+          // console.log(data);
+          dispatch(setResult(data));
+        })
+        .catch((err) => {
+          console.log("Execute error: ", err);
+          let message: string | undefined = err.message;
+          if (message === undefined) message = "Unexpected error";
+          dispatch(setExecuteError(message));
+        })
+        .finally(() => dispatch(setExecuteResultLoading(false)));
+    }
+    // console.log("current data", currentExecuteData);
+  };
+
+  const handleSubmitCode = () => {
+    if (
+      lessonId !== undefined &&
+      courseId !== undefined &&
+      currentExecuteData.source_code !== undefined &&
+      currentExecuteData.system_language_id !== undefined
+    ) {
+      setSubmisisonLoading(true);
+      CodeSubmissionService.createCodeSubmission({
+        codeQuestionId: lesson?.question?.codeQuestionId || "",
+        languageId: currentExecuteData.system_language_id,
+        sourceCode: currentExecuteData.source_code,
+        cerCourseId: courseId
+      })
+        .then((data) => {
+          console.log("create submit response", data);
+          navigate(
+            routes.user.course_certificate.detail.lesson.submission
+              .replace(":courseId", courseId)
+              .replace(":lessonId", lessonId)
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => setSubmisisonLoading(false));
+    }
+  };
+
+  if (lesson === null || courseId === undefined || lessonId === undefined) return null;
   return (
     <Grid container gap={2}>
       <Grid item xs={12} md={12}>
@@ -227,7 +300,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
           </Box>
         ) : (
           <Card>
-            <Box className={classes.leftBody}>
+            <Box className={classes.leftBody} id='problem-detail-tab-body'>
               <Box className={classes.tabWrapper} ref={tabRef}>
                 <Tabs
                   value={activeTab}
@@ -259,15 +332,33 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
               <Box
                 id={classes.tabBody}
                 style={{
-                  height: `calc(100% - ${tabHeight}px)`
+                  minHeight: `600px`,
+                  overflowY: "auto"
                 }}
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route path={"solution"} element={<ProblemDetailSolution maxHeight={700} />} />
+                  <Route
+                    path={"solution"}
+                    element={
+                      <ProblemDetailSolution
+                        maxHeight={700}
+                        lessonProblemId={lesson?.question?.codeQuestionId || ""}
+                      />
+                    }
+                  />
                   <Route
                     path={"submission"}
-                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                    element={
+                      <ProblemDetailSubmission
+                        submissionLoading={submissionLoading}
+                        maxHeight={600}
+                        cerCourseInfo={{
+                          cerCourseId: courseId || "",
+                          lesson: lesson
+                        }}
+                      />
+                    }
                   />
                 </Routes>
               </Box>
@@ -317,12 +408,17 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
           <JoyButton
             color='success'
             translation-key='detail_problem_execute'
-            // onClick={handleExecuteCode}
+            onClick={handleExecuteCode}
             startDecorator={<PlayArrowIcon />}
           >
             {t("detail_problem_execute")}
           </JoyButton>
-          <JoyButton color='primary' variant='outlined' translation-key='detail_problem_submit'>
+          <JoyButton
+            color='primary'
+            variant='outlined'
+            translation-key='detail_problem_submit'
+            onClick={handleSubmitCode}
+          >
             {submissionLoading && <CircularProgress size={15} sx={{ marginRight: 1 }} />}
             {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
           </JoyButton>

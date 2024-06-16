@@ -26,7 +26,7 @@ export class CodeSubmissionService {
   }
 
   static async createCodeSubmission(data: {
-    codeQuestionId: UUID;
+    codeQuestionId: UUID | string;
     languageId: UUID;
     sourceCode: string;
     contestId?: string;
@@ -67,7 +67,13 @@ export class CodeSubmissionService {
     }
   }
 
-  static async getCodeSubmissionList(codeQuestionId: UUID, pageNo: number, pageSize: number) {
+  static async getCodeSubmissionList(
+    codeQuestionId: UUID | string,
+    pageNo: number,
+    pageSize: number,
+    contestId?: string,
+    cerCourseId?: string
+  ) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
@@ -76,7 +82,47 @@ export class CodeSubmissionService {
         params: {
           pageNo,
           pageSize,
-          codeQuestionId
+          codeQuestionId,
+          contestId,
+          cerCourseId
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getAdminCodeSubmissionList({
+    codeQuestionId,
+    cerCourseId,
+    contestId,
+    pageNo,
+    pageSize
+  }: {
+    codeQuestionId: string;
+    cerCourseId?: string;
+    contestId?: string;
+    pageNo: number;
+    pageSize: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.ADMIN_CODE_SUBMISSION}`, {
+        params: {
+          pageNo,
+          pageSize,
+          codeQuestionId,
+          contestId,
+          cerCourseId
         }
       });
       if (response.status === 200) {

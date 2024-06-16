@@ -1,20 +1,20 @@
+import RequireAuth from "components/common/RequireAuth";
+import { ERoleName } from "models/authService/entity/role";
+import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
+import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
+import Lessons from "pages/client/user/CourseCertificate/Lessons";
+import OrganizationAdminHomepage from "pages/org_admin";
+import { lazy } from "react";
 import {
   Route,
   RouterProvider,
   createHashRouter,
   createRoutesFromElements
 } from "react-router-dom";
-import { lazy } from "react";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
-import Lessons from "pages/client/user/CourseCertificate/Lessons";
-import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
-import OrganizationAdminHomepage from "pages/org_admin";
-import { ERoleName } from "models/authService/entity/role";
-import RequireAuth from "components/common/RequireAuth";
-import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );

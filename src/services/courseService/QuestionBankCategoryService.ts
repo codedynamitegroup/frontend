@@ -8,10 +8,12 @@ export class QuestionBankCategoryService {
   static async getQuestionBankCategories({
     search = "",
     isOrgQuestionBank,
+    organizationId,
     pageNo = 0,
     pageSize = 10
   }: {
     isOrgQuestionBank?: boolean;
+    organizationId?: string;
     search?: string;
     pageNo?: number;
     pageSize?: number;
@@ -23,6 +25,7 @@ export class QuestionBankCategoryService {
       }).get(`${API.COURSE.QUESTION_BANK_CATEGORY.DEFAULT}`, {
         params: {
           isOrgQuestionBank,
+          organizationId,
           search,
           pageNo,
           pageSize
@@ -85,11 +88,13 @@ export class QuestionBankCategoryService {
     name,
     description,
     isOrgQuestionBank,
+    organizationId,
     createdBy
   }: {
     name: string;
     description: string;
     isOrgQuestionBank: boolean;
+    organizationId?: string;
     createdBy: string;
   }) {
     try {
@@ -100,6 +105,7 @@ export class QuestionBankCategoryService {
         name,
         description,
         isOrgQuestionBank,
+        organizationId,
         createdBy
       });
       if (response.status === 201) {

@@ -1,7 +1,6 @@
-import { Box, Container, Grid, Typography, Stack, Divider } from "@mui/material";
+import { Box, Container, Grid, Stack, Divider } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
-import ParagraphBody from "components/text/ParagraphBody";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
@@ -30,6 +29,13 @@ import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import { CourseService } from "services/courseService/CourseService";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
+import Heading2 from "components/text/Heading2";
+import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
+import { Card } from "@mui/joy";
+import ParagraphBody from "components/text/ParagraphBody";
 
 interface Props {
   qtype: String;
@@ -57,6 +63,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
   const [submitCount, setSubmitCount] = useState(0);
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const navigate = useNavigate();
 
@@ -65,16 +72,6 @@ const CreateTrueFalseQuestion = (props: Props) => {
     ref: headerRef
   });
   if (props.insideCrumb) headerHeight = 0;
-  // const [initialized, setInitialized] = useState(true);
-  // let outletContext: any = useOutletContext();
-  // let outletTab = outletContext?.value;
-  // useEffect(() => {
-  //   if (initialized) {
-  //     setInitialized(false);
-  //   } else {
-  //     navigate("/lecturer/question-bank-management");
-  //   }
-  // }, [outletTab]);
 
   const urlParams = useParams();
 
@@ -132,7 +129,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
 
- const user: User = useSelector(selectCurrentUser);
+  const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
     console.log(data);
@@ -149,7 +146,13 @@ const CreateTrueFalseQuestion = (props: Props) => {
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "TRUE_FALSE",
-      answers: undefined,
+      answers: [
+        {
+          feedback: "Correct",
+          answer: Number(formSubmittedData.showNumCorrect) === 1 ? "true" : "false",
+          fraction: 1
+        }
+      ],
       questionBankCategoryId: isQuestionBank ? categoryId : undefined,
       isOrgQuestionBank: isOrgQuestionBank,
       single: true,
@@ -200,6 +203,22 @@ const CreateTrueFalseQuestion = (props: Props) => {
       console.log(error);
     }
   };
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId);
+    };
+
+    fetchData();
+  }, [courseId]);
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.questionName) {
@@ -217,6 +236,37 @@ const CreateTrueFalseQuestion = (props: Props) => {
     { value: "1", label: t("question_management_show_instructions") },
     { value: "0", label: t("question_management_no_show_instructions") }
   ];
+
+  const breadCrumbData = isQuestionBank
+    ? [
+        {
+          navLink: routes.lecturer.question_bank.path,
+          label: i18next.format(t("common_question_bank"), "firstUppercase")
+        },
+        {
+          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+          label: categoryName
+        }
+      ]
+    : [
+        {
+          navLink: routes.lecturer.course.management,
+          label: t("common_course_management")
+        },
+        {
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+          label: courseData?.name
+        },
+        {
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+          label: t("common_type_assignment")
+        },
+        {
+          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+          label: t("course_lecturer_assignment_create_exam")
+        }
+      ];
+
   return (
     <>
       <SnackbarAlert
@@ -227,87 +277,61 @@ const CreateTrueFalseQuestion = (props: Props) => {
         content={snackbarContent}
       />
       <Helmet>
-        <title>Create true false question</title>
+        <title>Course | Create true false question</title>
       </Helmet>
 
       <Grid className={classes.root}>
         <Header ref={headerRef} />
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
-            <Box className={classes.tabWrapper}>
-              {isQuestionBank ? (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    onClick={() => navigate(routes.lecturer.question_bank.path)}
-                    translation-key='common_question_bank'
-                  >
-                    {i18next.format(t("common_question_bank"), "firstUppercase")}
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
-                    }
-                  >
-                    {categoryName}
-                  </span>{" "}
-                  {"> "}
-                  <span>Tạo câu hỏi</span>
-                </ParagraphBody>
-              ) : (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    translation-key='common_course_management'
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                  >
-                    {t("common_course_management")}
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                    }
-                  >
-                    CS202 - Nhập môn lập trình
-                  </span>{" "}
-                  {"> "}
-                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                    Xem bài tập
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() => navigate(routes.lecturer.exam.create)}
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_create_exam")}
-                  </span>{" "}
-                  {"> "}
-                  <span translation-key='question_management_create_question'>
-                    {t("question_management_create_question")}
-                  </span>
-                </ParagraphBody>
-              )}
-            </Box>
-            <Box className={classes.formBody}>
-              <Typography
-                className={classes.pageTitle}
+            <CustomBreadCrumb
+              breadCrumbData={breadCrumbData}
+              lastBreadCrumbLabel={t("create_question_true_false")}
+            />
+
+            <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-start'>
+              <Box
+                sx={{
+                  borderRadius: "1000px",
+                  backgroundColor: "#DFF2E0",
+                  width: "40px",
+                  height: "40px"
+                }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <RuleRoundedIcon
+                  sx={{
+                    color: "#4CAF50"
+                  }}
+                />
+              </Box>
+              <Heading2
                 translation-key={["common_add", "common_question_type_with_question_truefalse"]}
               >
-                {t("common_add")}{" "}
-                {t("common_question_type_with_question_truefalse").toLocaleLowerCase()}
-              </Typography>
+                {t("common_add").toUpperCase()}{" "}
+                {t("common_question_type_with_question_truefalse").toUpperCase()}
+              </Heading2>
+            </Stack>
 
+            <Box className={classes.formBody}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <Card
+                        variant='soft'
+                        color='primary'
+                        sx={{
+                          padding: "10px"
+                        }}
+                      >
+                        <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                          {i18next.t("common_general").toUpperCase()}
+                        </ParagraphBody>
+                      </Card>
+                    </Grid>
                     {/* Question name */}
                     <Grid item xs={12} md={6}>
                       <Controller
@@ -324,6 +348,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
                             placeholder={t("exam_management_create_question_name")}
                             titleRequired={true}
                             translation-key='exam_management_create_question_name'
+                            useDefaultTitleStyle
                             {...field}
                           />
                         )}
@@ -338,6 +363,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         name='defaultScore'
                         render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            useDefaultTitleStyle
                             inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
@@ -366,6 +392,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         translation-key='exam_management_create_question_description'
                         title={`${t("exam_management_create_question_description")} `}
                         titleRequired
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -408,6 +438,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         translation-key='question_management_general_comment'
                         title={`${t("question_management_general_comment")} `}
                         optional
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -445,11 +479,29 @@ const CreateTrueFalseQuestion = (props: Props) => {
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
+                    <Grid item xs={12} />
+                    <Grid item xs={12}>
+                      <Card
+                        variant='soft'
+                        color='primary'
+                        sx={{
+                          padding: "10px"
+                        }}
+                      >
+                        <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                          {i18next.t("common_detail").toUpperCase()}
+                        </ParagraphBody>
+                      </Card>
+                    </Grid>
                     <Grid item xs={12} md={6}>
                       <TitleWithInfoTip
                         translation-key='question_management_correct_answer'
                         title={`${t("question_management_correct_answer")} `}
                         tooltipDescription={t("question_management_correct_answer_description")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Controller
                         name='showNumCorrect'
@@ -458,7 +510,9 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         render={({ field: { onChange, value } }) => (
                           <JoyRadioGroup
                             value={value}
-                            onChange={onChange}
+                            onChange={(newValue) => {
+                              onChange(newValue);
+                            }}
                             values={showNumCorrectOptions}
                             orientation='horizontal'
                             size='md'
@@ -467,7 +521,13 @@ const CreateTrueFalseQuestion = (props: Props) => {
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_multiple_choice_show_instructions")} />
+                      <TitleWithInfoTip
+                        title={t("question_multiple_choice_show_instructions")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='showInstructions'
                         control={control}
@@ -493,6 +553,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         optional
                         translation-key='question_multiple_choice_correct_feedback'
                         title={t("question_multiple_choice_correct_feedback")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -533,6 +597,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
                         optional
                         translation-key='question_multiple_choice_incorrect_feedback'
                         title={t("question_multiple_choice_incorrect_feedback")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -580,7 +648,20 @@ const CreateTrueFalseQuestion = (props: Props) => {
                 >
                   {t("question_management_create_question")}
                 </JoyButton>
-                <JoyButton variant='outlined' translation-key='common_cancel'>
+                <JoyButton
+                  variant='outlined'
+                  translation-key='common_cancel'
+                  onClick={() => {
+                    if (isQuestionBank)
+                      navigate(
+                        routes.lecturer.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId ?? ""
+                        )
+                      );
+                    else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+                  }}
+                >
                   {t("common_cancel")}
                 </JoyButton>
               </Stack>

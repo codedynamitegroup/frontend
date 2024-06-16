@@ -1,5 +1,6 @@
 import { Radio, RadioGroup, Sheet } from "@mui/joy";
 import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 
 interface JoyRadioGroupProps {
   values: { value: boolean; label: string }[] | { value: string; label: string }[] | undefined;
@@ -9,7 +10,7 @@ interface JoyRadioGroupProps {
   orientation?: "horizontal" | "vertical";
 
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: any) => void;
 
   fontSize?: string;
   fontWeight?: string;
@@ -35,8 +36,14 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
     overlay,
     disabled
   } = props;
+
+  const [selectedValue, setSelectedValue] = useState(value);
+  useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
+
   return (
-    <RadioGroup orientation={orientation} size={size} variant={variant} value={value}>
+    <RadioGroup orientation={orientation} size={size} variant={variant} value={selectedValue}>
       <Box
         sx={{
           display: "flex",
@@ -92,7 +99,7 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
           ) : (
             <Radio
               disabled={disabled}
-              checked={index === 0 ? true : false}
+              checked={value.value === selectedValue ? true : false}
               checkedIcon={
                 numbering && (
                   <Box

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { clear } from "console";
 import { User } from "models/authService/entity/user";
 
 interface InitialState {

@@ -5,15 +5,18 @@ import { Box, Card, Divider, Tab, Tabs } from "@mui/material";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import moment from "moment";
 import NotFoundPage from "pages/common/NotFoundPage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch } from "store";
 import * as yup from "yup";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 import ContestEditDetails from "./ContestEditDetails";
@@ -21,10 +24,6 @@ import ContestEditProblems from "./ContestEditProblems";
 import ContestEditSignUps from "./ContestEditSignUps";
 import ContestEditStatistics from "./ContestEditStatictics";
 import classes from "./styles.module.scss";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "store";
-import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { ContestEntity } from "models/coreService/entity/ContestEntity";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -237,27 +236,44 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   );
 
   const handleUpdateContest = useCallback(
-    async (id: string, data: UpdateContestCommand) => {
+    async (id: string, data: IFormDataType) => {
+      setSubmitLoading(true);
       try {
-        const updateContestResponse = await ContestService.updateContest(id, data);
+        const updateContestResponse = await ContestService.updateContest(id, {
+          name: data.name,
+          description: data.description,
+          thumbnailUrl: data.thumbnailUrl,
+          prizes: data.prizes,
+          rules: data.rules,
+          scoring: data.scoring,
+          isPublic: data.isPublic,
+          startTime: data.startTime,
+          endTime: data.isNoEndTime ? null : data.endTime,
+          isRestrictedForum: data.isRestrictedForum,
+          isDisabledForum: data.isDisabledForum,
+          questionIds: data.problems.map((problem) => problem.questionId)
+        });
         if (updateContestResponse) {
           dispatch(setSuccessMess("Contest updated successfully"));
         } else {
           dispatch(setErrorMess("Failed to update contest"));
         }
+        setSubmitLoading(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess("You are not authorized to update this contest"));
         }
-        // Show snackbar here
+        setSubmitLoading(false);
       }
     },
     [dispatch]
   );
 
-  const submitHandler = async (data: any) => {
-    console.log("submitHandler", data);
+  const submitHandler = async (data: IFormDataType) => {
+    if (contestId) {
+      handleUpdateContest(contestId, data);
+    }
   };
 
   useEffect(() => {

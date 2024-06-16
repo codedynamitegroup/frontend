@@ -19,6 +19,18 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+
+interface AddContestProblemDialogQuestionInterface {
+  id: string;
+  questionId: string;
+  no: number;
+  name: string;
+  difficulty: string;
+  isPublic: boolean;
+}
 
 interface AddContestProblemDialogProps extends DialogProps {
   title?: string;
@@ -30,6 +42,8 @@ interface AddContestProblemDialogProps extends DialogProps {
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
   isConfirmLoading?: boolean;
+  currentQuestionList: ContestQuestionEntity[];
+  changeCurrentQuestionList: (value: ContestQuestionEntity[]) => void;
 }
 
 enum FilterValue {
@@ -50,6 +64,8 @@ export default function AddContestProblemDialog({
   onHanldeConfirm,
   isConfirmLoading = false,
   isReportExisted,
+  currentQuestionList,
+  changeCurrentQuestionList,
   ...props
 }: AddContestProblemDialogProps) {
   const { t } = useTranslation();
@@ -67,115 +83,77 @@ export default function AddContestProblemDialog({
     }
   ]);
 
-  const [questionList, setQuestionList] = React.useState<any[]>([
-    {
-      id: "1",
-      no: 1,
-      name: "Problem 1",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "2",
-      no: 2,
-      name: "Problem 2",
-      difficulty: "MEDIUM",
-      isPublic: false
-    },
-    {
-      id: "3",
-      no: 3,
-      name: "Problem 3",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "4",
-      no: 4,
-      name: "Problem 4",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "5",
-      no: 5,
-      name: "Problem 5",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "6",
-      no: 6,
-      name: "Problem 6",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "7",
-      no: 7,
-      name: "Problem 7",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "8",
-      no: 8,
-      name: "Problem 8",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "9",
-      no: 9,
-      name: "Problem 9",
-      difficulty: "HARD",
-      isPublic: false
-    },
-    {
-      id: "10",
-      no: 10,
-      name: "Problem 10",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "11",
-      no: 11,
-      name: "Problem 11",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "12",
-      no: 12,
-      name: "Problem 12",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "13",
-      no: 13,
-      name: "Problem 13",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "14",
-      no: 14,
-      name: "Problem 14",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "15",
-      no: 15,
-      name: "Problem 15",
-      difficulty: "HARD",
-      isPublic: false
-    }
-  ]);
+  const [data, setData] = React.useState<{
+    codeQuestions: AddContestProblemDialogQuestionInterface[];
+    currentPage: number;
+    totalPage: number;
+    totalItems: number;
+  }>({
+    codeQuestions: [],
+    currentPage: 0,
+    totalPage: 0,
+    totalItems: 0
+  });
 
-  const handleApplyFilter = React.useCallback(() => {}, []);
+  const handleGetAdminCodeQuestions = React.useCallback(
+    async ({
+      search,
+      isPublic,
+      difficulty,
+      pageNo = 0,
+      pageSize = 5
+    }: {
+      search?: string;
+      isPublic?: boolean;
+      difficulty?: QuestionDifficultyEnum;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      setIsLoading(true);
+      try {
+        const getAdminCodeQuestionsResponse = await CodeQuestionService.getAdminCodeQuestions({
+          search,
+          isPublic,
+          difficulty,
+          pageNo,
+          pageSize
+        });
+        setData({
+          codeQuestions: getAdminCodeQuestionsResponse.codeQuestions.map(
+            (item: any, index: number) => ({
+              id: item.id,
+              questionId: item.questionId,
+              no: pageNo * pageSize + index + 1,
+              name: item.name,
+              difficulty: item.difficulty,
+              isPublic: item.isPublic
+            })
+          ),
+          currentPage: getAdminCodeQuestionsResponse.currentPage,
+          totalPage: getAdminCodeQuestionsResponse.totalPage,
+          totalItems: getAdminCodeQuestionsResponse.totalItems
+        });
+        setIsLoading(false);
+      } catch (error: any) {
+        console.error("error", error);
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  const handleApplyFilter = React.useCallback(() => {
+    const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
+    const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
+    handleGetAdminCodeQuestions({
+      search: searchValue,
+      isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
+      difficulty:
+        !difficulty || difficulty === FilterValue.ALL
+          ? undefined
+          : (difficulty as QuestionDifficultyEnum)
+    });
+  }, [filters, handleGetAdminCodeQuestions, searchValue]);
 
   const handleCancelFilter = React.useCallback(() => {
     setFilters([
@@ -184,7 +162,10 @@ export default function AddContestProblemDialog({
         value: FilterValue.ALL
       }
     ]);
-  }, []);
+    handleGetAdminCodeQuestions({
+      search: searchValue
+    });
+  }, [handleGetAdminCodeQuestions, searchValue]);
 
   const tableHeading: GridColDef[] = [
     { field: "no", headerName: "STT", width: 100 },
@@ -294,17 +275,44 @@ export default function AddContestProblemDialog({
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    // console.log(model);
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetAdminCodeQuestions({
+      search: searchValue,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = questionList.length;
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(5);
+  const totalElement = data.totalItems;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     // console.log(params);
   };
 
-  const handleSearchChange = React.useCallback((value: string) => {}, []);
+  const handleSearchChange = React.useCallback(
+    (value: string) => {
+      setPage(0);
+      const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
+      const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
+      handleGetAdminCodeQuestions({
+        search: value,
+        isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
+        difficulty:
+          !difficulty || difficulty === FilterValue.ALL
+            ? undefined
+            : (difficulty as QuestionDifficultyEnum),
+        pageNo: 0,
+        pageSize: pageSize
+      });
+    },
+    [handleGetAdminCodeQuestions, pageSize, filters]
+  );
+
+  React.useEffect(() => {
+    handleGetAdminCodeQuestions({});
+  }, [handleGetAdminCodeQuestions]);
 
   return (
     <CustomDialog
@@ -380,7 +388,8 @@ export default function AddContestProblemDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
-            dataList={questionList}
+            loading={isLoading}
+            dataList={data.codeQuestions}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}
             dataGridToolBar={dataGridToolbar}

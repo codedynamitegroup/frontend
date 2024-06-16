@@ -1,4 +1,4 @@
-import { Box, Card, Chip, IconButton, Paper, Stack } from "@mui/material";
+import { Box, Chip, Divider, Stack } from "@mui/material";
 import classes from "./style.module.scss";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
+import { Card } from "@mui/joy";
+import IconButton from "@mui/joy/IconButton";
 
 const CustomSearchFeatureBar = ({
   isLoading = false,
@@ -25,7 +27,8 @@ const CustomSearchFeatureBar = ({
   onHandleApplyFilter = () => {},
   onHandleCancelFilter = () => {},
   createBtnText = "",
-  onClickCreate = () => {}
+  onClickCreate = () => {},
+  isFilter = true
 }: {
   isLoading: boolean;
   searchValue: string;
@@ -49,6 +52,7 @@ const CustomSearchFeatureBar = ({
   onHandleCancelFilter?: () => void;
   createBtnText?: string;
   onClickCreate?: () => void;
+  isFilter?: boolean;
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -66,72 +70,77 @@ const CustomSearchFeatureBar = ({
 
   return (
     <Stack direction='column' gap={2}>
-      <Paper className={classes.container}>
+      {isFilter ? (
         <form>
-          {fields.map((field, index) => (
-            <Card
-              key={field.id}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                height: "60px",
-                margin: "10px",
-                padding: "5px 10px"
-              }}
-            >
-              <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
-                <ParagraphBody width={"100px"}>
-                  {index === 0 ? t("common_filter_by") : t("common_and")}
-                </ParagraphBody>
-                <BasicSelect
-                  labelId={`select-filter-key-${index}`}
-                  value={field.key}
-                  onHandleChange={(value: string) => {
-                    const newFields = fields.map((f, i) => {
-                      if (i === index) {
-                        const newField = {
-                          key: value,
-                          value: filterValueList[value]?.[0]?.value || ""
-                        };
-                        return newField;
-                      }
-                      return f;
-                    });
-                    handleChangeFilters(newFields);
-                  }}
-                  width='fit-content'
-                  sx={{
-                    minWidth: "150px",
-                    maxWidth: "200px"
-                  }}
-                  items={[...filterKeyList].filter(
-                    (key) =>
-                      !fields.map((f) => f.key).includes(key.value) || key.value === field.key
-                  )}
-                />
-                <BasicSelect
-                  labelId={`select-filter-value-${index}`}
-                  value={field.value}
-                  onHandleChange={(value: string) => {
-                    const newFields = fields.map((f, i) => {
-                      if (i === index) {
-                        return { key: f.key, value };
-                      }
-                      return f;
-                    });
-                    handleChangeFilters(newFields);
-                  }}
-                  width='fit-content'
-                  items={filterValueList[field.key] || []}
-                />
-              </Stack>
-              {index > 0 && (
-                <IconButton onClick={() => remove(index)}>
-                  <CancelIcon />
-                </IconButton>
-              )}
-            </Card>
-          ))}
+          <Stack gap={2}>
+            {fields.map((field, index) => (
+              <Card
+                key={field.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: "10px 10px"
+                }}
+                variant='outlined'
+                color='neutral'
+              >
+                <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
+                  <ParagraphBody width={"100px"}>
+                    {index === 0 ? t("common_filter_by") : t("common_and")}
+                  </ParagraphBody>
+                  <BasicSelect
+                    labelId={`select-filter-key-${index}`}
+                    value={field.key}
+                    onHandleChange={(value: string) => {
+                      const newFields = fields.map((f, i) => {
+                        if (i === index) {
+                          const newField = {
+                            key: value,
+                            value: filterValueList[value]?.[0]?.value || ""
+                          };
+                          return newField;
+                        }
+                        return f;
+                      });
+                      handleChangeFilters(newFields);
+                    }}
+                    width='fit-content'
+                    sx={{
+                      minWidth: "150px",
+                      maxWidth: "200px"
+                    }}
+                    borderRadius='12px'
+                    items={[...filterKeyList].filter(
+                      (key) =>
+                        !fields.map((f) => f.key).includes(key.value) || key.value === field.key
+                    )}
+                  />
+                  <BasicSelect
+                    labelId={`select-filter-value-${index}`}
+                    value={field.value}
+                    onHandleChange={(value: string) => {
+                      const newFields = fields.map((f, i) => {
+                        if (i === index) {
+                          return { key: f.key, value };
+                        }
+                        return f;
+                      });
+                      handleChangeFilters(newFields);
+                    }}
+                    borderRadius='12px'
+                    width='fit-content'
+                    items={filterValueList[field.key] || []}
+                  />
+                </Stack>
+                {index > 0 && (
+                  <IconButton onClick={() => remove(index)} color='danger' variant='soft'>
+                    <CancelIcon />
+                  </IconButton>
+                )}
+              </Card>
+            ))}
+          </Stack>
           <Button
             onClick={() => {
               if (fields.length >= filterKeyList.length) {
@@ -143,9 +152,12 @@ const CustomSearchFeatureBar = ({
                 value: ""
               });
             }}
-            margin='10px'
+            margin='10px 0'
+            variant='outlined'
           >
-            + {t("common_add_condition")}
+            <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--blue-light'>
+              + {t("common_add_condition")}
+            </ParagraphBody>
           </Button>
           <Stack
             direction='row'
@@ -158,6 +170,7 @@ const CustomSearchFeatureBar = ({
               btnType={BtnType.Outlined}
               translate-key='common_cancel_filter'
               onClick={onHandleCancelFilter}
+              color='inherit'
             >
               {t("common_cancel_filter")}
             </Button>
@@ -170,8 +183,10 @@ const CustomSearchFeatureBar = ({
             </Button>
           </Stack>
         </form>
-      </Paper>
-
+      ) : (
+        <></>
+      )}
+      <Divider />
       <Box className={classes.searchWrapper}>
         <Stack direction='row' gap={2}>
           <AutoSearchBar
@@ -201,8 +216,8 @@ const CustomSearchFeatureBar = ({
       {isLoading ? (
         <></>
       ) : (
-        searchValue &&
-        searchValue.length > 0 && (
+        (searchValue && searchValue.length > 0) ||
+        (fields && (
           <Chip
             size='small'
             label={`${numOfResults} results found`}
@@ -215,7 +230,7 @@ const CustomSearchFeatureBar = ({
               color: "white"
             }}
           />
-        )
+        ))
       )}
     </Stack>
   );

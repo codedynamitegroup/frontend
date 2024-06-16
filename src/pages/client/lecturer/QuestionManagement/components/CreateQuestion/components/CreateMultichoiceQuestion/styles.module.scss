@@ -1,6 +1,6 @@
 .root {
   flex-direction: column !important;
-  background-color: var(--gray-2);
+  background-color: white;
   min-height: max-content;
 }
 
@@ -13,7 +13,6 @@
 .container {
   display: flex !important;
   flex-direction: column;
-  background-color: white;
   border-radius: 5px;
   padding-left: 0px !important;
   padding-right: 0px !important;
@@ -29,10 +28,12 @@
 }
 
 .formBody {
+  background-color: white;
   display: flex;
   flex-direction: column;
-  padding: 20px 40px;
+  padding: 20px 7px;
   gap: 15px;
+  border-radius: 12px;
 }
 
 .linkLevel {
