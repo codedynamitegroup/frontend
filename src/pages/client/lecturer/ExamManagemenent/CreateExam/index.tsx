@@ -776,7 +776,7 @@ export default function ExamCreated() {
             </DrawerHeader>
             <Divider />
             <Box className={classes.drawerBody}>
-              {/* <Box className={classes.drawerFieldContainer}>
+              <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='assignment_management_max_score'>
                   {t("assignment_management_max_score")}
                 </TextTitle>
@@ -790,7 +790,7 @@ export default function ExamCreated() {
                   backgroundColor='#D9E2ED'
                   translation-key='exam_management_create_enter_score'
                 />
-              </Box> */}
+              </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle
                   className={classes.drawerTextTitle}
