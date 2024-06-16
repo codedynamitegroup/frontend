@@ -81,6 +81,8 @@ import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
 
 const drawerWidth = 400;
 
@@ -203,20 +205,24 @@ export default function ExamCreated() {
   };
 
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+  const user: User = useSelector(selectCurrentUser);
 
   const handleGetQuestionBankCategories = async ({
     search = "",
     pageNo = 0,
-    pageSize = 99
+    pageSize = 99,
+    organizationId = user.organization.organizationId
   }: {
     search?: string;
     pageNo?: number;
     pageSize?: number;
+    organizationId?: string;
   }) => {
     try {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
           search,
+          organizationId,
           pageNo,
           pageSize
         });
@@ -261,33 +267,36 @@ export default function ExamCreated() {
       {
         field: "name",
         headerName: t("exam_management_create_question_name"),
-        minWidth: 250
+        flex: 0.7,
+        minWidth: 150
         // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
         field: "questionText",
         headerName: t("exam_management_create_question_description"),
         renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
-        minWidth: 500
+        flex: 2,
+        minWidth: 300
       },
       {
         field: "defaultMark",
         headerName: t("assignment_management_max_score"),
-        minWidth: 50,
-        renderCell: (params) => (
-          <InputTextField
-            type='number'
-            value={params.value}
-            onChange={(e) => console.log(e.target.value)}
-            placeholder={t("exam_management_create_enter_score")}
-            translation-key='exam_management_create_enter_score'
-            backgroundColor='white'
-          />
-        )
+        minWidth: 50
+        // renderCell: (params) => (
+        //   <InputTextField
+        //     type='number'
+        //     value={params.value}
+        //     onChange={(e) => console.log(e.target.value)}
+        //     placeholder={t("exam_management_create_enter_score")}
+        //     translation-key='exam_management_create_enter_score'
+        //     backgroundColor='white'
+        //   />
+        // )
       },
       {
         field: "qtypeText",
         headerName: t("exam_management_create_question_type"),
+        flex: 2,
         minWidth: 150
         // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
@@ -295,7 +304,8 @@ export default function ExamCreated() {
         field: "action",
         headerName: t("common_action"),
         type: "actions",
-        minWidth: 200,
+        flex: 2,
+        minWidth: 150,
         getActions: (params) => [
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
           <GridActionsCellItem
@@ -631,18 +641,19 @@ export default function ExamCreated() {
                 >
                   {t("course_lecturer_assignment_create_exam")}
                 </Heading1>
+
                 <InputTextField
                   type='text'
                   title={t("common_exam_name")}
                   value={questionCreate.examName}
                   onChange={(e) => {
-                    // setExamName(e.target.value);
                     dispatch(setExamNameCreate(e.target.value));
                   }}
                   placeholder={t("exam_management_create_enter_exam_name")}
                   backgroundColor='white'
                   translation-key={["common_exam_name", "exam_management_create_enter_exam_name"]}
                 />
+
                 <Grid container spacing={1} columns={12}>
                   <Grid item xs={3}>
                     <TextTitle translation-key='common_exam_description'>
@@ -653,7 +664,6 @@ export default function ExamCreated() {
                     <TextEditor
                       value={questionCreate.examDescription}
                       onChange={(value) => {
-                        // setExamDescription(value);
                         dispatch(setExamDescriptionCreate(value));
                       }}
                     />
@@ -774,7 +784,6 @@ export default function ExamCreated() {
                   type='number'
                   value={questionCreate.maxScore}
                   onChange={(e) => {
-                    // setExamMaximumGrade(parseInt(e.target.value));
                     dispatch(setMaxScoreCreate(parseInt(e.target.value)));
                   }}
                   placeholder={t("exam_management_create_enter_score")}

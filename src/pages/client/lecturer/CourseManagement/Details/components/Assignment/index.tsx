@@ -22,6 +22,7 @@ import { AssignmentService } from "services/courseService/AssignmentService";
 import assignment, { setAssignments } from "reduxes/courseService/assignment";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { clearExamCreate } from "reduxes/coreService/questionCreate";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -96,6 +97,7 @@ const LecturerCourseAssignment = () => {
   };
 
   const onCreateNewExam = (popupState: any) => {
+    dispatch(clearExamCreate());
     navigate(routes.lecturer.exam.create.replace(":courseId", courseId?.toString() ?? ""));
     popupState.close();
   };
