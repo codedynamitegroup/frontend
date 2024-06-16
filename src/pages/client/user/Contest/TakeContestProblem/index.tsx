@@ -26,7 +26,7 @@ import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQues
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import { Resizable } from "re-resizable";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -54,6 +54,10 @@ import Result from "../../DetailProblem/components/Result";
 import ProblemDetailSubmission from "../../DetailProblem/components/Submission";
 import TestCase from "../../DetailProblem/components/TestCase";
 import classes from "./styles.module.scss";
+import { ContestService } from "services/coreService/ContestService";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
+import { setErrorMess } from "reduxes/AppStatus";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
@@ -72,6 +76,25 @@ export default function TakeContestProblem() {
   const [submissionLoading, setSubmisisonLoading] = useState(false);
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
+
+  const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
+
+  const handleGetContestById = useCallback(
+    async (id: string) => {
+      dispatch(setInititalLoading(true));
+      try {
+        const getContestDetailsResponse = await ContestService.getContestById(id);
+        if (getContestDetailsResponse) {
+          setContestDetails(getContestDetailsResponse);
+        }
+        dispatch(setInititalLoading(false));
+      } catch (error: any) {
+        console.log("error", error);
+        dispatch(setInititalLoading(false));
+      }
+    },
+    [dispatch]
+  );
 
   const updateLanguageSourceCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
     const submissinMapWithLangIdKeyAndSourceCodeValue = new Map<UUID, string>();
@@ -246,6 +269,7 @@ export default function TakeContestProblem() {
       currentExecuteData.system_language_id !== undefined
     ) {
       setSubmisisonLoading(true);
+      console.log("contestId ccc", contestId);
       CodeSubmissionService.createCodeSubmission({
         codeQuestionId: problemId,
         languageId: currentExecuteData.system_language_id,
@@ -311,9 +335,23 @@ export default function TakeContestProblem() {
 
   const marginRef = useRef<number>(10);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (contestId) {
+        handleGetContestById(contestId);
+      }
+    };
+    fetchInitialData();
+  }, [contestId, dispatch, handleGetContestById]);
+
+  if (!contestId || !contestDetails) return null;
+  if (contestDetails.isRegistered !== true) {
+    dispatch(setErrorMess(t("contest_not_registered")));
+    navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
+  }
   return (
     <Box className={classes.root}>
-      {/* <Header ref={headerRef} /> */}
       <Box
         className={classes.body}
         style={{
@@ -497,7 +535,9 @@ export default function TakeContestProblem() {
                       sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                     >
                       {codeQuestion?.languages.map((value: ProgrammingLanguageEntity) => (
-                        <MenuItem value={value.id}>{value.name}</MenuItem>
+                        <MenuItem key={value.id} value={value.id}>
+                          {value.name}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>

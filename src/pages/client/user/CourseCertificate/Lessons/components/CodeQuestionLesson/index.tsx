@@ -352,6 +352,8 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
                       <ProblemDetailSubmission
                         submissionLoading={submissionLoading}
                         maxHeight={600}
+                        cerCourseId={courseId}
+                        lesson={lesson}
                       />
                     }
                   />
