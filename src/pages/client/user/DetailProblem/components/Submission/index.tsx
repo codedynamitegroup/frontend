@@ -35,6 +35,7 @@ export default function ProblemDetailSubmission({
   };
   contestInfo?: {
     contestId: string;
+    problemId: string;
   };
 }) {
   const { t } = useTranslation();
@@ -91,6 +92,19 @@ export default function ProblemDetailSubmission({
           })
           .catch((err) => console.log(err))
           .finally(() => setCodeSubmissionLoading(false));
+      } else if (contestInfo !== undefined) {
+        CodeSubmissionService.getCodeSubmissionList(
+          contestInfo.problemId,
+          pageNum,
+          pageSize,
+          contestInfo.contestId,
+          undefined
+        )
+          .then((data: CodeSubmissionPaginationList) => {
+            setCodeSubmissions(data.codeSubmissions);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setCodeSubmissionLoading(false));
       } else {
         CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
           .then((data: CodeSubmissionPaginationList) => {
@@ -101,7 +115,7 @@ export default function ProblemDetailSubmission({
           .finally(() => setCodeSubmissionLoading(false));
       }
     }
-  }, [cerCourseInfo, codeQuestion, submissionLoading]);
+  }, [cerCourseInfo, codeQuestion, contestInfo, submissionLoading]);
 
   const customHeading = t("detail_problem_submission_customHeading", {
     returnObjects: true
@@ -259,6 +273,19 @@ export default function ProblemDetailSubmission({
               })
               .catch((err) => console.log(err))
               .finally(() => setCodeSubmissionLoading(false));
+          } else if (contestInfo !== undefined) {
+            CodeSubmissionService.getCodeSubmissionList(
+              contestInfo.problemId,
+              pageNum,
+              pageSize,
+              contestInfo.contestId,
+              undefined
+            )
+              .then((data: CodeSubmissionPaginationList) => {
+                setCodeSubmissions(data.codeSubmissions);
+              })
+              .catch((err) => console.log(err))
+              .finally(() => setCodeSubmissionLoading(false));
           } else {
             CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
               .then((data: CodeSubmissionPaginationList) => {
@@ -293,7 +320,8 @@ export default function ProblemDetailSubmission({
     cerCourseInfo,
     checkGrading,
     codeQuestion,
-    handleMarkViewedChapterResourceById
+    handleMarkViewedChapterResourceById,
+    contestInfo
   ]);
 
   return (
