@@ -325,39 +325,37 @@ const AdminQuestionBankManagement = () => {
               isFilter={false}
             />
           </Grid>
-          <Grid item xs={12}>
-            <CustomDataGrid
-              loading={questionBankCategoriesState.isLoading}
-              dataList={questionBankCategoriesState.categories.questionBankCategories.map(
-                (item, index) => ({
-                  stt: index + 1,
-                  ...item
-                })
-              )}
-              tableHeader={tableHeading}
-              onSelectData={handleRowClick}
-              dataGridToolBar={dataGridToolbar}
-              page={page}
-              pageSize={rowsPerPage}
-              totalElement={totalElement}
-              onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
-              getRowHeight={() => "auto"}
-              onClickRow={handleRowClick}
-              sx={{
-                "& .MuiDataGrid-cell": {
-                  border: "none"
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f9fb"
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
-                }
-              }}
-              personalSx={true}
-            />
-          </Grid>
+
+          <CustomDataGrid
+            loading={questionBankCategoriesState.isLoading}
+            dataList={questionBankCategoriesState.categories.questionBankCategories.map(
+              (item, index) => ({
+                stt: index + 1,
+                ...item
+              })
+            )}
+            tableHeader={columns}
+            onSelectData={handleRowClick}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={rowsPerPage}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            onClickRow={handleRowClick}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                border: "none"
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#f5f9fb"
+              },
+              "& .MuiDataGrid-toolbarContainer": {
+                backgroundColor: "#f5f9fb"
+              }
+            }}
+            personalSx={true}
+          />
         </Stack>
       </Container>
       <Dialog
