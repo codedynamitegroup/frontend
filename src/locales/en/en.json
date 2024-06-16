@@ -305,11 +305,12 @@
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
   "contest_problems_description": "Add questions to your contest by selecting questions from our public library or create and add your own questions here.",
   "contest_metadata_customization_description": "Fill out this information to customize your contest description page.",
-  "common_thumbnail": "Thumbnail",
+  "contest_thumbnail": "Thumbnail",
   "contest_delete_problem_success": "Delete problem successfully",
   "contest_delete_contest_success": "Delete contest successfully",
   "contest_delete_contest_fail": "Delete contest failed",
   "contest_details_problems_success_rates": "Problems success rates",
+  "contest_not_registered": "You have not registered for this contest yet",
 
   "contest_detail_joined_feature_status": "You have registerd for this contest",
   "contest_detail_joined_happening_status": "You are joining this contest",
@@ -343,6 +344,7 @@
   "contest_import_problem_button": "Import problem from library",
   "contest_create_problem_button": "Create problem",
   "contest_problem_list": "Problem list",
+  "contest_details_view_all_submissions": "View all submissions",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
@@ -627,6 +629,7 @@
   "question_bank_category_header_table": [
     "NO.",
     "Category",
+    "Organization name",
     "Created by",
     "Last updated at",
     "Action"

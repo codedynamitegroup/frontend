@@ -51,6 +51,12 @@ const questionBankCategorySlice = createSlice({
       state.categories.totalItems = action.payload.totalItems;
       state.categories.totalPages = action.payload.totalPages;
     },
+    clearCategories: (state) => {
+      state.categories.questionBankCategories = [];
+      state.categories.currentPage = 0;
+      state.categories.totalItems = 0;
+      state.categories.totalPages = 0;
+    },
     setCategoryDetails: (state, action) => {
       state.categoryDetails = action.payload;
     },
@@ -66,7 +72,13 @@ const questionBankCategorySlice = createSlice({
   }
 });
 
-export const { setLoading, setCategories, setCategoryDetails, setQuestionsBank, setTab } =
-  questionBankCategorySlice.actions;
+export const {
+  setLoading,
+  setCategories,
+  clearCategories,
+  setCategoryDetails,
+  setQuestionsBank,
+  setTab
+} = questionBankCategorySlice.actions;
 
 export default questionBankCategorySlice.reducer;

@@ -49,7 +49,7 @@ import { setLoading as setInititalLoading } from "reduxes/Loading";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
-const OrgAdminQuestionBankManagement = () => {
+const AdminQuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
@@ -118,7 +118,6 @@ const OrgAdminQuestionBankManagement = () => {
         const getQuestionBankCategoryResponse =
           await QuestionBankCategoryService.getQuestionBankCategories({
             isOrgQuestionBank: true,
-            organizationId: user.organization.organizationId,
             search,
             pageNo,
             pageSize
@@ -164,7 +163,6 @@ const OrgAdminQuestionBankManagement = () => {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
-        organizationId: user.organization.organizationId,
         isOrgQuestionBank: true,
         createdBy: user.userId
       });
@@ -500,4 +498,4 @@ const OrgAdminQuestionBankManagement = () => {
   );
 };
 
-export default OrgAdminQuestionBankManagement;
+export default AdminQuestionBankManagement;

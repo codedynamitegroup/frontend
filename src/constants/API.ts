@@ -141,11 +141,13 @@ export const API = {
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id",
-      RECOMMENED: "/code-assessment/code-question/most-practicing-recently"
+      RECOMMENED: "/code-assessment/code-question/most-practicing-recently",
+      ADMIN_CODE_QUESTION: "/code-assessment/code-question/admin-code-question"
     },
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
-      GET_BY_ID: "/code-assessment/code-submission/:id"
+      GET_BY_ID: "/code-assessment/code-submission/:id",
+      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission"
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",

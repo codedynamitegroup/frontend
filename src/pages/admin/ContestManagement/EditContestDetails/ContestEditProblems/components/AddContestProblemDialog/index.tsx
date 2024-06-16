@@ -19,6 +19,18 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+
+interface AddContestProblemDialogQuestionInterface {
+  id: string;
+  questionId: string;
+  no: number;
+  name: string;
+  difficulty: string;
+  isPublic: boolean;
+}
 
 interface AddContestProblemDialogProps extends DialogProps {
   title?: string;
@@ -30,6 +42,8 @@ interface AddContestProblemDialogProps extends DialogProps {
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
   isConfirmLoading?: boolean;
+  currentQuestionList: ContestQuestionEntity[];
+  setCurrentQuestionList: (value: ContestQuestionEntity[]) => void;
 }
 
 enum FilterValue {
@@ -50,6 +64,7 @@ export default function AddContestProblemDialog({
   onHanldeConfirm,
   isConfirmLoading = false,
   isReportExisted,
+  currentQuestionList,
   ...props
 }: AddContestProblemDialogProps) {
   const { t } = useTranslation();
@@ -67,113 +82,9 @@ export default function AddContestProblemDialog({
     }
   ]);
 
-  const [questionList, setQuestionList] = React.useState<any[]>([
-    {
-      id: "1",
-      no: 1,
-      name: "Problem 1",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "2",
-      no: 2,
-      name: "Problem 2",
-      difficulty: "MEDIUM",
-      isPublic: false
-    },
-    {
-      id: "3",
-      no: 3,
-      name: "Problem 3",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "4",
-      no: 4,
-      name: "Problem 4",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "5",
-      no: 5,
-      name: "Problem 5",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "6",
-      no: 6,
-      name: "Problem 6",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "7",
-      no: 7,
-      name: "Problem 7",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "8",
-      no: 8,
-      name: "Problem 8",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "9",
-      no: 9,
-      name: "Problem 9",
-      difficulty: "HARD",
-      isPublic: false
-    },
-    {
-      id: "10",
-      no: 10,
-      name: "Problem 10",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "11",
-      no: 11,
-      name: "Problem 11",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "12",
-      no: 12,
-      name: "Problem 12",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "13",
-      no: 13,
-      name: "Problem 13",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "14",
-      no: 14,
-      name: "Problem 14",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "15",
-      no: 15,
-      name: "Problem 15",
-      difficulty: "HARD",
-      isPublic: false
-    }
-  ]);
+  const [questionList, setQuestionList] = React.useState<
+    AddContestProblemDialogQuestionInterface[]
+  >([]);
 
   const handleApplyFilter = React.useCallback(() => {}, []);
 
@@ -305,6 +216,44 @@ export default function AddContestProblemDialog({
   };
 
   const handleSearchChange = React.useCallback((value: string) => {}, []);
+
+  const handleGetAdminCodeQuestions = React.useCallback(
+    async ({
+      search,
+      isPublic,
+      difficulty,
+      pageNo = 0,
+      pageSize = 5
+    }: {
+      search?: string;
+      isPublic?: boolean;
+      difficulty?: QuestionDifficultyEnum;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      try {
+        const getAdminCodeQuestionsResponse = await CodeQuestionService.getAdminCodeQuestions({
+          search,
+          isPublic,
+          difficulty,
+          pageNo,
+          pageSize
+        });
+        console.log("getAdminCodeQuestionsResponse", getAdminCodeQuestionsResponse);
+      } catch (error: any) {
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          // dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+        // dispatch(setLoading(false));
+      }
+    },
+    []
+  );
+
+  React.useEffect(() => {
+    handleGetAdminCodeQuestions({});
+  }, [handleGetAdminCodeQuestions]);
 
   return (
     <CustomDialog

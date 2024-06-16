@@ -11,6 +11,7 @@ import images from "config/images";
 import Header from "components/Header";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 const drawerWidth = 300;
 
@@ -73,6 +74,12 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
         </Box>
       ),
       link: routes.admin.certificate.root
+    },
+    {
+      name: t("question_bank_management"),
+      "translation-key": "question_bank_management",
+      icon: <AccountBalanceIcon className={classes.itemIcon} />,
+      link: routes.admin.question_bank.root
     }
   ];
   // const [open, setOpen] = React.useState(true);

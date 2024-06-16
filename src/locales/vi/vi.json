@@ -217,10 +217,10 @@
   "forget_password_description": "Nhập email đã đăng ký, chúng tôi sẽ gửi yêu cầu đổi mật khẩu đến mail này",
 
   "common_practice": "Luyện tập",
-  "common_question_bank": "ngân hàng câu hỏi",
+  "common_question_bank": "Ngân hàng câu hỏi",
   "common_general": "chung",
-  "common_personal": "cá nhân",
-  "common_add_new": "thêm mới",
+  "common_personal": "Cá nhân",
+  "common_add_new": "Thêm mới",
   "common_cannot_be_blank": "không được để trống",
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
@@ -313,6 +313,7 @@
   "contest_delete_contest_success": "Xoá cuộc thi thành công",
   "contest_delete_contest_fail": "Xoá cuộc thi thất bại",
   "contest_details_problems_success_rates": "Tỉ lệ thành công của bài toán",
+  "contest_not_registered": "Bạn chưa đăng ký tham gia cuộc thi này",
 
   "contest_detail_joined_feature_status": "Bạn đã đăng ký tham gia cuộc thi này",
   "contest_detail_joined_happening_status": "Bạn đang tham gia cuộc thi này",
@@ -344,6 +345,7 @@
   "contest_import_problem_button": "Thêm bài toán từ thư viện",
   "contest_create_problem_button": "Tạo bài toán",
   "contest_problem_list": "Danh sách bài toán",
+  "contest_details_view_all_submissions": "Xem tất cả bài nộp",
 
   "certificate_title": "Khóa học chứng chỉ",
   "certificate_description": "Bạn muốn rèn luyện khả năng code của bạn ? Hãy thử các khóa học sau",
@@ -621,6 +623,7 @@
   "question_bank_category_header_table": [
     "STT",
     "Tên danh mục",
+    "Tên tổ chức",
     "Ngày tạo bởi",
     "Lần chỉnh sửa cuối bởi",
     "Tác vụ"
