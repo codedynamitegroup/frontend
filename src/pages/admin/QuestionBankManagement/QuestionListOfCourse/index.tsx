@@ -287,7 +287,6 @@ const QuestionListOfCourse = () => {
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     console.log(params);
-    // navigate(`${params.row.id}`);
   };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
@@ -306,7 +305,7 @@ const QuestionListOfCourse = () => {
   const handleCreateQuestionAI = () => {
     navigate(`ai/create`);
   };
-
+ const dataGridToolbar = { enableToolbar: true };
   useEffect(() => {
     if (categoryId) {
       handleGetCategory(categoryId);
@@ -364,7 +363,6 @@ const QuestionListOfCourse = () => {
         fullWidth
       />
 
-      {/* <TabPanel value='1' sx={{ padding: 0 }}> */}
       <Box className={classes.tabWrapper}>
         <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
           <span
@@ -389,11 +387,6 @@ const QuestionListOfCourse = () => {
             {t("question_bank_create_category_info")}: {categoryState.categoryDetails?.description}
           </Heading5>
           <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-            {/* <Button btnType={BtnType.Primary}>
-                <ParagraphBody paddingX={3} translation-key='common_data_export'>
-                  {t("common_data_export")}
-                </ParagraphBody>
-              </Button> */}
             <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
               <ParagraphBody paddingX={3} translation-key='common_add_question'>
                 {" "}
@@ -448,6 +441,7 @@ const QuestionListOfCourse = () => {
             }))}
             tableHeader={columns}
             onSelectData={rowSelectionHandler}
+            dataGridToolBar={dataGridToolbar}
             page={page}
             pageSize={rowsPerPage}
             totalElement={questionCategoryState.totalItems}
@@ -457,99 +451,6 @@ const QuestionListOfCourse = () => {
           />
         </Stack>
       </Container>
-      {/* </TabPanel>
-      <TabPanel value='2' sx={{ padding: 0 }}>
-        <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span
-              onClick={() => navigate(routes.lecturer.question_bank.path)}
-              translation-key='common_question_bank'
-            >
-              {i18next.format(t("common_question_bank"), "firstUppercase")}
-            </span>{" "}
-            {"> "}
-            <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
-          </ParagraphBody>
-        </Box>
-        <Container>
-          <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
-            <Heading5
-              fontStyle={"italic"}
-              fontWeight={"400"}
-              colorname='--gray-50'
-              translation-key='question_bank_create_category_info'
-            >
-              {t("question_bank_create_category_info")}:{" "}
-              {categoryState.categoryDetails?.description}
-            </Heading5>
-            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              <Button btnType={BtnType.Primary}>
-                <ParagraphBody paddingX={3} translation-key='common_data_export'>
-                  {t("common_data_export")}
-                </ParagraphBody>
-              </Button>
-              <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
-                <ParagraphBody paddingX={3} translation-key='common_add_question'>
-                  {t("common_add_question")}
-                </ParagraphBody>
-              </Button>
-              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                <ParagraphBody
-                  paddingX={3}
-                  translation-key='question_bank_category_question_list_create_by_AI'
-                >
-                  {t("question_bank_category_question_list_create_by_AI")}
-                </ParagraphBody>
-              </Button>
-            </Stack>
-
-            <Stack direction='row' justifyContent='space-between'>
-              <SearchBar
-                onSearchClick={() => null}
-                translation-key='question_bank_category_question_list_enter_question_name'
-                placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
-              />
-              <Button btnType={BtnType.Primary} onClick={() => setOpenAccessDialog(true)}>
-                <ParagraphBody paddingX={3} translation-key='question_bank_access_right'>
-                  {t("question_bank_access_right")}
-                </ParagraphBody>
-              </Button>
-            </Stack>
-            <CustomDataGrid
-              sx={{
-                "& .MuiDataGrid-cell": {
-                  border: "none"
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f9fb"
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
-                }
-              }}
-              dataList={questionCategoryState.questions.map((item, index) => ({
-                stt: index + 1,
-                ...item
-              }))}
-              tableHeader={columns}
-              onSelectData={rowSelectionHandler}
-              pageSize={rowsPerPage}
-              page={page}
-              totalElement={questionCategoryState.totalItems}
-              onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={false}
-            />
-          </Stack>
-        </Container>
-        <AccessedUserListDialog
-          aria-labelledby='assess-list-dialog'
-          open={openAccessDialog}
-          setOpenAccessDialog={setOpenAccessDialog}
-          maxWidth='sm'
-          fullWidth
-        />
-      </TabPanel> */}
     </div>
   );
 };
