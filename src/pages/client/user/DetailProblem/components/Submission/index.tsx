@@ -79,12 +79,13 @@ export default function ProblemDetailSubmission({
     if (codeQuestion !== null && codeQuestion.id !== undefined) {
       setCodeSubmissionLoading(true);
       if (cerCourseInfo !== undefined) {
-        CodeSubmissionService.getAdminCodeSubmissionList({
-          codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
-          cerCourseId: cerCourseInfo.cerCourseId,
-          pageNo: pageNum,
-          pageSize
-        })
+        CodeSubmissionService.getCodeSubmissionList(
+          cerCourseInfo.lesson?.question?.codeQuestionId || "",
+          pageNum,
+          pageSize,
+          undefined,
+          cerCourseInfo.cerCourseId
+        )
           .then((data: CodeSubmissionPaginationList) => {
             setCodeSubmissions(data.codeSubmissions);
           })
@@ -246,12 +247,13 @@ export default function ProblemDetailSubmission({
       const intervalId = window.setInterval(function () {
         if (codeQuestion !== null && codeQuestion.id !== undefined) {
           if (cerCourseInfo !== undefined) {
-            CodeSubmissionService.getAdminCodeSubmissionList({
-              codeQuestionId: cerCourseInfo.lesson?.question?.codeQuestionId || "",
-              cerCourseId: cerCourseInfo.cerCourseId,
-              pageNo: pageNum,
-              pageSize
-            })
+            CodeSubmissionService.getCodeSubmissionList(
+              cerCourseInfo.lesson?.question?.codeQuestionId || "",
+              pageNum,
+              pageSize,
+              undefined,
+              cerCourseInfo.cerCourseId
+            )
               .then((data: CodeSubmissionPaginationList) => {
                 setCodeSubmissions(data.codeSubmissions);
               })

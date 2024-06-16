@@ -501,7 +501,14 @@ export default function TakeContestProblem() {
                   <Route path={"solution"} element={<ProblemDetailSolution />} />
                   <Route
                     path={"submission"}
-                    element={<ProblemDetailSubmission submissionLoading={submissionLoading} />}
+                    element={
+                      <ProblemDetailSubmission
+                        submissionLoading={submissionLoading}
+                        contestInfo={{
+                          contestId: contestId
+                        }}
+                      />
+                    }
                   />
                 </Routes>
               </Box>
