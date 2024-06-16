@@ -1,32 +1,36 @@
-import classes from "./styles.module.scss";
-import Box from "@mui/material/Box";
-import ParagraphBody from "components/text/ParagraphBody";
-import { useEffect, useRef, useState, lazy } from "react";
-import { useNavigate } from "react-router";
-import UserTableTemplate from "components/common/table/UserTableTemplate";
-import { useTranslation } from "react-i18next";
-import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
-import cloneDeep from "lodash/cloneDeep";
-import { useAppDispatch, useAppSelector } from "hooks";
-import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
-import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
-import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
-import { useIsMounted } from "utils/isMounted";
-import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
-import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import { CircularProgress, Stack } from "@mui/material";
-import { CodeSubmissionEntity } from "models/codeAssessmentService/entity/CodeSubmissionEntity";
-import { clearInterval } from "timers";
+import Box from "@mui/material/Box";
+import UserTableTemplate from "components/common/table/UserTableTemplate";
+import ParagraphBody from "components/text/ParagraphBody";
+import { useAppDispatch, useAppSelector } from "hooks";
+import cloneDeep from "lodash/cloneDeep";
+import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
+import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
+import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
+import { ChapterResourceEntity } from "models/coreService/entity/ChapterResourceEntity";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
+import { lazy, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import { setLoading } from "reduxes/Loading";
+import { markChapterResourceAsViewed } from "reduxes/coreService/Chapter";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { useIsMounted } from "utils/isMounted";
+import { kiloByteToMegaByte, roundedNumber } from "utils/number";
+import classes from "./styles.module.scss";
 
 const DetailSolution = lazy(() => import("./components/DetailSubmission"));
 
 export default function ProblemDetailSubmission({
   submissionLoading,
-  maxHeight
+  maxHeight,
+  cerCourseId,
+  lesson
 }: {
   submissionLoading: boolean;
   maxHeight?: number;
+  cerCourseId?: string;
+  lesson?: ChapterResourceEntity | null;
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -51,18 +55,42 @@ export default function ProblemDetailSubmission({
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
   const isMounted = useIsMounted();
 
+  const handleMarkViewedChapterResourceById = useCallback(async () => {
+    if (lesson && lesson.resourceType === ResourceTypeEnum.CODE && !lesson.isCompleted) {
+      try {
+        dispatch(markChapterResourceAsViewed(lesson.chapterResourceId));
+      } catch (error: any) {
+        //do nothing
+      }
+    }
+  }, [lesson, dispatch]);
+
   useEffect(() => {
     if (codeQuestion !== null && codeQuestion.id !== undefined) {
       setCodeSubmissionLoading(true);
-      CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
-        .then((data: CodeSubmissionPaginationList) => {
-          // console.log("data", data);
-          setCodeSubmissions(data.codeSubmissions);
+      if (lesson !== undefined) {
+        CodeSubmissionService.getAdminCodeSubmissionList({
+          codeQuestionId: lesson?.question?.codeQuestionId || "",
+          cerCourseId,
+          pageNo: pageNum,
+          pageSize
         })
-        .catch((err) => console.log(err))
-        .finally(() => setCodeSubmissionLoading(false));
+          .then((data: CodeSubmissionPaginationList) => {
+            setCodeSubmissions(data.codeSubmissions);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setCodeSubmissionLoading(false));
+      } else {
+        CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
+          .then((data: CodeSubmissionPaginationList) => {
+            // console.log("data", data);
+            setCodeSubmissions(data.codeSubmissions);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setCodeSubmissionLoading(false));
+      }
     }
-  }, [submissionLoading]);
+  }, [cerCourseId, codeQuestion, lesson, submissionLoading]);
 
   const customHeading = t("detail_problem_submission_customHeading", {
     returnObjects: true
@@ -193,32 +221,65 @@ export default function ProblemDetailSubmission({
       .catch((err) => console.error(err))
       .finally(() => dispatch(setLoading(false)));
   };
-  const checkGrading = (): boolean => {
+  const checkGrading = useCallback((): boolean => {
     const data = codeSubmissions;
-    console.log(data);
+    // console.log(data);
     if (data === undefined || data.length < 1) return false;
     for (let i = 0; i < data.length; ++i) if (data[i].gradingStatus === "GRADING") return true;
     return false;
-  };
+  }, [codeSubmissions]);
+
   useEffect(() => {
     const isGrading = checkGrading();
     if (isGrading) {
-      console.log("polling");
+      // console.log("polling");
       const intervalId = window.setInterval(function () {
         if (codeQuestion !== null && codeQuestion.id !== undefined) {
-          CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
-            .then((data: CodeSubmissionPaginationList) => {
-              setCodeSubmissions(data.codeSubmissions);
-              window.clearInterval(intervalId);
+          if (lesson !== undefined) {
+            CodeSubmissionService.getAdminCodeSubmissionList({
+              codeQuestionId: lesson?.question?.codeQuestionId || "",
+              cerCourseId,
+              pageNo: pageNum,
+              pageSize
             })
-            .catch((err) => console.log(err));
+              .then((data: CodeSubmissionPaginationList) => {
+                setCodeSubmissions(data.codeSubmissions);
+              })
+              .catch((err) => console.log(err))
+              .finally(() => setCodeSubmissionLoading(false));
+          } else {
+            CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
+              .then((data: CodeSubmissionPaginationList) => {
+                setCodeSubmissions(data.codeSubmissions);
+                window.clearInterval(intervalId);
+              })
+              .catch((err) => console.log(err));
+          }
         }
       }, 3000); // Poll every 3 seconds
 
       return () => window.clearInterval(intervalId);
     } // Cleanup interval on unmount
-    else console.log("not polling");
-  }, [codeSubmissions]);
+    else {
+      // console.log("not polling");
+      if (lesson?.isCompleted !== true && codeSubmissions !== undefined) {
+        const codeSubmissionIndex = codeSubmissions.findIndex(
+          (value: CodeSubmissionDetailEntity) =>
+            value.gradingStatus === "GRADED" && value.description === "Accepted"
+        );
+        if (codeSubmissionIndex !== -1) {
+          handleMarkViewedChapterResourceById();
+        }
+      }
+    }
+  }, [
+    codeSubmissions,
+    cerCourseId,
+    lesson,
+    checkGrading,
+    codeQuestion,
+    handleMarkViewedChapterResourceById
+  ]);
 
   return (
     <Box className={classes.container}>

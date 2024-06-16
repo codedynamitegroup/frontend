@@ -112,7 +112,7 @@ function UserTableTemplate({
                     className={`${classes["col-table-body"]}                           
 										`}
                   >
-                    <ParagraphBody>{row[column]}</ParagraphBody>
+                    {row[column]}
                   </TableCell>
                 ))}
 
