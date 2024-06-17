@@ -4,10 +4,10 @@ import classes from "./styles.module.scss";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextEditor from "components/editor/TextEditor";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
@@ -34,6 +34,7 @@ import "dayjs/locale/vi";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { Link as RouterLink } from "react-router-dom";
 
 export enum ResourceType {
   assignment = "assignment",
@@ -67,21 +68,6 @@ const AssignmentResource = ({
 
   const navigate = useNavigate();
 
-  const onDetailClick = () => {
-    if (type === ResourceType.assignment)
-      navigate(
-        routes.student.assignment.detail
-          .replace(":courseId", courseId ?? "")
-          .replace(":assignmentId", examId ?? "")
-      );
-    else
-      navigate(
-        routes.student.exam.detail
-          .replace(":courseId", courseId ?? "")
-          .replace(":examId", examId ?? "")
-      );
-  };
-
   return (
     <Box className={classes.cardWrapper}>
       <Grid container alignItems='center'>
@@ -109,14 +95,15 @@ const AssignmentResource = ({
             {type === ResourceType.assignment ? <AssignmentIcon /> : <AccessTimeFilledIcon />}
           </Avatar>
           <Link
-            href={
+            component={RouterLink}
+            to={
               type === ResourceType.assignment
                 ? routes.student.assignment.detail
-                    .replace(":courseId", courseId ?? "")
-                    .replace(":assignmentId", examId ?? "")
+                    .replace(":courseId", courseId || "")
+                    .replace(":assignmentId", examId || "")
                 : routes.student.exam.detail
-                    .replace(":courseId", courseId ?? "")
-                    .replace(":examId", examId ?? "")
+                    .replace(":courseId", courseId || "")
+                    .replace(":examId", examId || "")
             }
             underline='none'
             style={{ marginLeft: "12px" }}

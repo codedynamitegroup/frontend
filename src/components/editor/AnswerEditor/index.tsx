@@ -1,4 +1,4 @@
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import Button from "@mui/joy/Button";
 import TextEditor from "../TextEditor";
 import AnswerPoint from "utils/AnswerPoint";
@@ -11,6 +11,8 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import DeleteIcon from "@mui/icons-material/Delete";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import ParagraphBody from "components/text/ParagraphBody";
 
 interface AnswerEditorProps {
   answerNumber: number;
@@ -37,7 +39,13 @@ const AnswerEditor = (props: AnswerEditorProps) => {
       paddingBottom={4}
       paddingX={2}
       spacing={props.qtype === qtype.multiple_choice.code ? 3 : 1}
-      sx={{ borderRadius: "12px", borderColor: "#E0E0E0", borderStyle: "solid" }}
+      sx={{
+        borderRadius: "12px",
+        borderColor: "#E0E0E0",
+        borderStyle: "solid",
+        width: "100%",
+        marginLeft: "3px"
+      }}
       container
     >
       <Grid item xs={12} md={12}>
@@ -48,12 +56,12 @@ const AnswerEditor = (props: AnswerEditorProps) => {
           alignContent={"center"}
           display={"flex"}
         >
-          <Typography
+          <ParagraphBody
             translation-key='question_management_option'
             className={classes.criteriaOrderText}
           >
             {t("common_answer")} {props.answerNumber + 1}
-          </Typography>
+          </ParagraphBody>
           <Button
             color='danger'
             variant='soft'
@@ -68,12 +76,15 @@ const AnswerEditor = (props: AnswerEditorProps) => {
       <Grid item xs={12} md={12}>
         {props.qtype === qtype.multiple_choice.code && (
           <>
-            <Typography
-              translation-key='question_management_option'
-              className={classes.generalDescription}
-            >
-              {t("question_management_option")}
-            </Typography>
+            <TitleWithInfoTip
+              title={t("question_management_option")}
+              fontSize='12px'
+              color='var(--gray-60)'
+              gutterBottom
+              fontWeight='600'
+              titleRequired
+            />
+
             <Controller
               control={control}
               name={`answers.${index}.answer`}
@@ -103,6 +114,7 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                   name={`answers.${index}.answer`}
                   render={({ field }) => (
                     <InputTextFieldColumn
+                      useDefaultTitleStyle
                       title={`${t("common_content")}`}
                       titleRequired
                       size='small'
@@ -114,12 +126,14 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                 />
               </Grid>
               <Grid item xs={6} md={6}>
-                <Typography
-                  translation-key='question_management_percentage'
-                  className={classes.generalDescription}
-                >
-                  {t("question_management_percentage")}
-                </Typography>
+                <TitleWithInfoTip
+                  title={t("question_management_percentage")}
+                  fontSize='12px'
+                  color='var(--gray-60)'
+                  gutterBottom
+                  fontWeight='600'
+                />
+
                 <Controller
                   control={control}
                   name={`answers.${index}.fraction`}
@@ -167,12 +181,13 @@ const AnswerEditor = (props: AnswerEditorProps) => {
           <>
             <Grid container>
               <Grid item xs={12}>
-                <Typography
-                  translation-key='question_management_percentage'
-                  className={classes.generalDescription}
-                >
-                  {t("question_management_percentage")}
-                </Typography>
+                <TitleWithInfoTip
+                  title={t("question_management_percentage")}
+                  fontSize='12px'
+                  color='var(--gray-60)'
+                  gutterBottom
+                  fontWeight='600'
+                />
               </Grid>
               <Grid item xs={12}>
                 <Controller
@@ -211,10 +226,15 @@ const AnswerEditor = (props: AnswerEditorProps) => {
         </>
       )}
       <Grid item xs={12} md={12} translation-key='question_management_general_comment'>
-        <Typography className={classes.generalDescription}>
-          {t("question_management_general_comment")}{" "}
-          <span className={classes.errorTextStar}>*</span>
-        </Typography>
+        <TitleWithInfoTip
+          title={t("question_management_general_comment")}
+          fontSize='12px'
+          color='var(--gray-60)'
+          gutterBottom
+          fontWeight='600'
+          titleRequired
+        />
+
         <Controller
           control={control}
           name={`answers.${index}.feedback`}

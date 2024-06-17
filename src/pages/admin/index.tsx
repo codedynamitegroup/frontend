@@ -14,6 +14,7 @@ import Footer from "components/Footer";
 import UserManagement from "./UserManagement/UserManagement";
 import CreateUser from "./UserManagement/CreateUser";
 import EditUserDetails from "./UserManagement/EditUserDetails";
+import CertificateCourseManagement from "./CertificateCourseManagement/CertificateCourseManagement";
 import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse";
 import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
 import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
@@ -22,14 +23,19 @@ import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/co
 import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 import qtype from "utils/constant/Qtype";
 import AdminQuestionBankManagement from "./QuestionBankManagement";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "reduxes/SidebarStatus";
+import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
 
 type Props = {};
 
 const SystemAdminHomepage = (props: Props) => {
   const [open, setOpen] = React.useState(true);
+  const dispatch = useDispatch();
 
   const toggleDrawer = () => {
     setOpen((pre) => !pre);
+    dispatch(toggleSidebar());
   };
 
   return (
@@ -49,6 +55,7 @@ const SystemAdminHomepage = (props: Props) => {
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/create"} element={<CreateUser />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
+            <Route path={"/certificate-course"} element={<CertificateCourseManagement />} />
 
             <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
             <Route
@@ -76,6 +83,7 @@ const SystemAdminHomepage = (props: Props) => {
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
             />
+            <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
           </Routes>
         </Box>
         {/* </Box> */}

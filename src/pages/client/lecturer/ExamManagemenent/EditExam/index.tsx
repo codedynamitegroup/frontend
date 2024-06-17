@@ -68,6 +68,7 @@ import {
   setMaxAttemptCreate,
   setMaxScoreCreate,
   setOverdueHandlingCreate,
+  setQuestionCreate,
   setQuestionCreateFromBank,
   setTimeCloseCreate,
   setTimeLimitCreate,
@@ -243,11 +244,30 @@ export default function ExamEdit() {
     }
   };
 
+  const handleGetExamQuestionById = async (id: string) => {
+    try {
+      const response = await ExamService.getExamQuestionById(id, null);
+      dispatch(setQuestionCreateFromBank(response.questions));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchInitialData = async () => {
-      await handleGetExamById(examId ?? "");
-    };
-    fetchInitialData();
+    ExamService.getExamById(examId ?? "").then((result) => {
+      dispatch(setExamNameCreate(result.name));
+      dispatch(setExamDescriptionCreate(result.intro));
+      dispatch(setMaxScoreCreate(result.maxScores));
+      dispatch(setTimeOpenCreate(result.timeOpen));
+      dispatch(setTimeCloseCreate(result.timeClose));
+      dispatch(setTimeLimitCreate(result.timeLimit));
+      dispatch(setMaxAttemptCreate(result.maxAttempts));
+      dispatch(setOverdueHandlingCreate(result.overdueHanding));
+    });
+
+    ExamService.getExamQuestionById(examId ?? "", null).then((result) => {
+      dispatch(setQuestionCreateFromBank(result.questions));
+    });
   }, []);
 
   const handleGetQuestionBankCategories = async ({
@@ -298,33 +318,36 @@ export default function ExamEdit() {
       {
         field: "name",
         headerName: t("exam_management_create_question_name"),
-        minWidth: 250
+        flex: 0.7,
+        minWidth: 150
         // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
         field: "questionText",
         headerName: t("exam_management_create_question_description"),
         renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
-        minWidth: 500
+        flex: 2,
+        minWidth: 300
       },
       {
         field: "defaultMark",
         headerName: t("assignment_management_max_score"),
-        minWidth: 50,
-        renderCell: (params) => (
-          <InputTextField
-            type='number'
-            value={params.value}
-            onChange={(e) => console.log(e.target.value)}
-            placeholder={t("exam_management_create_enter_score")}
-            translation-key='exam_management_create_enter_score'
-            backgroundColor='white'
-          />
-        )
+        minWidth: 50
+        // renderCell: (params) => (
+        //   <InputTextField
+        //     type='number'
+        //     value={params.value}
+        //     onChange={(e) => console.log(e.target.value)}
+        //     placeholder={t("exam_management_create_enter_score")}
+        //     translation-key='exam_management_create_enter_score'
+        //     backgroundColor='white'
+        //   />
+        // )
       },
       {
         field: "qtypeText",
         headerName: t("exam_management_create_question_type"),
+        flex: 2,
         minWidth: 150
         // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
@@ -332,7 +355,8 @@ export default function ExamEdit() {
         field: "action",
         headerName: t("common_action"),
         type: "actions",
-        minWidth: 200,
+        flex: 2,
+        minWidth: 150,
         getActions: (params) => [
           <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
           <GridActionsCellItem
@@ -859,7 +883,6 @@ export default function ExamEdit() {
                       type='number'
                       value={questionCreate.timeLimit}
                       onChange={(e) => {
-                        // setExamTimeLimitNumber(parseInt(e.target.value));
                         dispatch(setTimeLimitCreate(parseInt(e.target.value)));
                       }}
                       placeholder={t("common_enter_quan")}
@@ -938,7 +961,8 @@ export default function ExamEdit() {
                   }}
                   items={[
                     {
-                      value: OVERDUE_HANDLING.AUTOSUBMIT,
+                      // value: OVERDUE_HANDLING.AUTOSUBMIT,
+                      value: "AUTOSUBMIT",
                       label: t("exam_management_create_when_time_end_auto")
                     },
                     // {
@@ -946,7 +970,8 @@ export default function ExamEdit() {
                     //   label: t("exam_management_create_when_time_end_spare")
                     // },
                     {
-                      value: OVERDUE_HANDLING.AUTOABANDON,
+                      // value: OVERDUE_HANDLING.AUTOABANDON,
+                      value: "AUTOABANDON",
                       label: t("exam_management_create_when_time_end_delete")
                     }
                   ]}

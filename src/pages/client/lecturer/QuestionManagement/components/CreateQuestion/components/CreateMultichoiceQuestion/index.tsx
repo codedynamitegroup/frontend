@@ -1,13 +1,4 @@
-import {
-  Box,
-  Collapse,
-  Container,
-  Divider,
-  Grid,
-  ListItemButton,
-  Stack,
-  Typography
-} from "@mui/material";
+import { Box, Collapse, Container, Divider, Grid, ListItemButton, Stack } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import Heading2 from "components/text/Heading2";
@@ -44,6 +35,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import { CourseService } from "services/courseService/CourseService";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
+import { Card } from "@mui/joy";
 
 interface Props {
   qtype: String;
@@ -77,6 +74,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
   const [submitCount, setSubmitCount] = useState(0);
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const navigate = useNavigate();
 
@@ -85,16 +83,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
     ref: headerRef
   });
   if (props.insideCrumb) headerHeight = 0;
-  // const [initialized, setInitialized] = useState(true);
-  // let outletContext: any = useOutletContext();
-  // let outletTab = outletContext?.value;
-  // useEffect(() => {
-  //   if (initialized) {
-  //     setInitialized(false);
-  //   } else {
-  //     navigate("/lecturer/question-bank-management");
-  //   }
-  // }, [outletTab]);
 
   const urlParams = useParams();
 
@@ -257,7 +245,22 @@ const CreateMultichoiceQuestion = (props: Props) => {
       console.log(error);
     }
   };
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId);
+    };
+
+    fetchData();
+  }, [courseId]);
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
@@ -309,6 +312,35 @@ const CreateMultichoiceQuestion = (props: Props) => {
     { value: "1", label: t("question_management_show_num_correct") },
     { value: "0", label: t("question_management_no_show_num_correct") }
   ];
+  const breadCrumbData = isQuestionBank
+    ? [
+        {
+          navLink: routes.lecturer.question_bank.path,
+          label: i18next.format(t("common_question_bank"), "firstUppercase")
+        },
+        {
+          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+          label: categoryName
+        }
+      ]
+    : [
+        {
+          navLink: routes.lecturer.course.management,
+          label: t("common_course_management")
+        },
+        {
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+          label: courseData?.name
+        },
+        {
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+          label: t("common_type_assignment")
+        },
+        {
+          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+          label: t("course_lecturer_assignment_create_exam")
+        }
+      ];
 
   return (
     <>
@@ -327,78 +359,52 @@ const CreateMultichoiceQuestion = (props: Props) => {
         <Header ref={headerRef} />
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
-            <Box className={classes.tabWrapper}>
-              {isQuestionBank ? (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    onClick={() => navigate(routes.lecturer.question_bank.path)}
-                    translation-key='common_question_bank'
-                  >
-                    {i18next.format(t("common_question_bank"), "firstUppercase")}
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
-                    }
-                  >
-                    {categoryName}
-                  </span>{" "}
-                  {"> "}
-                  <span>Tạo câu hỏi</span>
-                </ParagraphBody>
-              ) : (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    translation-key='common_course_management'
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                  >
-                    {t("common_course_management")}
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(routes.lecturer.course.information.replace(":courseId", "1"))
-                    }
-                  >
-                    CS202 - Nhập môn lập trình
-                  </span>{" "}
-                  {"> "}
-                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                    Xem bài tập
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() => navigate(routes.lecturer.exam.create)}
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_create_exam")}
-                  </span>{" "}
-                  {"> "}
-                  <span translation-key='question_management_create_question'>
-                    {t("question_management_create_question")}
-                  </span>
-                </ParagraphBody>
-              )}
-            </Box>
-            <Box className={classes.formBody}>
-              <Typography
-                className={classes.pageTitle}
+            <CustomBreadCrumb
+              breadCrumbData={breadCrumbData}
+              lastBreadCrumbLabel={t("create_question_multiple_choice")}
+            />
+
+            <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-start'>
+              <Box
+                sx={{
+                  borderRadius: "1000px",
+                  backgroundColor: "#FFE0B2",
+                  width: "40px",
+                  height: "40px"
+                }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <FormatListBulletedIcon
+                  sx={{
+                    color: "#FB8C00"
+                  }}
+                />
+              </Box>
+              <Heading2
                 translation-key={["common_add", "common_question_type_with_question_multichoice"]}
               >
-                {t("common_add")}{" "}
-                {t("common_question_type_with_question_multichoice").toLocaleLowerCase()}
-              </Typography>
+                {t("common_add").toUpperCase()}{" "}
+                {t("common_question_type_with_question_multichoice").toUpperCase()}
+              </Heading2>
+            </Stack>
 
+            <Box className={classes.formBody}>
               <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Card
+                    variant='soft'
+                    color='primary'
+                    sx={{
+                      padding: "10px"
+                    }}
+                  >
+                    <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                      {i18next.t("common_general").toUpperCase()}
+                    </ParagraphBody>
+                  </Card>
+                </Grid>
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
                     {/* Question name */}
@@ -409,6 +415,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         name='questionName'
                         render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            useDefaultTitleStyle
                             error={Boolean(errors?.questionName)}
                             errorMessage={errors.questionName?.message}
                             title={`${t("exam_management_create_question_name")}`}
@@ -431,6 +438,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         name='defaultScore'
                         render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            useDefaultTitleStyle
                             inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
@@ -459,6 +467,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         translation-key='exam_management_create_question_description'
                         title={`${t("exam_management_create_question_description")} `}
                         titleRequired
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -501,6 +513,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         translation-key='question_management_general_comment'
                         title={`${t("question_management_general_comment")} `}
                         optional
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -536,7 +552,19 @@ const CreateMultichoiceQuestion = (props: Props) => {
                     </Grid>
                   </Grid>
                 </Grid>
-
+                <Grid item xs={12}>
+                  <Card
+                    variant='soft'
+                    color='primary'
+                    sx={{
+                      padding: "10px"
+                    }}
+                  >
+                    <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                      {i18next.t("common_detail").toUpperCase()}
+                    </ParagraphBody>
+                  </Card>
+                </Grid>
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
@@ -544,6 +572,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         optional
                         translation-key='question_multiple_choice_correct_feedback'
                         title={t("question_multiple_choice_correct_feedback")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -582,6 +614,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         optional
                         translation-key='question_multiple_choice_incorrect_feedback'
                         title={t("question_multiple_choice_incorrect_feedback")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -621,7 +657,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_multiple_choice_numbering")} />
+                      <TitleWithInfoTip
+                        title={t("question_multiple_choice_numbering")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='numbering'
                         control={control}
@@ -632,7 +674,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_management_scramble")} />
+                      <TitleWithInfoTip
+                        title={t("question_management_scramble")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='shuffleAnswer'
                         control={control}
@@ -649,7 +697,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_management_one_or_many")} />
+                      <TitleWithInfoTip
+                        title={t("question_management_one_or_many")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='single'
                         control={control}
@@ -660,7 +714,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_multiple_choice_show_instructions")} />
+                      <TitleWithInfoTip
+                        title={t("question_multiple_choice_show_instructions")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='showInstructions'
                         control={control}
@@ -679,7 +739,13 @@ const CreateMultichoiceQuestion = (props: Props) => {
                     <Grid item xs={12} md={6} />
 
                     <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip title={t("question_multiple_show_num_correct")} />
+                      <TitleWithInfoTip
+                        title={t("question_multiple_show_num_correct")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Controller
                         name='showNumCorrect'
                         control={control}
@@ -700,31 +766,40 @@ const CreateMultichoiceQuestion = (props: Props) => {
               </Grid>
 
               <div>
-                <ListItemButton onClick={() => setAnswerOpen(!answerOpen)} sx={{ paddingX: 0 }}>
+                <ListItemButton
+                  onClick={() => setAnswerOpen(!answerOpen)}
+                  sx={{ paddingX: 0, marginBottom: "30px" }}
+                >
                   <Grid container alignItems={"center"} columns={12}>
-                    <Grid item xs={12} md={3}>
-                      <Heading2
-                        sx={{ display: "inline" }}
+                    <Grid item xs={12}>
+                      <Card
+                        variant='soft'
+                        color='primary'
+                        sx={{
+                          padding: "10px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexDirection: "row"
+                        }}
                         translation-key='question_management_answer'
-                        ref={questionAnswerRef}
                       >
-                        {t("question_management_answer")}
-                      </Heading2>
-                      {Boolean(errors?.answers) && (
-                        <ErrorMessage>
-                          {errors.answers?.message || errors.answers?.root?.message}
-                        </ErrorMessage>
-                      )}
-                    </Grid>
-                    <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>
-                      {answerOpen ? <ExpandLess /> : <ExpandMore />}
+                        <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                          {t("question_management_answer").toUpperCase()}
+                          {Boolean(errors?.answers) && (
+                            <ErrorMessage>
+                              {errors.answers?.message || errors.answers?.root?.message}
+                            </ErrorMessage>
+                          )}
+                        </ParagraphBody>
+
+                        {answerOpen ? <ExpandLess /> : <ExpandMore />}
+                      </Card>
                     </Grid>
                   </Grid>
                 </ListItemButton>
 
                 <Collapse in={answerOpen} timeout='auto' unmountOnExit>
                   <Stack spacing={{ xs: 4 }} useFlexGap>
-                    <Divider />
                     {fields.map((field, index) => (
                       <AnswerEditor
                         key={field.id}
@@ -745,11 +820,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
                         {t("question_answer_add_answer")}
                       </JoyButton>
                     </Grid>
-
-                    <Divider />
                   </Stack>
                 </Collapse>
               </div>
+              <Divider />
               <Stack spacing={{ xs: 2 }} direction={"row"} justifyContent={"center"}>
                 <JoyButton
                   loading={submitLoading}
@@ -759,7 +833,20 @@ const CreateMultichoiceQuestion = (props: Props) => {
                 >
                   {t("question_management_create_question")}
                 </JoyButton>
-                <JoyButton variant='outlined' translation-key='common_cancel'>
+                <JoyButton
+                  variant='outlined'
+                  translation-key='common_cancel'
+                  onClick={() => {
+                    if (isQuestionBank)
+                      navigate(
+                        routes.lecturer.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId ?? ""
+                        )
+                      );
+                    else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+                  }}
+                >
                   {t("common_cancel")}
                 </JoyButton>
               </Stack>

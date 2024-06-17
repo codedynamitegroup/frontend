@@ -1,4 +1,4 @@
-import { Box, Card, Chip, IconButton, Paper, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import classes from "./style.module.scss";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
+import { Card } from "@mui/joy";
+import IconButton from "@mui/joy/IconButton";
+import Chip from "@mui/joy/Chip";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 
 const CustomSearchFeatureBar = ({
   isLoading = false,
@@ -69,18 +73,19 @@ const CustomSearchFeatureBar = ({
   return (
     <Stack direction='column' gap={2}>
       {isFilter ? (
-        <Paper className={classes.container}>
-          <form>
+        <form>
+          <Stack gap={2}>
             {fields.map((field, index) => (
               <Card
                 key={field.id}
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  height: "60px",
-                  margin: "10px",
-                  padding: "5px 10px"
+                  flexDirection: "row",
+                  padding: "10px 10px"
                 }}
+                variant='outlined'
+                color='neutral'
               >
                 <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
                   <ParagraphBody width={"100px"}>
@@ -107,6 +112,7 @@ const CustomSearchFeatureBar = ({
                       minWidth: "150px",
                       maxWidth: "200px"
                     }}
+                    borderRadius='12px'
                     items={[...filterKeyList].filter(
                       (key) =>
                         !fields.map((f) => f.key).includes(key.value) || key.value === field.key
@@ -124,60 +130,68 @@ const CustomSearchFeatureBar = ({
                       });
                       handleChangeFilters(newFields);
                     }}
+                    borderRadius='12px'
                     width='fit-content'
                     items={filterValueList[field.key] || []}
                   />
                 </Stack>
                 {index > 0 && (
-                  <IconButton onClick={() => remove(index)}>
+                  <IconButton onClick={() => remove(index)} color='danger' variant='soft'>
                     <CancelIcon />
                   </IconButton>
                 )}
               </Card>
             ))}
+          </Stack>
+          <Button
+            onClick={() => {
+              if (fields.length >= filterKeyList.length) {
+                dispatch(setErrorMess(t("common_max_filter_reach")));
+                return;
+              }
+              append({
+                key: "",
+                value: ""
+              });
+            }}
+            margin='10px 0'
+            variant='outlined'
+            colorName={"var(--blue-light)"}
+            borderRadius='12px'
+            startIcon={<AddCircleRoundedIcon />}
+          >
+            <ParagraphBody fontSize={"12px"} fontWeight={"500"} colorname='--blue-light-1'>
+              {t("common_add_condition")}
+            </ParagraphBody>
+          </Button>
+          <Stack
+            direction='row'
+            gap={2}
+            sx={{ padding: "10px" }}
+            display='flex'
+            justifyContent='flex-end'
+          >
             <Button
-              onClick={() => {
-                if (fields.length >= filterKeyList.length) {
-                  dispatch(setErrorMess(t("common_max_filter_reach")));
-                  return;
-                }
-                append({
-                  key: "",
-                  value: ""
-                });
-              }}
-              margin='10px'
+              btnType={BtnType.Outlined}
+              translate-key='common_cancel_filter'
+              onClick={onHandleCancelFilter}
+              color='inherit'
             >
-              + {t("common_add_condition")}
+              {t("common_cancel_filter")}
             </Button>
-            <Stack
-              direction='row'
-              gap={2}
-              sx={{ padding: "10px" }}
-              display='flex'
-              justifyContent='flex-end'
+            <Button
+              btnType={BtnType.Primary}
+              translate-key='common_apply_filter'
+              onClick={onHandleApplyFilter}
             >
-              <Button
-                btnType={BtnType.Outlined}
-                translate-key='common_cancel_filter'
-                onClick={onHandleCancelFilter}
-              >
-                {t("common_cancel_filter")}
-              </Button>
-              <Button
-                btnType={BtnType.Primary}
-                translate-key='common_apply_filter'
-                onClick={onHandleApplyFilter}
-              >
-                {t("common_apply_filter")}
-              </Button>
-            </Stack>
-          </form>
-        </Paper>
+              {t("common_apply_filter")}
+            </Button>
+          </Stack>
+        </form>
       ) : (
         <></>
       )}
-
+      <Divider />
       <Box className={classes.searchWrapper}>
         <Stack direction='row' gap={2}>
           <AutoSearchBar
@@ -195,8 +209,18 @@ const CustomSearchFeatureBar = ({
               }}
             >
               {createBtnText !== "" && (
-                <Button btnType={BtnType.Primary} onClick={onClickCreate}>
-                  {createBtnText}
+                <Button
+                  variant='contained'
+                  onClick={onClickCreate}
+                  borderRadius='12px'
+                  startIcon={<AddCircleRoundedIcon />}
+                  sx={{
+                    backgroundColor: "var(--blue-2) !important"
+                  }}
+                >
+                  <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--ghost-white'>
+                    {createBtnText}
+                  </ParagraphBody>
                 </Button>
               )}
             </Box>
@@ -210,17 +234,19 @@ const CustomSearchFeatureBar = ({
         (searchValue && searchValue.length > 0) ||
         (fields && (
           <Chip
-            size='small'
-            label={`${numOfResults} results found`}
-            variant='outlined'
+            variant='soft'
             sx={{
-              padding: "15px 10px",
-              maxWidth: "fit-content",
-              background: "var(--green-500)",
-              border: "none",
-              color: "white"
+              padding: "5px 10px",
+              maxWidth: "fit-content"
             }}
-          />
+            color='success'
+            size='sm'
+          >
+            <ParagraphBody
+              fontSize={"12px"}
+              fontWeight={"600"}
+            >{`${numOfResults} results found`}</ParagraphBody>
+          </Chip>
         ))
       )}
     </Stack>

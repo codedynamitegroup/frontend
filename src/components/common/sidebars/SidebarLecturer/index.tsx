@@ -1,9 +1,8 @@
-import CodeIcon from "@mui/icons-material/Code";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import Header, { DrawerHeader } from "components/Header";
+import Header from "components/Header";
 import React, { useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
@@ -13,6 +12,8 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "reduxes/SidebarStatus";
 
 const drawerWidth = 300;
 
@@ -66,9 +67,10 @@ export default function SidebarLecturer({ children }: any) {
     }
   ];
   const [open, setOpen] = React.useState(true);
-
+  const dispatch = useDispatch();
   const toggleDrawer = () => {
     setOpen((pre) => !pre);
+    dispatch(toggleSidebar());
   };
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -85,8 +87,8 @@ export default function SidebarLecturer({ children }: any) {
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            marginTop: `${headerHeight + 2}px`
+            width: drawerWidth
+            // marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'
