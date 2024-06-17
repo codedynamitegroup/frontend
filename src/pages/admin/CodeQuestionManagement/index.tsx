@@ -1,4 +1,4 @@
-import { Box, Card, Divider, Grid, TablePagination } from "@mui/material";
+import { Box, Card, Divider, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TableTemplate from "components/common/table/TableTemplate";
@@ -6,12 +6,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
-import SearchBar from "components/common/search/SearchBar";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
+import { RootState } from "store";
 import { QuestionService } from "services/courseService/QuestionService";
-import { clearCodeQuestion, setQuestions } from "reduxes/courseService/question";
+import { clearCodeQuestion } from "reduxes/courseService/question";
 import dayjs from "dayjs";
 import {
   GridActionsCellItem,
