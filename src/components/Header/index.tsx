@@ -179,7 +179,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   }, [pathname, loggedUser]);
 
   return (
-    <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
+    <AppBar
+      position='fixed'
+      open={open}
+      className={classes.header}
+      ref={ref}
+      sx={{
+        paddingLeft: sidebarStatus ? "240px" : "0px"
+      }}
+    >
       <Toolbar disableGutters className={classes.toolbar}>
         <Box className={classes.toolbarGroup}>
           <Box className={classes.wrapper}>

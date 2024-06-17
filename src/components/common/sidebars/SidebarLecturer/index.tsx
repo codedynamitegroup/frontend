@@ -88,8 +88,8 @@ export default function SidebarLecturer({ children }: any) {
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            marginTop: `${headerHeight + 2}px`
+            width: drawerWidth
+            // marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'
