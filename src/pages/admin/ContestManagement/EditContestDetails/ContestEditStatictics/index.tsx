@@ -1,4 +1,4 @@
-import { Card, Grid, Skeleton, Stack } from "@mui/material";
+import { Box, Card, Grid, Skeleton, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import Heading4 from "components/text/Heading4";
@@ -10,6 +10,8 @@ import Heading5 from "components/text/Heading5";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
 import { useMemo } from "react";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import JoyButton from "@mui/joy/Button";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const valueFormatter = (value: number | null) => `${value}%`;
 
@@ -137,9 +139,24 @@ const ContestEditStatistics = ({
       <Grid item xs={12} md={6}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={12} lg={12}>
-            <Heading5 translate-key='contest_details_problems_success_rates'>
-              {t("contest_details_problems_success_rates")}
-            </Heading5>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Heading5 translate-key='contest_details_problems_success_rates'>
+                {t("contest_details_problems_success_rates")}
+              </Heading5>
+              <JoyButton
+                onClick={() => {}}
+                endDecorator={
+                  <ArrowForwardIosIcon
+                    sx={{
+                      width: "17px"
+                    }}
+                  />
+                }
+                translate-key='contest_details_view_all_submissions'
+              >
+                {t("contest_details_view_all_submissions")}
+              </JoyButton>
+            </Box>
             <Card
               color='neutral'
               variant='outlined'

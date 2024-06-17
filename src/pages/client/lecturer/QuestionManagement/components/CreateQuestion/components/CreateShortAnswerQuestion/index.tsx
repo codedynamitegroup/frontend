@@ -1,13 +1,4 @@
-import {
-  Box,
-  Collapse,
-  Container,
-  Divider,
-  Grid,
-  ListItemButton,
-  Stack,
-  Typography
-} from "@mui/material";
+import { Box, Collapse, Container, Divider, Grid, ListItemButton, Stack } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import Heading2 from "components/text/Heading2";
@@ -25,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller, useFieldArray, set } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
 import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -33,7 +24,6 @@ import AlertDialog from "../BlockingDialog";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
-import question from "reduxes/courseService/question";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
@@ -45,6 +35,12 @@ import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithI
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
+
+import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import { CourseService } from "services/courseService/CourseService";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
+import { Card } from "@mui/joy";
 
 interface Props {
   qtype: String;
@@ -64,9 +60,11 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
+  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const { t, i18n } = useTranslation();
 
@@ -88,16 +86,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
     ref: headerRef
   });
   if (props.insideCrumb) headerHeight = 0;
-  // const [initialized, setInitialized] = useState(true);
-  // let outletContext: any = useOutletContext();
-  // let outletTab = outletContext?.value;
-  // useEffect(() => {
-  //   if (initialized) {
-  //     setInitialized(false);
-  //   } else {
-  //     navigate("/lecturer/question-bank-management");
-  //   }
-  // }, [outletTab]);
 
   const urlParams = useParams();
 
@@ -148,7 +136,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
     control,
     handleSubmit,
     trigger,
-    formState: { errors, isDirty }
+    formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -177,8 +165,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
     setOpenAlertDiaglog(false);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
+
     const newQuestion: PostShortAnswerQuestion = {
-      organizationId: user.organization.organizationId,
+      organizationId: isAdminQuestionBank ? "" : user.organization.organizationId,
       createdBy: user.userId,
       updatedBy: user.userId,
       difficulty: "EASY",
@@ -218,7 +207,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        if (isQuestionBank)
+        if (isAdminQuestionBank)
+          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
@@ -236,6 +227,21 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId);
+    };
+
+    fetchData();
+  }, [courseId]);
 
   useEffect(() => {
     if (i18n.language !== currentLang && errors?.questionName) {
@@ -244,7 +250,35 @@ const CreateShortAnswerQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
-  console.log("error: ", errors);
+  const breadCrumbData = isQuestionBank
+    ? [
+        {
+          navLink: routes.lecturer.question_bank.path,
+          label: i18next.format(t("common_question_bank"), "firstUppercase")
+        },
+        {
+          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+          label: categoryName
+        }
+      ]
+    : [
+        {
+          navLink: routes.lecturer.course.management,
+          label: t("common_course_management")
+        },
+        {
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+          label: courseData?.name
+        },
+        {
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+          label: t("common_type_assignment")
+        },
+        {
+          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+          label: t("course_lecturer_assignment_create_exam")
+        }
+      ];
 
   return (
     <>
@@ -257,83 +291,58 @@ const CreateShortAnswerQuestion = (props: Props) => {
           content={snackbarContent}
         />
         <Helmet>
-          <title>Create short answer question</title>
+          <title>Course | Create short answer question</title>
         </Helmet>
         <Header ref={headerRef} />
 
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <AlertDialog isBlocking={openAlertDiaglog} />
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
-            <Box className={classes.tabWrapper}>
-              {isQuestionBank ? (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    onClick={() => navigate(routes.lecturer.question_bank.path)}
-                    translation-key='common_question_bank'
-                  >
-                    {i18next.format(t("common_question_bank"), "firstUppercase")}
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
-                    }
-                  >
-                    {categoryName}
-                  </span>{" "}
-                  {"> "}
-                  <span>Tạo câu hỏi</span>
-                </ParagraphBody>
-              ) : (
-                <ParagraphBody
-                  className={classes.breadCump}
-                  colorname='--gray-50'
-                  fontWeight={"600"}
-                >
-                  <span
-                    translation-key='common_course_management'
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                  >
-                    {t("common_course_management")}
-                  </span>{" "}
-                  {"> "}
-                  {/* <span
-                    onClick={() =>
-                      navigate(routes.lecturer.course.information.replace(":courseId", courseId))
-                    }
-                  >
-                    CS202 - Nhập môn lập trình
-                  </span>{" "}
-                  {"> "} */}
-                  <span onClick={() => navigate(routes.lecturer.course.assignment)}>
-                    Xem bài tập
-                  </span>{" "}
-                  {"> "}
-                  <span
-                    onClick={() =>
-                      navigate(routes.lecturer.exam.create.replace(":courseId", courseId))
-                    }
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_create_exam")}
-                  </span>{" "}
-                  {"> "}
-                  <span translation-key='question_management_create_question'>
-                    {t("question_management_create_question")}
-                  </span>
-                </ParagraphBody>
-              )}
-            </Box>
+            <CustomBreadCrumb
+              breadCrumbData={breadCrumbData}
+              lastBreadCrumbLabel={t("create_question_short_answer")}
+            />
+
+            <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-start'>
+              <Box
+                sx={{
+                  borderRadius: "1000px",
+                  backgroundColor: "#E0F7FA",
+                  width: "40px",
+                  height: "40px"
+                }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <ShortTextRoundedIcon
+                  sx={{
+                    color: "#039BE5"
+                  }}
+                />
+              </Box>
+              <Heading2
+                translation-key={["common_add", "common_question_type_with_question_shortanswer"]}
+              >
+                {t("common_add").toUpperCase()}{" "}
+                {t("common_question_type_with_question_shortanswer").toUpperCase()}
+              </Heading2>
+            </Stack>
             <Box className={classes.formBody}>
-              <Typography className={classes.pageTitle} translation-key='common_add'>
-                {t("common_add")}{" "}
-                {t("common_question_type_with_question_shortanswer").toLocaleLowerCase()}
-              </Typography>
               <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Card
+                    variant='soft'
+                    color='primary'
+                    sx={{
+                      padding: "10px"
+                    }}
+                  >
+                    <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                      {i18next.t("common_general").toUpperCase()}
+                    </ParagraphBody>
+                  </Card>
+                </Grid>
                 <Grid item xs={12} md={12}>
                   <Grid container spacing={3}>
                     {/* Question name */}
@@ -346,6 +355,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
                         render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
                             inputRef={ref}
+                            useDefaultTitleStyle
                             error={Boolean(errors?.questionName)}
                             errorMessage={errors.questionName?.message}
                             title={`${t("exam_management_create_question_name")}`}
@@ -368,6 +378,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
                         rules={{ required: true }}
                         render={({ field: { ref, ...field } }) => (
                           <InputTextFieldColumn
+                            useDefaultTitleStyle
                             inputRef={ref}
                             titleRequired={true}
                             error={Boolean(errors?.defaultScore)}
@@ -395,6 +406,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
                       <TitleWithInfoTip
                         title={t("exam_management_create_question_description")}
                         titleRequired
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -433,7 +448,14 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
                     {/* General feedback */}
                     <Grid item xs={6} md={6}>
-                      <TitleWithInfoTip title={t("question_management_general_comment")} optional />
+                      <TitleWithInfoTip
+                        title={t("question_management_general_comment")}
+                        optional
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
 
                       <Grid container spacing={1}>
                         <Grid item xs={12} md={12} className={classes.textEditor}>
@@ -473,9 +495,31 @@ const CreateShortAnswerQuestion = (props: Props) => {
                   {/* Case sensitive */}
                   <Grid container>
                     <Grid item xs={12}>
+                      <Card
+                        variant='soft'
+                        color='primary'
+                        sx={{
+                          padding: "10px",
+                          marginBottom: "25px"
+                        }}
+                      >
+                        <ParagraphBody
+                          fontWeight={"600"}
+                          colorname='--blue-2'
+                          translation-key='common_detail'
+                        >
+                          {i18next.t("common_detail").toUpperCase()}
+                        </ParagraphBody>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12}>
                       <TitleWithInfoTip
                         title={t("question_management_distinguish_lettercase")}
                         tooltipDescription={t("case_sensitive_tooltip_description")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
                       />
                     </Grid>
                     <Grid item xs={12} md={12}>
@@ -501,30 +545,40 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
               {/* Answer list */}
               <div>
-                <ListItemButton onClick={() => setAnswerOpen(!answerOpen)} sx={{ paddingX: 0 }}>
+                <ListItemButton
+                  onClick={() => setAnswerOpen(!answerOpen)}
+                  sx={{ paddingX: 0, marginBottom: "30px" }}
+                >
                   <Grid container alignItems={"center"} columns={12}>
-                    <Grid item xs={12} md={3}>
-                      <Heading2
-                        sx={{ display: "inline" }}
+                    <Grid item xs={12}>
+                      <Card
+                        variant='soft'
+                        color='primary'
+                        sx={{
+                          padding: "10px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexDirection: "row"
+                        }}
                         translation-key='question_management_answer'
                       >
-                        {t("question_management_answer")}
-                      </Heading2>
-                      {Boolean(errors?.answers) && (
-                        <ErrorMessage>
-                          {errors.answers?.message || errors.answers?.root?.message}
-                        </ErrorMessage>
-                      )}
-                    </Grid>
-                    <Grid item xs={12} md={9} display={"flex"} alignItems={"center"}>
-                      {answerOpen ? <ExpandLess /> : <ExpandMore />}
+                        <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                          {t("question_management_answer").toUpperCase()}
+                          {Boolean(errors?.answers) && (
+                            <ErrorMessage>
+                              {errors.answers?.message || errors.answers?.root?.message}
+                            </ErrorMessage>
+                          )}
+                        </ParagraphBody>
+
+                        {answerOpen ? <ExpandLess /> : <ExpandMore />}
+                      </Card>
                     </Grid>
                   </Grid>
                 </ListItemButton>
 
                 <Collapse in={answerOpen} timeout='auto' unmountOnExit>
                   <Stack spacing={{ xs: 3 }} useFlexGap sx={{ marginBottom: "20px" }}>
-                    <Divider />
                     {fields.map((field, index) => (
                       <>
                         <AnswerEditor
@@ -549,8 +603,8 @@ const CreateShortAnswerQuestion = (props: Props) => {
                     </Grid>
                   </Stack>
                 </Collapse>
-                <Divider />
               </div>
+              <Divider />
               <Stack spacing={{ xs: 2 }} direction={"row"} justifyContent={"center"}>
                 <JoyButton
                   loading={submitLoading}
@@ -560,7 +614,20 @@ const CreateShortAnswerQuestion = (props: Props) => {
                 >
                   {t("question_management_create_question")}
                 </JoyButton>
-                <JoyButton variant='outlined' translation-key='common_cancel'>
+                <JoyButton
+                  variant='outlined'
+                  translation-key='common_cancel'
+                  onClick={() => {
+                    if (isQuestionBank)
+                      navigate(
+                        routes.lecturer.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId ?? ""
+                        )
+                      );
+                    else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+                  }}
+                >
                   {t("common_cancel")}
                 </JoyButton>
               </Stack>

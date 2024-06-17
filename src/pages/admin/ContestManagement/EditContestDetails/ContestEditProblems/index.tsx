@@ -72,6 +72,10 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
         title={t("contest_add_problem_button")}
         handleClose={handleCloseAddProblemDialog}
         maxWidth='md'
+        currentQuestionList={problems}
+        changeCurrentQuestionList={(newProblems: ContestQuestionEntity[]) =>
+          setValue("problems", newProblems)
+        }
       />
       <ConfirmDelete
         isOpen={isOpenConfirmDelete}

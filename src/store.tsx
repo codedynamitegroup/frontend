@@ -35,6 +35,7 @@ import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import appStatus from "reduxes/AppStatus";
 import user from "reduxes/authService/user";
+import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 
 const persistConfig = {
   key: "takeExam",
@@ -79,7 +80,8 @@ const store = configureStore({
     questionCategory: questionCategory,
     loading: loading,
     appStatus: appStatus,
-    user: user
+    user: user,
+    adminCertificateCourse: adminCertificateCourse
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

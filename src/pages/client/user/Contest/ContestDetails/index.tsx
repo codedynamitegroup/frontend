@@ -143,15 +143,15 @@ const ContestDetails = () => {
     async (id: string) => {
       dispatch(setInititalLoading(true));
       try {
-        const getContestsResponse = await ContestService.getContestById(id);
-        if (getContestsResponse) {
+        const getContestDetailsResponse = await ContestService.getContestById(id);
+        if (getContestDetailsResponse) {
           if (
-            getContestsResponse.startTime &&
-            moment().utc().isAfter(getContestsResponse.startTime)
+            getContestDetailsResponse.startTime &&
+            moment().utc().isAfter(getContestDetailsResponse.startTime)
           ) {
             await handleGetContestLeaderboard(id);
           }
-          setContestDetails(getContestsResponse);
+          setContestDetails(getContestDetailsResponse);
         }
         dispatch(setInititalLoading(false));
       } catch (error: any) {

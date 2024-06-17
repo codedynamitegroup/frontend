@@ -1,5 +1,5 @@
 .sideBar {
-  width: 300px;
+  width: 270px;
   overflow: auto;
   flex-shrink: 0;
   height: 100%;
@@ -15,16 +15,45 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+}
+
+.logo {
+  width: 200px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    margin-top: 5px;
+    filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%)
+      contrast(101%);
+  }
+  cursor: pointer;
 }
 
 .item {
-  &[class~="Mui-selected"] {
-    background-color: var(--gray-3);
+  margin-bottom: 3px !important;
+  .itemIcon {
+    font-size: inherit;
+    min-width: 25px;
   }
-  &:hover {
-    background-color: var(--gray-10);
+  &[class~="Mui-selected"] {
+    background-color: var(--blue-light-4);
+    border-radius: 5px;
+    color: #002db3;
+    text-decoration: none;
     .itemIcon {
-      color: black;
+      color: #002db3;
+    } 
+  }
+
+  &:hover {
+    background-color: var(--blue-light-4) !important;
+    border-radius: 5px;
+    color: #002db3;
+    text-decoration: none;
+    .itemIcon {
+      color: #002db3;
     }
   }
 }
