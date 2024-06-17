@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import classes from "./style.module.scss";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,8 @@ import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
 import { Card } from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
+import Chip from "@mui/joy/Chip";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 
 const CustomSearchFeatureBar = ({
   isLoading = false,
@@ -154,9 +156,12 @@ const CustomSearchFeatureBar = ({
             }}
             margin='10px 0'
             variant='outlined'
+            colorName={"var(--blue-light)"}
+            borderRadius='12px'
+            startIcon={<AddCircleRoundedIcon />}
           >
-            <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--blue-light'>
-              + {t("common_add_condition")}
+            <ParagraphBody fontSize={"12px"} fontWeight={"500"} colorname='--blue-light-1'>
+              {t("common_add_condition")}
             </ParagraphBody>
           </Button>
           <Stack
@@ -204,8 +209,18 @@ const CustomSearchFeatureBar = ({
               }}
             >
               {createBtnText !== "" && (
-                <Button btnType={BtnType.Primary} onClick={onClickCreate}>
-                  {createBtnText}
+                <Button
+                  variant='contained'
+                  onClick={onClickCreate}
+                  borderRadius='12px'
+                  startIcon={<AddCircleRoundedIcon />}
+                  sx={{
+                    backgroundColor: "var(--blue-2) !important"
+                  }}
+                >
+                  <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--ghost-white'>
+                    {createBtnText}
+                  </ParagraphBody>
                 </Button>
               )}
             </Box>
@@ -219,17 +234,19 @@ const CustomSearchFeatureBar = ({
         (searchValue && searchValue.length > 0) ||
         (fields && (
           <Chip
-            size='small'
-            label={`${numOfResults} results found`}
-            variant='outlined'
+            variant='soft'
             sx={{
-              padding: "15px 10px",
-              maxWidth: "fit-content",
-              background: "var(--green-500)",
-              border: "none",
-              color: "white"
+              padding: "5px 10px",
+              maxWidth: "fit-content"
             }}
-          />
+            color='success'
+            size='sm'
+          >
+            <ParagraphBody
+              fontSize={"12px"}
+              fontWeight={"600"}
+            >{`${numOfResults} results found`}</ParagraphBody>
+          </Chip>
         ))
       )}
     </Stack>

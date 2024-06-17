@@ -92,8 +92,8 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
-            backgroundColor: "#f5f5f5",
-            marginTop: `${headerHeight + 2}px`
+            backgroundColor: "#f5f5f5"
+            // marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'
