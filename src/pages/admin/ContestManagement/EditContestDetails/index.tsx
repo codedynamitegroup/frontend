@@ -417,7 +417,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                 }
               />
               <Route path={"signups"} element={<ContestEditSignUps />} />
-              <Route path={"statistics"} element={<ContestEditStatistics data={statistics} />} />
+              <Route
+                path={"statistics"}
+                element={<ContestEditStatistics data={statistics} contestId={contestId} />}
+              />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>
@@ -432,7 +435,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             marginLeft: "-25px",
             backgroundColor: "white",
             borderTop: "1px solid #E0E0E0",
-            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
+            width: isDrawerOpen ? "calc(100% - 270px)" : "100%"
           }}
         >
           <JoyButton

@@ -26,6 +26,7 @@ import AdminQuestionBankManagement from "./QuestionBankManagement";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
+import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
 
 type Props = {};
 
@@ -46,6 +47,7 @@ const SystemAdminHomepage = (props: Props) => {
           <Routes>
             <Route path={"contests"} element={<ContestManagement />} />
             <Route path={"contests/create"} element={<CreateContest />} />
+            <Route path={"contests/:contestId/submissions"} element={<AdminContestSubmissions />} />
             <Route
               path={"contests/edit/:contestId/*"}
               element={<EditContestDetails isDrawerOpen={open} />}
