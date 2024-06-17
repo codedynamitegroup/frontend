@@ -1,4 +1,5 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Checkbox, Grid, Link, Stack } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import {
@@ -19,9 +20,9 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
-import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
 
 interface AddContestProblemDialogQuestionInterface {
   id: string;
@@ -30,6 +31,8 @@ interface AddContestProblemDialogQuestionInterface {
   name: string;
   difficulty: string;
   isPublic: boolean;
+  maxGrade: number;
+  defaultMark: number;
 }
 
 interface AddContestProblemDialogProps extends DialogProps {
@@ -43,7 +46,8 @@ interface AddContestProblemDialogProps extends DialogProps {
   onHanldeConfirm?: () => void;
   isConfirmLoading?: boolean;
   currentQuestionList: ContestQuestionEntity[];
-  changeCurrentQuestionList: (value: ContestQuestionEntity[]) => void;
+  handleAddProblem: (value: ContestQuestionEntity) => void;
+  handleDeleteProblem: (questionId: string) => void;
 }
 
 enum FilterValue {
@@ -65,7 +69,9 @@ export default function AddContestProblemDialog({
   isConfirmLoading = false,
   isReportExisted,
   currentQuestionList,
-  changeCurrentQuestionList,
+  // changeCurrentQuestionList,
+  handleAddProblem,
+  handleDeleteProblem,
   ...props
 }: AddContestProblemDialogProps) {
   const { t } = useTranslation();
@@ -111,7 +117,7 @@ export default function AddContestProblemDialog({
     }) => {
       setIsLoading(true);
       try {
-        const getAdminCodeQuestionsResponse = await CodeQuestionService.getAdminCodeQuestions({
+        const getAdminCodeQuestionsResponse = await CoreCodeQuestionService.getAdminCodeQuestions({
           search,
           isPublic,
           difficulty,
@@ -119,14 +125,31 @@ export default function AddContestProblemDialog({
           pageSize
         });
         setData({
-          codeQuestions: getAdminCodeQuestionsResponse.codeQuestions.map(
-            (item: any, index: number) => ({
+          codeQuestions: getAdminCodeQuestionsResponse.qtypeCodeQuestions.map(
+            (
+              item: {
+                id: string;
+                question: {
+                  id: string;
+                  name: string;
+                  questionText: string;
+                  generalFeedback: string;
+                  difficulty: string;
+                  defaultMark: number;
+                };
+                isPublic: boolean;
+                maxGrade: number;
+              },
+              index: number
+            ) => ({
               id: item.id,
-              questionId: item.questionId,
+              questionId: item.question.id,
               no: pageNo * pageSize + index + 1,
-              name: item.name,
-              difficulty: item.difficulty,
-              isPublic: item.isPublic
+              name: item.question.name,
+              difficulty: item.question.difficulty,
+              isPublic: item.isPublic,
+              maxGrade: item.maxGrade,
+              defaultMark: item.question.defaultMark
             })
           ),
           currentPage: getAdminCodeQuestionsResponse.currentPage,
@@ -168,11 +191,11 @@ export default function AddContestProblemDialog({
   }, [handleGetAdminCodeQuestions, searchValue]);
 
   const tableHeading: GridColDef[] = [
-    { field: "no", headerName: "STT", width: 100 },
+    { field: "no", headerName: t("common_no"), width: 100 },
     {
       field: "name",
-      headerName: "Problem Name",
-      flex: 2,
+      headerName: t("list_problem_problem_name"),
+      flex: 1.5,
       renderCell: (params) => {
         return (
           <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
@@ -184,9 +207,17 @@ export default function AddContestProblemDialog({
       }
     },
     {
+      field: "maxGrade",
+      headerName: "Max grade",
+      flex: 0.6,
+      renderCell: (params) => {
+        return <Heading6 fontWeight={600}>{params.row.maxGrade}</Heading6>;
+      }
+    },
+    {
       field: "difficulty",
-      headerName: "Difficulty level",
-      flex: 0.8,
+      headerName: t("common_difficulty_level"),
+      flex: 0.6,
       renderCell: (params) => {
         return (
           <Heading6
@@ -213,7 +244,7 @@ export default function AddContestProblemDialog({
     {
       field: "isPublic",
       headerName: t("contest_is_public"),
-      flex: 0.5,
+      flex: 0.4,
       align: "center",
       renderHeader: () => {
         return (
@@ -252,18 +283,50 @@ export default function AddContestProblemDialog({
       },
       getActions: (params) => {
         return [
-          <GridActionsCellItem
-            label='Add'
-            onClick={() => {}}
-            icon={
-              <Stack direction='row' gap={1} display='flex' alignItems='center'>
-                <AddCircleOutlineIcon htmlColor='#1976d2' />
-                <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
-                  {t("common_add")}
-                </Heading6>
-              </Stack>
-            }
-          />
+          currentQuestionList.find((item) => item.questionId === params.row.questionId) ? (
+            <GridActionsCellItem
+              label='Remove'
+              onClick={() => {
+                handleDeleteProblem(params.row.questionId);
+              }}
+              icon={
+                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
+                  <RemoveCircleOutlineIcon htmlColor='#EF4743' />
+                  <Heading6
+                    fontWeight={"700"}
+                    colorname={"--red-text"}
+                    translate-key='common_remove'
+                  >
+                    {t("common_remove")}
+                  </Heading6>
+                </Stack>
+              }
+            />
+          ) : (
+            <GridActionsCellItem
+              label='Add'
+              onClick={() => {
+                const newProblem: ContestQuestionEntity = {
+                  codeQuestionId: params.row.id,
+                  questionId: params.row.questionId,
+                  difficulty: params.row.difficulty,
+                  name: params.row.name,
+                  questionText: "",
+                  defaultMark: params.row.defaultMark,
+                  maxGrade: params.row.maxGrade
+                };
+                handleAddProblem(newProblem);
+              }}
+              icon={
+                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
+                  <AddCircleOutlineIcon htmlColor='#1976d2' />
+                  <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
+                    {t("common_add")}
+                  </Heading6>
+                </Stack>
+              }
+            />
+          )
         ];
       }
     }

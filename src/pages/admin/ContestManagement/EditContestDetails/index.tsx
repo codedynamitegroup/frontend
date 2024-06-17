@@ -138,10 +138,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             questionId: yup.string().required(t("contest_question_id_required")),
             codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
             difficulty: yup.string().required(t("contest_difficulty_required")),
-            name: yup.string().required(t("contest_name_required")),
-            questionText: yup.string().required(t("contest_question_text_required")),
-            defaultMark: yup.number().required(t("contest_default_mark_required")),
-            maxGrade: yup.number().required(t("contest_max_grade_required"))
+            name: yup.string().default("").trim(""),
+            questionText: yup.string().default("").trim(""),
+            defaultMark: yup.number().default(0),
+            maxGrade: yup.number().default(0)
           })
         )
         .required(t("contest_problems_required"))
@@ -255,6 +255,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
         });
         if (updateContestResponse) {
           dispatch(setSuccessMess("Contest updated successfully"));
+          handleGetContestById(id);
         } else {
           dispatch(setErrorMess("Failed to update contest"));
         }
@@ -263,11 +264,13 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess("You are not authorized to update this contest"));
+        } else {
+          dispatch(setErrorMess("Failed to update contest"));
         }
         setSubmitLoading(false);
       }
     },
-    [dispatch]
+    [dispatch, handleGetContestById]
   );
 
   const submitHandler = async (data: IFormDataType) => {
@@ -446,7 +449,6 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             variant='solid'
             type='submit'
             translation-key='common_save_changes'
-            onClick={handleSubmit(submitHandler)}
           >
             {t("common_save_changes")}
           </JoyButton>

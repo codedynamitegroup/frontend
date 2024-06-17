@@ -83,43 +83,4 @@ export class CodeQuestionService {
       });
     }
   }
-
-  static async getAdminCodeQuestions({
-    search,
-    isPublic,
-    difficulty,
-    pageNo,
-    pageSize
-  }: {
-    search?: string;
-    isPublic?: boolean;
-    difficulty?: QuestionDifficultyEnum;
-    pageNo: number;
-    pageSize: number;
-  }) {
-    try {
-      const response = await api({
-        baseURL: codeAssessmentServiceApiUrl
-      }).get(API.CODE_ASSESSMENT.CODE_QUESTION.ADMIN_CODE_QUESTION, {
-        params: {
-          pageNo,
-          pageSize,
-          search,
-          isPublic,
-          difficulty
-        }
-      });
-
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error: any) {
-      console.error("Failed to fetch admin code questions", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
-    }
-  }
 }

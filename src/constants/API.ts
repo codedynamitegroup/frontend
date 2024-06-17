@@ -62,6 +62,9 @@ export const API = {
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
         GET_ALL: "/core/questions/multichoice-question"
+      },
+      CODE_QUESTION: {
+        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin"
       }
     }
   },
