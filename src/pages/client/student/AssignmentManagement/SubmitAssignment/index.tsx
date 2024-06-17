@@ -3,6 +3,7 @@ import {
   Alert,
   Box,
   Card,
+  CircularProgress,
   Container,
   CssBaseline,
   Divider,
@@ -47,6 +48,8 @@ import { SubmissionAssignmentEntity } from "models/courseService/entity/Submissi
 import { setSubmissionAssignmentDetails } from "reduxes/courseService/submission_assignment";
 import { CreateSubmissionAssignmentCommand } from "models/courseService/entity/create/CreateSubmissionAssignmentCommand";
 import { CreateSubmissionAssignmentFile } from "models/courseService/entity/create/CreateSubmissionAssignmentFile";
+import { UpdateSubmissionAssignment } from "models/courseService/entity/update/UpdateSubmissionAssignment";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 const drawerWidth = 450;
 
@@ -158,6 +161,18 @@ export default function SubmitAssignment() {
     }
   };
 
+  const deleteSubmissionAssignmentFile = async (id: string) => {
+    try {
+      const response = await SubmissionAssignmentFileService.deleteById(id);
+      if (response) {
+        console.log("Delete submission assignment file successfully");
+        return response;
+      }
+    } catch (error: any) {
+      console.error("Failed to delete submission assignment file", error);
+    }
+  };
+
   const createSubmissionAssignment = async (
     submissionAssignment: CreateSubmissionAssignmentCommand
   ) => {
@@ -194,31 +209,73 @@ export default function SubmitAssignment() {
     try {
       let fileArray: CreateSubmissionAssignmentFile[] = [];
       let submissionAssignmentFileIdArray: string[] = [];
+      let submissionAssignmentResponse;
+      if (!submissionAssignmentState.submissionAssignmentDetails) {
+        for (const file of extFiles) {
+          const submissionAssignmentFile: CreateSubmissionAssignmentFile = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimetype: file.type || "",
+            timemodified: new Date().toISOString()
+          };
+          const submissionAssignmentFileResponse =
+            await createSubmissionAssignmentFile(submissionAssignmentFile);
+          fileArray.push(submissionAssignmentFile);
+          submissionAssignmentFileIdArray.push(submissionAssignmentFileResponse.id);
+        }
 
-      for (const file of extFiles) {
-        const submissionAssignmentFile: CreateSubmissionAssignmentFile = {
-          fileName: file.name || "",
-          fileUrl: file.downloadUrl || "",
-          fileSize: file.size || 0,
-          mimetype: file.type || "",
+        const submissionAssignment: CreateSubmissionAssignmentCommand = {
+          assignmentId: assignmentId ?? "",
+          userId: loggedUser.userId ?? "",
+          content: textEditorContent ? textEditorContent : null,
+          isGraded: false,
+          feedback: null,
+          submitTime: new Date().toISOString(),
           timemodified: new Date().toISOString()
         };
-        const submissionAssignmentFileResponse =
-          await createSubmissionAssignmentFile(submissionAssignmentFile);
-        fileArray.push(submissionAssignmentFile);
-        submissionAssignmentFileIdArray.push(submissionAssignmentFileResponse.id);
-      }
+        submissionAssignmentResponse = await createSubmissionAssignment(submissionAssignment);
+      } else {
+        const existingFiles =
+          submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFiles || [];
 
-      const submissionAssignment: CreateSubmissionAssignmentCommand = {
-        assignmentId: assignmentId ?? "",
-        userId: loggedUser.userId ?? "",
-        content: textEditorContent ? textEditorContent : null,
-        isGraded: false,
-        feedback: null,
-        submitTime: new Date().toISOString(),
-        timemodified: new Date().toISOString()
-      };
-      const submissionAssignmentResponse = await createSubmissionAssignment(submissionAssignment);
+        const filesToCreate = extFiles.filter(
+          (file) => !existingFiles.some((existingFile) => existingFile.id === file.id)
+        );
+        const filesToDelete = existingFiles.filter(
+          (existingFile) => !extFiles.some((file) => file.id === existingFile.id)
+        );
+
+        for (const file of filesToDelete) {
+          await deleteSubmissionAssignmentFile(file.id);
+        }
+
+        for (const file of filesToCreate) {
+          const submissionAssignmentFile: CreateSubmissionAssignmentFile = {
+            fileName: file.name || "",
+            fileUrl: file.downloadUrl || "",
+            fileSize: file.size || 0,
+            mimetype: file.type || "",
+            timemodified: new Date().toISOString()
+          };
+          const submissionAssignmentFileResponse =
+            await createSubmissionAssignmentFile(submissionAssignmentFile);
+          fileArray.push(submissionAssignmentFile);
+          submissionAssignmentFileIdArray.push(submissionAssignmentFileResponse.id);
+        }
+
+        const submissionAssignment: UpdateSubmissionAssignment = {
+          content: textEditorContent ? textEditorContent : null,
+          isGraded: false,
+          feedback: null,
+          timemodified: new Date().toISOString()
+        };
+
+        submissionAssignmentResponse = await SubmissionAssignmentService.update(
+          submissionAssignment,
+          submissionAssignmentState.submissionAssignmentDetails.id
+        );
+      }
 
       if (submissionAssignmentResponse && fileArray.length != 0) {
         for (let i = 0; i < fileArray.length; i++) {
@@ -246,6 +303,7 @@ export default function SubmitAssignment() {
 
   const pathSegments = location.pathname.split("/");
   const lastSegment = pathSegments[pathSegments.length - 1];
+  console.log(submissionAssignmentState.submissionAssignmentDetails);
 
   useEffect(() => {
     const fetchSubmissionAssignment = async () => {
@@ -289,86 +347,62 @@ export default function SubmitAssignment() {
   return (
     <Grid className={classes.root}>
       <Header ref={headerRef} />
-      <Box
-        className={classes.container}
-        sx={{
-          marginTop: `${headerHeight}px`
-        }}
-      >
-        <CssBaseline />
-        <AppBar
-          position='fixed'
+      {submissionAssignmentState.isLoading ? (
+        <Box
           sx={{
-            top: `${headerHeight}px`,
-            backgroundColor: "white"
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
           }}
-          ref={header2Ref}
-          open={false}
         >
-          <Toolbar>
-            <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.management)}
-              >
-                Quản lý khoá học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.student.course.information)}
-              >
-                {submissionAssignmentState?.submissionAssignmentDetails?.assignmentName}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() =>
-                  navigate(routes.student.course.assignment.replace(":courseId", courseId ?? ""))
-                }
-              >
-                Danh sách bài tập
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() =>
-                  navigate(
-                    routes.student.assignment.detail
-                      .replace(":assignmentId", assignmentId ?? "")
-                      .replace(":courseId", courseId ?? "")
-                  )
-                }
-              >
-                {assignmentState.assignmentDetails?.title}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Nộp bài làm</ParagraphSmall>
-            </Box>
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              edge='end'
-              sx={{ display: "none" }}
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Box
+            className={classes.contentContainer}
+            sx={{
+              marginTop: `${headerHeight}px`
+            }}
+          >
+            <Container
+              sx={{
+                padding: "0",
+                display: "flex",
+                justifyContent: "flex-start"
+              }}
             >
-              <MenuIcon color='action' />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Main
-          open={true}
-          className={classes.mainContent}
-          sx={{
-            height: `calc(100% - ${header2Height}px)`,
-            marginTop: `${header2Height}px`
-          }}
-        >
-          <Container>
-            <Card>
+              <CustomBreadCrumb
+                breadCrumbData={[
+                  {
+                    navLink: routes.lecturer.course.management,
+                    label: "Quản lý khoá học"
+                  },
+                  {
+                    navLink: routes.lecturer.course.information.replace(
+                      ":courseId",
+                      courseId ?? ""
+                    ),
+                    label: courseState.courseDetail?.name || ""
+                  },
+                  {
+                    navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
+                    label: "Danh sách bài tập"
+                  },
+                  {
+                    navLink: routes.lecturer.assignment.detail
+                      .replace(":assignmentId", assignmentId ?? "")
+                      .replace(":courseId", courseId ?? ""),
+                    label: assignmentState.assignmentDetails?.title || ""
+                  }
+                ]}
+                lastBreadCrumbLabel='Nộp bài làm'
+              />
+            </Container>
+            <Container>
               <Box
                 component='form'
                 className={classes.formBody}
@@ -401,7 +435,7 @@ export default function SubmitAssignment() {
                   className={classes.pageActivityHeader}
                   sx={{
                     padding: "10px",
-                    backgroundColor: "#F8F9FA"
+                    backgroundColor: "var(--gray-2)"
                   }}
                 >
                   <Grid container direction='row' alignItems='center' gap={1}>
@@ -490,37 +524,45 @@ export default function SubmitAssignment() {
                       {error}
                     </Alert>
                   )}
-                </Box>
-                <BasicAccordion
-                  title={t("course_assignment_detail_submit")}
-                  translation-key='course_assignment_detail_submit'
-                  open={"panel1"}
-                >
                   <Box className={classes.formBody}>
                     {assignmentState.assignmentDetails?.type === "BOTH" ? (
                       <>
-                        <Grid container spacing={1}>
+                        <Grid className={classes.submitWrapper} container spacing={1}>
                           <Grid item xs={3}>
                             <TextTitle translation-key='common_essay'>
                               {t("common_essay")}
                             </TextTitle>
                           </Grid>
                           <Grid item xs={9} className={classes.textEditor}>
-                            <TextEditor value={textEditorContent} onChange={setTextEditorContent} />
+                            <TextEditor
+                              className={classes.textEditor}
+                              value={textEditorContent}
+                              onChange={setTextEditorContent}
+                            />
                           </Grid>
-                          <Grid item xs={3}>
-                            <TextTitle translation-key='course_student_assignment_submit_file'>
-                              {t("course_student_assignment_submit_file")}
+                          <Grid item xs={3} style={{ marginTop: "50px" }}>
+                            <TextTitle translation-key='course_student_assignment_file_submission'>
+                              {t("course_student_assignment_file_submission")}
                             </TextTitle>
                           </Grid>
-                          <Grid item xs={9}>
-                            <FileUploader extFiles={extFiles} setExtFiles={setExtFiles} />
+                          <Grid item xs={9} style={{ marginTop: "50px" }}>
+                            <AdvancedDropzoneDemo
+                              extFiles={extFiles}
+                              setExtFiles={setExtFiles}
+                              maxFiles={Number(assignmentState.assignmentDetails?.maxUploadFiles)}
+                              maxFileSize={Number(assignmentState.assignmentDetails?.maxFileSize)}
+                            />{" "}
                           </Grid>
                         </Grid>
                       </>
                     ) : assignmentState.assignmentDetails?.type === "FILE" ? (
                       <Grid container spacing={1}>
-                        <Grid item xs={12}>
+                        <Grid item xs={4}>
+                          <TextTitle translation-key='course_student_assignment_file_submission'>
+                            {t("course_student_assignment_file_submission")}
+                          </TextTitle>
+                        </Grid>
+                        <Grid item xs={8}>
                           <AdvancedDropzoneDemo
                             extFiles={extFiles}
                             setExtFiles={setExtFiles}
@@ -531,36 +573,45 @@ export default function SubmitAssignment() {
                       </Grid>
                     ) : (
                       <Grid container spacing={1}>
-                        <Grid item xs={12} className={classes.textEditor}>
-                          <TextEditor value={textEditorContent} onChange={setTextEditorContent} />
+                        <Grid item xs={4}>
+                          <TextTitle translation-key='common_essay'>{t("common_essay")}</TextTitle>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextEditor
+                            className={classes.textEditor}
+                            value={textEditorContent}
+                            onChange={setTextEditorContent}
+                            roundedBorder
+                            openDialog
+                          />
                         </Grid>
                       </Grid>
                     )}
                   </Box>
-                </BasicAccordion>
 
-                <Divider />
-                <Grid container direction='row' justifyContent='center' gap={1}>
-                  <Grid item>
+                  <Box className={classes.stickyBottom}>
                     <Button
                       type='submit'
+                      className={classes.saveBtn}
                       btnType={BtnType.Primary}
                       translation-key='common_save_changes'
                     >
                       {t("common_save_changes")}
                     </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button btnType={BtnType.Outlined} translation-key='common_cancel'>
+                    <Button
+                      className={classes.cancelBtn}
+                      onClick={() => navigate(-1)}
+                      translation-key='common_cancel'
+                    >
                       {t("common_cancel")}
                     </Button>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
               </Box>
-            </Card>
-          </Container>
-        </Main>
-      </Box>
+            </Container>
+          </Box>
+        </>
+      )}
     </Grid>
   );
 }

@@ -136,7 +136,8 @@ export const routes = {
     },
     assignment: {
       detail: "/student/courses/:courseId/assignments/:assignmentId",
-      submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
+      submit: "/student/courses/:courseId/assignments/:assignmentId/submit",
+      edit_submit: "/student/courses/:courseId/assignments/:assignmentId/submit/edit"
     },
     exam: {
       detail: "/student/courses/:courseId/assignments/exams/:examId",
