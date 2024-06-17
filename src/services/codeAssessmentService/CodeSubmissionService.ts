@@ -106,7 +106,7 @@ export class CodeSubmissionService {
     pageNo,
     pageSize
   }: {
-    codeQuestionId: string;
+    codeQuestionId?: string;
     cerCourseId?: string;
     contestId?: string;
     pageNo: number;

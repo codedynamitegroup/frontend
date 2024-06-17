@@ -4,7 +4,7 @@ import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,12 +14,24 @@ import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmis
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
 import classes from "./styles.module.scss";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import {
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridRowParams,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
+import Heading6 from "components/text/Heading6";
+import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 
 const AdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const { contestId } = useParams<{ contestId: string }>();
 
@@ -47,21 +59,18 @@ const AdminContestSubmissions = () => {
 
   const handleGetAdminCodeSubmissionsByContestId = useCallback(
     async ({
-      codeQuestionId,
       contestId,
       pageNo,
       pageSize
     }: {
-      codeQuestionId: string;
       contestId?: string;
       pageNo: number;
       pageSize: number;
     }) => {
       setIsLoading(true);
       try {
-        const getAdminCodeSubmissionsByContestIdResponse =
+        const getAdminCodeSubmissionsByContestIdResponse: CodeSubmissionPaginationList =
           await CodeSubmissionService.getAdminCodeSubmissionList({
-            codeQuestionId,
             contestId,
             pageNo,
             pageSize
@@ -79,10 +88,103 @@ const AdminContestSubmissions = () => {
     []
   );
 
-  useEffect(() => {
-    if (contestId) {
-      handleGetContestById(contestId);
+  const dataGridToolbar = { enableToolbar: true };
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {};
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {};
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    // console.log(params);
+  };
+
+  const totalElement = useMemo(() => 0, []);
+
+  const tableHeading: GridColDef[] = [
+    {
+      field: "status",
+      headerName: t("common_status"),
+      flex: 0.5,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_status")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return <></>;
+      }
+    },
+    {
+      field: "email",
+      headerName: t("common_email"),
+      flex: 0.7,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_email")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return <></>;
+      }
+    },
+    {
+      field: "language",
+      headerName: t("common_programming_language"),
+      flex: 0.7,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_programming_language")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return <></>;
+      }
+    },
+    {
+      field: "runtime",
+      headerName: t("common_runtime"),
+      flex: 0.5,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_runtime")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return <></>;
+      }
+    },
+    {
+      field: "memory",
+      headerName: t("common_memory"),
+      flex: 0.5,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_memory")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return <></>;
+      }
     }
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (contestId) {
+        await handleGetContestById(contestId);
+      }
+    };
+    fetchData();
   }, [contestId, handleGetContestById]);
 
   if (!contestId || !contestDetails) {
@@ -127,10 +229,43 @@ const AdminContestSubmissions = () => {
         <Divider />
         <Box
           sx={{
-            margin: "20px"
+            margin: "20px",
+            minHeight: "600px"
           }}
         >
           <Heading1>{t("detail_problem_submission")}</Heading1>
+          <Box
+            sx={{
+              margin: "20px 0"
+            }}
+          >
+            <CustomDataGrid
+              loading={isLoading}
+              dataList={[]}
+              tableHeader={tableHeading}
+              onSelectData={rowSelectionHandler}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              getRowHeight={() => "auto"}
+              onClickRow={rowClickHandler}
+              sx={{
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
+                }
+              }}
+              personalSx={true}
+            />
+          </Box>
         </Box>
       </Card>
     </>
