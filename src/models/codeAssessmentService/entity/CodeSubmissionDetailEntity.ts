@@ -14,6 +14,13 @@ export interface CodeSubmissionDetailEntity {
   achievedGrade: number;
   description: string | undefined;
 
+  user?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+
   headCode: string | undefined;
   bodyCode: string | undefined;
   tailCode: string | undefined;
