@@ -1,9 +1,8 @@
-import CodeIcon from "@mui/icons-material/Code";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import Header, { DrawerHeader } from "components/Header";
+import Header from "components/Header";
 import React, { useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";

@@ -3,7 +3,8 @@
   .formWrapper {
     width: 100%;
     .container {
-      border-radius: 5px;
+      border-radius: 15px;
+      box-shadow: 1px 1px 2px 0px var(--gray-20);
       border: 1px solid var(--gray-30);
       .inputField {
         width: 100%;

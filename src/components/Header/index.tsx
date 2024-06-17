@@ -2,8 +2,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/joy/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -29,7 +27,7 @@ import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "store";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 
@@ -58,7 +56,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const { t } = useTranslation();
   const { toggleDrawer } = props;
   const { loggedUser, logout, isLecturer, isStudent, isSystemAdmin, isMoodleAdmin } = useAuth();
-  const dispatch = useDispatch();
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus.isOpen);
 
   interface AppBarProps extends MuiAppBarProps {

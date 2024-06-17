@@ -154,6 +154,15 @@ const CertificateCourseManagement = () => {
       })),
     [certificateCourseState.certificateCourses]
   );
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetCertificateCourses({
+      searchName: searchValue,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
+  };
 
   const tableHeading: GridColDef[] = useMemo(
     () => [
@@ -308,104 +317,107 @@ const CertificateCourseManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
+
+      <Box
         sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
+          paddingLeft: "13px"
         }}
       >
-        <CustomBreadCrumb breadCrumbData={[]} lastBreadCrumbLabel='Certificate Course Management' />
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            padding: "20px"
-          }}
-        >
-          <Grid item xs={12}>
-            <Heading3 translate-key='certificate_course_management_title'>
-              {t("certificate_course_management_title").toUpperCase()}
-            </Heading3>
-          </Grid>
-          <Grid item xs={12}>
-            <CustomSearchFeatureBar
-              isLoading={certificateCourseState.isLoading}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              onHandleChange={handleSearchChange}
-              createBtnText={t("certificate_course_create_btn")}
-              onClickCreate={() => {
-                navigate(routes.admin.contest.create);
-              }}
-              numOfResults={totalElement}
-              // filterKeyList={[
-              //   {
-              //     label: t("common_status"),
-              //     value: "Status"
-              //   }
-              // ]}
-              // filterValueList={{
-              //   Status: [
-              //     {
-              //       label: t("common_all"),
-              //       value: ContestStartTimeFilterEnum.ALL
-              //     },
-              //     {
-              //       label: t("common_upcoming"),
-              //       value: ContestStartTimeFilterEnum.UPCOMING
-              //     },
-              //     {
-              //       label: t("common_in_progress"),
-              //       value: ContestStartTimeFilterEnum.HAPPENING
-              //     },
-              //     {
-              //       label: t("common_ended"),
-              //       value: ContestStartTimeFilterEnum.ENDED
-              //     }
-              //   ] as { label: string; value: string }[]
-              // }}
-              filters={filters}
-              handleChangeFilters={(filters: { key: string; value: string }[]) => {
-                setFilters(filters);
-              }}
-              // onHandleApplyFilter={handleApplyFilter}
-              // onHandleCancelFilter={handleCancelFilter}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <CustomDataGrid
-              loading={certificateCourseState.isLoading}
-              dataList={certificateCourseList}
-              tableHeader={tableHeading}
-              onSelectData={() => {}}
-              dataGridToolBar={{ enableToolbar: true }}
-              page={page}
-              pageSize={pageSize}
-              totalElement={totalElement}
-              onPaginationModelChange={() => {}}
-              showVerticalCellBorder={false}
-              getRowHeight={() => "50"}
-              // onClickRow={rowClickHandler}
-              sx={{
-                "&.MuiDataGrid-withBorderColor": {
-                  border: "1px solid white"
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "white",
-                  borderBottom: "2px solid var(--gray-50)"
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
-                }
-              }}
-              personalSx={true}
-            />
-          </Grid>
+        <CustomBreadCrumb
+          breadCrumbData={[{ navLink: routes.admin.dashboard, label: "Home" }]}
+          lastBreadCrumbLabel='Certificate Course Management'
+        />
+      </Box>
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: "0 20px"
+        }}
+      >
+        <Grid item xs={12}>
+          <Heading3 translate-key='certificate_course_management_title'>
+            {t("certificate_course_management_title").toUpperCase()}
+          </Heading3>
         </Grid>
-      </Card>
+        <Grid item xs={12}>
+          <CustomSearchFeatureBar
+            isFilter={false}
+            isLoading={certificateCourseState.isLoading}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            onHandleChange={handleSearchChange}
+            createBtnText={t("certificate_course_create_btn")}
+            onClickCreate={() => {
+              navigate(routes.admin.contest.create);
+            }}
+            numOfResults={totalElement}
+            // filterKeyList={[
+            //   {
+            //     label: t("common_status"),
+            //     value: "Status"
+            //   }
+            // ]}
+            // filterValueList={{
+            //   Status: [
+            //     {
+            //       label: t("common_all"),
+            //       value: ContestStartTimeFilterEnum.ALL
+            //     },
+            //     {
+            //       label: t("common_upcoming"),
+            //       value: ContestStartTimeFilterEnum.UPCOMING
+            //     },
+            //     {
+            //       label: t("common_in_progress"),
+            //       value: ContestStartTimeFilterEnum.HAPPENING
+            //     },
+            //     {
+            //       label: t("common_ended"),
+            //       value: ContestStartTimeFilterEnum.ENDED
+            //     }
+            //   ] as { label: string; value: string }[]
+            // }}
+            filters={filters}
+            handleChangeFilters={(filters: { key: string; value: string }[]) => {
+              setFilters(filters);
+            }}
+            // onHandleApplyFilter={handleApplyFilter}
+            // onHandleCancelFilter={handleCancelFilter}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomDataGrid
+            loading={certificateCourseState.isLoading}
+            dataList={certificateCourseList}
+            tableHeader={tableHeading}
+            onSelectData={() => {}}
+            dataGridToolBar={{ enableToolbar: true }}
+            page={page}
+            pageSize={pageSize}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={false}
+            getRowHeight={() => "50"}
+            // onClickRow={rowClickHandler}
+            sx={{
+              "&.MuiDataGrid-withBorderColor": {
+                border: "1px solid white"
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "white",
+                borderBottom: "2px solid var(--gray-50)"
+              },
+              "& .MuiDataGrid-toolbarContainer": {
+                backgroundColor: "#f5f9fb"
+              },
+              minHeight: "500px"
+            }}
+            personalSx={true}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 };
