@@ -59,8 +59,8 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.users.root
     },
     {
-      name: t("certificate_course_management"),
-      "translation-key": "certificate_course_management",
+      name: t("certificate_course_management_title"),
+      "translation-key": "certificate_course_management_title",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.certificate.root
     },
@@ -91,8 +91,7 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            backgroundColor: "#f5f5f5"
+            width: drawerWidth
             // marginTop: `${headerHeight + 2}px`
           }
         }}
