@@ -1,5 +1,4 @@
-export interface CreateSubmissionAssignmentFile {
-  submissionAssignmentId?: string;
+export interface UpdateSubmissionAssignmentFile {
   fileName: string;
   fileSize: number;
   timemodified: string;

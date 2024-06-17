@@ -1,3 +1,4 @@
+import { AssignmentResourceEntity } from "./AssignmentResourceEntity";
 import { SubmissionAssignmentFileEntity } from "./SubmissionAssignmentFileEntity";
 import { SubmissionAssignmentOnlineTextEntity } from "./SubmissionAssignmentOnlineTextEntity";
 import { SubmissionGradeEntity } from "./SubmissionGradeEntity";
@@ -7,7 +8,7 @@ export interface SubmissionAssignmentEntity {
   assignmentName: string;
   user: UserResponseEntity;
   isGraded: boolean;
-  submissionAssignmentFile: SubmissionAssignmentFileEntity;
+  submissionAssignmentFiles: AssignmentResourceEntity[];
   submissionAssignmentOnlineText: SubmissionAssignmentOnlineTextEntity;
   submissionGrade: SubmissionGradeEntity;
   grade: number;

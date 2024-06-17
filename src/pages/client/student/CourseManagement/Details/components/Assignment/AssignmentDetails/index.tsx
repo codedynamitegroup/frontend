@@ -130,23 +130,19 @@ const StudentCourseAssignmentDetails = () => {
   };
 
   const checkTimeSubmission = (): number => {
-    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return 0;
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) {
+      if (new Date() > timeClose) return 0;
+      return 3;
+    }
     let submitTime = new Date(
       submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
     );
-    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
     if (submitTime < timeClose) {
       return 1;
     }
     return 2;
   };
-  console.log(submissionAssignmentState.submissionAssignmentDetails);
-  let date1 = new Date(
-    submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
-  );
-  let date2 = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
-  console.log(checkTimeSubmission());
-  console.log(date1, date2);
 
   let columns: Column[] = [
     {
@@ -169,7 +165,7 @@ const StudentCourseAssignmentDetails = () => {
         checkTimeSubmission() === 1
           ? t("assignment_submitted") + formatTime(submitTime) + t("early")
           : checkTimeSubmission() === 2
-            ? t("assignment_submitted_late") + formatTime(timeRemaining) + t("late")
+            ? t("assignment_submitted_late") + formatTime(submitTime) + t("late")
             : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
               ? t("assignment_overdue") + formatTime(timeRemaining)
               : formatTime(timeRemaining),
@@ -185,13 +181,13 @@ const StudentCourseAssignmentDetails = () => {
     }
   ];
 
-  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFile) {
+  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles) {
     columns.push({
       header: t("course_student_assignment_file_submission"),
       data: (
         <CustomFileList
           files={
-            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFile.files.map(
+            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFiles.map(
               (attachment) => ({
                 id: attachment.id,
                 name: attachment.fileName,

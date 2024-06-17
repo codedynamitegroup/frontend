@@ -156,7 +156,7 @@ const LecturerCourseAssignmentSubmissions = () => {
         student_email: submissionAssignment.user.email,
         status: {
           submission_status_submitted:
-            submissionAssignment.submissionAssignmentFile ||
+            submissionAssignment.submissionAssignmentFiles ||
             submissionAssignment.submissionAssignmentOnlineText
               ? SubmissionStatusSubmitted.SUBMITTED
               : SubmissionStatusSubmitted.NOT_SUBMITTED,
@@ -174,7 +174,7 @@ const LecturerCourseAssignmentSubmissions = () => {
           }
         },
         last_submission_time:
-          submissionAssignment.submissionAssignmentFile ||
+          submissionAssignment.submissionAssignmentFiles ||
           submissionAssignment.submissionAssignmentOnlineText
             ? dayjs(submissionAssignment.timemodefied).format("dddd, D MMMM YYYY, h:mm A")
             : "-",
@@ -183,8 +183,8 @@ const LecturerCourseAssignmentSubmissions = () => {
               "dddd, D MMMM YYYY, h:mm A"
             )
           : "-",
-        submission_file: submissionAssignment.submissionAssignmentFile
-          ? submissionAssignment.submissionAssignmentFile
+        submission_file: submissionAssignment.submissionAssignmentFiles
+          ? submissionAssignment.submissionAssignmentFiles
           : null,
         submission_online_text: submissionAssignment.submissionAssignmentOnlineText
           ? submissionAssignment.submissionAssignmentOnlineText.content

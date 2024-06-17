@@ -9,13 +9,15 @@ import { Box, Card } from "@mui/material";
 export default function BasicAccordion({
   title,
   children,
-  sx
+  sx,
+  open
 }: {
   title?: string;
   children: React.ReactNode;
   sx?: any;
+  open?: string;
 }) {
-  const [expanded, setExpanded] = React.useState<string | false>(false);
+  const [expanded, setExpanded] = React.useState<string | false>(open || false);
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);

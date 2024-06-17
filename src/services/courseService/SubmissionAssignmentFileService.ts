@@ -1,69 +1,62 @@
-import axios from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { API } from "constants/API";
+import { CreateSubmissionAssignmentFile } from "models/courseService/entity/create/CreateSubmissionAssignmentFile";
+import { UpdateSubmissionAssignmentFile } from "models/courseService/entity/update/UpdateSubmissionAssignmentFile";
+import api from "utils/api";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
 export class SubmissionAssignmentFileService {
-  static async create(data: any) {
+  private static apiClient: AxiosInstance = api({
+    baseURL: courseServiceApiUrl,
+    isAuthorization: true
+  });
+
+  private static async handleResponse<T>(response: AxiosResponse<T>): Promise<T> {
+    if (response.status >= 200 && response.status < 300) {
+      return response.data;
+    }
+    throw new Error(`Unexpected response status: ${response.status}`);
+  }
+
+  private static handleError(error: any) {
+    console.error("API call failed", error);
+    return Promise.reject({
+      code: error.response?.data?.code || 503,
+      status: error.response?.data?.status || "Service Unavailable",
+      message: error.response?.data?.message || error.message
+    });
+  }
+  static async create(data: CreateSubmissionAssignmentFile) {
     try {
-      const response = await axios.post(
-        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.CREATE}`,
+      const response = await this.apiClient.post(
+        `${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.DEFAULT}`,
         data
       );
-
-      if (response.status === 201) {
-        return response.data;
-      }
+      return this.handleResponse(response);
     } catch (error: any) {
-      console.error("Failed to create submission assignment file", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
+      return this.handleError(error);
     }
   }
-  static async update(data: any, id: string) {
+  static async update(data: CreateSubmissionAssignmentFile, id: string) {
     try {
-      const response = await axios.put(
-        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.UPDATE_BY_ID}`.replace(
-          ":id",
-          id
-        ),
+      const response = await this.apiClient.put(
+        `${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.DEFAULT}/${id}`,
         data
       );
-
-      if (response.status === 200) {
-        return response.data;
-      }
+      return this.handleResponse(response);
     } catch (error: any) {
-      console.error("Failed to update submission assignment file", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
+      return this.handleError(error);
     }
   }
   static async deleteById(id: string) {
     try {
-      const response = await axios.delete(
-        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.DELETE_BY_ID}`.replace(
-          ":id",
-          id
-        )
+      const response = await this.apiClient.delete(
+        `${API.COURSE.SUBMISSION_ASSIGNMENT_FILE.DELETE_BY_ID}`.replace(":id", id)
       );
-
-      if (response.status === 200) {
-        return response.data;
-      }
+      return this.handleResponse(response);
     } catch (error: any) {
-      console.error("Failed to delete submission assignment file", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
+      return this.handleError(error);
     }
   }
 }
