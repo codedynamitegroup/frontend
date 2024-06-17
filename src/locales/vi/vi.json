@@ -666,6 +666,10 @@
 
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
 
+  "code_question_name": "Tên câu hỏi code",
+  "code_question_difficulty": "Độ khó",
+  "code_question_updated": "Cập nhật lần cuối",
+
   "detail_problem_description": "Mô tả",
   "detail_problem_discussion": "Thảo luận",
   "detail_problem_submission": "Bài nộp",

@@ -1,0 +1,105 @@
+.table-head {
+  background-color: var(--blue-500);
+  p {
+    color: #fff;
+  }
+
+  .table-cell {
+    min-width: 180px;
+    color: #fff !important;
+  }
+
+  .table-cell.small-heading {
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .table-cell.large-heading {
+    min-width: 250px !important;
+    max-width: 250px !important;
+  }
+}
+
+.col-table-body.cell-limit-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  max-width: 250px;
+  font-size: 16px;
+  color: #333;
+
+  transition: all 0.3s ease;
+}
+
+.col-table-body.cell-limit-text:hover {
+  white-space: normal;
+  overflow: visible;
+}
+
+.col-table-body.active {
+  color: #00ba00 !important;
+}
+
+.col-table-body.inactive {
+  color: var(--blue-500) !important;
+}
+
+.cell-actions {
+  width: 180px;
+}
+
+.noList {
+  text-align: center;
+}
+
+.btn-wrapper {
+  display: flex;
+  gap: 15px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.col-table-language-name {
+  display: flex !important;
+  gap: 10px;
+  align-items: center;
+}
+
+.dataGrid {
+  [class~="MuiDataGrid-columnHeaders"] {
+    background-color: var(--blue-500);
+    color: white;
+
+    [class~="MuiSvgIcon-root"] {
+      color: white;
+    }
+    [class~="MuiDataGrid-columnHeaderTitle"] {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  [class~="MuiDataGrid-virtualScroller"] {
+    [class~="MuiDataGrid-cellContent"] {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+.icon {
+  height: 24px !important;
+  width: 24px !important;
+  color: var(--gray-50);
+}

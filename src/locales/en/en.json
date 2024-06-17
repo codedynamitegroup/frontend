@@ -672,6 +672,10 @@
 
   "question_bank_management": "Question bank management",
 
+  "code_question_name": "Question name",
+  "code_question_difficulty": "Difficulty",
+  "code_question_updated": "Last updated",
+
   "detail_problem_description": "Description",
   "detail_problem_discussion": "Discussion",
   "detail_problem_submission": "Submissions",

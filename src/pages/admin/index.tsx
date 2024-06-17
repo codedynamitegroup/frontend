@@ -27,6 +27,8 @@ import { useDispatch } from "react-redux";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
 import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
+import AdminCodeQuestionManagement from "./CodeQuestionManagement";
+import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
 
 type Props = {};
 
@@ -86,6 +88,9 @@ const SystemAdminHomepage = (props: Props) => {
               element={<LecturerCodeQuestionCreation />}
             />
             <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
+
+            <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
+            <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
           </Routes>
         </Box>
         {/* </Box> */}
