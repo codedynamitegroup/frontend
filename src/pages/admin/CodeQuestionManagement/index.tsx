@@ -2,7 +2,7 @@ import { Box, Card, Divider, Grid, TablePagination } from "@mui/material";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TableTemplate from "components/common/table/TableTemplate";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
 import { routes } from "routes/routes";
@@ -34,21 +34,16 @@ import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionSe
 import { setCodeQuestions } from "reduxes/coreService/CodeQuestion";
 import ParagraphBody from "components/text/ParagraphBody";
 import { setSuccessMess } from "reduxes/AppStatus";
-
-interface AddContestProblemDialogQuestionInterface {
-  id: string;
-  questionId: string;
-  no: number;
-  name: string;
-  difficulty: string;
-  isPublic: boolean;
-  maxGrade: number;
-  defaultMark: number;
+enum FilterValue {
+  ALL = "ALL",
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD"
 }
-
 const AdminCodeQuestionManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const codeQuestionState = useSelector((state: RootState) => state.codeQuestion);
   const searchHandle = async (searchText: string) => {
@@ -145,7 +140,7 @@ const AdminCodeQuestionManagement = () => {
       isPublic,
       difficulty,
       pageNo = 0,
-      pageSize = 5
+      pageSize = 10
     }: {
       search?: string;
       isPublic?: boolean;
@@ -169,41 +164,11 @@ const AdminCodeQuestionManagement = () => {
         setIsLoading(false);
       }
     },
-    []
+    [dispatch, t]
   );
-
-  const handleGetQuestions = async ({
-    search = searchText,
-    pageNo = page,
-    pageSize = rowsPerPage
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    try {
-      const getQuestionResponse = await QuestionService.getQuestions({
-        search,
-        pageNo,
-        pageSize
-      });
-      dispatch(setQuestions(getQuestionResponse));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleDeleteQuestion = async (questionId: string) => {
-    try {
-      await QuestionService.deleteQuestion(questionId);
-      handleGetQuestions({ search: searchText });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     const fetchInitialQuestions = async () => {
-      await handleGetQuestions({ search: searchText });
       await handleGetAdminCodeQuestions({ search: searchText });
     };
     fetchInitialQuestions();
@@ -211,28 +176,11 @@ const AdminCodeQuestionManagement = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-    handleGetQuestions({ search: searchText, pageNo: newPage, pageSize: rowsPerPage });
-  };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-    handleGetQuestions({ search: searchText, pageNo: 0, pageSize: +event.target.value });
-  };
-
-  const navigate = useNavigate();
   const onEdit = (questionId: number) => {
-    navigate(
-      routes.lecturer.code_question.information.replace(":questionId", questionId.toString())
-    );
+    navigate(routes.admin.code_question.information.replace(":questionId", questionId.toString()));
   };
-  const onDelete = (questionId: number) => {
-    handleDeleteQuestion(questionId.toString());
-  };
+
   const [deletedCodeQuestionId, setDeletedCodeQuestionId] = useState<string>("");
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const onCancelConfirmDelete = () => {
@@ -276,6 +224,42 @@ const AdminCodeQuestionManagement = () => {
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
+  const [filters, setFilters] = React.useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "Difficulty level",
+      value: FilterValue.ALL
+    }
+  ]);
+
+  const handleApplyFilter = React.useCallback(() => {
+    const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
+    const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
+    handleGetAdminCodeQuestions({
+      search: searchText,
+      isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
+      difficulty:
+        !difficulty || difficulty === FilterValue.ALL
+          ? undefined
+          : (difficulty as QuestionDifficultyEnum)
+    });
+  }, [filters, handleGetAdminCodeQuestions, searchText]);
+
+  const handleCancelFilter = React.useCallback(() => {
+    setFilters([
+      {
+        key: "Difficulty level",
+        value: FilterValue.ALL
+      }
+    ]);
+    handleGetAdminCodeQuestions({
+      search: searchText
+    });
+  }, [handleGetAdminCodeQuestions, searchText]);
 
   return (
     <>
@@ -321,9 +305,59 @@ const AdminCodeQuestionManagement = () => {
               onHandleChange={searchHandle}
               createBtnText={t("code_management_create_new_title")}
               onClickCreate={() => {
-                navigate(routes.admin.users.create);
+                navigate(routes.admin.code_question.create);
               }}
-              isFilter={false}
+              numOfResults={totalElement}
+              filterKeyList={[
+                {
+                  label: t("common_difficulty_level"),
+                  value: "Difficulty level"
+                },
+                {
+                  label: t("contest_is_public"),
+                  value: "Is public"
+                }
+              ]}
+              filterValueList={{
+                "Difficulty level": [
+                  {
+                    label: t("common_all"),
+                    value: FilterValue.ALL
+                  },
+                  {
+                    label: t("common_easy"),
+                    value: FilterValue.EASY
+                  },
+                  {
+                    label: t("common_medium"),
+                    value: FilterValue.MEDIUM
+                  },
+                  {
+                    label: t("common_hard"),
+                    value: FilterValue.HARD
+                  }
+                ] as { label: string; value: string }[],
+                "Is public": [
+                  {
+                    label: t("common_all"),
+                    value: "ALL"
+                  },
+                  {
+                    label: t("common_public"),
+                    value: "PUBLIC"
+                  },
+                  {
+                    label: t("common_private"),
+                    value: "PRIVATER"
+                  }
+                ] as { label: string; value: string }[]
+              }}
+              filters={filters}
+              handleChangeFilters={(filters: { key: string; value: string }[]) => {
+                setFilters(filters);
+              }}
+              onHandleApplyFilter={handleApplyFilter}
+              onHandleCancelFilter={handleCancelFilter}
             />
           </Grid>
           <Grid item xs={12}>
