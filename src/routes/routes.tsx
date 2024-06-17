@@ -234,7 +234,8 @@ export const routes = {
         signups: "/admin/contests/edit/:contestId/signups",
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
-      create: "/admin/contests/create"
+      create: "/admin/contests/create",
+      submissions: "/admin/contests/:contestId/submissions"
     },
     users: {
       root: "/admin/users",
@@ -243,6 +244,15 @@ export const routes = {
         details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
+    },
+    code_question: {
+      root: "/admin/code-questions",
+      create: "/admin/code-questions/create",
+      detail: "/admin/code-questions/edit/:questionId/*",
+      information: "/admin/code-questions/edit/:questionId/information",
+      test_cases: "/admin/code-questions/edit/:questionId/test-cases",
+      code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
+      languages: "/admin/code-questions/edit/:questionId/languages"
     },
     question_bank: {
       root: "/admin/question-bank-management",

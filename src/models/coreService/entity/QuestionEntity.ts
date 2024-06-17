@@ -179,3 +179,11 @@ export interface QuestionClone {
 export interface QuestionCloneRequest {
   questions: QuestionClone[];
 }
+
+export interface CodeQuestion {
+  id: string;
+  question: GetQuestion;
+  dslTemplate: string;
+  isPublic: boolean;
+  maxGrade: number;
+}

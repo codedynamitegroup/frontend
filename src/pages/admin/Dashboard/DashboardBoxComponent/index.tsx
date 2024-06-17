@@ -9,7 +9,7 @@ interface PropsData {
   icon: React.ReactNode;
 }
 
-const DasbboradBoxComponent = (props: PropsData) => {
+const DashboardBoxComponent = (props: PropsData) => {
   const { title, value, mainColor, icon } = props;
   return (
     <>
@@ -82,4 +82,4 @@ const DasbboradBoxComponent = (props: PropsData) => {
   );
 };
 
-export default DasbboradBoxComponent;
+export default DashboardBoxComponent;

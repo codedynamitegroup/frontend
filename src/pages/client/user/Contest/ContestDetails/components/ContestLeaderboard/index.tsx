@@ -17,6 +17,7 @@ import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestion
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import { millisToFormatTimeString } from "utils/time";
 import React from "react";
+import InfoTooltip from "components/common/infoTooltip";
 
 interface PropsData {
   page: number;
@@ -66,7 +67,14 @@ export default function ContestLeaderboard(props: PropsData) {
                 className={clsx(classes.tableHeader, classes.tableCell)}
                 translation-key='contest_detail_leaderboard_total_time'
               >
-                {t("contest_detail_leaderboard_total_time")}
+                {t("contest_detail_leaderboard_total_time")}{" "}
+                {
+                  <InfoTooltip
+                    tooltipDescription={t("contest_detail_leaderboard_total_time_description")}
+                    fontSize={"13px"}
+                    margin={"0 0 0 5px"}
+                  />
+                }
               </TableCell>
               <TableCell
                 align='center'
@@ -118,7 +126,7 @@ export default function ContestLeaderboard(props: PropsData) {
                   <TableCell align='center' className={clsx(classes.tableCell)}>
                     <Typography color={"var(--orange-1)"}>
                       {currentUserRank.totalTime
-                        ? millisToFormatTimeString(currentUserRank.totalTime)
+                        ? millisToFormatTimeString(currentUserRank.totalTime * 1000)
                         : millisToFormatTimeString(0)}
                     </Typography>
                   </TableCell>
@@ -187,7 +195,7 @@ export default function ContestLeaderboard(props: PropsData) {
                 >
                   <Typography color={"var(--orange-1)"}>
                     {row.totalTime
-                      ? millisToFormatTimeString(row.totalTime)
+                      ? millisToFormatTimeString(row.totalTime * 1000)
                       : millisToFormatTimeString(0)}
                   </Typography>
                 </TableCell>

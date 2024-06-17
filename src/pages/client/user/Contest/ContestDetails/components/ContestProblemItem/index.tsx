@@ -32,7 +32,7 @@ const ContestProblemItem = (props: PropsData) => {
   return (
     <Paper className={classes.container}>
       <Grid container alignItems={"center"} justifyContent='space-between'>
-        <Grid item xs={9}>
+        <Grid item xs={8.5}>
           <Link
             component={RouterLink}
             to={routes.user.contest.detail.problems.description
@@ -67,7 +67,7 @@ const ContestProblemItem = (props: PropsData) => {
             </Stack>
           </Link>
         </Grid>
-        <Grid item justifyContent='end' xs={3}>
+        <Grid item justifyContent='end' xs={3.5}>
           <Stack direction={"row"}>
             <Divider orientation='vertical' flexItem />
             <Box className={clsx(classes.submissionContainer, classes.roundContainer)}>

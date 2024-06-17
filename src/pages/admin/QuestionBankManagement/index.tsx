@@ -40,7 +40,6 @@ import {
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
-import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
 import CustomDataGrid from "components/common/CustomDataGrid";
