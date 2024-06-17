@@ -1,7 +1,7 @@
 .navbarItem {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
+  // flex-grow: 1;
+  // display: flex;
+  // flex-direction: row;
   gap: 10px;
 
   @media (min-width: 900px) {
@@ -26,17 +26,24 @@
   align-items: center;
 }
 .toolbar {
+  .toolbarGroup {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+  }
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 56px;
 }
 .item {
   a {
     padding: 10px;
     &:hover {
+      border-radius: 5px;
       background-color: var(--blue-1);
     }
   }

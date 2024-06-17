@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
+import IconButton from "@mui/joy/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -29,6 +29,9 @@ import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 
 interface ILinkMenu {
   name: string;
@@ -55,6 +58,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const { t } = useTranslation();
   const { toggleDrawer } = props;
   const { loggedUser, logout, isLecturer, isStudent, isSystemAdmin, isMoodleAdmin } = useAuth();
+  const dispatch = useDispatch();
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus.isOpen);
 
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -172,21 +177,25 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     });
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
+
   return (
     <AppBar position='fixed' open={open} className={classes.header} ref={ref}>
-      <Container maxWidth='xl'>
-        <Toolbar disableGutters className={classes.toolbar}>
+      <Toolbar disableGutters className={classes.toolbar}>
+        <Box className={classes.toolbarGroup}>
           <Box className={classes.wrapper}>
             {toggleDrawer && (
               <IconButton
                 aria-label='open drawer'
                 onClick={toggleDrawer}
-                edge='start'
                 sx={{
-                  mr: 2
+                  mr: 2,
+                  backgroundColor: sidebarStatus ? "var(--blue-light-4)" : "#EEEEEE",
+                  transform: sidebarStatus ? "scaleX(1)" : "scaleX(-1)",
+                  color: sidebarStatus ? "#002db3" : "var(--gray-80)"
                 }}
+                variant='soft'
               >
-                <MenuIcon />
+                <MenuOpenRoundedIcon />
               </IconButton>
             )}
 
@@ -275,6 +284,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </ParagraphSmall>
             )}
           </Box>
+        </Box>
+
+        <Box className={classes.toolbarGroup}>
           <Box>
             <LanguageSelector />
           </Box>
@@ -334,161 +346,161 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </Grid>
             </Grid>
           )}
-        </Toolbar>
-        <Menu
-          anchorEl={anchorEl}
-          id='account-menu'
-          className={classes.menuProfile}
-          open={openMenu}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              "& .MuiAvatar-root": {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1
-              },
-              "&::before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0
-              }
+        </Box>
+      </Toolbar>
+      <Menu
+        anchorEl={anchorEl}
+        id='account-menu'
+        className={classes.menuProfile}
+        open={openMenu}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "& .MuiAvatar-root": {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1
+            },
+            "&::before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0
             }
+          }
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem
+          onClick={() => {
+            activeRoute(routes.admin.homepage.root)
+              ? navigate(routes.admin.information)
+              : activeRoute(routes.org_admin.homepage.root)
+                ? navigate(routes.org_admin.information)
+                : navigate(routes.user.information);
           }}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          translation-key='common_account_info'
         >
+          <ListItemIcon>
+            <Person fontSize='small' />
+          </ListItemIcon>
+          {t("common_account_info")}
+        </MenuItem>
+        {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
           <MenuItem
-            onClick={() => {
-              activeRoute(routes.admin.homepage.root)
-                ? navigate(routes.admin.information)
-                : activeRoute(routes.org_admin.homepage.root)
-                  ? navigate(routes.org_admin.information)
-                  : navigate(routes.user.information);
-            }}
-            translation-key='common_account_info'
+            onClick={() => navigate(routes.admin.dashboard)}
+            translation-key='common_admin_page'
           >
             <ListItemIcon>
-              <Person fontSize='small' />
+              <Box className={classes.imgIcon}>
+                <img src={images.admin.adminManagement} alt='admin management img' />
+              </Box>
             </ListItemIcon>
-            {t("common_account_info")}
+
+            {t("common_admin_page")}
           </MenuItem>
-          {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
-            <MenuItem
-              onClick={() => navigate(routes.admin.dashboard)}
-              translation-key='common_admin_page'
-            >
-              <ListItemIcon>
-                <Box className={classes.imgIcon}>
-                  <img src={images.admin.adminManagement} alt='admin management img' />
-                </Box>
-              </ListItemIcon>
-
-              {t("common_admin_page")}
-            </MenuItem>
-          )}
-          {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
-            (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
-            <MenuItem
-              onClick={() => navigate(routes.user.dashboard.root)}
-              translation-key='common_user_page'
-            >
-              <ListItemIcon>
-                <Box className={classes.imgIcon}>
-                  <img src={images.admin.clientPage} alt='client page img' />
-                </Box>
-              </ListItemIcon>
-
-              {t("common_user_page")}
-            </MenuItem>
-          )}
-          {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
-            <MenuItem
-              onClick={() => navigate(routes.org_admin.users.root)}
-              translation-key='common_admin_page'
-            >
-              <ListItemIcon>
-                <Box className={classes.imgIcon}>
-                  <img src={images.admin.adminManagement} alt='admin management img' />
-                </Box>
-              </ListItemIcon>
-
-              {t("common_admin_page")}
-            </MenuItem>
-          )}
-          <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
+        )}
+        {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
+          (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
+          <MenuItem
+            onClick={() => navigate(routes.user.dashboard.root)}
+            translation-key='common_user_page'
+          >
             <ListItemIcon>
-              <Logout className={classes.iconLogout} fontSize='small' />
+              <Box className={classes.imgIcon}>
+                <img src={images.admin.clientPage} alt='client page img' />
+              </Box>
             </ListItemIcon>
-            {t("common_logout")}
+
+            {t("common_user_page")}
           </MenuItem>
-        </Menu>
-        <Drawer
-          className={classes.drawer}
-          sx={{
+        )}
+        {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
+          <MenuItem
+            onClick={() => navigate(routes.org_admin.users.root)}
+            translation-key='common_admin_page'
+          >
+            <ListItemIcon>
+              <Box className={classes.imgIcon}>
+                <img src={images.admin.adminManagement} alt='admin management img' />
+              </Box>
+            </ListItemIcon>
+
+            {t("common_admin_page")}
+          </MenuItem>
+        )}
+        <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
+          <ListItemIcon>
+            <Logout className={classes.iconLogout} fontSize='small' />
+          </ListItemIcon>
+          {t("common_logout")}
+        </MenuItem>
+      </Menu>
+      <Drawer
+        className={classes.drawer}
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box"
-            },
-            display: { xs: "flex", md: "none" }
-          }}
-          variant='persistent'
-          anchor='left'
-          open={open}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "ltr" ? <CloseIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <List>
-            {pagesHeader
-              .filter((page) => page.position === "left")
-              .map((item, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemButton>
-                    <ListItemText
-                      primary={
-                        <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-          </List>
-          <Divider />
-          <List>
-            {pagesHeader
-              .filter((page) => page.position === "right")
-              .map((item, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemButton>
-                    <ListItemText
-                      primary={
-                        <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-          </List>
-        </Drawer>
-      </Container>
+            boxSizing: "border-box"
+          },
+          display: { xs: "flex", md: "none" }
+        }}
+        variant='persistent'
+        anchor='left'
+        open={open}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? <CloseIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <List>
+          {pagesHeader
+            .filter((page) => page.position === "left")
+            .map((item, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton>
+                  <ListItemText
+                    primary={
+                      <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+        </List>
+        <Divider />
+        <List>
+          {pagesHeader
+            .filter((page) => page.position === "right")
+            .map((item, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton>
+                  <ListItemText
+                    primary={
+                      <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+        </List>
+      </Drawer>
     </AppBar>
   );
 });

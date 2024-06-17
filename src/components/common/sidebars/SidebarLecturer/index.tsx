@@ -13,6 +13,8 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "reduxes/SidebarStatus";
 
 const drawerWidth = 300;
 
@@ -66,9 +68,10 @@ export default function SidebarLecturer({ children }: any) {
     }
   ];
   const [open, setOpen] = React.useState(true);
-
+  const dispatch = useDispatch();
   const toggleDrawer = () => {
     setOpen((pre) => !pre);
+    dispatch(toggleSidebar());
   };
 
   const headerRef = useRef<HTMLDivElement>(null);
