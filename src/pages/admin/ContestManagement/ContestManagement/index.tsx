@@ -418,12 +418,12 @@ const ContestManagement = () => {
 
   useEffect(() => {
     const fetchContests = async () => {
-      dispatch(setInititalLoading(true));
-      await handleGetContests({
+      // dispatch(setInititalLoading(true));
+      handleGetContests({
         searchName: "",
         startTimeFilter: ContestStartTimeFilterEnum.ALL
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
     fetchContests();
