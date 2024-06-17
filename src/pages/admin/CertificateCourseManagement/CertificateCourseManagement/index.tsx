@@ -350,7 +350,7 @@ const CertificateCourseManagement = () => {
             onHandleChange={handleSearchChange}
             createBtnText={t("certificate_course_create_btn")}
             onClickCreate={() => {
-              navigate(routes.admin.contest.create);
+              navigate(routes.admin.certificate.create);
             }}
             numOfResults={totalElement}
             // filterKeyList={[

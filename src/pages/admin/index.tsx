@@ -25,6 +25,7 @@ import qtype from "utils/constant/Qtype";
 import AdminQuestionBankManagement from "./QuestionBankManagement";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "reduxes/SidebarStatus";
+import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
 
 type Props = {};
 
@@ -82,6 +83,7 @@ const SystemAdminHomepage = (props: Props) => {
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
             />
+            <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
           </Routes>
         </Box>
         {/* </Box> */}
