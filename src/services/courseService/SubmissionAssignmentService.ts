@@ -4,6 +4,44 @@ import { API } from "constants/API";
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
 export class SubmissionAssignmentService {
+  static async createSubmissionAssignment(data: any) {
+    try {
+      const response = await axios.post(
+        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT.DEFAULT}`,
+        data
+      );
+
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create submission assignment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async update(data: any, id: string) {
+    try {
+      const response = await axios.put(
+        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT.DEFAULT}/${id}`,
+        data
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to update submission assignment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async getSubmissionAssignmentById(userId: string, assignmentId: string) {
     try {
       const response = await axios.get(

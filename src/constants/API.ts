@@ -103,6 +103,14 @@ export const API = {
       COUNT_TO_GRADE: "/course/submission-assignment/countToGrade",
       COUNT_ALL: "/course/submission-assignment/countAll"
     },
+    SUBMISSION_ASSIGNMENT_FILE: {
+      DEFAULT: "/course/submission-assignment-file",
+      CREATE: "/course/submission-assignment-file",
+      UPDATE_BY_ID: "/course/submission-assignment-file/:id",
+      DELETE_BY_ID: "/course/submission-assignment-file/:id",
+      GET_BY_ID: "/course/submission-assignment-file/:id"
+    },
+
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",

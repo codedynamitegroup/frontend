@@ -128,20 +128,19 @@ const SubmitExamSummary = lazy(
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
+// function ScrollToTop() {
+//   const { pathname } = useLocation();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+//   useEffect(() => {
+//     window.scrollTo(0, 0);
+//   }, [pathname]);
 
-  return null;
-}
+//   return null;
+// }
 
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
-      <ScrollToTop />
       <Route element={<PersistLogin />}>
         <Route path={routes.user.problem.detail.root} element={<DetailProblem />} />
         <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
