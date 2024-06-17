@@ -342,6 +342,7 @@
   "contest_detail_join_button": "Tham gia",
   "contest_detail_leaderboard_rank": "Hạng",
   "contest_detail_leaderboard_total_time": "Tổng thời gian làm",
+  "contest_detail_leaderboard_total_time_description": "Thời gian này được tính từ thời điểm bắt đầu cuộc thi đến thời điểm bạn nộp bài toán cuối cùng",
   "contest_detail_join_success": "Đăng ký tham gia cuộc thi thành công",
   "contest_detail_register_tooltip": "Hãy đăng nhập để có thể tham gia cuộc thi này",
   "contest_detail_already_started_message": "Cuộc thi đã bắt đầu. Bạn không thể tham gia",

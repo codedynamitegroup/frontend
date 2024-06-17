@@ -341,6 +341,7 @@
   "contest_detail_leaderboard_rank": "Rank",
   "contest_detail_leaderboard_participant": "Participant",
   "contest_detail_leaderboard_total_time": "Total time",
+  "contest_detail_leaderboard_total_time_description": "This time count from the beginning of the contest to the time you submit the last problem",
   "contest_detail_join_success": "Join contest successfully",
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",

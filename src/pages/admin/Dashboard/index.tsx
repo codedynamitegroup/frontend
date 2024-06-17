@@ -1,6 +1,6 @@
 import { Box, Grid, Skeleton, Stack, TableCell } from "@mui/material";
 import { useEffect, useState } from "react";
-import DasbboradBoxComponent from "./DashboardBoxComponent";
+import DashboardBoxComponent from "./DashboardBoxComponent";
 import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
@@ -467,7 +467,7 @@ const AdminDashboard = () => {
               <Grid item xs={12}>
                 <Grid container spacing={4}>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.onlineUser}
@@ -481,7 +481,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.offlineUser}
@@ -495,7 +495,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.totalUser}
@@ -509,7 +509,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.loginTodayUser}
@@ -671,7 +671,7 @@ const AdminDashboard = () => {
               <Grid item xs={12}>
                 <Grid container spacing={4}>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.course}
@@ -685,7 +685,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.userEnrollment}
@@ -699,7 +699,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.activeCourse}
@@ -713,7 +713,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.inactiveCourse}
@@ -1157,7 +1157,7 @@ const AdminDashboard = () => {
               <Grid item xs={12}>
                 <Grid container spacing={4}>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.contestDashboard}
@@ -1171,7 +1171,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.contestParticipant}
@@ -1185,7 +1185,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.happeningContest}
@@ -1199,7 +1199,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.upcomingContest}
@@ -1213,7 +1213,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.closedContest}
@@ -1382,7 +1382,7 @@ const AdminDashboard = () => {
               <Grid item xs={12}>
                 <Grid container spacing={4}>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.certificateCourse}
@@ -1396,7 +1396,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.certificateEnrollment}
@@ -1410,7 +1410,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.certificateCompleted}
@@ -1424,7 +1424,7 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6} lg={3}>
-                    <DasbboradBoxComponent
+                    <DashboardBoxComponent
                       icon={
                         <img
                           src={images.admin.certificateRating}

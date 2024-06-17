@@ -233,7 +233,8 @@ export const routes = {
         signups: "/admin/contests/edit/:contestId/signups",
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
-      create: "/admin/contests/create"
+      create: "/admin/contests/create",
+      submissions: "/admin/contests/:contestId/submissions"
     },
     users: {
       root: "/admin/users",

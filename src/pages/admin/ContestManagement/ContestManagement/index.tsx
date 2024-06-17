@@ -25,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { setContests, setLoading } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
@@ -311,12 +310,7 @@ const ContestManagement = () => {
             label='Edit'
             onClick={() => {
               navigate(
-                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId),
-                {
-                  state: {
-                    contestName: params.row.name
-                  }
-                }
+                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId)
               );
             }}
           />,
