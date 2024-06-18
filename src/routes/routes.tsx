@@ -235,7 +235,8 @@ export const routes = {
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
       create: "/admin/contests/create",
-      submissions: "/admin/contests/:contestId/submissions"
+      submissions: "/admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     },
     users: {
       root: "/admin/users",
