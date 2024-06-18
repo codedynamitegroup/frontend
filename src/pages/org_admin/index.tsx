@@ -18,6 +18,7 @@ import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/
 import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
 import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 import OrgAdminContestManagement from "./ContestManagement/OrgAdminContestManagement";
+import OrgAdminCreateContest from "./ContestManagement/OrgAdminCreateContest";
 
 type Props = {};
 
@@ -35,6 +36,28 @@ const OrganizationAdminHomepage = (props: Props) => {
         <Box className={classes.body}>
           <Routes>
             <Route path={"contests"} element={<OrgAdminContestManagement />} />
+            <Route path={"contests/create"} element={<OrgAdminCreateContest />} />
+            <Route
+              path={"contests/:contestId/submissions"}
+              element={
+                // <OrgAdminContestSubmissions />
+                <div></div>
+              }
+            />
+            <Route
+              path={"contests/:contestId/submissions/:submissionId"}
+              element={
+                // <OrgAdminContestSubmissionDetails />
+                <div></div>
+              }
+            />
+            <Route
+              path={"contests/edit/:contestId/*"}
+              element={
+                // <OrgAdminEditContestDetails isDrawerOpen={open} />
+                <div></div>
+              }
+            />
 
             <Route path={"information"} element={<UserInformation />} />
             <Route path={"users"} element={<UserManagement />} />
