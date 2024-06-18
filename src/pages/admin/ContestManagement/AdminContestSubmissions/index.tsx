@@ -1,5 +1,5 @@
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, Card, Divider } from "@mui/material";
+import { Avatar, Box, Card, Divider, Stack } from "@mui/material";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
@@ -24,7 +24,8 @@ import {
 } from "@mui/x-data-grid";
 import Heading6 from "components/text/Heading6";
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
-import { GradingStatus } from "models/codeAssessmentService/enum/GradingStatus";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 
 const AdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -32,6 +33,7 @@ const AdminContestSubmissions = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [page, setPage] = useState(0);
+
   const [pageSize, setPageSize] = useState(10);
 
   const { contestId } = useParams<{ contestId: string }>();
@@ -70,93 +72,13 @@ const AdminContestSubmissions = () => {
     }) => {
       setIsLoading(true);
       try {
-        // const getAdminCodeSubmissionsByContestIdResponse: CodeSubmissionPaginationList =
-        //   await CodeSubmissionService.getAdminCodeSubmissionList({
-        //     contestId,
-        //     pageNo,
-        //     pageSize
-        //   });
-
-        // console.log(
-        //   "getAdminCodeSubmissionsByContestIdResponse",
-        //   getAdminCodeSubmissionsByContestIdResponse
-        // );
-        setCodeSubmissions([
-          {
-            id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-            codeQuestionId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-            programmingLanguageId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-            avgRuntime: 0,
-            avgMemory: 0,
-            createdAt: "2021-10-01",
-            gradingStatus: GradingStatus.GRADING,
-            maxGrade: 100,
-            achievedGrade: 0,
-            description: "description",
-            user: {
-              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-              firstName: "firstName",
-              lastName: "lastName",
-              email: "email"
-            },
-            codeQuestion: {
-              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-              name: "name"
-            },
-            headCode: "headCode",
-            bodyCode: "bodyCode",
-            tailCode: "tailCode",
-            sourceCode: "sourceCode",
-            firstFailTestCase: {
-              input: "input",
-              output: "output",
-              actualOutput: "actualOutput",
-              stderr: "stderr",
-              compileOutput: "compileOutput",
-              runtime: "runtime",
-              memory: "memory",
-              message: "message",
-              description: "description"
-            }
-          },
-          {
-            id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c2",
-            codeQuestionId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-            programmingLanguageId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-            avgRuntime: 0,
-            avgMemory: 0,
-            createdAt: "2021-10-01",
-            gradingStatus: GradingStatus.GRADING,
-            maxGrade: 100,
-            achievedGrade: 0,
-            description: "description",
-            user: {
-              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-              firstName: "firstName",
-              lastName: "lastName",
-              email: "email"
-            },
-            codeQuestion: {
-              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
-              name: "name"
-            },
-            headCode: "headCode",
-            bodyCode: "bodyCode",
-            tailCode: "tailCode",
-            sourceCode: "sourceCode",
-            firstFailTestCase: {
-              input: "input",
-              output: "output",
-              actualOutput: "actualOutput",
-              stderr: "stderr",
-              compileOutput: "compileOutput",
-              runtime: "runtime",
-              memory: "memory",
-              message: "message",
-              description: "description"
-            }
-          }
-        ]);
+        const getAdminCodeSubmissionsByContestIdResponse: CodeSubmissionPaginationList =
+          await CodeSubmissionService.getAdminCodeSubmissionList({
+            contestId,
+            pageNo,
+            pageSize
+          });
+        setCodeSubmissions(getAdminCodeSubmissionsByContestIdResponse.codeSubmissions);
         setIsLoading(false);
       } catch (error: any) {
         console.log("error", error);
@@ -171,12 +93,24 @@ const AdminContestSubmissions = () => {
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {};
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetAdminCodeSubmissionsByContestId({
+      contestId,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
+  };
   const rowClickHandler = (params: GridRowParams<any>) => {
-    // console.log(params);
+    navigate(
+      routes.admin.contest.submission_detail
+        .replace(":submissionId", params.id.toString() || "")
+        .replace(":contestId", contestId || "")
+    );
   };
 
-  const totalElement = useMemo(() => 0, []);
+  const totalElement = useMemo(() => codeSubmissions.length, [codeSubmissions]);
 
   const tableHeading: GridColDef[] = [
     {
@@ -192,7 +126,9 @@ const AdminContestSubmissions = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>{params.row.codeQuestion?.name || ""}</ParagraphSmall>
+          <ParagraphSmall fontWeight={500} width={"auto"}>
+            {params.row.codeQuestion?.name || ""}
+          </ParagraphSmall>
         );
       }
     },
@@ -208,13 +144,32 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.gradingStatus}</ParagraphSmall>;
+        return (
+          <Heading6
+            fontWeight={700}
+            colorname={
+              params.row.gradingStatus === "GRADING"
+                ? "--orange-4"
+                : params.row.description !== "Accepted"
+                  ? "--red-error"
+                  : "--green-600"
+            }
+          >
+            {params.row.gradingStatus === "GRADING"
+              ? params.row.gradingStatus
+              : params.row.description ??
+                (params.row.gradingStatus === "GRADING_SYSTEM_UNAVAILABLE"
+                  ? "GRADING SYSTEM UNAVAILABLE"
+                  : "")}
+          </Heading6>
+        );
       }
     },
     {
       field: "email",
       headerName: t("common_email"),
       flex: 0.6,
+      minWidth: 270,
       renderHeader: () => {
         return (
           <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -223,7 +178,29 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.user?.email || ""}</ParagraphSmall>;
+        return (
+          <Stack
+            direction='row'
+            gap={2}
+            alignItems='center'
+            justifyContent='flex-start'
+            margin={"5px"}
+            sx={{
+              textOverflow: "ellipsis"
+            }}
+          >
+            <Avatar
+              sx={{
+                bgcolor: `${generateHSLColorByRandomText(`${params.row.firstName} ${params.row.lastName}`)}`
+              }}
+              alt={params.row.user.email}
+              src={params.row.user?.avatarUrl}
+            >
+              {params.row.user.firstName.charAt(0)}
+            </Avatar>
+            <ParagraphSmall fontWeight={500}>{params.row.user.email}</ParagraphSmall>
+          </Stack>
+        );
       }
     },
     {
@@ -238,7 +215,11 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.programmingLanguageId}</ParagraphSmall>;
+        return (
+          <ParagraphSmall fontWeight={500} width={"auto"}>
+            {params.row.programmingLanguageName}
+          </ParagraphSmall>
+        );
       }
     },
     {
@@ -253,7 +234,13 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <></>;
+        return (
+          <ParagraphSmall fontWeight={500} width={"auto"}>
+            {params.row.avgRuntime === undefined || params.row.gradingStatus === "GRADING"
+              ? "N/A"
+              : `${roundedNumber(params.row.avgRuntime, 3)}s`}
+          </ParagraphSmall>
+        );
       }
     },
     {
@@ -268,7 +255,13 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <></>;
+        return (
+          <ParagraphSmall fontWeight={500} width={"auto"}>
+            {params.row.avgMemory === undefined || params.row.gradingStatus === "GRADING"
+              ? "N/A"
+              : `${roundedNumber(kiloByteToMegaByte(params.row.avgMemory), 3)}MB`}
+          </ParagraphSmall>
+        );
       }
     }
   ];
@@ -330,7 +323,7 @@ const AdminContestSubmissions = () => {
         <Box
           sx={{
             margin: "20px",
-            minHeight: "600px"
+            minHeight: "700px"
           }}
         >
           <Heading1>{t("detail_problem_submission")}</Heading1>

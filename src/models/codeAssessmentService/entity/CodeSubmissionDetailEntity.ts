@@ -6,6 +6,7 @@ export interface CodeSubmissionDetailEntity {
   id: UUID;
   codeQuestionId: UUID;
   programmingLanguageId: UUID;
+  programmingLanguageName: string;
   avgRuntime: number | undefined;
   avgMemory: number | undefined;
   createdAt: string | undefined;
@@ -18,6 +19,7 @@ export interface CodeSubmissionDetailEntity {
     id: string;
     firstName: string;
     lastName: string;
+    avatarUrl: string;
     email: string;
   };
 

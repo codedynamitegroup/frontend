@@ -204,6 +204,9 @@ const CustomDataGrid = (props: DataGridProps) => {
         sx={
           personalSx
             ? {
+                "& .MuiDataGrid-row:hover": {
+                  cursor: onClickRow ? "pointer" : "default"
+                },
                 "& .MuiDataGrid-overlayWrapper": {
                   height: "auto !important",
                   margin: "20px"

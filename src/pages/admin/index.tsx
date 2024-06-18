@@ -29,6 +29,7 @@ import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertifi
 import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
 import AdminCodeQuestionManagement from "./CodeQuestionManagement";
 import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
+import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmissionDetails";
 
 type Props = {};
 
@@ -50,6 +51,10 @@ const SystemAdminHomepage = (props: Props) => {
             <Route path={"contests"} element={<ContestManagement />} />
             <Route path={"contests/create"} element={<CreateContest />} />
             <Route path={"contests/:contestId/submissions"} element={<AdminContestSubmissions />} />
+            <Route
+              path={"contests/:contestId/submissions/:submissionId"}
+              element={<AdminContestSubmissionDetails />}
+            />
             <Route
               path={"contests/edit/:contestId/*"}
               element={<EditContestDetails isDrawerOpen={open} />}
