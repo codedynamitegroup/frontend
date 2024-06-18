@@ -1036,5 +1036,7 @@
   "question_essay_attachment": "Number of allow attachment(s)",
   "common_avg_rating": "Average rating",
   "certificate_course_create_btn": "Add certificate course",
-  "certificate_course_management_title": "Certificate course management"
+  "certificate_course_management_title": "Certificate course management",
+  "create_certificate_course_title": "Create certificate course",
+  "certificate_course_management": "Certificate course management"
 }
