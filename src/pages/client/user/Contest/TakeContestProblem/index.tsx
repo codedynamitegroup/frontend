@@ -269,7 +269,6 @@ export default function TakeContestProblem() {
       currentExecuteData.system_language_id !== undefined
     ) {
       setSubmisisonLoading(true);
-      console.log("contestId ccc", contestId);
       CodeSubmissionService.createCodeSubmission({
         codeQuestionId: problemId,
         languageId: currentExecuteData.system_language_id,

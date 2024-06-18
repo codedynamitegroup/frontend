@@ -24,6 +24,7 @@ import {
 } from "@mui/x-data-grid";
 import Heading6 from "components/text/Heading6";
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
+import { GradingStatus } from "models/codeAssessmentService/enum/GradingStatus";
 
 const AdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ const AdminContestSubmissions = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
 
-  const [codeSubmissions, setCodeSubmissions] = useState<CodeSubmissionDetailEntity[]>();
+  const [codeSubmissions, setCodeSubmissions] = useState<CodeSubmissionDetailEntity[]>([]);
 
   const handleGetContestById = useCallback(
     async (id: string) => {
@@ -69,16 +70,93 @@ const AdminContestSubmissions = () => {
     }) => {
       setIsLoading(true);
       try {
-        const getAdminCodeSubmissionsByContestIdResponse: CodeSubmissionPaginationList =
-          await CodeSubmissionService.getAdminCodeSubmissionList({
-            contestId,
-            pageNo,
-            pageSize
-          });
-        console.log(
-          "getAdminCodeSubmissionsByContestIdResponse",
-          getAdminCodeSubmissionsByContestIdResponse
-        );
+        // const getAdminCodeSubmissionsByContestIdResponse: CodeSubmissionPaginationList =
+        //   await CodeSubmissionService.getAdminCodeSubmissionList({
+        //     contestId,
+        //     pageNo,
+        //     pageSize
+        //   });
+
+        // console.log(
+        //   "getAdminCodeSubmissionsByContestIdResponse",
+        //   getAdminCodeSubmissionsByContestIdResponse
+        // );
+        setCodeSubmissions([
+          {
+            id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+            codeQuestionId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+            programmingLanguageId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+            avgRuntime: 0,
+            avgMemory: 0,
+            createdAt: "2021-10-01",
+            gradingStatus: GradingStatus.GRADING,
+            maxGrade: 100,
+            achievedGrade: 0,
+            description: "description",
+            user: {
+              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+              firstName: "firstName",
+              lastName: "lastName",
+              email: "email"
+            },
+            codeQuestion: {
+              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+              name: "name"
+            },
+            headCode: "headCode",
+            bodyCode: "bodyCode",
+            tailCode: "tailCode",
+            sourceCode: "sourceCode",
+            firstFailTestCase: {
+              input: "input",
+              output: "output",
+              actualOutput: "actualOutput",
+              stderr: "stderr",
+              compileOutput: "compileOutput",
+              runtime: "runtime",
+              memory: "memory",
+              message: "message",
+              description: "description"
+            }
+          },
+          {
+            id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c2",
+            codeQuestionId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+            programmingLanguageId: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+            avgRuntime: 0,
+            avgMemory: 0,
+            createdAt: "2021-10-01",
+            gradingStatus: GradingStatus.GRADING,
+            maxGrade: 100,
+            achievedGrade: 0,
+            description: "description",
+            user: {
+              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+              firstName: "firstName",
+              lastName: "lastName",
+              email: "email"
+            },
+            codeQuestion: {
+              id: "a2e5afa6-f0c8-422e-8895-a706d1a1d6c1",
+              name: "name"
+            },
+            headCode: "headCode",
+            bodyCode: "bodyCode",
+            tailCode: "tailCode",
+            sourceCode: "sourceCode",
+            firstFailTestCase: {
+              input: "input",
+              output: "output",
+              actualOutput: "actualOutput",
+              stderr: "stderr",
+              compileOutput: "compileOutput",
+              runtime: "runtime",
+              memory: "memory",
+              message: "message",
+              description: "description"
+            }
+          }
+        ]);
         setIsLoading(false);
       } catch (error: any) {
         console.log("error", error);
@@ -102,6 +180,23 @@ const AdminContestSubmissions = () => {
 
   const tableHeading: GridColDef[] = [
     {
+      field: "problem",
+      headerName: t("common_problem"),
+      flex: 0.5,
+      renderHeader: () => {
+        return (
+          <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_problem")}
+          </Heading6>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <ParagraphSmall width={"auto"}>{params.row.codeQuestion?.name || ""}</ParagraphSmall>
+        );
+      }
+    },
+    {
       field: "status",
       headerName: t("common_status"),
       flex: 0.5,
@@ -113,13 +208,13 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <></>;
+        return <ParagraphSmall width={"auto"}>{params.row.gradingStatus}</ParagraphSmall>;
       }
     },
     {
       field: "email",
       headerName: t("common_email"),
-      flex: 0.7,
+      flex: 0.6,
       renderHeader: () => {
         return (
           <Heading6 fontWeight={600} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -128,7 +223,7 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <></>;
+        return <ParagraphSmall width={"auto"}>{params.row.user?.email || ""}</ParagraphSmall>;
       }
     },
     {
@@ -143,7 +238,7 @@ const AdminContestSubmissions = () => {
         );
       },
       renderCell: (params) => {
-        return <></>;
+        return <ParagraphSmall width={"auto"}>{params.row.programmingLanguageId}</ParagraphSmall>;
       }
     },
     {
@@ -182,10 +277,15 @@ const AdminContestSubmissions = () => {
     const fetchData = async () => {
       if (contestId) {
         await handleGetContestById(contestId);
+        await handleGetAdminCodeSubmissionsByContestId({
+          contestId,
+          pageNo: 0,
+          pageSize
+        });
       }
     };
     fetchData();
-  }, [contestId, handleGetContestById]);
+  }, [contestId, handleGetAdminCodeSubmissionsByContestId, handleGetContestById, pageSize]);
 
   if (!contestId || !contestDetails) {
     return null;
@@ -241,7 +341,7 @@ const AdminContestSubmissions = () => {
           >
             <CustomDataGrid
               loading={isLoading}
-              dataList={[]}
+              dataList={codeSubmissions}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
               dataGridToolBar={dataGridToolbar}

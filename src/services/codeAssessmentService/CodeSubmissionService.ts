@@ -100,13 +100,11 @@ export class CodeSubmissionService {
   }
 
   static async getAdminCodeSubmissionList({
-    codeQuestionId,
     cerCourseId,
     contestId,
     pageNo,
     pageSize
   }: {
-    codeQuestionId?: string;
     cerCourseId?: string;
     contestId?: string;
     pageNo: number;
@@ -120,7 +118,6 @@ export class CodeSubmissionService {
         params: {
           pageNo,
           pageSize,
-          codeQuestionId,
           contestId,
           cerCourseId
         }
