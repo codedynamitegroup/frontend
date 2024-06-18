@@ -26,3 +26,16 @@
     width: 70px;
   }
 }
+
+.saveBtn {
+  padding: 12px 20px !important;
+}
+.cancelBtn {
+  background-color: #f5f5f5 !important;
+  padding: 12px 20px !important;
+  font-weight: 500;
+
+  &:hover {
+    background-color: var(--gray-10) !important;
+  }
+}

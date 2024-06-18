@@ -8,7 +8,8 @@ export const API = {
       UPDATE_BY_ID: "/core/certificate-courses/:id",
       DELETE_BY_ID: "/core/certificate-courses/:id",
       REGISTER_BY_ID: "/core/certificate-courses/:id/register",
-      GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics"
+      GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics",
+      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
@@ -62,6 +63,9 @@ export const API = {
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
         GET_ALL: "/core/questions/multichoice-question"
+      },
+      CODE_QUESTION: {
+        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin"
       }
     }
   },
@@ -103,6 +107,14 @@ export const API = {
       COUNT_TO_GRADE: "/course/submission-assignment/countToGrade",
       COUNT_ALL: "/course/submission-assignment/countAll"
     },
+    SUBMISSION_ASSIGNMENT_FILE: {
+      DEFAULT: "/course/submission-assignment-file",
+      CREATE: "/course/submission-assignment-file",
+      UPDATE_BY_ID: "/course/submission-assignment-file/:id",
+      DELETE_BY_ID: "/course/submission-assignment-file/:id",
+      GET_BY_ID: "/course/submission-assignment-file/:id"
+    },
+
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",
@@ -140,11 +152,13 @@ export const API = {
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_ID: "/code-assessment/code-question/:id",
-      RECOMMENED: "/code-assessment/code-question/most-practicing-recently"
+      RECOMMENED: "/code-assessment/code-question/most-practicing-recently",
+      ADMIN_CODE_QUESTION: "/code-assessment/code-question/admin-code-question"
     },
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
-      GET_BY_ID: "/code-assessment/code-submission/:id"
+      GET_BY_ID: "/code-assessment/code-submission/:id",
+      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission"
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",

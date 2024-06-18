@@ -5,15 +5,18 @@ import { Box, Card, Divider, Tab, Tabs } from "@mui/material";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import { UpdateContestCommand } from "models/coreService/update/UpdateContestCommand";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import moment from "moment";
 import NotFoundPage from "pages/common/NotFoundPage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch } from "store";
 import * as yup from "yup";
 import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
 import ContestEditDetails from "./ContestEditDetails";
@@ -21,10 +24,6 @@ import ContestEditProblems from "./ContestEditProblems";
 import ContestEditSignUps from "./ContestEditSignUps";
 import ContestEditStatistics from "./ContestEditStatictics";
 import classes from "./styles.module.scss";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "store";
-import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { ContestEntity } from "models/coreService/entity/ContestEntity";
 
 export interface IFormDataType {
   isNoEndTime: boolean;
@@ -139,10 +138,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             questionId: yup.string().required(t("contest_question_id_required")),
             codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
             difficulty: yup.string().required(t("contest_difficulty_required")),
-            name: yup.string().required(t("contest_name_required")),
-            questionText: yup.string().required(t("contest_question_text_required")),
-            defaultMark: yup.number().required(t("contest_default_mark_required")),
-            maxGrade: yup.number().required(t("contest_max_grade_required"))
+            name: yup.string().default("").trim(""),
+            questionText: yup.string().default("").trim(""),
+            defaultMark: yup.number().default(0),
+            maxGrade: yup.number().default(0)
           })
         )
         .required(t("contest_problems_required"))
@@ -256,6 +255,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
         });
         if (updateContestResponse) {
           dispatch(setSuccessMess("Contest updated successfully"));
+          handleGetContestById(id);
         } else {
           dispatch(setErrorMess("Failed to update contest"));
         }
@@ -264,11 +264,13 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess("You are not authorized to update this contest"));
+        } else {
+          dispatch(setErrorMess("Failed to update contest"));
         }
         setSubmitLoading(false);
       }
     },
-    [dispatch]
+    [dispatch, handleGetContestById]
   );
 
   const submitHandler = async (data: IFormDataType) => {
@@ -415,7 +417,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                 }
               />
               <Route path={"signups"} element={<ContestEditSignUps />} />
-              <Route path={"statistics"} element={<ContestEditStatistics data={statistics} />} />
+              <Route
+                path={"statistics"}
+                element={<ContestEditStatistics data={statistics} contestId={contestId} />}
+              />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>
@@ -430,7 +435,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             marginLeft: "-25px",
             backgroundColor: "white",
             borderTop: "1px solid #E0E0E0",
-            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
+            width: isDrawerOpen ? "calc(100% - 270px)" : "100%"
           }}
         >
           <JoyButton
@@ -447,7 +452,6 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             variant='solid'
             type='submit'
             translation-key='common_save_changes'
-            onClick={handleSubmit(submitHandler)}
           >
             {t("common_save_changes")}
           </JoyButton>

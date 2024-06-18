@@ -7,13 +7,15 @@ import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-import images from "config/images";
 import Header from "components/Header";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
+import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import CodeIcon from "@mui/icons-material/Code";
 
-const drawerWidth = 300;
+const drawerWidth = 270;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -42,21 +44,13 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
     {
       name: t("common_dashboard"),
       "translation-key": "common_dashboard",
-      icon: (
-        <Box className={classes.img}>
-          <DashboardRoundedIcon />
-        </Box>
-      ),
+      icon: <DashboardRoundedIcon className={classes.itemIcon} />,
       link: routes.admin.dashboard
     },
     {
       name: t("side_bar_contest_management"),
       "translation-key": "side_bar_contest_management",
-      icon: (
-        <Box className={classes.img}>
-          <img src={images.admin.contest} alt='contest img' />
-        </Box>
-      ),
+      icon: <EmojiEventsOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.contest.root
     },
     {
@@ -64,6 +58,18 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       "translation-key": "user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.admin.users.root
+    },
+    {
+      name: t("certificate_course_management_title"),
+      "translation-key": "certificate_course_management_title",
+      icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
+      link: routes.admin.certificate.root
+    },
+    {
+      name: t("code_management_title"),
+      "translation-key": "code_management_title",
+      icon: <CodeIcon className={classes.itemIcon} />,
+      link: routes.admin.code_question.root
     },
     {
       name: t("question_bank_management"),
@@ -92,8 +98,8 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            marginTop: `${headerHeight + 2}px`
+            width: drawerWidth
+            // marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'

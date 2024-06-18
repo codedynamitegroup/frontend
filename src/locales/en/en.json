@@ -87,6 +87,7 @@
   "common_question_type_code": "Coding",
   "common_question_type_yes_no": "True / False",
   "common_add": "Add",
+  "common_remove": "Remove",
   "common_question": "Question",
   "common_enter_grade": "Enter grade",
   "common_see_evaluating": "View Evaluating",
@@ -199,6 +200,9 @@
   "common_advanced_settings": "Advanced settings",
   "common_no": "No",
   "common_email": "Email",
+  "common_programming_language": "Programming language",
+  "common_runtime": "Runtime",
+  "common_memory": "Memory",
   "common_my_courses": "My courses",
   "common_next": "Next",
   "common_previous": "Previous",
@@ -217,6 +221,8 @@
   "dialog_confirm_delete_title": "Confirm Delete",
   "dialog_confirm_delete_contest_description": "Are you sure you want to delete this contest?",
   "dialog_confirm_delete_problem_description": "Are you sure you want to delete this question? You have to save changes after this to apply for the contest",
+  "dialog_confirm_add_contest_problem_title": "Add question to contest",
+  "dialog_confirm_add_contest_problem_description": "Are you sure you want to add this question to the contest?",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest management",
@@ -305,11 +311,14 @@
   "contest_details_description": "Customize your contest by providing more information needed to create your contest details page.",
   "contest_problems_description": "Add questions to your contest by selecting questions from our public library or create and add your own questions here.",
   "contest_metadata_customization_description": "Fill out this information to customize your contest description page.",
-  "common_thumbnail": "Thumbnail",
+  "contest_thumbnail": "Thumbnail",
   "contest_delete_problem_success": "Delete problem successfully",
   "contest_delete_contest_success": "Delete contest successfully",
   "contest_delete_contest_fail": "Delete contest failed",
   "contest_details_problems_success_rates": "Problems success rates",
+  "contest_not_registered": "You have not registered for this contest yet",
+  "contest_add_problem_success": "Add problem to contest successfully",
+  "contest_add_problem_fail": "Add problem to contest failed",
 
   "contest_detail_joined_feature_status": "You have registerd for this contest",
   "contest_detail_joined_happening_status": "You are joining this contest",
@@ -335,6 +344,7 @@
   "contest_detail_leaderboard_rank": "Rank",
   "contest_detail_leaderboard_participant": "Participant",
   "contest_detail_leaderboard_total_time": "Total time",
+  "contest_detail_leaderboard_total_time_description": "This time count from the beginning of the contest to the time you submit the last problem",
   "contest_detail_join_success": "Join contest successfully",
   "contest_detail_register_tooltip": "Please sign in to register for this contest",
   "contest_detail_already_started_message": "This contest has already started. You can't join now",
@@ -343,6 +353,7 @@
   "contest_import_problem_button": "Import problem from library",
   "contest_create_problem_button": "Create problem",
   "contest_problem_list": "Problem list",
+  "contest_details_view_all_submissions": "View all submissions",
 
   "certificate_title": "Certificate course",
   "certificate_description": "Do you want to practice your coding skills? Try the following courses",
@@ -437,6 +448,8 @@
   "course_assignment_detail_open_time": "Open time",
   "course_assignment_detail_close_time": "Close time",
   "course_assignment_detail_submit": "Add submission",
+  "course_assignment_detail_edit_submit": "Edit submission",
+  "course_assignment_detail_remove_submit": "Remove submission",
 
   "course_grade_title": "Grade report",
   "course_grade_average": "Average",
@@ -627,6 +640,7 @@
   "question_bank_category_header_table": [
     "NO.",
     "Category",
+    "Organization name",
     "Created by",
     "Last updated at",
     "Action"
@@ -659,6 +673,10 @@
   "question_bank_create_category_name": "Category name",
 
   "question_bank_management": "Question bank management",
+
+  "code_question_name": "Question name",
+  "code_question_difficulty": "Difficulty",
+  "code_question_updated": "Last updated",
 
   "detail_problem_description": "Description",
   "detail_problem_discussion": "Discussion",
@@ -1011,6 +1029,10 @@
   "create_question_multiple_choice": "Create multiple choice question",
   "create_question_essay": "Create essay question",
   "create_question_code": "Create code question",
+  "create_question_short_answer": "Create short answer question",
   "common_detail": "Detail",
-  "question_essay_attachment": "Number of allow attachment(s)"
+  "question_essay_attachment": "Number of allow attachment(s)",
+  "common_avg_rating": "Average rating",
+  "certificate_course_create_btn": "Add certificate course",
+  "certificate_course_management_title": "Certificate course management"
 }

@@ -81,3 +81,41 @@
 .action {
   margin-top: 20px;
 }
+
+/* styles.css */
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+.slideUp {
+  animation: slideUp 0.5s forwards;
+}

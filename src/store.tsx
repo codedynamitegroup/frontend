@@ -25,6 +25,7 @@ import auth from "reduxes/Auth";
 import loading from "reduxes/Loading";
 import questionCreate from "reduxes/coreService/questionCreate/index";
 import takeExam from "reduxes/TakeExam";
+import codeQuestionReducer from "reduxes/coreService/CodeQuestion";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import { InitialState as TakeExamInitialState } from "reduxes/TakeExam";
@@ -35,6 +36,8 @@ import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import appStatus from "reduxes/AppStatus";
 import user from "reduxes/authService/user";
+import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
+import SidebarStatus from "reduxes/SidebarStatus";
 
 const persistConfig = {
   key: "takeExam",
@@ -68,6 +71,7 @@ const store = configureStore({
     exam: examReducer,
     searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
     question: questionReducer,
+    codeQuestion: codeQuestionReducer,
     questionBankCategory: questionBankCategory,
     detailCodeQuestion: detailCodeQuestion,
     courseUser: courseUser,
@@ -79,7 +83,9 @@ const store = configureStore({
     questionCategory: questionCategory,
     loading: loading,
     appStatus: appStatus,
-    user: user
+    user: user,
+    adminCertificateCourse: adminCertificateCourse,
+    sidebarStatus: SidebarStatus
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

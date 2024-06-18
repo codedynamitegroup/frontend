@@ -30,6 +30,8 @@ import images from "config/images";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 import { CourseUserService } from "services/courseService/CourseUserService";
+import useAuth from "hooks/useAuth";
+import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
 
 type Column = {
   header: string;
@@ -45,7 +47,7 @@ const StudentCourseAssignmentDetails = () => {
   const assignmentState = useSelector((state: RootState) => state.assignment);
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const dispatch = useDispatch();
-  const user: User = useSelector(selectCurrentUser);
+  const { loggedUser } = useAuth();
 
   const handleGetAssignmentDetails = async (id: string) => {
     try {
@@ -75,7 +77,7 @@ const StudentCourseAssignmentDetails = () => {
     };
 
     fetchAssignmentDetails();
-    handleGetSubmissionAssignment(user.userId, assignmentId ?? "");
+    handleGetSubmissionAssignment(loggedUser?.userId, assignmentId ?? "");
   }, []);
 
   function calculateTimeDifference(
@@ -130,23 +132,19 @@ const StudentCourseAssignmentDetails = () => {
   };
 
   const checkTimeSubmission = (): number => {
-    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) return 0;
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) {
+      if (new Date() > timeClose) return 0;
+      return 3;
+    }
     let submitTime = new Date(
       submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
     );
-    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
     if (submitTime < timeClose) {
       return 1;
     }
     return 2;
   };
-  console.log(submissionAssignmentState.submissionAssignmentDetails);
-  let date1 = new Date(
-    submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
-  );
-  let date2 = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
-  console.log(checkTimeSubmission());
-  console.log(date1, date2);
 
   let columns: Column[] = [
     {
@@ -169,7 +167,7 @@ const StudentCourseAssignmentDetails = () => {
         checkTimeSubmission() === 1
           ? t("assignment_submitted") + formatTime(submitTime) + t("early")
           : checkTimeSubmission() === 2
-            ? t("assignment_submitted_late") + formatTime(timeRemaining) + t("late")
+            ? t("assignment_submitted_late") + formatTime(submitTime) + t("late")
             : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
               ? t("assignment_overdue") + formatTime(timeRemaining)
               : formatTime(timeRemaining),
@@ -185,23 +183,26 @@ const StudentCourseAssignmentDetails = () => {
     }
   ];
 
-  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFile) {
+  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles) {
     columns.push({
       header: t("course_student_assignment_file_submission"),
       data: (
         <CustomFileList
           files={
-            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFile.files.map(
-              (attachment) => ({
-                id: attachment.id,
-                name: attachment.fileName,
-                downloadUrl: attachment.fileUrl,
-                size: attachment.fileSize,
-                type: attachment.mimetype,
-                lastModified: new Date(attachment.timemodified).toLocaleString("en-US", {
-                  timeZone: "Asia/Ho_Chi_Minh"
-                })
-              })
+            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFiles.map(
+              (attachment) => {
+                let f: File = new File([""], attachment.fileName, {
+                  lastModified: new Date(attachment.timemodified).getTime()
+                });
+                return {
+                  id: attachment.id,
+                  name: attachment.fileName,
+                  downloadUrl: attachment.fileUrl,
+                  size: attachment.fileSize,
+                  type: attachment.mimetype,
+                  file: f
+                };
+              }
             ) ?? [] // provide an empty array if introAttachments is undefined
           }
           treeView={false}
@@ -244,6 +245,7 @@ const StudentCourseAssignmentDetails = () => {
     }
   ];
 
+  console.log(submissionAssignmentState.submissionAssignmentDetails?.submitTime);
   return (
     <Box className={classes.assignmentBody}>
       <Button
@@ -327,19 +329,57 @@ const StudentCourseAssignmentDetails = () => {
             dangerouslySetInnerHTML={{ __html: assignmentState.assignmentDetails?.activity || `` }}
           ></div>
           <CustomFileList
-            files={assignmentState.assignmentDetails?.introAttachments?.map((attachment: any) => ({
-              id: attachment.id,
-              name: attachment.fileName,
-              downloadUrl: attachment.fileUrl,
-              size: attachment.fileSize,
-              type: attachment.mimetype,
-              lastModified: new Date(attachment.timemodified).toLocaleString("en-US", {
-                timeZone: "Asia/Ho_Chi_Minh"
-              })
-            }))}
+            files={assignmentState.assignmentDetails?.introAttachments?.map(
+              (attachment: AssignmentResourceEntity) => {
+                let f: File = new File([""], attachment.fileName, {
+                  lastModified: attachment.timemodified.getTime()
+                });
+                return {
+                  id: attachment.id,
+                  name: attachment.fileName,
+                  downloadUrl: attachment.fileUrl,
+                  size: attachment.fileSize,
+                  type: attachment.mimetype,
+                  file: f
+                };
+              }
+            )}
           />
         </Box>
       </Card>
+      {submissionAssignmentState.submissionAssignmentDetails?.submitTime && (
+        <Box>
+          <Button
+            className={classes.cancelBtn}
+            onClick={() => {
+              navigate(
+                routes.student.assignment.edit_submit
+                  .replace(":assignmentId", assignmentId ?? "")
+                  .replace(":courseId", courseId ?? "")
+              );
+            }}
+            width='fit-content'
+            style={{ marginRight: "10px" }}
+          >
+            <ParagraphBody
+              fontSize={"13.5px"}
+              fontWeight={520}
+              translation-key='course_assignment_detail_edit_submit'
+            >
+              {t("course_assignment_detail_edit_submit")}
+            </ParagraphBody>
+          </Button>
+          <Button className={classes.cancelBtn} onClick={() => {}} width='fit-content'>
+            <ParagraphBody
+              fontSize={"13.5px"}
+              fontWeight={520}
+              translation-key='course_assignment_detail_remove_submit'
+            >
+              {t("course_assignment_detail_remove_submit")}
+            </ParagraphBody>
+          </Button>
+        </Box>
+      )}
       <Heading2 translation-key={["course_student_assignment_submission_status"]}>
         {t("course_student_assignment_submission_status")}
       </Heading2>
@@ -372,8 +412,10 @@ const StudentCourseAssignmentDetails = () => {
           />
         </>
       )}
-      {!assignmentState.assignmentDetails?.moodleId && (
+      {(!submissionAssignmentState?.submissionAssignmentDetails?.submitTime ||
+        assignmentState.assignmentDetails?.moodleId) && (
         <Button
+          className={classes.saveBtn}
           btnType={BtnType.Primary}
           onClick={() => {
             navigate(

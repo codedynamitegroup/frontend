@@ -280,6 +280,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     }
   };
 
+  if (lesson === null || courseId === undefined || lessonId === undefined) return null;
   return (
     <Grid container gap={2}>
       <Grid item xs={12} md={12}>
@@ -352,6 +353,10 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
                       <ProblemDetailSubmission
                         submissionLoading={submissionLoading}
                         maxHeight={600}
+                        cerCourseInfo={{
+                          cerCourseId: courseId || "",
+                          lesson: lesson
+                        }}
                       />
                     }
                   />

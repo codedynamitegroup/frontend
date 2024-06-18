@@ -1,8 +1,8 @@
-import { Card, Grid, Skeleton, Stack } from "@mui/material";
+import { Box, Card, Grid, Skeleton, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import Heading4 from "components/text/Heading4";
-import DasbboradBoxComponent from "pages/admin/Dashboard/DashboardBoxComponent";
+import DashboardBoxComponent from "pages/admin/Dashboard/DashboardBoxComponent";
 import images from "config/images";
 import { BarChart } from "@mui/x-charts/BarChart";
 import ChartLengend from "pages/admin/Dashboard/ChartLegend";
@@ -10,19 +10,26 @@ import Heading5 from "components/text/Heading5";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
 import { useMemo } from "react";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import JoyButton from "@mui/joy/Button";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 const valueFormatter = (value: number | null) => `${value}%`;
 
 const ContestEditStatistics = ({
-  data
+  data,
+  contestId
 }: {
   data: {
     numOfSignUps: number;
     numOfParticipantsHavingSubmissions: number;
     contestQuestions: ContestQuestionEntity[];
   } | null;
+  contestId: string;
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const calculateSuccessRate = useMemo(
     () => (numOfCorrectSubmissions: number, numOfSubmissions: number) => {
@@ -109,7 +116,7 @@ const ContestEditStatistics = ({
       <Grid item xs={12}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={12} md={6} lg={3}>
-            <DasbboradBoxComponent
+            <DashboardBoxComponent
               icon={
                 <img src={images.admin.totalUser} alt='online user' style={{ width: "35px" }} />
               }
@@ -119,7 +126,7 @@ const ContestEditStatistics = ({
             />
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={3}>
-            <DasbboradBoxComponent
+            <DashboardBoxComponent
               icon={
                 <img
                   src={images.admin.loginTodayUser}
@@ -137,9 +144,26 @@ const ContestEditStatistics = ({
       <Grid item xs={12} md={6}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={12} lg={12}>
-            <Heading5 translate-key='contest_details_problems_success_rates'>
-              {t("contest_details_problems_success_rates")}
-            </Heading5>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Heading5 translate-key='contest_details_problems_success_rates'>
+                {t("contest_details_problems_success_rates")}
+              </Heading5>
+              <JoyButton
+                onClick={() => {
+                  navigate(routes.admin.contest.submissions.replace(":contestId", contestId));
+                }}
+                endDecorator={
+                  <ArrowForwardIosIcon
+                    sx={{
+                      width: "17px"
+                    }}
+                  />
+                }
+                translate-key='contest_details_view_all_submissions'
+              >
+                {t("contest_details_view_all_submissions")}
+              </JoyButton>
+            </Box>
             <Card
               color='neutral'
               variant='outlined'

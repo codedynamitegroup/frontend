@@ -143,15 +143,15 @@ const ContestDetails = () => {
     async (id: string) => {
       dispatch(setInititalLoading(true));
       try {
-        const getContestsResponse = await ContestService.getContestById(id);
-        if (getContestsResponse) {
+        const getContestDetailsResponse = await ContestService.getContestById(id);
+        if (getContestDetailsResponse) {
           if (
-            getContestsResponse.startTime &&
-            moment().utc().isAfter(getContestsResponse.startTime)
+            getContestDetailsResponse.startTime &&
+            moment().utc().isAfter(getContestDetailsResponse.startTime)
           ) {
             await handleGetContestLeaderboard(id);
           }
-          setContestDetails(getContestsResponse);
+          setContestDetails(getContestDetailsResponse);
         }
         dispatch(setInititalLoading(false));
       } catch (error: any) {
@@ -193,7 +193,7 @@ const ContestDetails = () => {
         <Grid container gap={2}>
           <Grid
             item
-            xs={activeTab !== 2 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 9 : 12}
+            xs={activeTab !== 2 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 8 : 12}
           >
             <Box className={classes.bodyWrapper}>
               {/* <TabContext value={activeTab}> */}
@@ -369,9 +369,15 @@ const ContestDetails = () => {
             </Box>
           </Grid>
           {activeTab !== 2 ? (
-            <Grid item xs={2.5}>
+            <Grid item xs={3}>
               {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
-                <Paper>
+                <Paper
+                  sx={{
+                    padding: "1px 20px",
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.05)"
+                  }}
+                >
                   <Grid container direction='column' alignItems='center' justifyContent='center'>
                     <Grid item xs={12}>
                       <Heading4 margin={"10px"} translation-key='contest_detail_leaderboard_rank'>

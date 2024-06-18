@@ -5,17 +5,23 @@ import {
   DialogActions,
   IconButton,
   DialogTitle,
-  Dialog
+  Dialog,
+  Grid
 } from "@mui/material";
 
 import Textarea from "@mui/joy/Textarea";
-import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
-import SearchBar from "components/common/search/SearchBar";
+import {
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridEventListener,
+  GridPaginationModel,
+  GridCallbackDetails
+} from "@mui/x-data-grid";
 import { red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -26,44 +32,119 @@ import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
-import { setCategories } from "reduxes/courseService/questionBankCategory";
+import {
+  clearCategories,
+  setCategories,
+  setLoading
+} from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { setLoading as setInititalLoading } from "reduxes/Loading";
+import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 const OrgAdminQuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
-  const dispath = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
+  const user: User = useSelector(selectCurrentUser);
+  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const dataGridToolbar = { enableToolbar: true };
+
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const totalElement = useMemo(
+    () => questionBankCategoriesState.categories.totalItems || 0,
+    [questionBankCategoriesState.categories]
+  );
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedCategoryId, setDeletedCategoryId] = useState<string>("");
+
+  const [selectedRowData, setSelectedRowData] = useState<QuestionBankCategoryEntity>();
+  const [dataEdit, setDataEdit] = useState<QuestionBankCategoryEntity>(
+    {} as QuestionBankCategoryEntity
+  );
+  const [dataCreate, setDataCreate] = useState<QuestionBankCategoryEntity>(
+    {} as QuestionBankCategoryEntity
+  );
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+    navigate(`${params.row.id}`);
+  };
   const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
   };
-
-  const handleGetQuestionBankCategories = async ({
-    search = searchText,
-    pageNo = page,
-    pageSize = rowsPerPage
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    try {
-      const getQuestionBankCategoryResponse =
-        await QuestionBankCategoryService.getQuestionBankCategories({
-          isOrgQuestionBank: categoryState.tab === "1" ? true : false,
-          search,
-          pageNo,
-          pageSize
-        });
-      dispath(setCategories(getQuestionBankCategoryResponse));
-    } catch (error) {
-      console.log(error);
-    }
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
   };
+  const onDeleteConfirmDelete = async () => {
+    QuestionBankCategoryService.deleteQuestionBankCategory(deletedCategoryId)
+      .then(() => {
+        dispatch(setSuccessMess("Delete category successfully"));
+        dispatch(clearCategories());
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess("Delete category failed"));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
+
+  const handleGetQuestionBankCategories = useCallback(
+    async ({
+      search = searchText,
+      pageNo = page,
+      pageSize = rowsPerPage
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      dispatch(setLoading(true));
+      try {
+        const getQuestionBankCategoryResponse =
+          await QuestionBankCategoryService.getQuestionBankCategories({
+            isOrgQuestionBank: true,
+            organizationId: user.organization.organizationId,
+            search,
+            pageNo,
+            pageSize
+          });
+        dispatch(setCategories(getQuestionBankCategoryResponse));
+        dispatch(setLoading(false));
+      } catch (error: any) {
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+        // Show snackbar here
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch, t]
+  );
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      handleGetQuestionBankCategories({
+        search: value
+      });
+    },
+    [handleGetQuestionBankCategories]
+  );
 
   const handleEdit = async () => {
     try {
@@ -78,16 +159,13 @@ const OrgAdminQuestionBankManagement = () => {
     }
   };
 
-  const user: User = useSelector(selectCurrentUser);
-
-  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
-
   const handleCreate = async () => {
     try {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
-        isOrgQuestionBank: categoryState.tab === "1" ? true : false,
+        organizationId: user.organization.organizationId,
+        isOrgQuestionBank: true,
         createdBy: user.userId
       });
       handleGetQuestionBankCategories({ search: searchText });
@@ -96,54 +174,7 @@ const OrgAdminQuestionBankManagement = () => {
     }
   };
 
-  const handleDeleteCategory = async (id: string) => {
-    try {
-      await QuestionBankCategoryService.deleteQuestionBankCategory(id);
-      handleGetQuestionBankCategories({ search: searchText });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchInitialQuestionBankCategories = async () => {
-      await handleGetQuestionBankCategories({ search: searchText });
-    };
-    fetchInitialQuestionBankCategories();
-  }, [searchText, categoryState.tab]);
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-    handleGetQuestionBankCategories({
-      search: searchText,
-      pageNo: 0,
-      pageSize: +event.target.value
-    });
-  };
-
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [page, setPage] = useState(0);
-
-  const { t } = useTranslation();
-  const [pageState, setPageState] = useState({
-    page: page,
-    pageSize: rowsPerPage
-  });
-
-  const [selectedRowData, setSelectedRowData] = useState<QuestionBankCategoryEntity>();
-  const [dataEdit, setDataEdit] = useState<QuestionBankCategoryEntity>(
-    {} as QuestionBankCategoryEntity
-  );
-  const [dataCreate, setDataCreate] = useState<QuestionBankCategoryEntity>(
-    {} as QuestionBankCategoryEntity
-  );
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-
-  const columnsProps: GridColDef[] = [
+  const tableHeading: GridColDef[] = [
     {
       field: "stt",
       sortable: false,
@@ -157,16 +188,25 @@ const OrgAdminQuestionBankManagement = () => {
     {
       field: "category",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
+      field: "organizationName",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.organizationName}</ParagraphBody>;
+      }
+    },
+    {
       field: "created",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.createdByName}</ParagraphBody>
@@ -178,7 +218,7 @@ const OrgAdminQuestionBankManagement = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
@@ -218,7 +258,8 @@ const OrgAdminQuestionBankManagement = () => {
             label='Cancel'
             className='textPrimary'
             onClick={() => {
-              handleDeleteCategory(id as string);
+              setDeletedCategoryId(id as string);
+              setIsOpenConfirmDelete(true);
             }}
             sx={{
               color: red[500]
@@ -229,6 +270,31 @@ const OrgAdminQuestionBankManagement = () => {
       headerClassName: classes["table-head"]
     }
   ];
+
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    setPage(model.page);
+    setRowsPerPage(model.pageSize);
+    handleGetQuestionBankCategories({
+      search: searchText,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
+  };
+
+  useEffect(() => {
+    const fetchQuestionBankCategory = async () => {
+      if (categoryState.categories.questionBankCategories.length > 0) return;
+      dispatch(setInititalLoading(true));
+      await handleGetQuestionBankCategories({ search: searchText });
+      dispatch(setInititalLoading(false));
+    };
+    fetchQuestionBankCategory();
+  }, [
+    dispatch,
+    handleGetQuestionBankCategories,
+    questionBankCategoriesState.categories.questionBankCategories
+  ]);
+
   const addHeaderNameByLanguage = (
     columns: GridColDef[],
     headerName: Array<String>
@@ -246,165 +312,63 @@ const OrgAdminQuestionBankManagement = () => {
   const headerName = t("question_bank_category_header_table", {
     returnObjects: true
   }) as Array<String>;
-  const columns = addHeaderNameByLanguage(columnsProps, headerName);
-  useEffect(() => {
-    handleGetQuestionBankCategories({
-      search: searchText,
-      pageNo: pageState.page,
-      pageSize: pageState.pageSize
-    });
-  }, [pageState.page, pageState.pageSize, searchText]);
-  const navigate = useNavigate();
-
-  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    navigate(`${params.row.id}`);
-  };
+  const columns = addHeaderNameByLanguage(tableHeading, headerName);
 
   return (
     <div>
-      {/* <TabPanel value='1' className={classes["tab-panel"]}> */}
       <Container>
         <Stack spacing={2} marginBottom={3} paddingTop={1}>
           <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
             {i18next.format(t("common_question_bank"), "firstUppercase")}
           </Heading1>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-            <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
-              <ParagraphBody paddingX={3} translation-key='common_add_new'>
-                {i18next.format(t("common_add_new"), "firstUppercase")}
-              </ParagraphBody>
-            </Button>
-          </Stack>
 
-          <CustomAutocomplete
-            placeHolder={`${t("question_bank_category_find_by_category")} ...`}
-            translation-key='question_bank_category_find_by_category'
-            value={searchText}
-            setValue={setSearchText}
-            options={[]}
-            onHandleChange={searchHandle}
-          />
-          <DataGrid
-            sx={{
-              "& .MuiDataGrid-cell": { padding: "16px" },
-              "& .MuiDataGrid-row:hover": {
-                cursor: "pointer"
-              }
-            }}
-            translation-key-header='question_bank_category_header_table'
-            autoHeight
-            disableColumnMenu
-            getRowHeight={() => "auto"}
-            rows={questionBankCategoriesState.categories.questionBankCategories.map(
+          <Grid item xs={12}>
+            <CustomSearchFeatureBar
+              isLoading={categoryState.isLoading}
+              searchValue={searchText}
+              setSearchValue={setSearchText}
+              onHandleChange={handleSearchChange}
+              createBtnText={t("common_add_new")}
+              onClickCreate={() => {
+                setOpenCreateDialog(true);
+              }}
+              numOfResults={totalElement}
+              isFilter={false}
+            />
+          </Grid>
+
+          <CustomDataGrid
+            loading={questionBankCategoriesState.isLoading}
+            dataList={questionBankCategoriesState.categories.questionBankCategories.map(
               (item, index) => ({
                 stt: index + 1,
                 ...item
               })
             )}
-            rowCount={questionBankCategoriesState.categories.totalItems}
-            loading={questionBankCategoriesState.isLoading}
-            paginationModel={{
-              page: page,
-              pageSize: rowsPerPage
-            }}
-            onPaginationModelChange={(model, details) => {
-              setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-              setPage(model.page);
-              setRowsPerPage(model.pageSize);
-            }}
-            columns={columns}
-            pageSizeOptions={[5, 10, 30, 50]}
-            paginationMode='server'
-            disableColumnFilter
-            onRowClick={handleRowClick}
-            hideFooterSelectedRowCount
-            localeText={{
-              MuiTablePagination: {
-                labelDisplayedRows: ({ from, to, count, page }) => {
-                  return t("common_table_from_to", { from: from, to: to, countText: count });
-                },
-                labelRowsPerPage: t("common_table_row_per_page")
+            tableHeader={columns}
+            onSelectData={handleRowClick}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={rowsPerPage}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            onClickRow={handleRowClick}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                border: "none"
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#f5f9fb"
+              },
+              "& .MuiDataGrid-toolbarContainer": {
+                backgroundColor: "#f5f9fb"
               }
             }}
-            // slots={{
-            //   toolbar: EditToolbar
-            // }}
+            personalSx={true}
           />
         </Stack>
       </Container>
-      {/* </TabPanel>
-      <TabPanel value='2' className={classes["tab-panel"]}>
-        <Container>
-          <Stack spacing={2} marginBottom={3} paddingTop={1}>
-            <Heading1 fontWeight={"500"} translation-key='common_question_bank'>
-              {i18next.format(t("common_question_bank"), "firstUppercase")}
-            </Heading1>
-            <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(true)}>
-                <ParagraphBody paddingX={3} translation-key='common_add_new'>
-                  {i18next.format(t("common_add_new"), "firstUppercase")}
-                </ParagraphBody>
-              </Button>
-            </Stack>
-
-            <CustomAutocomplete
-              // ={searchHandle}
-              placeHolder={`${t("question_bank_category_find_by_category")} ...`}
-              translation-key='question_bank_category_find_by_category'
-              value={searchText}
-              setValue={setSearchText}
-              options={[]}
-              onHandleChange={searchHandle}
-            />
-            <DataGrid
-              sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" },
-                "& .MuiDataGrid-row:hover": {
-                  cursor: "pointer"
-                }
-              }}
-              translation-key-header='question_bank_category_header_table'
-              autoHeight
-              disableColumnMenu
-              getRowHeight={() => "auto"}
-              rows={questionBankCategoriesState.categories.questionBankCategories.map(
-                (item, index) => ({
-                  stt: index + 1,
-                  ...item
-                })
-              )}
-              rowCount={questionBankCategoriesState.categories.totalItems}
-              loading={questionBankCategoriesState.isLoading}
-              paginationModel={{
-                page: page,
-                pageSize: rowsPerPage
-              }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-                setPage(model.page);
-                setRowsPerPage(model.pageSize);
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              onRowClick={handleRowClick}
-              hideFooterSelectedRowCount
-              localeText={{
-                MuiTablePagination: {
-                  labelDisplayedRows: ({ from, to, count, page }) => {
-                    return t("common_table_from_to", { from: from, to: to, countText: count });
-                  },
-                  labelRowsPerPage: t("common_table_row_per_page")
-                }
-              }}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
-            />
-          </Stack>
-        </Container>
-      </TabPanel> */}
       <Dialog
         aria-labelledby='customized-dialog-title'
         open={openCreateDialog}
@@ -525,6 +489,13 @@ const OrgAdminQuestionBankManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this category?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
     </div>
   );
 };

@@ -229,12 +229,12 @@ export default function AssignmentGrading() {
                 </TextTitle>
                 {submissionAssignmentState.submissionAssignments.find(
                   (submission) => submission.id === assignmentSubmissionStudent
-                )?.submissionAssignmentFile?.files ? (
+                )?.submissionAssignmentFiles ? (
                   <CustomFileList
                     files={
                       submissionAssignmentState.submissionAssignments
                         .find((submission) => submission.id === assignmentSubmissionStudent)
-                        ?.submissionAssignmentFile?.files.map(
+                        ?.submissionAssignmentFiles?.map(
                           (attachment: AssignmentResourceEntity) => ({
                             id: attachment.id,
                             name: attachment.fileName,

@@ -10,11 +10,18 @@ import {
 
 import Textarea from "@mui/joy/Textarea";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DataGrid, GridColDef, GridActionsCellItem, GridEventListener } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridEventListener,
+  GridPaginationModel,
+  GridCallbackDetails
+} from "@mui/x-data-grid";
 import SearchBar from "components/common/search/SearchBar";
 import { red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
@@ -33,11 +40,13 @@ import { QuestionBankCategoryEntity } from "models/courseService/entity/Question
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
+import CustomDataGrid from "components/common/CustomDataGrid";
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
   const dispath = useDispatch<AppDispatch>();
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
+  const dataGridToolbar = { enableToolbar: true };
   const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
   };
@@ -55,6 +64,7 @@ const QuestionBankManagement = () => {
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
           isOrgQuestionBank: categoryState.tab === "1" ? true : false,
+          organizationId: user.organization.organizationId,
           search,
           pageNo,
           pageSize
@@ -87,6 +97,7 @@ const QuestionBankManagement = () => {
       await QuestionBankCategoryService.createQuestionBankCategory({
         name: dataCreate?.name || "",
         description: dataCreate?.description || "",
+        organizationId: user.organization.organizationId,
         isOrgQuestionBank: categoryState.tab === "1" ? true : false,
         createdBy: user.userId
       });
@@ -157,16 +168,25 @@ const QuestionBankManagement = () => {
     {
       field: "category",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
+      field: "organizationName",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.organizationName}</ParagraphBody>;
+      }
+    },
+    {
       field: "created",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.createdByName}</ParagraphBody>
@@ -178,7 +198,7 @@ const QuestionBankManagement = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
@@ -260,6 +280,21 @@ const QuestionBankManagement = () => {
     navigate(`${params.row.id}`);
   };
 
+  const totalElement = useMemo(
+    () => questionBankCategoriesState.categories.totalItems || 0,
+    [questionBankCategoriesState.categories]
+  );
+
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    setPage(model.page);
+    setRowsPerPage(model.pageSize);
+    handleGetQuestionBankCategories({
+      search: searchText,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
+  };
+
   return (
     <div>
       <TabPanel value='1' className={classes["tab-panel"]}>
@@ -284,51 +319,35 @@ const QuestionBankManagement = () => {
               options={[]}
               onHandleChange={searchHandle}
             />
-            <DataGrid
-              sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" },
-                "& .MuiDataGrid-row:hover": {
-                  cursor: "pointer"
-                }
-              }}
-              translation-key-header='question_bank_category_header_table'
-              autoHeight
-              disableColumnMenu
-              getRowHeight={() => "auto"}
-              rows={questionBankCategoriesState.categories.questionBankCategories.map(
+            <CustomDataGrid
+              loading={questionBankCategoriesState.isLoading}
+              dataList={questionBankCategoriesState.categories.questionBankCategories.map(
                 (item, index) => ({
                   stt: index + 1,
                   ...item
                 })
               )}
-              rowCount={questionBankCategoriesState.categories.totalItems}
-              loading={questionBankCategoriesState.isLoading}
-              paginationModel={{
-                page: page,
-                pageSize: rowsPerPage
-              }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-                setPage(model.page);
-                setRowsPerPage(model.pageSize);
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              onRowClick={handleRowClick}
-              hideFooterSelectedRowCount
-              localeText={{
-                MuiTablePagination: {
-                  labelDisplayedRows: ({ from, to, count, page }) => {
-                    return t("common_table_from_to", { from: from, to: to, countText: count });
-                  },
-                  labelRowsPerPage: t("common_table_row_per_page")
+              tableHeader={columns}
+              onSelectData={handleRowClick}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={rowsPerPage}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              onClickRow={handleRowClick}
+              sx={{
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
                 }
               }}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
+              personalSx={true}
             />
           </Stack>
         </Container>
@@ -356,51 +375,35 @@ const QuestionBankManagement = () => {
               options={[]}
               onHandleChange={searchHandle}
             />
-            <DataGrid
-              sx={{
-                "& .MuiDataGrid-cell": { padding: "16px" },
-                "& .MuiDataGrid-row:hover": {
-                  cursor: "pointer"
-                }
-              }}
-              translation-key-header='question_bank_category_header_table'
-              autoHeight
-              disableColumnMenu
-              getRowHeight={() => "auto"}
-              rows={questionBankCategoriesState.categories.questionBankCategories.map(
+            <CustomDataGrid
+              loading={questionBankCategoriesState.isLoading}
+              dataList={questionBankCategoriesState.categories.questionBankCategories.map(
                 (item, index) => ({
                   stt: index + 1,
                   ...item
                 })
               )}
-              rowCount={questionBankCategoriesState.categories.totalItems}
-              loading={questionBankCategoriesState.isLoading}
-              paginationModel={{
-                page: page,
-                pageSize: rowsPerPage
-              }}
-              onPaginationModelChange={(model, details) => {
-                setPageState((old) => ({ ...old, page: model.page, pageSize: model.pageSize }));
-                setPage(model.page);
-                setRowsPerPage(model.pageSize);
-              }}
-              columns={columns}
-              pageSizeOptions={[5, 10, 30, 50]}
-              paginationMode='server'
-              disableColumnFilter
-              onRowClick={handleRowClick}
-              hideFooterSelectedRowCount
-              localeText={{
-                MuiTablePagination: {
-                  labelDisplayedRows: ({ from, to, count, page }) => {
-                    return t("common_table_from_to", { from: from, to: to, countText: count });
-                  },
-                  labelRowsPerPage: t("common_table_row_per_page")
+              tableHeader={columns}
+              onSelectData={handleRowClick}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={rowsPerPage}
+              totalElement={totalElement}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={true}
+              onClickRow={handleRowClick}
+              sx={{
+                "& .MuiDataGrid-cell": {
+                  border: "none"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f9fb"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
                 }
               }}
-              // slots={{
-              //   toolbar: EditToolbar
-              // }}
+              personalSx={true}
             />
           </Stack>
         </Container>

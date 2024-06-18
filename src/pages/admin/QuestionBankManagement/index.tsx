@@ -40,7 +40,6 @@ import {
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
-import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
 import CustomDataGrid from "components/common/CustomDataGrid";
@@ -186,16 +185,25 @@ const AdminQuestionBankManagement = () => {
     {
       field: "category",
       sortable: false,
-      flex: 3,
+      flex: 2,
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return <ParagraphBody>{params.row.name}</ParagraphBody>;
       }
     },
     {
+      field: "organizationName",
+      sortable: false,
+      flex: 2,
+      headerClassName: classes["table-head"],
+      renderCell: (params) => {
+        return <ParagraphBody>{params.row.organizationName}</ParagraphBody>;
+      }
+    },
+    {
       field: "created",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.createdByName}</ParagraphBody>
@@ -207,7 +215,7 @@ const AdminQuestionBankManagement = () => {
     {
       field: "updated",
       sortable: false,
-      flex: 3,
+      flex: 2,
       renderCell: (params) => (
         <div>
           <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
@@ -325,39 +333,37 @@ const AdminQuestionBankManagement = () => {
               isFilter={false}
             />
           </Grid>
-          <Grid item xs={12}>
-            <CustomDataGrid
-              loading={questionBankCategoriesState.isLoading}
-              dataList={questionBankCategoriesState.categories.questionBankCategories.map(
-                (item, index) => ({
-                  stt: index + 1,
-                  ...item
-                })
-              )}
-              tableHeader={tableHeading}
-              onSelectData={handleRowClick}
-              dataGridToolBar={dataGridToolbar}
-              page={page}
-              pageSize={rowsPerPage}
-              totalElement={totalElement}
-              onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
-              getRowHeight={() => "auto"}
-              onClickRow={handleRowClick}
-              sx={{
-                "& .MuiDataGrid-cell": {
-                  border: "none"
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f9fb"
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
-                }
-              }}
-              personalSx={true}
-            />
-          </Grid>
+
+          <CustomDataGrid
+            loading={questionBankCategoriesState.isLoading}
+            dataList={questionBankCategoriesState.categories.questionBankCategories.map(
+              (item, index) => ({
+                stt: index + 1,
+                ...item
+              })
+            )}
+            tableHeader={columns}
+            onSelectData={handleRowClick}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={rowsPerPage}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            onClickRow={handleRowClick}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                border: "none"
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#f5f9fb"
+              },
+              "& .MuiDataGrid-toolbarContainer": {
+                backgroundColor: "#f5f9fb"
+              }
+            }}
+            personalSx={true}
+          />
         </Stack>
       </Container>
       <Dialog

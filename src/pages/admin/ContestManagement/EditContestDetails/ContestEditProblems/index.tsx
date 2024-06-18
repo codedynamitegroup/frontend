@@ -26,9 +26,10 @@ import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { useState } from "react";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
-import { setSuccessMess } from "reduxes/AppStatus";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import AddContestProblemDialog from "./components/AddContestProblemDialog";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
+import ConfirmAdd from "components/common/dialogs/ConfirmAdd";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;
@@ -43,16 +44,34 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [isOpenConfirmAdd, setIsOpenConfirmAdd] = useState(false);
   const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+  const [newProblem, setNewProblem] = useState<ContestQuestionEntity | null>(null);
 
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
+  const onCancelConfirmAdd = () => {
+    setIsOpenConfirmAdd(false);
+    setIsOpenedAddProblemDialog(true);
+  };
+
   const onDeleteConfirmDelete = async () => {
     const newProblems = problems.filter((problem) => problem.questionId !== deletedQuestionId);
     setValue("problems", newProblems);
     setIsOpenConfirmDelete(false);
     dispatch(setSuccessMess(t("contest_delete_problem_success")));
+  };
+
+  const onAddConfirmAdd = async () => {
+    setIsOpenConfirmAdd(false);
+    if (!newProblem) {
+      dispatch(setErrorMess(t("contest_add_problem_error")));
+      return;
+    }
+    const newProblems = [...problems, newProblem];
+    setValue("problems", newProblems);
+    dispatch(setSuccessMess(t("contest_add_problem_success")));
   };
 
   const [isOpenedAddProblemDialog, setIsOpenedAddProblemDialog] = useState(false);
@@ -72,6 +91,15 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
         title={t("contest_add_problem_button")}
         handleClose={handleCloseAddProblemDialog}
         maxWidth='md'
+        currentQuestionList={problems}
+        handleAddProblem={(newProblem: ContestQuestionEntity) => {
+          setNewProblem(newProblem);
+          setIsOpenConfirmAdd(true);
+        }}
+        handleDeleteProblem={(questionId: string) => {
+          setDeletedQuestionId(questionId);
+          setIsOpenConfirmDelete(true);
+        }}
       />
       <ConfirmDelete
         isOpen={isOpenConfirmDelete}
@@ -79,6 +107,13 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
         description={t("dialog_confirm_delete_problem_description")}
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
+      />
+      <ConfirmAdd
+        isOpen={isOpenConfirmAdd}
+        title={t("dialog_confirm_add_contest_problem_title")}
+        description={t("dialog_confirm_add_contest_problem_description")}
+        onCancel={onCancelConfirmAdd}
+        onAdd={onAddConfirmAdd}
       />
       <Grid
         container
@@ -145,11 +180,21 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
                   <TableCell
                     align='left'
                     sx={{
-                      width: "20%"
+                      width: "15%"
                     }}
                   >
                     <Heading6 fontWeight={"700"} translation-key='common_max_score'>
                       {t("common_max_score")}
+                    </Heading6>
+                  </TableCell>
+                  <TableCell
+                    align='left'
+                    sx={{
+                      width: "15%"
+                    }}
+                  >
+                    <Heading6 fontWeight={"700"} translation-key='common_max_score'>
+                      {t("common_difficulty_level")}
                     </Heading6>
                   </TableCell>
                   <TableCell
@@ -188,14 +233,26 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
                           </Link>
                         </ParagraphSmall>
                       </TableCell>
+                      <TableCell>{row.maxGrade}</TableCell>
                       <TableCell>
-                        {row.difficulty === "EASY"
-                          ? t("common_easy")
-                          : row.difficulty === "MEDIUM"
-                            ? t("common_medium")
-                            : row.difficulty === "HARD"
-                              ? t("common_hard")
-                              : 0}
+                        <Heading6
+                          fontWeight={600}
+                          colorname={
+                            row.difficulty === "EASY"
+                              ? "--green-500"
+                              : row.difficulty === "MEDIUM"
+                                ? "--orange-5"
+                                : "--red-hard"
+                          }
+                        >
+                          {row.difficulty === "EASY"
+                            ? t("common_easy")
+                            : row.difficulty === "MEDIUM"
+                              ? t("common_medium")
+                              : row.difficulty === "HARD"
+                                ? t("common_hard")
+                                : 0}
+                        </Heading6>
                       </TableCell>
                       <TableCell align='center'>
                         <IconButton

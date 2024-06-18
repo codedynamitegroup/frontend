@@ -1,4 +1,5 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Checkbox, Grid, Link, Stack } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import {
@@ -19,6 +20,20 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import classes from "./styles.module.scss";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
+
+interface AddContestProblemDialogQuestionInterface {
+  id: string;
+  questionId: string;
+  no: number;
+  name: string;
+  difficulty: string;
+  isPublic: boolean;
+  maxGrade: number;
+  defaultMark: number;
+}
 
 interface AddContestProblemDialogProps extends DialogProps {
   title?: string;
@@ -30,6 +45,9 @@ interface AddContestProblemDialogProps extends DialogProps {
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
   isConfirmLoading?: boolean;
+  currentQuestionList: ContestQuestionEntity[];
+  handleAddProblem: (value: ContestQuestionEntity) => void;
+  handleDeleteProblem: (questionId: string) => void;
 }
 
 enum FilterValue {
@@ -50,6 +68,10 @@ export default function AddContestProblemDialog({
   onHanldeConfirm,
   isConfirmLoading = false,
   isReportExisted,
+  currentQuestionList,
+  // changeCurrentQuestionList,
+  handleAddProblem,
+  handleDeleteProblem,
   ...props
 }: AddContestProblemDialogProps) {
   const { t } = useTranslation();
@@ -67,115 +89,94 @@ export default function AddContestProblemDialog({
     }
   ]);
 
-  const [questionList, setQuestionList] = React.useState<any[]>([
-    {
-      id: "1",
-      no: 1,
-      name: "Problem 1",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "2",
-      no: 2,
-      name: "Problem 2",
-      difficulty: "MEDIUM",
-      isPublic: false
-    },
-    {
-      id: "3",
-      no: 3,
-      name: "Problem 3",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "4",
-      no: 4,
-      name: "Problem 4",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "5",
-      no: 5,
-      name: "Problem 5",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "6",
-      no: 6,
-      name: "Problem 6",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "7",
-      no: 7,
-      name: "Problem 7",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "8",
-      no: 8,
-      name: "Problem 8",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "9",
-      no: 9,
-      name: "Problem 9",
-      difficulty: "HARD",
-      isPublic: false
-    },
-    {
-      id: "10",
-      no: 10,
-      name: "Problem 10",
-      difficulty: "EASY",
-      isPublic: false
-    },
-    {
-      id: "11",
-      no: 11,
-      name: "Problem 11",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "12",
-      no: 12,
-      name: "Problem 12",
-      difficulty: "HARD",
-      isPublic: true
-    },
-    {
-      id: "13",
-      no: 13,
-      name: "Problem 13",
-      difficulty: "EASY",
-      isPublic: true
-    },
-    {
-      id: "14",
-      no: 14,
-      name: "Problem 14",
-      difficulty: "MEDIUM",
-      isPublic: true
-    },
-    {
-      id: "15",
-      no: 15,
-      name: "Problem 15",
-      difficulty: "HARD",
-      isPublic: false
-    }
-  ]);
+  const [data, setData] = React.useState<{
+    codeQuestions: AddContestProblemDialogQuestionInterface[];
+    currentPage: number;
+    totalPage: number;
+    totalItems: number;
+  }>({
+    codeQuestions: [],
+    currentPage: 0,
+    totalPage: 0,
+    totalItems: 0
+  });
 
-  const handleApplyFilter = React.useCallback(() => {}, []);
+  const handleGetAdminCodeQuestions = React.useCallback(
+    async ({
+      search,
+      isPublic,
+      difficulty,
+      pageNo = 0,
+      pageSize = 5
+    }: {
+      search?: string;
+      isPublic?: boolean;
+      difficulty?: QuestionDifficultyEnum;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      setIsLoading(true);
+      try {
+        const getAdminCodeQuestionsResponse = await CoreCodeQuestionService.getAdminCodeQuestions({
+          search,
+          isPublic,
+          difficulty,
+          pageNo,
+          pageSize
+        });
+        setData({
+          codeQuestions: getAdminCodeQuestionsResponse.qtypeCodeQuestions.map(
+            (
+              item: {
+                id: string;
+                question: {
+                  id: string;
+                  name: string;
+                  questionText: string;
+                  generalFeedback: string;
+                  difficulty: string;
+                  defaultMark: number;
+                };
+                isPublic: boolean;
+                maxGrade: number;
+              },
+              index: number
+            ) => ({
+              id: item.id,
+              questionId: item.question.id,
+              no: pageNo * pageSize + index + 1,
+              name: item.question.name,
+              difficulty: item.question.difficulty,
+              isPublic: item.isPublic,
+              maxGrade: item.maxGrade,
+              defaultMark: item.question.defaultMark
+            })
+          ),
+          currentPage: getAdminCodeQuestionsResponse.currentPage,
+          totalPage: getAdminCodeQuestionsResponse.totalPage,
+          totalItems: getAdminCodeQuestionsResponse.totalItems
+        });
+        setIsLoading(false);
+      } catch (error: any) {
+        console.error("error", error);
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  const handleApplyFilter = React.useCallback(() => {
+    const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
+    const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
+    handleGetAdminCodeQuestions({
+      search: searchValue,
+      isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
+      difficulty:
+        !difficulty || difficulty === FilterValue.ALL
+          ? undefined
+          : (difficulty as QuestionDifficultyEnum)
+    });
+  }, [filters, handleGetAdminCodeQuestions, searchValue]);
 
   const handleCancelFilter = React.useCallback(() => {
     setFilters([
@@ -184,14 +185,17 @@ export default function AddContestProblemDialog({
         value: FilterValue.ALL
       }
     ]);
-  }, []);
+    handleGetAdminCodeQuestions({
+      search: searchValue
+    });
+  }, [handleGetAdminCodeQuestions, searchValue]);
 
   const tableHeading: GridColDef[] = [
-    { field: "no", headerName: "STT", width: 100 },
+    { field: "no", headerName: t("common_no"), width: 100 },
     {
       field: "name",
-      headerName: "Problem Name",
-      flex: 2,
+      headerName: t("list_problem_problem_name"),
+      flex: 1.5,
       renderCell: (params) => {
         return (
           <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
@@ -203,9 +207,17 @@ export default function AddContestProblemDialog({
       }
     },
     {
+      field: "maxGrade",
+      headerName: "Max grade",
+      flex: 0.6,
+      renderCell: (params) => {
+        return <Heading6 fontWeight={600}>{params.row.maxGrade}</Heading6>;
+      }
+    },
+    {
       field: "difficulty",
-      headerName: "Difficulty level",
-      flex: 0.8,
+      headerName: t("common_difficulty_level"),
+      flex: 0.6,
       renderCell: (params) => {
         return (
           <Heading6
@@ -232,7 +244,7 @@ export default function AddContestProblemDialog({
     {
       field: "isPublic",
       headerName: t("contest_is_public"),
-      flex: 0.5,
+      flex: 0.4,
       align: "center",
       renderHeader: () => {
         return (
@@ -271,18 +283,50 @@ export default function AddContestProblemDialog({
       },
       getActions: (params) => {
         return [
-          <GridActionsCellItem
-            label='Add'
-            onClick={() => {}}
-            icon={
-              <Stack direction='row' gap={1} display='flex' alignItems='center'>
-                <AddCircleOutlineIcon htmlColor='#1976d2' />
-                <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
-                  {t("common_add")}
-                </Heading6>
-              </Stack>
-            }
-          />
+          currentQuestionList.find((item) => item.questionId === params.row.questionId) ? (
+            <GridActionsCellItem
+              label='Remove'
+              onClick={() => {
+                handleDeleteProblem(params.row.questionId);
+              }}
+              icon={
+                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
+                  <RemoveCircleOutlineIcon htmlColor='#EF4743' />
+                  <Heading6
+                    fontWeight={"700"}
+                    colorname={"--red-text"}
+                    translate-key='common_remove'
+                  >
+                    {t("common_remove")}
+                  </Heading6>
+                </Stack>
+              }
+            />
+          ) : (
+            <GridActionsCellItem
+              label='Add'
+              onClick={() => {
+                const newProblem: ContestQuestionEntity = {
+                  codeQuestionId: params.row.id,
+                  questionId: params.row.questionId,
+                  difficulty: params.row.difficulty,
+                  name: params.row.name,
+                  questionText: "",
+                  defaultMark: params.row.defaultMark,
+                  maxGrade: params.row.maxGrade
+                };
+                handleAddProblem(newProblem);
+              }}
+              icon={
+                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
+                  <AddCircleOutlineIcon htmlColor='#1976d2' />
+                  <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
+                    {t("common_add")}
+                  </Heading6>
+                </Stack>
+              }
+            />
+          )
         ];
       }
     }
@@ -294,17 +338,44 @@ export default function AddContestProblemDialog({
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    // console.log(model);
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetAdminCodeQuestions({
+      search: searchValue,
+      pageNo: model.page,
+      pageSize: model.pageSize
+    });
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = questionList.length;
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(5);
+  const totalElement = data.totalItems;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     // console.log(params);
   };
 
-  const handleSearchChange = React.useCallback((value: string) => {}, []);
+  const handleSearchChange = React.useCallback(
+    (value: string) => {
+      setPage(0);
+      const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
+      const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
+      handleGetAdminCodeQuestions({
+        search: value,
+        isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
+        difficulty:
+          !difficulty || difficulty === FilterValue.ALL
+            ? undefined
+            : (difficulty as QuestionDifficultyEnum),
+        pageNo: 0,
+        pageSize: pageSize
+      });
+    },
+    [handleGetAdminCodeQuestions, pageSize, filters]
+  );
+
+  React.useEffect(() => {
+    handleGetAdminCodeQuestions({});
+  }, [handleGetAdminCodeQuestions]);
 
   return (
     <CustomDialog
@@ -380,7 +451,8 @@ export default function AddContestProblemDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
-            dataList={questionList}
+            loading={isLoading}
+            dataList={data.codeQuestions}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}
             dataGridToolBar={dataGridToolbar}

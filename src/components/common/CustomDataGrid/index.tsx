@@ -153,6 +153,8 @@ const CustomDataGrid = (props: DataGridProps) => {
                 ...sx
               }
         }
+        pagination
+        paginationMode='server'
         onCellClick={handleCellClick}
         onPaginationModelChange={pageChangeHandler}
         getRowHeight={props.getRowHeight}
