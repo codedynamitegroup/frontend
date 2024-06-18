@@ -305,7 +305,7 @@ const QuestionListOfCourse = () => {
   const handleCreateQuestionAI = () => {
     navigate(`ai/create`);
   };
- const dataGridToolbar = { enableToolbar: true };
+  const dataGridToolbar = { enableToolbar: true };
   useEffect(() => {
     if (categoryId) {
       handleGetCategory(categoryId);

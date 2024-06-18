@@ -440,6 +440,8 @@
   "course_assignment_detail_open_time": "Thời gian mở",
   "course_assignment_detail_close_time": "Thời gian đóng",
   "course_assignment_detail_submit": "Thêm bài nộp",
+  "course_assignment_detail_edit_submit": "Chỉnh sửa bài nộp",
+  "course_assignment_detail_remove_submit": "Xóa bài nộp",
 
   "course_grade_title": "Báo cáo điểm",
   "course_grade_average": "Điểm trung bình",
@@ -665,6 +667,10 @@
   "question_bank_create_category_name": "Tên danh mục",
 
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
+
+  "code_question_name": "Tên câu hỏi code",
+  "code_question_difficulty": "Độ khó",
+  "code_question_updated": "Cập nhật lần cuối",
 
   "detail_problem_description": "Mô tả",
   "detail_problem_discussion": "Thảo luận",

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { API } from "constants/API";
 import { CreateSubmissionAssignmentCommand } from "models/courseService/entity/create/CreateSubmissionAssignmentCommand";
+import { UpdateSubmissionAssignment } from "models/courseService/entity/update/UpdateSubmissionAssignment";
 import api from "utils/api";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
@@ -37,7 +38,7 @@ export class SubmissionAssignmentService {
       return this.handleError(error);
     }
   }
-  static async update(data: any, id: string) {
+  static async update(data: UpdateSubmissionAssignment, id: string) {
     try {
       const response = await this.apiClient.put(
         `${API.COURSE.SUBMISSION_ASSIGNMENT.UPDATE_BY_ID}`.replace(":id", id),

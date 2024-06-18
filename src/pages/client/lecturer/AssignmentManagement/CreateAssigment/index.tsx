@@ -35,7 +35,7 @@ import moment, { Moment } from "moment";
 import { ExtFile, ServerResponse, UPLOADSTATUS } from "@files-ui/react";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Heading2 from "components/text/Heading2";
-import { NavigateNext } from "@mui/icons-material";
+import { Close, NavigateNext } from "@mui/icons-material";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import Heading3 from "components/text/Heading3";
 import { idID } from "@mui/material/locale";
@@ -88,6 +88,7 @@ export default function AssignmentCreated() {
   const [collapseOpen, setCollapseOpen] = useState(true);
   const [submissionTimeCollapseOpen, setSubmissionTimeCollapseOpen] = useState(false);
   const [submissionTypeCollapseOpen, setSubmissionTypeCollapseOpen] = useState(false);
+  const [shake, setShake] = useState(false);
 
   const [textSubmission, setTextSubmission] = useState<boolean>(false);
   const [fileSubmission, setFileSubmission] = useState<boolean>(true);
@@ -234,6 +235,11 @@ export default function AssignmentCreated() {
   }, []);
 
   const submitHandler = async (data: any) => {
+    if (!textSubmission && !fileSubmission) {
+      setShake(true);
+      setTimeout(() => setShake(false), 2000); // Reset shake a
+      return;
+    }
     setLoading(true);
     const formSubmittedData: IFormDataType = { ...data };
     const {
@@ -772,7 +778,7 @@ export default function AssignmentCreated() {
                         {t("common_submission_type")}
                       </ParagraphSmall>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={9} style={{ position: "relative" }}>
                       <FormGroup style={{ flexDirection: "row" }}>
                         <FormControlLabel
                           translation-key='common_submission_type_online_text'
@@ -797,6 +803,19 @@ export default function AssignmentCreated() {
                           label={t("common_submission_type_file")}
                         />
                       </FormGroup>
+                      {shake && (
+                        <Alert
+                          className={shake ? classes.shake : classes.slideUp}
+                          severity='error'
+                          sx={{
+                            position: "absolute",
+                            top: -50,
+                            zIndex: 9999 // Adjust the z-index as needed
+                          }}
+                        >
+                          {"Hãy chọn loại bài tập"}
+                        </Alert>
+                      )}
                     </Grid>
                   </Grid>
                   {textSubmission && (

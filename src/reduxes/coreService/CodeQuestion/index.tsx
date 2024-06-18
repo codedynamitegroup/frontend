@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
+import { CodeQuestion } from "models/coreService/entity/QuestionEntity";
 
 interface InitialState {
   isLoading: boolean;
-  questions: QuestionEntity[];
+  questions: CodeQuestion[];
   currentPage: number;
   totalItems: number;
   totalPages: number;
@@ -17,28 +17,22 @@ const initialState: InitialState = {
   totalPages: 0
 };
 
-const questionSlice = createSlice({
-  name: "question",
+const codeQuestionSlice = createSlice({
+  name: "codeQuestion",
   initialState: initialState,
   reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload.isLoading;
     },
-    setQuestions: (state, action) => {
-      state.questions = action.payload.questions;
+    setCodeQuestions: (state, action) => {
+      state.questions = action.payload.qtypeCodeQuestions;
       state.currentPage = action.payload.currentPage;
       state.totalItems = action.payload.totalItems;
       state.totalPages = action.payload.totalPages;
-    },
-    clearCodeQuestion: (state) => {
-      state.questions = [];
-      state.currentPage = 0;
-      state.totalItems = 0;
-      state.totalPages = 0;
     }
   }
 });
 
-export const { setLoading, setQuestions, clearCodeQuestion } = questionSlice.actions;
+export const { setLoading, setCodeQuestions } = codeQuestionSlice.actions;
 
-export default questionSlice.reducer;
+export default codeQuestionSlice.reducer;

@@ -13,6 +13,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import CodeIcon from "@mui/icons-material/Code";
 
 const drawerWidth = 270;
 
@@ -63,6 +64,12 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       "translation-key": "certificate_course_management_title",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.certificate.root
+    },
+    {
+      name: t("code_management_title"),
+      "translation-key": "code_management_title",
+      icon: <CodeIcon className={classes.itemIcon} />,
+      link: routes.admin.code_question.root
     },
     {
       name: t("question_bank_management"),

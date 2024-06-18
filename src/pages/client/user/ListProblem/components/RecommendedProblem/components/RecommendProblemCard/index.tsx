@@ -10,12 +10,15 @@ import images from "config/images";
 import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 type Props = {
   recommendProblem: IRecommendedProblem;
 };
 
 const RecommendProblemCard = ({ recommendProblem }: Props) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const renderTextLevel = (level: QuestionDifficultyEnum) => {
     if (level === QuestionDifficultyEnum.EASY) {
@@ -27,7 +30,12 @@ const RecommendProblemCard = ({ recommendProblem }: Props) => {
   };
 
   return (
-    <Box className={classes.recommendProblemCardWrapper}>
+    <Box
+      className={classes.recommendProblemCardWrapper}
+      onClick={() => {
+        navigate(routes.user.problem.detail.description.replace(":problemId", recommendProblem.id));
+      }}
+    >
       <Grid container direction={"column"} margin={0} gap={2}>
         <Grid item container xs={6} className={classes.titleRecommendProblem}>
           <Grid item xs={12} className={classes.nameRecommendProblem}>

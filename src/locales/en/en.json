@@ -448,6 +448,8 @@
   "course_assignment_detail_open_time": "Open time",
   "course_assignment_detail_close_time": "Close time",
   "course_assignment_detail_submit": "Add submission",
+  "course_assignment_detail_edit_submit": "Edit submission",
+  "course_assignment_detail_remove_submit": "Remove submission",
 
   "course_grade_title": "Grade report",
   "course_grade_average": "Average",
@@ -671,6 +673,10 @@
   "question_bank_create_category_name": "Category name",
 
   "question_bank_management": "Question bank management",
+
+  "code_question_name": "Question name",
+  "code_question_difficulty": "Difficulty",
+  "code_question_updated": "Last updated",
 
   "detail_problem_description": "Description",
   "detail_problem_discussion": "Discussion",

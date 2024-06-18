@@ -1,37 +1,20 @@
-.root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: auto;
+#codequestionCreationBody {
   display: flex;
-  flex-direction: column !important;
-  background-color: var(--gray-2);
-}
-// .table-head {
-//   background-color: var(--blue-500);
-//   p {
-//     color: #fff;
-//   }
-// }
-.tab-panel {
-  padding: 0px;
-}
-
-.container {
-  display: flex !important;
   flex-direction: column;
-  background-color: white;
-  border-radius: 5px;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  height: 100%;
 }
 
 .tabWrapper {
   border-bottom: 1px solid var(--gray-10);
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 15px 40px;
+
+  .breadCump {
+    span:hover {
+      cursor: pointer;
+      color: black;
+    }
+  }
 }
 
 .formBody {
@@ -41,18 +24,6 @@
   gap: 15px;
 }
 
-.linkLevel {
-  span:hover {
-    cursor: pointer;
-    color: black;
-  }
-}
-.breadCump {
-  span:hover {
-    cursor: pointer;
-    color: black;
-  }
-}
 .stickyFooterItem {
   background-color: #ffffff;
   border-top: 1px solid var(--gray-30);
@@ -79,4 +50,8 @@
 
 .stickyFooterContainer {
   position: relative;
+}
+
+.textEditor {
+  height: 200px;
 }
