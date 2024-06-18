@@ -82,6 +82,7 @@
   "common_question_type_yes_no": "Đúng / sai",
   "common_question_type_code": "Lập trình",
   "common_add": "Thêm",
+  "common_remove": "Xoá",
   "common_question": "Câu hỏi",
   "common_enter_grade": "Nhập điểm",
   "common_see_evaluating": "Xem đánh giá",
@@ -189,6 +190,9 @@
   "common_advanced_settings": "Cài đặt nâng cao",
   "common_no": "STT",
   "common_email": "Email",
+  "common_programming_language": "Ngôn ngữ lập trình",
+  "common_runtime": "Thời gian thực thi",
+  "common_memory": "Bộ nhớ",
   "common_my_courses": "Khoá học của tôi",
   "common_next": "Tiếp",
   "common_previous": "Trước",
@@ -206,6 +210,8 @@
   "dialog_confirm_delete_title": "Xác nhận xoá",
   "dialog_confirm_delete_contest_description": "Bạn có chắc chắn muốn xoá cuộc thi này không ?",
   "dialog_confirm_delete_problem_description": "Bạn có chắc chắn muốn xoá bài toán này không ? Bạn phải lưu thay đổi sau đó để áp dụng cho cuộc thi",
+  "dialog_confirm_add_contest_problem_title": "Xác nhận thêm bài toán",
+  "dialog_confirm_add_contest_problem_description": "Bạn có chắc chắn muốn thêm bài toán này vào cuộc thi không ?",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
@@ -314,6 +320,8 @@
   "contest_delete_contest_fail": "Xoá cuộc thi thất bại",
   "contest_details_problems_success_rates": "Tỉ lệ thành công của bài toán",
   "contest_not_registered": "Bạn chưa đăng ký tham gia cuộc thi này",
+  "contest_add_problem_success": "Thêm bài toán vào cuộc thi thành công",
+  "contest_add_problem_fail": "Thêm bài toán vào cuộc thi thất bại",
 
   "contest_detail_joined_feature_status": "Bạn đã đăng ký tham gia cuộc thi này",
   "contest_detail_joined_happening_status": "Bạn đang tham gia cuộc thi này",
@@ -337,6 +345,7 @@
   "contest_detail_join_button": "Tham gia",
   "contest_detail_leaderboard_rank": "Hạng",
   "contest_detail_leaderboard_total_time": "Tổng thời gian làm",
+  "contest_detail_leaderboard_total_time_description": "Thời gian này được tính từ thời điểm bắt đầu cuộc thi đến thời điểm bạn nộp bài toán cuối cùng",
   "contest_detail_join_success": "Đăng ký tham gia cuộc thi thành công",
   "contest_detail_register_tooltip": "Hãy đăng nhập để có thể tham gia cuộc thi này",
   "contest_detail_already_started_message": "Cuộc thi đã bắt đầu. Bạn không thể tham gia",
@@ -431,6 +440,8 @@
   "course_assignment_detail_open_time": "Thời gian mở",
   "course_assignment_detail_close_time": "Thời gian đóng",
   "course_assignment_detail_submit": "Thêm bài nộp",
+  "course_assignment_detail_edit_submit": "Chỉnh sửa bài nộp",
+  "course_assignment_detail_remove_submit": "Xóa bài nộp",
 
   "course_grade_title": "Báo cáo điểm",
   "course_grade_average": "Điểm trung bình",
@@ -656,6 +667,10 @@
   "question_bank_create_category_name": "Tên danh mục",
 
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
+
+  "code_question_name": "Tên câu hỏi code",
+  "code_question_difficulty": "Độ khó",
+  "code_question_updated": "Cập nhật lần cuối",
 
   "detail_problem_description": "Mô tả",
   "detail_problem_discussion": "Thảo luận",

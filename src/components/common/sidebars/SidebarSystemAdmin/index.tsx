@@ -14,6 +14,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import CodeIcon from "@mui/icons-material/Code";
 
 const drawerWidth = 270;
 
@@ -60,8 +61,8 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.users.root
     },
     {
-      name: t("certificate_course_management"),
-      "translation-key": "certificate_course_management",
+      name: t("certificate_course_management_title"),
+      "translation-key": "certificate_course_management_title",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.certificate.root,
       children: [
@@ -73,6 +74,12 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           // icon: <AddCircleRoundedIcon className={classes.itemIcon} />
         }
       ]
+    },
+    {
+      name: t("code_management_title"),
+      "translation-key": "code_management_title",
+      icon: <CodeIcon className={classes.itemIcon} />,
+      link: routes.admin.code_question.root
     },
     {
       name: t("question_bank_management"),
@@ -101,8 +108,7 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            backgroundColor: "#f5f5f5"
+            width: drawerWidth
             // marginTop: `${headerHeight + 2}px`
           }
         }}

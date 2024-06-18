@@ -182,7 +182,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       className={classes.header}
       ref={ref}
       sx={{
-        paddingLeft: sidebarStatus ? "240px" : "0px"
+        paddingLeft: sidebarStatus && toggleDrawer ? "240px" : "0px"
       }}
     >
       <Toolbar disableGutters className={classes.toolbar}>
@@ -204,25 +204,27 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             )}
 
-            <Box className={classes.logo}>
-              <Link
-                component={RouterLink}
-                to={
-                  loggedUser &&
-                  !activeRoute(routes.admin.homepage.root) &&
-                  !activeRoute(routes.org_admin.homepage.root)
-                    ? routes.user.dashboard.root
-                    : loggedUser && activeRoute(routes.org_admin.homepage.root)
-                      ? routes.org_admin.users.root
-                      : loggedUser && activeRoute(routes.admin.homepage.root)
-                        ? routes.admin.dashboard
-                        : routes.user.homepage.root
-                }
-                className={classes.textLink}
-              >
-                <img src={images.logo.appLogo} alt='logo' />
-              </Link>
-            </Box>
+            {(!toggleDrawer || (!!toggleDrawer && !sidebarStatus)) && (
+              <Box className={classes.logo}>
+                <Link
+                  component={RouterLink}
+                  to={
+                    loggedUser &&
+                    !activeRoute(routes.admin.homepage.root) &&
+                    !activeRoute(routes.org_admin.homepage.root)
+                      ? routes.user.dashboard.root
+                      : loggedUser && activeRoute(routes.org_admin.homepage.root)
+                        ? routes.org_admin.users.root
+                        : loggedUser && activeRoute(routes.admin.homepage.root)
+                          ? routes.admin.dashboard
+                          : routes.user.homepage.root
+                  }
+                  className={classes.textLink}
+                >
+                  <img src={images.logo.appLogo} alt='logo' />
+                </Link>
+              </Box>
+            )}
           </Box>
           <Box className={classes.navbarItem} ml={2}>
             {!activeRoute(routes.admin.homepage.root) &&

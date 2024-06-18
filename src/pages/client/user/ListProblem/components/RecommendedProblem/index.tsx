@@ -10,6 +10,7 @@ import { dA } from "@fullcalendar/core/internal-common";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 export interface IRecommendedProblem {
+  id: string;
   title: string;
   level: QuestionDifficultyEnum;
   numberStudiedPeople: number;
@@ -40,7 +41,7 @@ const RecommendedProblem = () => {
         {recommendLoading &&
           [0, 1, 2].map((_, index) => (
             <Grid item xs={4} key={index}>
-              <Skeleton variant='rounded' width={"100%"} height={240} />
+              <Skeleton variant='rounded' width={"100%"} height={200} />
             </Grid>
           ))}
         {!recommendLoading &&
@@ -50,6 +51,7 @@ const RecommendedProblem = () => {
                 <Grid item xs={4} key={index}>
                   <RecommendProblemCard
                     recommendProblem={{
+                      id: recommendedProblem.id,
                       title: recommendedProblem.name,
                       level: recommendedProblem.difficulty,
                       numberStudiedPeople: recommendedProblem.numOfPeopleAttend

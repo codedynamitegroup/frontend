@@ -34,8 +34,6 @@ const TitleWithInfoTip = (props: PropsData) => {
   return (
     <Box className={classes.titleContainer}>
       <TextTitle
-        // className={classes.generalDescription}
-
         fontSize={fontSize}
         fontWeight={fontWeight}
         color={color}
