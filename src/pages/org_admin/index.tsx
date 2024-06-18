@@ -17,6 +17,7 @@ import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/compon
 import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
 import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
 import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
+import OrgAdminContestManagement from "./ContestManagement/OrgAdminContestManagement";
 
 type Props = {};
 
@@ -33,6 +34,8 @@ const OrganizationAdminHomepage = (props: Props) => {
         {/* <Box className={classes.container}> */}
         <Box className={classes.body}>
           <Routes>
+            <Route path={"contests"} element={<OrgAdminContestManagement />} />
+
             <Route path={"information"} element={<UserInformation />} />
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />

@@ -49,16 +49,16 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
     //   ),
     //   link: routes.admin.dashboard
     // },
-    // {
-    //   name: t("side_bar_contest_management"),
-    //   "translation-key": "side_bar_contest_management",
-    //   icon: (
-    //     <Box className={classes.img}>
-    //       <img src={images.admin.contest} alt='contest img' />
-    //     </Box>
-    //   ),
-    //   link: routes.admin.contest.root
-    // },
+    {
+      name: t("side_bar_contest_management"),
+      "translation-key": "side_bar_contest_management",
+      icon: (
+        <Box className={classes.img}>
+          <img src={images.admin.contest} alt='contest img' />
+        </Box>
+      ),
+      link: routes.org_admin.contest.root
+    },
     {
       name: t("user_management"),
       "translation-key": "user_management",
