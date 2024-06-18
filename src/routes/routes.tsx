@@ -243,6 +243,15 @@ export const routes = {
       },
       create: "/admin/users/create"
     },
+    organizations: {
+      root: "/admin/organizations",
+      edit: {
+        root: "/admin/organizations/edit/:organizationId/*",
+        details: "/admin/organizations/edit/:organizationId/details",
+        list_users: "/admin/organizations/edit/:organizationId/users"
+      },
+      create: "/admin/organizations/create"
+    },
     question_bank: {
       root: "/admin/question-bank-management",
       detail: "/admin/question-bank-management/:categoryId",

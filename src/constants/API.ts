@@ -172,23 +172,31 @@ export const API = {
     SUBMISSION: "/submissions"
   },
   AUTH: {
-    GET_ALL_USERS: "/auth/users",
-    GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
-    GET_STATISTICS: "/auth/users/statistics",
-    SOCIAL_LOGIN: "/auth/users/social-login",
-    LOGIN: "/auth/users/login",
-    REFRESH_TOKEN: "/auth/users/refresh-token",
-    LOGOUT: "/auth/users/logout",
-    REGISTER: "/auth/users/register",
-    CREATE_USER_BY_ADMIN: "/auth/users",
-    GET_USER_BY_EMAIL: "/auth/users/get-by-email",
-    GET_USER_BY_ID: "/auth/users/:id",
-    DELETE_USER_BY_ID: "/auth/users/:id",
-    FORGOT_PASSWORD: "/auth/users/forgot-password",
-    VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
-    UPDATE_PROFILE_USER: "/auth/users/update-profile",
-    UPDATE_USER_BY_ADMIN: "/auth/users/:id",
-    CHANGE_PASSWORD: "/auth/users/change-password",
-    RESET_PASSWORD: "/auth/users/forgot-password/change-password"
+    USER: {
+      GET_ALL_USERS: "/auth/users",
+      GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
+      GET_STATISTICS: "/auth/users/statistics",
+      SOCIAL_LOGIN: "/auth/users/social-login",
+      LOGIN: "/auth/users/login",
+      REFRESH_TOKEN: "/auth/users/refresh-token",
+      LOGOUT: "/auth/users/logout",
+      REGISTER: "/auth/users/register",
+      CREATE_USER_BY_ADMIN: "/auth/users",
+      GET_USER_BY_EMAIL: "/auth/users/get-by-email",
+      GET_USER_BY_ID: "/auth/users/:id",
+      DELETE_USER_BY_ID: "/auth/users/:id",
+      FORGOT_PASSWORD: "/auth/users/forgot-password",
+      VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
+      UPDATE_PROFILE_USER: "/auth/users/update-profile",
+      UPDATE_USER_BY_ADMIN: "/auth/users/:id",
+      CHANGE_PASSWORD: "/auth/users/change-password",
+      RESET_PASSWORD: "/auth/users/forgot-password/change-password"
+    },
+    ORGANIZATION: {
+      GET_ALL_ORGANIZATIONS: "/auth/organizations",
+      CREATE_ORGANIZATION: "/auth/organizations",
+      GET_ORGANIZATION_BY_ID: "/auth/organizations/:id",
+      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
+    }
   }
 };

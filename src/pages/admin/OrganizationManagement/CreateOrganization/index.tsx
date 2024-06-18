@@ -1,9 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { Box, Card, Divider, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -15,28 +13,25 @@ import JoyButton from "@mui/joy/Button";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
-import { CreatedUserByAdminRequest } from "models/authService/entity/user";
-import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
-import InputSelect from "components/common/inputs/InputSelect";
-import { IOptionItem } from "models/general";
+import TextEditor from "components/editor/TextEditor";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import { CreateOrganizationRequest } from "models/authService/entity/organization";
+import { OrganizationService } from "services/authService/OrganizationService";
+import { clearOrganizations } from "reduxes/authService/organization";
 
 interface IFormDataType {
   email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  roleName: IOptionItem;
+  description?: string;
+  name: string;
   phone: string;
+  address: string;
 }
 
-const CreateUser = () => {
+const CreateOrganization = () => {
+  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -44,30 +39,9 @@ const CreateUser = () => {
   const schema = useMemo(() => {
     return yup.object().shape({
       email: yup.string().required(t("email_required")).email(t("email_invalid")),
-      password: yup
-        .string()
-        .required(t("password_required"))
-        .matches(
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-          t("password_invalid")
-        ),
-      confirmPassword: yup
-        .string()
-        .required(t("password_confirm_required"))
-        .matches(
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-          t("password_invalid")
-        )
-        .oneOf([yup.ref("password")], t("password_confirm_not_match")),
-      firstName: yup.string().required(t("first_name_required")),
-      lastName: yup.string().required(t("last_name_required")),
-      roleName: yup
-        .object()
-        .shape({
-          id: yup.string().required(t("role_required")),
-          name: yup.string().required(t("role_required"))
-        })
-        .required(t("role_required")),
+      name: yup.string().required(t("organization_name_required")),
+      description: yup.string(),
+      address: yup.string().required(t("organization_address_required")),
       phone: yup
         .string()
         .matches(/^\+?[1-9][0-9]{7,14}$/, t("phone_number_invalid"))
@@ -86,46 +60,36 @@ const CreateUser = () => {
 
   const submitHandler = async (data: any) => {
     const formSubmittedData: IFormDataType = { ...data };
-    const createUserByAdminData: CreatedUserByAdminRequest = {
+    const createdOrganizationRequest: CreateOrganizationRequest = {
       email: formSubmittedData.email,
-      password: formSubmittedData.password,
-      firstName: formSubmittedData.firstName,
-      lastName: formSubmittedData.lastName,
-      roleName: formSubmittedData.roleName.id,
+      description: formSubmittedData.description,
+      name: formSubmittedData.name,
+      address: formSubmittedData.address,
       phone: formSubmittedData.phone
     };
-    await handleCreateUser(createUserByAdminData);
+    await handleCreateOrganization(createdOrganizationRequest);
   };
 
-  const handleCreateUser = useCallback(
-    async (createUserByAdminData: CreatedUserByAdminRequest) => {
+  const handleCreateOrganization = useCallback(
+    async (createOrganizationRequest: CreateOrganizationRequest) => {
       setSubmitLoading(true);
       try {
-        await UserService.createUserByAdmin(createUserByAdminData);
+        await OrganizationService.createOrganization(createOrganizationRequest);
         setSubmitLoading(false);
-        dispatch(setSuccessMess("Created user successfully"));
-        dispatch(clearUsers());
-        navigate(routes.admin.users.root);
+        dispatch(setSuccessMess("Created organization successfully"));
+        dispatch(clearOrganizations());
+        navigate(routes.admin.organizations.root);
       } catch (error: any) {
         console.error("error", error);
-        dispatch(setErrorMess("User creation failed!!! please check your input information"));
+        dispatch(
+          setErrorMess("Organization creation failed!!! please check your input information")
+        );
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         setSubmitLoading(false);
       }
     },
-    [t]
-  );
-
-  const roleNameList: IOptionItem[] = useMemo(
-    () => [
-      { id: ERoleName.ADMIN, name: t("role_system_admin") },
-      { id: ERoleName.USER, name: t("role_user") },
-      { id: ERoleName.LECTURER_MOODLE, name: t("role_lecturer") },
-      { id: ERoleName.STUDENT_MOODLE, name: t("role_student") },
-      { id: ERoleName.ADMIN_MOODLE, name: t("role_org_admin") }
-    ],
     [t]
   );
   return (
@@ -141,11 +105,13 @@ const CreateUser = () => {
           gap: "20px"
         }}
       >
-        <Box className={classes.breadcump}>
+        <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
-              breadCrumbData={[{ navLink: routes.admin.users.root, label: t("user_management") }]}
-              lastBreadCrumbLabel={t("user_create")}
+              breadCrumbData={[
+                { navLink: routes.admin.organizations.root, label: t("organization_management") }
+              ]}
+              lastBreadCrumbLabel={t("organization_create")}
             />
           </Box>
         </Box>
@@ -155,18 +121,8 @@ const CreateUser = () => {
             padding: "20px"
           }}
         >
-          <Heading1 translate-key='user_create'>{t("user_create")}</Heading1>
+          <Heading1 translate-key='user_create'>{t("organization_create")}</Heading1>
           <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
-            <InputSelect
-              fullWidth
-              title={t("common_role")}
-              name='roleName'
-              control={control}
-              selectProps={{
-                options: roleNameList
-              }}
-              errorMessage={(errors.roleName as any)?.id?.message}
-            />
             <Grid container spacing={1} columns={12}>
               <Grid item xs={4}>
                 <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
@@ -199,33 +155,43 @@ const CreateUser = () => {
               width='100%'
             />
             <InputTextField
-              title={t("first_name")}
+              title={t("organization_name")}
               type='text'
-              inputRef={register("firstName")}
-              errorMessage={errors?.firstName?.message}
+              inputRef={register("name")}
+              errorMessage={errors?.name?.message}
               width='100%'
             />
             <InputTextField
-              title={t("last_name")}
+              title={t("organization_address")}
               type='text'
-              inputRef={register("lastName")}
-              errorMessage={errors?.lastName?.message}
+              inputRef={register("address")}
+              errorMessage={errors?.address?.message}
               width='100%'
             />
-            <InputTextField
-              title={t("common_password")}
-              type='password'
-              inputRef={register("password")}
-              errorMessage={errors?.password?.message}
-              width='100%'
-            />
-            <InputTextField
-              title={t("common_password_confirm")}
-              type='password'
-              inputRef={register("confirmPassword")}
-              errorMessage={errors?.confirmPassword?.message}
-              width='100%'
-            />
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={4}>
+                <TextTitle translation-key='common_description'>
+                  {t("common_description")}
+                </TextTitle>
+              </Grid>
+              <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
+                <Controller
+                  control={control}
+                  name={"description"}
+                  render={({ field }) => (
+                    <TextEditor
+                      maxLines={6}
+                      roundedBorder
+                      translation-key='common_description'
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.description?.message && (
+                  <ErrorMessage>{errors.description?.message}</ErrorMessage>
+                )}
+              </Grid>
+            </Grid>
 
             <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
               <JoyButton
@@ -234,7 +200,7 @@ const CreateUser = () => {
                 type='submit'
                 translation-key='user_create'
               >
-                {t("user_create")}
+                {t("organization_create")}
               </JoyButton>
             </Grid>
           </Box>
@@ -244,4 +210,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default CreateOrganization;

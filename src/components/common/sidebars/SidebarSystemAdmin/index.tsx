@@ -13,6 +13,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import images from "config/images";
 
 const drawerWidth = 270;
 
@@ -69,6 +70,12 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       "translation-key": "question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.admin.question_bank.root
+    },
+    {
+      name: t("organization_management"),
+      "translation-key": "organization_management",
+      icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
+      link: routes.admin.organizations.root
     }
   ];
   // const [open, setOpen] = React.useState(true);

@@ -1,10 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { Avatar, Box, Card, Divider, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -34,6 +32,7 @@ import { IOptionItem } from "models/general";
 import InputSelect from "components/common/inputs/InputSelect";
 import images from "config/images";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 interface IFormDataType {
   firstName: string;
@@ -44,7 +43,6 @@ interface IFormDataType {
 }
 
 const EditUserDetails = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -188,20 +186,12 @@ const EditUserDetails = () => {
           gap: "20px"
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.users.root)}
-              translation-key='user_management'
-            >
-              {t("user_management")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='common_account_info'>
-              {t("common_account_info")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[{ navLink: routes.admin.users.root, label: t("user_management") }]}
+              lastBreadCrumbLabel={t("common_account_info")}
+            />
           </Box>
         </Box>
         <Divider />

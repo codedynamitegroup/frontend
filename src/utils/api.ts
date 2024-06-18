@@ -48,7 +48,7 @@ const createInstance = ({
           const newRefreshToken = localStorage.getItem("refresh_token");
           const newAccessToken = localStorage.getItem("access_token");
           return axios
-            .post(`${AUTH_SERVICE_API_URL}${API.AUTH.REFRESH_TOKEN}`, {
+            .post(`${AUTH_SERVICE_API_URL}${API.AUTH.USER.REFRESH_TOKEN}`, {
               newAccessToken,
               newRefreshToken
             })
