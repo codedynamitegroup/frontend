@@ -341,6 +341,7 @@ export const routes = {
             code
           }))
       },
+
       update_question: {
         paths: Object.values(qtype)
           .map((value) => value.code)
@@ -349,6 +350,20 @@ export const routes = {
             code
           }))
       }
+    },
+    contest: {
+      root: "/org-admin/contests",
+      edit: {
+        root: "/org-admin/contests/edit/:contestId/*",
+        details: "/org-admin/contests/edit/:contestId/details",
+        problems: "/org-admin/contests/edit/:contestId/problems",
+        advanced_settings: "/org-admin/contests/edit/:contestId/advanced-settings",
+        signups: "/org-admin/contests/edit/:contestId/signups",
+        statistics: "/org-admin/contests/edit/:contestId/statistics"
+      },
+      create: "/org-admin/contests/create",
+      submissions: "/org-admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     }
   }
 };
