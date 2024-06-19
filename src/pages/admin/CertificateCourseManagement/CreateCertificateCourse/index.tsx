@@ -10,8 +10,10 @@ import {
   Controller,
   FieldArrayWithId,
   FieldErrors,
+  UseFieldArrayMove,
   UseFieldArrayRemove,
   UseFormRegister,
+  UseFormSetValue,
   UseFormWatch,
   useFieldArray,
   useForm
@@ -44,7 +46,14 @@ import EditOffRoundedIcon from "@mui/icons-material/EditOffRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 
-import { DragDropContext, Droppable, Draggable, DraggableProvided } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DraggableLocation,
+  DropResult
+} from "react-beautiful-dnd";
 
 interface FormData {
   name: string;
@@ -71,6 +80,7 @@ export interface ChapterResourceData {
 }
 
 interface ChapterFieldArrayPropsData {
+  setValue: UseFormSetValue<FormData>;
   errors: FieldErrors<FormData>;
   isDragging: boolean;
   field: FieldArrayWithId<FormData, "chapters", "id">;
@@ -198,8 +208,9 @@ const CreateCertificateCourse = () => {
     if (destination) {
       move(source.index, destination.index);
 
-      setValue(`chapters.${source.index}.no`, source.index);
-      setValue(`chapters.${destination.index}.no`, destination.index);
+      fields.forEach((field, idx) => {
+        setValue(`chapters.${idx}.no`, idx);
+      });
     }
   };
 
@@ -433,7 +444,7 @@ const CreateCertificateCourse = () => {
                         return (
                           <Draggable
                             key={`chapters[${index}]`}
-                            draggableId={`item-${index}`}
+                            draggableId={`item-chapter-${index}`}
                             index={index}
                           >
                             {(provided, snapshot) => (
@@ -443,6 +454,7 @@ const CreateCertificateCourse = () => {
                                 {...provided.draggableProps}
                               >
                                 <ChapterItem
+                                  setValue={setValue}
                                   errors={errors}
                                   watch={watch}
                                   isDragging={isDragging}
@@ -503,11 +515,13 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
     provided,
     isDragging,
     watch,
-    errors
+    errors,
+
+    setValue
   } = props;
   const [open, setOpen] = useState(false);
   const [isEditting, setIsEditting] = useState(true);
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: `chapters.${parentIndex}.resources`
   });
@@ -544,6 +558,29 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
       setOpen(true);
     }
   }, [isEditting]);
+
+  const handleDragResource = (result: DropResult) => {
+    const source = result.source as DraggableLocation;
+    const destination = result.destination as DraggableLocation;
+    console.log("source: %s, destination: %s", source.index, destination.index);
+
+    if (destination) {
+      move(source.index, destination.index);
+
+      fields.forEach((field, idx) => {
+        setValue(`chapters.${parentIndex}.resources.${idx}.no`, idx);
+      });
+    }
+  };
+
+  const handleRemoveResource = (index: number) => {
+    remove(index);
+
+    const updatedFields = watch(`chapters.${parentIndex}.resources`);
+    updatedFields?.forEach((field, idx) => {
+      setValue(`chapters.${parentIndex}.resources.${idx}.no`, idx);
+    });
+  };
 
   return (
     <>
@@ -696,22 +733,48 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
               marginTop: "10px"
             }}
           >
-            <Stack spacing={{ xs: 4 }} useFlexGap>
-              {fields.map((field, index) => (
-                <React.Fragment key={field.id}>
-                  <ChapterResourceItem
-                    errors={errors}
-                    watch={watch}
-                    parentIndex={parentIndex}
-                    isEditting={isEditting}
-                    index={index}
-                    removeResource={() => remove(index)}
-                    {...{ control, register }}
-                  />
-                  <Divider />
-                </React.Fragment>
-              ))}
-            </Stack>
+            <DragDropContext onDragEnd={handleDragResource}>
+              <Droppable droppableId='resource'>
+                {(provided) => (
+                  <Stack spacing={2} {...provided.droppableProps} ref={provided.innerRef}>
+                    {fields.map((field: any, index: number) => {
+                      return (
+                        <>
+                          <Draggable
+                            key={`resources[${index}]`}
+                            draggableId={`item-resource-${index}`}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                key={field.id}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                              >
+                                <div {...provided.dragHandleProps}>
+                                  <DragIndicatorRoundedIcon />
+                                </div>
+
+                                <ChapterResourceItem
+                                  errors={errors}
+                                  watch={watch}
+                                  parentIndex={parentIndex}
+                                  isEditting={isEditting}
+                                  index={index}
+                                  removeResource={() => handleRemoveResource(index)}
+                                  {...{ control, register }}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                          {index !== fields.length - 1 && <Divider />}
+                        </>
+                      );
+                    })}
+                  </Stack>
+                )}
+              </Droppable>
+            </DragDropContext>
           </Card>
         )}
       </Collapse>
