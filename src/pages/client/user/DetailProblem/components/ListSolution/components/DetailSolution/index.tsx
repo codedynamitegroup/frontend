@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  IconButton,
   Menu,
   MenuItem,
   Pagination,
@@ -28,7 +29,7 @@ import Markdown from "react-markdown";
 import gfm from "remark-gfm";
 import { TextareaAutosize } from "@mui/base";
 import Button from "@mui/material/Button";
-
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import MDEditor from "@uiw/react-md-editor";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
@@ -45,6 +46,10 @@ import * as Yup from "yup";
 import { CommentPaginationList } from "models/codeAssessmentService/entity/CommentPaginationList";
 import { CommentEntity } from "models/codeAssessmentService/entity/CommentEntity";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import useAuth from "hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 type FormCommentValue = {
   comment: string;
@@ -77,7 +82,14 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   });
 
   const dispatch = useAppDispatch();
+  const auth = useAuth();
+  const navigate = useNavigate();
   const [solution, setSolution] = useState<SharedSolutionEntity | null>(null);
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
   const [commentLoading, setCommentLoading] = useState(false);
   const pageSize = 10;
   const [pageNum, setPageNum] = useState(0);
@@ -86,6 +98,21 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const [comments, setComments] = useState<CommentEntity[]>([]);
   const [newest, setNewest] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [editSolutionAnchorEl, setEditSolutionAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [isOpenConfirmDeleteSolution, setIsOpenConfirmDeleteSolution] = useState(false);
+  const onCancleConfirmDeleteSolution = () => {
+    setIsOpenConfirmDeleteSolution(false);
+  };
+  const onAcceptConfirmDeleteSolution = () => {
+    if (solution?.sharedSolutionId) {
+      SharedSolutionService.deleteSharedSolution(solution.sharedSolutionId)
+        .then((data) => {
+          handleSolutionDetail();
+        })
+        .catch((err) => console.log(err));
+    }
+    setIsOpenConfirmDeleteSolution(false);
+  };
   const openFilterNewest = Boolean(anchorEl);
   const handleCloseFilterNewest = () => {
     setAnchorEl(null);
@@ -93,6 +120,27 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const handleOpenFilterNewest = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const openSolutionEditAnchorEl = Boolean(editSolutionAnchorEl);
+  const handleClickSolutionEdit = (event: React.MouseEvent<HTMLElement>) => {
+    setEditSolutionAnchorEl(event.currentTarget);
+  };
+  const handleCloseSolutionEdit = () => {
+    setEditSolutionAnchorEl(null);
+  };
+  const openEditSolution = () => {
+    if (problemId)
+      navigate(routes.user.problem.solution.share.replace(":problemId", problemId), {
+        state: {
+          content: solution?.content,
+          title: solution?.title,
+          tags: solution?.tags,
+          edit: true,
+          solutionId: solution?.sharedSolutionId
+        }
+      });
+  };
+
   useEffect(() => {
     if (selectedSolutionId) {
       dispatch(setLoading(true));
@@ -146,44 +194,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
         });
   };
 
-  //   const markdownContent = `
-  //   ### Approaches
-  // (Also explained in the code)
-  // **Bold text**
-
-  // 1. Step 1
-  //     - Easy solution !!!, everyone knows how to solve this problem.
-
-  // ### Complexity
-  // - Time complexity: O(1)
-
-  // ### Code
-  // \`\`\`cpp
-  // class Solution {
-  // public:
-  //     vector<vector<int>> divideArray(vector<int>& nums, int ki) {
-  //        vector<vector<int>> ans;
-  //         sort(nums.begin(),nums.end());
-  //         int i=0;
-  //         int j=1;
-  //         int k=2;
-  //         while(k<nums.size()){
-  //             if(nums[j]-nums[i]<=ki&&nums[k]-nums[i]<=ki&&nums[k]-nums[j]<=ki){
-  //                 ans.push_back({nums[i],nums[j],nums[k]});
-  //                 i=i+3;
-  //                 j=j+3;
-  //                 k=k+3;
-  //             }
-  //             else{
-  //                 return {};
-  //             }
-  //         }
-  //         return ans;
-  //     }
-  // };
-  // \`\`\`
-  // `;
-
   const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageNum(value - 1);
   };
@@ -195,10 +205,52 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   return (
     <Box className={classes.containerDetailSolution}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
-        <Box onClick={handleSolutionDetail} className={classes.backButton}>
-          <ArrowBackIcon className={classes.backIcon} />
-          <span translation-key='common_back'>{t("common_back")}</span>
-        </Box>
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          <Box onClick={handleSolutionDetail} className={classes.backButton}>
+            <ArrowBackIcon className={classes.backIcon} />
+            <span translation-key='common_back'>{t("common_back")}</span>
+          </Box>
+          {auth.loggedUser.userId === solution?.user.id && (
+            <>
+              <IconButton
+                id='edit-solution-button'
+                aria-controls={openSolutionEditAnchorEl ? "edit-solution-menu" : undefined}
+                aria-haspopup='true'
+                aria-expanded={openSolutionEditAnchorEl ? "true" : undefined}
+                onClick={handleClickSolutionEdit}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+              <Menu
+                id='edit-solution-menu'
+                aria-labelledby='edit-solution-button'
+                anchorEl={editSolutionAnchorEl}
+                open={openSolutionEditAnchorEl}
+                onClose={handleCloseSolutionEdit}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+              >
+                <MenuItem onClick={openEditSolution}>{t("common_edit")}</MenuItem>
+                <MenuItem onClick={() => setIsOpenConfirmDeleteSolution(true)}>
+                  {t("common_remove")}
+                </MenuItem>
+              </Menu>
+              <ConfirmDelete
+                isOpen={isOpenConfirmDeleteSolution}
+                title={t("dialog_confirm_delete_title")}
+                description={t("dialog_confirm_delete_shared_solution")}
+                onCancel={onCancleConfirmDeleteSolution}
+                onDelete={onAcceptConfirmDeleteSolution}
+              />
+            </>
+          )}
+        </Stack>
         <Divider />
       </Box>
 

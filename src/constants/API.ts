@@ -166,6 +166,9 @@ export const API = {
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
         DEFAULT: "code-assessment/shared-solution/:id/comment"
+      },
+      TAG: {
+        DEFAULT: "code-assessment/shared-solution/:id/tag"
       }
     }
   },

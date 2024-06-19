@@ -223,6 +223,7 @@
   "dialog_confirm_delete_problem_description": "Are you sure you want to delete this question? You have to save changes after this to apply for the contest",
   "dialog_confirm_add_contest_problem_title": "Add question to contest",
   "dialog_confirm_add_contest_problem_description": "Are you sure you want to add this question to the contest?",
+  "dialog_confirm_delete_shared_solution": "Are you sure to delete this solution?",
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest management",
