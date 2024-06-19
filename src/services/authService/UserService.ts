@@ -19,7 +19,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.SOCIAL_LOGIN}`, {
+      }).post(`${API.AUTH.USER.SOCIAL_LOGIN}`, {
         provider: provider,
         accessToken: accessToken
       });
@@ -40,7 +40,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_USER_BY_EMAIL}`);
+      }).get(`${API.AUTH.USER.GET_USER_BY_EMAIL}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -57,7 +57,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_USER_BY_ID.replace(":id", id)}`);
+      }).get(`${API.AUTH.USER.GET_USER_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -74,7 +74,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).delete(`${API.AUTH.DELETE_USER_BY_ID.replace(":id", id)}`);
+      }).delete(`${API.AUTH.USER.DELETE_USER_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -90,7 +90,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.LOGIN}`, loginData);
+      }).post(`${API.AUTH.USER.LOGIN}`, loginData);
       if (response.status === 200) {
         return response.data;
       }
@@ -106,7 +106,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.REFRESH_TOKEN}`, {
+      }).post(`${API.AUTH.USER.REFRESH_TOKEN}`, {
         accessToken: accessToken,
         refreshToken: refreshToken
       });
@@ -126,7 +126,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${API.AUTH.LOGOUT}`);
+      }).post(`${API.AUTH.USER.LOGOUT}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -143,7 +143,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.REGISTER}`, registeredData);
+      }).post(`${API.AUTH.USER.REGISTER}`, registeredData);
       if (response.status === 201) {
         return response.data;
       }
@@ -160,7 +160,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${API.AUTH.CREATE_USER_BY_ADMIN}`, createdUserByAdminRequest);
+      }).post(`${API.AUTH.USER.CREATE_USER_BY_ADMIN}`, createdUserByAdminRequest);
       if (response.status === 201) {
         return response.data;
       }
@@ -177,7 +177,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).put(`${API.AUTH.UPDATE_PROFILE_USER}`, {
+      }).put(`${API.AUTH.USER.UPDATE_PROFILE_USER}`, {
         email: updateProfileUserRequest.email,
         firstName: updateProfileUserRequest.firstName,
         lastName: updateProfileUserRequest.lastName,
@@ -203,7 +203,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).put(`${API.AUTH.UPDATE_USER_BY_ADMIN.replace(":id", userId)}`, {
+      }).put(`${API.AUTH.USER.UPDATE_USER_BY_ADMIN.replace(":id", userId)}`, {
         firstName: updateUserByAdminRequest.firstName,
         lastName: updateUserByAdminRequest.lastName,
         dob: updateUserByAdminRequest.dob,
@@ -226,7 +226,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).post(`${API.AUTH.CHANGE_PASSWORD}`, {
+      }).post(`${API.AUTH.USER.CHANGE_PASSWORD}`, {
         oldPassword: updatePasswordUserRequest.oldPassword,
         newPassword: updatePasswordUserRequest.newPassword
       });
@@ -245,7 +245,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).put(`${API.AUTH.FORGOT_PASSWORD}`, {
+      }).put(`${API.AUTH.USER.FORGOT_PASSWORD}`, {
         email: email,
         redirectUrl: redirectUrl
       });
@@ -264,7 +264,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.VERIFY_OTP}`, {
+      }).post(`${API.AUTH.USER.VERIFY_OTP}`, {
         email: verifyOTP.email,
         otp: verifyOTP.otp
       });
@@ -283,7 +283,7 @@ export class UserService {
     try {
       const response = await api({
         baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.RESET_PASSWORD}`, {
+      }).post(`${API.AUTH.USER.RESET_PASSWORD}`, {
         email: resetPasswordUserRequest.email,
         newPassword: resetPasswordUserRequest.password,
         otp: resetPasswordUserRequest.otp
@@ -313,7 +313,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_ALL_USERS}`, {
+      }).get(`${API.AUTH.USER.GET_ALL_USERS}`, {
         params: {
           searchName,
           pageNo,
@@ -347,7 +347,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_ALL_USERS_BY_ORGANIZATION.replace(":id", id)}`, {
+      }).get(`${API.AUTH.USER.GET_ALL_USERS_BY_ORGANIZATION.replace(":id", id)}`, {
         params: {
           searchName,
           pageNo,
@@ -371,7 +371,7 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.AUTH.GET_STATISTICS}`);
+      }).get(`${API.AUTH.USER.GET_STATISTICS}`);
       if (response.status === 200) {
         return response.data;
       }

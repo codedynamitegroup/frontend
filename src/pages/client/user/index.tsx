@@ -45,8 +45,8 @@ const UserHomepage = (props: Props) => {
         <Box id={classes.userPageBody}>
           <Routes>
             <Route path={""} element={<HomePage />} />
-            <Route path={"course-certificates"} element={<CourseCertificates />} />
-            <Route path={"course-certificates/:courseId/*"} element={<CourseCertificateDetail />} />
+            <Route path={"certificate-courses"} element={<CourseCertificates />} />
+            <Route path={"certificate-courses/:courseId/*"} element={<CourseCertificateDetail />} />
             <Route path={"problems"} element={<ListProblem />} />
             <Route path={"contests"} element={<ContestList />} />
             <Route path={"contests/:contestId/*"} element={<ContestDetails />} />

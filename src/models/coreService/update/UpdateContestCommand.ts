@@ -1,4 +1,5 @@
 export interface UpdateContestCommand {
+  orgId?: string;
   name?: string;
   description?: string;
   thumbnailUrl?: string;

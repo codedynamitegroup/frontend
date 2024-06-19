@@ -52,7 +52,6 @@ interface UserManagementProps {
 }
 
 const UserManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -371,7 +370,6 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (userState.users.users.length > 0) return;
       dispatch(setInititalLoading(true));
       await handleGetUsers({
         searchName: ""
@@ -404,13 +402,6 @@ const UserManagement = () => {
           }
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
         <Divider />
         <Grid
           container

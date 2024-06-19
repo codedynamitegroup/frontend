@@ -44,4 +44,47 @@ export class CoreCodeQuestionService {
       });
     }
   }
+
+  static async getOrgAdminCodeQuestions({
+    orgId,
+    search,
+    isPublic,
+    difficulty,
+    pageNo,
+    pageSize
+  }: {
+    orgId: string;
+    search?: string;
+    isPublic?: boolean;
+    difficulty?: QuestionDifficultyEnum;
+    pageNo: number;
+    pageSize: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(API.CORE.QUESTION.CODE_QUESTION.GET_ALL_BY_ORG_ADMIN, {
+        params: {
+          orgId,
+          pageNo,
+          pageSize,
+          search,
+          isPublic,
+          difficulty
+        }
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch org admin code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }
