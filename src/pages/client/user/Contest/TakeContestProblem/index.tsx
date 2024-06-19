@@ -67,9 +67,8 @@ export default function TakeContestProblem() {
     contestId: string;
   }>();
   const { pathname } = useLocation();
-
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const currentExecuteData = useAppSelector((state) => state.executeData);
@@ -79,6 +78,18 @@ export default function TakeContestProblem() {
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
   const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
+
+  const isContestEnded = useMemo(() => {
+    if (
+      contestDetails &&
+      contestDetails?.endTime &&
+      moment(contestDetails.endTime).isBefore(moment())
+    ) {
+      dispatch(setErrorMess(t("contest_ended")));
+      return true;
+    }
+    return false;
+  }, [contestDetails, dispatch, t]);
 
   const handleGetContestById = useCallback(
     async (id: string) => {
@@ -339,7 +350,6 @@ export default function TakeContestProblem() {
   };
 
   const marginRef = useRef<number>(10);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -351,10 +361,6 @@ export default function TakeContestProblem() {
   }, [contestId, dispatch, handleGetContestById]);
 
   if (!contestId || !contestDetails || !problemId) return null;
-  if (contestDetails.endTime && moment(contestDetails.endTime).isBefore(moment())) {
-    dispatch(setErrorMess(t("contest_ended")));
-    navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
-  }
   if (contestDetails.isRegistered !== true) {
     dispatch(setErrorMess(t("contest_not_registered")));
     navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
@@ -419,7 +425,7 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_execute'
                   focusRipple
                   onClick={handleExecuteCode}
-                  disabled={!auth.isLoggedIn}
+                  disabled={!auth.isLoggedIn || isContestEnded}
                 >
                   <PlayArrowIcon />
                   {t("detail_problem_execute")}
@@ -430,7 +436,7 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_submit'
                   onClick={handleSubmitCode}
                   focusRipple
-                  disabled={!auth.isLoggedIn}
+                  disabled={!auth.isLoggedIn || isContestEnded}
                 >
                   {submissionLoading && <CircularProgress size={20} />}
                   {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
