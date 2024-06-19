@@ -16,12 +16,11 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -46,6 +45,7 @@ interface UserManagementProps {
   lastLogin: string;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
+  isBelongToOrganization: boolean;
   createdAt: Date;
   roleName: string;
   isDeleted: boolean;
@@ -66,7 +66,7 @@ const UserManagement = () => {
     }[]
   >([
     {
-      key: "Status",
+      key: "role",
       value: "ALL"
     }
   ]);
@@ -137,7 +137,7 @@ const UserManagement = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 3,
+      flex: 2.5,
       renderHeader: () => {
         return (
           <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -173,7 +173,7 @@ const UserManagement = () => {
     {
       field: "fullname",
       headerName: t("common_fullname"),
-      flex: 2,
+      flex: 1.5,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -225,7 +225,33 @@ const UserManagement = () => {
           <Checkbox
             disableRipple
             checked={params.row.isDeleted === true ? true : false}
-            color={params.row.isDeleted ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
+      field: "isBelongToOrganization",
+      headerName: t("common_is_belong_to_organization"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_belong_to_organization")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isBelongToOrganization === true ? true : false}
             sx={{
               "&:hover": {
                 backgroundColor: "transparent !important",
@@ -346,7 +372,8 @@ const UserManagement = () => {
           isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
           createdAt: user.createdAt,
           roleName: mappingRole(user),
-          isDeleted: user.isDeleted
+          isDeleted: user.isDeleted,
+          isBelongToOrganization: !!user.organization
         };
       }),
     [mappingRole, userState.users]
@@ -370,15 +397,15 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      dispatch(setInititalLoading(true));
+      // dispatch(setInititalLoading(true));
       await handleGetUsers({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.users.users]);
+  }, [dispatch, handleGetUsers]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -427,22 +454,46 @@ const UserManagement = () => {
               filterKeyList={[
                 {
                   label: t("common_status"),
-                  value: "Status"
+                  value: "blockStatus"
+                },
+                {
+                  label: t("common_role"),
+                  value: "role"
                 }
               ]}
               filterValueList={{
-                Status: [
+                blockStatus: [
+                  {
+                    label: t("common_all"),
+                    value: "ALL"
+                  },
+                  { label: t("common_active"), value: "ACTIVE" },
+                  { label: t("common_inactive"), value: "INACTIVE" }
+                ],
+                role: [
                   {
                     label: t("common_all"),
                     value: "ALL"
                   },
                   {
-                    label: t("common_active"),
-                    value: "ACTIVE"
+                    label: t("role_system_admin"),
+                    value: ERoleName.ADMIN
                   },
                   {
-                    label: t("common_inactive"),
-                    value: "INACTIVE"
+                    label: t("role_org_admin"),
+                    value: ERoleName.ADMIN_MOODLE
+                  },
+                  {
+                    label: t("role_lecturer"),
+                    value: ERoleName.LECTURER_MOODLE
+                  },
+                  {
+                    label: t("role_student"),
+                    value: ERoleName.STUDENT_MOODLE
+                  },
+                  {
+                    label: t("role_user"),
+                    value: ERoleName.USER
                   }
                 ]
               }}

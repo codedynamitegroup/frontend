@@ -1,6 +1,7 @@
 {
   "common_is_blocked": "Tình trạng khóa",
-  "common_organization": "Tổ chức",
+  "common_is_belong_to_organization": "Thuộc tổ chức",
+  "common_organization_name": "Tên tổ chức",
   "common_please_login": "Vui lòng đăng nhập",
   "common_please_login_to_continue": "Vui lòng đăng nhập để tiếp tục",
   "common_easy": "Dễ",
@@ -401,6 +402,7 @@
   "role_user": "Người dùng",
 
   "organization_management": "Quản lý tổ chức",
+  "organization_please_verified": "Vui lòng xác thực tổ chức để sử dụng các tính năng",
   "organization_create": "Tạo tổ chức",
   "organization_update": "Cập nhật tổ chức",
   "organization_email": "Email",
@@ -417,6 +419,7 @@
 
   "user_management": "Quản lý người dùng",
   "user_create": "Tạo người dùng",
+  "user_assign_to_organization": "Gán cho tổ chức",
   "user_update": "Cập nhật người dùng",
   "user_detail_account_management": "Quản lý tài khoản",
   "user_detail_edit_account": "Chỉnh sửa hồ sơ",

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Card, Divider, Grid } from "@mui/material";
+import { Box, Card, Divider, Grid, TextareaAutosize } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -175,21 +175,15 @@ const CreateOrganization = () => {
                 </TextTitle>
               </Grid>
               <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
-                <Controller
-                  control={control}
-                  name={"description"}
-                  render={({ field }) => (
-                    <TextEditor
-                      maxLines={6}
-                      roundedBorder
-                      translation-key='common_description'
-                      {...field}
-                    />
-                  )}
+                <TextareaAutosize
+                  aria-label='empty textarea'
+                  translation-key='common_description'
+                  placeholder={t("common_description")}
+                  className={classes.textArea}
+                  minRows={5}
+                  {...register("description")}
+                  aria-invalid={errors.description ? true : false}
                 />
-                {errors.description?.message && (
-                  <ErrorMessage>{errors.description?.message}</ErrorMessage>
-                )}
               </Grid>
             </Grid>
 

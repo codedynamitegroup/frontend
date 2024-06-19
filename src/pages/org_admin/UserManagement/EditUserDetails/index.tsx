@@ -237,7 +237,7 @@ const EditUserDetails = () => {
             />
             {user?.organization && (
               <InputTextField
-                title={t("common_organization")}
+                title={t("common_organization_name")}
                 type='text'
                 disabled
                 value={user?.organization.name}

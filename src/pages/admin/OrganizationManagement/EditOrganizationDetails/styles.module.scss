@@ -3,3 +3,16 @@
   align-items: center;
   padding-left: 20px;
 }
+
+.tabs {
+  & [class~="Mui-selected"] {
+    & [class~="MuiTypography-root"] {
+      font-weight: 700;
+      color: var(--blue-3);
+    }
+  }
+
+  & [class~="MuiTabs-indicator"] {
+    background-color: var(--blue-3);
+  }
+}

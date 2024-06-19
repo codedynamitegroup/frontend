@@ -10,6 +10,8 @@ import ParagraphBody from "components/text/ParagraphBody";
 import NotFoundPage from "pages/common/NotFoundPage";
 import OrganizationDetails from "./OrganizationDetails";
 import OrganizationUserManagement from "./UserManagement";
+import CreateUser from "./UserManagement/CreateUser";
+import AssignUser from "./UserManagement/AssignUser";
 
 const EditOrganizationDetails = () => {
   const { t } = useTranslation();
@@ -78,7 +80,7 @@ const EditOrganizationDetails = () => {
           </Heading1>
           <Box
             sx={{
-              margin: "20px",
+              margin: "20px 0px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0"
             }}
@@ -114,6 +116,8 @@ const EditOrganizationDetails = () => {
             <Routes>
               <Route path={"details"} element={<OrganizationDetails />} />
               <Route path={"users"} element={<OrganizationUserManagement />} />
+              <Route path={"users/create"} element={<CreateUser />} />
+              <Route path={"users/assign-user"} element={<AssignUser />} />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>

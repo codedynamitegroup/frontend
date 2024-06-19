@@ -15,6 +15,12 @@ interface InitialState {
     totalItems: number;
     totalPages: number;
   };
+  org_assign_users: {
+    users: User[];
+    currentPage: number;
+    totalItems: number;
+    totalPages: number;
+  };
 }
 
 const initialState: InitialState = {
@@ -26,6 +32,12 @@ const initialState: InitialState = {
     totalPages: 0
   },
   org_users: {
+    users: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0
+  },
+  org_assign_users: {
     users: [],
     currentPage: 0,
     totalItems: 0,
@@ -63,10 +75,17 @@ const userSlice = createSlice({
       state.org_users.currentPage = 0;
       state.org_users.totalItems = 0;
       state.org_users.totalPages = 0;
+    },
+    setOrgAssignUsers: (state, action) => {
+      state.org_assign_users.users = action.payload.users;
+      state.org_assign_users.currentPage = action.payload.currentPage;
+      state.org_assign_users.totalItems = action.payload.totalItems;
+      state.org_assign_users.totalPages = action.payload.totalPages;
     }
   }
 });
 
-export const { setLoading, setUsers, clearUsers, setOrgUsers, clearOrgUsers } = userSlice.actions;
+export const { setLoading, setUsers, clearUsers, setOrgUsers, clearOrgUsers, setOrgAssignUsers } =
+  userSlice.actions;
 
 export default userSlice.reducer;
