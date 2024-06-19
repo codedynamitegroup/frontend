@@ -1,5 +1,5 @@
 {
-  "common_is_blocked": "Is blocked",
+  "common_is_blocked": "Blocked status",
   "common_organization": "Organization",
   "common_please_login": "Please login",
   "common_please_login_to_continue": "Please login to continue",
@@ -405,6 +405,21 @@
   "role_lecturer": "Lecturer",
   "role_student": "Student",
   "role_user": "User",
+
+  "organization_management": "Organization management",
+  "organization_create": "Create organization",
+  "organization_update": "Update organization",
+  "organization_email": "Email",
+  "organization_phone": "Phone",
+  "organization_address": "Address",
+  "organization_name": "Organization name",
+  "organization_information": "Organization information",
+  "organization_list_users": "Organization users",
+  "organization_url": "Organization Link",
+
+  "common_updated_at": "Updated at",
+  "common_updated_by": "Updated by",
+  "common_is_verified": "Verified status",
 
   "user_management": "User management",
   "user_create": "Create user",

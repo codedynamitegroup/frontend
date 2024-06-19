@@ -66,6 +66,8 @@ import happeningContest from "assets/img/admin/happening-contest.svg";
 import upcomingContest from "assets/img/admin/upcomming-contest.svg";
 import contestDashboard from "assets/img/admin/contest-dashboard.svg";
 
+import organizationIc from "assets/img/admin/organization.svg";
+
 const images = {
   course: {
     courseAssignment,
@@ -115,7 +117,8 @@ const images = {
     contestParticipant,
     happeningContest,
     upcomingContest,
-    contestDashboard
+    contestDashboard,
+    organizationIc
   }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };

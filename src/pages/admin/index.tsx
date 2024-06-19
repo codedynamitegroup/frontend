@@ -30,6 +30,9 @@ import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions
 import AdminCodeQuestionManagement from "./CodeQuestionManagement";
 import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
 import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmissionDetails";
+import OrganizationManagement from "./OrganizationManagement/OrganizationManagement";
+import CreateOrganization from "./OrganizationManagement/CreateOrganization";
+import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
 
 type Props = {};
 
@@ -61,9 +64,18 @@ const SystemAdminHomepage = (props: Props) => {
             />
             <Route path={"information"} element={<UserInformation />} />
             <Route path={"/dashboard"} element={<AdminDashboard />} />
+
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/create"} element={<CreateUser />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
+
+            <Route path={"organizations"} element={<OrganizationManagement />} />
+            <Route path={"organizations/create"} element={<CreateOrganization />} />
+            <Route
+              path={"organizations/edit/:organizationId/*"}
+              element={<EditOrganizationDetails />}
+            />
+
             <Route path={"/certificate-course"} element={<CertificateCourseManagement />} />
 
             <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
