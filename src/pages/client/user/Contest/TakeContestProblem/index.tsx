@@ -198,13 +198,18 @@ export default function TakeContestProblem() {
   };
 
   const tabs: string[] = useMemo(() => {
-    return [
-      routes.user.contest.detail.problems.description,
-      routes.user.contest.detail.problems.solution,
-      routes.user.contest.detail.problems.submission
-    ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routes]);
+    if (contestDetails?.isDisabledForum === true)
+      return [
+        routes.user.contest.detail.problems.description,
+        routes.user.contest.detail.problems.submission
+      ];
+    else
+      return [
+        routes.user.contest.detail.problems.description,
+        routes.user.contest.detail.problems.solution,
+        routes.user.contest.detail.problems.submission
+      ];
+  }, [contestDetails?.isDisabledForum]);
 
   const activeRoute = (routeName: string) => {
     const match = matchPath(pathname, routeName);
@@ -373,8 +378,9 @@ export default function TakeContestProblem() {
                 color='primary'
                 variant='plain'
                 startDecorator={<ArrowBackIosNewIcon />}
+                translate-key='contest_back_to_contest_problems_button'
               >
-                Back to contest problems
+                {t("contest_back_to_contest_problems_button")}
               </JoyButton>
             </Box>
           )}
@@ -470,21 +476,36 @@ export default function TakeContestProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  {auth.isLoggedIn && (
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      translation-key='detail_problem_discussion'
-                      label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                      value={1}
-                    />
-                  )}
-                  {auth.isLoggedIn && (
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      translation-key='detail_problem_submission'
-                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                      value={2}
-                    />
+                  {contestDetails?.isDisabledForum === true ? (
+                    <>
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_submission'
+                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                          value={1}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_discussion'
+                          label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                          value={1}
+                        />
+                      )}
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_submission'
+                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                          value={2}
+                        />
+                      )}
+                    </>
                   )}
                 </Tabs>
               </Box>
@@ -497,7 +518,9 @@ export default function TakeContestProblem() {
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  {contestDetails?.isDisabledForum === true ? null : (
+                    <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  )}
                   <Route
                     path={"submission"}
                     element={
@@ -507,6 +530,7 @@ export default function TakeContestProblem() {
                           contestId: contestId,
                           problemId: problemId
                         }}
+                        isShareSolutionDisabled={contestDetails?.isDisabledForum}
                       />
                     }
                   />

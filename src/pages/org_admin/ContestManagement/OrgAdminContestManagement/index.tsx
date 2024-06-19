@@ -33,15 +33,17 @@ import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import React from "react";
+import useAuth from "hooks/useAuth";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
   status: string;
 }
 
-const ContestManagement = () => {
+const OrgAdminContestManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const { loggedUser } = useAuth();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentLang, setCurrentLang] = useState(() => {
@@ -81,9 +83,14 @@ const ContestManagement = () => {
     }) => {
       dispatch(setLoading(true));
       try {
-        const getCertificateCoursesResponse = await ContestService.getContestsForAdmin({
+        if (!loggedUser?.organization.organizationId) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+          return;
+        }
+        const getCertificateCoursesResponse = await ContestService.getContestsForOrgAdmin({
           searchName,
           startTimeFilter,
+          orgId: loggedUser.organization.organizationId,
           pageNo,
           pageSize
         });
@@ -97,7 +104,7 @@ const ContestManagement = () => {
         dispatch(setLoading(false));
       }
     },
-    [dispatch, t]
+    [dispatch, loggedUser?.organization.organizationId, t]
   );
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
@@ -312,7 +319,7 @@ const ContestManagement = () => {
             label='Edit'
             onClick={() => {
               navigate(
-                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId)
+                routes.org_admin.contest.edit.details.replace(":contestId", params.row.contestId)
               );
             }}
           />,
@@ -414,12 +421,10 @@ const ContestManagement = () => {
 
   useEffect(() => {
     const fetchContests = async () => {
-      // dispatch(setInititalLoading(true));
       handleGetContests({
         searchName: "",
         startTimeFilter: ContestStartTimeFilterEnum.ALL
       });
-      // dispatch(setInititalLoading(false));
     };
 
     fetchContests();
@@ -471,7 +476,7 @@ const ContestManagement = () => {
               onHandleChange={handleSearchChange}
               createBtnText={t("contest_create")}
               onClickCreate={() => {
-                navigate(routes.admin.contest.create);
+                navigate(routes.org_admin.contest.create);
               }}
               numOfResults={totalElement}
               filterKeyList={[
@@ -542,4 +547,4 @@ const ContestManagement = () => {
   );
 };
 
-export default ContestManagement;
+export default OrgAdminContestManagement;

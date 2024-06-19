@@ -8,6 +8,7 @@ import ErrorMessage from "components/text/ErrorMessage";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import useAuth from "hooks/useAuth";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import moment from "moment";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -29,9 +30,10 @@ interface IFormDataType {
   endTime?: string | null;
 }
 
-const CreateContest = () => {
+const OrgAdminCreateContest = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const { loggedUser } = useAuth();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -96,7 +98,13 @@ const CreateContest = () => {
     async ({ name, description, thumbnailUrl, startTime, endTime }: CreateContestCommand) => {
       setSubmitLoading(true);
       try {
+        if (!loggedUser.organization) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+          setSubmitLoading(false);
+          return;
+        }
         const createContestResponse = await ContestService.createContest({
+          orgId: loggedUser.organization.organizationId,
           name,
           description,
           thumbnailUrl,
@@ -107,7 +115,10 @@ const CreateContest = () => {
           dispatch(setSuccessMess(t("contest_create_success")));
           setSubmitLoading(false);
           navigate(
-            routes.admin.contest.edit.details.replace(":contestId", createContestResponse.contestId)
+            routes.org_admin.contest.edit.details.replace(
+              ":contestId",
+              createContestResponse.contestId
+            )
           );
         }
       } catch (error: any) {
@@ -118,7 +129,7 @@ const CreateContest = () => {
         setSubmitLoading(false);
       }
     },
-    [dispatch, navigate, t]
+    [dispatch, loggedUser.organization, navigate, t]
   );
 
   return (
@@ -139,7 +150,7 @@ const CreateContest = () => {
             <ParagraphSmall
               colorname='--blue-500'
               className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.contest.root)}
+              onClick={() => navigate(routes.org_admin.contest.root)}
               translation-key='contest_management_title'
             >
               {t("contest_management_title")}
@@ -309,4 +320,4 @@ const CreateContest = () => {
   );
 };
 
-export default CreateContest;
+export default OrgAdminCreateContest;

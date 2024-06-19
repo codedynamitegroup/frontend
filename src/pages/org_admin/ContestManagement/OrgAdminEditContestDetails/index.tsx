@@ -18,40 +18,19 @@ import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
 import * as yup from "yup";
-import ContestEditAdvancedSettings from "./ContestEditAdvancedSettings";
-import ContestEditDetails from "./ContestEditDetails";
-import ContestEditProblems from "./ContestEditProblems";
-import ContestEditSignUps from "./ContestEditSignUps";
-import ContestEditStatistics from "./ContestEditStatictics";
 import classes from "./styles.module.scss";
+import useAuth from "hooks/useAuth";
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
+import OrgAdminContestEditSignUps from "./OrgAdminContestEditSignUps";
+import OrgAdminContestEditAdvancedSettings from "./OrgAdminContestEditAdvancedSettings";
+import OrgAdminContestEditProblems from "./OrgAdminContestEditProblems";
+import OrgAdminContestEditDetails from "./OrgAdminContestEditDetails";
+import OrgAdminContestEditStatictics from "./OrgAdminContestEditStatictics";
 
-export interface IFormDataType {
-  isNoEndTime: boolean;
-  name: string;
-  startTime: string;
-  endTime?: string | null;
-  thumbnailUrl?: string;
-  description?: string;
-  prizes?: string;
-  rules?: string;
-  scoring?: string;
-  isPublic: boolean;
-  isRestrictedForum: boolean;
-  isDisabledForum: boolean;
-  problems: {
-    questionId: string;
-    codeQuestionId: string;
-    difficulty: string;
-    name: string;
-    questionText: string;
-    defaultMark: number;
-    maxGrade: number;
-  }[];
-}
-
-const EditContestDetails = ({ isDrawerOpen }: any) => {
+const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const { loggedUser } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -70,11 +49,11 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
 
   const tabs: string[] = useMemo(() => {
     return [
-      routes.admin.contest.edit.details,
-      routes.admin.contest.edit.problems,
-      routes.admin.contest.edit.advanced_settings,
-      routes.admin.contest.edit.signups,
-      routes.admin.contest.edit.statistics
+      routes.org_admin.contest.edit.details,
+      routes.org_admin.contest.edit.problems,
+      routes.org_admin.contest.edit.advanced_settings,
+      routes.org_admin.contest.edit.signups,
+      routes.org_admin.contest.edit.statistics
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);
@@ -239,7 +218,13 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
     async (id: string, data: IFormDataType) => {
       setSubmitLoading(true);
       try {
+        if (!loggedUser.organization) {
+          dispatch(setErrorMess("You are not authorized to update this contest"));
+          setSubmitLoading(false);
+          return;
+        }
         const updateContestResponse = await ContestService.updateContest(id, {
+          orgId: loggedUser.organization.organizationId,
           name: data.name,
           description: data.description,
           thumbnailUrl: data.thumbnailUrl,
@@ -270,7 +255,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
         setSubmitLoading(false);
       }
     },
-    [dispatch, handleGetContestById]
+    [dispatch, handleGetContestById, loggedUser.organization]
   );
 
   const submitHandler = async (data: IFormDataType) => {
@@ -283,8 +268,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
     if (contestId) handleGetContestById(contestId);
   }, [contestId, handleGetContestById]);
 
-  if (!contestId) return null;
-
+  if (!contestId || !loggedUser || !loggedUser.organization) return null;
   return (
     <>
       <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
@@ -303,7 +287,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               <ParagraphSmall
                 colorname='--blue-500'
                 className={classes.cursorPointer}
-                onClick={() => navigate(routes.admin.contest.root)}
+                onClick={() => navigate(routes.org_admin.contest.root)}
                 translation-key='contest_management_title'
               >
                 {t("contest_management_title")}
@@ -386,7 +370,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"details"}
                 element={
-                  <ContestEditDetails
+                  <OrgAdminContestEditDetails
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -397,7 +381,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"problems"}
                 element={
-                  <ContestEditProblems
+                  <OrgAdminContestEditProblems
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -408,7 +392,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"advanced-settings"}
                 element={
-                  <ContestEditAdvancedSettings
+                  <OrgAdminContestEditAdvancedSettings
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -416,10 +400,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                   />
                 }
               />
-              <Route path={"signups"} element={<ContestEditSignUps />} />
+              <Route path={"signups"} element={<OrgAdminContestEditSignUps />} />
               <Route
                 path={"statistics"}
-                element={<ContestEditStatistics data={statistics} contestId={contestId} />}
+                element={<OrgAdminContestEditStatictics data={statistics} contestId={contestId} />}
               />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
@@ -435,7 +419,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             marginLeft: "-25px",
             backgroundColor: "white",
             borderTop: "1px solid #E0E0E0",
-            width: isDrawerOpen ? "calc(100% - 270px)" : "100%"
+            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
           }}
         >
           <JoyButton
@@ -461,4 +445,4 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   );
 };
 
-export default EditContestDetails;
+export default OrgAdminEditContestDetails;
