@@ -1041,5 +1041,22 @@
   "certificate_course_create_btn": "Add certificate course",
   "certificate_course_management_title": "Certificate course management",
   "create_certificate_course_title": "Create certificate course",
-  "certificate_course_management": "Certificate course management"
+  "certificate_course_management": "Certificate course management",
+  "common_add_chapter": "Add chapter",
+  "enable_drag_drop_chapter": "Enable drag and drop chapter",
+  "disable_drag_drop_chapter": "Disable drag and drop chapter",
+  "certificate_course_name": "Certificate course name",
+  "certificate_course_description_title": "Certificate course description",
+  "certificate_course_skill_level_title": "Skill level",
+  "certificate_course_topic_title": "Topic",
+  "chapter_resource_title": "Resource title",
+  "resource_type_title": "Resource type",
+  "resource_lesson_type_title": "Resource content",
+  "certificate_course_name_required": "Certificate course name is required",
+  "chapter_title_required": "Chapter title is required",
+  "resource_title_required": "Resource title is required",
+  "enter_chapter_resource_title": "Enter chapter resource title",
+  "enter_certificate_course_name": "Enter certificate course name",
+  "enter_certificate_course_description_title": "Enter certificate course description",
+  "add_chapter_resource": "Add chapter resource"
 }
