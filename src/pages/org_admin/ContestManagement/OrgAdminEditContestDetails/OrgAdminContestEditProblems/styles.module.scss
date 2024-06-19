@@ -1,0 +1,41 @@
+.formBody {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    gap: 15px;
+}
+
+.container {
+    // width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.icon {
+    margin-right: 10px;
+}
+.iconCheck {
+    color: var(--green-600);
+}
+.pagination {
+    background-color: white !important;
+}
+.table-head {
+    background-color: var(--gray-1);
+    .table-cell {
+        min-width: 180px;
+        color: #fff !important;
+    }
+}
+
+.linkText {
+    &:hover {
+        color: var(--blue-3);
+    }
+}
+
+.row1 {
+    // cursor: pointer;
+    background-color: var(--gray-1);
+}

@@ -317,7 +317,7 @@ const OrgAdminContestManagement = () => {
             label='Edit'
             onClick={() => {
               navigate(
-                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId)
+                routes.org_admin.contest.edit.details.replace(":contestId", params.row.contestId)
               );
             }}
           />,
@@ -419,12 +419,10 @@ const OrgAdminContestManagement = () => {
 
   useEffect(() => {
     const fetchContests = async () => {
-      // dispatch(setInititalLoading(true));
       handleGetContests({
         searchName: "",
         startTimeFilter: ContestStartTimeFilterEnum.ALL
       });
-      // dispatch(setInititalLoading(false));
     };
 
     fetchContests();
@@ -476,7 +474,7 @@ const OrgAdminContestManagement = () => {
               onHandleChange={handleSearchChange}
               createBtnText={t("contest_create")}
               onClickCreate={() => {
-                navigate(routes.admin.contest.create);
+                navigate(routes.org_admin.contest.create);
               }}
               numOfResults={totalElement}
               filterKeyList={[
