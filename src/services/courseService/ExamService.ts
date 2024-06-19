@@ -90,9 +90,10 @@ export class ExamService {
 
   static async getOverviewsByExamId(examId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.EXAM.OVERVIEW.replace(":id", examId)}`
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${courseServiceApiUrl}${API.COURSE.EXAM.OVERVIEW.replace(":id", examId)}`);
       if (response.status === 200) {
         return Promise.resolve(response.data);
       }

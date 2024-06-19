@@ -1036,8 +1036,10 @@
   "exam_detail_summary_review": "Review",
   "exam_detail_summary_state": "State",
   "exam_detail_summary_open_review": "Open review",
+  "exam_detail_see_again": "See again",
   "exam_detail_start": "Start exam",
   "exam_detail_continue": "Continue exam",
+  "exam_detail_test": "Test exam",
 
   "course_error_page": "Error | Course",
   "course_error": "Course Error",
