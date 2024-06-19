@@ -9,8 +9,10 @@ import {
   Control,
   Controller,
   FieldArrayWithId,
+  FieldErrors,
   UseFieldArrayRemove,
   UseFormRegister,
+  UseFormWatch,
   useFieldArray,
   useForm
 } from "react-hook-form";
@@ -40,6 +42,9 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/joy/IconButton";
 import EditOffRoundedIcon from "@mui/icons-material/EditOffRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
+
+import { DragDropContext, Droppable, Draggable, DraggableProvided } from "react-beautiful-dnd";
 
 interface FormData {
   name: string;
@@ -49,30 +54,39 @@ interface FormData {
   chapters?: ChapterData[];
 }
 
-interface ChapterData {
+export interface ChapterData {
+  no: number;
   title: string;
   description?: string;
   resources: ChapterResourceData[];
 }
 
-interface ChapterResourceData {
+export interface ChapterResourceData {
+  no: number;
   resourceType: string;
   title: string;
   questionId?: string;
   lessonHtml?: string;
   youtubeVideoUrl?: string;
 }
+
 interface ChapterFieldArrayPropsData {
+  errors: FieldErrors<FormData>;
+  isDragging: boolean;
   field: FieldArrayWithId<FormData, "chapters", "id">;
   removeChapter: UseFieldArrayRemove;
+  watch: UseFormWatch<FormData>;
 
   control: Control<FormData, any>;
   register: UseFormRegister<FormData>;
   parentIndex: number;
+  provided: DraggableProvided;
 }
 interface ChapterResourceFieldArrayPropsData {
+  errors: FieldErrors<FormData>;
   control: Control<FormData, any>;
   register: UseFormRegister<FormData>;
+  watch: UseFormWatch<FormData>;
 
   index: number;
   parentIndex: number;
@@ -84,6 +98,7 @@ const CreateCertificateCourse = () => {
   const { t } = useTranslation();
   const [topicList, setTopicList] = useState<TopicEntity[]>([]);
   const [skeleton, setSkeleton] = useState<boolean>(true);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const breadCrumbData = [
     {
@@ -130,10 +145,30 @@ const CreateCertificateCourse = () => {
 
   const schema = useMemo(() => {
     return yup.object().shape({
-      name: yup.string().required(t("name_required")),
+      name: yup.string().required(t("certificate_course_name_required")),
       description: yup.string(),
       skillLevel: yup.string().required(t("skill_level_required")),
-      topicId: yup.string().required(t("topic_required"))
+      topicId: yup.string().required(t("topic_required")),
+      chapters: yup.array().of(
+        yup.object().shape({
+          no: yup.number().required(),
+          title: yup.string().required(t("chapter_title_required")),
+          description: yup.string(),
+          resources: yup
+            .array()
+            .of(
+              yup.object().shape({
+                no: yup.number().required(),
+                resourceType: yup.string().required(),
+                title: yup.string().required(t("resource_title_required")),
+                questionId: yup.string(),
+                lessonHtml: yup.string(),
+                youtubeVideoUrl: yup.string()
+              })
+            )
+            .required()
+        })
+      )
     });
   }, [t]);
 
@@ -142,21 +177,42 @@ const CreateCertificateCourse = () => {
     control,
     handleSubmit,
     trigger,
+    setValue,
+    watch,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   });
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "chapters"
   });
   const handleAddNewChapter = () => {
     append({
+      no: fields.length,
       title: "",
       resources: []
     });
   };
+  const handleDrag = ({ source, destination }: { source: any; destination: any }) => {
+    if (destination) {
+      move(source.index, destination.index);
+
+      setValue(`chapters.${source.index}.no`, source.index);
+      setValue(`chapters.${destination.index}.no`, destination.index);
+    }
+  };
+
+  const handleRemoveChapter = (index: number) => {
+    remove(index);
+
+    const updatedFields = watch("chapters");
+    updatedFields?.forEach((field, idx) => {
+      setValue(`chapters.${idx}.no`, idx);
+    });
+  };
   console.log("error:", errors);
+  console.log("fields", fields);
 
   const submitHandler = async (data: any) => {
     console.log("data", data);
@@ -326,30 +382,85 @@ const CreateCertificateCourse = () => {
               <Button
                 margin='10px 0'
                 variant='outlined'
-                colorName={"var(--blue-light)"}
+                colorName={"var(--blue-selected)"}
                 borderRadius='12px'
-                startIcon={<AddCircleRoundedIcon />}
+                startIcon={
+                  <AddCircleRoundedIcon
+                    sx={{
+                      color: "var(--blue-selected)",
+                      fontSize: "12px"
+                    }}
+                  />
+                }
                 onClick={handleAddNewChapter}
               >
                 <ParagraphBody fontSize={"12px"} fontWeight={"500"} colorname='--blue-light-1'>
                   {t("common_add_chapter")}
                 </ParagraphBody>
               </Button>
+
+              <Button
+                margin='10px 0 10px 10px'
+                variant={isDragging ? "contained" : "outlined"}
+                borderRadius='12px'
+                startIcon={
+                  <DragIndicatorRoundedIcon
+                    sx={{
+                      color: isDragging ? "var(--ghost-white)" : "var(--blue-selected)",
+                      fontSize: "12px"
+                    }}
+                  />
+                }
+                onClick={() => setIsDragging(!isDragging)}
+                boxShadow='0'
+              >
+                <ParagraphBody
+                  fontSize={"12px"}
+                  fontWeight={"500"}
+                  colorname={!isDragging ? "--blue-selected" : "--ghost-white"}
+                >
+                  {!isDragging ? t("enable_drag_drop_chapter") : t("disable_drag_drop_chapter")}
+                </ParagraphBody>
+              </Button>
             </Grid>
 
             <Grid item xs={12}>
-              <Grid container spacing={4}>
-                {fields.map((field, index) => (
-                  <Grid item xs={12} key={field.id}>
-                    <ChapterItem
-                      field={field}
-                      removeChapter={() => remove(index)}
-                      parentIndex={index}
-                      {...{ control, register }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              <DragDropContext onDragEnd={handleDrag}>
+                <Droppable droppableId='chapter'>
+                  {(provided) => (
+                    <Stack spacing={2} {...provided.droppableProps} ref={provided.innerRef}>
+                      {fields.map((field, index) => {
+                        return (
+                          <Draggable
+                            key={`chapters[${index}]`}
+                            draggableId={`item-${index}`}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                key={field.id}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                              >
+                                <ChapterItem
+                                  errors={errors}
+                                  watch={watch}
+                                  isDragging={isDragging}
+                                  provided={provided}
+                                  field={field}
+                                  removeChapter={() => handleRemoveChapter(index)}
+                                  parentIndex={index}
+                                  {...{ control, register }}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                    </Stack>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </Grid>
 
             <Grid item xs={12}>
@@ -383,8 +494,18 @@ const CreateCertificateCourse = () => {
 
 const ChapterItem = (props: ChapterFieldArrayPropsData) => {
   const { t } = useTranslation();
-  const { field, removeChapter, control, register, parentIndex } = props;
-  const [open, setOpen] = useState(true);
+  const {
+    field,
+    removeChapter,
+    control,
+    register,
+    parentIndex,
+    provided,
+    isDragging,
+    watch,
+    errors
+  } = props;
+  const [open, setOpen] = useState(false);
   const [isEditting, setIsEditting] = useState(true);
   const { fields, append, remove } = useFieldArray({
     control,
@@ -393,6 +514,7 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
 
   const handleNewResource = () => {
     append({
+      no: fields.length,
       resourceType: ResourceTypeEnum.LESSON,
       title: "",
       lessonHtml: "",
@@ -400,60 +522,100 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
       youtubeVideoUrl: ""
     });
   };
+  const [chapterName, setChapterName] = useState<string>("Chapter " + parentIndex);
+
+  useEffect(() => {
+    if (isDragging) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [isDragging]);
+
+  useEffect(() => {
+    const tempChapterName = watch(`chapters.${parentIndex}.title`);
+    if (tempChapterName && tempChapterName !== "") {
+      setChapterName(tempChapterName);
+    } else setChapterName("Chapter " + parentIndex);
+  }, [watch(`chapters.${parentIndex}.title`)]);
+
+  useEffect(() => {
+    if (isEditting && !isDragging) {
+      setOpen(true);
+    }
+  }, [isEditting]);
 
   return (
-    <div>
-      <Box
+    <>
+      {!isDragging && (
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"flex-start"}
+          marginBottom={"10px"}
+        >
+          <IconButton
+            variant={isEditting ? "soft" : "solid"}
+            onClick={() => {
+              setIsEditting(!isEditting);
+            }}
+            color='primary'
+          >
+            {isEditting ? <EditOffRoundedIcon /> : <EditRoundedIcon />}
+          </IconButton>
+          <IconButton
+            variant='soft'
+            sx={{
+              marginLeft: "10px"
+            }}
+            color='danger'
+            onClick={() => {
+              removeChapter();
+            }}
+          >
+            <DeleteForeverRoundedIcon />
+          </IconButton>
+        </Box>
+      )}
+      <Stack
+        direction={"row"}
         display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"flex-start"}
-        marginBottom={"10px"}
+        alignItems={"center"}
+        spacing={1}
+        flex={1}
+        sx={{ width: "100%" }}
       >
-        <IconButton
-          variant={isEditting ? "soft" : "solid"}
-          onClick={() => {
-            setIsEditting(!isEditting);
-          }}
-          color='primary'
-        >
-          {isEditting ? <EditOffRoundedIcon /> : <EditRoundedIcon />}
-        </IconButton>
-        <IconButton
+        {isDragging && (
+          <div {...provided.dragHandleProps}>
+            <DragIndicatorRoundedIcon />
+          </div>
+        )}
+        <Card
           variant='soft'
+          color='neutral'
           sx={{
-            marginLeft: "10px"
+            flexGrow: 1,
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            "&:hover": {
+              cursor: isDragging ? "" : "pointer",
+              backgroundColor: "var(--blue-light-4)"
+            }
           }}
-          color='danger'
           onClick={() => {
-            removeChapter();
+            !isDragging && setOpen(!open);
           }}
+          translation-key='question_management_answer'
         >
-          <DeleteForeverRoundedIcon />
-        </IconButton>
-      </Box>
-      <Card
-        variant='soft'
-        color='neutral'
-        sx={{
-          padding: "10px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "row",
-          "&:hover": {
-            cursor: "pointer",
-            backgroundColor: "var(--blue-light-4)"
-          }
-        }}
-        onClick={() => setOpen(!open)}
-        translation-key='question_management_answer'
-      >
-        <ParagraphBody fontWeight={"600"} colorname='--eerie-black'>
-          {"Chapter " + parentIndex}
-        </ParagraphBody>
+          <ParagraphBody fontWeight={"600"} colorname='--eerie-black'>
+            {chapterName}
+          </ParagraphBody>
 
-        {open ? <ArrowDropDownRoundedIcon /> : <ArrowDropUpRoundedIcon />}
-      </Card>
-
+          {open ? <ArrowDropDownRoundedIcon /> : <ArrowDropUpRoundedIcon />}
+        </Card>
+      </Stack>
       <Collapse in={open} timeout='auto'>
         {isEditting && (
           <Grid
@@ -470,6 +632,8 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
                 name={`chapters.${parentIndex}.title`}
                 render={({ field: { ref, ...field } }) => (
                   <InputTextFieldColumn
+                    error={Boolean(errors?.chapters?.[parentIndex]?.title)}
+                    errorMessage={errors?.chapters?.[parentIndex]?.title?.message}
                     useDefaultTitleStyle
                     title={`${"Chapter Title"}`}
                     inputRef={ref}
@@ -481,19 +645,6 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
                   />
                 )}
               />
-
-              <Button
-                margin='10px 0'
-                variant='outlined'
-                colorName={"var(--blue-light)"}
-                borderRadius='12px'
-                startIcon={<AddCircleRoundedIcon />}
-                onClick={handleNewResource}
-              >
-                <ParagraphBody fontSize={"12px"} fontWeight={"500"} colorname='--blue-light-1'>
-                  {t("common_add_chapter_resource")}
-                </ParagraphBody>
-              </Button>
             </Grid>
             <Grid item sm={12} md={6}>
               <TitleWithInfoTip
@@ -525,36 +676,52 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
             </Grid>
           </Grid>
         )}
-
-        {/* {fields.length !== 0 && ( */}
-        <Card
-          sx={{
-            marginTop: "10px"
-          }}
-        >
-          <Stack spacing={{ xs: 4 }} useFlexGap>
-            {fields.map((field, index) => (
-              <React.Fragment key={field.id}>
-                <ChapterResourceItem
-                  parentIndex={parentIndex}
-                  isEditting={isEditting}
-                  index={index}
-                  removeResource={() => remove(index)}
-                  {...{ control, register }}
-                />
-                <Divider />
-              </React.Fragment>
-            ))}
-          </Stack>
-        </Card>
-        {/* )} */}
+        {isEditting && (
+          <Button
+            margin='5px 0'
+            variant='outlined'
+            colorName={"var(--blue-light)"}
+            borderRadius='12px'
+            startIcon={<AddCircleRoundedIcon />}
+            onClick={handleNewResource}
+          >
+            <ParagraphBody fontSize={"12px"} fontWeight={"500"} colorname='--blue-light-1'>
+              {t("add_chapter_resource")}
+            </ParagraphBody>
+          </Button>
+        )}
+        {fields.length !== 0 && (
+          <Card
+            sx={{
+              marginTop: "10px"
+            }}
+          >
+            <Stack spacing={{ xs: 4 }} useFlexGap>
+              {fields.map((field, index) => (
+                <React.Fragment key={field.id}>
+                  <ChapterResourceItem
+                    errors={errors}
+                    watch={watch}
+                    parentIndex={parentIndex}
+                    isEditting={isEditting}
+                    index={index}
+                    removeResource={() => remove(index)}
+                    {...{ control, register }}
+                  />
+                  <Divider />
+                </React.Fragment>
+              ))}
+            </Stack>
+          </Card>
+        )}
       </Collapse>
-    </div>
+    </>
   );
 };
 
 const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
-  const { isEditting, removeResource, index, control, register, parentIndex } = props;
+  const { isEditting, removeResource, index, control, register, parentIndex, watch, errors } =
+    props;
 
   const { t } = useTranslation();
   const resourceTypeOptions = useMemo(() => {
@@ -564,6 +731,14 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
     }));
   }, [t]);
   const [resourceType, setResourceType] = useState(ResourceTypeEnum.LESSON);
+  const [resourceName, setResourceName] = useState<string>("Resource " + index);
+
+  useEffect(() => {
+    const tempResourceName = watch(`chapters.${parentIndex}.resources.${index}.title`);
+    if (tempResourceName && tempResourceName !== "") {
+      setResourceName(tempResourceName);
+    } else setResourceName("Resource " + index);
+  }, [watch(`chapters.${parentIndex}.resources.${index}.title`)]);
 
   return (
     <>
@@ -591,6 +766,10 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
                   control={control}
                   render={({ field: { ref, ...field } }) => (
                     <InputTextFieldColumn
+                      error={Boolean(errors?.chapters?.[parentIndex]?.resources?.[index]?.title)}
+                      errorMessage={
+                        errors?.chapters?.[parentIndex]?.resources?.[index]?.title?.message
+                      }
                       inputRef={ref}
                       useDefaultTitleStyle
                       title={`${t("chapter_resource_title")}`}
@@ -659,7 +838,12 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
           <Stack direction={"row"} alignItems={"center"} spacing={1}>
             <Box
               sx={{
-                backgroundColor: "#FFEBEE",
+                backgroundColor:
+                  resourceType === ResourceTypeEnum.LESSON
+                    ? "#E3F2FD"
+                    : resourceType === ResourceTypeEnum.VIDEO
+                      ? "#FFEBEE"
+                      : "#E8F5E9",
                 borderRadius: "8px",
                 display: "flex",
                 justifyContent: "center",
@@ -668,24 +852,28 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
                 padding: "10px"
               }}
             >
-              <SmartDisplayRoundedIcon
-                sx={{
-                  color: "#D32F2F"
-                }}
-              />
-              <BookRoundedIcon
-                sx={{
-                  color: "#1976D2"
-                }}
-              />
-              <CodeRoundedIcon
-                sx={{
-                  color: "#388E3C"
-                }}
-              />
+              {resourceType === ResourceTypeEnum.LESSON ? (
+                <BookRoundedIcon
+                  sx={{
+                    color: "#1976D2"
+                  }}
+                />
+              ) : resourceType === ResourceTypeEnum.VIDEO ? (
+                <SmartDisplayRoundedIcon
+                  sx={{
+                    color: "#D32F2F"
+                  }}
+                />
+              ) : (
+                <CodeRoundedIcon
+                  sx={{
+                    color: "#388E3C"
+                  }}
+                />
+              )}
             </Box>
             <ParagraphBody fontWeight={"600"} colorname='--eerie-black'>
-              {"Chapter name"}
+              {resourceName}
             </ParagraphBody>
           </Stack>
         )}
