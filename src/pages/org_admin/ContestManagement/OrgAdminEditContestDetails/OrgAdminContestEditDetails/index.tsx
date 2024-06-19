@@ -8,12 +8,12 @@ import TitleWithInfoTip from "components/text/TitleWithInfo";
 import moment from "moment";
 import { Control, Controller, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { IFormDataType } from "..";
 import classes from "./styles.module.scss";
 import TextEditor from "components/editor/TextEditor";
 import AdvancedDropzoneDemo from "components/editor/FileUploader";
 import { ExtFile } from "@files-ui/react";
 import { useEffect, useState } from "react";
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
 
 interface ContestEditDetailsProps {
   control: Control<IFormDataType, any>;
@@ -266,7 +266,6 @@ const OrgAdminContestEditDetails = ({
                       <TitleWithInfoTip
                         translate-key='contest_thumbnail'
                         title={t("contest_thumbnail")}
-                        titleRequired={true}
                       />
                     </Grid>
                     <Grid item xs={12} md={7}>

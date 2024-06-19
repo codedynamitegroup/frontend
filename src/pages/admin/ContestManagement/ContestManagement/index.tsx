@@ -207,7 +207,9 @@ const ContestManagement = () => {
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.endTime as string, currentLang)}
+            {params.row.endTime
+              ? standardlizeUTCStringToLocaleString(params.row.endTime, currentLang)
+              : t("contest_details_has_no_end_time")}
           </ParagraphSmall>
         );
       }

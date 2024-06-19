@@ -32,10 +32,17 @@ interface ProblemDetailSubmissionProps {
     contestId: string;
     problemId: string;
   };
+  isShareSolutionDisabled?: boolean;
 }
 
 const ProblemDetailSubmission = memo(
-  ({ submissionLoading, maxHeight, cerCourseInfo, contestInfo }: ProblemDetailSubmissionProps) => {
+  ({
+    submissionLoading,
+    maxHeight,
+    cerCourseInfo,
+    contestInfo,
+    isShareSolutionDisabled
+  }: ProblemDetailSubmissionProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -357,6 +364,7 @@ const ProblemDetailSubmission = memo(
                 handleSubmissionDetail={() => {
                   setsubmissionDetail(!submissionDetail);
                 }}
+                isShareSolutionDisabled={isShareSolutionDisabled}
               />
             </Box>
           ) : (
