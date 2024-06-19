@@ -58,6 +58,7 @@ import { ContestService } from "services/coreService/ContestService";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { setErrorMess } from "reduxes/AppStatus";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
+import moment from "moment";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
@@ -350,6 +351,10 @@ export default function TakeContestProblem() {
   }, [contestId, dispatch, handleGetContestById]);
 
   if (!contestId || !contestDetails || !problemId) return null;
+  if (contestDetails.endTime && moment(contestDetails.endTime).isBefore(moment())) {
+    dispatch(setErrorMess(t("contest_ended")));
+    navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
+  }
   if (contestDetails.isRegistered !== true) {
     dispatch(setErrorMess(t("contest_not_registered")));
     navigate(routes.user.contest.detail.information.replace(":contestId", contestId));

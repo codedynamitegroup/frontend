@@ -317,6 +317,7 @@
   "contest_delete_contest_fail": "Delete contest failed",
   "contest_details_problems_success_rates": "Problems success rates",
   "contest_not_registered": "You have not registered for this contest yet",
+  "contest_ended": "This contest has ended",
   "contest_add_problem_success": "Add problem to contest successfully",
   "contest_add_problem_fail": "Add problem to contest failed",
   "contest_details_has_no_end_time": "This contest has no end time",

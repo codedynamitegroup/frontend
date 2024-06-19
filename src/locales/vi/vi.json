@@ -320,6 +320,7 @@
   "contest_delete_contest_fail": "Xoá cuộc thi thất bại",
   "contest_details_problems_success_rates": "Tỉ lệ thành công của bài toán",
   "contest_not_registered": "Bạn chưa đăng ký tham gia cuộc thi này",
+  "contest_ended": "Cuộc thi đã kết thúc",
   "contest_add_problem_success": "Thêm bài toán vào cuộc thi thành công",
   "contest_add_problem_fail": "Thêm bài toán vào cuộc thi thất bại",
   "contest_details_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
