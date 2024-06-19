@@ -106,14 +106,20 @@
   }
 }
 
-.icCode,
-.icCheck,
-.icVideo,
-.icArticle {
-  width: 20px;
-  height: 20px;
-}
+.icCodeWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-.icCheck {
-  color: var(--green-500);
+  .icCode,
+  .icCheck,
+  .icVideo,
+  .icArticle {
+    width: 20px;
+    height: 20px;
+  }
+
+  .icCheck {
+    color: var(--green-500);
+  }
 }

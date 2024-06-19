@@ -129,8 +129,8 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
       rules: yup.string().trim(""),
       scoring: yup.string().trim(""),
       isPublic: yup.boolean().required(t("contest_is_public_required")),
-      isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
-      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required")),
+      isRestrictedForum: yup.boolean().default(false),
+      isDisabledForum: yup.boolean().default(false),
       problems: yup
         .array()
         .of(
@@ -144,7 +144,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             maxGrade: yup.number().default(0)
           })
         )
-        .required(t("contest_problems_required"))
+        .default([])
     });
   }, [t]);
 
@@ -417,7 +417,10 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
                 }
               />
               <Route path={"signups"} element={<ContestEditSignUps />} />
-              <Route path={"statistics"} element={<ContestEditStatistics data={statistics} />} />
+              <Route
+                path={"statistics"}
+                element={<ContestEditStatistics data={statistics} contestId={contestId} />}
+              />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>
@@ -432,7 +435,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             marginLeft: "-25px",
             backgroundColor: "white",
             borderTop: "1px solid #E0E0E0",
-            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
+            width: isDrawerOpen ? "calc(100% - 270px)" : "100%"
           }}
         >
           <JoyButton

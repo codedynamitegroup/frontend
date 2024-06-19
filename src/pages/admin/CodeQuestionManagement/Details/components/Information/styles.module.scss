@@ -1,0 +1,9 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .textEditor {
+    height: 200px;
+  }
+}

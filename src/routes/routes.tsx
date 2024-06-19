@@ -136,7 +136,8 @@ export const routes = {
     },
     assignment: {
       detail: "/student/courses/:courseId/assignments/:assignmentId",
-      submit: "/student/courses/:courseId/assignments/:assignmentId/submit"
+      submit: "/student/courses/:courseId/assignments/:assignmentId/submit",
+      edit_submit: "/student/courses/:courseId/assignments/:assignmentId/submit/edit"
     },
     exam: {
       detail: "/student/courses/:courseId/assignments/exams/:examId",
@@ -233,7 +234,9 @@ export const routes = {
         signups: "/admin/contests/edit/:contestId/signups",
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
-      create: "/admin/contests/create"
+      create: "/admin/contests/create",
+      submissions: "/admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     },
     users: {
       root: "/admin/users",
@@ -243,15 +246,24 @@ export const routes = {
       },
       create: "/admin/users/create"
     },
-    organizations: {
-      root: "/admin/organizations",
-      edit: {
-        root: "/admin/organizations/edit/:organizationId/*",
-        details: "/admin/organizations/edit/:organizationId/details",
-        list_users: "/admin/organizations/edit/:organizationId/users"
-      },
-      create: "/admin/organizations/create"
-    },
+	organizations: {
+	  root: "/admin/organizations",
+	  edit: {
+		root: "/admin/organizations/edit/:organizationId/*",
+		details: "/admin/organizations/edit/:organizationId/details",
+		list_users: "/admin/organizations/edit/:organizationId/users"
+	  },
+	  create: "/admin/organizations/create"
+	},
+	code_question: {
+	  root: "/admin/code-questions",
+	  create: "/admin/code-questions/create",
+	  detail: "/admin/code-questions/edit/:questionId/*",
+	  information: "/admin/code-questions/edit/:questionId/information",
+	  test_cases: "/admin/code-questions/edit/:questionId/test-cases",
+	  code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
+	  languages: "/admin/code-questions/edit/:questionId/languages"
+	},
     question_bank: {
       root: "/admin/question-bank-management",
       detail: "/admin/question-bank-management/:categoryId",
@@ -338,6 +350,7 @@ export const routes = {
             code
           }))
       },
+
       update_question: {
         paths: Object.values(qtype)
           .map((value) => value.code)
@@ -346,6 +359,20 @@ export const routes = {
             code
           }))
       }
+    },
+    contest: {
+      root: "/org-admin/contests",
+      edit: {
+        root: "/org-admin/contests/edit/:contestId/*",
+        details: "/org-admin/contests/edit/:contestId/details",
+        problems: "/org-admin/contests/edit/:contestId/problems",
+        advanced_settings: "/org-admin/contests/edit/:contestId/advanced-settings",
+        signups: "/org-admin/contests/edit/:contestId/signups",
+        statistics: "/org-admin/contests/edit/:contestId/statistics"
+      },
+      create: "/org-admin/contests/create",
+      submissions: "/org-admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     }
   }
 };

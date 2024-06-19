@@ -34,6 +34,7 @@ interface Props {
   languageName: string;
   codeSubmissionDetail: CodeSubmissionDetailEntity | null;
   codeQuestion: CodeQuestionEntity;
+  isShareSolutionDisabled?: boolean;
 }
 
 export interface ICodeQuestion {
@@ -45,7 +46,8 @@ export default function DetailSolution({
   handleSubmissionDetail,
   codeSubmissionDetail,
   languageName,
-  codeQuestion
+  codeQuestion,
+  isShareSolutionDisabled
 }: Props) {
   const { t } = useTranslation();
 
@@ -201,13 +203,15 @@ export default function DetailSolution({
               </ParagraphExtraSmall>
             </Box>
           </Box>
-          <Button
-            variant='contained'
-            color='primary'
-            translation-key='detail_problem_submission_detail_share_solution'
-          >
-            {t("detail_problem_submission_detail_share_solution")}
-          </Button>
+          {isShareSolutionDisabled === true ? null : (
+            <Button
+              variant='contained'
+              color='primary'
+              translation-key='detail_problem_submission_detail_share_solution'
+            >
+              {t("detail_problem_submission_detail_share_solution")}
+            </Button>
+          )}
         </Box>
         {codeSubmissionDetail?.firstFailTestCase?.message &&
           codeSubmissionDetail.firstFailTestCase.message.length > 0 && (

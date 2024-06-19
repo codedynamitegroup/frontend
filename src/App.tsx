@@ -239,6 +239,7 @@ const router = createHashRouter(
         <Route element={<RequireAuth availableRoles={[ERoleName.STUDENT_MOODLE]} />}>
           <Route path={routes.student.root} element={<StudentCoursesManagement />} />
           <Route path={routes.student.assignment.submit} element={<SubmitAssignment />} />
+          <Route path={routes.student.assignment.edit_submit} element={<SubmitAssignment />} />
           <Route path={routes.student.exam.take} element={<TakeExam />} />
           <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
           <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />

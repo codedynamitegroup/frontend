@@ -25,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { setContests, setLoading } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
@@ -208,7 +207,9 @@ const ContestManagement = () => {
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.endTime as string, currentLang)}
+            {params.row.endTime
+              ? standardlizeUTCStringToLocaleString(params.row.endTime, currentLang)
+              : t("contest_details_has_no_end_time")}
           </ParagraphSmall>
         );
       }
@@ -311,12 +312,7 @@ const ContestManagement = () => {
             label='Edit'
             onClick={() => {
               navigate(
-                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId),
-                {
-                  state: {
-                    contestName: params.row.name
-                  }
-                }
+                routes.admin.contest.edit.details.replace(":contestId", params.row.contestId)
               );
             }}
           />,

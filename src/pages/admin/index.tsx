@@ -1,6 +1,8 @@
 import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import { Route, Routes } from "react-router";
+import RequireAuth from "components/common/RequireAuth";
+import { ERoleName } from "models/authService/entity/role";
 import ContestManagement from "./ContestManagement/ContestManagement";
 import CreateContest from "./ContestManagement/CreateContest";
 import EditContestDetails from "./ContestManagement/EditContestDetails";
@@ -8,6 +10,7 @@ import SidebarSystemAdmin from "components/common/sidebars/SidebarSystemAdmin";
 import UserInformation from "pages/client/user/UserDetails/UserInformation";
 import React from "react";
 import AdminDashboard from "./Dashboard";
+import Footer from "components/Footer";
 import UserManagement from "./UserManagement/UserManagement";
 import CreateUser from "./UserManagement/CreateUser";
 import EditUserDetails from "./UserManagement/EditUserDetails";
@@ -23,6 +26,10 @@ import AdminQuestionBankManagement from "./QuestionBankManagement";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
+import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
+import AdminCodeQuestionManagement from "./CodeQuestionManagement";
+import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
+import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmissionDetails";
 import OrganizationManagement from "./OrganizationManagement/OrganizationManagement";
 import CreateOrganization from "./OrganizationManagement/CreateOrganization";
 import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
@@ -46,6 +53,11 @@ const SystemAdminHomepage = (props: Props) => {
           <Routes>
             <Route path={"contests"} element={<ContestManagement />} />
             <Route path={"contests/create"} element={<CreateContest />} />
+            <Route path={"contests/:contestId/submissions"} element={<AdminContestSubmissions />} />
+            <Route
+              path={"contests/:contestId/submissions/:submissionId"}
+              element={<AdminContestSubmissionDetails />}
+            />
             <Route
               path={"contests/edit/:contestId/*"}
               element={<EditContestDetails isDrawerOpen={open} />}
@@ -93,6 +105,9 @@ const SystemAdminHomepage = (props: Props) => {
               element={<LecturerCodeQuestionCreation />}
             />
             <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
+
+            <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
+            <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
           </Routes>
         </Box>
         {/* </Box> */}

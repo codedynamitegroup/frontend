@@ -5,7 +5,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  background-color: var(--gray-2);
+  background-color: white;
 }
 
 .container {
@@ -21,20 +21,19 @@
 .formBody {
   display: flex;
   flex-direction: column;
-  padding: 20px 40px;
+  padding: 20px 0px;
   gap: 15px;
+  margin-bottom: 10px;
 }
 
 .drawerBody {
   padding: 20px;
+  overflow: auto;
 }
 
 .drawerFieldContainer {
-  margin-bottom: 20px;
-}
-
-.textEditor {
-  height: 200px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #breadcumpWrapper {
@@ -42,6 +41,7 @@
   align-items: center;
   gap: 5px;
   padding: 10px 10px;
+  flex-grow: 1;
 
   #icArrow {
     color: var(--blue-500);
@@ -54,4 +54,37 @@
       text-decoration: underline;
     }
   }
+}
+.contentContainer {
+  overflow: hidden;
+  overflow-y: auto;
+}
+.gradeContainer {
+  background-color: white;
+}
+.stickyBottom {
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+  padding: 10px 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.cancelBtn {
+  background-color: #f5f5f5 !important;
+  padding: 12px 20px !important;
+  &:hover {
+    background-color: var(--gray-10) !important;
+  }
+}
+
+.saveBtn {
+  padding: 12px 20px !important;
+}
+
+.textEditor {
+  height: 200px;
+  margin-bottom: 20px;
 }

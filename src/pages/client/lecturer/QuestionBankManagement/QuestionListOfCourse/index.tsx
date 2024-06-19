@@ -62,6 +62,7 @@ const QuestionListOfCourse = () => {
   const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
     React.useState(false);
   const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
+  const dataGridToolbar = { enableToolbar: true };
 
   const columnsProps: GridColDef[] = [
     {
@@ -449,6 +450,7 @@ const QuestionListOfCourse = () => {
               }))}
               tableHeader={columns}
               onSelectData={rowSelectionHandler}
+              dataGridToolBar={dataGridToolbar}
               page={page}
               pageSize={rowsPerPage}
               totalElement={questionCategoryState.totalItems}
@@ -485,11 +487,11 @@ const QuestionListOfCourse = () => {
               {categoryState.categoryDetails?.description}
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              <Button btnType={BtnType.Primary}>
+              {/* <Button btnType={BtnType.Primary}>
                 <ParagraphBody paddingX={3} translation-key='common_data_export'>
                   {t("common_data_export")}
                 </ParagraphBody>
-              </Button>
+              </Button> */}
               <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
                 <ParagraphBody paddingX={3} translation-key='common_add_question'>
                   {t("common_add_question")}
@@ -505,7 +507,7 @@ const QuestionListOfCourse = () => {
               </Button>
             </Stack>
 
-            <Stack direction='row' justifyContent='space-between'>
+            {/* <Stack direction='row' justifyContent='space-between'>
               <SearchBar
                 onSearchClick={() => null}
                 translation-key='question_bank_category_question_list_enter_question_name'
@@ -516,7 +518,15 @@ const QuestionListOfCourse = () => {
                   {t("question_bank_access_right")}
                 </ParagraphBody>
               </Button>
-            </Stack>
+            </Stack> */}
+            <CustomAutocomplete
+              translation-key='question_bank_category_question_list_enter_question_name'
+              placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
+              value={searchText}
+              setValue={setSearchText}
+              options={[]}
+              onHandleChange={handleSearch}
+            />
             <CustomDataGrid
               sx={{
                 "& .MuiDataGrid-cell": {
@@ -535,6 +545,7 @@ const QuestionListOfCourse = () => {
               }))}
               tableHeader={columns}
               onSelectData={rowSelectionHandler}
+              dataGridToolBar={dataGridToolbar}
               pageSize={rowsPerPage}
               page={page}
               totalElement={questionCategoryState.totalItems}

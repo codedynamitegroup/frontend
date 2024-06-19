@@ -108,6 +108,44 @@ export class ContestService {
     }
   }
 
+  static async getContestsForOrgAdmin({
+    searchName,
+    startTimeFilter = ContestStartTimeFilterEnum.ALL,
+    orgId,
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    searchName?: string;
+    startTimeFilter?: ContestStartTimeFilterEnum;
+    orgId: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.CONTEST.CONTEST_MANAGEMENT_FOR_ORG_ADMIN}`, {
+        params: {
+          searchName,
+          startTimeFilter,
+          orgId,
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
   static async getMostPopularContests() {
     try {
       const response = await api({
