@@ -66,7 +66,8 @@ export const API = {
         GET_ALL: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
-        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin"
+        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",
+        GET_ALL_BY_ORG_ADMIN: "/core/questions/code-question/org-admin"
       }
     }
   },

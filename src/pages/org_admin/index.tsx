@@ -19,6 +19,9 @@ import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/co
 import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
 import OrgAdminContestManagement from "./ContestManagement/OrgAdminContestManagement";
 import OrgAdminCreateContest from "./ContestManagement/OrgAdminCreateContest";
+import OrgAdminEditContestDetails from "./ContestManagement/OrgAdminEditContestDetails";
+import OrgAdminContestSubmissionDetails from "./ContestManagement/OrgAdminContestSubmissionDetails";
+import OrgAdminContestSubmissions from "./ContestManagement/OrgAdminContestSubmissions";
 
 type Props = {};
 
@@ -39,24 +42,15 @@ const OrganizationAdminHomepage = (props: Props) => {
             <Route path={"contests/create"} element={<OrgAdminCreateContest />} />
             <Route
               path={"contests/:contestId/submissions"}
-              element={
-                // <OrgAdminContestSubmissions />
-                <div></div>
-              }
+              element={<OrgAdminContestSubmissions />}
             />
             <Route
               path={"contests/:contestId/submissions/:submissionId"}
-              element={
-                // <OrgAdminContestSubmissionDetails />
-                <div></div>
-              }
+              element={<OrgAdminContestSubmissionDetails />}
             />
             <Route
               path={"contests/edit/:contestId/*"}
-              element={
-                // <OrgAdminEditContestDetails isDrawerOpen={open} />
-                <div></div>
-              }
+              element={<OrgAdminEditContestDetails isDrawerOpen={open} />}
             />
 
             <Route path={"information"} element={<UserInformation />} />
