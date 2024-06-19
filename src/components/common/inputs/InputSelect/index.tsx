@@ -178,13 +178,13 @@ const InputSelect = memo((props: InputSelectProps) => {
             </>
           ) : (
             <>
-              <Select
+              {/* <Select
                 styles={customStyles(!!errorMessage)}
                 getOptionValue={(option) => option[bindKey || "id"]}
                 getOptionLabel={(option) => getOptionLabel(option)}
                 components={{ DropdownIndicator, Option, SingleValue }}
                 {...selectProps}
-              />
+              /> */}
             </>
           )}
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
