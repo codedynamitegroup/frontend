@@ -1,0 +1,39 @@
+#introduction {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 500px;
+
+  #courseDescription {
+    [class~="ql-editor"] {
+      padding: 0px;
+    }
+    .commentBox {
+      padding: 15px 0;
+      position: relative;
+      .textArea {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 50px;
+        padding-left: 30px;
+        padding-right: 30px;
+        resize: none;
+        border: none;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        &:focus {
+          outline: none;
+        }
+      }
+      .commentButton {
+        background-color: green;
+        text-transform: none !important;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        margin-bottom: 30px;
+        margin-right: 10px;
+      }
+    }
+  }
+}

@@ -28,6 +28,8 @@ import useAuth from "hooks/useAuth";
 import images from "config/images";
 import { decodeBase64, removeNewLine } from "utils/base64";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -50,6 +52,20 @@ export default function DetailSolution({
   isShareSolutionDisabled
 }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
+  const lessonProblemId = () => {
+    if (problemId)
+      navigate(routes.user.problem.solution.share.replace(":problemId", problemId), {
+        state: {
+          sourceCode: codeSubmissionDetail?.sourceCode ?? ""
+        }
+      });
+  };
 
   const user = useAppSelector((state) => state.auth.currentUser);
 

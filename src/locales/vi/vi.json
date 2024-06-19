@@ -25,6 +25,7 @@
   "common_progress": "Tiến độ",
   "common_introduction": "Giới thiệu",
   "common_certificate": "Chứng chỉ",
+  "common_review": "Đánh giá",
   "common_level": "Cấp độ",
   "common_participant": "Người tham gia",
   "common_continue": "Tiếp tục",
@@ -213,6 +214,7 @@
   "dialog_confirm_delete_problem_description": "Bạn có chắc chắn muốn xoá bài toán này không ? Bạn phải lưu thay đổi sau đó để áp dụng cho cuộc thi",
   "dialog_confirm_add_contest_problem_title": "Xác nhận thêm bài toán",
   "dialog_confirm_add_contest_problem_description": "Bạn có chắc chắn muốn thêm bài toán này vào cuộc thi không ?",
+  "dialog_confirm_delete_shared_solution": "Bạn có chắc muốn xóa bài giải này không?",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Quản lý cuộc thi",
@@ -367,6 +369,8 @@
   "certificate_advance": "Kiến thức nâng cao",
   "certificate_empty": "Không có khóa học nào",
   "certificate_hot_recommend": "Khóa học chứng chỉ nổi bật",
+  "certificate_send_review": "Gửi đánh giá",
+  "certificate_review_placeholder": "Đánh giá của bạn",
 
   "certificate_detail_rating": "Đánh giá",
   "certificate_detail_lesson": "Bài học",
@@ -377,6 +381,7 @@
   "certificate_detail_lesson_title": "Các bài học ở khóa học",
   "certificate_detail_certification_title": "Chứng chỉ khóa học",
   "certificate_detail_certification_information": "Thông tin của khóa học",
+  "certificate_detail_review": "Đánh giá khóa học",
   "certificate_detail_certification_description": "Bạn sẽ nhận được chứng chỉ khóa học khi hoàn thành tối thiểu 85% nội dung khóa học",
   "certificate_detail_breadcrump": "Danh sách khóa học",
   "not_registered_certificate_course_message": "Bạn cần đăng ký khóa học này để tiếp tục",

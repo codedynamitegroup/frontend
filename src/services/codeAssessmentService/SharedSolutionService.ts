@@ -6,6 +6,102 @@ import api from "utils/api";
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class SharedSolutionService {
+  static async editSharedSolution(
+    sharedSolutionId: string,
+    content: string,
+    title: string,
+    removedTagIds: string[],
+    addedTagIds: string[]
+  ) {
+    try {
+      const editSolution = api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).put(API.CODE_ASSESSMENT.SHARED_SOLUTION.GET_BY_ID.replace(":id", sharedSolutionId), {
+        title,
+        content
+      });
+      const addTag =
+        addedTagIds.length > 0
+          ? api({
+              baseURL: codeAssessmentServiceApiUrl,
+              isAuthorization: true
+            }).post(
+              `${API.CODE_ASSESSMENT.SHARED_SOLUTION.TAG.DEFAULT.replace(":id", sharedSolutionId)}?tagIds=${addedTagIds.join(", ")}`
+            )
+          : undefined;
+      const removeTag =
+        removedTagIds.length > 0
+          ? api({
+              baseURL: codeAssessmentServiceApiUrl,
+              isAuthorization: true
+            }).delete(
+              API.CODE_ASSESSMENT.SHARED_SOLUTION.TAG.DEFAULT.replace(":id", sharedSolutionId),
+              {
+                params: {
+                  tagIds: removedTagIds.join(", ")
+                }
+              }
+            )
+          : undefined;
+      const responses = await Promise.all([editSolution, addTag, removeTag]);
+
+      return responses.map((i) => (i ? i.data : i));
+    } catch (error: any) {
+      console.error("Failed to fetch detail solution", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async deleteSharedSolution(sharedSolutionId: string) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).delete(API.CODE_ASSESSMENT.SHARED_SOLUTION.GET_BY_ID.replace(":id", sharedSolutionId));
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch detail solution", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createSharedSolution(
+    codeQuestionId: string,
+    title: string,
+    content: string,
+    tagIds: string[]
+  ) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).post(API.CODE_ASSESSMENT.SHARED_SOLUTION.DEFAULT, {
+        codeQuestionId,
+        content,
+        title,
+        tagIds: tagIds
+      });
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch detail solution", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async getRootComments(
     sharedSolutionId: string,
     pageNo: number,
