@@ -29,6 +29,7 @@ import CertificateDetails from "./components/Certificate";
 import CourseCertificateIntroduction from "./components/Introduction";
 import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
+import CertificateCourseReviews from "./components/CertificateCourseReviews";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -75,7 +76,8 @@ const CourseCertificateDetail = () => {
     return [
       routes.user.course_certificate.detail.introduction,
       routes.user.course_certificate.detail.lesson.root,
-      routes.user.course_certificate.detail.certificate
+      routes.user.course_certificate.detail.certificate,
+      routes.user.course_certificate.detail.review
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routes]);
@@ -414,6 +416,15 @@ const CourseCertificateDetail = () => {
                     }
                     value={2}
                   />
+                  <Tab
+                    sx={{ textTransform: "none" }}
+                    label={
+                      <ParagraphBody translation-key='common_review'>
+                        {t("common_review")}
+                      </ParagraphBody>
+                    }
+                    value={3}
+                  />
                 </Tabs>
               </Box>
               <Box>
@@ -435,6 +446,7 @@ const CourseCertificateDetail = () => {
                     }
                   />
                   <Route path={"certificate"} element={<CertificateDetails />} />
+                  <Route path={"review"} element={<CertificateCourseReviews />} />
                 </Routes>
               </Box>
             </Box>
