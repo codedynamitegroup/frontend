@@ -164,19 +164,20 @@ export const routes = {
       }
     },
     course_certificate: {
-      root: "/course-certificates",
+      root: "/certificate-courses",
       detail: {
-        root: "/course-certificates/:courseId/*",
-        introduction: "/course-certificates/:courseId/introduction",
+        root: "/certificate-courses/:courseId/*",
+        introduction: "/certificate-courses/:courseId/introduction",
         lesson: {
-          root: "/course-certificates/:courseId/lesson",
-          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
-          description: "/course-certificates/:courseId/lesson/:lessonId/description",
-          solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
-          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
-          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
+          root: "/certificate-courses/:courseId/lesson",
+          detail: "/certificate-courses/:courseId/lesson/:lessonId/*",
+          description: "/certificate-courses/:courseId/lesson/:lessonId/description",
+          solution: "/certificate-courses/:courseId/lesson/:lessonId/solution",
+          submission: "/certificate-courses/:courseId/lesson/:lessonId/submission",
+          share_solution: "/certificate-courses/:courseId/lesson/:lessonId/share-solution"
         },
-        certificate: "/course-certificates/:courseId/certificate"
+        certificate: "/certificate-courses/:courseId/certificate",
+        review: "/certificate-courses/:courseId/review"
       }
     },
     contest: {

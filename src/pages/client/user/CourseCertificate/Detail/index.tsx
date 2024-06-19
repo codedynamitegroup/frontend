@@ -3,17 +3,20 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import SchoolIcon from "@mui/icons-material/School";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
-import { Box, Container, Divider, Grid, Tab, Tabs, Tooltip } from "@mui/material";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import JoyButton from "@mui/joy/Button";
+import { Box, Container, Grid, Tab, Tabs, Tooltip } from "@mui/material";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import useAuth from "hooks/useAuth";
 import i18next from "i18next";
+import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { setCertificateCourseDetails } from "reduxes/coreService/CertificateCourse";
 import { setChapters } from "reduxes/coreService/Chapter";
@@ -26,9 +29,6 @@ import CertificateDetails from "./components/Certificate";
 import CourseCertificateIntroduction from "./components/Introduction";
 import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
-import useAuth from "hooks/useAuth";
-import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -42,11 +42,6 @@ const CourseCertificateDetail = () => {
   const { pathname } = useLocation();
 
   const { isLoggedIn } = useAuth();
-
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
-
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -114,9 +109,7 @@ const CourseCertificateDetail = () => {
           message: error.response?.message || error.message
         });
         // Show snackbar here
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Error);
-        setContent(error.response?.message || error.message);
+        dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch]
@@ -135,9 +128,7 @@ const CourseCertificateDetail = () => {
           message: error.response?.message || error.message
         });
         // Show snackbar here
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Error);
-        setContent(error.response?.message || error.message);
+        dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch]
@@ -156,26 +147,26 @@ const CourseCertificateDetail = () => {
           registerCertificateCourseByIdResponse &&
           registerCertificateCourseByIdResponse.certificateCourseId === id
         ) {
-          setOpenSnackbarAlert(true);
-          setType(AlertType.Success);
-          setContent(
-            t("register_certificate_course_success", {
-              courseName: certificateCourseDetails?.name
-            })
-          );
           dispatch(
             setCertificateCourseDetails({
               ...certificateCourseDetails,
               isRegistered: true
             })
           );
+          dispatch(
+            setSuccessMess(
+              t("register_certificate_course_success", {
+                courseName: certificateCourseDetails?.name
+              })
+            )
+          );
         } else {
-          setOpenSnackbarAlert(true);
-          setType(AlertType.Error);
-          setContent(
-            t("register_certificate_course_failed", {
-              courseName: certificateCourseDetails?.name
-            })
+          dispatch(
+            setSuccessMess(
+              t("register_certificate_course_failed", {
+                courseName: certificateCourseDetails?.name
+              })
+            )
           );
         }
       } catch (error: any) {
@@ -185,9 +176,7 @@ const CourseCertificateDetail = () => {
           message: error.response?.message || error.message
         });
         setIsRegisterLoading(false);
-        setOpenSnackbarAlert(true);
-        setType(AlertType.Error);
-        setContent(error.response?.message || error.message);
+        dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [certificateCourseDetails, dispatch, t]
@@ -209,12 +198,6 @@ const CourseCertificateDetail = () => {
 
   return (
     <Box id={classes.courseCertificateDetailRoot}>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
       <Container id={classes.container}>
         <Grid container id={classes.bodyWrapper}>
           <Grid item xs={12} md={12} id={classes.rightBody}>
