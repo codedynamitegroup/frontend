@@ -319,6 +319,8 @@
   "contest_not_registered": "You have not registered for this contest yet",
   "contest_add_problem_success": "Add problem to contest successfully",
   "contest_add_problem_fail": "Add problem to contest failed",
+  "contest_details_has_no_end_time": "This contest has no end time",
+  "contest_back_to_contest_problems_button": "Back to contest problems",
 
   "contest_detail_joined_feature_status": "You have registerd for this contest",
   "contest_detail_joined_happening_status": "You are joining this contest",

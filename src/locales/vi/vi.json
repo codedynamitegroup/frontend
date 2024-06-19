@@ -322,6 +322,8 @@
   "contest_not_registered": "Bạn chưa đăng ký tham gia cuộc thi này",
   "contest_add_problem_success": "Thêm bài toán vào cuộc thi thành công",
   "contest_add_problem_fail": "Thêm bài toán vào cuộc thi thất bại",
+  "contest_details_has_no_end_time": "Cuộc thi không có thời gian kết thúc",
+  "contest_back_to_contest_problems_button": "Quay lại danh sách bài toán",
 
   "contest_detail_joined_feature_status": "Bạn đã đăng ký tham gia cuộc thi này",
   "contest_detail_joined_happening_status": "Bạn đang tham gia cuộc thi này",

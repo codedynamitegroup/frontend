@@ -19,7 +19,6 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { Link as RouterLink } from "react-router-dom";
 import { routes } from "routes/routes";
 import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { IFormDataType } from "..";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
@@ -30,6 +29,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import AddContestProblemDialog from "./components/OrgAdminAddContestProblemDialog";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 import ConfirmAdd from "components/common/dialogs/ConfirmAdd";
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;

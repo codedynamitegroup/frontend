@@ -3,9 +3,9 @@ import ErrorMessage from "components/text/ErrorMessage";
 import Heading4 from "components/text/Heading4";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
 import { Control, Controller, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { IFormDataType } from "..";
 
 interface ContestEditDetailsProps {
   control: Control<IFormDataType, any>;

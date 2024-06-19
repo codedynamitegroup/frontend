@@ -261,7 +261,6 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                       <TitleWithInfoTip
                         translate-key='contest_thumbnail'
                         title={t("contest_thumbnail")}
-                        titleRequired={true}
                       />
                     </Grid>
                     <Grid item xs={12} md={7}>

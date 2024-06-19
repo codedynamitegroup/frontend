@@ -18,37 +18,14 @@ import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
 import * as yup from "yup";
-import ContestEditAdvancedSettings from "./OrgAdminContestEditAdvancedSettings";
-import ContestEditDetails from "./OrgAdminContestEditDetails";
-import ContestEditProblems from "./OrgAdminContestEditProblems";
-import ContestEditSignUps from "./OrgAdminContestEditSignUps";
-import ContestEditStatistics from "./OrgAdminContestEditStatictics";
 import classes from "./styles.module.scss";
 import useAuth from "hooks/useAuth";
-
-export interface IFormDataType {
-  isNoEndTime: boolean;
-  name: string;
-  startTime: string;
-  endTime?: string | null;
-  thumbnailUrl?: string;
-  description?: string;
-  prizes?: string;
-  rules?: string;
-  scoring?: string;
-  isPublic: boolean;
-  isRestrictedForum: boolean;
-  isDisabledForum: boolean;
-  problems: {
-    questionId: string;
-    codeQuestionId: string;
-    difficulty: string;
-    name: string;
-    questionText: string;
-    defaultMark: number;
-    maxGrade: number;
-  }[];
-}
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
+import OrgAdminContestEditSignUps from "./OrgAdminContestEditSignUps";
+import OrgAdminContestEditAdvancedSettings from "./OrgAdminContestEditAdvancedSettings";
+import OrgAdminContestEditProblems from "./OrgAdminContestEditProblems";
+import OrgAdminContestEditDetails from "./OrgAdminContestEditDetails";
+import OrgAdminContestEditStatictics from "./OrgAdminContestEditStatictics";
 
 const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -131,8 +108,8 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
       rules: yup.string().trim(""),
       scoring: yup.string().trim(""),
       isPublic: yup.boolean().required(t("contest_is_public_required")),
-      isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
-      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required")),
+      isRestrictedForum: yup.boolean().default(false),
+      isDisabledForum: yup.boolean().default(false),
       problems: yup
         .array()
         .of(
@@ -146,7 +123,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
             maxGrade: yup.number().default(0)
           })
         )
-        .required(t("contest_problems_required"))
+        .default([])
     });
   }, [t]);
 
@@ -393,7 +370,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"details"}
                 element={
-                  <ContestEditDetails
+                  <OrgAdminContestEditDetails
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -404,7 +381,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"problems"}
                 element={
-                  <ContestEditProblems
+                  <OrgAdminContestEditProblems
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -415,7 +392,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
               <Route
                 path={"advanced-settings"}
                 element={
-                  <ContestEditAdvancedSettings
+                  <OrgAdminContestEditAdvancedSettings
                     control={control}
                     errors={errors}
                     setValue={setValue}
@@ -423,10 +400,10 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
                   />
                 }
               />
-              <Route path={"signups"} element={<ContestEditSignUps />} />
+              <Route path={"signups"} element={<OrgAdminContestEditSignUps />} />
               <Route
                 path={"statistics"}
-                element={<ContestEditStatistics data={statistics} contestId={contestId} />}
+                element={<OrgAdminContestEditStatictics data={statistics} contestId={contestId} />}
               />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
@@ -442,7 +419,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
             marginLeft: "-25px",
             backgroundColor: "white",
             borderTop: "1px solid #E0E0E0",
-            width: isDrawerOpen ? "calc(100% - 270px)" : "100%"
+            width: isDrawerOpen ? "calc(100% - 300px)" : "100%"
           }}
         >
           <JoyButton
