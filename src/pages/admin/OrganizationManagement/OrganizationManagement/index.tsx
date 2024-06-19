@@ -338,17 +338,16 @@ const OrganizationManagement = () => {
   }, [i18next.language]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (organizationState.organizations.organizations.length > 0) return;
-      dispatch(setInititalLoading(true));
+    const fetchOrganizations = async () => {
+      // dispatch(setInititalLoading(true));
       await handleGetOrganizations({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
-    fetchUsers();
-  }, [dispatch, handleGetOrganizations, organizationState.organizations.organizations]);
+    fetchOrganizations();
+  }, [dispatch, handleGetOrganizations]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);

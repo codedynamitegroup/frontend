@@ -194,6 +194,8 @@ export const API = {
       VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
       UPDATE_PROFILE_USER: "/auth/users/update-profile",
       UPDATE_USER_BY_ADMIN: "/auth/users/:id",
+      ASSIGN_USER_TO_ORGANIZATION: "/auth/users/assign-user-to-org/:id",
+      UNASSIGNED_USER_TO_ORGANIZATION: "/auth/users/unassigned-user-to-org/:id",
       CHANGE_PASSWORD: "/auth/users/change-password",
       RESET_PASSWORD: "/auth/users/forgot-password/change-password"
     },

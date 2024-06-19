@@ -247,24 +247,26 @@ export const routes = {
       },
       create: "/admin/users/create"
     },
-	organizations: {
-	  root: "/admin/organizations",
-	  edit: {
-		root: "/admin/organizations/edit/:organizationId/*",
-		details: "/admin/organizations/edit/:organizationId/details",
-		list_users: "/admin/organizations/edit/:organizationId/users"
-	  },
-	  create: "/admin/organizations/create"
-	},
-	code_question: {
-	  root: "/admin/code-questions",
-	  create: "/admin/code-questions/create",
-	  detail: "/admin/code-questions/edit/:questionId/*",
-	  information: "/admin/code-questions/edit/:questionId/information",
-	  test_cases: "/admin/code-questions/edit/:questionId/test-cases",
-	  code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
-	  languages: "/admin/code-questions/edit/:questionId/languages"
-	},
+    organizations: {
+      root: "/admin/organizations",
+      edit: {
+        root: "/admin/organizations/edit/:organizationId/*",
+        details: "/admin/organizations/edit/:organizationId/details",
+        list_users: "/admin/organizations/edit/:organizationId/users",
+        create_user: "/admin/organizations/edit/:organizationId/users/create",
+        assign_user: "/admin/organizations/edit/:organizationId/users/assign-user"
+      },
+      create: "/admin/organizations/create"
+    },
+    code_question: {
+      root: "/admin/code-questions",
+      create: "/admin/code-questions/create",
+      detail: "/admin/code-questions/edit/:questionId/*",
+      information: "/admin/code-questions/edit/:questionId/information",
+      test_cases: "/admin/code-questions/edit/:questionId/test-cases",
+      code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
+      languages: "/admin/code-questions/edit/:questionId/languages"
+    },
     question_bank: {
       root: "/admin/question-bank-management",
       detail: "/admin/question-bank-management/:categoryId",

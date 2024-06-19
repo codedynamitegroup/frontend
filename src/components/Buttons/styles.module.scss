@@ -2,7 +2,7 @@
   text-transform: none;
   font-size: 14px;
   font-weight: 600;
-  &[class~=Mui-disabled] {
+  &[class~="Mui-disabled"] {
     opacity: 0.5;
   }
   img {
@@ -18,19 +18,19 @@
   }
 }
 .btnRed {
-  background: #af1c10;
-  border: 1px solid transparent;
-  color: white;
+  background: #af1c10 !important;
+  border: 1px solid transparent !important;
+  color: white !important;
   &:hover {
-    background: #af1d1080;
+    background: #af1d1080 !important;
   }
 }
 .btnTransparentBlue {
-  background: transparent;
-  color: var(--cimigo-blue);
-  border: 1px solid var(--cimigo-blue);
+  background: transparent !important;
+  color: var(--blue-3) !important;
+  border: 1px solid var(--blue-3) !important;
   &:hover {
-    background: #eef0f2;
+    background: #eef0f2 !important;
   }
 }
 .btndisabled {
@@ -39,10 +39,10 @@
   font-weight: 600;
 }
 .btnGreen {
-  background: #7C9911;
+  background: #7c9911;
   border: none;
   color: white;
   &:hover {
-    background: #7C9911;
+    background: #7c9911;
   }
 }

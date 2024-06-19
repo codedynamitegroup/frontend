@@ -1,6 +1,7 @@
 {
   "common_is_blocked": "Blocked status",
-  "common_organization": "Organization",
+  "common_is_belong_to_organization": "Belong to organization",
+  "common_organization_name": "Organization name",
   "common_please_login": "Please login",
   "common_please_login_to_continue": "Please login to continue",
   "common_easy": "Easy",
@@ -406,12 +407,13 @@
   "forget_password_description": "Enter registerd email, we will send a change password email to this email",
 
   "role_system_admin": "System admin",
-  "role_org_admin": "Org admin",
+  "role_org_admin": "Organization admin",
   "role_lecturer": "Lecturer",
   "role_student": "Student",
   "role_user": "User",
 
   "organization_management": "Organization management",
+  "organization_please_verified": "Please verify organization to continue this action",
   "organization_create": "Create organization",
   "organization_update": "Update organization",
   "organization_email": "Email",
@@ -428,6 +430,7 @@
 
   "user_management": "User management",
   "user_create": "Create user",
+  "user_assign_to_organization": "Assign to organization",
   "user_update": "Update user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
