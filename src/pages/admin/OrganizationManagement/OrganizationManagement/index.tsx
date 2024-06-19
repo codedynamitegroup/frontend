@@ -16,42 +16,38 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { ERoleName } from "models/authService/entity/role";
-import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { OrganizationService } from "services/authService/OrganizationService";
+import { clearOrganizations, setOrganizations, setLoading } from "reduxes/authService/organization";
 
-interface UserManagementProps {
+interface OrganizationManagementProps {
   id: string;
-  userId: string;
+  organizationId: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  description: string;
   phone: string;
-  avatarUrl: string;
   address: string;
-  dob: Date;
-  lastLogin: string;
-  isLinkedWithGoogle: boolean;
-  isLinkedWithMicrosoft: boolean;
-  createdAt: Date;
-  roleName: string;
+  apiKey: string;
+  moodleUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  isVerified: boolean;
   isDeleted: boolean;
 }
 
-const UserManagement = () => {
+const OrganizationManagement = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -71,21 +67,21 @@ const UserManagement = () => {
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
+  const organizationState = useSelector((state: RootState) => state.organization);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [deletedUserId, setDeletedUserId] = useState<string>("");
+  const [deletedOrganizationId, setDeletedOrganizationId] = useState<string>("");
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
   const onDeleteConfirmDelete = async () => {
-    UserService.deleteUserById(deletedUserId)
+    UserService.deleteUserById(deletedOrganizationId)
       .then((res) => {
-        dispatch(setSuccessMess("Delete user successfully"));
-        dispatch(clearUsers());
+        dispatch(setSuccessMess("Delete organization successfully"));
+        dispatch(clearOrganizations());
       })
       .catch((error) => {
         console.error("error", error);
-        dispatch(setErrorMess("Delete user failed"));
+        dispatch(setErrorMess("Delete organization failed"));
       })
       .finally(() => {
         setIsOpenConfirmDelete(false);
@@ -93,7 +89,7 @@ const UserManagement = () => {
   };
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleGetUsers = useCallback(
+  const handleGetOrganizations = useCallback(
     async ({
       searchName,
       pageNo = 0,
@@ -105,12 +101,12 @@ const UserManagement = () => {
     }) => {
       dispatch(setLoading(true));
       try {
-        const getUsersResponse = await UserService.getAllUser({
+        const getOrganizationsResponse = await OrganizationService.getAllOrganizations({
           searchName,
           pageNo,
           pageSize
         });
-        dispatch(setUsers(getUsersResponse));
+        dispatch(setOrganizations(getOrganizationsResponse));
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -126,22 +122,22 @@ const UserManagement = () => {
 
   const handleSearchChange = useCallback(
     (value: string) => {
-      handleGetUsers({
+      handleGetOrganizations({
         searchName: value
       });
     },
-    [handleGetUsers]
+    [handleGetOrganizations]
   );
 
   const tableHeading: GridColDef[] = [
     {
       field: "email",
-      headerName: "Email",
-      flex: 3,
+      headerName: t("organization_email"),
+      flex: 2,
       renderHeader: () => {
         return (
           <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            Email
+            {t("organization_email")}
           </Heading5>
         );
       },
@@ -154,15 +150,6 @@ const UserManagement = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <Avatar
-              sx={{
-                bgcolor: `${generateHSLColorByRandomText(`${params.row.firstName} ${params.row.lastName}`)}`
-              }}
-              alt={params.row.email}
-              src={params.row.avatarUrl}
-            >
-              {params.row.firstName.charAt(0)}
-            </Avatar>
             <ParagraphSmall width={"auto"} fontWeight={500}>
               {params.row.email}
             </ParagraphSmall>
@@ -171,52 +158,63 @@ const UserManagement = () => {
       }
     },
     {
-      field: "fullname",
-      headerName: t("common_fullname"),
+      field: "name",
+      headerName: t("organization_name"),
       flex: 2,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_fullname")}
+            {t("organization_name")}
           </Heading5>
         );
       },
       renderCell: (params) => {
-        return (
-          <ParagraphSmall width={"auto"}>
-            {params.row.firstName} {params.row.lastName}
-          </ParagraphSmall>
-        );
+        return <ParagraphSmall width={"auto"}>{params.row.name}</ParagraphSmall>;
       }
     },
     {
-      field: "lastLogin",
-      headerName: t("common_last_login"),
+      field: "phone",
+      headerName: t("organization_phone"),
       flex: 1,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_last_login")}
+            {t("organization_phone")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return <ParagraphSmall width={"auto"}>{params.row.phone}</ParagraphSmall>;
+      }
+    },
+    {
+      field: "updatedAt",
+      headerName: t("common_updated_at"),
+      flex: 1,
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_updated_at")}
           </Heading5>
         );
       },
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
+            {standardlizeUTCStringToLocaleString(params.row.updatedAt as string, currentLang)}
           </ParagraphSmall>
         );
       }
     },
     {
-      field: "isDeleted",
-      headerName: t("common_is_blocked"),
+      field: "isVerified",
+      headerName: t("common_is_verified"),
       flex: 0.6,
       align: "center",
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_is_blocked")}
+            {t("common_is_verified")}
           </Heading5>
         );
       },
@@ -224,8 +222,7 @@ const UserManagement = () => {
         return (
           <Checkbox
             disableRipple
-            checked={params.row.isDeleted === true ? true : false}
-            color={params.row.isDeleted ? "success" : "error"}
+            checked={params.row.isVerified === true ? true : false}
             sx={{
               "&:hover": {
                 backgroundColor: "transparent !important",
@@ -234,21 +231,6 @@ const UserManagement = () => {
             }}
           />
         );
-      }
-    },
-    {
-      field: "roleName",
-      headerName: t("common_role"),
-      flex: 1,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_role")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.roleName}</ParagraphSmall>;
       }
     },
     {
@@ -269,16 +251,22 @@ const UserManagement = () => {
             icon={<EditIcon />}
             label='Edit'
             onClick={() => {
-              navigate(routes.admin.users.edit.details.replace(":userId", params.row.userId), {
-                state: {
-                  contestName: params.row.name
+              navigate(
+                routes.admin.organizations.edit.details.replace(
+                  ":organizationId",
+                  params.row.organizationId
+                ),
+                {
+                  state: {
+                    contestName: params.row.name
+                  }
                 }
-              });
+              );
             }}
           />,
           <GridActionsCellItem
             onClick={() => {
-              setDeletedUserId(params.row.userId);
+              setDeletedOrganizationId(params.row.userId);
               setIsOpenConfirmDelete(true);
             }}
             icon={<DeleteIcon />}
@@ -291,7 +279,10 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
+  const totalElement = useMemo(
+    () => organizationState.organizations.totalItems || 0,
+    [organizationState.organizations]
+  );
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -301,68 +292,46 @@ const UserManagement = () => {
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     setPage(model.page);
     setPageSize(model.pageSize);
-    handleGetUsers({
+    handleGetOrganizations({
       searchName: searchValue,
       pageNo: model.page,
       pageSize: model.pageSize
     });
   };
 
-  const roleMapping = useMemo(
-    () => [
-      { name: ERoleName.ADMIN, label: t("role_system_admin") },
-      { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
-      { name: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
-      { name: ERoleName.STUDENT_MOODLE, label: t("role_student") }
-    ],
-    [t]
-  );
-
-  const mappingRole = useCallback(
-    (user: User) => {
-      const matchedRole = roleMapping.find((role) =>
-        user?.roles.some((userRole) => userRole?.name === role.name)
-      );
-      return matchedRole ? matchedRole.label : t("role_user");
-    },
-    [roleMapping, t]
-  );
-
-  const userListTable: UserManagementProps[] = useMemo(
+  const organizationListTable: OrganizationManagementProps[] = useMemo(
     () =>
-      userState.users.users.map((user) => {
+      organizationState.organizations.organizations.map((organization) => {
         return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
+          id: organization.organizationId,
+          organizationId: organization.organizationId,
+          email: organization.email,
+          name: organization.name,
+          description: organization.description,
+          phone: organization.phone,
+          address: organization.address,
+          apiKey: organization.apiKey,
+          moodleUrl: organization.moodleUrl,
+          createdAt: organization.createdAt,
+          updatedAt: organization.updatedAt,
+          isDeleted: organization.isDeleted,
+          isVerified: organization.isVerified
         };
       }),
-    [mappingRole, userState.users]
+    [organizationState.organizations]
   );
 
   const handleApplyFilter = useCallback(() => {
-    handleGetUsers({
+    handleGetOrganizations({
       searchName: searchValue
     });
-  }, [handleGetUsers, searchValue]);
+  }, [handleGetOrganizations, searchValue]);
 
   const handleCancelFilter = useCallback(() => {
-    handleGetUsers({
+    handleGetOrganizations({
       searchName: searchValue
     });
-  }, [handleGetUsers, searchValue]);
+  }, [handleGetOrganizations, searchValue]);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -370,15 +339,16 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      if (organizationState.organizations.organizations.length > 0) return;
       dispatch(setInititalLoading(true));
-      await handleGetUsers({
+      await handleGetOrganizations({
         searchName: ""
       });
       dispatch(setInititalLoading(false));
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.users.users]);
+  }, [dispatch, handleGetOrganizations, organizationState.organizations.organizations]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -389,7 +359,7 @@ const UserManagement = () => {
       <ConfirmDelete
         isOpen={isOpenConfirmDelete}
         title={"Confirm delete"}
-        description='Are you sure you want to delete this user?'
+        description='Are you sure you want to delete this organization?'
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
@@ -402,7 +372,6 @@ const UserManagement = () => {
           }
         }}
       >
-        <Divider />
         <Grid
           container
           spacing={2}
@@ -411,17 +380,19 @@ const UserManagement = () => {
           }}
         >
           <Grid item xs={12}>
-            <Heading1 translate-key='user_management'>{t("user_management")}</Heading1>
+            <Heading1 translate-key='organization_management'>
+              {t("organization_management")}
+            </Heading1>
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={organizationState.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
-              createBtnText={t("user_create")}
+              createBtnText={t("organization_create")}
               onClickCreate={() => {
-                navigate(routes.admin.users.create);
+                navigate(routes.admin.organizations.create);
               }}
               numOfResults={totalElement}
               filterKeyList={[
@@ -457,8 +428,8 @@ const UserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
-              dataList={userListTable}
+              loading={organizationState.isLoading}
+              dataList={organizationListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
               dataGridToolBar={dataGridToolbar}
@@ -489,4 +460,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default OrganizationManagement;

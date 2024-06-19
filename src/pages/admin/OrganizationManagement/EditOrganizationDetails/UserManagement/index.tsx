@@ -19,21 +19,20 @@ import i18next from "i18next";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
+import { useNavigate, useParams } from "react-router-dom";
+import { setLoading, setOrgUsers } from "reduxes/authService/user";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { setErrorMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
-import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
-interface UserManagementProps {
+interface OrganizationUserManagementProps {
   id: string;
   userId: string;
   email: string;
@@ -51,10 +50,12 @@ interface UserManagementProps {
   isDeleted: boolean;
 }
 
-const UserManagement = () => {
+const OrganizationUserManagement = () => {
+  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
+  const { organizationId } = useParams<{ organizationId: string }>();
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
@@ -72,25 +73,7 @@ const UserManagement = () => {
   ]);
 
   const userState = useSelector((state: RootState) => state.user);
-  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [deletedUserId, setDeletedUserId] = useState<string>("");
-  const onCancelConfirmDelete = () => {
-    setIsOpenConfirmDelete(false);
-  };
-  const onDeleteConfirmDelete = async () => {
-    UserService.deleteUserById(deletedUserId)
-      .then((res) => {
-        dispatch(setSuccessMess("Delete user successfully"));
-        dispatch(clearUsers());
-      })
-      .catch((error) => {
-        console.error("error", error);
-        dispatch(setErrorMess("Delete user failed"));
-      })
-      .finally(() => {
-        setIsOpenConfirmDelete(false);
-      });
-  };
+
   const dispatch = useDispatch<AppDispatch>();
 
   const handleGetUsers = useCallback(
@@ -103,14 +86,16 @@ const UserManagement = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
+      if (!organizationId) return;
       dispatch(setLoading(true));
       try {
-        const getUsersResponse = await UserService.getAllUser({
-          searchName,
-          pageNo,
-          pageSize
+        const getUsersResponse = await UserService.getAllUserByOrganization({
+          searchName: searchName,
+          pageNo: pageNo,
+          pageSize: pageSize,
+          id: organizationId
         });
-        dispatch(setUsers(getUsersResponse));
+        dispatch(setOrgUsers(getUsersResponse));
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -121,7 +106,7 @@ const UserManagement = () => {
         dispatch(setLoading(false));
       }
     },
-    [dispatch, t]
+    [dispatch, organizationId, t]
   );
 
   const handleSearchChange = useCallback(
@@ -137,10 +122,10 @@ const UserManagement = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 3,
+      flex: 2,
       renderHeader: () => {
         return (
-          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
             Email
           </Heading5>
         );
@@ -269,21 +254,14 @@ const UserManagement = () => {
             icon={<EditIcon />}
             label='Edit'
             onClick={() => {
-              navigate(routes.admin.users.edit.details.replace(":userId", params.row.userId), {
+              navigate(routes.org_admin.users.edit.details.replace(":userId", params.row.userId), {
                 state: {
                   contestName: params.row.name
                 }
               });
             }}
           />,
-          <GridActionsCellItem
-            onClick={() => {
-              setDeletedUserId(params.row.userId);
-              setIsOpenConfirmDelete(true);
-            }}
-            icon={<DeleteIcon />}
-            label='Delete'
-          />
+          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
         ];
       }
     }
@@ -291,7 +269,7 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
+  const totalElement = useMemo(() => userState.org_users.totalItems || 0, [userState.org_users]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -328,9 +306,9 @@ const UserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: UserManagementProps[] = useMemo(
+  const userListTable: OrganizationUserManagementProps[] = useMemo(
     () =>
-      userState.users.users.map((user) => {
+      userState.org_users.users.map((user) => {
         return {
           id: user.userId,
           userId: user.userId,
@@ -349,7 +327,7 @@ const UserManagement = () => {
           isDeleted: user.isDeleted
         };
       }),
-    [mappingRole, userState.users]
+    [mappingRole, userState.org_users]
   );
 
   const handleApplyFilter = useCallback(() => {
@@ -378,7 +356,7 @@ const UserManagement = () => {
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.users.users]);
+  }, [dispatch, handleGetUsers, userState.org_users.users]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -386,13 +364,6 @@ const UserManagement = () => {
 
   return (
     <>
-      <ConfirmDelete
-        isOpen={isOpenConfirmDelete}
-        title={"Confirm delete"}
-        description='Are you sure you want to delete this user?'
-        onCancel={onCancelConfirmDelete}
-        onDelete={onDeleteConfirmDelete}
-      />
       <Card
         sx={{
           margin: "20px",
@@ -402,6 +373,13 @@ const UserManagement = () => {
           }
         }}
       >
+        <Box className={classes.breadcump} ref={breadcumpRef}>
+          <Box id={classes.breadcumpWrapper}>
+            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
+              {t("user_detail_account_management")}
+            </ParagraphSmall>
+          </Box>
+        </Box>
         <Divider />
         <Grid
           container
@@ -419,10 +397,6 @@ const UserManagement = () => {
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
-              createBtnText={t("user_create")}
-              onClickCreate={() => {
-                navigate(routes.admin.users.create);
-              }}
               numOfResults={totalElement}
               filterKeyList={[
                 {
@@ -489,4 +463,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default OrganizationUserManagement;

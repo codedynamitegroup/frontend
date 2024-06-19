@@ -1,5 +1,5 @@
 {
-  "common_is_blocked": "Đã khóa",
+  "common_is_blocked": "Tình trạng khóa",
   "common_organization": "Tổ chức",
   "common_please_login": "Vui lòng đăng nhập",
   "common_please_login_to_continue": "Vui lòng đăng nhập để tiếp tục",
@@ -403,6 +403,21 @@
   "role_lecturer": "Giảng viên",
   "role_student": "Sinh viên",
   "role_user": "Người dùng",
+
+  "organization_management": "Quản lý tổ chức",
+  "organization_create": "Tạo tổ chức",
+  "organization_update": "Cập nhật tổ chức",
+  "organization_email": "Email",
+  "organization_phone": "Số điện loại",
+  "organization_address": "Địa chỉ",
+  "organization_name": "Tên tổ chức",
+  "organization_information": "Thông tin tổ chức",
+  "organization_list_users": "Danh sách người dùng của tổ chức",
+  "organization_url": "Đường dẫn tổ chức",
+
+  "common_updated_at": "Cập nhật lần cuối lúc",
+  "common_updated_by": "Cập nhật bởi",
+  "common_is_verified": "Tình trạng xác thực",
 
   "user_management": "Quản lý người dùng",
   "user_create": "Tạo người dùng",
