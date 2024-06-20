@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -30,7 +30,6 @@ import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import classes from "./styles.module.scss";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -454,22 +453,13 @@ const ContestManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
+      <Grid
+        container
+        spacing={2}
         sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
+          padding: "0px 20px 20px 20px"
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
-              {t("contest_management_title")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
         <Divider />
         <Grid
           container
@@ -557,7 +547,7 @@ const ContestManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Grid>
     </>
   );
 };

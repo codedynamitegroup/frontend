@@ -11,7 +11,6 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
 import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -446,6 +445,7 @@ const CourseCertificateDetail = () => {
                     path={"review"}
                     element={
                       <CertificateCourseReviews
+                        certificateCourseDetails={certificateCourseDetails}
                         certificateCourseId={courseId}
                         dispatch={dispatch}
                       />

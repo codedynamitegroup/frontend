@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import JoyButton from "@mui/joy/Button";
-import { Box, Card, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
 import ErrorMessage from "components/text/ErrorMessage";
@@ -134,37 +134,20 @@ const OrgAdminCreateContest = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+      <Box>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.org_admin.contest.root)}
-              translation-key='contest_management_title'
-            >
-              {t("contest_management_title")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_create'>
-              {t("contest_create")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.org_admin.contest.root, label: t("contest_management_title") }
+              ]}
+              lastBreadCrumbLabel={t("contest_create")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0 20px"
           }}
         >
           <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
@@ -315,7 +298,7 @@ const OrgAdminCreateContest = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

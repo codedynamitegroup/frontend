@@ -6,6 +6,46 @@ import api from "utils/api";
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class SharedSolutionService {
+  static async editComment(commentId: string, content: string) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).put(API.CODE_ASSESSMENT.SHARED_SOLUTION.COMMENT.EDIT_OR_DELETE.replace(":id", commentId), {
+        content
+      });
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to edit comment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async deleteComment(commentId: string) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).delete(
+        API.CODE_ASSESSMENT.SHARED_SOLUTION.COMMENT.EDIT_OR_DELETE.replace(":id", commentId)
+      );
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to delete comment", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async editSharedSolution(
     sharedSolutionId: string,
     content: string,
@@ -48,7 +88,7 @@ export class SharedSolutionService {
 
       return responses.map((i) => (i ? i.data : i));
     } catch (error: any) {
-      console.error("Failed to fetch detail solution", error);
+      console.error("Failed to edit solution", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -66,7 +106,7 @@ export class SharedSolutionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch detail solution", error);
+      console.error("Failed to delete solution", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -94,7 +134,7 @@ export class SharedSolutionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch detail solution", error);
+      console.error("Failed to create solution", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -123,7 +163,7 @@ export class SharedSolutionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch detail solution", error);
+      console.error("Failed to fetch comment", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
@@ -152,7 +192,7 @@ export class SharedSolutionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to fetch detail solution", error);
+      console.error("Failed to create comment", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
