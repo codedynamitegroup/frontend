@@ -10,11 +10,11 @@
   }
 }
 .btnBlue {
-  background: var(--cimigo-blue);
-  border: 1px solid transparent;
-  color: white;
+  background: var(--blue-3) !important;
+  border: 1px solid transparent !important;
+  color: white !important;
   &:hover {
-    background: var(--cimigo-blue-light);
+    background: var(--blue-3) !important;
   }
 }
 .btnRed {
@@ -39,10 +39,10 @@
   font-weight: 600;
 }
 .btnGreen {
-  background: #7c9911;
-  border: none;
-  color: white;
+  background: var(--green-600) !important;
+  border: none !important;
+  color: white !important;
   &:hover {
-    background: #7c9911;
+    background: var(--green-500) !important;
   }
 }

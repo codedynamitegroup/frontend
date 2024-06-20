@@ -50,7 +50,7 @@ const ConfirmAdd = memo((props: ConfirmDeleteProps) => {
           <Buttons
             children={t("common_add")}
             translation-key='common_add'
-            btnType='Blue'
+            btnType='Green'
             padding='11px 16px'
             onClick={onAdd}
           />
