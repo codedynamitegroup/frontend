@@ -1,19 +1,24 @@
 import { Box, Grid, Stack, Divider } from "@mui/material";
+import FlagIcon from "@mui/icons-material/Flag";
+import Button from "@mui/joy/Button";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useTranslation } from "react-i18next";
-import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { useTranslation } from "react-i18next";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
+import { useDispatch } from "react-redux";
+import { setAnswered, setFlag } from "reduxes/TakeExam";
 
-interface PreviewMultipleChoiceProps {
-  questionIndex: number;
-  questionSubmitContent?: any;
-  questionTrueFalse: MultiChoiceQuestion;
+interface Props {
+  page: number;
+  questionTrueFalseQuestion: MultiChoiceQuestion;
+  questionState: any;
 }
 
-const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
-  const { questionIndex, questionSubmitContent, questionTrueFalse } = props;
+const TrueFalseExamQuestion = (props: Props) => {
   const { t } = useTranslation();
+  const { page, questionState, questionTrueFalseQuestion } = props;
   const answerList = [
     {
       value: "true",
@@ -24,45 +29,51 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
       label: t("common_false")
     }
   ];
+  const dispatch = useDispatch();
+  const isFlagged = questionState?.flag;
+
+  const flagQuestionHandle = () => {
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionTrueFalseQuestion.question.id, flag: !isFlagged }));
+  };
+
+  const handleRadioChange = (value: string) => {
+    dispatch(
+      setAnswered({ id: questionTrueFalseQuestion.question.id, content: value, answered: true })
+    );
+  };
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <Heading4>{`${t("common_question")} ${questionIndex + 1}`}</Heading4>
-          {/* <Button
+          <Heading4>{`${t("common_question")} ${page + 1}`}</Heading4>
+          <Button
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
             onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
-          </Button> */}
+          </Button>
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
-            }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
-                ? t("common_answered")
-                : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
               {t("common_score_can_achieve")}
               {": "}
-              {questionTrueFalse.question.defaultMark}
+              {questionTrueFalseQuestion.question.defaultMark}
             </ParagraphBody>
           </Box>
         </Stack>
@@ -83,10 +94,10 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
           color={"#212121"}
           lineHeight={"1.5"}
           dangerouslySetInnerHTML={{
-            __html: questionTrueFalse.question.questionText
+            __html: questionTrueFalseQuestion.question.questionText
           }}
         />
-        {Boolean(questionTrueFalse.showStandardInstructions) && (
+        {Boolean(questionTrueFalseQuestion.showStandardInstructions) && (
           <ParagraphBody
             fontSize={".875rem"}
             textAlign={"left"}
@@ -98,15 +109,14 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
         )}
         <JoyRadioGroup
           color='primary'
-          onChange={() => {}}
-          value={questionSubmitContent?.content}
+          value={questionState?.content}
+          onChange={handleRadioChange}
           values={answerList}
           orientation='vertical'
           size='md'
           fontSize='.8rem'
           fontWeight='400'
           overlay
-          disabled
         />
       </Grid>
     </Grid>

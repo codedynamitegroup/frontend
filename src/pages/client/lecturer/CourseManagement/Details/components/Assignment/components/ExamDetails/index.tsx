@@ -181,7 +181,7 @@ const LecturerCourseExamDetails = () => {
     };
     dispatch(setExamData(examStateData));
     navigate(
-      routes.lecturer.exam.review
+      routes.lecturer.exam.take
         .replace(":courseId", courseId || examState.examDetail.courseId)
         .replace(":examId", examId || examState.examDetail.id)
     );
