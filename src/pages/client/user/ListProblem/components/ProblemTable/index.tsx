@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useAppSelector } from "hooks";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { PaginationList } from "models/codeAssessmentService/entity/PaginationList";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,7 +24,6 @@ import useAuth from "hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import { PaginationList } from "models/general";
 
 export default function ProblemTable() {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ export default function ProblemTable() {
     currentPage: 0,
     totalItems: 0,
     totalPages: 0,
-    items: []
+    codeQuestions: []
   });
   const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -100,7 +100,7 @@ export default function ProblemTable() {
       </Heading6>
     );
   };
-  const data = codeQuestionList.items.map((value) => ({
+  const data = codeQuestionList.codeQuestions.map((value) => ({
     id: value.id,
     name: value.name,
     status: renderStatus(value.done === true ? 1 : 0),
