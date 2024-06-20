@@ -360,6 +360,8 @@ export default function TakeExam() {
         clearInterval(checkExist);
       }
     }, 100); // check every 100ms
+
+    return () => clearInterval(checkExist);
   }, [location]);
 
   return (
