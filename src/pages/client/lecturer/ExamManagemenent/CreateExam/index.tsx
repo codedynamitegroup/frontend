@@ -355,15 +355,16 @@ export default function ExamCreated() {
   function handleClick() {
     setLoading(true);
     submitHandler();
-    navigate(
-      routes.lecturer.course.assignment.replace(
-        ":courseId",
-        courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
-      )
-    );
+
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+      navigate(
+        routes.lecturer.course.assignment.replace(
+          ":courseId",
+          courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
+        )
+      );
+    }, 3000);
   }
 
   const handleDrawerOpen = () => {

@@ -225,6 +225,8 @@ const CreateEssayQuestion = (props: Props) => {
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
+  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
+  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
   const user: User = useSelector(selectCurrentUser);
@@ -284,7 +286,11 @@ const CreateEssayQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        if (isQuestionBank)
+        if (isAdminQuestionBank)
+          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else if (isOrgAdminQuestionBank)
+          navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
