@@ -166,7 +166,7 @@ export default function Lessons() {
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch, lessonId]
@@ -189,7 +189,7 @@ export default function Lessons() {
           }
         }
       } catch (error: any) {
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
         navigate(
           routes.user.course_certificate.detail.introduction
             .replace(":courseId", id)
@@ -197,7 +197,7 @@ export default function Lessons() {
         );
       }
     },
-    [dispatch, navigate]
+    [navigate]
   );
 
   const handleMarkViewedChapterResourceById = useCallback(async () => {
