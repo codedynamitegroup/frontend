@@ -1098,6 +1098,10 @@
   "youtube_video_url": "Youtube video URL",
   "enter_youtube_video_url": "Enter youtube video URL",
   "edit_certificate_course_title": "Edit certificate course",
+  "create_certificate_course_success": "Create certificate course successfully",
+  "edit_certificate_course_success": "Edit certificate course successfully",
+  "edit_certificate_course_error": "Edit certificate course failed",
+  "create_certificate_course_failed": "Create certificate course failed",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

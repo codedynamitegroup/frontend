@@ -59,6 +59,9 @@ import CodeQuestionDialog from "../SelectCodeQuestionDialog";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { CreateCertificateCourseWithAllAttributeCommand } from "models/coreService/create/CreateCertificateCourseCommand";
 import { useNavigate } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
+import { di } from "@fullcalendar/core/internal-common";
 
 interface FormData {
   name: string;
@@ -111,6 +114,7 @@ interface ChapterResourceFieldArrayPropsData {
 }
 
 const CreateCertificateCourse = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [topicList, setTopicList] = useState<TopicEntity[]>([]);
@@ -263,17 +267,19 @@ const CreateCertificateCourse = () => {
       })
     };
 
-    try {
-      const response =
-        await CertificateCourseService.createCertificateCourses(newCertificateCourse);
-      if (response.status === 200) {
-        console.log("response", response);
-      }
-      setSubmitLoading(false);
-    } catch (error) {
-      console.error("error", error);
-      setSubmitLoading(false);
-    }
+    CertificateCourseService.createCertificateCourses(newCertificateCourse)
+      .then((response) => {
+        setSubmitLoading(false);
+        dispatch(setSuccessMess(t("create_certificate_course_success")));
+        navigate(routes.admin.certificate.root);
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess(t("create_certificate_course_failed")));
+      })
+      .finally(() => {
+        setSubmitLoading(false);
+      });
   };
 
   return (
