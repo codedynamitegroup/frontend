@@ -175,17 +175,7 @@ const EditUserDetails = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -194,10 +184,9 @@ const EditUserDetails = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='common_account_info'>{t("common_account_info")}</Heading1>
@@ -451,7 +440,7 @@ const EditUserDetails = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

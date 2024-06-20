@@ -80,3 +80,9 @@ export interface ResetPasswordUserRequest {
   password: string;
   otp: string;
 }
+
+export enum EBelongToOrg {
+  ALL = "ALL",
+  BELONG_TO_ORGANIZATION = "BELONG_TO_ORGANIZATION",
+  NOT_BELONG_TO_ORGANIZATION = "NOT_BELONG_TO_ORGANIZATION"
+}

@@ -222,8 +222,6 @@ const CreateCertificateCourse = () => {
       setValue(`chapters.${idx}.no`, idx);
     });
   };
-  console.log("error:", errors);
-  console.log("fields", fields);
 
   const submitHandler = async (data: any) => {
     console.log("data", data);

@@ -380,15 +380,7 @@ const OrganizationManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
+      <Box>
         <Grid
           container
           spacing={2}
@@ -472,7 +464,7 @@ const OrganizationManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };
