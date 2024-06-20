@@ -166,7 +166,7 @@ export default function Lessons() {
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch, lessonId]
@@ -181,7 +181,6 @@ export default function Lessons() {
           const certificateCourse = getCertificateCourseByIdResponse as CertificateCourseEntity;
           // Check if user is registered to the course
           if (certificateCourse.isRegistered !== true) {
-            dispatch(setErrorMess(t("not_registered_certificate_course_message")));
             navigate(
               routes.user.course_certificate.detail.introduction
                 .replace(":courseId", id)
@@ -190,7 +189,7 @@ export default function Lessons() {
           }
         }
       } catch (error: any) {
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
         navigate(
           routes.user.course_certificate.detail.introduction
             .replace(":courseId", id)
@@ -198,7 +197,7 @@ export default function Lessons() {
         );
       }
     },
-    [dispatch, navigate, t]
+    [navigate]
   );
 
   const handleMarkViewedChapterResourceById = useCallback(async () => {
