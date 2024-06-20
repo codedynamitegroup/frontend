@@ -67,6 +67,7 @@ import upcomingContest from "assets/img/admin/upcomming-contest.svg";
 import contestDashboard from "assets/img/admin/contest-dashboard.svg";
 
 import organizationIc from "assets/img/admin/organization.svg";
+import contactUsIc from "assets/img/contact_us.jpg";
 
 const images = {
   course: {
@@ -97,6 +98,7 @@ const images = {
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo,
   error: { notFoundError, forbiddenError },
+  contactUsIc,
   admin: {
     contest,
     adminManagement,

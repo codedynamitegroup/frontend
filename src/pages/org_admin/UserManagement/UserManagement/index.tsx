@@ -52,7 +52,6 @@ interface UserManagementProps {
 }
 
 const UserManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -272,8 +271,7 @@ const UserManagement = () => {
                 }
               });
             }}
-          />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          />
         ];
       }
     }
@@ -300,7 +298,6 @@ const UserManagement = () => {
 
   const roleMapping = useMemo(
     () => [
-      { name: ERoleName.ADMIN, label: t("role_system_admin") },
       { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
       { name: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
       { name: ERoleName.STUDENT_MOODLE, label: t("role_student") }
@@ -377,23 +374,7 @@ const UserManagement = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
-        <Divider />
+      <Box>
         <Grid
           container
           spacing={2}
@@ -471,7 +452,7 @@ const UserManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };

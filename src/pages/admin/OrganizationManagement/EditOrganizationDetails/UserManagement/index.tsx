@@ -414,11 +414,8 @@ const OrganizationUserManagement = () => {
     UserService.unassignedUserToOrganization(unassignedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Unassigned user successfully"));
-        setUserState({
-          currentPage: 0,
-          totalItems: 0,
-          totalPages: 0,
-          items: []
+        handleGetUsers({
+          searchName: searchValue
         });
       })
       .catch((error) => {
