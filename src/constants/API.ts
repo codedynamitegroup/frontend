@@ -9,7 +9,8 @@ export const API = {
       DELETE_BY_ID: "/core/certificate-courses/:id",
       REGISTER_BY_ID: "/core/certificate-courses/:id/register",
       GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics",
-      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all"
+      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all",
+      CREATE_FULL: "core/certificate-courses/create"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
@@ -53,6 +54,7 @@ export const API = {
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
       QUESTION_DETAIL: "/core/questions/detail",
+      GET_ALL_WITH_PAGINATION: "/core/questions/admin/all",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",

@@ -1083,5 +1083,10 @@
   "enter_chapter_resource_title": "Enter chapter resource title",
   "enter_certificate_course_name": "Enter certificate course name",
   "enter_certificate_course_description_title": "Enter certificate course description",
-  "add_chapter_resource": "Add chapter resource"
+  "add_chapter_resource": "Add chapter resource",
+  "certificate_course_list": "Certificate course list",
+  "choose_code_question": "Choose code question",
+  "choose_code_question_title": "Chosen code question: ",
+  "youtube_video_url": "Youtube video URL",
+  "enter_youtube_video_url": "Enter youtube video URL"
 }
