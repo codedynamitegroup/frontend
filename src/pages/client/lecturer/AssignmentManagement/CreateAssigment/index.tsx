@@ -392,6 +392,16 @@ export default function AssignmentCreated() {
       setValue("wordLimit", assignment.wordLimit);
       setValue("maxUploadedFile", assignment.maxUploadFiles);
       setValue("maxFileSize", assignment.maxFileSize);
+      if (assignment.type === "BOTH") {
+        setTextSubmission(true);
+        setFileSubmission(true);
+      } else if (assignment.type === "TEXT_ONLINE") {
+        setTextSubmission(true);
+        setFileSubmission(false);
+      } else {
+        setTextSubmission(false);
+        setFileSubmission(true);
+      }
       setExtFiles(
         assignment?.introAttachments.map((file) => {
           let f: File = new File([""], file.fileName, {

@@ -3,5 +3,5 @@ export interface UpdateSubmissionAssignment {
   grade?: number | null;
   content?: string | null;
   feedback?: string | null;
-  timemodified: string;
+  timemodified?: string | null;
 }

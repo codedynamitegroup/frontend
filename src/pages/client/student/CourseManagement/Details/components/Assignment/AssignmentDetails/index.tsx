@@ -60,7 +60,7 @@ const StudentCourseAssignmentDetails = () => {
 
   const handleGetSubmissionAssignment = async (userId: string, assignmentId: string) => {
     try {
-      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentByUserIdAsignmentId(
         userId,
         assignmentId
       );
@@ -182,14 +182,18 @@ const StudentCourseAssignmentDetails = () => {
         : "-"
     }
   ];
+  console.log(submissionAssignmentState.submissionAssignmentDetails);
 
-  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles) {
+  if (
+    submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles &&
+    submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles.length !== 0
+  ) {
     columns.push({
       header: t("course_student_assignment_file_submission"),
       data: (
         <CustomFileList
           files={
-            submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentFiles.map(
+            submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles.map(
               (attachment) => {
                 let f: File = new File([""], attachment.fileName, {
                   lastModified: new Date(attachment.timemodified).getTime()
@@ -210,15 +214,42 @@ const StudentCourseAssignmentDetails = () => {
       )
     });
   }
-  if (submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentOnlineText) {
+  function addAttributesAndStylesToImages(html: string, className: string, css: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Thêm thuộc tính và class vào các thẻ <img>
+    const images = doc.getElementsByTagName("img");
+    for (let img of images) {
+      img.classList.add(className);
+    }
+
+    // Tạo thẻ <style> và thêm CSS
+    const style = doc.createElement("style");
+    style.textContent = css;
+    doc.head.appendChild(style);
+
+    return doc.documentElement.outerHTML;
+  }
+  const css = `
+.custom-class {
+    max-width: 100%;
+    padding: 10px;
+    height: auto;
+}
+`;
+  if (submissionAssignmentState.submissionAssignmentDetails?.content) {
     columns.push({
       header: t("course_student_assignment_online_text_submission"),
       data: (
         <div
           dangerouslySetInnerHTML={{
             __html:
-              submissionAssignmentState.submissionAssignmentDetails.submissionAssignmentOnlineText
-                .content || ``
+              addAttributesAndStylesToImages(
+                submissionAssignmentState.submissionAssignmentDetails.content,
+                "custom-class",
+                css
+              ) || ``
           }}
         ></div>
       )
@@ -230,15 +261,31 @@ const StudentCourseAssignmentDetails = () => {
       header: t("course_student_assignment_grade"),
       data:
         (submissionAssignmentState.submissionAssignmentDetails?.isGraded &&
-          submissionAssignmentState.submissionAssignmentDetails?.grade.toFixed(2)) ||
+          submissionAssignmentState.submissionAssignmentDetails?.submissionGrade.grade
+            .toFixed(2)
+            .toString() +
+            " / " +
+            assignmentState.assignmentDetails?.maxScore.toFixed(2).toString()) ||
         "-"
+    },
+    {
+      header: t("course_student_assignment_grade_on"),
+      data: (
+        <div>
+          {submissionAssignmentState.submissionAssignmentDetails?.submissionGrade
+            ? dayjs(
+                submissionAssignmentState.submissionAssignmentDetails?.submissionGrade.timeModified
+              ).format("DD/MM/YYYY hh:mm:ss A")
+            : "-"}
+        </div>
+      )
     },
     {
       header: t("course_student_assignment_feedback"),
       data: (
         <div
           dangerouslySetInnerHTML={{
-            __html: submissionAssignmentState.submissionAssignmentDetails?.content || ``
+            __html: submissionAssignmentState.submissionAssignmentDetails?.feedback || ``
           }}
         ></div>
       )
@@ -332,7 +379,7 @@ const StudentCourseAssignmentDetails = () => {
             files={assignmentState.assignmentDetails?.introAttachments?.map(
               (attachment: AssignmentResourceEntity) => {
                 let f: File = new File([""], attachment.fileName, {
-                  lastModified: attachment.timemodified.getTime()
+                  lastModified: new Date(attachment.timemodified).getTime()
                 });
                 return {
                   id: attachment.id,

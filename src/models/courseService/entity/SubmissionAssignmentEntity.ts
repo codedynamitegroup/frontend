@@ -13,6 +13,7 @@ export interface SubmissionAssignmentEntity {
   submissionGrade: SubmissionGradeEntity;
   grade: number;
   content: string;
+  feedback: string;
   submitTime: Date;
   timemodefied: Date;
 }

@@ -510,6 +510,7 @@
 
   "course_student_assignment_grade": "Grade",
   "course_student_assignment_feedback": "Feedback",
+  "course_student_assignment_grade_on": "Grade on",
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",
@@ -557,6 +558,9 @@
   "course_lecturer_sub_grading": "Grading",
   "course_lecturer_sub_last_submission_time": "Last submission time",
   "course_lecturer_sub_last_grading_time": "Last grading time",
+  "course_lecturer_sub_feedback": "Feedback",
+  "course_lecturer_sub_file_submission": "File submissions",
+  "course_lecturer_sub_online_text": "Online text",
 
   "course_lecturer_submission_online_text": "Online text submission",
   "course_lecturer_submission_file": "File submission",
@@ -578,6 +582,7 @@
   "common_allow_submission_after_end_time": "Allow submission after end time",
 
   "common_submission_type_online_text": "Online text",
+  "common_word_count": "words",
   "common_submission_type_file": "File submissions",
   "common_word_limit": "Word limit",
   "common_max_upload_file": "Maximum number of uploaded files",
@@ -601,6 +606,9 @@
   "common_confirm_deletion": "Confirm Deletion",
   "assignment_management_delete_assignment": "Are you sure you want to delete this assignment?",
   "common_cancel": "Cancel",
+
+  "course_student_assignment_word_limit_notification": "The word limit for this assignment is {{maxWord}} words and you are attempting to submit {{wordCount}} words. Please review your submission and try again.",
+  "course_student_assignment_submit_nothing": "Nothing was submitted",
 
   "exam_management_create_retry_num": "Maximum retry times",
   "exam_management_create_when_time_end": "When due",
