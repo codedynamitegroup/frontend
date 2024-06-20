@@ -20,8 +20,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading } from "reduxes/authService/user";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -32,6 +31,7 @@ import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import useAuth from "hooks/useAuth";
+import { PaginationList } from "models/general";
 
 interface UserManagementProps {
   id: string;
@@ -73,7 +73,13 @@ const UserManagement = () => {
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -96,7 +102,12 @@ const UserManagement = () => {
           pageSize: pageSize,
           id: loggedUser.organization.organizationId
         });
-        dispatch(setUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -270,7 +281,7 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -307,29 +318,29 @@ const UserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: UserManagementProps[] = useMemo(
-    () =>
-      userState.users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
-        };
-      }),
-    [mappingRole, userState.users]
-  );
+  const userListTable: UserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
@@ -349,16 +360,16 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (userState.users.users.length > 0) return;
-      dispatch(setInititalLoading(true));
+      if (userState.items.length > 0) return;
+      dispatch(setLoading(true));
       await handleGetUsers({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      dispatch(setLoading(false));
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.users.users]);
+  }, [dispatch, handleGetUsers, userState.items]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -395,7 +406,7 @@ const UserManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -433,7 +444,7 @@ const UserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
+              loading={isLoadingState.loading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

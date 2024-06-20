@@ -20,7 +20,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -31,6 +30,8 @@ import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setLoading } from "reduxes/Loading";
+import { PaginationList } from "models/general";
 
 interface UserManagementProps {
   id: string;
@@ -71,7 +72,13 @@ const UserManagement = () => {
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedUserId, setDeletedUserId] = useState<string>("");
   const onCancelConfirmDelete = () => {
@@ -81,7 +88,12 @@ const UserManagement = () => {
     UserService.deleteUserById(deletedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Delete user successfully"));
-        dispatch(clearUsers());
+        setUserState({
+          currentPage: 0,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        });
       })
       .catch((error) => {
         console.error("error", error);
@@ -110,7 +122,12 @@ const UserManagement = () => {
           pageNo,
           pageSize
         });
-        dispatch(setUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -317,7 +334,7 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -354,31 +371,30 @@ const UserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: UserManagementProps[] = useMemo(
-    () =>
-      userState.users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted,
-          isBelongToOrganization: !!user.organization
-        };
-      }),
-    [mappingRole, userState.users]
-  );
-
+  const userListTable: UserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted,
+        isBelongToOrganization: user.organization ? true : false
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
       searchName: searchValue
@@ -442,7 +458,7 @@ const UserManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -508,7 +524,7 @@ const UserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
+              loading={isLoadingState.loading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

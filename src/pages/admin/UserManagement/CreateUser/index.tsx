@@ -19,7 +19,6 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { CreatedUserByAdminRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import InputSelect from "components/common/inputs/InputSelect";
@@ -104,7 +103,6 @@ const CreateUser = () => {
         await UserService.createUserByAdmin(createUserByAdminData);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created user successfully"));
-        dispatch(clearUsers());
         navigate(routes.admin.users.root);
       } catch (error: any) {
         console.error("error", error);
