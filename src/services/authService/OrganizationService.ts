@@ -73,6 +73,25 @@ export class OrganizationService {
       });
     }
   }
+  static async createOrganizationByContactUs(createOrganizationRequest: CreateOrganizationRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(
+        `${API.AUTH.ORGANIZATION.CREATE_ORGANIZATION_BY_CONTACT_US}`,
+        createOrganizationRequest
+      );
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async updateOrganizationBySystemAdmin(
     id: string,
     updateOrganizationRequest: UpdateOrganizationBySystemAdminRequest
@@ -85,6 +104,23 @@ export class OrganizationService {
         `${API.AUTH.ORGANIZATION.UPDATE_ORGANIZATION_BY_ID.replace(":id", id)}`,
         updateOrganizationRequest
       );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async deleteOrganizationBySystemAdmin(id: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).delete(`${API.AUTH.ORGANIZATION.DELETE_ORGANIZATION_BY_ID.replace(":id", id)}`);
       if (response.status === 200) {
         return response.data;
       }
