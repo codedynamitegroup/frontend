@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Card, Divider, Grid } from "@mui/material";
+import { Box, Card, Divider, Grid, TextareaAutosize } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -16,11 +16,9 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
-import TextEditor from "components/editor/TextEditor";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
-import { clearOrganizations } from "reduxes/authService/organization";
 
 interface IFormDataType {
   email: string;
@@ -77,7 +75,6 @@ const CreateOrganization = () => {
         await OrganizationService.createOrganization(createOrganizationRequest);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created organization successfully"));
-        dispatch(clearOrganizations());
         navigate(routes.admin.organizations.root);
       } catch (error: any) {
         console.error("error", error);
@@ -94,17 +91,7 @@ const CreateOrganization = () => {
   );
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -115,10 +102,9 @@ const CreateOrganization = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='user_create'>{t("organization_create")}</Heading1>
@@ -175,21 +161,15 @@ const CreateOrganization = () => {
                 </TextTitle>
               </Grid>
               <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
-                <Controller
-                  control={control}
-                  name={"description"}
-                  render={({ field }) => (
-                    <TextEditor
-                      maxLines={6}
-                      roundedBorder
-                      translation-key='common_description'
-                      {...field}
-                    />
-                  )}
+                <TextareaAutosize
+                  aria-label='empty textarea'
+                  translation-key='common_description'
+                  placeholder={t("common_description")}
+                  className={classes.textArea}
+                  minRows={5}
+                  {...register("description")}
+                  aria-invalid={errors.description ? true : false}
                 />
-                {errors.description?.message && (
-                  <ErrorMessage>{errors.description?.message}</ErrorMessage>
-                )}
               </Grid>
             </Grid>
 
@@ -205,7 +185,7 @@ const CreateOrganization = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

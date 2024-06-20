@@ -1,6 +1,8 @@
 import { API } from "constants/API";
 import {
+  AssignUserToOrganizationRequest,
   CreatedUserByAdminRequest,
+  EBelongToOrg,
   LoginRequest,
   RegisteredRequest,
   ResetPasswordUserRequest,
@@ -172,6 +174,46 @@ export class UserService {
       });
     }
   }
+  static async assignUserToOrganization(
+    userId: string,
+    assignUserToOrganizationRequest: AssignUserToOrganizationRequest
+  ) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(
+        `${API.AUTH.USER.ASSIGN_USER_TO_ORGANIZATION.replace(":id", userId)}`,
+        assignUserToOrganizationRequest
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async unassignedUserToOrganization(userId: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.AUTH.USER.UNASSIGNED_USER_TO_ORGANIZATION.replace(":id", userId)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async updateProfileUser(updateProfileUserRequest: UpdateProfileUserRequest) {
     try {
       const response = await api({
@@ -203,13 +245,10 @@ export class UserService {
       const response = await api({
         baseURL: authServiceApiUrl,
         isAuthorization: true
-      }).put(`${API.AUTH.USER.UPDATE_USER_BY_ADMIN.replace(":id", userId)}`, {
-        firstName: updateUserByAdminRequest.firstName,
-        lastName: updateUserByAdminRequest.lastName,
-        dob: updateUserByAdminRequest.dob,
-        phone: updateUserByAdminRequest.phone,
-        roleName: updateUserByAdminRequest.roleName
-      });
+      }).put(
+        `${API.AUTH.USER.UPDATE_USER_BY_ADMIN.replace(":id", userId)}`,
+        updateUserByAdminRequest
+      );
       if (response?.status === 200) {
         return response.data;
       }
@@ -303,11 +342,13 @@ export class UserService {
   static async getAllUser({
     searchName,
     pageNo = 0,
-    pageSize = 10
+    pageSize = 10,
+    belongToOrg = EBelongToOrg.ALL
   }: {
     searchName?: string;
     pageNo?: number;
     pageSize?: number;
+    belongToOrg?: string;
   }) {
     try {
       const response = await api({
@@ -317,7 +358,8 @@ export class UserService {
         params: {
           searchName,
           pageNo,
-          pageSize
+          pageSize,
+          belongToOrg
         }
       });
       if (response.status === 200) {

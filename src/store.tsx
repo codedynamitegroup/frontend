@@ -5,10 +5,7 @@ import selectRubricDialogReducer from "reduxes/SelectRubricDialog/index";
 import rubricDialogReducer from "reduxes/NewEditRubricDialog/index";
 import selectRubricCriteriaDialog from "reduxes/SelectRubricCriteriaDialog";
 import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
-import topicReducer from "reduxes/coreService/Topic/index";
-import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
-import contestReducer from "reduxes/coreService/Contest/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import sectionReducer from "reduxes/courseService/section/index";
@@ -35,8 +32,6 @@ import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import appStatus from "reduxes/AppStatus";
-import user from "reduxes/authService/user";
-import organization from "reduxes/authService/organization";
 import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
 
@@ -59,10 +54,7 @@ const store = configureStore({
     rubricDialog: rubricDialogReducer,
     selectCriteriaDialog: selectRubricCriteriaDialog,
     rubricCriteriaConfigDialog: rubricCriteriaConfigDialog,
-    topic: topicReducer,
-    certifcateCourse: certificateCourseReducer,
     chapter: chapterReducer,
-    contest: contestReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     courseType: courseTypeReducer,
@@ -84,10 +76,8 @@ const store = configureStore({
     questionCategory: questionCategory,
     loading: loading,
     appStatus: appStatus,
-    user: user,
     adminCertificateCourse: adminCertificateCourse,
-    sidebarStatus: SidebarStatus,
-    organization: organization
+    sidebarStatus: SidebarStatus
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

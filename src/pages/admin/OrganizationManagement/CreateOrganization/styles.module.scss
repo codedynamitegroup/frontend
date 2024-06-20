@@ -23,3 +23,17 @@
     border: 1px solid var(--gray-30);
   }
 }
+
+.textArea {
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
+  resize: none;
+  border: 1px solid var(--gray-30);
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+  }
+}

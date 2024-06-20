@@ -10,26 +10,26 @@ import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
-import { setCertificateCourseDetails } from "reduxes/coreService/CertificateCourse";
-import { setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { ChapterService } from "services/coreService/ChapterService";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import CertificateDetails from "./components/Certificate";
+import CertificateCourseReviews from "./components/CertificateCourseReviews";
 import CourseCertificateIntroduction from "./components/Introduction";
 import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
-import CertificateCourseReviews from "./components/CertificateCourseReviews";
+import { setChapters } from "reduxes/coreService/Chapter";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -46,9 +46,8 @@ const CourseCertificateDetail = () => {
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
-  const certificateCourseDetails = useSelector(
-    (state: RootState) => state.certifcateCourse.certificateCourseDetails
-  );
+  const [certificateCourseDetails, setCertificateCourseDetails] =
+    useState<CertificateCourseEntity | null>(null);
 
   const progress = useMemo(() => {
     if (!certificateCourseDetails) return 0;
@@ -103,7 +102,7 @@ const CourseCertificateDetail = () => {
       try {
         const getCertificateCourseByIdResponse =
           await CertificateCourseService.getCertificateCourseById(id);
-        dispatch(setCertificateCourseDetails(getCertificateCourseByIdResponse));
+        setCertificateCourseDetails(getCertificateCourseByIdResponse);
       } catch (error: any) {
         console.error("Failed to fetch certificate course by id", {
           code: error.response?.code || 503,
@@ -122,14 +121,9 @@ const CourseCertificateDetail = () => {
       try {
         const getChaptersByCertificateCourseIdResponse =
           await ChapterService.getChaptersByCertificateCourseIdResponse(id);
+        // setChapters(getChaptersByCertificateCourseIdResponse);
         dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
       } catch (error: any) {
-        console.error("Failed to fetch chapters by certificate course id", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-        // Show snackbar here
         dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
@@ -149,12 +143,13 @@ const CourseCertificateDetail = () => {
           registerCertificateCourseByIdResponse &&
           registerCertificateCourseByIdResponse.certificateCourseId === id
         ) {
-          dispatch(
-            setCertificateCourseDetails({
-              ...certificateCourseDetails,
+          setCertificateCourseDetails((prev) => {
+            if (!prev) return null;
+            return {
+              ...prev,
               isRegistered: true
-            })
-          );
+            };
+          });
           dispatch(
             setSuccessMess(
               t("register_certificate_course_success", {
@@ -446,7 +441,16 @@ const CourseCertificateDetail = () => {
                     }
                   />
                   <Route path={"certificate"} element={<CertificateDetails />} />
-                  <Route path={"review"} element={<CertificateCourseReviews />} />
+                  <Route
+                    path={"review"}
+                    element={
+                      <CertificateCourseReviews
+                        certificateCourseDetails={certificateCourseDetails}
+                        certificateCourseId={courseId}
+                        dispatch={dispatch}
+                      />
+                    }
+                  />
                 </Routes>
               </Box>
             </Box>

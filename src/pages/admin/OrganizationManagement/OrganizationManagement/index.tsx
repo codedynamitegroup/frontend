@@ -29,7 +29,8 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { UserService } from "services/authService/UserService";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { OrganizationService } from "services/authService/OrganizationService";
-import { clearOrganizations, setOrganizations, setLoading } from "reduxes/authService/organization";
+import { OrganizationEntity } from "models/authService/entity/organization";
+import { PaginationList } from "models/general";
 
 interface OrganizationManagementProps {
   id: string;
@@ -67,9 +68,16 @@ const OrganizationManagement = () => {
     }
   ]);
 
-  const organizationState = useSelector((state: RootState) => state.organization);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedOrganizationId, setDeletedOrganizationId] = useState<string>("");
+  const [organizationsState, setOrganizationsState] = useState<PaginationList<OrganizationEntity>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
+
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
@@ -77,7 +85,12 @@ const OrganizationManagement = () => {
     UserService.deleteUserById(deletedOrganizationId)
       .then((res) => {
         dispatch(setSuccessMess("Delete organization successfully"));
-        dispatch(clearOrganizations());
+        setOrganizationsState({
+          currentPage: 0,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        });
       })
       .catch((error) => {
         console.error("error", error);
@@ -99,22 +112,27 @@ const OrganizationManagement = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setLoading(true));
+      dispatch(setInititalLoading(true));
       try {
         const getOrganizationsResponse = await OrganizationService.getAllOrganizations({
           searchName,
           pageNo,
           pageSize
         });
-        dispatch(setOrganizations(getOrganizationsResponse));
-        dispatch(setLoading(false));
+        setOrganizationsState({
+          currentPage: getOrganizationsResponse.currentPage,
+          totalItems: getOrganizationsResponse.totalItems,
+          totalPages: getOrganizationsResponse.totalPages,
+          items: getOrganizationsResponse.organizations
+        });
+        dispatch(setInititalLoading(false));
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setLoading(false));
+        dispatch(setInititalLoading(false));
       }
     },
     [dispatch, t]
@@ -280,8 +298,8 @@ const OrganizationManagement = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const totalElement = useMemo(
-    () => organizationState.organizations.totalItems || 0,
-    [organizationState.organizations]
+    () => organizationsState?.totalItems || 0,
+    [organizationsState?.totalItems]
   );
 
   const dataGridToolbar = { enableToolbar: true };
@@ -299,27 +317,27 @@ const OrganizationManagement = () => {
     });
   };
 
-  const organizationListTable: OrganizationManagementProps[] = useMemo(
-    () =>
-      organizationState.organizations.organizations.map((organization) => {
-        return {
-          id: organization.organizationId,
-          organizationId: organization.organizationId,
-          email: organization.email,
-          name: organization.name,
-          description: organization.description,
-          phone: organization.phone,
-          address: organization.address,
-          apiKey: organization.apiKey,
-          moodleUrl: organization.moodleUrl,
-          createdAt: organization.createdAt,
-          updatedAt: organization.updatedAt,
-          isDeleted: organization.isDeleted,
-          isVerified: organization.isVerified
-        };
-      }),
-    [organizationState.organizations]
-  );
+  const organizationListTable: OrganizationManagementProps[] = useMemo(() => {
+    if (organizationsState.items.length > 0) {
+      return organizationsState.items.map((organization) => ({
+        id: organization.organizationId,
+        organizationId: organization.organizationId,
+        email: organization.email,
+        name: organization.name,
+        description: organization.description,
+        phone: organization.phone,
+        address: organization.address,
+        apiKey: organization.apiKey,
+        moodleUrl: organization.moodleUrl,
+        createdAt: organization.createdAt,
+        updatedAt: organization.updatedAt,
+        isDeleted: organization.isDeleted,
+        isVerified: organization.isVerified
+      }));
+    } else {
+      return [];
+    }
+  }, [organizationsState.items]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetOrganizations({
@@ -338,17 +356,16 @@ const OrganizationManagement = () => {
   }, [i18next.language]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (organizationState.organizations.organizations.length > 0) return;
-      dispatch(setInititalLoading(true));
+    const fetchOrganizations = async () => {
+      // dispatch(setInititalLoading(true));
       await handleGetOrganizations({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
-    fetchUsers();
-  }, [dispatch, handleGetOrganizations, organizationState.organizations.organizations]);
+    fetchOrganizations();
+  }, [dispatch, handleGetOrganizations]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -363,15 +380,7 @@ const OrganizationManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
+      <Box>
         <Grid
           container
           spacing={2}
@@ -386,7 +395,7 @@ const OrganizationManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={organizationState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -428,7 +437,7 @@ const OrganizationManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={organizationState.isLoading}
+              loading={isLoadingState.loading}
               dataList={organizationListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
@@ -455,7 +464,7 @@ const OrganizationManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Avatar, Box, Card, Divider, Grid } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Divider, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,7 +17,6 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { UpdateUserByAdminRequest, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import { format, parse } from "date-fns";
 import ErrorMessage from "components/text/ErrorMessage";
 import PhoneInput from "react-phone-number-input";
@@ -40,6 +39,7 @@ interface IFormDataType {
   roleName: IOptionItem;
   dob?: string;
   phone: string;
+  isDeleted: boolean;
 }
 
 const EditUserDetails = () => {
@@ -62,7 +62,8 @@ const EditUserDetails = () => {
           id: yup.string().required(),
           name: yup.string().required()
         })
-        .required(t("role_required"))
+        .required(t("role_required")),
+      isDeleted: yup.boolean().required(t("organization_is_deleted_required"))
     });
   }, [t]);
   const { userId } = useParams<{ userId: string }>();
@@ -73,10 +74,7 @@ const EditUserDetails = () => {
   const roleNameList: IOptionItem[] = useMemo(
     () => [
       { id: ERoleName.ADMIN, name: t("role_system_admin") },
-      { id: ERoleName.USER, name: t("role_user") },
-      { id: ERoleName.LECTURER_MOODLE, name: t("role_lecturer") },
-      { id: ERoleName.STUDENT_MOODLE, name: t("role_student") },
-      { id: ERoleName.ADMIN_MOODLE, name: t("role_org_admin") }
+      { id: ERoleName.USER, name: t("role_user") }
     ],
     [t]
   );
@@ -119,7 +117,8 @@ const EditUserDetails = () => {
             lastName: userResponse.lastName,
             dob: format(userResponse.dob ? userResponse.dob : Date.now(), "dd-MM-yyyy"),
             phone: userResponse.phone,
-            roleName: roleName
+            roleName: roleName,
+            isDeleted: userResponse.isDeleted
           });
           setUser(userResponse);
         }
@@ -145,8 +144,10 @@ const EditUserDetails = () => {
         ? parse(formSubmittedData.dob, "dd-MM-yyyy", new Date())
         : undefined,
       roleName: formSubmittedData.roleName.id,
-      phone: formSubmittedData.phone
+      phone: formSubmittedData.phone,
+      isDeleted: formSubmittedData.isDeleted
     };
+    console.log(updateUserByAdminData);
     await handleUpdateUser(updateUserByAdminData);
   };
 
@@ -160,7 +161,6 @@ const EditUserDetails = () => {
         await UserService.updateUserByAdmin(userId, updateUserByAdminRequest);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Updated user successfully"));
-        dispatch(clearUsers());
       } catch (error: any) {
         console.error("error", error);
         dispatch(setErrorMess("User is updated failed!!! please check your input information"));
@@ -175,17 +175,7 @@ const EditUserDetails = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -194,10 +184,9 @@ const EditUserDetails = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='common_account_info'>{t("common_account_info")}</Heading1>
@@ -229,7 +218,7 @@ const EditUserDetails = () => {
             />
             {user?.organization && (
               <InputTextField
-                title={t("common_organization")}
+                title={t("common_organization_name")}
                 type='text'
                 disabled
                 value={user?.organization.name}
@@ -312,6 +301,32 @@ const EditUserDetails = () => {
                   }}
                 />
                 {errors.dob?.message && <ErrorMessage>{errors.dob?.message}</ErrorMessage>}
+              </Grid>
+            </Grid>
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={4} display={"flex"} flexDirection={"row"} alignItems={"center"}>
+                <TextTitle translation-key='common_is_blocked'>{t("common_is_blocked")}</TextTitle>
+              </Grid>
+              <Grid
+                item
+                xs={7}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                gap={"10px"}
+              >
+                <Controller
+                  control={control}
+                  name='isDeleted'
+                  render={({ field }) => {
+                    return (
+                      <Checkbox size='large' checked={!!field.value} {...field} name='isDeleted' />
+                    );
+                  }}
+                />
+                {errors.isDeleted?.message && (
+                  <ErrorMessage>{errors.isDeleted?.message}</ErrorMessage>
+                )}
               </Grid>
             </Grid>
             {user && (
@@ -425,7 +440,7 @@ const EditUserDetails = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

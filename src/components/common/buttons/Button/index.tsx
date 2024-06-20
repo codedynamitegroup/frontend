@@ -41,6 +41,8 @@ const Button = memo((props: ButtonProps) => {
     backgroundColor,
     sx = {},
     boxShadow,
+    startIcon,
+    endIcon,
     ...rest
   } = props;
   return (
@@ -57,6 +59,8 @@ const Button = memo((props: ButtonProps) => {
       )}
       type={isTypeSubmit ? "submit" : "button"}
       {...rest}
+      startIcon={startIcon}
+      endIcon={endIcon}
       sx={{
         ...sx,
         width: width,
@@ -67,7 +71,8 @@ const Button = memo((props: ButtonProps) => {
         borderRadius: borderRadius,
         color: colorName,
         backgroundColor: backgroundColor,
-        boxShadow: boxShadow
+        boxShadow: boxShadow,
+        gap: startIcon || endIcon ? "10px" : "0"
       }}
     >
       <ParagraphBody>{children}</ParagraphBody>

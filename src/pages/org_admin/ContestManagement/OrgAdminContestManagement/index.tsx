@@ -16,24 +16,22 @@ import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
+import useAuth from "hooks/useAuth";
 import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { setContests, setLoading } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import React from "react";
-import useAuth from "hooks/useAuth";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -65,9 +63,25 @@ const OrgAdminContestManagement = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
-  const contestState = useSelector((state: RootState) => state.contest);
-
   const dispatch = useDispatch<AppDispatch>();
+
+  const [data, setData] = useState<{
+    isLoading: boolean;
+    contests: {
+      contests: ContestEntity[];
+      currentPage: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  }>({
+    isLoading: false,
+    contests: {
+      contests: [],
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0
+    }
+  });
 
   const handleGetContests = useCallback(
     async ({
@@ -81,7 +95,10 @@ const OrgAdminContestManagement = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setLoading(true));
+      setData((prev) => ({
+        ...prev,
+        isLoading: true
+      }));
       try {
         if (!loggedUser?.organization.organizationId) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
@@ -94,14 +111,20 @@ const OrgAdminContestManagement = () => {
           pageNo,
           pageSize
         });
-        dispatch(setContests(getCertificateCoursesResponse));
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false,
+          contests: getCertificateCoursesResponse
+        }));
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false
+        }));
       }
     },
     [dispatch, loggedUser?.organization.organizationId, t]
@@ -335,14 +358,11 @@ const OrgAdminContestManagement = () => {
       }
     }
   ];
-  const totalElement = useMemo(
-    () => contestState.contests.totalItems || 0,
-    [contestState.contests]
-  );
+  const totalElement = useMemo(() => data.contests.totalItems || 0, [data.contests]);
 
   const contestList: ContestManagementProps[] = useMemo(
     () =>
-      contestState.contests.contests.map((contest: any) => {
+      data.contests.contests.map((contest: any) => {
         const status =
           contest.startTime && moment().utc().isBefore(contest.startTime)
             ? ContestStartTimeFilterEnum.UPCOMING
@@ -373,7 +393,7 @@ const OrgAdminContestManagement = () => {
           updatedBy: contest.updatedBy
         };
       }),
-    [contestState.contests]
+    [data.contests]
   );
 
   const dataGridToolbar = { enableToolbar: true };
@@ -417,6 +437,7 @@ const OrgAdminContestManagement = () => {
 
   useEffect(() => {
     setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18next.language]);
 
   useEffect(() => {
@@ -428,7 +449,7 @@ const OrgAdminContestManagement = () => {
     };
 
     fetchContests();
-  }, [dispatch, handleGetContests]);
+  }, [handleGetContests]);
 
   return (
     <>
@@ -470,7 +491,7 @@ const OrgAdminContestManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={contestState.isLoading}
+              isLoading={data.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -515,7 +536,7 @@ const OrgAdminContestManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomDataGrid
-              loading={contestState.isLoading}
+              loading={data.isLoading}
               dataList={contestList}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

@@ -19,7 +19,6 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { CreatedUserByAdminRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import InputSelect from "components/common/inputs/InputSelect";
@@ -104,7 +103,6 @@ const CreateUser = () => {
         await UserService.createUserByAdmin(createUserByAdminData);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created user successfully"));
-        dispatch(clearUsers());
         navigate(routes.admin.users.root);
       } catch (error: any) {
         console.error("error", error);
@@ -130,17 +128,7 @@ const CreateUser = () => {
   );
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -149,10 +137,9 @@ const CreateUser = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='user_create'>{t("user_create")}</Heading1>
@@ -239,7 +226,7 @@ const CreateUser = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

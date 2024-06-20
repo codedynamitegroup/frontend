@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { clearOrganizations } from "reduxes/authService/organization";
-import TextEditor from "components/editor/TextEditor";
 import {
   OrganizationEntity,
   UpdateOrganizationBySystemAdminRequest
@@ -23,7 +21,7 @@ import i18next from "i18next";
 import { OrganizationService } from "services/authService/OrganizationService";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
-import { Box, Checkbox, Grid } from "@mui/material";
+import { Box, Checkbox, Grid, TextareaAutosize } from "@mui/material";
 type Props = {};
 
 interface IFormDataType {
@@ -64,7 +62,6 @@ const OrganizationDetails = (props: Props) => {
     async (id: string) => {
       try {
         const organizationResponse = await OrganizationService.getOrganizationById(id);
-        console.log(organizationResponse);
         if (organizationResponse) {
           reset({
             isVerified: organizationResponse.isVerified,
@@ -81,7 +78,6 @@ const OrganizationDetails = (props: Props) => {
 
   useEffect(() => {
     if (organizationId && !organization) {
-      console.log(organizationId);
       handleGetOrganizationById(organizationId);
     }
   }, [organization, handleGetOrganizationById, organizationId]);
@@ -108,7 +104,6 @@ const OrganizationDetails = (props: Props) => {
         );
         setSubmitLoading(false);
         dispatch(setSuccessMess("Updated organization successfully"));
-        dispatch(clearOrganizations());
       } catch (error: any) {
         console.error("error", error);
         dispatch(
@@ -193,12 +188,14 @@ const OrganizationDetails = (props: Props) => {
           <TextTitle translation-key='common_description'>{t("common_description")}</TextTitle>
         </Grid>
         <Grid item xs={7} display={"flex"} flexDirection={"row"} alignItems={"center"} gap={"10px"}>
-          <TextEditor
-            maxLines={6}
-            roundedBorder
+          <TextareaAutosize
+            aria-label='empty textarea'
             translation-key='common_description'
+            placeholder={t("common_description")}
+            className={classes.textArea}
+            disabled
+            minRows={5}
             value={organization?.description}
-            readOnly={true}
           />
         </Grid>
       </Grid>

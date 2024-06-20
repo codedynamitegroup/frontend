@@ -1,6 +1,7 @@
 {
   "common_is_blocked": "Blocked status",
-  "common_organization": "Organization",
+  "common_is_belong_to_organization": "Belong to organization",
+  "common_organization_name": "Organization name",
   "common_please_login": "Please login",
   "common_please_login_to_continue": "Please login to continue",
   "common_easy": "Easy",
@@ -189,6 +190,7 @@
   "common_enter_answer": "Enter answer",
   "common_remove_flag": "Remove flag",
   "common_start": "Start",
+  "common_star": "Star",
   "common_details": "Details",
   "common_problems": "Problems",
   "common_moderators": "Moderators",
@@ -407,12 +409,13 @@
   "forget_password_description": "Enter registerd email, we will send a change password email to this email",
 
   "role_system_admin": "System admin",
-  "role_org_admin": "Org admin",
+  "role_org_admin": "Organization admin",
   "role_lecturer": "Lecturer",
   "role_student": "Student",
   "role_user": "User",
 
   "organization_management": "Organization management",
+  "organization_please_verified": "Please verify organization to continue this action",
   "organization_create": "Create organization",
   "organization_update": "Update organization",
   "organization_email": "Email",
@@ -427,8 +430,12 @@
   "common_updated_by": "Updated by",
   "common_is_verified": "Verified status",
 
+  "user_select_from_list": "Select user from list",
+  "user_belong_to_organization": "Belong to organization",
+  "user_not_belong_to_organization": "Not belong to organization",
   "user_management": "User management",
   "user_create": "Create user",
+  "user_assign_to_organization": "Assign to organization",
   "user_update": "Update user",
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
@@ -1037,8 +1044,10 @@
   "exam_detail_summary_review": "Review",
   "exam_detail_summary_state": "State",
   "exam_detail_summary_open_review": "Open review",
+  "exam_detail_see_again": "See again",
   "exam_detail_start": "Start exam",
   "exam_detail_continue": "Continue exam",
+  "exam_detail_test": "Test exam",
 
   "course_error_page": "Error | Course",
   "course_error": "Course Error",
@@ -1079,5 +1088,10 @@
   "enter_chapter_resource_title": "Enter chapter resource title",
   "enter_certificate_course_name": "Enter certificate course name",
   "enter_certificate_course_description_title": "Enter certificate course description",
-  "add_chapter_resource": "Add chapter resource"
+  "add_chapter_resource": "Add chapter resource",
+  "certificate_course_list": "Certificate course list",
+  "choose_code_question": "Choose code question",
+  "choose_code_question_title": "Chosen code question: ",
+  "youtube_video_url": "Youtube video URL",
+  "enter_youtube_video_url": "Enter youtube video URL"
 }

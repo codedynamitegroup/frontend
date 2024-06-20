@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Checkbox, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Checkbox, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -11,26 +11,31 @@ import {
 } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
-import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setLoading, setOrgUsers } from "reduxes/authService/user";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import { setErrorMess } from "reduxes/AppStatus";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import Button, { BtnType } from "components/common/buttons/Button";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { OrganizationEntity } from "models/authService/entity/organization";
+import { OrganizationService } from "services/authService/OrganizationService";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import Heading1 from "components/text/Heading1";
+import { setLoading } from "reduxes/Loading";
+import { PaginationList } from "models/general";
 
 interface OrganizationUserManagementProps {
   id: string;
@@ -51,11 +56,11 @@ interface OrganizationUserManagementProps {
 }
 
 const OrganizationUserManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
   const { organizationId } = useParams<{ organizationId: string }>();
+  const [organization, setOrganization] = useState<OrganizationEntity>();
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
@@ -72,9 +77,34 @@ const OrganizationUserManagement = () => {
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
-
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
   const dispatch = useDispatch<AppDispatch>();
+
+  const handleGetOrganizationById = useCallback(async (id: string) => {
+    try {
+      dispatch(setLoading(true));
+      const organizationResponse = await OrganizationService.getOrganizationById(id);
+      if (organizationResponse) {
+        setOrganization(organizationResponse);
+      }
+      dispatch(setLoading(false));
+    } catch (error: any) {
+      console.error("error", error);
+      dispatch(setLoading(false));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (organizationId && !organization) {
+      handleGetOrganizationById(organizationId);
+    }
+  }, [organization, handleGetOrganizationById, organizationId]);
 
   const handleGetUsers = useCallback(
     async ({
@@ -95,7 +125,12 @@ const OrganizationUserManagement = () => {
           pageSize: pageSize,
           id: organizationId
         });
-        dispatch(setOrgUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -254,14 +289,22 @@ const OrganizationUserManagement = () => {
             icon={<EditIcon />}
             label='Edit'
             onClick={() => {
-              navigate(routes.org_admin.users.edit.details.replace(":userId", params.row.userId), {
-                state: {
-                  contestName: params.row.name
-                }
-              });
+              if (organizationId)
+                navigate(
+                  routes.admin.organizations.edit.edit_user
+                    .replace(":userId", params.row.userId)
+                    .replace(":organizationId", organizationId)
+                );
             }}
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            onClick={() => {
+              setUnassignedUserId(params.row.userId);
+              setIsOpenConfirmDelete(true);
+            }}
+            icon={<DeleteIcon />}
+            label='Delete'
+          />
         ];
       }
     }
@@ -269,7 +312,7 @@ const OrganizationUserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.org_users.totalItems || 0, [userState.org_users]);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -306,29 +349,29 @@ const OrganizationUserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: OrganizationUserManagementProps[] = useMemo(
-    () =>
-      userState.org_users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
-        };
-      }),
-    [mappingRole, userState.org_users]
-  );
+  const userListTable: OrganizationUserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
@@ -348,39 +391,55 @@ const OrganizationUserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      dispatch(setInititalLoading(true));
+      // dispatch(setInititalLoading(true));
       await handleGetUsers({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.org_users.users]);
+  }, [dispatch, handleGetUsers]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
 
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [unassignedUserId, setUnassignedUserId] = useState<string>("");
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+  const onUnassignedUserConfirmDelete = async () => {
+    UserService.unassignedUserToOrganization(unassignedUserId)
+      .then((res) => {
+        dispatch(setSuccessMess("Unassigned user successfully"));
+        setUserState({
+          currentPage: 0,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        });
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess("Delete user failed"));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
+
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
-        <Divider />
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm unassigned user"}
+        description='Are you sure you want to unassigned this user to organization?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onUnassignedUserConfirmDelete}
+      />
+      {organization && organization?.isVerified === true ? (
         <Grid
           container
           spacing={2}
@@ -389,11 +448,8 @@ const OrganizationUserManagement = () => {
           }}
         >
           <Grid item xs={12}>
-            <Heading1 translate-key='user_management'>{t("user_management")}</Heading1>
-          </Grid>
-          <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -427,11 +483,45 @@ const OrganizationUserManagement = () => {
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
             />
+            <Box className={classes.btnWrapper}>
+              <Button
+                onClick={() => {
+                  if (organizationId) {
+                    navigate(
+                      routes.admin.organizations.edit.create_user.replace(
+                        ":organizationId",
+                        organizationId
+                      )
+                    );
+                  }
+                }}
+                btnType={BtnType.Primary}
+                translation-key='user_create'
+              >
+                {t("user_create")}
+              </Button>
+              <Button
+                onClick={() => {
+                  if (organizationId) {
+                    navigate(
+                      routes.admin.organizations.edit.assign_user.replace(
+                        ":organizationId",
+                        organizationId
+                      )
+                    );
+                  }
+                }}
+                btnType={BtnType.Secondary}
+                translation-key='user_assign_to_organization'
+              >
+                {t("user_assign_to_organization")}
+              </Button>
+            </Box>
           </Grid>
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
+              loading={isLoadingState.loading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
@@ -458,7 +548,18 @@ const OrganizationUserManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      ) : (
+        <Box id={classes.pleaseVerifiedBody}>
+          <VerifiedIcon
+            sx={{
+              fontSize: "100px",
+              color: "var(--green-500)",
+              margin: "0 auto"
+            }}
+          />
+          <Heading1>{t("organization_please_verified")}</Heading1>
+        </Box>
+      )}
     </>
   );
 };

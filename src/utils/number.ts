@@ -28,4 +28,15 @@ const kiloByteToMegaByte = (number: number | undefined): number | undefined => {
   return number / 1024;
 };
 
-export { standardlizeNumber, standardlizeDecimalNumber, roundedNumber, kiloByteToMegaByte };
+const calcPercentageInHundred = (numerator: number, denominator: number): number => {
+  if (denominator === 0) return 0;
+  return Math.round((numerator / denominator) * 100);
+};
+
+export {
+  standardlizeNumber,
+  standardlizeDecimalNumber,
+  roundedNumber,
+  kiloByteToMegaByte,
+  calcPercentageInHundred
+};

@@ -9,13 +9,18 @@ export const API = {
       DELETE_BY_ID: "/core/certificate-courses/:id",
       REGISTER_BY_ID: "/core/certificate-courses/:id/register",
       GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics",
-      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all"
+      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all",
+      CREATE_FULL: "core/certificate-courses/create"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
       GET_BY_ID: "/core/topics/:id",
       UPDATE_BY_ID: "/core/topics/:id",
       DELETE_BY_ID: "/core/topics/:id"
+    },
+    REVIEW: {
+      DEFAULT: "/core/reviews",
+      CREATE: "/core/reviews/create"
     },
     CHAPTER: {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
@@ -49,6 +54,7 @@ export const API = {
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
       QUESTION_DETAIL: "/core/questions/detail",
+      GET_ALL_WITH_PAGINATION: "/core/questions/admin/all",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
@@ -195,6 +201,8 @@ export const API = {
       VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
       UPDATE_PROFILE_USER: "/auth/users/update-profile",
       UPDATE_USER_BY_ADMIN: "/auth/users/:id",
+      ASSIGN_USER_TO_ORGANIZATION: "/auth/users/assign-user-to-org/:id",
+      UNASSIGNED_USER_TO_ORGANIZATION: "/auth/users/unassigned-user-to-org/:id",
       CHANGE_PASSWORD: "/auth/users/change-password",
       RESET_PASSWORD: "/auth/users/forgot-password/change-password"
     },

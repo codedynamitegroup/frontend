@@ -10,6 +10,9 @@ import ParagraphBody from "components/text/ParagraphBody";
 import NotFoundPage from "pages/common/NotFoundPage";
 import OrganizationDetails from "./OrganizationDetails";
 import OrganizationUserManagement from "./UserManagement";
+import CreateUser from "./UserManagement/CreateUser";
+import AssignUser from "./UserManagement/AssignUser";
+import EditUserDetailsOrganization from "./UserManagement/EditUserDetails";
 
 const EditOrganizationDetails = () => {
   const { t } = useTranslation();
@@ -46,17 +49,7 @@ const EditOrganizationDetails = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -67,10 +60,9 @@ const EditOrganizationDetails = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='organization_information'>
@@ -78,7 +70,7 @@ const EditOrganizationDetails = () => {
           </Heading1>
           <Box
             sx={{
-              margin: "20px",
+              margin: "20px 0px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0"
             }}
@@ -114,11 +106,14 @@ const EditOrganizationDetails = () => {
             <Routes>
               <Route path={"details"} element={<OrganizationDetails />} />
               <Route path={"users"} element={<OrganizationUserManagement />} />
+              <Route path={"users/create"} element={<CreateUser />} />
+              <Route path={"users/:userId"} element={<EditUserDetailsOrganization />} />
+              <Route path={"users/assign-user"} element={<AssignUser />} />
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

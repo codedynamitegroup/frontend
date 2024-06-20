@@ -1,6 +1,9 @@
 import { UpdateCertificateCourseCommand } from "./../../models/coreService/update/UpdateCertificateCourseCommand";
 import { API } from "constants/API";
-import { CreateCertificateCourseCommand } from "models/coreService/create/CreateCertificateCourseCommand";
+import {
+  CreateCertificateCourseCommand,
+  CreateCertificateCourseWithAllAttributeCommand
+} from "models/coreService/create/CreateCertificateCourseCommand";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import api from "utils/api";
 
@@ -204,6 +207,24 @@ export class CertificateCourseService {
         }
       });
       if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
+  static async createCertificateCourses(data: CreateCertificateCourseWithAllAttributeCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CERTIFICATE_COURSE.CREATE_FULL}`, data);
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {

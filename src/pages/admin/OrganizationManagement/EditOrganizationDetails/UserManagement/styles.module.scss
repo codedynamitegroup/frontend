@@ -1,3 +1,15 @@
-.breadcump {
-    padding: 10px 20px 10px 20px;
+.btnWrapper {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+#pleaseVerifiedBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  padding: 20px;
 }
