@@ -16,13 +16,15 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
+import { ContestLeaderboardEntity } from "models/coreService/entity/ContestLeaderboardEntity";
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactQuill from "react-quill";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Route,
   Link as RouterLink,
@@ -32,15 +34,13 @@ import {
   useParams
 } from "react-router-dom";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
-import { setContestLeaderboard } from "reduxes/coreService/Contest";
+import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import ContestLeaderboard from "./components/ContestLeaderboard";
 import ContestProblemItem from "./components/ContestProblemItem";
 import ContestTimeInformation from "./components/ContestTimeInformation";
 import classes from "./stytles.module.scss";
-import { ContestEntity } from "models/coreService/entity/ContestEntity";
-import { routes } from "routes/routes";
 
 const ContestDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -49,9 +49,10 @@ const ContestDetails = () => {
 
   const [leaderboardPage, setLeaderboardPage] = useState<number>(0);
   const [leaderboardPageSize, setLeaderboardPageSize] = useState<number>(5);
-  const contestState = useSelector((state: RootState) => state.contest);
+  const [contestLeaderboard, setContestLeaderboard] = useState<ContestLeaderboardEntity | null>(
+    null
+  );
   const { contestId } = useParams<{ contestId: string }>();
-  // const contestDetails = useMemo(() => contestState.contestDetails, [contestState.contestDetails]);
   const tabs: string[] = useMemo(() => {
     return [
       routes.user.contest.detail.information,
@@ -76,10 +77,6 @@ const ContestDetails = () => {
   }, [pathname, tabs]);
 
   const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
-  const contestLeaderboard = useMemo(
-    () => contestState.contestLeaderboard,
-    [contestState.contestLeaderboard]
-  );
 
   const contestStatus = useMemo(() => {
     if (contestDetails) {
@@ -122,22 +119,19 @@ const ContestDetails = () => {
 
   const { t } = useTranslation();
 
-  const handleGetContestLeaderboard = useCallback(
-    async (id: string) => {
-      try {
-        const getContestsResponse = await ContestService.getContestLeaderboard(id);
-        dispatch(setContestLeaderboard(getContestsResponse));
-      } catch (error: any) {
-        console.error("Failed to fetch contests", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-        // Show snackbar here
-      }
-    },
-    [dispatch]
-  );
+  const handleGetContestLeaderboard = useCallback(async (id: string) => {
+    try {
+      const getContestsResponse = await ContestService.getContestLeaderboard(id);
+      setContestLeaderboard(getContestsResponse);
+    } catch (error: any) {
+      console.error("Failed to fetch contests", {
+        code: error.response?.code || 503,
+        status: error.response?.status || "Service Unavailable",
+        message: error.response?.message || error.message
+      });
+      // Show snackbar here
+    }
+  }, []);
 
   const handleGetContestById = useCallback(
     async (id: string) => {

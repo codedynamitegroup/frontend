@@ -1,9 +1,7 @@
 import { memo } from "react";
 import { Dialog, Grid, IconButton } from "@mui/material";
 import classes from "./styles.module.scss";
-
 import Buttons from "components/Buttons";
-import images from "config/images";
 import { useTranslation } from "react-i18next";
 import CloseIcon from "@mui/icons-material/Close";
 

@@ -166,11 +166,6 @@ export default function Lessons() {
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        console.error("Failed to fetch chapters by certificate course id", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
         dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
@@ -195,11 +190,6 @@ export default function Lessons() {
           }
         }
       } catch (error: any) {
-        console.error("Failed to fetch certificate course by id", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
         dispatch(setErrorMess(error.response?.message || error.message));
         navigate(
           routes.user.course_certificate.detail.introduction
