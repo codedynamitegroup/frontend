@@ -155,21 +155,21 @@ export default function Lessons() {
         const getChaptersByCertificateCourseIdResponse: { chapters: ChapterEntity[] } =
           await ChapterService.getChaptersByCertificateCourseIdResponse(id);
         if (getChaptersByCertificateCourseIdResponse) {
-          const lesson = getChaptersByCertificateCourseIdResponse.chapters
-            .map((chapter) => chapter.resources)
-            .filter((resource) => resource !== undefined && resource.length > 0)
-            .flat()
-            .find((resource) => resource.chapterResourceId === lessonId);
-          if (lesson && lesson.resourceType !== ResourceTypeEnum.CODE && !lesson.isCompleted) {
-            await ChapterResourceService.markViewedChapterResource(lessonId as string);
-          }
+          // const lesson = getChaptersByCertificateCourseIdResponse.chapters
+          //   .map((chapter) => chapter.resources)
+          //   .filter((resource) => resource !== undefined && resource.length > 0)
+          //   .flat()
+          //   .find((resource) => resource.chapterResourceId === lessonId);
+          // if (lesson && lesson.resourceType !== ResourceTypeEnum.CODE && !lesson.isCompleted) {
+          //   await ChapterResourceService.markViewedChapterResource(lessonId as string);
+          // }
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        // dispatch(setErrorMess(error.response?.message || error.message));
+        dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
-    [dispatch, lessonId]
+    [dispatch]
   );
 
   const handleGetCertificateCourseById = useCallback(
