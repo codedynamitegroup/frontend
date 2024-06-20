@@ -88,11 +88,9 @@ const UserManagement = () => {
     UserService.deleteUserById(deletedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Delete user successfully"));
-        setUserState({
-          currentPage: 0,
-          totalItems: 0,
-          totalPages: 0,
-          items: []
+        handleGetUsers({
+          searchName: "",
+          belongToOrg: EBelongToOrg.ALL
         });
       })
       .catch((error) => {

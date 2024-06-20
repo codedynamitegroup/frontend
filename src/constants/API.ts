@@ -208,8 +208,10 @@ export const API = {
     ORGANIZATION: {
       GET_ALL_ORGANIZATIONS: "/auth/organizations",
       CREATE_ORGANIZATION: "/auth/organizations",
+      CREATE_ORGANIZATION_BY_CONTACT_US: "/auth/organizations/contact-us",
       GET_ORGANIZATION_BY_ID: "/auth/organizations/:id",
-      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
+      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id",
+      DELETE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
     }
   }
 };

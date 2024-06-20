@@ -33,6 +33,7 @@ import { IOptionItem } from "models/general";
 import InputSelect from "components/common/inputs/InputSelect";
 import images from "config/images";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 interface IFormDataType {
   firstName: string;
@@ -173,34 +174,17 @@ const EditUserDetails = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.org_admin.users.root)}
-              translation-key='user_management'
-            >
-              {t("user_management")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='common_account_info'>
-              {t("common_account_info")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.org_admin.users.root, label: t("user_management") }
+              ]}
+              lastBreadCrumbLabel={t("common_account_info")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
             padding: "20px"
@@ -431,7 +415,7 @@ const EditUserDetails = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

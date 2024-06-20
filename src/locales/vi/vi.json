@@ -1,4 +1,6 @@
 {
+  "common_contact_us": "Liên hệ với chúng tôi",
+  "common_contact_us_description": "Vui lòng điền biểu mẫu dưới đây để liên hệ với chúng tôi.",
   "common_is_blocked": "Tình trạng khóa",
   "common_is_belong_to_organization": "Thuộc tổ chức",
   "common_organization_name": "Tên tổ chức",
@@ -251,6 +253,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
+  "header_business_contact": "Liên hệ doanh nghiệp",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -1045,5 +1048,10 @@
   "exam_detail_graded": "Đã chấm",
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
-  "exam_detail_attempt_unlimited": "Không giới hạn lần làm"
+  "exam_detail_attempt_unlimited": "Không giới hạn lần làm",
+
+  "business_email": "Email doanh nghiệp",
+  "business_phone": "Số điện thoại doanh nghiệp",
+  "business_address": "Địa chỉ doanh nghiệp",
+  "business_name": "Tên doanh nghiệp"
 }

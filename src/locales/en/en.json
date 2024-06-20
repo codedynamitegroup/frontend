@@ -1,4 +1,6 @@
 {
+  "common_contact_us": "Contact us",
+  "common_contact_us_description": "Please fill out the form below, and we'll contact you shortly.",
   "common_is_blocked": "Blocked status",
   "common_is_belong_to_organization": "Belong to organization",
   "common_organization_name": "Organization name",
@@ -249,6 +251,7 @@
 
   "header_explore_course": "Explore",
   "header_contest": "Contest",
+  "header_business_contact": "Business contact",
   "header_course": "Course",
   "header_login_button": "Login",
   "header_register_button": "Register",
@@ -1091,5 +1094,10 @@
   "choose_code_question": "Choose code question",
   "choose_code_question_title": "Chosen code question: ",
   "youtube_video_url": "Youtube video URL",
-  "enter_youtube_video_url": "Enter youtube video URL"
+  "enter_youtube_video_url": "Enter youtube video URL",
+
+  "business_email": "Business email",
+  "business_phone": "Business phone",
+  "business_address": "Business address",
+  "business_name": "Business name"
 }
