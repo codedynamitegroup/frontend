@@ -34,8 +34,8 @@ import { OrganizationEntity } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import Heading1 from "components/text/Heading1";
-import { setLoading } from "reduxes/Loading";
 import { PaginationList } from "models/general";
+import { setLoading } from "reduxes/Loading";
 
 interface OrganizationUserManagementProps {
   id: string;
@@ -83,7 +83,7 @@ const OrganizationUserManagement = () => {
     totalPages: 0,
     items: []
   });
-  const isLoadingState = useSelector((state: RootState) => state.loading);
+  const [isLoadingListUsers, setIsLoadingListUserss] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleGetOrganizationById = useCallback(async (id: string) => {
@@ -117,7 +117,7 @@ const OrganizationUserManagement = () => {
       pageSize?: number;
     }) => {
       if (!organizationId) return;
-      dispatch(setLoading(true));
+      setIsLoadingListUserss(true);
       try {
         const getUsersResponse = await UserService.getAllUserByOrganization({
           searchName: searchName,
@@ -131,14 +131,14 @@ const OrganizationUserManagement = () => {
           totalPages: getUsersResponse.totalPages,
           items: getUsersResponse.users
         });
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       }
     },
     [dispatch, organizationId, t]
@@ -446,7 +446,7 @@ const OrganizationUserManagement = () => {
         >
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={isLoadingState.loading}
+              isLoading={isLoadingListUsers}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -518,7 +518,7 @@ const OrganizationUserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={isLoadingState.loading}
+              loading={isLoadingListUsers}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

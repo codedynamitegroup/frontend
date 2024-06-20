@@ -18,11 +18,10 @@ import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
@@ -75,7 +74,7 @@ const OrganizationManagement = () => {
     totalPages: 0,
     items: []
   });
-  const isLoadingState = useSelector((state: RootState) => state.loading);
+  const [isLoadingListOrganizations, setIsLoadingListOrganizations] = useState<boolean>(false);
 
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
@@ -108,7 +107,7 @@ const OrganizationManagement = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setInititalLoading(true));
+      setIsLoadingListOrganizations(true);
       try {
         const getOrganizationsResponse = await OrganizationService.getAllOrganizations({
           searchName,
@@ -121,14 +120,14 @@ const OrganizationManagement = () => {
           totalPages: getOrganizationsResponse.totalPages,
           items: getOrganizationsResponse.organizations
         });
-        dispatch(setInititalLoading(false));
+        setIsLoadingListOrganizations(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setInititalLoading(false));
+        setIsLoadingListOrganizations(false);
       }
     },
     [dispatch, t]
@@ -418,7 +417,7 @@ const OrganizationManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={isLoadingState.loading}
+              isLoading={isLoadingListOrganizations}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -460,7 +459,7 @@ const OrganizationManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={isLoadingState.loading}
+              loading={isLoadingListOrganizations}
               dataList={organizationListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
