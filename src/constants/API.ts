@@ -92,6 +92,7 @@ export const API = {
     ASSIGNMENT: {
       DEFAULT: "/course/assignment",
       GET_BY_ID: "/course/assignment/:id",
+      LIST_SUBMISSION: "/course/assignment/list-submission/:id",
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
@@ -113,6 +114,14 @@ export const API = {
       UPDATE_BY_ID: "/course/submission-assignment-file/:id",
       DELETE_BY_ID: "/course/submission-assignment-file/:id",
       GET_BY_ID: "/course/submission-assignment-file/:id"
+    },
+    SUBMISSION_GRADE: {
+      DEFAULT: "/course/submission-grade",
+      GET_BY_USER_ID_ASSIGNMENT_ID: "/course/submission-grade/user",
+      GET_BY_ID: "/course/submission-grade/:id",
+      CREATE: "/course/submission-grade",
+      UPDATE_BY_ID: "/course/submission-grade/:id",
+      DELETE_BY_ID: "/course/submission-grade/:id"
     },
 
     EXAM: {

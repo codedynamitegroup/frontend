@@ -1,33 +1,32 @@
-import { Box, Button, CircularProgress, Container, Grid, Toolbar } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { useTheme } from "@mui/material/styles";
+import { Box, Button, Chip, CircularProgress, Container, Grid, Stack } from "@mui/material";
 import Header from "components/Header";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
-import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import useBoxDimensions from "hooks/useBoxDimensions";
-import { useTranslation } from "react-i18next";
-import Heading1 from "components/text/Heading1";
-import { Height } from "@mui/icons-material";
+import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
 import { SubmissionAssignmentService } from "services/courseService/SubmissionAssignmentService";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setSubmissionAssignments } from "reduxes/courseService/submission_assignment";
 import { RootState } from "store";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import CustomFileList from "components/editor/FileUploader/components/CustomFileList";
+import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
+import { UpdateSubmissionAssignment } from "models/courseService/entity/update/UpdateSubmissionAssignment";
+import { CreateSubmissionGradeCommand } from "models/courseService/entity/create/CreateSubmissionGradeCommand";
+import { SubmissionGradeService } from "services/courseService/SubmissionGradeService";
+import { UpdateSubmissionGradeCommand } from "models/courseService/entity/update/UpdateSubmissionGradeCommand";
 import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
+import ParagraphBody from "components/text/ParagraphBody";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import useBoxDimensions from "hooks/useBoxDimensions";
 
 export default function AssignmentGrading() {
   const { t } = useTranslation();
@@ -35,7 +34,10 @@ export default function AssignmentGrading() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [assignmentTypes, setAssignmentTypes] = React.useState(["Tự luận", "Nộp tệp"]);
+  const [assignmentTypes, setAssignmentTypes] = React.useState([
+    t("common_submission_type_file"),
+    t("common_submission_type_online_text")
+  ]);
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState("");
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
   const { courseId, assignmentId, submissionId } = useParams<{
@@ -48,6 +50,7 @@ export default function AssignmentGrading() {
   );
 
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
+  const assignmentState = useSelector((state: RootState) => state.assignment);
   const dispatch = useDispatch();
 
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
@@ -64,12 +67,61 @@ export default function AssignmentGrading() {
     ref: headerRef
   });
 
+  const handleSave = async (continueToNext = false) => {
+    const submissionGrade = submissionAssignmentState.submissionAssignments.find(
+      (submission) => submission.id === assignmentSubmissionStudent
+    )?.submissionGrade;
+    if (submissionGrade) {
+      const updateSubmissionGrade: UpdateSubmissionGradeCommand = {
+        grade: Number(assignmentMaximumGrade),
+        timeModified: new Date().toISOString()
+      };
+      await SubmissionGradeService.updateSubmissionGrade(
+        updateSubmissionGrade,
+        submissionGrade.id ?? ""
+      );
+      const submissionAssignment: UpdateSubmissionAssignment = {
+        feedback: assignmentFeedback
+      };
+      await SubmissionAssignmentService.update(submissionAssignment, submissionId ?? "");
+    } else {
+      const submissionGrade: CreateSubmissionGradeCommand = {
+        submissionAssignmentId: submissionId ?? "",
+        grade: Number(assignmentMaximumGrade),
+        timeCreated: new Date().toISOString(),
+        timeModified: new Date().toISOString()
+      };
+      await createSubmissionGrade(submissionGrade);
+      const submissionAssignment: UpdateSubmissionAssignment = {
+        isGraded: true,
+        feedback: assignmentFeedback
+      };
+      await SubmissionAssignmentService.update(submissionAssignment, submissionId ?? "");
+    }
+
+    if (continueToNext) {
+      navigateToNextStudent();
+    }
+  };
+
+  const createSubmissionGrade = async (createSubmissionGrade: CreateSubmissionGradeCommand) => {
+    try {
+      const response = await SubmissionGradeService.createSubmissionGrade(createSubmissionGrade);
+      if (response) {
+        return response;
+      }
+    } catch (error) {
+      console.error("Failed to create submission grade", error);
+    }
+  };
+
   const handleGetSubmissionAssignmentByAssignment = useCallback(
     async (assignmentId: string) => {
       dispatch(setLoading(true));
       try {
         const response =
           await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+        console.log(response);
         dispatch(setSubmissionAssignments(response));
       } catch (error) {
         console.error("Failed to fetch submission assignment", error);
@@ -98,19 +150,52 @@ export default function AssignmentGrading() {
   }, [assignmentSubmissionStudent, assignmentId, courseId, navigate]);
 
   useEffect(() => {
-    if (submissionAssignmentState.submissionAssignments) {
-      const grade =
-        submissionAssignmentState.submissionAssignments.find(
-          (submission) => submission.id === assignmentSubmissionStudent
-        )?.grade ?? -1;
-      setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
-      setAssignmentFeedback(
-        submissionAssignmentState.submissionAssignments.find(
-          (submission) => submission.id === assignmentSubmissionStudent
-        )?.content ?? ""
+    const fetchSubmissionAssignment = async () => {
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
+        assignmentSubmissionStudent
       );
+      const grade = response.submissionGrade?.grade ?? -1;
+      setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
+      setAssignmentFeedback(response?.feedback ?? "");
+    };
+    fetchSubmissionAssignment();
+  }, [assignmentSubmissionStudent]);
+
+  const navigateToNextStudent = () => {
+    const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(
+      (submission) => submission.id === assignmentSubmissionStudent
+    );
+    const nextIndex = (currentIndex + 1) % submissionAssignmentState.submissionAssignments.length;
+    const nextStudentId = submissionAssignmentState.submissionAssignments[nextIndex].id;
+    setAssignmentSubmissionStudent(nextStudentId);
+  };
+
+  function addAttributesAndStylesToImages(html: string, className: string, css: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Thêm thuộc tính và class vào các thẻ <img>
+    const images = doc.getElementsByTagName("img");
+    for (let img of images) {
+      img.classList.add(className);
     }
-  }, [submissionAssignmentState.submissionAssignments, assignmentSubmissionStudent]);
+
+    // Tạo thẻ <style> và thêm CSS
+    const style = doc.createElement("style");
+    style.textContent = css;
+    doc.head.appendChild(style);
+
+    return doc.documentElement.outerHTML;
+  }
+  const css = `
+.custom-class {
+    max-width: 100%;
+    height: auto;
+}
+`;
+  const content = submissionAssignmentState.submissionAssignments.find(
+    (submission) => submission.id === assignmentSubmissionStudent
+  )?.content;
 
   return (
     <Grid className={classes.root}>
@@ -200,62 +285,116 @@ export default function AssignmentGrading() {
                 <TextTitle translation-key='course_lecturer_grading_assignment_type'>
                   {t("course_lecturer_grading_assignment_type")}
                 </TextTitle>
-                <ChipMultipleFilter
-                  label=''
-                  defaultChipList={["Tự luận", "Nộp tệp"]}
-                  filterList={assignmentTypes}
-                  onFilterListChangeHandler={setAssignmentTypes}
-                  readOnly={true}
-                  backgroundColor='white'
-                />
+                <Stack
+                  translation-key={[
+                    "common_submission_type_file",
+                    "common_submission_type_online_text"
+                  ]}
+                  direction='row'
+                  spacing={1}
+                >
+                  {assignmentTypes.map((type) => {
+                    return <Chip label={type} />;
+                  })}
+                </Stack>
               </Box>
-              <Box className={classes.drawerFieldContainer} translation-key='no_data'>
-                <TextTitle translation-key='course_lecturer_submission_online_text'>
-                  {t("course_lecturer_submission_online_text")}
-                </TextTitle>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      submissionAssignmentState.submissionAssignments.find(
-                        (submission) => submission.id === assignmentSubmissionStudent
-                      )?.submissionAssignmentOnlineText?.content ??
-                      `<span style="color: red;">${t("no_data")}</span>`
-                  }}
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer} translation-key='no_data'>
-                <TextTitle translation-key='course_lecturer_submission_file'>
-                  {t("course_lecturer_submission_file")}
-                </TextTitle>
-                {submissionAssignmentState.submissionAssignments.find(
-                  (submission) => submission.id === assignmentSubmissionStudent
-                )?.submissionAssignmentFiles ? (
-                  <CustomFileList
-                    files={
-                      submissionAssignmentState.submissionAssignments
-                        .find((submission) => submission.id === assignmentSubmissionStudent)
-                        ?.submissionAssignmentFiles?.map(
-                          (attachment: AssignmentResourceEntity) => ({
-                            id: attachment.id,
-                            name: attachment.fileName,
-                            downloadUrl: attachment.fileUrl,
-                            size: attachment.fileSize,
-                            type: attachment.mimetype,
-                            lastModified: new Date(attachment.timemodified).toLocaleString(
-                              "en-US",
-                              {
-                                timeZone: "Asia/Ho_Chi_Minh"
+              {assignmentState.assignmentDetails?.type === "BOTH" ? (
+                <>
+                  <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                    <TextTitle translation-key='course_lecturer_submission_online_text'>
+                      {t("course_lecturer_submission_online_text")}
+                    </TextTitle>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: content
+                          ? addAttributesAndStylesToImages(content, "custom-class", css)
+                          : `<span style="color: red;">${t("no_data")}</span>`
+                      }}
+                    />
+                  </Box>
+
+                  <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                    <TextTitle translation-key='course_lecturer_submission_file'>
+                      {t("course_lecturer_submission_file")}
+                    </TextTitle>
+                    {submissionAssignmentState.submissionAssignments.find(
+                      (submission) => submission.id === assignmentSubmissionStudent
+                    )?.submissionAssignmentFiles.length != 0 ? (
+                      <CustomFileList
+                        files={
+                          submissionAssignmentState.submissionAssignments
+                            .find((submission) => submission.id === assignmentSubmissionStudent)
+                            ?.submissionAssignmentFiles?.map(
+                              (attachment: AssignmentResourceEntity) => {
+                                let f: File = new File([""], attachment.fileName, {
+                                  lastModified: new Date(attachment.timemodified).getTime()
+                                });
+                                return {
+                                  id: attachment.id,
+                                  name: attachment.fileName,
+                                  downloadUrl: attachment.fileUrl,
+                                  size: attachment.fileSize,
+                                  type: attachment.mimetype,
+                                  file: f
+                                };
                               }
-                            )
-                          })
-                        ) ?? []
-                    }
-                    treeView={false}
+                            ) ?? []
+                        }
+                        treeView={false}
+                      />
+                    ) : (
+                      <span style={{ color: "red" }}>{t("no_data")}</span>
+                    )}
+                  </Box>
+                </>
+              ) : assignmentState.assignmentDetails?.type === "FILE" ? (
+                <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                  <TextTitle translation-key='course_lecturer_submission_file'>
+                    {t("course_lecturer_submission_file")}
+                  </TextTitle>
+                  {submissionAssignmentState.submissionAssignments.find(
+                    (submission) => submission.id === assignmentSubmissionStudent
+                  )?.submissionAssignmentFiles.length != 0 ? (
+                    <CustomFileList
+                      files={
+                        submissionAssignmentState.submissionAssignments
+                          .find((submission) => submission.id === assignmentSubmissionStudent)
+                          ?.submissionAssignmentFiles?.map(
+                            (attachment: AssignmentResourceEntity) => {
+                              let f: File = new File([""], attachment.fileName, {
+                                lastModified: new Date(attachment.timemodified).getTime()
+                              });
+                              return {
+                                id: attachment.id,
+                                name: attachment.fileName,
+                                downloadUrl: attachment.fileUrl,
+                                size: attachment.fileSize,
+                                type: attachment.mimetype,
+                                file: f
+                              };
+                            }
+                          ) ?? []
+                      }
+                      treeView={false}
+                    />
+                  ) : (
+                    <span style={{ color: "red" }}>{t("no_data")}</span>
+                  )}
+                </Box>
+              ) : (
+                <Box className={classes.drawerFieldContainer} translation-key='no_data'>
+                  <TextTitle translation-key='course_lecturer_submission_online_text'>
+                    {t("course_lecturer_submission_online_text")}
+                  </TextTitle>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: content
+                        ? addAttributesAndStylesToImages(content, "custom-class", css)
+                        : `<span style="color: red;">${t("no_data")}</span>`
+                    }}
                   />
-                ) : (
-                  <span style={{ color: "red" }}>{t("no_data")}</span>
-                )}
-              </Box>
+                </Box>
+              )}
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_score_on_range'>
                   {t("course_lecturer_score_on_range", { range: 100 })}
@@ -264,7 +403,7 @@ export default function AssignmentGrading() {
                   type='number'
                   value={assignmentMaximumGrade}
                   onChange={(e) => setAssignmentMaximumGrade(e.target.value)}
-                  placeholder='Nhập điểm tối đa'
+                  placeholder='Nhập điểm'
                   backgroundColor='white'
                 />
               </Box>
@@ -292,11 +431,17 @@ export default function AssignmentGrading() {
           variant='contained'
           color='primary'
           className={classes.btnGrade}
-          onClick={() => {
-            console.log("Grade");
-          }}
+          onClick={() => handleSave()}
         >
           Lưu thay đổi
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.btnGrade}
+          onClick={() => handleSave(true)}
+        >
+          Lưu và tiếp tục
         </Button>
       </Box>
     </Grid>

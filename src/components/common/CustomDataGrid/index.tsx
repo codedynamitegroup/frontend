@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-undef */
 import Box from "@mui/material/Box";
-
 import { GridEventListener } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
@@ -64,6 +63,7 @@ const CustomDataGrid = (props: DataGridProps) => {
     getRowClassName,
     personalSx
   } = props;
+
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
     details: GridCallbackDetails<any>
@@ -81,6 +81,7 @@ const CustomDataGrid = (props: DataGridProps) => {
       event.stopPropagation();
     }
   };
+
   const { t } = useTranslation();
 
   return (
@@ -140,9 +141,18 @@ const CustomDataGrid = (props: DataGridProps) => {
           footer: customFooter,
           ...slots
         }}
-        sx={
-          personalSx
-            ? { ...sx }
+        sx={{
+          "& .MuiDataGrid-columnHeaders": {
+            height: 80 // Tăng chiều cao của header
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            lineHeight: "normal", // Đặt lại line-height
+            whiteSpace: "normal", // Cho phép xuống dòng
+            overflow: "visible", // Hiển thị đầy đủ nội dung
+            textOverflow: "unset" // Bỏ text overflow
+          },
+          ...(personalSx
+            ? sx
             : {
                 "& .MuiDataGrid-row:hover": {
                   cursor: onClickRow ? "pointer" : "default"
@@ -151,8 +161,8 @@ const CustomDataGrid = (props: DataGridProps) => {
                   backgroundColor: "var(--gray-2)"
                 },
                 ...sx
-              }
-        }
+              })
+        }}
         pagination
         paginationMode='server'
         onCellClick={handleCellClick}
@@ -174,4 +184,5 @@ const CustomDataGrid = (props: DataGridProps) => {
     </Box>
   );
 };
+
 export default CustomDataGrid;

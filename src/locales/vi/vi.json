@@ -468,6 +468,7 @@
 
   "course_student_assignment_grade": "Điểm số",
   "course_student_assignment_feedback": "Nhận xét",
+  "course_student_assignment_grade_on": "Ngày chấm",
 
   "assignment_submitted": "Bài tập được nộp ",
   "assignment_overdue": "Bài tập đã quá hạn ",
@@ -516,6 +517,9 @@
   "course_lecturer_sub_grading": "Chấm điểm",
   "course_lecturer_sub_last_submission_time": "Thời gian nộp cuối",
   "course_lecturer_sub_last_grading_time": "Thời gian chấm cuối",
+  "course_lecturer_sub_feedback": "Đánh giá",
+  "course_lecturer_sub_file_submission": "Tệp bài nộp",
+  "course_lecturer_sub_online_text": "Tự luận",
 
   "course_lecturer_submission_online_text": "Nội dung nộp",
   "course_lecturer_submission_file": "Tệp nộp",
@@ -540,6 +544,7 @@
   "common_submission_type_online_text": "Văn bản",
   "common_submission_type_file": "Tệp",
   "common_word_limit": "Giới hạn từ",
+  "common_word_count": "từ",
   "common_max_upload_file": "Số lượng tệp tối đa",
   "common_max_submission_file_size": "Kích thước tệp tối đa",
 
@@ -561,6 +566,9 @@
   "common_confirm_deletion": "Xác nhận xóa",
   "assignment_management_delete_assignment": "Bạn có chắc chắn muốn xóa bài tập này?",
   "common_cancel": "Hủy",
+
+  "course_student_assignment_word_limit_notification": "Giới hạn từ cho bài tập này là {{maxWord}} từ và bạn đang cố gắng nộp {{wordCount}} từ. Vui lòng xem lại bài nộp của bạn và thử lại.",
+  "course_student_assignment_submit_nothing": "Không có bài để nộp",
 
   "exam_management_create_retry_num": "Số lần làm lại tối đa",
   "exam_management_create_retry_num_infinite": "không giới hạn số lần làm lại",
