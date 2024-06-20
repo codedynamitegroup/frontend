@@ -86,21 +86,23 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
 
   return (
     <>
-      <AddContestProblemDialog
-        open={isOpenedAddProblemDialog}
-        title={t("contest_add_problem_button")}
-        handleClose={handleCloseAddProblemDialog}
-        maxWidth='md'
-        currentQuestionList={problems}
-        handleAddProblem={(newProblem: ContestQuestionEntity) => {
-          setNewProblem(newProblem);
-          setIsOpenConfirmAdd(true);
-        }}
-        handleDeleteProblem={(questionId: string) => {
-          setDeletedQuestionId(questionId);
-          setIsOpenConfirmDelete(true);
-        }}
-      />
+      {isOpenedAddProblemDialog && (
+        <AddContestProblemDialog
+          open={isOpenedAddProblemDialog}
+          title={t("contest_add_problem_button")}
+          handleClose={handleCloseAddProblemDialog}
+          maxWidth='md'
+          currentQuestionList={problems}
+          handleAddProblem={(newProblem: ContestQuestionEntity) => {
+            setNewProblem(newProblem);
+            setIsOpenConfirmAdd(true);
+          }}
+          handleDeleteProblem={(questionId: string) => {
+            setDeletedQuestionId(questionId);
+            setIsOpenConfirmDelete(true);
+          }}
+        />
+      )}
       <ConfirmDelete
         isOpen={isOpenConfirmDelete}
         title={t("dialog_confirm_delete_title")}

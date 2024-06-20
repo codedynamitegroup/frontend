@@ -25,18 +25,10 @@ import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilt
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  setCertificateCourses,
-  setLoading,
-  setMostEnrolledCertificateCourses
-} from "reduxes/coreService/CertificateCourse";
-import { setTopics } from "reduxes/coreService/Topic";
 import { routes } from "routes/routes";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { TopicService } from "services/coreService/TopicService";
-import { AppDispatch, RootState } from "store";
 import CourseCertificateCard from "./components/CourseCertifcateCard";
 import classes from "./styles.module.scss";
 
@@ -46,12 +38,29 @@ const CourseCertificates = () => {
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
 
-  const [isTopicsLoading, setIsTopicsLoading] = useState(false);
-  const [isRecommendedLoading, setIsRecommendedLoading] = useState(false);
+  const [recommendedCertificateCourses, setRecommendedCertificateCourses] = useState<{
+    isLoading: boolean;
+    mostEnrolledCertificateCourses: CertificateCourseEntity[];
+  }>({
+    isLoading: false,
+    mostEnrolledCertificateCourses: []
+  });
 
-  const dispatch = useDispatch<AppDispatch>();
-  const topicState = useSelector((state: RootState) => state.topic);
-  const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
+  const [certificateCourseData, setCertificateCourseData] = useState<{
+    isLoading: boolean;
+    certificateCourses: CertificateCourseEntity[];
+  }>({
+    isLoading: false,
+    certificateCourses: []
+  });
+
+  const [topicData, setTopicData] = useState<{
+    isLoading: boolean;
+    topics: TopicEntity[];
+  }>({
+    isLoading: false,
+    topics: []
+  });
 
   const catalogActive = useMemo(() => {
     const catalogActive = searchParams.get("catalog") || "all";
@@ -62,23 +71,16 @@ const CourseCertificates = () => {
   const navigate = useNavigate();
 
   const handleGetTopics = useCallback(async () => {
-    setIsTopicsLoading(true);
+    setTopicData((prev) => ({ ...prev, isLoading: true }));
     try {
       const getTopicsResponse = await TopicService.getTopics({
         fetchAll: true
       });
-      dispatch(setTopics(getTopicsResponse));
-      setIsTopicsLoading(false);
+      setTopicData((prev) => ({ ...prev, isLoading: false, topics: getTopicsResponse.topics }));
     } catch (error: any) {
-      console.error("Failed to fetch topics", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-      setIsTopicsLoading(false);
-      // Show snackbar here
+      setTopicData((prev) => ({ ...prev, isLoading: false }));
     }
-  }, [dispatch]);
+  }, []);
 
   const handleGetCertificateCourses = useCallback(
     async ({
@@ -90,72 +92,56 @@ const CourseCertificates = () => {
       filterTopicId?: string;
       isRegisteredFilter: IsRegisteredFilterEnum;
     }) => {
-      dispatch(setLoading({ isLoading: true }));
+      setCertificateCourseData((prev) => ({ ...prev, isLoading: true }));
+
       try {
         const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
           courseName,
           filterTopicId,
           isRegisteredFilter
         });
-        setTimeout(() => {
-          dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-          dispatch(setLoading({ isLoading: false }));
-        }, 1000);
+        setCertificateCourseData((prev) => ({
+          ...prev,
+          isLoading: false,
+          certificateCourses: getCertificateCoursesResponse.certificateCourses
+        }));
       } catch (error: any) {
-        console.error("Failed to fetch certificate courses", {
-          code: error.code || 503,
-          status: error.status || "Service Unavailable",
-          message: error.message
-        });
-        dispatch(setLoading({ isLoading: false }));
-        // Show snackbar here
+        setCertificateCourseData((prev) => ({ ...prev, isLoading: false }));
       }
     },
-    [dispatch]
+    []
   );
 
-  const handleGetMyCertificateCourses = useCallback(
-    async (searchText: string) => {
-      dispatch(setLoading({ isLoading: true }));
-      try {
-        const getCertificateCoursesResponse =
-          await CertificateCourseService.getMyCertificateCourses(searchText);
-        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-        dispatch(setLoading({ isLoading: false }));
-      } catch (error: any) {
-        console.error("Failed to fetch my certificate courses", {
-          code: error.code || 503,
-          status: error.status || "Service Unavailable",
-          message: error.message
-        });
-        dispatch(setLoading({ isLoading: false }));
-        // Show snackbar here
-      }
-    },
-    [dispatch]
-  );
+  const handleGetMyCertificateCourses = useCallback(async (searchText: string) => {
+    setCertificateCourseData((prev) => ({ ...prev, isLoading: true }));
+    try {
+      const getCertificateCoursesResponse =
+        await CertificateCourseService.getMyCertificateCourses(searchText);
+      setCertificateCourseData((prev) => ({
+        ...prev,
+        isLoading: false,
+        certificateCourses: getCertificateCoursesResponse.certificateCourses
+      }));
+    } catch (error: any) {
+      setCertificateCourseData((prev) => ({ ...prev, isLoading: false }));
+    }
+  }, []);
 
   const handleGetMostEnrolledCertificateCourses = useCallback(async () => {
-    setIsRecommendedLoading(true);
+    setRecommendedCertificateCourses((prev) => ({ ...prev, isLoading: true }));
     try {
       const getMostEnrolledCertificateCoursesResponse =
         await CertificateCourseService.getMostEnrolledCertificateCourses();
-      dispatch(
-        setMostEnrolledCertificateCourses(
+      setRecommendedCertificateCourses((prev) => ({
+        ...prev,
+        isLoading: false,
+        mostEnrolledCertificateCourses:
           getMostEnrolledCertificateCoursesResponse.mostEnrolledCertificateCourses
-        )
-      );
-      setIsRecommendedLoading(false);
+      }));
     } catch (error: any) {
-      console.error("Failed to fetch most enrolled certificate courses", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-      setIsRecommendedLoading(false);
-      // Show snackbar here
+      setRecommendedCertificateCourses((prev) => ({ ...prev, isLoading: false }));
     }
-  }, [dispatch]);
+  }, []);
 
   const searchHandle = useCallback(
     async (searchText: string) => {
@@ -192,12 +178,12 @@ const CourseCertificates = () => {
 
   const certificateCoursesByEachTopic = useMemo(() => {
     const certificateCoursesByEachTopic = new Map<string, CertificateCourseEntity[]>();
-    for (const topic of topicState.topics) {
+    for (const topic of topicData.topics) {
       certificateCoursesByEachTopic.set(topic.topicId, []);
     }
 
     // Assign certificate courses to each topic
-    for (const certificateCourse of certificateCourseState.certificateCourses) {
+    for (const certificateCourse of certificateCourseData.certificateCourses) {
       const topicId = certificateCourse.topic.topicId;
       const certificateCourses = certificateCoursesByEachTopic.get(topicId);
       if (!certificateCourses) continue;
@@ -206,7 +192,7 @@ const CourseCertificates = () => {
     }
 
     return certificateCoursesByEachTopic;
-  }, [certificateCourseState.certificateCourses, topicState.topics]);
+  }, [certificateCourseData.certificateCourses, topicData.topics]);
 
   useEffect(() => {
     const fetchDefaultData = async () => {
@@ -274,7 +260,7 @@ const CourseCertificates = () => {
               )}
               <Heading5 translation-key='common_topics'>{t("common_topics")}</Heading5>
               <Box className={classes.couseCertificatesByTopic}>
-                {isTopicsLoading ? (
+                {topicData.isLoading ? (
                   <Box
                     sx={{
                       display: "flex",
@@ -299,7 +285,7 @@ const CourseCertificates = () => {
                     aria-label='Platform'
                     fullWidth
                   >
-                    {topicState.topics.map((topic: TopicEntity, index: number) => (
+                    {topicData.topics.map((topic: TopicEntity, index: number) => (
                       <AnimatedToggleButton
                         key={index}
                         value={topic.topicId}
@@ -342,13 +328,13 @@ const CourseCertificates = () => {
                         {t("certificate_hot_recommend")}
                       </Heading2>
                       <Grid container spacing={3}>
-                        {isRecommendedLoading
+                        {recommendedCertificateCourses.isLoading
                           ? Array.from({ length: 3 }).map((_, index) => (
                               <Grid item xs={4} key={index}>
                                 <Skeleton variant='rectangular' width='100%' height={320} />
                               </Grid>
                             ))
-                          : certificateCourseState.mostEnrolledCertificateCourses
+                          : recommendedCertificateCourses.mostEnrolledCertificateCourses
                               .slice(0, 3)
                               .map((course, index) => (
                                 <Grid
@@ -377,9 +363,10 @@ const CourseCertificates = () => {
 
                 <Box className={classes.autocompleteWrapper}>
                   <CustomAutocomplete
+                    isLoading={certificateCourseData.isLoading}
                     value={searchText}
                     setValue={setSearchText}
-                    options={certificateCourseState.certificateCourses}
+                    options={certificateCourseData.certificateCourses}
                     onHandleChange={searchHandle}
                     renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
                       return (
@@ -458,16 +445,16 @@ const CourseCertificates = () => {
 
                 {typeof catalogActive === "string" &&
                   (catalogActive === "all" || catalogActive === "my-courses") &&
-                  topicState.topics &&
-                  topicState.topics.length > 0 &&
-                  topicState.topics.map((topic, index) => {
+                  topicData.topics &&
+                  topicData.topics.length > 0 &&
+                  topicData.topics.map((topic, index) => {
                     const certificateCourses = certificateCoursesByEachTopic.get(topic.topicId);
                     return (
                       <Box className={classes.couseCertificatesByTopic} key={index}>
                         <Heading3>
                           {topic.name} ({certificateCourses?.length})
                         </Heading3>
-                        {certificateCourseState.isLoading ? (
+                        {certificateCourseData.isLoading ? (
                           <Box
                             sx={{
                               display: "flex",
@@ -510,9 +497,9 @@ const CourseCertificates = () => {
                   catalogActive !== "my-courses" && (
                     <Box className={classes.couseCertificatesByTopic}>
                       <Heading3>
-                        {topicState.topics.find((topic) => topic.topicId === catalogActive)?.name}
+                        {topicData.topics.find((topic) => topic.topicId === catalogActive)?.name}
                       </Heading3>
-                      {certificateCourseState.isLoading ? (
+                      {certificateCourseData.isLoading ? (
                         <Box
                           sx={{
                             display: "flex",

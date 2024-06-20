@@ -15,15 +15,16 @@ import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
-import { setContests, setLoading, setMostPopularContests } from "reduxes/coreService/Contest";
+import { setErrorMess } from "reduxes/AppStatus";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -34,7 +35,6 @@ import { standardlizeNumber } from "utils/number";
 import ContestContentCard from "./components/ContestContentCard";
 import TrendingContestCard from "./components/TrendingContestCard";
 import classes from "./styles.module.scss";
-import { setErrorMess } from "reduxes/AppStatus";
 
 const ContestList = () => {
   const navigate = useNavigate();
@@ -43,7 +43,36 @@ const ContestList = () => {
 
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const contestState = useSelector((state: RootState) => state.contest);
+  // const contestState = useSelector((state: RootState) => state.contest);
+
+  const [data, setData] = useState<{
+    isLoading: boolean;
+    contests: {
+      contests: ContestEntity[];
+      currentPage: number;
+      totalItems: number;
+      totalPages: number;
+    };
+    mostPopularContests: {
+      mostPopularContests: ContestEntity[];
+      numOfParticipants: number;
+      numOfContests: number;
+    };
+  }>({
+    isLoading: false,
+    contests: {
+      contests: [],
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0
+    },
+    mostPopularContests: {
+      mostPopularContests: [],
+      numOfParticipants: 0,
+      numOfContests: 0
+    }
+  });
+
   const [searchParams] = useSearchParams();
   const pageSize = 10;
   const pageNo = useMemo(
@@ -130,7 +159,10 @@ const ContestList = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setLoading(true));
+      setData((prev) => ({
+        ...prev,
+        isLoading: true
+      }));
       try {
         const getContestsResponse = await ContestService.getContests({
           searchName: searchName,
@@ -138,19 +170,25 @@ const ContestList = () => {
           pageNo: pageNo,
           pageSize: pageSize
         });
-        dispatch(setContests(getContestsResponse));
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false,
+          contests: getContestsResponse
+        }));
       } catch (error: any) {
         console.error("Failed to fetch contests", {
           code: error.code || 503,
           status: error.status || "Service Unavailable",
           message: error.message
         });
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false
+        }));
         // Show snackbar here
       }
     },
-    [dispatch]
+    []
   );
 
   const handleGetMyContests = useCallback(
@@ -163,21 +201,30 @@ const ContestList = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setLoading(true));
+      setData((prev) => ({
+        ...prev,
+        isLoading: true
+      }));
       try {
         const getMyContestsResponse = await ContestService.getMyContests({
           searchName: searchName,
           pageNo: pageNo,
           pageSize: pageSize
         });
-        dispatch(setContests(getMyContestsResponse));
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false,
+          contests: getMyContestsResponse
+        }));
       } catch (error: any) {
-        dispatch(setLoading(false));
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
           navigate(routes.user.contest.root);
         }
+        setData((prev) => ({
+          ...prev,
+          isLoading: false
+        }));
       }
     },
     [dispatch, navigate, t]
@@ -186,16 +233,14 @@ const ContestList = () => {
   const handleGetMostPopularContests = useCallback(async () => {
     try {
       const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
-      dispatch(setMostPopularContests(getMostPopularContestsResponse));
+      setData((prev) => ({
+        ...prev,
+        mostPopularContests: getMostPopularContestsResponse
+      }));
     } catch (error: any) {
-      // console.error("Failed to fetch most popular contests", {
-      //   code: error.response?.code || 503,
-      //   status: error.response?.status || "Service Unavailable",
-      //   message: error.response?.message || error.message
-      // });
       // Show snackbar here
     }
-  }, [dispatch]);
+  }, []);
 
   const searchHandle = useCallback(
     (searchText: string) => {
@@ -261,7 +306,7 @@ const ContestList = () => {
               <Grid item md={12} lg={12} className={classes.generalDetailsContainer}>
                 <Box>
                   <Heading2 colorname={"--white"}>
-                    {standardlizeNumber(contestState.mostPopularContests.numOfContests)}
+                    {standardlizeNumber(data.mostPopularContests.numOfContests)}
                   </Heading2>
                   <Heading4 colorname={"--white"} translation-key='contest_total_num'>
                     {t("contest_total_num")}
@@ -269,7 +314,7 @@ const ContestList = () => {
                 </Box>
                 <Box>
                   <Heading2 colorname={"--white"}>
-                    {standardlizeNumber(contestState.mostPopularContests.numOfParticipants)}
+                    {standardlizeNumber(data.mostPopularContests.numOfParticipants)}
                   </Heading2>
                   <Heading4 colorname={"--white"} translation-key='contest_total_num'>
                     {i18next.format(t("common_participant", { count: 2 }), "uppercase")}
@@ -286,7 +331,7 @@ const ContestList = () => {
                   onSlideChange={() => {}}
                   onSwiper={(swiper: any) => {}}
                 >
-                  {contestState.mostPopularContests.mostPopularContests.map((item, index) => (
+                  {data.mostPopularContests.mostPopularContests.map((item, index) => (
                     <SwiperSlide key={index}>
                       <TrendingContestCard
                         key={index.toString()}
@@ -374,7 +419,7 @@ const ContestList = () => {
             </Grid>
             <Box marginTop={"15px"}>
               <Grid container spacing={2}>
-                {contestState.isLoading ? (
+                {data.isLoading ? (
                   <Box
                     sx={{
                       display: "flex",
@@ -391,8 +436,8 @@ const ContestList = () => {
                       {t("common_loading")}
                     </ParagraphBody>
                   </Box>
-                ) : contestState.contests.contests && contestState.contests.contests.length > 0 ? (
-                  contestState.contests.contests.map((item, index) => (
+                ) : data.contests.contests && data.contests.contests.length > 0 ? (
+                  data.contests.contests.map((item, index) => (
                     <Grid item xs={12} key={index.toString()}>
                       <ContestContentCard
                         name={item.name}
@@ -430,7 +475,7 @@ const ContestList = () => {
                   }}
                 >
                   <CustomPagination
-                    count={contestState.contests.totalPages}
+                    count={data.contests.totalPages}
                     page={pageNo}
                     handlePageChange={handlePageChange}
                     showFirstButton

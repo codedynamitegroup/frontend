@@ -5,10 +5,7 @@ import selectRubricDialogReducer from "reduxes/SelectRubricDialog/index";
 import rubricDialogReducer from "reduxes/NewEditRubricDialog/index";
 import selectRubricCriteriaDialog from "reduxes/SelectRubricCriteriaDialog";
 import rubricCriteriaConfigDialog from "reduxes/NewEditRubricCriteriaDialog";
-import topicReducer from "reduxes/coreService/Topic/index";
-import certificateCourseReducer from "reduxes/coreService/CertificateCourse/index";
 import chapterReducer from "reduxes/coreService/Chapter/index";
-import contestReducer from "reduxes/coreService/Contest/index";
 import algorithmTagReducer from "reduxes/CodeAssessmentService/CodeQuestion/Filter/Algorithm";
 import courseReducer from "reduxes/courseService/course/index";
 import sectionReducer from "reduxes/courseService/section/index";
@@ -57,10 +54,7 @@ const store = configureStore({
     rubricDialog: rubricDialogReducer,
     selectCriteriaDialog: selectRubricCriteriaDialog,
     rubricCriteriaConfigDialog: rubricCriteriaConfigDialog,
-    topic: topicReducer,
-    certifcateCourse: certificateCourseReducer,
     chapter: chapterReducer,
-    contest: contestReducer,
     algorithmnTag: algorithmTagReducer,
     course: courseReducer,
     courseType: courseTypeReducer,

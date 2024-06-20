@@ -10,7 +10,7 @@ const createInstance = ({
   baseURL: string;
   isAuthorization?: boolean;
 }) => {
-  const accessToken = localStorage.getItem("access_token");
+  // const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
   const instance = axios.create({
     baseURL,
