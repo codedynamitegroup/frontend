@@ -423,6 +423,9 @@
   "common_updated_by": "Cập nhật bởi",
   "common_is_verified": "Tình trạng xác thực",
 
+  "user_select_from_list": "Chọn người dùng từ danh sách",
+  "user_belong_to_organization": "Thuộc tổ chức",
+  "user_not_belong_to_organization": "Không thuộc tổ chức nào",
   "user_management": "Quản lý người dùng",
   "user_create": "Tạo người dùng",
   "user_assign_to_organization": "Gán cho tổ chức",

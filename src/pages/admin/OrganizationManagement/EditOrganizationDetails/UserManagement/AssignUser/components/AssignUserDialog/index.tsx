@@ -25,7 +25,7 @@ import Heading5 from "components/text/Heading5";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { ERoleName } from "models/authService/entity/role";
-import { User } from "models/authService/entity/user";
+import { EBelongToOrg, User } from "models/authService/entity/user";
 import { setLoading } from "reduxes/Loading";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PaginationList } from "models/general";
@@ -46,6 +46,7 @@ export interface UserManagementProps {
   createdAt: Date;
   roleName: string;
   isDeleted: boolean;
+  isBelongToOrganization: boolean;
 }
 
 interface AssignUserToOrganizationDialogProps extends DialogProps {
@@ -97,18 +98,21 @@ export default function AssignUserToOrganizationDialog({
     async ({
       searchName,
       pageNo = 0,
-      pageSize = 10
+      pageSize = 10,
+      belongToOrg = EBelongToOrg.NOT_BELONG_TO_ORGANIZATION
     }: {
       searchName: string;
       pageNo?: number;
       pageSize?: number;
+      belongToOrg?: EBelongToOrg;
     }) => {
       dispatch(setLoading(true));
       try {
         const getUsersResponse = await UserService.getAllUser({
           searchName,
           pageNo,
-          pageSize
+          pageSize,
+          belongToOrg
         });
         setUserState({
           currentPage: getUsersResponse.currentPage,
@@ -142,7 +146,7 @@ export default function AssignUserToOrganizationDialog({
     {
       field: "email",
       headerName: "Email",
-      flex: 3,
+      flex: 2.5,
       renderHeader: () => {
         return (
           <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -178,7 +182,7 @@ export default function AssignUserToOrganizationDialog({
     {
       field: "fullname",
       headerName: t("common_fullname"),
-      flex: 2,
+      flex: 1.5,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -231,6 +235,33 @@ export default function AssignUserToOrganizationDialog({
             disableRipple
             checked={params.row.isDeleted === true ? true : false}
             color={params.row.isDeleted ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
+      field: "isBelongToOrganization",
+      headerName: t("common_is_belong_to_organization"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_belong_to_organization")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isBelongToOrganization === true ? true : false}
             sx={{
               "&:hover": {
                 backgroundColor: "transparent !important",
@@ -314,7 +345,8 @@ export default function AssignUserToOrganizationDialog({
         isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
         createdAt: user.createdAt,
         roleName: mappingRole(user),
-        isDeleted: user.isDeleted
+        isDeleted: user.isDeleted,
+        isBelongToOrganization: user.organization ? true : false
       }));
     } else {
       return [];
@@ -358,7 +390,7 @@ export default function AssignUserToOrganizationDialog({
     <CustomDialog
       open={open}
       handleClose={handleClose}
-      title={t("user_assign_to_organization")}
+      title={title}
       actionsDisabled
       minWidth={"1000px"}
       {...props}

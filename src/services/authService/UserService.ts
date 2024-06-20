@@ -2,6 +2,7 @@ import { API } from "constants/API";
 import {
   AssignUserToOrganizationRequest,
   CreatedUserByAdminRequest,
+  EBelongToOrg,
   LoginRequest,
   RegisteredRequest,
   ResetPasswordUserRequest,
@@ -341,11 +342,13 @@ export class UserService {
   static async getAllUser({
     searchName,
     pageNo = 0,
-    pageSize = 10
+    pageSize = 10,
+    belongToOrg = EBelongToOrg.ALL
   }: {
     searchName?: string;
     pageNo?: number;
     pageSize?: number;
+    belongToOrg?: string;
   }) {
     try {
       const response = await api({
@@ -355,7 +358,8 @@ export class UserService {
         params: {
           searchName,
           pageNo,
-          pageSize
+          pageSize,
+          belongToOrg
         }
       });
       if (response.status === 200) {

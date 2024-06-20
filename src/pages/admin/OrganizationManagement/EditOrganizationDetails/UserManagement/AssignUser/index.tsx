@@ -133,7 +133,7 @@ const AssignUser = () => {
       {isOpenedAddUserDialog && (
         <AssignUserToOrganizationDialog
           open={isOpenedAddUserDialog}
-          title={t("contest_add_problem_button")}
+          title={t("user_select_from_list")}
           handleClose={handleCloseAddUserDialog}
           handleUserSelected={handleUserSelected}
           maxWidth='md'
@@ -231,9 +231,9 @@ const AssignUser = () => {
               loading={submitLoading}
               variant='solid'
               type='submit'
-              translation-key='user_assign'
+              translation-key='user_assign_to_organization'
             >
-              {t("user_assign")}
+              {t("user_assign_to_organization")}
             </JoyButton>
           </Grid>
         </Box>

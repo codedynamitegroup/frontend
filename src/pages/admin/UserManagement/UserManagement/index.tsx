@@ -25,7 +25,7 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { User } from "models/authService/entity/user";
+import { EBelongToOrg, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
@@ -67,8 +67,8 @@ const UserManagement = () => {
     }[]
   >([
     {
-      key: "role",
-      value: "ALL"
+      key: "belongToOrg",
+      value: EBelongToOrg.ALL
     }
   ]);
 
@@ -109,18 +109,21 @@ const UserManagement = () => {
     async ({
       searchName,
       pageNo = 0,
-      pageSize = 10
+      pageSize = 10,
+      belongToOrg = EBelongToOrg.ALL
     }: {
       searchName: string;
       pageNo?: number;
       pageSize?: number;
+      belongToOrg: string;
     }) => {
       dispatch(setLoading(true));
       try {
         const getUsersResponse = await UserService.getAllUser({
           searchName,
           pageNo,
-          pageSize
+          pageSize,
+          belongToOrg
         });
         setUserState({
           currentPage: getUsersResponse.currentPage,
@@ -144,7 +147,8 @@ const UserManagement = () => {
   const handleSearchChange = useCallback(
     (value: string) => {
       handleGetUsers({
-        searchName: value
+        searchName: value,
+        belongToOrg: filters[0].value
       });
     },
     [handleGetUsers]
@@ -347,7 +351,8 @@ const UserManagement = () => {
     handleGetUsers({
       searchName: searchValue,
       pageNo: model.page,
-      pageSize: model.pageSize
+      pageSize: model.pageSize,
+      belongToOrg: filters[0].value
     });
   };
 
@@ -397,13 +402,15 @@ const UserManagement = () => {
   }, [mappingRole, userState.items]);
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
-      searchName: searchValue
+      searchName: searchValue,
+      belongToOrg: filters[0].value
     });
-  }, [handleGetUsers, searchValue]);
+  }, [handleGetUsers, searchValue, filters]);
 
   const handleCancelFilter = useCallback(() => {
     handleGetUsers({
-      searchName: searchValue
+      searchName: searchValue,
+      belongToOrg: EBelongToOrg.ALL
     });
   }, [handleGetUsers, searchValue]);
 
@@ -415,7 +422,8 @@ const UserManagement = () => {
     const fetchUsers = async () => {
       // dispatch(setInititalLoading(true));
       await handleGetUsers({
-        searchName: ""
+        searchName: "",
+        belongToOrg: EBelongToOrg.ALL
       });
       // dispatch(setInititalLoading(false));
     };
@@ -436,122 +444,87 @@ const UserManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
+      <Grid
+        container
+        spacing={2}
         sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
+          padding: "0px 20px 20px 20px"
         }}
       >
-        <Divider />
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            padding: "20px"
-          }}
-        >
-          <Grid item xs={12}>
-            <Heading1 translate-key='user_management'>{t("user_management")}</Heading1>
-          </Grid>
-          <Grid item xs={12}>
-            <CustomSearchFeatureBar
-              isLoading={isLoadingState.loading}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              onHandleChange={handleSearchChange}
-              createBtnText={t("user_create")}
-              onClickCreate={() => {
-                navigate(routes.admin.users.create);
-              }}
-              numOfResults={totalElement}
-              filterKeyList={[
-                {
-                  label: t("common_status"),
-                  value: "blockStatus"
-                },
-                {
-                  label: t("common_role"),
-                  value: "role"
-                }
-              ]}
-              filterValueList={{
-                blockStatus: [
-                  {
-                    label: t("common_all"),
-                    value: "ALL"
-                  },
-                  { label: t("common_active"), value: "ACTIVE" },
-                  { label: t("common_inactive"), value: "INACTIVE" }
-                ],
-                role: [
-                  {
-                    label: t("common_all"),
-                    value: "ALL"
-                  },
-                  {
-                    label: t("role_system_admin"),
-                    value: ERoleName.ADMIN
-                  },
-                  {
-                    label: t("role_org_admin"),
-                    value: ERoleName.ADMIN_MOODLE
-                  },
-                  {
-                    label: t("role_lecturer"),
-                    value: ERoleName.LECTURER_MOODLE
-                  },
-                  {
-                    label: t("role_student"),
-                    value: ERoleName.STUDENT_MOODLE
-                  },
-                  {
-                    label: t("role_user"),
-                    value: ERoleName.USER
-                  }
-                ]
-              }}
-              filters={filters}
-              handleChangeFilters={(filters: { key: string; value: string }[]) => {
-                setFilters(filters);
-              }}
-              onHandleApplyFilter={handleApplyFilter}
-              onHandleCancelFilter={handleCancelFilter}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            {/* #F5F9FB */}
-            <CustomDataGrid
-              loading={isLoadingState.loading}
-              dataList={userListTable}
-              tableHeader={tableHeading}
-              onSelectData={rowSelectionHandler}
-              dataGridToolBar={dataGridToolbar}
-              page={page}
-              pageSize={pageSize}
-              totalElement={totalElement}
-              onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
-              getRowHeight={() => "auto"}
-              onClickRow={rowClickHandler}
-              sx={{
-                "& .MuiDataGrid-cell": {
-                  border: "none"
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f9fb"
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
-                }
-              }}
-              personalSx={true}
-            />
-          </Grid>
+        <Grid item xs={12}>
+          <Heading1 translate-key='user_management'>{t("user_management")}</Heading1>
         </Grid>
-      </Card>
+        <Grid item xs={12}>
+          <CustomSearchFeatureBar
+            isLoading={isLoadingState.loading}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            onHandleChange={handleSearchChange}
+            createBtnText={t("user_create")}
+            onClickCreate={() => {
+              navigate(routes.admin.users.create);
+            }}
+            numOfResults={totalElement}
+            filterKeyList={[
+              {
+                label: t("common_is_belong_to_organization"),
+                value: "belongToOrg"
+              }
+            ]}
+            filterValueList={{
+              belongToOrg: [
+                {
+                  label: t("common_all"),
+                  value: EBelongToOrg.ALL
+                },
+                {
+                  label: t("user_belong_to_organization"),
+                  value: EBelongToOrg.BELONG_TO_ORGANIZATION
+                },
+                {
+                  label: t("user_not_belong_to_organization"),
+                  value: EBelongToOrg.NOT_BELONG_TO_ORGANIZATION
+                }
+              ]
+            }}
+            filters={filters}
+            handleChangeFilters={(newFilters: { key: string; value: string }[]) => {
+              setFilters(newFilters);
+            }}
+            onHandleApplyFilter={handleApplyFilter}
+            onHandleCancelFilter={handleCancelFilter}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          {/* #F5F9FB */}
+          <CustomDataGrid
+            loading={isLoadingState.loading}
+            dataList={userListTable}
+            tableHeader={tableHeading}
+            onSelectData={rowSelectionHandler}
+            dataGridToolBar={dataGridToolbar}
+            page={page}
+            pageSize={pageSize}
+            totalElement={totalElement}
+            onPaginationModelChange={pageChangeHandler}
+            showVerticalCellBorder={true}
+            getRowHeight={() => "auto"}
+            onClickRow={rowClickHandler}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                border: "none"
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#f5f9fb"
+              },
+              "& .MuiDataGrid-toolbarContainer": {
+                backgroundColor: "#f5f9fb"
+              }
+            }}
+            personalSx={true}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 };
