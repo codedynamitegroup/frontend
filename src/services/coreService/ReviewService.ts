@@ -48,12 +48,10 @@ export class ReviewService {
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.CORE.REVIEW.CREATE}`, {
-        params: {
-          certificateCourseId,
-          rating,
-          content
-        }
+      }).post(`${API.CORE.REVIEW.CREATE}`, {
+        certificateCourseId,
+        rating,
+        content
       });
       if (response.status === 201) {
         return response.data;
