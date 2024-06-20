@@ -166,7 +166,8 @@ export const API = {
       DEFAULT: "/code-assessment/shared-solution",
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
-        DEFAULT: "code-assessment/shared-solution/:id/comment"
+        DEFAULT: "code-assessment/shared-solution/:id/comment",
+        EDIT_OR_DELETE: "code-assessment/shared-solution/comment/:id"
       },
       TAG: {
         DEFAULT: "code-assessment/shared-solution/:id/tag"

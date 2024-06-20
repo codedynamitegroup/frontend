@@ -218,6 +218,7 @@
   "common_add_condition": "Add condition",
   "common_active": "Active",
   "common_inactive": "Inactive",
+  "common_close": "Close",
 
   "dialog_confirm_delete_title": "Confirm Delete",
   "dialog_confirm_delete_contest_description": "Are you sure you want to delete this contest?",

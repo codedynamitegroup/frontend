@@ -40,7 +40,7 @@ import { SharedSolutionEntity } from "models/codeAssessmentService/entity/Shared
 import images from "config/images";
 import i18next from "i18next";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { CommentPaginationList } from "models/codeAssessmentService/entity/CommentPaginationList";
@@ -50,9 +50,13 @@ import useAuth from "hooks/useAuth";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import cloneDeep from "lodash.clonedeep";
 
 type FormCommentValue = {
   comment: string;
+};
+type FormEditComment = {
+  comment: { value: string; id: string }[];
 };
 interface Props {
   handleSolutionDetail: () => void;
@@ -97,8 +101,50 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const [totalItem, setTotalItem] = useState(0);
   const [comments, setComments] = useState<CommentEntity[]>([]);
   const [newest, setNewest] = useState(true);
+  const {
+    register: registerEditComment,
+    control: editCommentControl,
+    handleSubmit: editCommentHandleSubmit,
+    setValue: setFormEditCommentValue
+  } = useForm<FormEditComment>({
+    defaultValues: {
+      comment: new Array(pageSize).fill({ value: "", id: "" })
+    }
+  });
+  const { fields: commentFields } = useFieldArray<FormEditComment>({
+    name: "comment",
+    control: editCommentControl
+  });
+  const onSubmitEditComment: SubmitHandler<FormEditComment> = (data) => {
+    const index = isOpenEditCommentForm.findIndex((value) => value === true);
+    if (index > -1 && index < comments.length) {
+      SharedSolutionService.editComment(data.comment[index].id, data.comment[index].value).then(
+        (data) => {
+          fetchCommentData();
+          handleCloseEditCommentForm();
+        }
+      );
+    }
+  };
+  const onDeleteComment = (index: number) => {
+    if (index > -1 && index < comments.length) {
+      SharedSolutionService.deleteComment(comments[index].id).then((data) => {
+        fetchCommentData();
+      });
+    }
+    handleCloseCommentEdit(index);
+  };
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openFilterNewest = Boolean(anchorEl);
   const [editSolutionAnchorEl, setEditSolutionAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openSolutionEditAnchorEl = Boolean(editSolutionAnchorEl);
+  const [editCommentAnchorEl, setEditCommentAnchorEl] = useState<(null | HTMLElement)[]>(
+    new Array(pageSize).fill(null)
+  );
+  const [isOpenEditCommentForm, setIsOpenEditCommentForm] = useState<boolean[]>(
+    new Array(pageSize).fill(false)
+  );
+  const openEditCommentAnchorEl = editCommentAnchorEl.map((value) => Boolean(value));
   const [isOpenConfirmDeleteSolution, setIsOpenConfirmDeleteSolution] = useState(false);
   const onCancleConfirmDeleteSolution = () => {
     setIsOpenConfirmDeleteSolution(false);
@@ -113,7 +159,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
     }
     setIsOpenConfirmDeleteSolution(false);
   };
-  const openFilterNewest = Boolean(anchorEl);
   const handleCloseFilterNewest = () => {
     setAnchorEl(null);
   };
@@ -121,12 +166,31 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
     setAnchorEl(event.currentTarget);
   };
 
-  const openSolutionEditAnchorEl = Boolean(editSolutionAnchorEl);
   const handleClickSolutionEdit = (event: React.MouseEvent<HTMLElement>) => {
     setEditSolutionAnchorEl(event.currentTarget);
   };
   const handleCloseSolutionEdit = () => {
     setEditSolutionAnchorEl(null);
+  };
+  const handleClickCommentEdit = (event: React.MouseEvent<HTMLElement>, index: number) => {
+    let newEditCommentAnchorEl = cloneDeep(editCommentAnchorEl);
+    newEditCommentAnchorEl[index] = event.currentTarget;
+    setEditCommentAnchorEl(newEditCommentAnchorEl);
+  };
+  const handleCloseCommentEdit = (index: number) => {
+    let newEditCommentAnchorEl = cloneDeep(editCommentAnchorEl);
+    newEditCommentAnchorEl[index] = null;
+    setEditCommentAnchorEl(newEditCommentAnchorEl);
+  };
+  const handleOpenEditCommentForm = (index: number) => {
+    handleCloseCommentEdit(index);
+    let newOpenEditCommentForm = new Array(pageSize).fill(false);
+    newOpenEditCommentForm[index] = true;
+    setIsOpenEditCommentForm(newOpenEditCommentForm);
+  };
+  const handleCloseEditCommentForm = () => {
+    let newOpenEditCommentForm = new Array(pageSize).fill(false);
+    setIsOpenEditCommentForm(newOpenEditCommentForm);
   };
   const openEditSolution = () => {
     if (problemId)
@@ -160,7 +224,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors }
   } = useForm<FormCommentValue>({
     resolver: yupResolver(schema)
@@ -173,6 +236,10 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
           setTotalPage(data.totalPages);
           setTotalItem(data.totalItems);
           setComments(data.comments);
+          data.comments?.forEach((item, index) => {
+            setFormEditCommentValue(`comment.${index}.value`, item.content);
+            setFormEditCommentValue(`comment.${index}.id`, item.id);
+          });
         })
         .catch((err) => console.log(err))
         .then(() => {
@@ -237,7 +304,10 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                 }}
               >
                 <MenuItem onClick={openEditSolution}>{t("common_edit")}</MenuItem>
-                <MenuItem onClick={() => setIsOpenConfirmDeleteSolution(true)}>
+                <MenuItem
+                  onClick={() => setIsOpenConfirmDeleteSolution(true)}
+                  sx={{ color: "red" }}
+                >
                   {t("common_remove")}
                 </MenuItem>
               </Menu>
@@ -414,28 +484,120 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                     </Stack>
                   )}
                   {!commentLoading &&
-                    comments.map((comment) => {
+                    comments.map((comment, index) => {
                       return (
-                        <>
-                          <Box className={classes.commentInfo} key={comment.user.id}>
-                            <Box className={classes.commentInfoUser}>
-                              <Avatar
-                                sx={{
-                                  bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
-                                }}
-                                alt={comment.user?.firstName}
-                                src={comment.user?.avatarUrl}
-                              >
-                                {comment.user?.firstName.charAt(0)}
-                              </Avatar>
-                              <Box className={classes.commentName}>
-                                {i18next.language === "vi"
-                                  ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
-                                  : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                        <form onSubmit={editCommentHandleSubmit(onSubmitEditComment)}>
+                          <Box className={classes.commentInfo} key={comment.id}>
+                            <Stack direction={"row"} justifyContent='space-between'>
+                              <Box className={classes.commentInfoUser}>
+                                <Avatar
+                                  sx={{
+                                    bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
+                                  }}
+                                  alt={comment.user?.firstName}
+                                  src={comment.user?.avatarUrl}
+                                >
+                                  {comment.user?.firstName.charAt(0)}
+                                </Avatar>
+                                <Box className={classes.commentName}>
+                                  {i18next.language === "vi"
+                                    ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
+                                    : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                                </Box>
                               </Box>
-                            </Box>
+                              {auth.loggedUser.userId === solution?.user.id && (
+                                <>
+                                  <IconButton
+                                    id={`edit-solution-button-${comment.id}`}
+                                    aria-controls={
+                                      openEditCommentAnchorEl[index]
+                                        ? `edit-solution-menu-${comment.id}`
+                                        : undefined
+                                    }
+                                    aria-haspopup='true'
+                                    aria-expanded={
+                                      openEditCommentAnchorEl[index] ? "true" : undefined
+                                    }
+                                    onClick={(event) => {
+                                      handleClickCommentEdit(event, index);
+                                    }}
+                                  >
+                                    <MoreHorizIcon />
+                                  </IconButton>
+                                  <Menu
+                                    id={`edit-solution-menu-${comment.id}`}
+                                    aria-labelledby={`edit-solution-button-${comment.id}`}
+                                    anchorEl={editCommentAnchorEl[index]}
+                                    open={openEditCommentAnchorEl[index]}
+                                    onClose={() => handleCloseCommentEdit(index)}
+                                    anchorOrigin={{
+                                      vertical: "bottom",
+                                      horizontal: "right"
+                                    }}
+                                    transformOrigin={{
+                                      vertical: "top",
+                                      horizontal: "right"
+                                    }}
+                                  >
+                                    <MenuItem onClick={() => handleOpenEditCommentForm(index)}>
+                                      {t("common_edit")}
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() => onDeleteComment(index)}
+                                      sx={{ color: "red" }}
+                                    >
+                                      {t("common_remove")}
+                                    </MenuItem>
+                                  </Menu>
+                                </>
+                              )}
+                            </Stack>
                             <Box className={classes.commentText}>
-                              <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                              {!isOpenEditCommentForm[index] && (
+                                <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                              )}
+                              {isOpenEditCommentForm[index] && (
+                                <Box className={classes.commentBox}>
+                                  <TextareaAutosize
+                                    key={commentFields[index].id}
+                                    {...registerEditComment(`comment.${index}.value`)}
+                                    aria-label='empty textarea'
+                                    translation-key='detail_problem_discussion_your_comment'
+                                    placeholder={t("detail_problem_discussion_your_comment")}
+                                    className={classes.textArea}
+                                    minRows={5}
+                                    aria-invalid={errors.comment ? true : false}
+                                  />
+                                  <Stack direction='row' justifyContent={"flex-end"} spacing={1}>
+                                    <Button
+                                      type='submit'
+                                      variant='contained'
+                                      sx={{
+                                        textTransform: "none",
+                                        backgroundColor: "green",
+                                        "&:hover": {
+                                          backgroundColor: "green"
+                                        }
+                                      }}
+                                      translation-key='common_edit'
+                                    >
+                                      {t("common_edit")}
+                                    </Button>
+                                    <Button
+                                      variant='contained'
+                                      sx={{
+                                        textTransform: "none",
+                                        backgroundColor: "red",
+                                        "&:hover": { backgroundColor: "red" }
+                                      }}
+                                      translation-key='common_close'
+                                      onClick={handleCloseEditCommentForm}
+                                    >
+                                      {t("common_close")}
+                                    </Button>
+                                  </Stack>
+                                </Box>
+                              )}
                             </Box>
                             {/* <Box className={classes.commentAction}>
                           <Box className={classes.upVote}>
@@ -459,7 +621,7 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                         </Box> */}
                           </Box>
                           <Divider />
-                        </>
+                        </form>
                       );
                     })}
                   <Stack alignItems={"center"}>
