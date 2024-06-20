@@ -96,6 +96,7 @@ interface DataGridProps {
   getCellClassName?: any;
   getRowClassName?: (params: GridRowClassNameParams<any>) => string;
   personalSx?: boolean;
+  getRowId?: (params: any) => string;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -122,7 +123,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     slots = {},
     getCellClassName,
     getRowClassName,
-    personalSx
+    personalSx,
+    getRowId
   } = props;
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
@@ -146,6 +148,7 @@ const CustomDataGrid = (props: DataGridProps) => {
   return (
     <Box className={classes.tableWrapper}>
       <DataGrid
+        getRowId={getRowId}
         loading={loading}
         rows={dataList}
         columns={tableHeader}

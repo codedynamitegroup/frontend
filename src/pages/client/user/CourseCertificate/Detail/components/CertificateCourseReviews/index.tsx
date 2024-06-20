@@ -8,9 +8,107 @@ import TextTitle from "components/text/TextTitle";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
+import { ReviewEntity } from "models/coreService/entity/ReviewEntity";
+import { useCallback, useEffect, useState } from "react";
+import { ReviewService } from "services/coreService/ReviewService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
-const CertificateCourseReviews = () => {
+const CertificateCourseReviews = ({
+  certificateCourseId,
+  dispatch
+}: {
+  certificateCourseId: string;
+  dispatch: any;
+}) => {
   const { t } = useTranslation();
+  const [page, setPage] = useState(0);
+  const [submitLoading, setSubmitLoading] = useState(false);
+
+  const [reviewData, setReviews] = useState<{
+    isLoading: boolean;
+    reviews: {
+      reviews: ReviewEntity[];
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+    };
+  }>({
+    isLoading: false,
+    reviews: {
+      reviews: [],
+      currentPage: 0,
+      totalPages: 0,
+      totalItems: 0
+    }
+  });
+
+  const handleGetReviewsByCertificateCourseId = useCallback(
+    async ({
+      certificateCourseId,
+      pageNo = 0,
+      pageSize = 5
+    }: {
+      certificateCourseId: string;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      setReviews((prev) => ({
+        ...prev,
+        isLoading: true
+      }));
+      try {
+        const getReviewsByCertificateCourseIdResponse =
+          await ReviewService.getReviewsByCertificateCourseId({
+            certificateCourseId,
+            pageNo: 0,
+            pageSize: 5
+          });
+        setReviews((prev) => ({
+          ...prev,
+          isLoading: false,
+          reviews: getReviewsByCertificateCourseIdResponse
+        }));
+      } catch (error: any) {
+        setReviews((prev) => ({
+          ...prev,
+          isLoading: false
+        }));
+      }
+    },
+    []
+  );
+
+  const handleCreateReview = useCallback(
+    async ({
+      certificateCourseId,
+      rating,
+      content
+    }: {
+      certificateCourseId: string;
+      rating: number;
+      content: string;
+    }) => {
+      setSubmitLoading(true);
+      try {
+        const createReviewResponse = await ReviewService.createReview({
+          certificateCourseId,
+          rating,
+          content
+        });
+        if (createReviewResponse && createReviewResponse.reviewId) {
+          dispatch(setSuccessMess("Đánh giá thành công"));
+          handleGetReviewsByCertificateCourseId({ certificateCourseId });
+        } else {
+          dispatch(setErrorMess("Đánh giá thất bại"));
+        }
+        setSubmitLoading(false);
+      } catch (error: any) {
+        setErrorMess("Đánh giá thất bại");
+        setSubmitLoading(false);
+      }
+    },
+    [dispatch, handleGetReviewsByCertificateCourseId]
+  );
 
   const starPercentList = [
     {
@@ -49,6 +147,22 @@ const CertificateCourseReviews = () => {
       rating: 5
     }
   });
+
+  const handleSubmitReview = async (data: { comment: string; rating: number }) => {
+    // await handleCreateReview({
+    //   certificateCourseId,
+    //   rating: data.rating,
+    //   content: data.comment
+    // });
+    // reset();
+    console.log("handleSubmitReview", data);
+  };
+
+  console.log("reviewData", reviewData);
+
+  useEffect(() => {
+    handleGetReviewsByCertificateCourseId({ certificateCourseId });
+  }, [certificateCourseId, handleGetReviewsByCertificateCourseId]);
 
   return (
     <Box id={classes.introduction}>
@@ -129,7 +243,7 @@ const CertificateCourseReviews = () => {
             width: "700px"
           }}
         >
-          <form onSubmit={handleSubmit((data) => console.log(data))}>
+          <form onSubmit={handleSubmit(handleSubmitReview)}>
             <Controller
               control={control}
               name='comment'

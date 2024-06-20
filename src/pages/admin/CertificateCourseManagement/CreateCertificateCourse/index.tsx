@@ -1,4 +1,4 @@
-import { Collapse, Container, Divider, Grid, ListItemButton } from "@mui/material";
+import { Collapse, Container, Divider, Grid } from "@mui/material";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import Heading3 from "components/text/Heading3";
 import { TopicEntity } from "models/coreService/entity/TopicEntity";
@@ -10,7 +10,6 @@ import {
   Controller,
   FieldArrayWithId,
   FieldErrors,
-  UseFieldArrayMove,
   UseFieldArrayRemove,
   UseFormRegister,
   UseFormSetValue,
@@ -45,6 +44,7 @@ import IconButton from "@mui/joy/IconButton";
 import EditOffRoundedIcon from "@mui/icons-material/EditOffRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
+import JoyButton from "@mui/joy/Button";
 
 import {
   DragDropContext,
@@ -54,6 +54,11 @@ import {
   DraggableLocation,
   DropResult
 } from "react-beautiful-dnd";
+import { Link } from "@mui/joy";
+import CodeQuestionDialog from "../SelectCodeQuestionDialog";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { CreateCertificateCourseWithAllAttributeCommand } from "models/coreService/create/CreateCertificateCourseCommand";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -93,6 +98,7 @@ interface ChapterFieldArrayPropsData {
   provided: DraggableProvided;
 }
 interface ChapterResourceFieldArrayPropsData {
+  setValue: UseFormSetValue<FormData>;
   errors: FieldErrors<FormData>;
   control: Control<FormData, any>;
   register: UseFormRegister<FormData>;
@@ -105,10 +111,12 @@ interface ChapterResourceFieldArrayPropsData {
 }
 
 const CreateCertificateCourse = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [topicList, setTopicList] = useState<TopicEntity[]>([]);
   const [skeleton, setSkeleton] = useState<boolean>(true);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
   const breadCrumbData = [
     {
@@ -173,7 +181,9 @@ const CreateCertificateCourse = () => {
                 title: yup.string().required(t("resource_title_required")),
                 questionId: yup.string(),
                 lessonHtml: yup.string(),
-                youtubeVideoUrl: yup.string()
+                youtubeVideoUrl: yup
+                  .string()
+                  .test("youtube-url", t("youtube_url_invalid"), (value) => isYoutubeUrl(value))
               })
             )
             .required()
@@ -224,7 +234,46 @@ const CreateCertificateCourse = () => {
   };
 
   const submitHandler = async (data: any) => {
-    console.log("data", data);
+    setSubmitLoading(true);
+    const formSubmittedData: FormData = { ...data };
+    const newCertificateCourse: CreateCertificateCourseWithAllAttributeCommand = {
+      name: formSubmittedData.name,
+      description: formSubmittedData.description || "",
+      skillLevel: formSubmittedData.skillLevel,
+      topicId: formSubmittedData.topicId,
+      startTime: new Date().toISOString(),
+      endTime: new Date(new Date().getTime() + 100000000000).toISOString(),
+      email: "",
+      chapters: (formSubmittedData.chapters || []).map((chapter) => {
+        return {
+          title: chapter.title,
+          no: chapter.no,
+          description: chapter.description || "",
+          resources: chapter.resources.map((resource) => {
+            return {
+              no: resource.no,
+              resourceType: resource.resourceType,
+              title: resource.title,
+              questionId: resource.questionId || "",
+              lessonHtml: resource.lessonHtml || "",
+              lessonVideo: resource.youtubeVideoUrl || ""
+            };
+          })
+        };
+      })
+    };
+
+    try {
+      const response =
+        await CertificateCourseService.createCertificateCourses(newCertificateCourse);
+      if (response.status === 200) {
+        console.log("response", response);
+      }
+      setSubmitLoading(false);
+    } catch (error) {
+      console.error("error", error);
+      setSubmitLoading(false);
+    }
   };
 
   return (
@@ -483,16 +532,22 @@ const CreateCertificateCourse = () => {
                 justifyContent={"center"}
                 mt={2}
               >
-                <Button btnType={BtnType.Outlined}>
+                <JoyButton
+                  variant='outlined'
+                  color='neutral'
+                  onClick={() => {
+                    navigate(routes.admin.certificate.root);
+                  }}
+                >
                   <ParagraphBody fontWeight={"600"} colorname='--eerie-black'>
                     {t("common_cancel")}
                   </ParagraphBody>
-                </Button>
-                <Button btnType={BtnType.Primary} type='submit'>
+                </JoyButton>
+                <JoyButton variant='solid' type='submit' color='primary' loading={submitLoading}>
                   <ParagraphBody fontWeight={"600"} colorname='--white'>
                     {t("common_save")}
                   </ParagraphBody>
-                </Button>
+                </JoyButton>
               </Stack>
             </Grid>
           </Grid>
@@ -523,6 +578,7 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
     control,
     name: `chapters.${parentIndex}.resources`
   });
+  const watchChapterTitle = watch(`chapters.${parentIndex}.title`);
 
   const handleNewResource = () => {
     append({
@@ -545,11 +601,11 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
   }, [isDragging]);
 
   useEffect(() => {
-    const tempChapterName = watch(`chapters.${parentIndex}.title`);
+    const tempChapterName = watchChapterTitle;
     if (tempChapterName && tempChapterName !== "") {
       setChapterName(tempChapterName);
     } else setChapterName("Chapter " + parentIndex);
-  }, [watch(`chapters.${parentIndex}.title`)]);
+  }, [watchChapterTitle]);
 
   useEffect(() => {
     if (isEditting && !isDragging) {
@@ -560,9 +616,8 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
   const handleDragResource = (result: DropResult) => {
     const source = result.source as DraggableLocation;
     const destination = result.destination as DraggableLocation;
-    console.log("source: %s, destination: %s", source.index, destination.index);
 
-    if (destination) {
+    if (result !== null && destination !== null && source !== null) {
       move(source.index, destination.index);
 
       fields.forEach((field, idx) => {
@@ -737,12 +792,8 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
                   <Stack spacing={2} {...provided.droppableProps} ref={provided.innerRef}>
                     {fields.map((field: any, index: number) => {
                       return (
-                        <>
-                          <Draggable
-                            key={`resources[${index}]`}
-                            draggableId={`item-resource-${index}`}
-                            index={index}
-                          >
+                        <React.Fragment key={`resources[${index}]`}>
+                          <Draggable draggableId={`item-resource-${index}`} index={index}>
                             {(provided, snapshot) => (
                               <div
                                 key={field.id}
@@ -754,6 +805,7 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
                                 </div>
 
                                 <ChapterResourceItem
+                                  setValue={setValue}
                                   errors={errors}
                                   watch={watch}
                                   parentIndex={parentIndex}
@@ -766,7 +818,7 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
                             )}
                           </Draggable>
                           {index !== fields.length - 1 && <Divider />}
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </Stack>
@@ -781,8 +833,17 @@ const ChapterItem = (props: ChapterFieldArrayPropsData) => {
 };
 
 const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
-  const { isEditting, removeResource, index, control, register, parentIndex, watch, errors } =
-    props;
+  const {
+    isEditting,
+    removeResource,
+    index,
+    control,
+    register,
+    parentIndex,
+    watch,
+    errors,
+    setValue
+  } = props;
 
   const { t } = useTranslation();
   const resourceTypeOptions = useMemo(() => {
@@ -791,19 +852,76 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
       value: resourceType
     }));
   }, [t]);
-  const [resourceType, setResourceType] = useState(ResourceTypeEnum.LESSON);
+
+  const watchResourceTitle = watch(`chapters.${parentIndex}.resources.${index}.title`);
+  const watchYoutubeVideoUrl = watch(`chapters.${parentIndex}.resources.${index}.youtubeVideoUrl`);
+  const watchResourceType = watch(`chapters.${parentIndex}.resources.${index}.resourceType`);
+  const watchLessonHtml = watch(`chapters.${parentIndex}.resources.${index}.lessonHtml`);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [resourceType, setResourceType] = useState(watchResourceType || ResourceTypeEnum.LESSON);
   const [resourceName, setResourceName] = useState<string>("Resource " + index);
 
   useEffect(() => {
-    const tempResourceName = watch(`chapters.${parentIndex}.resources.${index}.title`);
+    const tempResourceName = watchResourceTitle;
     if (tempResourceName && tempResourceName !== "") {
       setResourceName(tempResourceName);
     } else setResourceName("Resource " + index);
-  }, [watch(`chapters.${parentIndex}.resources.${index}.title`)]);
+
+    return () => {
+      setResourceName("");
+    };
+  }, [watchResourceTitle]);
+
+  // useEffect(() => {
+  //   if (watchResourceType === ResourceTypeEnum.LESSON) {
+  //     setResourceType(ResourceTypeEnum.LESSON);
+  //   } else if (watchResourceType === ResourceTypeEnum.VIDEO) {
+  //     setResourceType(ResourceTypeEnum.VIDEO);
+  //   } else {
+  //     setResourceType(ResourceTypeEnum.CODE);
+  //   }
+  // }, [watchResourceType]);
+
+  useEffect(() => {
+    if (resourceType === ResourceTypeEnum.VIDEO) {
+      setValue(`chapters.${parentIndex}.resources.${index}.lessonHtml`, "");
+      setValue(`chapters.${parentIndex}.resources.${index}.questionId`, "");
+    } else if (resourceType === ResourceTypeEnum.LESSON) {
+      setValue(`chapters.${parentIndex}.resources.${index}.youtubeVideoUrl`, "");
+      setValue(`chapters.${parentIndex}.resources.${index}.questionId`, "");
+    } else {
+      setValue(`chapters.${parentIndex}.resources.${index}.youtubeVideoUrl`, "");
+    }
+  }, [resourceType]);
+
+  const openQuestionDialog = () => {
+    setOpenDialog(true);
+  };
+  const closeQuestionDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleCodeQuestionRowClick = (questionData: {
+    questionId: string;
+    name: string;
+    difficulty: string;
+    questionText: string;
+  }) => {
+    setValue(`chapters.${parentIndex}.resources.${index}.questionId`, questionData.questionId);
+    setValue(`chapters.${parentIndex}.resources.${index}.lessonHtml`, questionData.name);
+    setOpenDialog(false);
+  };
 
   return (
     <>
       <Stack>
+        {openDialog && (
+          <CodeQuestionDialog
+            open={openDialog}
+            onClose={closeQuestionDialog}
+            onConfirm={handleCodeQuestionRowClick}
+          />
+        )}
         <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
           <IconButton
             variant='soft'
@@ -861,8 +979,8 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
                     <JoySelect
                       value={value}
                       onChange={(newValue: any) => {
-                        onChange(newValue);
                         setResourceType(newValue);
+                        onChange(newValue);
                       }}
                       options={resourceTypeOptions}
                     />
@@ -889,8 +1007,88 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
                     )}
                   />
                 )}
-                {resourceType === ResourceTypeEnum.VIDEO && <>VIDEO</>}
-                {resourceType === ResourceTypeEnum.CODE && <>QUESTION</>}
+                {resourceType === ResourceTypeEnum.VIDEO && (
+                  <>
+                    <Controller
+                      name={`chapters.${parentIndex}.resources.${index}.youtubeVideoUrl`}
+                      control={control}
+                      render={({ field: { ref, ...field } }) => (
+                        <InputTextFieldColumn
+                          error={Boolean(
+                            errors?.chapters?.[parentIndex]?.resources?.[index]?.youtubeVideoUrl
+                          )}
+                          errorMessage={
+                            errors?.chapters?.[parentIndex]?.resources?.[index]?.youtubeVideoUrl
+                              ?.message
+                          }
+                          inputRef={ref}
+                          useDefaultTitleStyle
+                          title={`${t("youtube_video_url")}`}
+                          type='text'
+                          placeholder={t("enter_youtube_video_url")}
+                          titleRequired={true}
+                          translation-key={["youtube_video_url", "enter_youtube_video_url"]}
+                          {...field}
+                        />
+                      )}
+                    />
+
+                    <Link href={watchYoutubeVideoUrl} target='_blank' rel='noopener noreferrer'>
+                      <Box
+                        component={"img"}
+                        sx={{
+                          marginTop: "20px",
+                          maxWidth: "200px",
+                          minWidth: "150px",
+                          borderRadius: "8px",
+                          "&:hover": {
+                            cursor: "pointer",
+                            transform: "scale(1.05)",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                            backgroundColor: "var(--blue-light-4)"
+                          }
+                        }}
+                        src={`https://img.youtube.com/vi/${extractVideoId(watchYoutubeVideoUrl)}/0.jpg`}
+                        alt='Youtube Video'
+                      />
+                    </Link>
+                  </>
+                )}
+                {resourceType === ResourceTypeEnum.CODE && (
+                  <>
+                    <Button
+                      variant='outlined'
+                      colorName={"var(--blue-selected)"}
+                      borderRadius='12px'
+                      startIcon={
+                        <AddCircleRoundedIcon
+                          sx={{
+                            color: "var(--blue-selected)",
+                            fontSize: "12px"
+                          }}
+                        />
+                      }
+                      onClick={openQuestionDialog}
+                    >
+                      <ParagraphBody
+                        fontSize={"12px"}
+                        fontWeight={"500"}
+                        colorname='--blue-light-1'
+                      >
+                        {t("choose_code_question")}
+                      </ParagraphBody>
+                    </Button>
+                    {watchResourceType === ResourceTypeEnum.CODE && watchLessonHtml !== "" && (
+                      <Stack marginTop={"5px"}>
+                        <ParagraphBody>{t("choose_code_question_title")} </ParagraphBody>
+                        <ParagraphBody fontWeight={"600"} colorname='--eerie-black'>
+                          {watchLessonHtml}
+                        </ParagraphBody>
+                      </Stack>
+                    )}
+                  </>
+                )}
               </Grid>
             </>
           )}
@@ -944,3 +1142,24 @@ const ChapterResourceItem = (props: ChapterResourceFieldArrayPropsData) => {
 };
 
 export default CreateCertificateCourse;
+
+const youtubeUrlRegex =
+  /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(?:-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/;
+
+function isYoutubeUrl(url?: string) {
+  if (url === "") return true;
+  if (!url || !youtubeUrlRegex.test(url)) {
+    return false;
+  }
+  return true;
+}
+
+function extractVideoId(url?: string) {
+  if (!url || !isYoutubeUrl(url)) {
+    return "";
+  }
+
+  const urlObj = new URL(url);
+  const params = new URLSearchParams(urlObj.search);
+  return params.get("v");
+}

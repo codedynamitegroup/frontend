@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "constants/API";
 import {
   PostEssayQuestion,
@@ -7,6 +6,7 @@ import {
   PostShortAnswerQuestion,
   QuestionCloneRequest
 } from "models/coreService/entity/QuestionEntity";
+import { GetAllQuestionWithPaginationCommand } from "models/courseService/entity/QuestionEntity";
 import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
@@ -196,6 +196,32 @@ export class QuestionService {
       }
     } catch (error: any) {
       console.error("Failed to clone question by id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getAllQuestionWithPagination(command: GetAllQuestionWithPaginationCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.QUESTION.GET_ALL_WITH_PAGINATION}`, {
+        params: {
+          searchName: command.searchName,
+          pageNo: command.pageNo,
+          pageSize: command.pageSize,
+          qtype: command.qtype
+        }
+      });
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to get all questions with pagination", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
