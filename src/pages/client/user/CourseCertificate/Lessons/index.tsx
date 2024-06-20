@@ -166,7 +166,7 @@ export default function Lessons() {
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        // dispatch(setErrorMess(error.response?.message || error.message));
+        dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch]
