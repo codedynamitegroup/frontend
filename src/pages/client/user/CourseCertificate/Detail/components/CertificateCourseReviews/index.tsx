@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import { ReviewEntity } from "models/coreService/entity/ReviewEntity";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReviewService } from "services/coreService/ReviewService";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
@@ -28,6 +28,7 @@ import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import CustomPagination from "components/common/pagination/CustomPagination";
 import useAuth from "hooks/useAuth";
+import { calcPercentageInHundred } from "utils/number";
 
 const CertificateCourseReviews = ({
   certificateCourseDetails,
@@ -128,28 +129,45 @@ const CertificateCourseReviews = ({
     [dispatch, handleGetReviewsByCertificateCourseId]
   );
 
-  const starPercentList = [
-    {
-      key: 1,
-      value: 20
-    },
-    {
-      key: 2,
-      value: 40
-    },
-    {
-      key: 3,
-      value: 60
-    },
-    {
-      key: 4,
-      value: 80
-    },
-    {
-      key: 5,
-      value: 100
-    }
-  ];
+  const starPercentList = useMemo(() => {
+    return [
+      {
+        key: 1,
+        value: calcPercentageInHundred(
+          certificateCourseDetails.numOfOneStarReviews || 0,
+          certificateCourseDetails.numOfReviews
+        )
+      },
+      {
+        key: 2,
+        value: calcPercentageInHundred(
+          certificateCourseDetails.numOfTwoStarReviews || 0,
+          certificateCourseDetails.numOfReviews
+        )
+      },
+      {
+        key: 3,
+        value: calcPercentageInHundred(
+          certificateCourseDetails.numOfThreeStarReviews || 0,
+          certificateCourseDetails.numOfReviews
+        )
+      },
+      {
+        key: 4,
+        value: calcPercentageInHundred(
+          certificateCourseDetails.numOfFourStarReviews || 0,
+          certificateCourseDetails.numOfReviews
+        )
+      },
+      {
+        key: 5,
+        value: calcPercentageInHundred(
+          certificateCourseDetails.numOfFiveStarReviews || 0,
+          certificateCourseDetails.numOfReviews
+        )
+      }
+    ];
+  }, [certificateCourseDetails]);
 
   const {
     control,
