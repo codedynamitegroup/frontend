@@ -94,6 +94,8 @@ export const routes = {
     },
     exam: {
       create: "/lecturer/courses/:courseId/assignments/exams/create",
+      take: "/lecturer/courses/:courseId/assignments/exams/:examId/take",
+      submitSummary: "/lecturer/courses/:courseId/assignments/exams/:examId/summary",
       edit: "/lecturer/courses/:courseId/assignments/exams/:examId/edit",
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
@@ -164,19 +166,20 @@ export const routes = {
       }
     },
     course_certificate: {
-      root: "/course-certificates",
+      root: "/certificate-courses",
       detail: {
-        root: "/course-certificates/:courseId/*",
-        introduction: "/course-certificates/:courseId/introduction",
+        root: "/certificate-courses/:courseId/*",
+        introduction: "/certificate-courses/:courseId/introduction",
         lesson: {
-          root: "/course-certificates/:courseId/lesson",
-          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
-          description: "/course-certificates/:courseId/lesson/:lessonId/description",
-          solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
-          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
-          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
+          root: "/certificate-courses/:courseId/lesson",
+          detail: "/certificate-courses/:courseId/lesson/:lessonId/*",
+          description: "/certificate-courses/:courseId/lesson/:lessonId/description",
+          solution: "/certificate-courses/:courseId/lesson/:lessonId/solution",
+          submission: "/certificate-courses/:courseId/lesson/:lessonId/submission",
+          share_solution: "/certificate-courses/:courseId/lesson/:lessonId/share-solution"
         },
-        certificate: "/course-certificates/:courseId/certificate"
+        certificate: "/certificate-courses/:courseId/certificate",
+        review: "/certificate-courses/:courseId/review"
       }
     },
     contest: {
@@ -245,6 +248,17 @@ export const routes = {
         details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
+    },
+    organizations: {
+      root: "/admin/organizations",
+      edit: {
+        root: "/admin/organizations/edit/:organizationId/*",
+        details: "/admin/organizations/edit/:organizationId/details",
+        list_users: "/admin/organizations/edit/:organizationId/users",
+        create_user: "/admin/organizations/edit/:organizationId/users/create",
+        assign_user: "/admin/organizations/edit/:organizationId/users/assign-user"
+      },
+      create: "/admin/organizations/create"
     },
     code_question: {
       root: "/admin/code-questions",

@@ -124,6 +124,10 @@ const PersistLogin = lazy(() => import("components/common/PersistLogin"));
 const SubmitExamSummary = lazy(
   () => import("pages/client/student/ExamManagemenent/SubmitExamReview")
 );
+const TakeExamLecturer = lazy(() => import("pages/client/lecturer/ExamManagemenent/TakeExam"));
+const SubmitExamSummaryLecturer = lazy(
+  () => import("pages/client/lecturer/ExamManagemenent/SubmitExamReview")
+);
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 
@@ -157,6 +161,11 @@ const router = createHashRouter(
             element={<PreviewAssignmentSubmission />}
           />
           <Route path={routes.lecturer.exam.create} element={<CreateExam />} />
+          <Route path={routes.lecturer.exam.take} element={<TakeExamLecturer />} />
+          <Route
+            path={routes.lecturer.exam.submitSummary}
+            element={<SubmitExamSummaryLecturer />}
+          />
           <Route path={routes.lecturer.exam.edit} element={<EditExam />} />
           <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
           <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />

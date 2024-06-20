@@ -1,0 +1,33 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  height: 100%;
+  gap: 15px;
+}
+.phoneInput {
+  input {
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 24px;
+    letter-spacing: 0.015em;
+    padding: 14px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--gray-30);
+  }
+}
+
+.textArea {
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
+  resize: none;
+  border: 1px solid var(--gray-30);
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+  }
+}

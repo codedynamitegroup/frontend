@@ -15,16 +15,15 @@ import JoyButton from "@mui/joy/Button";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import BasicSelect from "components/common/select/BasicSelect";
 import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { CreatedUserByAdminRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import InputSelect from "components/common/inputs/InputSelect";
 import { IOptionItem } from "models/general";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 interface IFormDataType {
   email: string;
@@ -37,7 +36,6 @@ interface IFormDataType {
 }
 
 const CreateUser = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -105,7 +103,6 @@ const CreateUser = () => {
         await UserService.createUserByAdmin(createUserByAdminData);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created user successfully"));
-        dispatch(clearUsers());
         navigate(routes.admin.users.root);
       } catch (error: any) {
         console.error("error", error);
@@ -142,20 +139,12 @@ const CreateUser = () => {
           gap: "20px"
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.users.root)}
-              translation-key='user_management'
-            >
-              {t("user_management")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='user_create'>
-              {t("user_create")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[{ navLink: routes.admin.users.root, label: t("user_management") }]}
+              lastBreadCrumbLabel={t("user_create")}
+            />
           </Box>
         </Box>
         <Divider />

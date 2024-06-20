@@ -16,12 +16,10 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUsers, setLoading, clearUsers } from "reduxes/authService/user";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -32,6 +30,8 @@ import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setLoading } from "reduxes/Loading";
+import { PaginationList } from "models/general";
 
 interface UserManagementProps {
   id: string;
@@ -46,13 +46,13 @@ interface UserManagementProps {
   lastLogin: string;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
+  isBelongToOrganization: boolean;
   createdAt: Date;
   roleName: string;
   isDeleted: boolean;
 }
 
 const UserManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -67,12 +67,18 @@ const UserManagement = () => {
     }[]
   >([
     {
-      key: "Status",
+      key: "role",
       value: "ALL"
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedUserId, setDeletedUserId] = useState<string>("");
   const onCancelConfirmDelete = () => {
@@ -82,7 +88,12 @@ const UserManagement = () => {
     UserService.deleteUserById(deletedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Delete user successfully"));
-        dispatch(clearUsers());
+        setUserState({
+          currentPage: 0,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        });
       })
       .catch((error) => {
         console.error("error", error);
@@ -111,7 +122,12 @@ const UserManagement = () => {
           pageNo,
           pageSize
         });
-        dispatch(setUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -138,7 +154,7 @@ const UserManagement = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 3,
+      flex: 2.5,
       renderHeader: () => {
         return (
           <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -174,7 +190,7 @@ const UserManagement = () => {
     {
       field: "fullname",
       headerName: t("common_fullname"),
-      flex: 2,
+      flex: 1.5,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -226,7 +242,33 @@ const UserManagement = () => {
           <Checkbox
             disableRipple
             checked={params.row.isDeleted === true ? true : false}
-            color={params.row.isDeleted ? "success" : "error"}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
+      field: "isBelongToOrganization",
+      headerName: t("common_is_belong_to_organization"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_belong_to_organization")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isBelongToOrganization === true ? true : false}
             sx={{
               "&:hover": {
                 backgroundColor: "transparent !important",
@@ -292,7 +334,7 @@ const UserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.users.totalItems || 0, [userState.users]);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -329,30 +371,30 @@ const UserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: UserManagementProps[] = useMemo(
-    () =>
-      userState.users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
-        };
-      }),
-    [mappingRole, userState.users]
-  );
-
+  const userListTable: UserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted,
+        isBelongToOrganization: user.organization ? true : false
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
       searchName: searchValue
@@ -371,16 +413,15 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (userState.users.users.length > 0) return;
-      dispatch(setInititalLoading(true));
+      // dispatch(setInititalLoading(true));
       await handleGetUsers({
         searchName: ""
       });
-      dispatch(setInititalLoading(false));
+      // dispatch(setInititalLoading(false));
     };
 
     fetchUsers();
-  }, [dispatch, handleGetUsers, userState.users.users]);
+  }, [dispatch, handleGetUsers]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -404,13 +445,6 @@ const UserManagement = () => {
           }
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
         <Divider />
         <Grid
           container
@@ -424,7 +458,7 @@ const UserManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -436,22 +470,46 @@ const UserManagement = () => {
               filterKeyList={[
                 {
                   label: t("common_status"),
-                  value: "Status"
+                  value: "blockStatus"
+                },
+                {
+                  label: t("common_role"),
+                  value: "role"
                 }
               ]}
               filterValueList={{
-                Status: [
+                blockStatus: [
+                  {
+                    label: t("common_all"),
+                    value: "ALL"
+                  },
+                  { label: t("common_active"), value: "ACTIVE" },
+                  { label: t("common_inactive"), value: "INACTIVE" }
+                ],
+                role: [
                   {
                     label: t("common_all"),
                     value: "ALL"
                   },
                   {
-                    label: t("common_active"),
-                    value: "ACTIVE"
+                    label: t("role_system_admin"),
+                    value: ERoleName.ADMIN
                   },
                   {
-                    label: t("common_inactive"),
-                    value: "INACTIVE"
+                    label: t("role_org_admin"),
+                    value: ERoleName.ADMIN_MOODLE
+                  },
+                  {
+                    label: t("role_lecturer"),
+                    value: ERoleName.LECTURER_MOODLE
+                  },
+                  {
+                    label: t("role_student"),
+                    value: ERoleName.STUDENT_MOODLE
+                  },
+                  {
+                    label: t("role_user"),
+                    value: ERoleName.USER
                   }
                 ]
               }}
@@ -466,7 +524,7 @@ const UserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
+              loading={isLoadingState.loading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

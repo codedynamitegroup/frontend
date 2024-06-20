@@ -14,3 +14,10 @@ export interface IOptionItem {
   id: string;
   name: string;
 }
+
+export interface PaginationList<T> {
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+  items: T[];
+}

@@ -80,10 +80,7 @@ export default function ProblemDetailSolution({
   const { height: stickyFilterHeight } = useBoxDimensions({
     ref: stickyFilterRef
   });
-  const [solutionDetail, setSolutionDetail] = useState(true);
-  const handleSolutionDetail = () => {
-    setSolutionDetail(!solutionDetail);
-  };
+
   const [searchKey, setSearchKey] = useState<string>("");
   const [timer, setTimer] = useState<number | undefined>(undefined);
 
@@ -134,10 +131,10 @@ export default function ProblemDetailSolution({
     setAnchorEl(event.currentTarget);
   };
   const choosenTagList = tags.filter((item) => item.isChoosen);
-  useEffect(() => {
+  const fetchSharedSolution = async () => {
     if (problemId) {
       setItemLoading(true);
-      SharedSolutionService.getSharedSolution(
+      await SharedSolutionService.getSharedSolution(
         problemId,
         {
           searchKey,
@@ -156,7 +153,7 @@ export default function ProblemDetailSolution({
         .finally(() => setItemLoading(false));
     } else if (courseId && lessonId && lessonProblemId) {
       setItemLoading(true);
-      SharedSolutionService.getSharedSolution(
+      await SharedSolutionService.getSharedSolution(
         lessonProblemId,
         {
           searchKey,
@@ -174,9 +171,19 @@ export default function ProblemDetailSolution({
         })
         .finally(() => setItemLoading(false));
     }
+  };
+  useEffect(() => {
+    fetchSharedSolution();
   }, [problemId, searchKey, tags, pageNum, newestSearch]);
   const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageNum(value - 1);
+  };
+  const [solutionDetail, setSolutionDetail] = useState(true);
+  const handleSolutionDetail = async () => {
+    if (!solutionDetail) {
+      await fetchSharedSolution();
+      setSolutionDetail(!solutionDetail);
+    } else setSolutionDetail(!solutionDetail);
   };
 
   return (

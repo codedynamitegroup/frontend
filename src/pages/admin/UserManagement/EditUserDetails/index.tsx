@@ -1,10 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Avatar, Box, Card, Divider, Grid } from "@mui/material";
+import { Avatar, Box, Card, Checkbox, Divider, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +17,6 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { UpdateUserByAdminRequest, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import { format, parse } from "date-fns";
 import ErrorMessage from "components/text/ErrorMessage";
 import PhoneInput from "react-phone-number-input";
@@ -34,6 +31,7 @@ import { IOptionItem } from "models/general";
 import InputSelect from "components/common/inputs/InputSelect";
 import images from "config/images";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 interface IFormDataType {
   firstName: string;
@@ -41,10 +39,10 @@ interface IFormDataType {
   roleName: IOptionItem;
   dob?: string;
   phone: string;
+  isDeleted: boolean;
 }
 
 const EditUserDetails = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -64,7 +62,8 @@ const EditUserDetails = () => {
           id: yup.string().required(),
           name: yup.string().required()
         })
-        .required(t("role_required"))
+        .required(t("role_required")),
+      isDeleted: yup.boolean().required(t("organization_is_deleted_required"))
     });
   }, [t]);
   const { userId } = useParams<{ userId: string }>();
@@ -75,10 +74,7 @@ const EditUserDetails = () => {
   const roleNameList: IOptionItem[] = useMemo(
     () => [
       { id: ERoleName.ADMIN, name: t("role_system_admin") },
-      { id: ERoleName.USER, name: t("role_user") },
-      { id: ERoleName.LECTURER_MOODLE, name: t("role_lecturer") },
-      { id: ERoleName.STUDENT_MOODLE, name: t("role_student") },
-      { id: ERoleName.ADMIN_MOODLE, name: t("role_org_admin") }
+      { id: ERoleName.USER, name: t("role_user") }
     ],
     [t]
   );
@@ -121,7 +117,8 @@ const EditUserDetails = () => {
             lastName: userResponse.lastName,
             dob: format(userResponse.dob ? userResponse.dob : Date.now(), "dd-MM-yyyy"),
             phone: userResponse.phone,
-            roleName: roleName
+            roleName: roleName,
+            isDeleted: userResponse.isDeleted
           });
           setUser(userResponse);
         }
@@ -147,8 +144,10 @@ const EditUserDetails = () => {
         ? parse(formSubmittedData.dob, "dd-MM-yyyy", new Date())
         : undefined,
       roleName: formSubmittedData.roleName.id,
-      phone: formSubmittedData.phone
+      phone: formSubmittedData.phone,
+      isDeleted: formSubmittedData.isDeleted
     };
+    console.log(updateUserByAdminData);
     await handleUpdateUser(updateUserByAdminData);
   };
 
@@ -162,7 +161,6 @@ const EditUserDetails = () => {
         await UserService.updateUserByAdmin(userId, updateUserByAdminRequest);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Updated user successfully"));
-        dispatch(clearUsers());
       } catch (error: any) {
         console.error("error", error);
         dispatch(setErrorMess("User is updated failed!!! please check your input information"));
@@ -188,20 +186,12 @@ const EditUserDetails = () => {
           gap: "20px"
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.users.root)}
-              translation-key='user_management'
-            >
-              {t("user_management")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='common_account_info'>
-              {t("common_account_info")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[{ navLink: routes.admin.users.root, label: t("user_management") }]}
+              lastBreadCrumbLabel={t("common_account_info")}
+            />
           </Box>
         </Box>
         <Divider />
@@ -239,7 +229,7 @@ const EditUserDetails = () => {
             />
             {user?.organization && (
               <InputTextField
-                title={t("common_organization")}
+                title={t("common_organization_name")}
                 type='text'
                 disabled
                 value={user?.organization.name}
@@ -322,6 +312,32 @@ const EditUserDetails = () => {
                   }}
                 />
                 {errors.dob?.message && <ErrorMessage>{errors.dob?.message}</ErrorMessage>}
+              </Grid>
+            </Grid>
+            <Grid container spacing={1} columns={12}>
+              <Grid item xs={4} display={"flex"} flexDirection={"row"} alignItems={"center"}>
+                <TextTitle translation-key='common_is_blocked'>{t("common_is_blocked")}</TextTitle>
+              </Grid>
+              <Grid
+                item
+                xs={7}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                gap={"10px"}
+              >
+                <Controller
+                  control={control}
+                  name='isDeleted'
+                  render={({ field }) => {
+                    return (
+                      <Checkbox size='large' checked={!!field.value} {...field} name='isDeleted' />
+                    );
+                  }}
+                />
+                {errors.isDeleted?.message && (
+                  <ErrorMessage>{errors.isDeleted?.message}</ErrorMessage>
+                )}
               </Grid>
             </Grid>
             {user && (

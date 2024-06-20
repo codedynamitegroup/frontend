@@ -1,0 +1,50 @@
+.filterSearch {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  .ant-input-search {
+    width: 300px;
+  }
+  gap: 10px;
+}
+.container {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.icon {
+  margin-right: 10px;
+}
+.iconCheck {
+  color: var(--green-600);
+}
+.pagination {
+  background-color: white !important;
+}
+.table-head {
+  background-color: var(--gray-1);
+  .table-cell {
+    min-width: 180px;
+    color: #fff !important;
+  }
+  .status {
+    width: 150px;
+  }
+}
+.row {
+  // cursor: pointer;
+}
+
+.linkText {
+  &:hover {
+    color: var(--blue-3);
+  }
+}
+
+.row1 {
+  // cursor: pointer;
+  background-color: var(--gray-1);
+}

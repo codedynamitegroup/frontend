@@ -1,44 +1,55 @@
-import { Box, Button, CardMedia, CircularProgress, Container, Grid } from "@mui/material";
-import classes from "./styles.module.scss";
-import Heading1 from "components/text/Heading1";
-import ParagraphBody from "components/text/ParagraphBody";
-import Heading3 from "components/text/Heading3";
-import { Card, CardContent } from "@mui/material";
-import images from "config/images";
-import StarIcon from "@mui/icons-material/Star";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import StarIcon from "@mui/icons-material/Star";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  CircularProgress,
+  Container,
+  Grid
+} from "@mui/material";
+import Heading1 from "components/text/Heading1";
+import Heading3 from "components/text/Heading3";
+import ParagraphBody from "components/text/ParagraphBody";
+import images from "config/images";
+import useAuth from "hooks/useAuth";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
+import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
-import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
-import { setCertificateCourses, setLoading } from "reduxes/coreService/CertificateCourse";
-import { CertificateCourseService } from "services/coreService/CertificateCourseService";
-import { useEffect, useMemo } from "react";
 import { routes } from "routes/routes";
-import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import useAuth from "hooks/useAuth";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import classes from "./styles.module.scss";
 
 export default function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useAuth();
   useEffect(() => {
     if (isLoggedIn) {
       navigate(routes.user.dashboard.root);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigate]);
 
-  const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
+  const [data, setData] = useState<{
+    isLoading: boolean;
+    certificateCourses: CertificateCourseEntity[];
+  }>({
+    isLoading: false,
+    certificateCourses: []
+  });
 
   const singleBasicProgrammingLanguageCertificateCourses = useMemo(() => {
-    if (!certificateCourseState.certificateCourses) {
+    if (!data.certificateCourses) {
       return [];
     }
-    const certificateCourses = certificateCourseState.certificateCourses.filter(
-      (certificateCourse) => certificateCourse.topic.isSingleProgrammingLanguage === true
+    const certificateCourses = data.certificateCourses.filter(
+      (dt) => dt.topic.isSingleProgrammingLanguage === true
     );
     // sort by skill level
     certificateCourses.sort((a, b) => {
@@ -61,18 +72,18 @@ export default function HomePage() {
       }
     });
     return certificateCourses;
-  }, [certificateCourseState.certificateCourses]);
+  }, [data.certificateCourses]);
 
   const dsaProgrammingLanguageCertificateCourses = useMemo(() => {
-    if (!certificateCourseState.certificateCourses) {
+    if (!data.certificateCourses) {
       return [];
     }
-    return certificateCourseState.certificateCourses.filter(
-      (certificateCourse) =>
-        certificateCourse.topic.isSingleProgrammingLanguage !== true &&
-        certificateCourse.topic.name === "Data structures and Algorithms"
+    return data.certificateCourses.filter(
+      (dt) =>
+        dt.topic.isSingleProgrammingLanguage !== true &&
+        dt.topic.name === "Data structures and Algorithms"
     );
-  }, [certificateCourseState.certificateCourses]);
+  }, [data.certificateCourses]);
 
   const handleGetCertificateCourses = async ({
     courseName,
@@ -83,25 +94,26 @@ export default function HomePage() {
     filterTopicId?: string;
     isRegisteredFilter: IsRegisteredFilterEnum;
   }) => {
-    dispatch(setLoading({ isLoading: true }));
+    setData((prev) => ({
+      ...prev,
+      isLoading: true
+    }));
     try {
       const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
         courseName,
         filterTopicId,
         isRegisteredFilter
       });
-      setTimeout(() => {
-        dispatch(setCertificateCourses(getCertificateCoursesResponse.certificateCourses));
-        dispatch(setLoading({ isLoading: false }));
-      }, 500);
+      setData((prev) => ({
+        ...prev,
+        certificateCourses: getCertificateCoursesResponse.certificateCourses,
+        isLoading: false
+      }));
     } catch (error: any) {
-      console.error("Failed to fetch certificate courses", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-      dispatch(setLoading({ isLoading: false }));
-      // Show snackbar here
+      setData((prev) => ({
+        ...prev,
+        isLoading: false
+      }));
     }
   };
 
@@ -144,7 +156,7 @@ export default function HomePage() {
           <Container className={classes.courseContainer}>
             <Grid item xs={12} className={classes.courseContent}>
               <Heading3 className={classes.courseHeading}>{t("home_learn_to_code")}</Heading3>
-              {certificateCourseState.isLoading ? (
+              {data.isLoading ? (
                 <Box
                   sx={{
                     display: "flex",
@@ -245,7 +257,7 @@ export default function HomePage() {
                 {t("home_data_structures_and_algorithms")}
               </Heading3>
 
-              {certificateCourseState.isLoading ? (
+              {data.isLoading ? (
                 <Box
                   sx={{
                     display: "flex",

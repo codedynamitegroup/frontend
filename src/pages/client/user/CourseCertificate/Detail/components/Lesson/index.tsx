@@ -1,14 +1,17 @@
 import { Box } from "@mui/material";
-import classes from "./styles.module.scss";
-import Heading1 from "components/text/Heading1";
-import LessonAccordion from "pages/client/user/CourseCertificate/Detail/components/Lesson/components/LessonAccordion";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
-import { useTranslation } from "react-i18next";
 import Heading2 from "components/text/Heading2";
+import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
+import LessonAccordion from "pages/client/user/CourseCertificate/Detail/components/Lesson/components/LessonAccordion";
+import { useTranslation } from "react-i18next";
+import classes from "./styles.module.scss";
 
-const CourseCertificateLesson = ({ isRegistered }: { isRegistered: boolean }) => {
-  const chapters = useSelector((state: RootState) => state.chapter.chapters);
+const CourseCertificateLesson = ({
+  chapters,
+  isRegistered
+}: {
+  chapters: ChapterEntity[];
+  isRegistered: boolean;
+}) => {
   const { t } = useTranslation();
 
   return (

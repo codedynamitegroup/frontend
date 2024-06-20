@@ -9,27 +9,8 @@
 .breadcump {
   display: flex;
   align-items: center;
-  padding: 10px 20px 10px 20px;
-
-  #breadcumpWrapper {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    #icArrow {
-      color: var(--blue-500);
-      width: 20px;
-      height: 15px;
-    }
-    .cursorPointer {
-      &:hover {
-        cursor: pointer;
-        text-decoration: underline;
-      }
-    }
-  }
+  padding-left: 20px;
 }
-
 .phoneInput {
   input {
     font-size: 16px;

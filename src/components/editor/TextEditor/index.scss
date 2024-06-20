@@ -9,6 +9,12 @@
       height: 100%;
     }
   }
+
+  .ql-disabled {
+    box-shadow: none;
+    border: 1px solid var(--gray-30);
+    border-radius: 12px !important;
+  }
 }
 .text-editor-no-toolbar {
   .ql-container {
@@ -79,7 +85,6 @@
   .ql-toolbar {
     border-radius: 12px 12px 0px 0px;
   }
-  
 }
 
 .dialogContent {

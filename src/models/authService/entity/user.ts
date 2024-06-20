@@ -34,11 +34,17 @@ export interface RegisteredRequest {
 }
 
 export interface CreatedUserByAdminRequest {
+  organizationId?: string;
   email: string;
   password: string;
   firstName: string;
   phone: string;
   lastName: string;
+  roleName: string;
+}
+
+export interface AssignUserToOrganizationRequest {
+  organizationId: string;
   roleName: string;
 }
 
@@ -56,6 +62,7 @@ export interface UpdateUserByAdminRequest {
   dob?: Date;
   phone: string;
   roleName: string;
+  isDeleted?: boolean;
 }
 
 export interface UpdatePasswordUserRequest {

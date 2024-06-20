@@ -26,7 +26,8 @@ export default function TestCase() {
 
   useEffect(() => {
     if (codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0) {
-      setTestCases(codeQuestion.sampleTestCases);
+      const clone = cloneDeep(codeQuestion.sampleTestCases);
+      setTestCases(clone.slice(0, Math.min(clone.length, 5)));
       // dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
       // dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
     }
