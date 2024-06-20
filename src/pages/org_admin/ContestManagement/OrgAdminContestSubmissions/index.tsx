@@ -1,8 +1,18 @@
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Avatar, Box, Card, Divider, Stack } from "@mui/material";
+import { Avatar, Box, Stack } from "@mui/material";
+import {
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridRowParams,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import CustomDataGrid from "components/common/CustomDataGrid";
 import Heading1 from "components/text/Heading1";
+import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
+import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,19 +23,9 @@ import { routes } from "routes/routes";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
-import classes from "./styles.module.scss";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import {
-  GridCallbackDetails,
-  GridColDef,
-  GridPaginationModel,
-  GridRowParams,
-  GridRowSelectionModel
-} from "@mui/x-data-grid";
-import Heading6 from "components/text/Heading6";
-import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
+import classes from "./styles.module.scss";
 
 const OrgAdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -285,44 +285,24 @@ const OrgAdminContestSubmissions = () => {
   }
   return (
     <>
-      <Card
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          margin: "20px 20px 90px 20px",
-          gap: "20px"
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+      <Box>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.org_admin.contest.root)}
-              translation-key='contest_management_title'
-            >
-              {t("contest_management_title")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() =>
-                navigate(routes.org_admin.contest.edit.details.replace(":contestId", contestId))
-              }
-            >
-              {contestDetails.name}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>{t("detail_problem_submission")}</ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.org_admin.contest.root, label: t("contest_management_title") },
+                {
+                  navLink: routes.org_admin.contest.edit.details.replace(":contestId", contestId),
+                  label: contestDetails.name
+                }
+              ]}
+              lastBreadCrumbLabel={t("detail_problem_submission")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            margin: "20px",
+            margin: "0 20px",
             minHeight: "700px"
           }}
         >
@@ -360,7 +340,7 @@ const OrgAdminContestSubmissions = () => {
             />
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };
