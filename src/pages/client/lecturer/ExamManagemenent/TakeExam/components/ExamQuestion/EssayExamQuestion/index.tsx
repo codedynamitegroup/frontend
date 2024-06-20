@@ -17,49 +17,85 @@ import {
 } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
 import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
+import { debounce } from "lodash";
 import { useState } from "react";
 
-interface EssayExamQuestionProps {
+interface Props {
+  page: number;
+
   questionEssayQuestion: EssayQuestion;
-  questionIndex: number;
-  questionSubmitContent?: any;
+  questionState: any;
 }
 
-const EssayExamQuestion = (props: EssayExamQuestionProps) => {
-  const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
+const EssayExamQuestion = (props: Props) => {
+  const { page, questionEssayQuestion, questionState } = props;
+  const isFlagged = questionState?.flag;
+  const [textValue, setTextValue] = useState<string>("");
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const fileTypeList =
+    questionEssayQuestion.fileTypesList === "archive"
+      ? ".7z, .bdoc, .cdoc, .ddoc, .gtar, .tgz, .gz, .gzip, .hqx, .rar, .sit, .tar, .zip"
+      : questionEssayQuestion.fileTypesList === "document"
+        ? ".doc, .docx, .epub, .gdoc, .odt, .ott, .oth, .pdf, .rtf"
+        : questionEssayQuestion.fileTypesList === "image"
+          ? ".bmp, .gif, .jpeg, .jpg, .png, .svg, .tif, .tiff"
+          : questionEssayQuestion.fileTypesList === "video"
+            ? ".3g2, .3gp, .avi, .flv, .h264, .m4v, .mkv, .mov, .mp4, .mpg, .mpeg .rm .swf .vob .wmv"
+            : questionEssayQuestion.fileTypesList === "audio"
+              ? ".aif, .cda, .mid, .midi, .mp3, .mpa, .ogg, .wav, .wma"
+              : "";
+  const convertedFileSize = questionEssayQuestion.maxBytes
+    ? (questionEssayQuestion.maxBytes / 1000) * 1024 * 1024
+    : undefined;
+
+  const flagQuestionHandle = () => {
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionEssayQuestion.question.id, flag: !isFlagged }));
+  };
+
+  const debouncedHandleOnInputChange = debounce((value: string) => {
+    let isAnswered = true;
+    if (value === "") isAnswered = false;
+
+    dispatch(
+      setAnswered({
+        id: questionEssayQuestion.question.id,
+        answered: isAnswered,
+        content: value
+      })
+    );
+  }, 250);
+
+  const HandleInputChange = (value: string) => {
+    setTextValue(value);
+    debouncedHandleOnInputChange(value);
+  };
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <Heading4>{`${t("common_question")} ${questionIndex + 1}`}</Heading4>
-          {/* <Button
+          <Heading4>{`${t("common_question")} ${page + 1}`}</Heading4>
+          <Button
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
             onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
-          </Button> */}
+          </Button>
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
-            }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
-                ? t("common_answered")
-                : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -100,35 +136,21 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             {t("common_answer")}
           </ParagraphBody>
           {questionEssayQuestion.responseFormat === "editor" && (
-            <ParagraphBody
-              sx={{
-                minHeight: "200px",
-                border: "1px solid #e0e0e0",
-                borderRadius: "12px",
-                padding: "10px"
-              }}
-              className='ql-editor'
-              fontSize={"1rem"}
-              textAlign={"left"}
-              fontWeight={"400"}
-              color={"#212121"}
-              lineHeight={"1.5"}
-              dangerouslySetInnerHTML={{
-                __html: questionSubmitContent?.content
-              }}
+            <TextEditor
+              value={textValue}
+              defaultvalue={questionState?.content}
+              onChange={HandleInputChange}
+              roundedBorder
+              maxLines={questionEssayQuestion.responseFieldLines}
             />
           )}
           {questionEssayQuestion.responseFormat === "plain" && (
-            <Textarea
-              defaultValue={questionSubmitContent?.content}
-              minRows={"10"}
-              maxRows={questionEssayQuestion.responseFieldLines}
-            />
+            <Textarea minRows={"10"} maxRows={questionEssayQuestion.responseFieldLines} />
           )}
         </Box>
       </Grid>
 
-      {/* {(questionEssayQuestion.responseFormat === "no_online" ||
+      {(questionEssayQuestion.responseFormat === "no_online" ||
         questionEssayQuestion.attachments !== 0) && (
         <Grid item xs={12}>
           <AdvancedDropzoneForEssayExam
@@ -144,7 +166,7 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             relatedRemoveAllDispatch={removeAllFilesFromExamQuestion}
           />
         </Grid>
-      )} */}
+      )}
     </Grid>
   );
 };
