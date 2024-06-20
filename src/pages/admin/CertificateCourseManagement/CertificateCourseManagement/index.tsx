@@ -1,30 +1,22 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Chip, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
   GridColDef,
-  GridPaginationModel,
-  GridRowParams,
-  GridRowSelectionModel
+  GridPaginationModel
 } from "@mui/x-data-grid";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
-import Heading1 from "components/text/Heading1";
 import Heading3 from "components/text/Heading3";
-import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
-import i18next from "i18next";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
-import moment from "moment";
 import React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,14 +33,10 @@ interface CertificateCourseDataGridProps extends CertificateCourseEntity {
 }
 
 const CertificateCourseManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const [currentLang, setCurrentLang] = useState(() => {
-    return i18next.language;
-  });
   const [filters, setFilters] = React.useState<
     {
       key: string;
@@ -277,17 +265,9 @@ const CertificateCourseManagement = () => {
               icon={<EditIcon />}
               label='Edit'
               onClick={() => {
-                // navigate(
-                //   routes.admin.contest.edit.details.replace(
-                //     ":contestId",
-                //     params.row.certificateCourseId
-                //   ),
-                //   {
-                //     state: {
-                //       contestName: params.row.name
-                //     }
-                //   }
-                // );
+                navigate(
+                  routes.admin.certificate.detail.replace(":id", params.row.certificateCourseId)
+                );
               }}
             />,
             <GridActionsCellItem

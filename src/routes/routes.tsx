@@ -182,6 +182,9 @@ export const routes = {
         review: "/certificate-courses/:courseId/review"
       }
     },
+    business_contact: {
+      root: "/business-contact"
+    },
     contest: {
       root: "/contests",
       detail: {
@@ -225,7 +228,8 @@ export const routes = {
     information: "/admin/information",
     certificate: {
       root: "/admin/certificate-course",
-      create: "/admin/certificate-course/create"
+      create: "/admin/certificate-course/create",
+      detail: "/admin/certificate-course/:id"
     },
     contest: {
       root: "/admin/contests",

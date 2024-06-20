@@ -30,7 +30,6 @@ import { UserService } from "services/authService/UserService";
 import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
-import { setLoading } from "reduxes/Loading";
 import { PaginationList } from "models/general";
 
 interface UserManagementProps {
@@ -78,7 +77,7 @@ const UserManagement = () => {
     totalPages: 0,
     items: []
   });
-  const isLoadingState = useSelector((state: RootState) => state.loading);
+  const [isLoadingListUsers, setIsLoadingListUsers] = useState<boolean>(false);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedUserId, setDeletedUserId] = useState<string>("");
   const onCancelConfirmDelete = () => {
@@ -88,11 +87,9 @@ const UserManagement = () => {
     UserService.deleteUserById(deletedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Delete user successfully"));
-        setUserState({
-          currentPage: 0,
-          totalItems: 0,
-          totalPages: 0,
-          items: []
+        handleGetUsers({
+          searchName: "",
+          belongToOrg: EBelongToOrg.ALL
         });
       })
       .catch((error) => {
@@ -117,7 +114,7 @@ const UserManagement = () => {
       pageSize?: number;
       belongToOrg: string;
     }) => {
-      dispatch(setLoading(true));
+      setIsLoadingListUsers(true);
       try {
         const getUsersResponse = await UserService.getAllUser({
           searchName,
@@ -131,14 +128,14 @@ const UserManagement = () => {
           totalPages: getUsersResponse.totalPages,
           items: getUsersResponse.users
         });
-        dispatch(setLoading(false));
+        setIsLoadingListUsers(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setLoading(false));
+        setIsLoadingListUsers(false);
       }
     },
     [dispatch, t]
@@ -456,7 +453,7 @@ const UserManagement = () => {
         </Grid>
         <Grid item xs={12}>
           <CustomSearchFeatureBar
-            isLoading={isLoadingState.loading}
+            isLoading={isLoadingListUsers}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
             onHandleChange={handleSearchChange}
@@ -498,7 +495,7 @@ const UserManagement = () => {
         <Grid item xs={12}>
           {/* #F5F9FB */}
           <CustomDataGrid
-            loading={isLoadingState.loading}
+            loading={isLoadingListUsers}
             dataList={userListTable}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}

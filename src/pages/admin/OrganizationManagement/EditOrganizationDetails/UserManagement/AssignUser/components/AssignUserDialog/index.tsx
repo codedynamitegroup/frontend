@@ -17,8 +17,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
 import i18next from "i18next";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
 import { UserService } from "services/authService/UserService";
 import Heading5 from "components/text/Heading5";
@@ -26,7 +25,6 @@ import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { ERoleName } from "models/authService/entity/role";
 import { EBelongToOrg, User } from "models/authService/entity/user";
-import { setLoading } from "reduxes/Loading";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PaginationList } from "models/general";
 
@@ -78,7 +76,7 @@ export default function AssignUserToOrganizationDialog({
     totalPages: 0,
     items: []
   });
-  const isLoadingState = useSelector((state: RootState) => state.loading);
+  const [isLoadingListUsers, setIsLoadingListUserss] = useState<boolean>(false);
 
   const [filters, setFilters] = useState<
     {
@@ -106,7 +104,7 @@ export default function AssignUserToOrganizationDialog({
       pageSize?: number;
       belongToOrg?: EBelongToOrg;
     }) => {
-      dispatch(setLoading(true));
+      setIsLoadingListUserss(true);
       try {
         const getUsersResponse = await UserService.getAllUser({
           searchName,
@@ -120,14 +118,14 @@ export default function AssignUserToOrganizationDialog({
           totalPages: getUsersResponse.totalPages,
           items: getUsersResponse.users
         });
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       }
     },
     [dispatch, t]
@@ -401,7 +399,7 @@ export default function AssignUserToOrganizationDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomSearchFeatureBar
-            isLoading={isLoadingState.loading}
+            isLoading={isLoadingListUsers}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
             onHandleChange={handleSearchChange}
@@ -438,7 +436,7 @@ export default function AssignUserToOrganizationDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
-            loading={isLoadingState.loading}
+            loading={isLoadingListUsers}
             dataList={userListTable}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}

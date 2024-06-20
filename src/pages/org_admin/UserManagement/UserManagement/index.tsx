@@ -1,6 +1,5 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Checkbox, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Box, Checkbox, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -16,15 +15,13 @@ import Heading5 from "components/text/Heading5";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import classes from "./styles.module.scss";
 import { setErrorMess } from "reduxes/AppStatus";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
@@ -52,7 +49,6 @@ interface UserManagementProps {
 }
 
 const UserManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
@@ -79,7 +75,7 @@ const UserManagement = () => {
     totalPages: 0,
     items: []
   });
-  const isLoadingState = useSelector((state: RootState) => state.loading);
+  const [isLoadingListUsers, setIsLoadingListUserss] = useState<boolean>(false);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -94,7 +90,7 @@ const UserManagement = () => {
       pageSize?: number;
     }) => {
       if (!loggedUser || !loggedUser?.organization) return;
-      dispatch(setLoading(true));
+      setIsLoadingListUserss(true);
       try {
         const getUsersResponse = await UserService.getAllUserByOrganization({
           searchName: searchName,
@@ -108,14 +104,14 @@ const UserManagement = () => {
           totalPages: getUsersResponse.totalPages,
           items: getUsersResponse.users
         });
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        dispatch(setLoading(false));
+        setIsLoadingListUserss(false);
       }
     },
     [dispatch, loggedUser, t]
@@ -272,8 +268,7 @@ const UserManagement = () => {
                 }
               });
             }}
-          />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          />
         ];
       }
     }
@@ -300,7 +295,6 @@ const UserManagement = () => {
 
   const roleMapping = useMemo(
     () => [
-      { name: ERoleName.ADMIN, label: t("role_system_admin") },
       { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
       { name: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
       { name: ERoleName.STUDENT_MOODLE, label: t("role_student") }
@@ -361,11 +355,11 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (userState.items.length > 0) return;
-      dispatch(setLoading(true));
+      // dispatch(setLoading(true));
       await handleGetUsers({
         searchName: ""
       });
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
     };
 
     fetchUsers();
@@ -377,23 +371,7 @@ const UserManagement = () => {
 
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='user_detail_account_management'>
-              {t("user_detail_account_management")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
-        <Divider />
+      <Box>
         <Grid
           container
           spacing={2}
@@ -406,7 +384,7 @@ const UserManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={isLoadingState.loading}
+              isLoading={isLoadingListUsers}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -444,7 +422,7 @@ const UserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={isLoadingState.loading}
+              loading={isLoadingListUsers}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
@@ -471,7 +449,7 @@ const UserManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };
