@@ -26,6 +26,7 @@ import Heading6 from "components/text/Heading6";
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 const AdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
@@ -285,44 +286,24 @@ const AdminContestSubmissions = () => {
   }
   return (
     <>
-      <Card
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          margin: "20px 20px 90px 20px",
-          gap: "20px"
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+      <Box>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.contest.root)}
-              translation-key='contest_management_title'
-            >
-              {t("contest_management_title")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() =>
-                navigate(routes.admin.contest.edit.details.replace(":contestId", contestId))
-              }
-            >
-              {contestDetails.name}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>{t("detail_problem_submission")}</ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.admin.contest.root, label: t("contest_management_title") },
+                {
+                  navLink: routes.admin.contest.edit.details.replace(":contestId", contestId),
+                  label: contestDetails.name
+                }
+              ]}
+              lastBreadCrumbLabel={t("detail_problem_submission")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            margin: "20px",
+            margin: "0 20px",
             minHeight: "700px"
           }}
         >
@@ -360,7 +341,7 @@ const AdminContestSubmissions = () => {
             />
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

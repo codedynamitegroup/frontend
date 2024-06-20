@@ -1,8 +1,8 @@
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MemoryIcon from "@mui/icons-material/Memory";
-import { Avatar, Box, Card, Container, Divider, Grid, TextField } from "@mui/material";
+import { Avatar, Box, Container, Grid, TextField } from "@mui/material";
 import MDEditor from "@uiw/react-md-editor";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
@@ -95,57 +95,28 @@ const OrgAdminContestSubmissionDetails = () => {
   }
   return (
     <>
-      <Card
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          margin: "20px 20px 90px 20px",
-          gap: "20px"
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+      <Box>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.org_admin.contest.root)}
-              translation-key='contest_management_title'
-            >
-              {t("contest_management_title")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() =>
-                navigate(routes.org_admin.contest.edit.details.replace(":contestId", contestId))
-              }
-            >
-              {contestDetails.name}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() =>
-                navigate(routes.org_admin.contest.submissions.replace(":contestId", contestId))
-              }
-              translation-key='detail_problem_submission'
-            >
-              {t("detail_problem_submission")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500'>
-              {t("detail_problem_submission_details")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.org_admin.contest.root, label: t("contest_management_title") },
+                {
+                  navLink: routes.org_admin.contest.edit.details.replace(":contestId", contestId),
+                  label: contestDetails.name
+                },
+                {
+                  navLink: routes.org_admin.contest.submissions.replace(":contestId", contestId),
+                  label: t("detail_problem_submission")
+                }
+              ]}
+              lastBreadCrumbLabel={t("detail_problem_submission_details")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            margin: "20px",
+            margin: "0 20px",
             minHeight: "700px"
           }}
         >
@@ -387,7 +358,7 @@ const OrgAdminContestSubmissionDetails = () => {
             </Box>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };
