@@ -48,6 +48,7 @@ import { CertificateCourseEntity } from "models/coreService/entity/CertificateCo
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import ReactQuill from "react-quill";
 import { ChapterResourceService } from "services/coreService/ChapterResourceService";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const drawerWidth = 300;
 
@@ -165,12 +166,7 @@ export default function Lessons() {
           dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
         }
       } catch (error: any) {
-        console.error("Failed to fetch chapters by certificate course id", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
     [dispatch, lessonId]
@@ -185,7 +181,6 @@ export default function Lessons() {
           const certificateCourse = getCertificateCourseByIdResponse as CertificateCourseEntity;
           // Check if user is registered to the course
           if (certificateCourse.isRegistered !== true) {
-            dispatch(setErrorMess(t("not_registered_certificate_course_message")));
             navigate(
               routes.user.course_certificate.detail.introduction
                 .replace(":courseId", id)
@@ -194,12 +189,7 @@ export default function Lessons() {
           }
         }
       } catch (error: any) {
-        console.error("Failed to fetch certificate course by id", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-        dispatch(setErrorMess(error.response?.message || error.message));
+        // dispatch(setErrorMess(error.response?.message || error.message));
         navigate(
           routes.user.course_certificate.detail.introduction
             .replace(":courseId", id)
@@ -207,7 +197,7 @@ export default function Lessons() {
         );
       }
     },
-    [dispatch, navigate, t]
+    [navigate]
   );
 
   const handleMarkViewedChapterResourceById = useCallback(async () => {
@@ -643,15 +633,31 @@ export default function Lessons() {
                             alignItems='center'
                             justifyContent='flex-start'
                           >
-                            {resource.isCompleted === true ? (
-                              <CheckCircleIcon className={classes.icCheck} />
-                            ) : resource.resourceType === ResourceTypeEnum.CODE ? (
-                              <CodeIcon className={classes.icCode} />
-                            ) : resource.resourceType === ResourceTypeEnum.VIDEO ? (
-                              <OndemandVideoIcon className={classes.icVideo} />
-                            ) : (
-                              <ArticleIcon className={classes.icArticle} />
-                            )}
+                            <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
+                              {resource.isCompleted === true ? (
+                                <CheckCircleIcon className={classes.icCheck} />
+                              ) : (
+                                <CircleIcon sx={{ color: "#D9D9D9" }} />
+                              )}
+                            </Grid>
+                            <Grid
+                              item
+                              xs={0.7}
+                              md={0.7}
+                              sx={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "flex-start"
+                              }}
+                            >
+                              {resource.resourceType === ResourceTypeEnum.CODE ? (
+                                <CodeIcon className={classes.icCode} />
+                              ) : resource.resourceType === ResourceTypeEnum.VIDEO ? (
+                                <OndemandVideoIcon className={classes.icVideo} />
+                              ) : (
+                                <ArticleIcon className={classes.icArticle} />
+                              )}
+                            </Grid>
                             <ParagraphSmall className={classes.chapterDescription}>
                               {resource?.title || ""}
                             </ParagraphSmall>

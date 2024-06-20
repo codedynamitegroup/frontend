@@ -103,6 +103,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       position: "left"
     },
     {
+      name: "header_business_contact",
+      path: routes.user.business_contact.root,
+      isActive: false,
+      position: "left"
+    },
+    {
       name: "header_login_button",
       path: routes.user.login.root,
       isActive: false,

@@ -9,13 +9,18 @@ export const API = {
       DELETE_BY_ID: "/core/certificate-courses/:id",
       REGISTER_BY_ID: "/core/certificate-courses/:id/register",
       GET_STATISTICS: "/core/certificate-courses/certificate/dashboard-statistics",
-      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all"
+      GET_ALL_WITH_PAGE: "/core/certificate-courses/admin/certificate/all",
+      CREATE_FULL: "core/certificate-courses/create"
     },
     TOPIC: {
       DEFAULT: "/core/topics",
       GET_BY_ID: "/core/topics/:id",
       UPDATE_BY_ID: "/core/topics/:id",
       DELETE_BY_ID: "/core/topics/:id"
+    },
+    REVIEW: {
+      DEFAULT: "/core/reviews",
+      CREATE: "/core/reviews/create"
     },
     CHAPTER: {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
@@ -28,6 +33,7 @@ export const API = {
       DEFAULT: "/core/contests",
       MY_CONTEST: "/core/contests/me",
       CONTEST_MANAGEMENT_FOR_ADMIN: "/core/contests/admin",
+      CONTEST_MANAGEMENT_FOR_ORG_ADMIN: "/core/contests/org-admin",
       CREATE: "/core/contests/create",
       GET_BY_ID: "/core/contests/:id",
       UPDATE_BY_ID: "/core/contests/:id",
@@ -48,6 +54,7 @@ export const API = {
       UPDATE_BY_ID: "/core/questions/:id",
       DELETE_BY_ID: "/core/questions/:id",
       QUESTION_DETAIL: "/core/questions/detail",
+      GET_ALL_WITH_PAGINATION: "/core/questions/admin/all",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
@@ -65,7 +72,8 @@ export const API = {
         GET_ALL: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
-        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin"
+        GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",
+        GET_ALL_BY_ORG_ADMIN: "/core/questions/code-question/org-admin"
       }
     }
   },
@@ -173,7 +181,11 @@ export const API = {
       DEFAULT: "/code-assessment/shared-solution",
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
-        DEFAULT: "code-assessment/shared-solution/:id/comment"
+        DEFAULT: "code-assessment/shared-solution/:id/comment",
+        EDIT_OR_DELETE: "code-assessment/shared-solution/comment/:id"
+      },
+      TAG: {
+        DEFAULT: "code-assessment/shared-solution/:id/tag"
       }
     }
   },
@@ -181,23 +193,35 @@ export const API = {
     SUBMISSION: "/submissions"
   },
   AUTH: {
-    GET_ALL_USERS: "/auth/users",
-    GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
-    GET_STATISTICS: "/auth/users/statistics",
-    SOCIAL_LOGIN: "/auth/users/social-login",
-    LOGIN: "/auth/users/login",
-    REFRESH_TOKEN: "/auth/users/refresh-token",
-    LOGOUT: "/auth/users/logout",
-    REGISTER: "/auth/users/register",
-    CREATE_USER_BY_ADMIN: "/auth/users",
-    GET_USER_BY_EMAIL: "/auth/users/get-by-email",
-    GET_USER_BY_ID: "/auth/users/:id",
-    DELETE_USER_BY_ID: "/auth/users/:id",
-    FORGOT_PASSWORD: "/auth/users/forgot-password",
-    VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
-    UPDATE_PROFILE_USER: "/auth/users/update-profile",
-    UPDATE_USER_BY_ADMIN: "/auth/users/:id",
-    CHANGE_PASSWORD: "/auth/users/change-password",
-    RESET_PASSWORD: "/auth/users/forgot-password/change-password"
+    USER: {
+      GET_ALL_USERS: "/auth/users",
+      GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
+      GET_STATISTICS: "/auth/users/statistics",
+      SOCIAL_LOGIN: "/auth/users/social-login",
+      LOGIN: "/auth/users/login",
+      REFRESH_TOKEN: "/auth/users/refresh-token",
+      LOGOUT: "/auth/users/logout",
+      REGISTER: "/auth/users/register",
+      CREATE_USER_BY_ADMIN: "/auth/users",
+      GET_USER_BY_EMAIL: "/auth/users/get-by-email",
+      GET_USER_BY_ID: "/auth/users/:id",
+      DELETE_USER_BY_ID: "/auth/users/:id",
+      FORGOT_PASSWORD: "/auth/users/forgot-password",
+      VERIFY_OTP: "/auth/users/forgot-password/verify-otp",
+      UPDATE_PROFILE_USER: "/auth/users/update-profile",
+      UPDATE_USER_BY_ADMIN: "/auth/users/:id",
+      ASSIGN_USER_TO_ORGANIZATION: "/auth/users/assign-user-to-org/:id",
+      UNASSIGNED_USER_TO_ORGANIZATION: "/auth/users/unassigned-user-to-org/:id",
+      CHANGE_PASSWORD: "/auth/users/change-password",
+      RESET_PASSWORD: "/auth/users/forgot-password/change-password"
+    },
+    ORGANIZATION: {
+      GET_ALL_ORGANIZATIONS: "/auth/organizations",
+      CREATE_ORGANIZATION: "/auth/organizations",
+      CREATE_ORGANIZATION_BY_CONTACT_US: "/auth/organizations/contact-us",
+      GET_ORGANIZATION_BY_ID: "/auth/organizations/:id",
+      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id",
+      DELETE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
+    }
   }
 };

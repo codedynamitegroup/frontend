@@ -1,27 +1,26 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, Card, Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import JoyButton from "@mui/joy/Button";
+import { Box, Checkbox, FormControlLabel, Grid, Stack } from "@mui/material";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
+import ErrorMessage from "components/text/ErrorMessage";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import moment from "moment";
-import TitleWithInfoTip from "components/text/TitleWithInfo";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch } from "store";
 import * as yup from "yup";
 import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
-import ErrorMessage from "components/text/ErrorMessage";
-import { AppDispatch } from "store";
-import { useDispatch } from "react-redux";
-import { setErrorMess } from "reduxes/AppStatus";
 
 interface IFormDataType {
   isNoEndTime: boolean;
@@ -34,9 +33,6 @@ const CreateContest = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [type, setType] = useState<AlertType>(AlertType.INFO);
-  const [content, setContent] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const schema = useMemo(() => {
@@ -108,9 +104,7 @@ const CreateContest = () => {
           endTime
         });
         if (createContestResponse.name === name) {
-          setOpenSnackbarAlert(true);
-          setType(AlertType.Success);
-          setContent(t("contest_create_success"));
+          dispatch(setSuccessMess(t("contest_create_success")));
           setSubmitLoading(false);
           navigate(
             routes.admin.contest.edit.details.replace(":contestId", createContestResponse.contestId)
@@ -129,43 +123,20 @@ const CreateContest = () => {
 
   return (
     <>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={type}
-        content={content}
-      />
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
+      <Box>
+        <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall
-              colorname='--blue-500'
-              className={classes.cursorPointer}
-              onClick={() => navigate(routes.admin.contest.root)}
-              translation-key='contest_management_title'
-            >
-              {t("contest_management_title")}
-            </ParagraphSmall>
-            <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_create'>
-              {t("contest_create")}
-            </ParagraphSmall>
+            <CustomBreadCrumb
+              breadCrumbData={[
+                { navLink: routes.admin.contest.root, label: t("contest_management_title") }
+              ]}
+              lastBreadCrumbLabel={t("contest_create")}
+            />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0 20px"
           }}
         >
           <Heading1 translate-key='contest_create'>{t("contest_create")}</Heading1>
@@ -316,7 +287,7 @@ const CreateContest = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };

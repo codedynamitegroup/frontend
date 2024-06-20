@@ -297,6 +297,7 @@ const QuestionListOfCourse = () => {
     navigate(`create/${typeToCreateNewQuestion}`, {
       state: {
         isQuestionBank: true,
+        isOrgAdminQuestionBank: true,
         isOrgQuestionBank: tab,
         categoryName: categoryState.categoryDetails?.name
       }
@@ -406,6 +407,7 @@ const QuestionListOfCourse = () => {
           </Stack>
 
           <CustomAutocomplete
+            isLoading={false}
             translation-key='question_bank_category_question_list_enter_question_name'
             placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
             value={searchText}

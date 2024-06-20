@@ -34,11 +34,17 @@ export interface RegisteredRequest {
 }
 
 export interface CreatedUserByAdminRequest {
+  organizationId?: string;
   email: string;
   password: string;
   firstName: string;
   phone: string;
   lastName: string;
+  roleName: string;
+}
+
+export interface AssignUserToOrganizationRequest {
+  organizationId: string;
   roleName: string;
 }
 
@@ -56,6 +62,7 @@ export interface UpdateUserByAdminRequest {
   dob?: Date;
   phone: string;
   roleName: string;
+  isDeleted?: boolean;
 }
 
 export interface UpdatePasswordUserRequest {
@@ -72,4 +79,10 @@ export interface ResetPasswordUserRequest {
   email: string;
   password: string;
   otp: string;
+}
+
+export enum EBelongToOrg {
+  ALL = "ALL",
+  BELONG_TO_ORGANIZATION = "BELONG_TO_ORGANIZATION",
+  NOT_BELONG_TO_ORGANIZATION = "NOT_BELONG_TO_ORGANIZATION"
 }

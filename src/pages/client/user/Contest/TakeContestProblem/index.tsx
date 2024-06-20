@@ -58,6 +58,7 @@ import { ContestService } from "services/coreService/ContestService";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { setErrorMess } from "reduxes/AppStatus";
 import { setLoading as setInititalLoading } from "reduxes/Loading";
+import moment from "moment";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
@@ -66,9 +67,8 @@ export default function TakeContestProblem() {
     contestId: string;
   }>();
   const { pathname } = useLocation();
-
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const currentExecuteData = useAppSelector((state) => state.executeData);
@@ -78,6 +78,18 @@ export default function TakeContestProblem() {
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
   const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
+
+  const isContestEnded = useMemo(() => {
+    if (
+      contestDetails &&
+      contestDetails?.endTime &&
+      moment(contestDetails.endTime).isBefore(moment())
+    ) {
+      dispatch(setErrorMess(t("contest_ended")));
+      return true;
+    }
+    return false;
+  }, [contestDetails, dispatch, t]);
 
   const handleGetContestById = useCallback(
     async (id: string) => {
@@ -198,13 +210,18 @@ export default function TakeContestProblem() {
   };
 
   const tabs: string[] = useMemo(() => {
-    return [
-      routes.user.contest.detail.problems.description,
-      routes.user.contest.detail.problems.solution,
-      routes.user.contest.detail.problems.submission
-    ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routes]);
+    if (contestDetails?.isDisabledForum === true)
+      return [
+        routes.user.contest.detail.problems.description,
+        routes.user.contest.detail.problems.submission
+      ];
+    else
+      return [
+        routes.user.contest.detail.problems.description,
+        routes.user.contest.detail.problems.solution,
+        routes.user.contest.detail.problems.submission
+      ];
+  }, [contestDetails?.isDisabledForum]);
 
   const activeRoute = (routeName: string) => {
     const match = matchPath(pathname, routeName);
@@ -269,7 +286,6 @@ export default function TakeContestProblem() {
       currentExecuteData.system_language_id !== undefined
     ) {
       setSubmisisonLoading(true);
-      console.log("contestId ccc", contestId);
       CodeSubmissionService.createCodeSubmission({
         codeQuestionId: problemId,
         languageId: currentExecuteData.system_language_id,
@@ -334,7 +350,6 @@ export default function TakeContestProblem() {
   };
 
   const marginRef = useRef<number>(10);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -374,8 +389,9 @@ export default function TakeContestProblem() {
                 color='primary'
                 variant='plain'
                 startDecorator={<ArrowBackIosNewIcon />}
+                translate-key='contest_back_to_contest_problems_button'
               >
-                Back to contest problems
+                {t("contest_back_to_contest_problems_button")}
               </JoyButton>
             </Box>
           )}
@@ -409,7 +425,7 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_execute'
                   focusRipple
                   onClick={handleExecuteCode}
-                  disabled={!auth.isLoggedIn}
+                  disabled={!auth.isLoggedIn || isContestEnded}
                 >
                   <PlayArrowIcon />
                   {t("detail_problem_execute")}
@@ -420,7 +436,7 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_submit'
                   onClick={handleSubmitCode}
                   focusRipple
-                  disabled={!auth.isLoggedIn}
+                  disabled={!auth.isLoggedIn || isContestEnded}
                 >
                   {submissionLoading && <CircularProgress size={20} />}
                   {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
@@ -471,21 +487,36 @@ export default function TakeContestProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  {auth.isLoggedIn && (
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      translation-key='detail_problem_discussion'
-                      label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                      value={1}
-                    />
-                  )}
-                  {auth.isLoggedIn && (
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      translation-key='detail_problem_submission'
-                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                      value={2}
-                    />
+                  {contestDetails?.isDisabledForum === true ? (
+                    <>
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_submission'
+                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                          value={1}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_discussion'
+                          label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                          value={1}
+                        />
+                      )}
+                      {auth.isLoggedIn && (
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          translation-key='detail_problem_submission'
+                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                          value={2}
+                        />
+                      )}
+                    </>
                   )}
                 </Tabs>
               </Box>
@@ -498,7 +529,9 @@ export default function TakeContestProblem() {
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  {contestDetails?.isDisabledForum === true ? null : (
+                    <Route path={"solution"} element={<ProblemDetailSolution />} />
+                  )}
                   <Route
                     path={"submission"}
                     element={
@@ -508,6 +541,7 @@ export default function TakeContestProblem() {
                           contestId: contestId,
                           problemId: problemId
                         }}
+                        isShareSolutionDisabled={contestDetails?.isDisabledForum}
                       />
                     }
                   />

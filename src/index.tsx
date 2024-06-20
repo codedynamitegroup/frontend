@@ -20,17 +20,17 @@ const pca = new PublicClientApplication(msalConfig);
 
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <MsalProvider instance={pca}>
-          <React.Suspense fallback={<LinearProgress />}>
-            <PersistGate loading={null} persistor={persistor}>
-              <AppStatus />
-              <App />
-            </PersistGate>
-          </React.Suspense>
-        </MsalProvider>
-      </GoogleOAuthProvider>
-    </React.StrictMode>
+    {/* <React.StrictMode> */}
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <MsalProvider instance={pca}>
+        <React.Suspense fallback={<LinearProgress />}>
+          <PersistGate loading={null} persistor={persistor}>
+            <AppStatus />
+            <App />
+          </PersistGate>
+        </React.Suspense>
+      </MsalProvider>
+    </GoogleOAuthProvider>
+    {/* </React.StrictMode> */}
   </Provider>
 );

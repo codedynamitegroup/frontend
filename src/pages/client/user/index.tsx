@@ -22,6 +22,7 @@ import ForbiddenPage from "pages/common/ForbiddenPage";
 import NotFoundPage from "pages/common/NotFoundPage";
 import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
+import BusinessContact from "./BusinessContact";
 
 type Props = {};
 
@@ -45,13 +46,14 @@ const UserHomepage = (props: Props) => {
         <Box id={classes.userPageBody}>
           <Routes>
             <Route path={""} element={<HomePage />} />
-            <Route path={"course-certificates"} element={<CourseCertificates />} />
-            <Route path={"course-certificates/:courseId/*"} element={<CourseCertificateDetail />} />
+            <Route path={"certificate-courses"} element={<CourseCertificates />} />
+            <Route path={"certificate-courses/:courseId/*"} element={<CourseCertificateDetail />} />
             <Route path={"problems"} element={<ListProblem />} />
             <Route path={"contests"} element={<ContestList />} />
             <Route path={"contests/:contestId/*"} element={<ContestDetails />} />
             <Route path={"login"} element={<Login />} />
             <Route path={"register"} element={<Register />} />
+            <Route path={"business-contact"} element={<BusinessContact />} />
             <Route path={"forgot-password"} element={<ForgotPassword />} />
             <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />

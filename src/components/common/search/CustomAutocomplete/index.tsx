@@ -8,8 +8,6 @@ import TextField from "@mui/material/TextField";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
 import classes from "./styles.module.scss";
 
 interface PropsData {
@@ -21,6 +19,7 @@ interface PropsData {
   maxWidth?: string;
   size?: "small" | "medium";
   renderOption?: (props: any, option: CertificateCourseEntity, { inputValue }: any) => JSX.Element;
+  isLoading: boolean;
 }
 
 const CustomAutocomplete = ({
@@ -31,13 +30,10 @@ const CustomAutocomplete = ({
   placeHolder,
   maxWidth,
   size = "small",
-  renderOption
+  renderOption,
+  isLoading
 }: PropsData) => {
-  const certificateCourseState = useSelector((state: RootState) => state.certifcateCourse);
   const { t } = useTranslation();
-
-  const isLoading = React.useMemo(() => certificateCourseState.isLoading, [certificateCourseState]);
-
   const handleOnChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
     setValue(e.target.value);
   };

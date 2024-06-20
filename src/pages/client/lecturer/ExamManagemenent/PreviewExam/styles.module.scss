@@ -1,37 +1,36 @@
 .root {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column !important;
-  background-color: var(--gray-2);
+  padding-bottom: 20px;
+  background-color: white;
 }
 
 .container {
   display: flex;
-  overflow: hidden;
+  height: 100%;
 }
 
 .mainContent {
   background-color: var(--gray-2);
-  overflow: auto;
 }
 
 .formBody {
   display: flex;
   flex-direction: column;
-  padding: 20px 40px;
+  padding: 20px 60px;
   gap: 15px;
+  height: fit-content;
 }
 
 .drawerBody {
   padding: 20px;
-  overflow: auto;
+  height: 100%;
 }
 
 .drawerFieldContainer {
   margin-bottom: 20px;
+  height: fit-content;
+  border-radius: 12px;
+  border: 1px solid #E1E1E1;
+  padding: 1.25rem 1.25rem;
   .drawerTextTitle {
     margin-bottom: 10px;
   }

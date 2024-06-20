@@ -21,6 +21,8 @@ interface ButtonProps extends ButtonPropsMUI {
   margin?: string;
   isTypeSubmit?: boolean;
   colorName?: string;
+  backgroundColor?: string;
+  boxShadow?: string;
 }
 
 const Button = memo((props: ButtonProps) => {
@@ -36,7 +38,11 @@ const Button = memo((props: ButtonProps) => {
     borderRadius,
     isTypeSubmit,
     colorName,
+    backgroundColor,
     sx = {},
+    boxShadow,
+    startIcon,
+    endIcon,
     ...rest
   } = props;
   return (
@@ -53,6 +59,8 @@ const Button = memo((props: ButtonProps) => {
       )}
       type={isTypeSubmit ? "submit" : "button"}
       {...rest}
+      startIcon={startIcon}
+      endIcon={endIcon}
       sx={{
         ...sx,
         width: width,
@@ -61,7 +69,10 @@ const Button = memo((props: ButtonProps) => {
         padding: padding,
         whiteSpace: nowrap ? "nowrap" : "unset",
         borderRadius: borderRadius,
-        color: colorName
+        color: colorName,
+        backgroundColor: backgroundColor,
+        boxShadow: boxShadow,
+        gap: startIcon || endIcon ? "10px" : "0"
       }}
     >
       <ParagraphBody>{children}</ParagraphBody>

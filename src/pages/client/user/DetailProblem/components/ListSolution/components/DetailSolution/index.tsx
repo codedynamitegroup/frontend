@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Divider,
   FormControl,
+  IconButton,
   Menu,
   MenuItem,
   Pagination,
@@ -28,7 +29,7 @@ import Markdown from "react-markdown";
 import gfm from "remark-gfm";
 import { TextareaAutosize } from "@mui/base";
 import Button from "@mui/material/Button";
-
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import MDEditor from "@uiw/react-md-editor";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
@@ -39,15 +40,23 @@ import { SharedSolutionEntity } from "models/codeAssessmentService/entity/Shared
 import images from "config/images";
 import i18next from "i18next";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { CommentPaginationList } from "models/codeAssessmentService/entity/CommentPaginationList";
 import { CommentEntity } from "models/codeAssessmentService/entity/CommentEntity";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import useAuth from "hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import cloneDeep from "lodash.clonedeep";
 
 type FormCommentValue = {
   comment: string;
+};
+type FormEditComment = {
+  comment: { value: string; id: string }[];
 };
 interface Props {
   handleSolutionDetail: () => void;
@@ -77,7 +86,14 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   });
 
   const dispatch = useAppDispatch();
+  const auth = useAuth();
+  const navigate = useNavigate();
   const [solution, setSolution] = useState<SharedSolutionEntity | null>(null);
+  const { problemId, courseId, lessonId } = useParams<{
+    problemId: string;
+    courseId: string;
+    lessonId: string;
+  }>();
   const [commentLoading, setCommentLoading] = useState(false);
   const pageSize = 10;
   const [pageNum, setPageNum] = useState(0);
@@ -85,14 +101,110 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const [totalItem, setTotalItem] = useState(0);
   const [comments, setComments] = useState<CommentEntity[]>([]);
   const [newest, setNewest] = useState(true);
+  const {
+    register: registerEditComment,
+    control: editCommentControl,
+    handleSubmit: editCommentHandleSubmit,
+    setValue: setFormEditCommentValue
+  } = useForm<FormEditComment>({
+    defaultValues: {
+      comment: new Array(pageSize).fill({ value: "", id: "" })
+    }
+  });
+  const { fields: commentFields } = useFieldArray<FormEditComment>({
+    name: "comment",
+    control: editCommentControl
+  });
+  const onSubmitEditComment: SubmitHandler<FormEditComment> = (data) => {
+    const index = isOpenEditCommentForm.findIndex((value) => value === true);
+    if (index > -1 && index < comments.length) {
+      SharedSolutionService.editComment(data.comment[index].id, data.comment[index].value).then(
+        (data) => {
+          fetchCommentData();
+          handleCloseEditCommentForm();
+        }
+      );
+    }
+  };
+  const onDeleteComment = (index: number) => {
+    if (index > -1 && index < comments.length) {
+      SharedSolutionService.deleteComment(comments[index].id).then((data) => {
+        fetchCommentData();
+      });
+    }
+    handleCloseCommentEdit(index);
+  };
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openFilterNewest = Boolean(anchorEl);
+  const [editSolutionAnchorEl, setEditSolutionAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openSolutionEditAnchorEl = Boolean(editSolutionAnchorEl);
+  const [editCommentAnchorEl, setEditCommentAnchorEl] = useState<(null | HTMLElement)[]>(
+    new Array(pageSize).fill(null)
+  );
+  const [isOpenEditCommentForm, setIsOpenEditCommentForm] = useState<boolean[]>(
+    new Array(pageSize).fill(false)
+  );
+  const openEditCommentAnchorEl = editCommentAnchorEl.map((value) => Boolean(value));
+  const [isOpenConfirmDeleteSolution, setIsOpenConfirmDeleteSolution] = useState(false);
+  const onCancleConfirmDeleteSolution = () => {
+    setIsOpenConfirmDeleteSolution(false);
+  };
+  const onAcceptConfirmDeleteSolution = () => {
+    if (solution?.sharedSolutionId) {
+      SharedSolutionService.deleteSharedSolution(solution.sharedSolutionId)
+        .then((data) => {
+          handleSolutionDetail();
+        })
+        .catch((err) => console.log(err));
+    }
+    setIsOpenConfirmDeleteSolution(false);
+  };
   const handleCloseFilterNewest = () => {
     setAnchorEl(null);
   };
   const handleOpenFilterNewest = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleClickSolutionEdit = (event: React.MouseEvent<HTMLElement>) => {
+    setEditSolutionAnchorEl(event.currentTarget);
+  };
+  const handleCloseSolutionEdit = () => {
+    setEditSolutionAnchorEl(null);
+  };
+  const handleClickCommentEdit = (event: React.MouseEvent<HTMLElement>, index: number) => {
+    let newEditCommentAnchorEl = cloneDeep(editCommentAnchorEl);
+    newEditCommentAnchorEl[index] = event.currentTarget;
+    setEditCommentAnchorEl(newEditCommentAnchorEl);
+  };
+  const handleCloseCommentEdit = (index: number) => {
+    let newEditCommentAnchorEl = cloneDeep(editCommentAnchorEl);
+    newEditCommentAnchorEl[index] = null;
+    setEditCommentAnchorEl(newEditCommentAnchorEl);
+  };
+  const handleOpenEditCommentForm = (index: number) => {
+    handleCloseCommentEdit(index);
+    let newOpenEditCommentForm = new Array(pageSize).fill(false);
+    newOpenEditCommentForm[index] = true;
+    setIsOpenEditCommentForm(newOpenEditCommentForm);
+  };
+  const handleCloseEditCommentForm = () => {
+    let newOpenEditCommentForm = new Array(pageSize).fill(false);
+    setIsOpenEditCommentForm(newOpenEditCommentForm);
+  };
+  const openEditSolution = () => {
+    if (problemId)
+      navigate(routes.user.problem.solution.share.replace(":problemId", problemId), {
+        state: {
+          content: solution?.content,
+          title: solution?.title,
+          tags: solution?.tags,
+          edit: true,
+          solutionId: solution?.sharedSolutionId
+        }
+      });
+  };
+
   useEffect(() => {
     if (selectedSolutionId) {
       dispatch(setLoading(true));
@@ -112,7 +224,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors }
   } = useForm<FormCommentValue>({
     resolver: yupResolver(schema)
@@ -125,6 +236,10 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
           setTotalPage(data.totalPages);
           setTotalItem(data.totalItems);
           setComments(data.comments);
+          data.comments?.forEach((item, index) => {
+            setFormEditCommentValue(`comment.${index}.value`, item.content);
+            setFormEditCommentValue(`comment.${index}.id`, item.id);
+          });
         })
         .catch((err) => console.log(err))
         .then(() => {
@@ -146,44 +261,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
         });
   };
 
-  //   const markdownContent = `
-  //   ### Approaches
-  // (Also explained in the code)
-  // **Bold text**
-
-  // 1. Step 1
-  //     - Easy solution !!!, everyone knows how to solve this problem.
-
-  // ### Complexity
-  // - Time complexity: O(1)
-
-  // ### Code
-  // \`\`\`cpp
-  // class Solution {
-  // public:
-  //     vector<vector<int>> divideArray(vector<int>& nums, int ki) {
-  //        vector<vector<int>> ans;
-  //         sort(nums.begin(),nums.end());
-  //         int i=0;
-  //         int j=1;
-  //         int k=2;
-  //         while(k<nums.size()){
-  //             if(nums[j]-nums[i]<=ki&&nums[k]-nums[i]<=ki&&nums[k]-nums[j]<=ki){
-  //                 ans.push_back({nums[i],nums[j],nums[k]});
-  //                 i=i+3;
-  //                 j=j+3;
-  //                 k=k+3;
-  //             }
-  //             else{
-  //                 return {};
-  //             }
-  //         }
-  //         return ans;
-  //     }
-  // };
-  // \`\`\`
-  // `;
-
   const handleChangePagination = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageNum(value - 1);
   };
@@ -195,10 +272,55 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
   return (
     <Box className={classes.containerDetailSolution}>
       <Box className={classes.stickyBack} ref={stickyBackRef}>
-        <Box onClick={handleSolutionDetail} className={classes.backButton}>
-          <ArrowBackIcon className={classes.backIcon} />
-          <span translation-key='common_back'>{t("common_back")}</span>
-        </Box>
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          <Box onClick={handleSolutionDetail} className={classes.backButton}>
+            <ArrowBackIcon className={classes.backIcon} />
+            <span translation-key='common_back'>{t("common_back")}</span>
+          </Box>
+          {auth.loggedUser.userId === solution?.user.id && (
+            <>
+              <IconButton
+                id='edit-solution-button'
+                aria-controls={openSolutionEditAnchorEl ? "edit-solution-menu" : undefined}
+                aria-haspopup='true'
+                aria-expanded={openSolutionEditAnchorEl ? "true" : undefined}
+                onClick={handleClickSolutionEdit}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+              <Menu
+                id='edit-solution-menu'
+                aria-labelledby='edit-solution-button'
+                anchorEl={editSolutionAnchorEl}
+                open={openSolutionEditAnchorEl}
+                onClose={handleCloseSolutionEdit}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+              >
+                <MenuItem onClick={openEditSolution}>{t("common_edit")}</MenuItem>
+                <MenuItem
+                  onClick={() => setIsOpenConfirmDeleteSolution(true)}
+                  sx={{ color: "red" }}
+                >
+                  {t("common_remove")}
+                </MenuItem>
+              </Menu>
+              <ConfirmDelete
+                isOpen={isOpenConfirmDeleteSolution}
+                title={t("dialog_confirm_delete_title")}
+                description={t("dialog_confirm_delete_shared_solution")}
+                onCancel={onCancleConfirmDeleteSolution}
+                onDelete={onAcceptConfirmDeleteSolution}
+              />
+            </>
+          )}
+        </Stack>
         <Divider />
       </Box>
 
@@ -362,28 +484,120 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                     </Stack>
                   )}
                   {!commentLoading &&
-                    comments.map((comment) => {
+                    comments.map((comment, index) => {
                       return (
-                        <>
-                          <Box className={classes.commentInfo} key={comment.user.id}>
-                            <Box className={classes.commentInfoUser}>
-                              <Avatar
-                                sx={{
-                                  bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
-                                }}
-                                alt={comment.user?.firstName}
-                                src={comment.user?.avatarUrl}
-                              >
-                                {comment.user?.firstName.charAt(0)}
-                              </Avatar>
-                              <Box className={classes.commentName}>
-                                {i18next.language === "vi"
-                                  ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
-                                  : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                        <form onSubmit={editCommentHandleSubmit(onSubmitEditComment)}>
+                          <Box className={classes.commentInfo} key={comment.id}>
+                            <Stack direction={"row"} justifyContent='space-between'>
+                              <Box className={classes.commentInfoUser}>
+                                <Avatar
+                                  sx={{
+                                    bgcolor: `${generateHSLColorByRandomText(`${comment.user?.firstName} ${comment.user?.lastName}`)}`
+                                  }}
+                                  alt={comment.user?.firstName}
+                                  src={comment.user?.avatarUrl}
+                                >
+                                  {comment.user?.firstName.charAt(0)}
+                                </Avatar>
+                                <Box className={classes.commentName}>
+                                  {i18next.language === "vi"
+                                    ? `${comment.user?.lastName ?? ""} ${solution.user?.firstName ?? ""}`
+                                    : `${comment.user?.firstName ?? ""} ${comment.user?.lastName ?? ""}`}
+                                </Box>
                               </Box>
-                            </Box>
+                              {auth.loggedUser.userId === solution?.user.id && (
+                                <>
+                                  <IconButton
+                                    id={`edit-solution-button-${comment.id}`}
+                                    aria-controls={
+                                      openEditCommentAnchorEl[index]
+                                        ? `edit-solution-menu-${comment.id}`
+                                        : undefined
+                                    }
+                                    aria-haspopup='true'
+                                    aria-expanded={
+                                      openEditCommentAnchorEl[index] ? "true" : undefined
+                                    }
+                                    onClick={(event) => {
+                                      handleClickCommentEdit(event, index);
+                                    }}
+                                  >
+                                    <MoreHorizIcon />
+                                  </IconButton>
+                                  <Menu
+                                    id={`edit-solution-menu-${comment.id}`}
+                                    aria-labelledby={`edit-solution-button-${comment.id}`}
+                                    anchorEl={editCommentAnchorEl[index]}
+                                    open={openEditCommentAnchorEl[index]}
+                                    onClose={() => handleCloseCommentEdit(index)}
+                                    anchorOrigin={{
+                                      vertical: "bottom",
+                                      horizontal: "right"
+                                    }}
+                                    transformOrigin={{
+                                      vertical: "top",
+                                      horizontal: "right"
+                                    }}
+                                  >
+                                    <MenuItem onClick={() => handleOpenEditCommentForm(index)}>
+                                      {t("common_edit")}
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() => onDeleteComment(index)}
+                                      sx={{ color: "red" }}
+                                    >
+                                      {t("common_remove")}
+                                    </MenuItem>
+                                  </Menu>
+                                </>
+                              )}
+                            </Stack>
                             <Box className={classes.commentText}>
-                              <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                              {!isOpenEditCommentForm[index] && (
+                                <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                              )}
+                              {isOpenEditCommentForm[index] && (
+                                <Box className={classes.commentBox}>
+                                  <TextareaAutosize
+                                    key={commentFields[index].id}
+                                    {...registerEditComment(`comment.${index}.value`)}
+                                    aria-label='empty textarea'
+                                    translation-key='detail_problem_discussion_your_comment'
+                                    placeholder={t("detail_problem_discussion_your_comment")}
+                                    className={classes.textArea}
+                                    minRows={5}
+                                    aria-invalid={errors.comment ? true : false}
+                                  />
+                                  <Stack direction='row' justifyContent={"flex-end"} spacing={1}>
+                                    <Button
+                                      type='submit'
+                                      variant='contained'
+                                      sx={{
+                                        textTransform: "none",
+                                        backgroundColor: "green",
+                                        "&:hover": {
+                                          backgroundColor: "green"
+                                        }
+                                      }}
+                                      translation-key='common_edit'
+                                    >
+                                      {t("common_edit")}
+                                    </Button>
+                                    <Button
+                                      variant='contained'
+                                      sx={{
+                                        textTransform: "none",
+                                        backgroundColor: "red",
+                                        "&:hover": { backgroundColor: "red" }
+                                      }}
+                                      translation-key='common_close'
+                                      onClick={handleCloseEditCommentForm}
+                                    >
+                                      {t("common_close")}
+                                    </Button>
+                                  </Stack>
+                                </Box>
+                              )}
                             </Box>
                             {/* <Box className={classes.commentAction}>
                           <Box className={classes.upVote}>
@@ -407,7 +621,7 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                         </Box> */}
                           </Box>
                           <Divider />
-                        </>
+                        </form>
                       );
                     })}
                   <Stack alignItems={"center"}>

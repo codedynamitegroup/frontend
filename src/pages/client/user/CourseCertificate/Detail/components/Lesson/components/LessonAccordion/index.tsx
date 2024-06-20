@@ -18,6 +18,7 @@ import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess } from "reduxes/AppStatus";
 import { useTranslation } from "react-i18next";
+import CircleIcon from "@mui/icons-material/Circle";
 
 interface Props {
   chapter: ChapterEntity;
@@ -81,7 +82,21 @@ export default function LessonAccordion({
                   <Grid item xs={1} md={1} className={classes.icCodeWrapper}>
                     {resource.isCompleted === true ? (
                       <CheckCircleIcon className={classes.icCheck} />
-                    ) : resource.resourceType === ResourceTypeEnum.CODE ? (
+                    ) : (
+                      <CircleIcon sx={{ color: "#D9D9D9" }} />
+                    )}
+                  </Grid>
+                  <Grid
+                    item
+                    xs={0.7}
+                    md={0.7}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "flex-start"
+                    }}
+                  >
+                    {resource.resourceType === ResourceTypeEnum.CODE ? (
                       <CodeIcon className={classes.icCode} />
                     ) : resource.resourceType === ResourceTypeEnum.VIDEO ? (
                       <OndemandVideoIcon className={classes.icVideo} />
@@ -89,7 +104,7 @@ export default function LessonAccordion({
                       <ArticleIcon className={classes.icArticle} />
                     )}
                   </Grid>
-                  <Grid item xs={11} md={11} className={classes.lessonTitle}>
+                  <Grid item xs={10} md={10} className={classes.lessonTitle}>
                     <ParagraphBody className={classes.title}>{resource?.title || ""}</ParagraphBody>
                   </Grid>
                 </Grid>

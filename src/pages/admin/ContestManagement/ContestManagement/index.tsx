@@ -1,6 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Card, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
+import { Avatar, Checkbox, Chip, Divider, Grid, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
@@ -20,19 +20,16 @@ import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { setContests, setLoading } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { ContestService } from "services/coreService/ContestService";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import classes from "./styles.module.scss";
-import React from "react";
 
 interface ContestManagementProps extends ContestEntity {
   id: string;
@@ -62,10 +59,25 @@ const ContestManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-
-  const contestState = useSelector((state: RootState) => state.contest);
-
   const dispatch = useDispatch<AppDispatch>();
+
+  const [data, setData] = useState<{
+    isLoading: boolean;
+    contests: {
+      contests: ContestEntity[];
+      currentPage: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  }>({
+    isLoading: false,
+    contests: {
+      contests: [],
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0
+    }
+  });
 
   const handleGetContests = useCallback(
     async ({
@@ -79,7 +91,11 @@ const ContestManagement = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      dispatch(setLoading(true));
+      // dispatch(setLoading(true));
+      setData((prev) => ({
+        ...prev,
+        isLoading: true
+      }));
       try {
         const getCertificateCoursesResponse = await ContestService.getContestsForAdmin({
           searchName,
@@ -87,14 +103,21 @@ const ContestManagement = () => {
           pageNo,
           pageSize
         });
-        dispatch(setContests(getCertificateCoursesResponse));
-        dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false,
+          contests: getCertificateCoursesResponse
+        }));
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
+        setData((prev) => ({
+          ...prev,
+          isLoading: false
+        }));
       }
     },
     [dispatch, t]
@@ -207,7 +230,9 @@ const ContestManagement = () => {
       renderCell: (params) => {
         return (
           <ParagraphSmall width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.endTime as string, currentLang)}
+            {params.row.endTime
+              ? standardlizeUTCStringToLocaleString(params.row.endTime, currentLang)
+              : t("contest_details_has_no_end_time")}
           </ParagraphSmall>
         );
       }
@@ -326,14 +351,11 @@ const ContestManagement = () => {
       }
     }
   ];
-  const totalElement = useMemo(
-    () => contestState.contests.totalItems || 0,
-    [contestState.contests]
-  );
+  const totalElement = useMemo(() => data.contests.totalItems || 0, [data.contests]);
 
   const contestList: ContestManagementProps[] = useMemo(
     () =>
-      contestState.contests.contests.map((contest: any) => {
+      data.contests.contests.map((contest: any) => {
         const status =
           contest.startTime && moment().utc().isBefore(contest.startTime)
             ? ContestStartTimeFilterEnum.UPCOMING
@@ -364,7 +386,7 @@ const ContestManagement = () => {
           updatedBy: contest.updatedBy
         };
       }),
-    [contestState.contests]
+    [data.contests]
   );
 
   const dataGridToolbar = { enableToolbar: true };
@@ -408,20 +430,19 @@ const ContestManagement = () => {
 
   useEffect(() => {
     setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18next.language]);
 
   useEffect(() => {
     const fetchContests = async () => {
-      // dispatch(setInititalLoading(true));
       handleGetContests({
         searchName: "",
         startTimeFilter: ContestStartTimeFilterEnum.ALL
       });
-      // dispatch(setInititalLoading(false));
     };
 
     fetchContests();
-  }, [dispatch, handleGetContests]);
+  }, [handleGetContests]);
 
   return (
     <>
@@ -432,22 +453,13 @@ const ContestManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
+      <Grid
+        container
+        spacing={2}
         sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
+          padding: "0px 20px 20px 20px"
         }}
       >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
-              {t("contest_management_title")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
         <Divider />
         <Grid
           container
@@ -463,7 +475,7 @@ const ContestManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={contestState.isLoading}
+              isLoading={data.isLoading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -508,7 +520,7 @@ const ContestManagement = () => {
           </Grid>
           <Grid item xs={12}>
             <CustomDataGrid
-              loading={contestState.isLoading}
+              loading={data.isLoading}
               dataList={contestList}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
@@ -535,7 +547,7 @@ const ContestManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Grid>
     </>
   );
 };

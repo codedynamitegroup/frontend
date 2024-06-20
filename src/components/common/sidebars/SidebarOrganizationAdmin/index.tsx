@@ -12,8 +12,9 @@ import Header from "components/Header";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 
-const drawerWidth = 300;
+const drawerWidth = 270;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -49,16 +50,13 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
     //   ),
     //   link: routes.admin.dashboard
     // },
-    // {
-    //   name: t("side_bar_contest_management"),
-    //   "translation-key": "side_bar_contest_management",
-    //   icon: (
-    //     <Box className={classes.img}>
-    //       <img src={images.admin.contest} alt='contest img' />
-    //     </Box>
-    //   ),
-    //   link: routes.admin.contest.root
-    // },
+    {
+      name: t("side_bar_contest_management"),
+      "translation-key": "side_bar_contest_management",
+      icon: <EmojiEventsOutlinedIcon className={classes.itemIcon} />,
+
+      link: routes.org_admin.contest.root
+    },
     {
       name: t("user_management"),
       "translation-key": "user_management",
@@ -92,8 +90,8 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            marginTop: `${headerHeight + 2}px`
+            width: drawerWidth
+            // marginTop: `${headerHeight + 2}px`
           }
         }}
         variant='persistent'

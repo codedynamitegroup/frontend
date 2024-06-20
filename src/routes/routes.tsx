@@ -94,6 +94,8 @@ export const routes = {
     },
     exam: {
       create: "/lecturer/courses/:courseId/assignments/exams/create",
+      take: "/lecturer/courses/:courseId/assignments/exams/:examId/take",
+      submitSummary: "/lecturer/courses/:courseId/assignments/exams/:examId/summary",
       edit: "/lecturer/courses/:courseId/assignments/exams/:examId/edit",
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
@@ -164,20 +166,24 @@ export const routes = {
       }
     },
     course_certificate: {
-      root: "/course-certificates",
+      root: "/certificate-courses",
       detail: {
-        root: "/course-certificates/:courseId/*",
-        introduction: "/course-certificates/:courseId/introduction",
+        root: "/certificate-courses/:courseId/*",
+        introduction: "/certificate-courses/:courseId/introduction",
         lesson: {
-          root: "/course-certificates/:courseId/lesson",
-          detail: "/course-certificates/:courseId/lesson/:lessonId/*",
-          description: "/course-certificates/:courseId/lesson/:lessonId/description",
-          solution: "/course-certificates/:courseId/lesson/:lessonId/solution",
-          submission: "/course-certificates/:courseId/lesson/:lessonId/submission",
-          share_solution: "/course-certificates/:courseId/lesson/:lessonId/share-solution"
+          root: "/certificate-courses/:courseId/lesson",
+          detail: "/certificate-courses/:courseId/lesson/:lessonId/*",
+          description: "/certificate-courses/:courseId/lesson/:lessonId/description",
+          solution: "/certificate-courses/:courseId/lesson/:lessonId/solution",
+          submission: "/certificate-courses/:courseId/lesson/:lessonId/submission",
+          share_solution: "/certificate-courses/:courseId/lesson/:lessonId/share-solution"
         },
-        certificate: "/course-certificates/:courseId/certificate"
+        certificate: "/certificate-courses/:courseId/certificate",
+        review: "/certificate-courses/:courseId/review"
       }
+    },
+    business_contact: {
+      root: "/business-contact"
     },
     contest: {
       root: "/contests",
@@ -222,7 +228,8 @@ export const routes = {
     information: "/admin/information",
     certificate: {
       root: "/admin/certificate-course",
-      create: "/admin/certificate-course/create"
+      create: "/admin/certificate-course/create",
+      detail: "/admin/certificate-course/:id"
     },
     contest: {
       root: "/admin/contests",
@@ -235,7 +242,8 @@ export const routes = {
         statistics: "/admin/contests/edit/:contestId/statistics"
       },
       create: "/admin/contests/create",
-      submissions: "/admin/contests/:contestId/submissions"
+      submissions: "/admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     },
     users: {
       root: "/admin/users",
@@ -244,6 +252,18 @@ export const routes = {
         details: "/admin/users/edit/:userId/details"
       },
       create: "/admin/users/create"
+    },
+    organizations: {
+      root: "/admin/organizations",
+      edit: {
+        root: "/admin/organizations/edit/:organizationId/*",
+        details: "/admin/organizations/edit/:organizationId/details",
+        list_users: "/admin/organizations/edit/:organizationId/users",
+        create_user: "/admin/organizations/edit/:organizationId/users/create",
+        assign_user: "/admin/organizations/edit/:organizationId/users/assign-user",
+        edit_user: "/admin/organizations/edit/:organizationId/users/:userId"
+      },
+      create: "/admin/organizations/create"
     },
     code_question: {
       root: "/admin/code-questions",
@@ -340,6 +360,7 @@ export const routes = {
             code
           }))
       },
+
       update_question: {
         paths: Object.values(qtype)
           .map((value) => value.code)
@@ -348,6 +369,20 @@ export const routes = {
             code
           }))
       }
+    },
+    contest: {
+      root: "/org-admin/contests",
+      edit: {
+        root: "/org-admin/contests/edit/:contestId/*",
+        details: "/org-admin/contests/edit/:contestId/details",
+        problems: "/org-admin/contests/edit/:contestId/problems",
+        advanced_settings: "/org-admin/contests/edit/:contestId/advanced-settings",
+        signups: "/org-admin/contests/edit/:contestId/signups",
+        statistics: "/org-admin/contests/edit/:contestId/statistics"
+      },
+      create: "/org-admin/contests/create",
+      submissions: "/org-admin/contests/:contestId/submissions",
+      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
     }
   }
 };

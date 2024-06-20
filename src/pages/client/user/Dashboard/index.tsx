@@ -1,6 +1,7 @@
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinearProgress } from "@mui/joy";
+import JoyButton from "@mui/joy/Button";
 import { CircularProgress, Container, Grid, Skeleton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -18,49 +19,65 @@ import images from "config/images";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { IsRegisteredFilterEnum } from "models/coreService/enum/IsRegisteredFilterEnum";
 import { SkillLevelEnum } from "models/coreService/enum/SkillLevelEnum";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setMostPopularContests } from "reduxes/coreService/Contest";
 import { routes } from "routes/routes";
 import { CertificateCourseService } from "services/coreService/CertificateCourseService";
 import { ContestService } from "services/coreService/ContestService";
-import { AppDispatch, RootState } from "store";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const user: User = useSelector(selectCurrentUser);
   const { loggedUser } = useAuth();
-  const contestState = useSelector((state: RootState) => state.contest);
-  const dispatch = useDispatch<AppDispatch>();
 
-  const [registeredCertificateCourses, setRegisteredCertificateCourses] = React.useState<
-    CertificateCourseEntity[]
-  >([]);
+  const [mostPopularContestData, setMostPopularContestData] = useState<{
+    isLoading: boolean;
+    mostPopularContests: {
+      mostPopularContests: ContestEntity[];
+      numOfParticipants: number;
+      numOfContests: number;
+    };
+  }>({
+    isLoading: false,
+    mostPopularContests: {
+      mostPopularContests: [],
+      numOfParticipants: 0,
+      numOfContests: 0
+    }
+  });
 
-  const [isCertificateCoursesLoading, setIsCertificateCoursesLoading] =
-    React.useState<boolean>(false);
-  const [certificateCourses, setCertificateCourses] = React.useState<CertificateCourseEntity[]>([]);
+  const [registeredCertificateCourseData, setRegisteredCertificateCourseData] = React.useState<{
+    isLoading: boolean;
+    certificateCourses: CertificateCourseEntity[];
+  }>({
+    isLoading: false,
+    certificateCourses: []
+  });
 
-  const [isMostPopularContestsLoading, setIsMostPopularContestsLoading] =
-    React.useState<boolean>(false);
+  const [certificateCourseData, setCertificateCourseData] = React.useState<{
+    isLoading: boolean;
+    certificateCourses: CertificateCourseEntity[];
+  }>({
+    isLoading: false,
+    certificateCourses: []
+  });
+
   const firstMostPopularContest = useMemo(() => {
     if (
-      !contestState.mostPopularContests ||
-      !contestState.mostPopularContests.mostPopularContests
+      !mostPopularContestData.mostPopularContests ||
+      !mostPopularContestData.mostPopularContests.mostPopularContests
     ) {
       return null;
     }
-    return contestState.mostPopularContests.mostPopularContests[0];
-  }, [contestState.mostPopularContests]);
+    return mostPopularContestData.mostPopularContests.mostPopularContests[0];
+  }, [mostPopularContestData.mostPopularContests]);
 
   const handleGetCertificateCourses = useCallback(
     async ({
@@ -72,80 +89,86 @@ export default function UserDashboard() {
       filterTopicId?: string;
       isRegisteredFilter: IsRegisteredFilterEnum;
     }) => {
-      setIsCertificateCoursesLoading(true);
+      setCertificateCourseData((prevState) => ({
+        ...prevState,
+        isLoading: true
+      }));
       try {
         const getCertificateCoursesResponse = await CertificateCourseService.getCertificateCourses({
           courseName,
           filterTopicId,
           isRegisteredFilter
         });
-        setIsCertificateCoursesLoading(false);
-        setCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-      } catch (error: any) {
-        console.error("Failed to fetch certificate courses", {
-          code: error.code || 503,
-          status: error.status || "Service Unavailable",
-          message: error.message
+        setCertificateCourseData({
+          isLoading: false,
+          certificateCourses: getCertificateCoursesResponse.certificateCourses
         });
-        setIsCertificateCoursesLoading(false);
-        // Show snackbar here
+      } catch (error: any) {
+        setCertificateCourseData((prevState) => ({
+          ...prevState,
+          isLoading: false
+        }));
       }
     },
     []
   );
 
   const handleGetRegisteredCertificateCourses = useCallback(async () => {
-    setIsCertificateCoursesLoading(true);
+    setRegisteredCertificateCourseData((prevState) => ({
+      ...prevState,
+      isLoading: true
+    }));
     try {
       const getCertificateCoursesResponse =
         await CertificateCourseService.getMyCertificateCourses("");
-      setRegisteredCertificateCourses(getCertificateCoursesResponse.certificateCourses);
-      setIsCertificateCoursesLoading(false);
-    } catch (error: any) {
-      console.error("Failed to fetch my certificate courses", {
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
+      setRegisteredCertificateCourseData({
+        isLoading: false,
+        certificateCourses: getCertificateCoursesResponse.certificateCourses
       });
-      setIsCertificateCoursesLoading(false);
-      // Show snackbar here
+    } catch (error: any) {
+      setRegisteredCertificateCourseData((prevState) => ({
+        ...prevState,
+        isLoading: false
+      }));
     }
   }, []);
 
   const handleGetMostPopularContests = useCallback(async () => {
-    setIsMostPopularContestsLoading(true);
+    setMostPopularContestData((prevState) => ({
+      ...prevState,
+      isLoading: true
+    }));
     try {
       const getMostPopularContestsResponse = await ContestService.getMostPopularContests();
-      dispatch(setMostPopularContests(getMostPopularContestsResponse));
-      setIsMostPopularContestsLoading(false);
-    } catch (error: any) {
-      console.error("Failed to fetch most popular contests", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
+      setMostPopularContestData({
+        isLoading: false,
+        mostPopularContests: getMostPopularContestsResponse
       });
-      setIsMostPopularContestsLoading(false);
-      // Show snackbar here
+    } catch (error: any) {
+      setMostPopularContestData((prevState) => ({
+        ...prevState,
+        isLoading: false
+      }));
     }
-  }, [dispatch]);
+  }, []);
 
   const ongoingRegisteredCourses = useMemo(() => {
-    if (!registeredCertificateCourses) {
+    if (!registeredCertificateCourseData) {
       return [];
     }
     return (
-      registeredCertificateCourses
+      registeredCertificateCourseData.certificateCourses
         // .filter((course) => (course?.numOfCompletedResources || 0) > 0)
         .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
         .slice(0, 3)
     );
-  }, [registeredCertificateCourses]);
+  }, [registeredCertificateCourseData]);
 
   const otherCertificateCourses = useMemo(() => {
-    if (!certificateCourses) {
+    if (!certificateCourseData || !certificateCourseData.certificateCourses) {
       return [];
     }
-    return certificateCourses
+    return certificateCourseData.certificateCourses
       .filter(
         (course) =>
           !ongoingRegisteredCourses.find(
@@ -154,7 +177,7 @@ export default function UserDashboard() {
       )
       .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
       .slice(0, 3);
-  }, [certificateCourses, ongoingRegisteredCourses]);
+  }, [certificateCourseData, ongoingRegisteredCourses]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -275,7 +298,7 @@ export default function UserDashboard() {
               </Box>
               <Box className={classes.couseCertificatesByTopic}>
                 <Grid container spacing={3}>
-                  {isCertificateCoursesLoading ? (
+                  {certificateCourseData.isLoading ? (
                     <Box
                       sx={{
                         display: "flex",
@@ -360,7 +383,7 @@ export default function UserDashboard() {
             </Heading2>
             <Box className={classes.contest}>
               <Card>
-                {isMostPopularContestsLoading ? (
+                {mostPopularContestData.isLoading ? (
                   <Skeleton variant='rectangular' height={140} />
                 ) : (
                   <CardMedia
@@ -373,12 +396,12 @@ export default function UserDashboard() {
                 )}
 
                 <CardContent>
-                  {isMostPopularContestsLoading ? (
+                  {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
                     <ParagraphBody>{firstMostPopularContest?.name}</ParagraphBody>
                   )}
-                  {isMostPopularContestsLoading ? (
+                  {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
                     <ParagraphSmall fontWeight={500} translation-key='dashboard_participant_num'>
@@ -386,7 +409,7 @@ export default function UserDashboard() {
                     </ParagraphSmall>
                   )}
 
-                  {isMostPopularContestsLoading ? (
+                  {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
                     <ParagraphSmall fontWeight={500} translation-key='dashboard_contest_end'>
@@ -401,7 +424,7 @@ export default function UserDashboard() {
                   )}
                 </CardContent>
                 <CardActions>
-                  {isMostPopularContestsLoading ? (
+                  {mostPopularContestData.isLoading ? (
                     <Skeleton variant='rounded' width={100} height={30} />
                   ) : (
                     <JoyButton

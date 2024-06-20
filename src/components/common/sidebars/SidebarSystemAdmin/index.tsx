@@ -13,6 +13,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import images from "config/images";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import CodeIcon from "@mui/icons-material/Code";
 
 const drawerWidth = 270;
@@ -63,7 +65,16 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       name: t("certificate_course_management_title"),
       "translation-key": "certificate_course_management_title",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
-      link: routes.admin.certificate.root
+      link: routes.admin.certificate.root,
+      children: [
+        { name: t("certificate_course_list"), link: routes.admin.certificate.root },
+
+        {
+          name: t("create_certificate_course_title"),
+          link: routes.admin.certificate.create
+          // icon: <AddCircleRoundedIcon className={classes.itemIcon} />
+        }
+      ]
     },
     {
       name: t("code_management_title"),
@@ -76,6 +87,12 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       "translation-key": "question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.admin.question_bank.root
+    },
+    {
+      name: t("organization_management"),
+      "translation-key": "organization_management",
+      icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
+      link: routes.admin.organizations.root
     }
   ];
   // const [open, setOpen] = React.useState(true);

@@ -312,6 +312,7 @@ const QuestionBankManagement = () => {
             </Stack>
 
             <CustomAutocomplete
+              isLoading={questionBankCategoriesState.isLoading}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'
               value={searchText}
@@ -367,6 +368,7 @@ const QuestionBankManagement = () => {
             </Stack>
 
             <CustomAutocomplete
+              isLoading={questionBankCategoriesState.isLoading}
               // ={searchHandle}
               placeHolder={`${t("question_bank_category_find_by_category")} ...`}
               translation-key='question_bank_category_find_by_category'

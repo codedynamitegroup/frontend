@@ -7,7 +7,7 @@ const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVIC
 const gateWayServiceApiUrl = process.env.REACT_APP_GATEWAY_SERVICE_API_URL || "";
 
 export class CodeSubmissionService {
-  static async getDetailCodeSubmission(codeQuestionId: UUID) {
+  static async getDetailCodeSubmission(codeQuestionId: UUID | string) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
@@ -100,13 +100,11 @@ export class CodeSubmissionService {
   }
 
   static async getAdminCodeSubmissionList({
-    codeQuestionId,
     cerCourseId,
     contestId,
     pageNo,
     pageSize
   }: {
-    codeQuestionId?: string;
     cerCourseId?: string;
     contestId?: string;
     pageNo: number;
@@ -120,7 +118,6 @@ export class CodeSubmissionService {
         params: {
           pageNo,
           pageSize,
-          codeQuestionId,
           contestId,
           cerCourseId
         }

@@ -20,3 +20,24 @@ export interface GetQuestionExam {
   page: number;
   qtype: string;
 }
+
+export interface GetAllQuestionWithPaginationCommand {
+  searchName?: string;
+  pageNo?: number;
+  pageSize?: number;
+  qtype?: string;
+}
+
+interface GetAllQuestionResponseEntity {
+  questionId: string;
+  name: string;
+  difficulty: string;
+  questionText: string;
+}
+
+export interface GetAllQuestionWithPaginationResponse {
+  questions: GetAllQuestionResponseEntity[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+}

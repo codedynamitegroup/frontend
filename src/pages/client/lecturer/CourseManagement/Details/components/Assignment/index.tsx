@@ -49,7 +49,6 @@ const LecturerCourseAssignment = () => {
   };
 
   useEffect(() => {
-    console.log("CCC");
     handleGetExams(courseId ?? "");
     handleGetAssignments(courseId ?? "");
   }, [courseId]);
@@ -57,7 +56,6 @@ const LecturerCourseAssignment = () => {
   const handleDeleteAssignment = useCallback(
     async (id: string) => {
       try {
-        console.log("HEHE");
         const response = await AssignmentService.deleteAssignment(id);
         if (response) {
           const result = assignmentState.assignments.filter((e) => e.id !== id);

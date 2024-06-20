@@ -1,10 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import JoyButton from "@mui/joy/Button";
-import { Box, Card, Divider, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import moment from "moment";
 import NotFoundPage from "pages/common/NotFoundPage";
@@ -129,8 +128,8 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
       rules: yup.string().trim(""),
       scoring: yup.string().trim(""),
       isPublic: yup.boolean().required(t("contest_is_public_required")),
-      isRestrictedForum: yup.boolean().required(t("contest_is_restricted_forum_required")),
-      isDisabledForum: yup.boolean().required(t("contest_is_disabled_forum_required")),
+      isRestrictedForum: yup.boolean().default(false),
+      isDisabledForum: yup.boolean().default(false),
       problems: yup
         .array()
         .of(
@@ -144,7 +143,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             maxGrade: yup.number().default(0)
           })
         )
-        .required(t("contest_problems_required"))
+        .default([])
     });
   }, [t]);
 
@@ -288,34 +287,20 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
   return (
     <>
       <Box component='form' className={classes.formBody} onSubmit={handleSubmit(submitHandler)}>
-        <Card
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "1px solid #e0e0e0",
-              borderRadius: "4px"
-            },
-            margin: "20px 20px 90px 20px",
-            gap: "20px"
-          }}
-        >
-          <Box className={classes.breadcump} ref={breadcumpRef}>
+        <Box>
+          <Box className={classes.breadcump}>
             <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.admin.contest.root)}
-                translation-key='contest_management_title'
-              >
-                {t("contest_management_title")}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>{defaultContestName}</ParagraphSmall>
+              <CustomBreadCrumb
+                breadCrumbData={[
+                  { navLink: routes.admin.contest.root, label: t("contest_management_title") }
+                ]}
+                lastBreadCrumbLabel={defaultContestName}
+              />
             </Box>
           </Box>
-          <Divider />
           <Box
             sx={{
-              margin: "20px"
+              margin: "0 20px"
             }}
           >
             <Heading1>{defaultContestName}</Heading1>
@@ -424,7 +409,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
               <Route path={"*"} element={<NotFoundPage />} />
             </Routes>
           </Box>
-        </Card>
+        </Box>
         <Box
           sx={{
             display: "flex",

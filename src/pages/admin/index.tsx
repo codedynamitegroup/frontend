@@ -29,6 +29,11 @@ import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertifi
 import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
 import AdminCodeQuestionManagement from "./CodeQuestionManagement";
 import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
+import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmissionDetails";
+import OrganizationManagement from "./OrganizationManagement/OrganizationManagement";
+import CreateOrganization from "./OrganizationManagement/CreateOrganization";
+import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
+import UpdateCertificateCourse from "./CertificateCourseManagement/UpdateCertificateCourse";
 
 type Props = {};
 
@@ -51,14 +56,27 @@ const SystemAdminHomepage = (props: Props) => {
             <Route path={"contests/create"} element={<CreateContest />} />
             <Route path={"contests/:contestId/submissions"} element={<AdminContestSubmissions />} />
             <Route
+              path={"contests/:contestId/submissions/:submissionId"}
+              element={<AdminContestSubmissionDetails />}
+            />
+            <Route
               path={"contests/edit/:contestId/*"}
               element={<EditContestDetails isDrawerOpen={open} />}
             />
             <Route path={"information"} element={<UserInformation />} />
             <Route path={"/dashboard"} element={<AdminDashboard />} />
+
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/create"} element={<CreateUser />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
+
+            <Route path={"organizations"} element={<OrganizationManagement />} />
+            <Route path={"organizations/create"} element={<CreateOrganization />} />
+            <Route
+              path={"organizations/edit/:organizationId/*"}
+              element={<EditOrganizationDetails />}
+            />
+
             <Route path={"/certificate-course"} element={<CertificateCourseManagement />} />
 
             <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
@@ -91,6 +109,7 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
             <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
+            <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
           </Routes>
         </Box>
         {/* </Box> */}

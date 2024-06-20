@@ -404,6 +404,7 @@ const QuestionListOfCourse = () => {
           </Stack>
 
           <CustomAutocomplete
+            isLoading={false}
             translation-key='question_bank_category_question_list_enter_question_name'
             placeHolder={`${t("question_bank_category_question_list_enter_question_name")} ...`}
             value={searchText}

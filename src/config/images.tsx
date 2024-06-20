@@ -66,6 +66,9 @@ import happeningContest from "assets/img/admin/happening-contest.svg";
 import upcomingContest from "assets/img/admin/upcomming-contest.svg";
 import contestDashboard from "assets/img/admin/contest-dashboard.svg";
 
+import organizationIc from "assets/img/admin/organization.svg";
+import contactUsIc from "assets/img/contact_us.jpg";
+
 const images = {
   course: {
     courseAssignment,
@@ -95,6 +98,7 @@ const images = {
   flagIcon: { flagVietnam, flagUs },
   icAlmostEqualTo,
   error: { notFoundError, forbiddenError },
+  contactUsIc,
   admin: {
     contest,
     adminManagement,
@@ -115,7 +119,8 @@ const images = {
     contestParticipant,
     happeningContest,
     upcomingContest,
-    contestDashboard
+    contestDashboard,
+    organizationIc
   }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
