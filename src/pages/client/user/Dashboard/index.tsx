@@ -179,8 +179,6 @@ export default function UserDashboard() {
       .slice(0, 3);
   }, [certificateCourseData, ongoingRegisteredCourses]);
 
-  console.log("ongoingRegisteredCourses", ongoingRegisteredCourses);
-
   useEffect(() => {
     const fetchInitialData = async () => {
       Promise.all([

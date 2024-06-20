@@ -1,4 +1,6 @@
 {
+  "common_contact_us": "Liên hệ với chúng tôi",
+  "common_contact_us_description": "Vui lòng điền biểu mẫu dưới đây để liên hệ với chúng tôi.",
   "common_is_blocked": "Tình trạng khóa",
   "common_is_belong_to_organization": "Thuộc tổ chức",
   "common_organization_name": "Tên tổ chức",
@@ -180,6 +182,7 @@
   "common_enter_answer": "Nhập câu trả lời",
   "common_remove_flag": "Huỷ gắn cờ",
   "common_start": "Bắt đầu",
+  "common_star": "Sao",
   "common_details": "Chi tiết",
   "common_problems": "Bài toán",
   "common_moderators": "Người điều hành",
@@ -231,6 +234,7 @@
   "common_personal": "Cá nhân",
   "common_add_new": "Thêm mới",
   "common_cannot_be_blank": "không được để trống",
+  "common_close": "Đóng",
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
 
@@ -251,6 +255,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
+  "header_business_contact": "Liên hệ doanh nghiệp",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -422,6 +427,9 @@
   "common_updated_by": "Cập nhật bởi",
   "common_is_verified": "Tình trạng xác thực",
 
+  "user_select_from_list": "Chọn người dùng từ danh sách",
+  "user_belong_to_organization": "Thuộc tổ chức",
+  "user_not_belong_to_organization": "Không thuộc tổ chức nào",
   "user_management": "Quản lý người dùng",
   "user_create": "Tạo người dùng",
   "user_assign_to_organization": "Gán cho tổ chức",
@@ -1042,5 +1050,10 @@
   "exam_detail_graded": "Đã chấm",
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
-  "exam_detail_attempt_unlimited": "Không giới hạn lần làm"
+  "exam_detail_attempt_unlimited": "Không giới hạn lần làm",
+
+  "business_email": "Email doanh nghiệp",
+  "business_phone": "Số điện thoại doanh nghiệp",
+  "business_address": "Địa chỉ doanh nghiệp",
+  "business_name": "Tên doanh nghiệp"
 }

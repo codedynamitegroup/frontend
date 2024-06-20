@@ -1,4 +1,6 @@
 {
+  "common_contact_us": "Contact us",
+  "common_contact_us_description": "Please fill out the form below, and we'll contact you shortly.",
   "common_is_blocked": "Blocked status",
   "common_is_belong_to_organization": "Belong to organization",
   "common_organization_name": "Organization name",
@@ -190,6 +192,7 @@
   "common_enter_answer": "Enter answer",
   "common_remove_flag": "Remove flag",
   "common_start": "Start",
+  "common_star": "Star",
   "common_details": "Details",
   "common_problems": "Problems",
   "common_moderators": "Moderators",
@@ -219,6 +222,7 @@
   "common_add_condition": "Add condition",
   "common_active": "Active",
   "common_inactive": "Inactive",
+  "common_close": "Close",
 
   "dialog_confirm_delete_title": "Confirm Delete",
   "dialog_confirm_delete_contest_description": "Are you sure you want to delete this contest?",
@@ -249,6 +253,7 @@
 
   "header_explore_course": "Explore",
   "header_contest": "Contest",
+  "header_business_contact": "Business contact",
   "header_course": "Course",
   "header_login_button": "Login",
   "header_register_button": "Register",
@@ -428,6 +433,9 @@
   "common_updated_by": "Updated by",
   "common_is_verified": "Verified status",
 
+  "user_select_from_list": "Select user from list",
+  "user_belong_to_organization": "Belong to organization",
+  "user_not_belong_to_organization": "Not belong to organization",
   "user_management": "User management",
   "user_create": "Create user",
   "user_assign_to_organization": "Assign to organization",
@@ -1089,5 +1097,10 @@
   "choose_code_question_title": "Chosen code question: ",
   "youtube_video_url": "Youtube video URL",
   "enter_youtube_video_url": "Enter youtube video URL",
-  "edit_certificate_course_title": "Edit certificate course"
+  "edit_certificate_course_title": "Edit certificate course",
+
+  "business_email": "Business email",
+  "business_phone": "Business phone",
+  "business_address": "Business address",
+  "business_name": "Business name"
 }

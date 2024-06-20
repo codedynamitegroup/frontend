@@ -141,13 +141,15 @@ const OrganizationDetails = (props: Props) => {
         value={standardlizeUTCStringToLocaleString(organization?.createdAt as string, currentLang)}
         width='100%'
       />
-      <InputTextField
-        title={t("common_created_by")}
-        type='text'
-        disabled
-        value={organization?.createdBy.email}
-        width='100%'
-      />
+      {organization?.createdBy && (
+        <InputTextField
+          title={t("common_created_by")}
+          type='text'
+          disabled
+          value={organization?.createdBy.email}
+          width='100%'
+        />
+      )}
       <InputTextField
         title={t("common_updated_at")}
         type='text'
@@ -155,13 +157,15 @@ const OrganizationDetails = (props: Props) => {
         value={standardlizeUTCStringToLocaleString(organization?.updatedAt as string, currentLang)}
         width='100%'
       />
-      <InputTextField
-        title={t("common_updated_by")}
-        type='text'
-        disabled
-        value={organization?.updatedBy.email}
-        width='100%'
-      />
+      {organization?.updatedBy && (
+        <InputTextField
+          title={t("common_updated_by")}
+          type='text'
+          disabled
+          value={organization?.updatedBy.email}
+          width='100%'
+        />
+      )}
       <InputTextField
         title={t("organization_email")}
         type='text'

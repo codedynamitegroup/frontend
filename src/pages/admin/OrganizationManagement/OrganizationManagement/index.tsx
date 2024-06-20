@@ -26,7 +26,6 @@ import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { UserService } from "services/authService/UserService";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { OrganizationService } from "services/authService/OrganizationService";
 import { OrganizationEntity } from "models/authService/entity/organization";
@@ -82,14 +81,11 @@ const OrganizationManagement = () => {
     setIsOpenConfirmDelete(false);
   };
   const onDeleteConfirmDelete = async () => {
-    UserService.deleteUserById(deletedOrganizationId)
+    OrganizationService.deleteOrganizationBySystemAdmin(deletedOrganizationId)
       .then((res) => {
         dispatch(setSuccessMess("Delete organization successfully"));
-        setOrganizationsState({
-          currentPage: 0,
-          totalItems: 0,
-          totalPages: 0,
-          items: []
+        handleGetOrganizations({
+          searchName: ""
         });
       })
       .catch((error) => {
@@ -225,6 +221,33 @@ const OrganizationManagement = () => {
       }
     },
     {
+      field: "isDeleted",
+      headerName: t("common_is_blocked"),
+      flex: 0.6,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_is_blocked")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Checkbox
+            disableRipple
+            checked={params.row.isDeleted === true ? true : false}
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent !important",
+                cursor: "default"
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
       field: "isVerified",
       headerName: t("common_is_verified"),
       flex: 0.6,
@@ -284,7 +307,7 @@ const OrganizationManagement = () => {
           />,
           <GridActionsCellItem
             onClick={() => {
-              setDeletedOrganizationId(params.row.userId);
+              setDeletedOrganizationId(params.row.organizationId);
               setIsOpenConfirmDelete(true);
             }}
             icon={<DeleteIcon />}
@@ -380,15 +403,7 @@ const OrganizationManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
+      <Box>
         <Grid
           container
           spacing={2}
@@ -472,7 +487,7 @@ const OrganizationManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };

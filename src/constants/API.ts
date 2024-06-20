@@ -18,6 +18,10 @@ export const API = {
       UPDATE_BY_ID: "/core/topics/:id",
       DELETE_BY_ID: "/core/topics/:id"
     },
+    REVIEW: {
+      DEFAULT: "/core/reviews",
+      CREATE: "/core/reviews/create"
+    },
     CHAPTER: {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
@@ -168,7 +172,8 @@ export const API = {
       DEFAULT: "/code-assessment/shared-solution",
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
-        DEFAULT: "code-assessment/shared-solution/:id/comment"
+        DEFAULT: "code-assessment/shared-solution/:id/comment",
+        EDIT_OR_DELETE: "code-assessment/shared-solution/comment/:id"
       },
       TAG: {
         DEFAULT: "code-assessment/shared-solution/:id/tag"
@@ -204,8 +209,10 @@ export const API = {
     ORGANIZATION: {
       GET_ALL_ORGANIZATIONS: "/auth/organizations",
       CREATE_ORGANIZATION: "/auth/organizations",
+      CREATE_ORGANIZATION_BY_CONTACT_US: "/auth/organizations/contact-us",
       GET_ORGANIZATION_BY_ID: "/auth/organizations/:id",
-      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
+      UPDATE_ORGANIZATION_BY_ID: "/auth/organizations/:id",
+      DELETE_ORGANIZATION_BY_ID: "/auth/organizations/:id"
     }
   }
 };
