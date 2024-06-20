@@ -13,52 +13,88 @@ import { setAnswered, setFlag } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 
-interface MultipleChoiceExamQuestionProps {
-  questionIndex: number;
+interface Props {
+  page: number;
+
   questionMultiChoice: MultiChoiceQuestion;
-  questionSubmitContent: any;
+  questionState: any;
 }
 
-const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
+const MultipleChoiceExamQuestion = (props: Props) => {
   const { t } = useTranslation();
-  const { questionIndex, questionMultiChoice, questionSubmitContent } = props;
+  const { page, questionState, questionMultiChoice } = props;
+  const dispatch = useDispatch();
+  const isFlagged = questionState?.flag;
 
-  const answerList = questionMultiChoice.question.answers?.map((answer: any) => ({
-    value: answer.id,
-    label: answer.answer
-  }));
+  // convert answer got from API to JoyRadioGroup format
+  // value is answer ID, label is answer content aka answer
+  const [answerList, setAnswerList] = useState<{ value: string; label: string }[] | undefined>(
+    questionMultiChoice.question.answers?.map((answer: any) => ({
+      value: answer.id,
+      label: answer.answer
+    }))
+  );
+
+  const flagQuestionHandle = () => {
+    if (isFlagged !== undefined)
+      dispatch(setFlag({ id: questionMultiChoice.question.id, flag: !isFlagged }));
+  };
+
+  const handleRadioChange = (value: string) => {
+    dispatch(setAnswered({ id: questionMultiChoice.question.id, content: value, answered: true }));
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedList: string[] = questionState?.content.split(", ");
+    selectedList = selectedList.filter((uuid) => uuid !== "" && uuid !== "null");
+
+    if (event.target.checked) {
+      selectedList.push(event.target.value);
+    } else {
+      selectedList = selectedList.filter((uuid) => uuid !== event.target.value);
+    }
+
+    const updatedContent = selectedList.join(", ");
+
+    dispatch(
+      setAnswered({
+        id: questionMultiChoice.question.id,
+        content: updatedContent,
+        answered: selectedList.length > 0 ? true : false
+      })
+    );
+
+    console.log(selectedList);
+  };
+
+  useEffect(() => {
+    if (questionMultiChoice.shuffleAnswers) setAnswerList(shuffleArray(answerList));
+  }, []);
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <Heading4>{`${t("common_question")} ${questionIndex + 1}`}</Heading4>
-          {/* <Button
+          <Heading4>{`${t("common_question")} ${page + 1}`}</Heading4>
+          <Button
             variant={isFlagged ? "soft" : "outlined"}
             color='primary'
             startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
             onClick={flagQuestionHandle}
           >
             {isFlagged ? t("common_remove_flag") : t("common_flag")}
-          </Button> */}
+          </Button>
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} spacing={2}>
           <Box
-            sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
-            }}
+            sx={{ backgroundColor: questionState?.answered ? "#e6eaf7" : "#FDF6EA" }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
-                ? t("common_answered")
-                : t("common_not_answered")}
+              {questionState?.answered ? t("common_answer_saved") : t("common_not_answered")}
             </ParagraphBody>
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
@@ -109,9 +145,8 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
         {Boolean(questionMultiChoice.single) ? (
           <JoyRadioGroup
             color='primary'
-            value={questionSubmitContent?.content}
-            onChange={() => {}}
-            disabled
+            value={questionState?.content}
+            onChange={handleRadioChange}
             values={answerList}
             orientation='vertical'
             size='md'
@@ -130,13 +165,12 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
             }}
           >
             {/* Value is ID */}
-            {answerList?.map((answer: any) => (
+            {answerList?.map((answer) => (
               <Sheet variant='outlined' key={answer.value}>
                 <Checkbox
-                  disabled
-                  onChange={() => {}}
+                  onChange={handleCheckboxChange}
                   value={answer.value}
-                  checked={questionSubmitContent?.content.includes(answer.value)}
+                  checked={questionState?.content.includes(answer.value)}
                   size='sm'
                   overlay
                   label={
@@ -153,5 +187,18 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
     </Grid>
   );
 };
+
+function shuffleArray(array: any[] | undefined) {
+  if (!array) return [];
+
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+
+  return array;
+}
 
 export default MultipleChoiceExamQuestion;

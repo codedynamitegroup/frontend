@@ -10,6 +10,7 @@
 
 .mainContent {
   background-color: var(--gray-2);
+  height: 100%;
 }
 
 .formBody {
@@ -29,7 +30,7 @@
   margin-bottom: 20px;
   height: fit-content;
   border-radius: 12px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   padding: 1.25rem 1.25rem;
   .drawerTextTitle {
     margin-bottom: 10px;
