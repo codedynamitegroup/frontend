@@ -58,7 +58,7 @@ export default function DetailSolution({
     courseId: string;
     lessonId: string;
   }>();
-  const lessonProblemId = () => {
+  const shareYourSolution = () => {
     if (problemId)
       navigate(routes.user.problem.solution.share.replace(":problemId", problemId), {
         state: {
@@ -224,6 +224,7 @@ export default function DetailSolution({
               variant='contained'
               color='primary'
               translation-key='detail_problem_submission_detail_share_solution'
+              onClick={shareYourSolution}
             >
               {t("detail_problem_submission_detail_share_solution")}
             </Button>
