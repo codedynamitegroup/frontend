@@ -289,11 +289,12 @@ const OrganizationUserManagement = () => {
             icon={<EditIcon />}
             label='Edit'
             onClick={() => {
-              navigate(routes.admin.users.edit.details.replace(":userId", params.row.userId), {
-                state: {
-                  contestName: params.row.name
-                }
-              });
+              if (organizationId)
+                navigate(
+                  routes.admin.organizations.edit.edit_user
+                    .replace(":userId", params.row.userId)
+                    .replace(":organizationId", organizationId)
+                );
             }}
           />,
           <GridActionsCellItem

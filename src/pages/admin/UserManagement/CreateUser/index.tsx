@@ -128,17 +128,7 @@ const CreateUser = () => {
   );
   return (
     <>
-      <Card
-        sx={{
-          margin: "20px",
-          // padding: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          },
-          gap: "20px"
-        }}
-      >
+      <Box>
         <Box className={classes.breadcump}>
           <Box id={classes.breadcumpWrapper}>
             <CustomBreadCrumb
@@ -147,10 +137,9 @@ const CreateUser = () => {
             />
           </Box>
         </Box>
-        <Divider />
         <Box
           sx={{
-            padding: "20px"
+            padding: "0px 20px 20px 20px"
           }}
         >
           <Heading1 translate-key='user_create'>{t("user_create")}</Heading1>
@@ -237,7 +226,7 @@ const CreateUser = () => {
             </Grid>
           </Box>
         </Box>
-      </Card>
+      </Box>
     </>
   );
 };
