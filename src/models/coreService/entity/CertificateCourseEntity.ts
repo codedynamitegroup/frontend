@@ -22,6 +22,11 @@ export interface CertificateCourseEntity {
   createdAt: string;
   updatedAt: string;
   updatedBy: UserEntity;
+  numOfOneStarReviews?: number;
+  numOfTwoStarReviews?: number;
+  numOfThreeStarReviews?: number;
+  numOfFourStarReviews?: number;
+  numOfFiveStarReviews?: number;
 }
 
 export interface PostCreateCertificateCourseCommand {
