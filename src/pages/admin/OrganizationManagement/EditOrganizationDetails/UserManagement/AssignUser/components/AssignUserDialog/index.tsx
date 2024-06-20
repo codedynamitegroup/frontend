@@ -12,7 +12,6 @@ import CustomDialog from "components/common/dialogs/CustomDialog";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading3 from "components/text/Heading3";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
@@ -20,7 +19,6 @@ import i18next from "i18next";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { setLoading, setOrgAssignUsers } from "reduxes/authService/user";
 import { setErrorMess } from "reduxes/AppStatus";
 import { UserService } from "services/authService/UserService";
 import Heading5 from "components/text/Heading5";
@@ -28,7 +26,9 @@ import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { ERoleName } from "models/authService/entity/role";
 import { User } from "models/authService/entity/user";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { setLoading } from "reduxes/Loading";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PaginationList } from "models/general";
 
 export interface UserManagementProps {
   id: string;
@@ -67,13 +67,19 @@ export default function AssignUserToOrganizationDialog({
 }: AssignUserToOrganizationDialogProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = React.useState<string>("");
-  const [currentLang, setCurrentLang] = React.useState(() => {
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
-  const userState = useSelector((state: RootState) => state.user);
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
 
-  const [filters, setFilters] = React.useState<
+  const [filters, setFilters] = useState<
     {
       key: string;
       value: string;
@@ -87,7 +93,7 @@ export default function AssignUserToOrganizationDialog({
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleGetUsers = React.useCallback(
+  const handleGetUsers = useCallback(
     async ({
       searchName,
       pageNo = 0,
@@ -104,7 +110,12 @@ export default function AssignUserToOrganizationDialog({
           pageNo,
           pageSize
         });
-        dispatch(setOrgAssignUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -118,7 +129,7 @@ export default function AssignUserToOrganizationDialog({
     [dispatch, t]
   );
 
-  const handleSearchChange = React.useCallback(
+  const handleSearchChange = useCallback(
     (value: string) => {
       handleGetUsers({
         searchName: value
@@ -247,12 +258,9 @@ export default function AssignUserToOrganizationDialog({
     }
   ];
 
-  const [page, setPage] = React.useState(0);
-  const [pageSize, setPageSize] = React.useState(10);
-  const totalElement = React.useMemo(
-    () => userState.org_assign_users.totalItems || 0,
-    [userState.org_assign_users]
-  );
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -269,7 +277,7 @@ export default function AssignUserToOrganizationDialog({
     });
   };
 
-  const roleMapping = React.useMemo(
+  const roleMapping = useMemo(
     () => [
       { name: ERoleName.ADMIN, label: t("role_system_admin") },
       { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
@@ -279,7 +287,7 @@ export default function AssignUserToOrganizationDialog({
     [t]
   );
 
-  const mappingRole = React.useCallback(
+  const mappingRole = useCallback(
     (user: User) => {
       const matchedRole = roleMapping.find((role) =>
         user?.roles.some((userRole) => userRole?.name === role.name)
@@ -289,47 +297,47 @@ export default function AssignUserToOrganizationDialog({
     [roleMapping, t]
   );
 
-  const userListTable: UserManagementProps[] = React.useMemo(
-    () =>
-      userState.org_assign_users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
-        };
-      }),
-    [mappingRole, userState.org_assign_users]
-  );
+  const userListTable: UserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
 
-  const handleApplyFilter = React.useCallback(() => {
+  const handleApplyFilter = useCallback(() => {
     handleGetUsers({
       searchName: searchValue
     });
   }, [handleGetUsers, searchValue]);
 
-  const handleCancelFilter = React.useCallback(() => {
+  const handleCancelFilter = useCallback(() => {
     handleGetUsers({
       searchName: searchValue
     });
   }, [handleGetUsers, searchValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentLang(i18next.language);
   }, [i18next.language]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchUsers = async () => {
       // dispatch(setInititalLoading(true));
       await handleGetUsers({
@@ -361,7 +369,7 @@ export default function AssignUserToOrganizationDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomSearchFeatureBar
-            isLoading={userState.isLoading}
+            isLoading={isLoadingState.loading}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
             onHandleChange={handleSearchChange}
@@ -398,7 +406,7 @@ export default function AssignUserToOrganizationDialog({
         </Grid>
         <Grid item xs={12}>
           <CustomDataGrid
-            loading={userState.isLoading}
+            loading={isLoadingState.loading}
             dataList={userListTable}
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}

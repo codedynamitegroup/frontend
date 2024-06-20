@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { clearOrganizations } from "reduxes/authService/organization";
-import TextEditor from "components/editor/TextEditor";
 import {
   OrganizationEntity,
   UpdateOrganizationBySystemAdminRequest
@@ -106,7 +104,6 @@ const OrganizationDetails = (props: Props) => {
         );
         setSubmitLoading(false);
         dispatch(setSuccessMess("Updated organization successfully"));
-        dispatch(clearOrganizations());
       } catch (error: any) {
         console.error("error", error);
         dispatch(

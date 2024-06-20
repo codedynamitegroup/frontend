@@ -19,7 +19,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { clearOrgUsers, setLoading, setOrgUsers } from "reduxes/authService/user";
 import { routes } from "routes/routes";
 import { AppDispatch, RootState } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
@@ -35,7 +34,8 @@ import { OrganizationEntity } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import Heading1 from "components/text/Heading1";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
+import { setLoading } from "reduxes/Loading";
+import { PaginationList } from "models/general";
 
 interface OrganizationUserManagementProps {
   id: string;
@@ -77,21 +77,26 @@ const OrganizationUserManagement = () => {
     }
   ]);
 
-  const userState = useSelector((state: RootState) => state.user);
-
+  const [userState, setUserState] = useState<PaginationList<User>>({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const isLoadingState = useSelector((state: RootState) => state.loading);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleGetOrganizationById = useCallback(async (id: string) => {
     try {
-      dispatch(setInititalLoading(true));
+      dispatch(setLoading(true));
       const organizationResponse = await OrganizationService.getOrganizationById(id);
       if (organizationResponse) {
         setOrganization(organizationResponse);
       }
-      dispatch(setInititalLoading(false));
+      dispatch(setLoading(false));
     } catch (error: any) {
       console.error("error", error);
-      dispatch(setInititalLoading(false));
+      dispatch(setLoading(false));
     }
   }, []);
 
@@ -120,7 +125,12 @@ const OrganizationUserManagement = () => {
           pageSize: pageSize,
           id: organizationId
         });
-        dispatch(setOrgUsers(getUsersResponse));
+        setUserState({
+          currentPage: getUsersResponse.currentPage,
+          totalItems: getUsersResponse.totalItems,
+          totalPages: getUsersResponse.totalPages,
+          items: getUsersResponse.users
+        });
         dispatch(setLoading(false));
       } catch (error: any) {
         console.error("error", error);
@@ -301,7 +311,7 @@ const OrganizationUserManagement = () => {
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const totalElement = useMemo(() => userState.org_users.totalItems || 0, [userState.org_users]);
+  const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -338,29 +348,29 @@ const OrganizationUserManagement = () => {
     [roleMapping, t]
   );
 
-  const userListTable: OrganizationUserManagementProps[] = useMemo(
-    () =>
-      userState.org_users.users.map((user) => {
-        return {
-          id: user.userId,
-          userId: user.userId,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatarUrl: user.avatarUrl,
-          lastLogin: user.lastLogin,
-          phone: user.phone,
-          address: user.address,
-          dob: user.dob,
-          isLinkedWithGoogle: user.isLinkedWithGoogle,
-          isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-          createdAt: user.createdAt,
-          roleName: mappingRole(user),
-          isDeleted: user.isDeleted
-        };
-      }),
-    [mappingRole, userState.org_users]
-  );
+  const userListTable: OrganizationUserManagementProps[] = useMemo(() => {
+    if (userState.items.length > 0) {
+      return userState.items.map((user) => ({
+        id: user.userId,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        lastLogin: user.lastLogin,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        isLinkedWithGoogle: user.isLinkedWithGoogle,
+        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
+        createdAt: user.createdAt,
+        roleName: mappingRole(user),
+        isDeleted: user.isDeleted
+      }));
+    } else {
+      return [];
+    }
+  }, [mappingRole, userState.items]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
@@ -403,7 +413,12 @@ const OrganizationUserManagement = () => {
     UserService.unassignedUserToOrganization(unassignedUserId)
       .then((res) => {
         dispatch(setSuccessMess("Unassigned user successfully"));
-        dispatch(clearOrgUsers());
+        setUserState({
+          currentPage: 0,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        });
       })
       .catch((error) => {
         console.error("error", error);
@@ -433,7 +448,7 @@ const OrganizationUserManagement = () => {
         >
           <Grid item xs={12}>
             <CustomSearchFeatureBar
-              isLoading={userState.isLoading}
+              isLoading={isLoadingState.loading}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onHandleChange={handleSearchChange}
@@ -505,7 +520,7 @@ const OrganizationUserManagement = () => {
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={userState.isLoading}
+              loading={isLoadingState.loading}
               dataList={userListTable}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}

@@ -3,8 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Avatar, Box, Grid } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
@@ -15,21 +15,12 @@ import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { ERoleName } from "models/authService/entity/role";
-import TextTitle from "components/text/TextTitle";
-import {
-  AssignUserToOrganizationRequest,
-  CreatedUserByAdminRequest,
-  User
-} from "models/authService/entity/user";
+import { AssignUserToOrganizationRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
-import PhoneInput from "react-phone-number-input";
-import ErrorMessage from "components/text/ErrorMessage";
 import InputSelect from "components/common/inputs/InputSelect";
 import { IOptionItem } from "models/general";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 import AssignUserToOrganizationDialog, { UserManagementProps } from "./components/AssignUserDialog";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
@@ -66,7 +57,6 @@ const AssignUser = () => {
     handleSubmit,
     control,
     formState: { errors },
-    register,
     reset
   } = useForm<IFormDataType>({
     resolver: yupResolver(schema)
@@ -92,7 +82,6 @@ const AssignUser = () => {
         await UserService.assignUserToOrganization(userId, assignUserToOrganizationData);
         setSubmitLoading(false);
         dispatch(setSuccessMess("User assigned successfully!!!"));
-        dispatch(clearUsers());
         if (organizationId)
           navigate(
             routes.admin.organizations.edit.list_users.replace(":organizationId", organizationId)
@@ -141,13 +130,16 @@ const AssignUser = () => {
 
   return (
     <>
-      <AssignUserToOrganizationDialog
-        open={isOpenedAddUserDialog}
-        title={t("contest_add_problem_button")}
-        handleClose={handleCloseAddUserDialog}
-        handleUserSelected={handleUserSelected}
-        maxWidth='md'
-      />
+      {isOpenedAddUserDialog && (
+        <AssignUserToOrganizationDialog
+          open={isOpenedAddUserDialog}
+          title={t("contest_add_problem_button")}
+          handleClose={handleCloseAddUserDialog}
+          handleUserSelected={handleUserSelected}
+          maxWidth='md'
+        />
+      )}
+
       <Box>
         <Button
           startIcon={<ArrowBackIcon />}

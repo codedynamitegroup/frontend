@@ -4,9 +4,8 @@ import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvid
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { logOut, selectCurrentUser, selectLoginStatus } from "reduxes/Auth";
+import { selectCurrentUser, selectLoginStatus } from "reduxes/Auth";
 import { setLoading } from "reduxes/Loading";
-import { clearUsers } from "reduxes/authService/user";
 import { routes } from "routes/routes";
 import { UserService } from "services/authService/UserService";
 

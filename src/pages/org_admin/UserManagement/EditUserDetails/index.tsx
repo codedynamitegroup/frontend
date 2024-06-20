@@ -19,7 +19,6 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { UpdateUserByAdminRequest, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import { clearUsers } from "reduxes/authService/user";
 import { format, parse } from "date-fns";
 import ErrorMessage from "components/text/ErrorMessage";
 import PhoneInput from "react-phone-number-input";
@@ -160,7 +159,6 @@ const EditUserDetails = () => {
         await UserService.updateUserByAdmin(userId, updateUserByAdminRequest);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Updated user successfully"));
-        dispatch(clearUsers());
       } catch (error: any) {
         console.error("error", error);
         dispatch(setErrorMess("User is updated failed!!! please check your input information"));

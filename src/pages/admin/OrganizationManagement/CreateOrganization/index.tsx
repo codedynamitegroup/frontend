@@ -16,11 +16,9 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
 import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
-import TextEditor from "components/editor/TextEditor";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
-import { clearOrganizations } from "reduxes/authService/organization";
 
 interface IFormDataType {
   email: string;
@@ -77,7 +75,6 @@ const CreateOrganization = () => {
         await OrganizationService.createOrganization(createOrganizationRequest);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created organization successfully"));
-        dispatch(clearOrganizations());
         navigate(routes.admin.organizations.root);
       } catch (error: any) {
         console.error("error", error);

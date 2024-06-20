@@ -35,8 +35,6 @@ import questionCategory from "reduxes/coreService/questionCategory";
 import Execute from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
 import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import appStatus from "reduxes/AppStatus";
-import user from "reduxes/authService/user";
-import organization from "reduxes/authService/organization";
 import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
 
@@ -84,10 +82,8 @@ const store = configureStore({
     questionCategory: questionCategory,
     loading: loading,
     appStatus: appStatus,
-    user: user,
     adminCertificateCourse: adminCertificateCourse,
-    sidebarStatus: SidebarStatus,
-    organization: organization
+    sidebarStatus: SidebarStatus
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
