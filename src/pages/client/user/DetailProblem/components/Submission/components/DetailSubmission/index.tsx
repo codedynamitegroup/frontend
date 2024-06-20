@@ -224,6 +224,7 @@ export default function DetailSolution({
               variant='contained'
               color='primary'
               translation-key='detail_problem_submission_detail_share_solution'
+              onClick={lessonProblemId}
             >
               {t("detail_problem_submission_detail_share_solution")}
             </Button>
