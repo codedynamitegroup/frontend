@@ -225,7 +225,8 @@ export const routes = {
     information: "/admin/information",
     certificate: {
       root: "/admin/certificate-course",
-      create: "/admin/certificate-course/create"
+      create: "/admin/certificate-course/create",
+      detail: "/admin/certificate-course/:id"
     },
     contest: {
       root: "/admin/contests",

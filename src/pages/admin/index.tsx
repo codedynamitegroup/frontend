@@ -33,6 +33,7 @@ import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmi
 import OrganizationManagement from "./OrganizationManagement/OrganizationManagement";
 import CreateOrganization from "./OrganizationManagement/CreateOrganization";
 import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
+import UpdateCertificateCourse from "./CertificateCourseManagement/UpdateCertificateCourse";
 
 type Props = {};
 
@@ -108,6 +109,7 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
             <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
+            <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
           </Routes>
         </Box>
         {/* </Box> */}

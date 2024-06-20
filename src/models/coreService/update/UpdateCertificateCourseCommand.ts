@@ -1,13 +1,27 @@
-import { TopicEntity } from "../entity/TopicEntity";
-import { UserEntity } from "../entity/UserEntity";
-import { SkillLevelEnum } from "../enum/SkillLevelEnum";
-
 export interface UpdateCertificateCourseCommand {
+  certificateCourseId: string;
   name?: string;
   description?: string;
-  skillLevel?: SkillLevelEnum;
+  skillLevel?: string;
+  topicId?: string;
   startTime?: string;
   endTime?: string;
-  topic?: TopicEntity;
-  updatedBy?: UserEntity;
+  chapters: UpdateCertificateCourseChapter[];
+  email: string;
+}
+
+interface UpdateCertificateCourseChapter {
+  title: string;
+  no: number;
+  description: string;
+  resources: UpdateCertificateCourseResource[]
+}
+
+interface UpdateCertificateCourseResource {
+  no: number;
+  title: string;
+  resourceType: string;
+  questionId: string;
+  lessonHtml: string;
+  lessonVideo: string;
 }
