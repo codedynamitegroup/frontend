@@ -30,6 +30,7 @@ import CertificateCourseReviews from "./components/CertificateCourseReviews";
 import CourseCertificateIntroduction from "./components/Introduction";
 import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
+import { setChapters } from "reduxes/coreService/Chapter";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -48,7 +49,6 @@ const CourseCertificateDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [certificateCourseDetails, setCertificateCourseDetails] =
     useState<CertificateCourseEntity | null>(null);
-  const [chapters, setChapters] = useState<ChapterEntity[]>([]);
 
   const progress = useMemo(() => {
     if (!certificateCourseDetails) return 0;
@@ -122,14 +122,9 @@ const CourseCertificateDetail = () => {
       try {
         const getChaptersByCertificateCourseIdResponse =
           await ChapterService.getChaptersByCertificateCourseIdResponse(id);
-        setChapters(getChaptersByCertificateCourseIdResponse);
+        // setChapters(getChaptersByCertificateCourseIdResponse);
+        dispatch(setChapters(getChaptersByCertificateCourseIdResponse));
       } catch (error: any) {
-        // console.error("Failed to fetch chapters by certificate course id", {
-        //   code: error.response?.code || 503,
-        //   status: error.response?.status || "Service Unavailable",
-        //   message: error.response?.message || error.message
-        // });
-        // Show snackbar here
         dispatch(setErrorMess(error.response?.message || error.message));
       }
     },
@@ -443,12 +438,19 @@ const CourseCertificateDetail = () => {
                     element={
                       <CourseCertificateLesson
                         isRegistered={certificateCourseDetails.isRegistered || false}
-                        chapters={chapters}
                       />
                     }
                   />
                   <Route path={"certificate"} element={<CertificateDetails />} />
-                  <Route path={"review"} element={<CertificateCourseReviews />} />
+                  <Route
+                    path={"review"}
+                    element={
+                      <CertificateCourseReviews
+                        certificateCourseId={courseId}
+                        dispatch={dispatch}
+                      />
+                    }
+                  />
                 </Routes>
               </Box>
             </Box>

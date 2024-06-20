@@ -4,15 +4,18 @@ import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
 import LessonAccordion from "pages/client/user/CourseCertificate/Detail/components/Lesson/components/LessonAccordion";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const CourseCertificateLesson = ({
-  chapters,
+  // chapters,
   isRegistered
 }: {
-  chapters: ChapterEntity[];
+  // chapters: ChapterEntity[];
   isRegistered: boolean;
 }) => {
   const { t } = useTranslation();
+  const chapters = useSelector((state: RootState) => state.chapter.chapters);
 
   return (
     <Box id={classes.certificateDetails}>

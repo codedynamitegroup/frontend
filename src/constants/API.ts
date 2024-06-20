@@ -17,6 +17,10 @@ export const API = {
       UPDATE_BY_ID: "/core/topics/:id",
       DELETE_BY_ID: "/core/topics/:id"
     },
+    REVIEW: {
+      DEFAULT: "/core/reviews",
+      CREATE: "/core/reviews/create"
+    },
     CHAPTER: {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",
       GET_BY_ID: "/core/chapters/:id",
