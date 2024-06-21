@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
-import classes from "./styles.module.scss";
-import Heading1 from "components/text/Heading1";
-import ReactQuill from "react-quill";
 import Heading2 from "components/text/Heading2";
 import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
+import classes from "./styles.module.scss";
 
 interface Props {
   description: string;
@@ -21,7 +20,14 @@ const CourseCertificateIntroduction = ({ description }: Props) => {
         <Heading2 colorname='--blue-500'>
           {t("certificate_detail_certification_information")}
         </Heading2>
-        <ReactQuill value={description} readOnly={true} theme={"bubble"} />
+        <ReactQuill
+          value={description}
+          readOnly={true}
+          theme={"bubble"}
+          style={{
+            marginTop: "15px"
+          }}
+        />
       </Box>
     </Box>
   );

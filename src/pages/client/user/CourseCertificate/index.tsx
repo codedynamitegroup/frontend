@@ -327,7 +327,7 @@ const CourseCertificates = () => {
                       >
                         {t("certificate_hot_recommend")}
                       </Heading2>
-                      <Grid container spacing={3}>
+                      <Grid container spacing={5}>
                         {recommendedCertificateCourses.isLoading
                           ? Array.from({ length: 3 }).map((_, index) => (
                               <Grid item xs={4} key={index}>
@@ -469,7 +469,7 @@ const CourseCertificates = () => {
                             <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
                           </Box>
                         ) : (
-                          <Grid container spacing={3}>
+                          <Grid container spacing={5}>
                             {certificateCourses?.map((course, index) => (
                               <Grid
                                 item
@@ -514,7 +514,7 @@ const CourseCertificates = () => {
                           <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
                         </Box>
                       ) : (
-                        <Grid container spacing={3}>
+                        <Grid container spacing={5}>
                           {certificateCoursesByEachTopic.get(catalogActive) &&
                             certificateCoursesByEachTopic
                               .get(catalogActive)

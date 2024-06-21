@@ -20,7 +20,8 @@ export const API = {
     },
     REVIEW: {
       DEFAULT: "/core/reviews",
-      CREATE: "/core/reviews/create"
+      CREATE: "/core/reviews/create",
+      COUNT_BY_CERTIFICATE_COURSE_ID: "/core/reviews/stars"
     },
     CHAPTER: {
       DEFAULT: "/core/chapters?certificateCourseId=:certificateCourseId",

@@ -383,7 +383,7 @@ const ContestDetails = () => {
                     topUserRank.filter((user) => user.totalScore > 0).length !== 0 ? (
                       <Stack spacing={1} margin={"10px 0 10px 0"}>
                         {topUserRank.map((user: UserContestRankEntity, index: number) => (
-                          <Grid item xs={12} key={user.rank}>
+                          <Grid item xs={12} key={index}>
                             <Stack alignItems={"center"} direction={"row"}>
                               <EmojiEventsIcon
                                 fontSize='small'

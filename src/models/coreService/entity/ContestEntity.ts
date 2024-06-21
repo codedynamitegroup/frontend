@@ -10,7 +10,7 @@ export interface ContestEntity {
   scoring: string;
   thumbnailUrl: string;
   startTime: string;
-  endTime: string;
+  endTime?: string;
   questions: ContestQuestionEntity[];
   numOfParticipants: number;
   isRegistered?: boolean;

@@ -1,6 +1,7 @@
-import classes from "./styles.module.scss";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
+import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
+import classes from "./styles.module.scss";
 
 interface PropsData {
   time: number;
@@ -16,11 +17,13 @@ const ContestTimeDisplay = (props: PropsData) => {
         className={classes.timeNumberContainer}
         sx={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <Typography textAlign={"center"} color='white' fontSize={"14px"} fontWeight=''>
+        <ParagraphBody textAlign={"center"} colorname='--white' fontSize={"14px"} fontWeight='500'>
           {time}
-        </Typography>
+        </ParagraphBody>
       </Paper>
-      <Typography textAlign={"center"}>{type}</Typography>
+      <ParagraphBody textAlign={"center"} fontWeight='500'>
+        {type}
+      </ParagraphBody>
     </Box>
   );
 };
