@@ -487,36 +487,29 @@ export default function TakeContestProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  {contestDetails?.isDisabledForum === true ? (
-                    <>
-                      {auth.isLoggedIn && (
-                        <Tab
-                          sx={{ textTransform: "none" }}
-                          translation-key='detail_problem_submission'
-                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                          value={1}
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {auth.isLoggedIn && (
-                        <Tab
-                          sx={{ textTransform: "none" }}
-                          translation-key='detail_problem_discussion'
-                          label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                          value={1}
-                        />
-                      )}
-                      {auth.isLoggedIn && (
-                        <Tab
-                          sx={{ textTransform: "none" }}
-                          translation-key='detail_problem_submission'
-                          label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                          value={2}
-                        />
-                      )}
-                    </>
+                  {contestDetails?.isDisabledForum === true && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_submission'
+                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                      value={1}
+                    />
+                  )}
+                  {contestDetails?.isDisabledForum !== true && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_discussion'
+                      label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                      value={1}
+                    />
+                  )}
+                  {contestDetails?.isDisabledForum !== true && (
+                    <Tab
+                      sx={{ textTransform: "none" }}
+                      translation-key='detail_problem_submission'
+                      label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                      value={2}
+                    />
                   )}
                 </Tabs>
               </Box>

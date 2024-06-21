@@ -413,13 +413,12 @@ export default function UserDashboard() {
                     <Skeleton variant='text' />
                   ) : (
                     <ParagraphSmall fontWeight={500} translation-key='dashboard_contest_end'>
-                      {t("dashboard_contest_end")}{" "}
-                      {firstMostPopularContest
-                        ? standardlizeUTCStringToLocaleString(
+                      {firstMostPopularContest && firstMostPopularContest.endTime
+                        ? `${t("dashboard_contest_end")} ${standardlizeUTCStringToLocaleString(
                             firstMostPopularContest.endTime,
                             i18next.language
-                          )
-                        : ""}
+                          )}`
+                        : t("this_contest_has_no_end_time")}
                     </ParagraphSmall>
                   )}
                 </CardContent>

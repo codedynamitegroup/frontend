@@ -2,6 +2,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArticleIcon from "@mui/icons-material/Article";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CircleIcon from "@mui/icons-material/Circle";
 import CodeIcon from "@mui/icons-material/Code";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -30,25 +31,23 @@ import Heading3 from "components/text/Heading3";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
 import { ResourceTypeEnum } from "models/coreService/enum/ResourceTypeEnum";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setErrorMess } from "reduxes/AppStatus";
 import { markChapterResourceAsViewed, setChapters } from "reduxes/coreService/Chapter";
 import { routes } from "routes/routes";
+import { CertificateCourseService } from "services/coreService/CertificateCourseService";
+import { ChapterResourceService } from "services/coreService/ChapterResourceService";
 import { ChapterService } from "services/coreService/ChapterService";
 import { AppDispatch, RootState } from "store";
-import classes from "./styles.module.scss";
 import CodeQuestionLesson from "./components/CodeQuestionLesson";
 import YouTubeVideo from "./components/YoutubeVideo";
-import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import { CertificateCourseService } from "services/coreService/CertificateCourseService";
-import ReactQuill from "react-quill";
-import { ChapterResourceService } from "services/coreService/ChapterResourceService";
-import CircleIcon from "@mui/icons-material/Circle";
+import classes from "./styles.module.scss";
 
 const drawerWidth = 300;
 
@@ -579,9 +578,9 @@ export default function Lessons() {
                       justifyContent='space-between'
                     >
                       <TextTitle>{`${index + 1}. ${chapter.title}`}</TextTitle>
-                      <ParagraphSmall className={classes.chapterDescription}>
+                      {/* <ParagraphSmall className={classes.chapterDescription}>
                         {chapter.description}
-                      </ParagraphSmall>
+                      </ParagraphSmall> */}
                     </Stack>
                   </AccordionSummary>
                   <AccordionDetails>
