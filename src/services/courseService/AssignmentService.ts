@@ -52,6 +52,17 @@ export class AssignmentService {
     }
   }
 
+  static async getListSubmissionByAssignmentId(id: string) {
+    try {
+      const response = await this.apiClient.get(
+        `${API.COURSE.ASSIGNMENT.LIST_SUBMISSION.replace(":id", id)}`
+      );
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return this.handleError(error);
+    }
+  }
+
   static async createAssignment(assignment: CreateAssignmentCommand) {
     try {
       const response = await this.apiClient.post(API.COURSE.ASSIGNMENT.CREATE, assignment);

@@ -63,6 +63,8 @@ import { ChapterService } from "services/coreService/ChapterService";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
 import { ChapterEntity } from "models/coreService/entity/ChapterEntity";
 import { UpdateCertificateCourseCommand } from "models/coreService/update/UpdateCertificateCourseCommand";
+import { useDispatch } from "react-redux";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface FormData {
   name: string;
@@ -115,6 +117,7 @@ interface ChapterResourceFieldArrayPropsData {
 }
 
 const UpdateCertificateCourse = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [topicList, setTopicList] = useState<TopicEntity[]>([]);
@@ -263,7 +266,7 @@ const UpdateCertificateCourse = () => {
   //   console.log("fields", fields);
 
   const submitHandler = async (data: any) => {
-    // setSubmitLoading(true);
+    setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
     const newCertificateCourse: UpdateCertificateCourseCommand = {
       certificateCourseId: id || "",
@@ -293,20 +296,20 @@ const UpdateCertificateCourse = () => {
       })
     };
 
-    try {
-      if (id) {
-        const response = await CertificateCourseService.updateCertificateCourseById(
-          id,
-          newCertificateCourse
-        );
-        console.log("Submit response", response);
-      }
-
-      setSubmitLoading(false);
-    } catch (error) {
-      console.error("error", error);
-      setSubmitLoading(false);
-    }
+    if (id) {
+      CertificateCourseService.updateCertificateCourseById(id, newCertificateCourse)
+        .then((response) => {
+          setSubmitLoading(false);
+          dispatch(setSuccessMess(t("edit_certificate_course_success")));
+        })
+        .catch((error) => {
+          console.error("error", error);
+          dispatch(setErrorMess(error.message || t("edit_certificate_course_error")));
+        })
+        .finally(() => {
+          setSubmitLoading(false);
+        });
+    } else setSubmitLoading(false);
   };
 
   useEffect(() => {

@@ -49,13 +49,23 @@ export class SubmissionAssignmentService {
       return this.handleError(error);
     }
   }
-  static async getSubmissionAssignmentById(userId: string, assignmentId: string) {
+  static async getSubmissionAssignmentByUserIdAsignmentId(userId: string, assignmentId: string) {
     try {
       const response = await this.apiClient.get(
         `${API.COURSE.SUBMISSION_ASSIGNMENT.GET_BY_USER_ID_ASSIGNMENT_ID}`,
         {
           params: { userId, assignmentId }
         }
+      );
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return this.handleError(error);
+    }
+  }
+  static async getSubmissionAssignmentById(submissionAssignmentId: string) {
+    try {
+      const response = await this.apiClient.get(
+        `${API.COURSE.SUBMISSION_ASSIGNMENT.GET_BY_ID}`.replace(":id", submissionAssignmentId)
       );
       return this.handleResponse(response);
     } catch (error: any) {

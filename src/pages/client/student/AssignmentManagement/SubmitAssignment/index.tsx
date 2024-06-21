@@ -51,49 +51,6 @@ import { CreateSubmissionAssignmentFile } from "models/courseService/entity/crea
 import { UpdateSubmissionAssignment } from "models/courseService/entity/update/UpdateSubmissionAssignment";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 
-const drawerWidth = 450;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: 0
-  }),
-  position: "relative"
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open"
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginRight: drawerWidth
-  })
-}));
-
 export default function SubmitAssignment() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -106,11 +63,32 @@ export default function SubmitAssignment() {
   const [textEditorContent, setTextEditorContent] = React.useState<string>("");
   const [error, setError] = React.useState<string>("");
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
-  const [state, setState] = React.useState(false);
+
+  const [wordCount, setWordCount] = React.useState(0);
+
+  const countWords = (text: string) => {
+    const wordsArray = text.trim().split(/\s+/);
+    const count = wordsArray.filter((word) => word !== "").length;
+    return count;
+  };
+
+  const handleChange = (content: string) => {
+    setTextEditorContent(content);
+    setWordCount(countWords(content));
+  };
+
+  const handleGetAssignmentDetails = async (id: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentById(id);
+      dispatch(setAssignmentDetails(response));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleGetSubmissionAssignment = async (userId: string, assignmentId: string) => {
     try {
-      const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentByUserIdAsignmentId(
         userId,
         assignmentId
       );
@@ -191,13 +169,21 @@ export default function SubmitAssignment() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (assignmentState.assignmentDetails?.type === "BOTH") {
-      if (textEditorContent.trim() === "" && extFiles.length === 0) {
+      let plainText = textEditorContent.replace(/<[^>]+>/g, "");
+      if (plainText.trim() === "" && extFiles.length === 0) {
         setError("Please provide content in the TextEditor or upload a file.");
+        setTimeout(() => setError(""), 3000); // Reset error after 1 second
         return;
       }
-    } else if (assignmentState.assignmentDetails?.type === "TEXT") {
-      if (textEditorContent.trim() === "") {
+    } else if (assignmentState.assignmentDetails?.type === "TEXT_ONLINE") {
+      let plainText = textEditorContent.replace(/<[^>]+>/g, "");
+      if (plainText.trim() === "") {
         setError("Please provide content in the TextEditor.");
+        setTimeout(() => setError(""), 3000); // Reset error after 1 second
+        return;
+      } else if (wordCount > Number(assignmentState.assignmentDetails?.wordLimit)) {
+        setError("Word limit exceeded.");
+        setTimeout(() => setError(""), 3000); // Reset error after 1 second
         return;
       }
     } else {
@@ -266,8 +252,6 @@ export default function SubmitAssignment() {
 
         const submissionAssignment: UpdateSubmissionAssignment = {
           content: textEditorContent ? textEditorContent : null,
-          isGraded: false,
-          feedback: null,
           timemodified: new Date().toISOString()
         };
 
@@ -343,6 +327,12 @@ export default function SubmitAssignment() {
       setTextEditorContent(submissionAssignmentState?.submissionAssignmentDetails?.content || "");
     }
   }, [submissionAssignmentState?.submissionAssignmentDetails]);
+
+  useEffect(() => {
+    if (!assignmentState.assignmentDetails) {
+      handleGetAssignmentDetails(assignmentId ?? "");
+    }
+  }, []);
 
   return (
     <Grid className={classes.root}>
@@ -501,9 +491,12 @@ export default function SubmitAssignment() {
                 >
                   {error && (
                     <Alert
+                      translation-key={[
+                        "course_student_assignment_word_limit_notification",
+                        "course_student_assignment_submit_nothing"
+                      ]}
                       severity='error'
                       sx={{
-                        position: "absolute",
                         top: -15,
                         width: "100%",
                         zIndex: 9999 // Adjust the z-index as needed
@@ -521,7 +514,12 @@ export default function SubmitAssignment() {
                         </IconButton>
                       }
                     >
-                      {error}
+                      {textEditorContent.replace(/<[^>]+>/g, "").trim() === ""
+                        ? t("course_student_assignment_submit_nothing")
+                        : t("course_student_assignment_word_limit_notification", {
+                            maxWord: assignmentState.assignmentDetails?.wordLimit,
+                            wordCount: wordCount
+                          })}
                     </Alert>
                   )}
                   <Box className={classes.formBody}>
@@ -580,10 +578,13 @@ export default function SubmitAssignment() {
                           <TextEditor
                             className={classes.textEditor}
                             value={textEditorContent}
-                            onChange={setTextEditorContent}
+                            onChange={handleChange}
                             roundedBorder
                             openDialog
                           />
+                          <ParagraphSmall textAlign={"end"} translation-key='common_word_count'>
+                            {wordCount} {t("common_word_count")}
+                          </ParagraphSmall>
                         </Grid>
                       </Grid>
                     )}
