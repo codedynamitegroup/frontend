@@ -230,9 +230,11 @@
   "dialog_confirm_add_contest_problem_title": "Add question to contest",
   "dialog_confirm_add_contest_problem_description": "Are you sure you want to add this question to the contest?",
   "dialog_confirm_delete_shared_solution": "Are you sure to delete this solution?",
+  "dialog_confirm_update_problems_title": "Update Problems",
+  "dialog_confirm_update_problems_description": "Are you sure you want to update problems?. Note that public problems can be viewed by all users in the public problem list",
 
   "side_bar_dashboard": "Dashboard",
-  "side_bar_contest_management": "Contest management",
+  "side_bar_contest_management": "Contest",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -257,6 +259,7 @@
   "header_course": "Course",
   "header_login_button": "Login",
   "header_register_button": "Register",
+  "header_switch": "Edit mode",
 
   "footer_description": "CodeDynamite is a website that helps users learn, compete and improve their programming skills.",
   "footer_resource_link_title": "Resources",
@@ -322,6 +325,8 @@
   "contest_thumbnail": "Thumbnail",
   "contest_delete_problem_success": "Delete problem successfully",
   "contest_delete_contest_success": "Delete contest successfully",
+  "contest_update_problems_error": "Update problems failed",
+  "contest_update_problems_success": "Update problems successfully",
   "contest_delete_contest_fail": "Delete contest failed",
   "contest_details_problems_success_rates": "Problems success rates",
   "contest_not_registered": "You have not registered for this contest yet",

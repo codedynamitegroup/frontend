@@ -1,28 +1,28 @@
-import Paper from "@mui/material/Paper";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
-import classes from "./styles.module.scss";
 import CalendarIcon from "@mui/icons-material/DateRange";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import Heading1 from "components/text/Heading1";
-import ContestTimeDisplay from "../TimeDisplay";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import { useNavigate } from "react-router-dom";
-import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { useTranslation } from "react-i18next";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import JoyButton from "@mui/joy/Button";
+import { Box, Stack, Tooltip } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Heading1 from "components/text/Heading1";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import useAuth from "hooks/useAuth";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import { ContestService } from "services/coreService/ContestService";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "store";
+import { useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import useAuth from "hooks/useAuth";
-import JoyButton from "@mui/joy/Button";
+import { routes } from "routes/routes";
+import { ContestService } from "services/coreService/ContestService";
+import { AppDispatch } from "store";
+import ContestTimeDisplay from "../TimeDisplay";
+import classes from "./styles.module.scss";
 
 interface PropsData {
   startDate: string;
-  endDate: string;
+  endDate?: string;
   status: ContestStartTimeFilterEnum;
   joinContest: boolean;
   contestName: string;
@@ -34,7 +34,7 @@ const ContestTimeInformation = (props: PropsData) => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { startDate, status, endDate, contestName } = props;
-  const convertedEndDate = new Date(endDate);
+  const convertedEndDate = endDate ? new Date(endDate) : null;
 
   const [isJoinContest, setIsJoinContest] = useState(props.joinContest);
 
@@ -117,14 +117,7 @@ const ContestTimeInformation = (props: PropsData) => {
             <ParagraphSmall colorname='--blue-500'>{contestName}</ParagraphSmall>
           </Box>
         </Box>
-        <Typography
-          fontWeight={"bolder"}
-          fontSize={"26px"}
-          fontFamily={"OpenSans, Arial, Helvetica, sans-serif"}
-          marginBottom={"5px"}
-        >
-          {contestName}
-        </Typography>
+        <Heading1 marginBottom={"5px"}>{contestName}</Heading1>
         {isJoinContest ? (
           status === ContestStartTimeFilterEnum.UPCOMING ? (
             <Heading1
@@ -195,12 +188,12 @@ const ContestTimeInformation = (props: PropsData) => {
           <Box className={classes.timeDetailContainer}>
             <Stack direction={"row"} justifyContent={"center"}>
               <CalendarIcon fontSize='small' />
-              <Typography
+              <ParagraphSmall
                 className={classes.timeDescriptionText}
                 translation-key='contest_detail_feature_status'
               >
                 {t("contest_detail_feature_status")}
-              </Typography>
+              </ParagraphSmall>
             </Stack>
             <Stack
               direction={"row"}
@@ -223,48 +216,61 @@ const ContestTimeInformation = (props: PropsData) => {
             </Stack>
           </Box>
         )}
-        {endDate && status === ContestStartTimeFilterEnum.HAPPENING && (
-          <Box className={classes.timeDetailContainer}>
-            <Stack direction={"row"} justifyContent={"center"}>
-              <CalendarIcon fontSize='small' />
-              <Typography
-                className={classes.timeDescriptionText}
-                translation-key='contest_detail_happening_status'
+        {status === ContestStartTimeFilterEnum.HAPPENING &&
+          (endDate ? (
+            <Box className={classes.timeDetailContainer}>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <CalendarIcon fontSize='small' />
+                <ParagraphSmall
+                  className={classes.timeDescriptionText}
+                  translation-key='contest_detail_happening_status'
+                >
+                  {t("contest_detail_happening_status")}
+                </ParagraphSmall>
+              </Stack>
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                sx={{ marginTop: "5px" }}
               >
-                {t("contest_detail_happening_status")}
-              </Typography>
-            </Stack>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              sx={{ marginTop: "5px" }}
-            >
-              {years > 0 && (
-                <ContestTimeDisplay time={years} type={t("contest_detail_feature_year")} />
-              )}
-              {months > 0 && (
-                <ContestTimeDisplay time={months} type={t("contest_detail_feature_month")} />
-              )}
-              {days > 0 && (
-                <ContestTimeDisplay time={days} type={t("contest_detail_feature_day")} />
-              )}
-              <ContestTimeDisplay time={hours} type={t("contest_detail_feature_hour")} />
-              <ContestTimeDisplay time={minutes} type={t("contest_detail_feature_minute")} />
-              <ContestTimeDisplay time={seconds} type={t("contest_detail_feature_second")} />
-            </Stack>
-          </Box>
-        )}
-        {status === ContestStartTimeFilterEnum.ENDED && (
+                {years > 0 && (
+                  <ContestTimeDisplay time={years} type={t("contest_detail_feature_year")} />
+                )}
+                {months > 0 && (
+                  <ContestTimeDisplay time={months} type={t("contest_detail_feature_month")} />
+                )}
+                {days > 0 && (
+                  <ContestTimeDisplay time={days} type={t("contest_detail_feature_day")} />
+                )}
+                <ContestTimeDisplay time={hours} type={t("contest_detail_feature_hour")} />
+                <ContestTimeDisplay time={minutes} type={t("contest_detail_feature_minute")} />
+                <ContestTimeDisplay time={seconds} type={t("contest_detail_feature_second")} />
+              </Stack>
+            </Box>
+          ) : (
+            <Box className={classes.timeDetailContainer}>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <CalendarIcon fontSize='small' />
+                <ParagraphSmall
+                  className={classes.timeDescriptionText}
+                  translation-key='this_contest_has_no_end_time'
+                >
+                  {t("this_contest_has_no_end_time")}
+                </ParagraphSmall>
+              </Stack>
+            </Box>
+          ))}
+        {convertedEndDate && status === ContestStartTimeFilterEnum.ENDED && (
           <Box className={classes.timeDetailContainer}>
             <Stack direction={"row"} justifyContent={"center"}>
               <NotificationsActiveIcon fontSize='small' />
-              <Typography
+              <ParagraphSmall
                 className={classes.timeDescriptionText}
                 translation-key='contest_detail_ended_status'
               >
                 {t("contest_detail_ended_status")}
-              </Typography>
+              </ParagraphSmall>
             </Stack>
             <Stack
               direction={"row"}

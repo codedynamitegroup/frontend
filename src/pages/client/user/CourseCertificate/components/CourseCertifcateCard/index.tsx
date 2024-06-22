@@ -1,7 +1,7 @@
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Divider, Grid, Rating, Stack } from "@mui/material";
-import Heading3 from "components/text/Heading3";
+import { Box, Grid, Rating, Stack } from "@mui/material";
+import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
@@ -19,21 +19,14 @@ const CourseCertificateCard = ({ course }: Props) => {
   return (
     <Box className={classes.courseCerticate}>
       <Grid container direction={"column"} margin={0} gap={2}>
-        <Grid item container xs={5} className={classes.titleCourse}>
-          <Grid item xs={3} className={classes.imgCourse}>
+        <Grid container className={classes.titleCourse}>
+          <Grid item xs={12} className={classes.imgCourse}>
             <img alt='img course' src={course?.topic?.thumbnailUrl} />
           </Grid>
-          <Grid item xs={9} className={classes.nameCourse}>
-            <Heading3>{course?.name || ""}</Heading3>
+          <Grid item xs={12} className={classes.nameCourse}>
+            <Heading4>{course?.name || ""}</Heading4>
           </Grid>
         </Grid>
-        <Divider />
-        <Grid item xs={5}>
-          <ParagraphBody className={classes.courseDescription}>
-            {course?.description || ""}
-          </ParagraphBody>
-        </Grid>
-        <Divider />
         <Grid item xs={2}>
           <Box
             className={classes.iconCourse}
@@ -43,9 +36,11 @@ const CourseCertificateCard = ({ course }: Props) => {
             }}
           >
             <Stack direction='row' spacing={1} alignItems={"center"}>
+              <ParagraphBody fontWeight={700}>{course?.avgRating || 0}</ParagraphBody>
               <Rating name='read-only' value={course?.avgRating || 0} readOnly size='small' />
-              <ParagraphBody>{course?.avgRating || 0}</ParagraphBody>
-              <ParagraphBody>({course?.numOfReviews || 0})</ParagraphBody>
+              <ParagraphBody>
+                ({course?.numOfReviews || 0} {t("certificate_detail_rating").toLowerCase()})
+              </ParagraphBody>
             </Stack>
           </Box>
           <Box className={classes.iconCourse}>

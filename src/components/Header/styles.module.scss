@@ -57,19 +57,18 @@
 .header {
   background-color: white !important;
   box-shadow: 0 2px 4px #00000026 !important;
-  padding-left: 240px;
-  .logo {
-    width: 140px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      margin-top: 5px;
-      filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%)
-        contrast(101%);
-    }
-    cursor: pointer;
+  padding-left: 220px;
+}
+.logo {
+  width: 140px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin-top: 5px;
+    filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%) contrast(101%);
   }
+  cursor: pointer;
 }
 
 .imageProfile {
@@ -86,11 +85,6 @@
 }
 .menuProfile {
   padding: 10px;
-  & [class~="MuiPaper-root"] {
-    right: 40px !important;
-    left: auto !important;
-    top: 60px !important;
-  }
 
   .logout {
     color: var(--red-error);

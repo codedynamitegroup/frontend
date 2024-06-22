@@ -64,4 +64,29 @@ export class ReviewService {
       });
     }
   }
+
+  static async getEachRatingCountByCertificateCourseId({
+    certificateCourseId
+  }: {
+    certificateCourseId: string;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl
+      }).get(`${API.CORE.REVIEW.COUNT_BY_CERTIFICATE_COURSE_ID}`, {
+        params: {
+          certificateCourseId
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

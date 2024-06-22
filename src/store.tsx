@@ -34,6 +34,7 @@ import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/Ex
 import appStatus from "reduxes/AppStatus";
 import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
+import EditMode from "reduxes/EditMode";
 
 const persistConfig = {
   key: "takeExam",
@@ -49,6 +50,7 @@ const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> =
 const store = configureStore({
   reducer: {
     selected: selectedReducer,
+    editMode: EditMode,
     codePlagiarism: codePlagiarismReducer,
     selectRubricDialog: selectRubricDialogReducer,
     rubricDialog: rubricDialogReducer,

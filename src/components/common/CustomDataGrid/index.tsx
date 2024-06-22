@@ -1,15 +1,16 @@
 /* eslint-disable react/jsx-no-undef */
 import Box from "@mui/material/Box";
-import { GridEventListener } from "@mui/x-data-grid";
+import { styled } from "@mui/material/styles";
+import { GridEventListener, GridRowId, useGridApiRef } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
 import { GridToolbar } from "@mui/x-data-grid/components/toolbar/GridToolbar";
+import { GridRowClassNameParams, GridRowSelectionModel } from "@mui/x-data-grid/models";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { GridRowSelectionModel, GridRowClassNameParams } from "@mui/x-data-grid/models";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
-import { styled } from "@mui/material/styles";
 
 const StyledGridOverlay = styled("div")(({ theme }) => ({
   display: "flex",
@@ -75,7 +76,11 @@ interface DataGridProps {
   dataList: Array<any>;
   tableHeader: Array<GridColDef>;
   visibleColumn?: any;
-  onSelectData: any;
+  rowSelectionModel?: GridRowId[];
+  onSelectData?: (
+    rowSelectionModel: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => void;
   onClickRow?: GridEventListener<"rowClick">;
   dataGridToolBar?: any;
   pageSize: number;
@@ -96,6 +101,7 @@ interface DataGridProps {
   getRowClassName?: (params: GridRowClassNameParams<any>) => string;
   personalSx?: boolean;
   getRowId?: (params: any) => string;
+  changeIsCustomDataGridFirstTimeRender?: (value: boolean) => void;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -103,6 +109,7 @@ const CustomDataGrid = (props: DataGridProps) => {
     loading = false,
     dataList,
     tableHeader,
+    rowSelectionModel,
     onSelectData,
     visibleColumn,
     checkboxSelection,
@@ -123,14 +130,16 @@ const CustomDataGrid = (props: DataGridProps) => {
     getCellClassName,
     getRowClassName,
     personalSx,
-    getRowId
+    getRowId,
+    changeIsCustomDataGridFirstTimeRender
   } = props;
+  const apiRef = useGridApiRef();
 
   const rowSelectionHandler = (
     rowSelectionModel: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {
-    onSelectData(rowSelectionModel, details);
+    onSelectData && onSelectData(rowSelectionModel, details);
   };
 
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
@@ -144,11 +153,19 @@ const CustomDataGrid = (props: DataGridProps) => {
     }
   };
 
+  useEffect(() => {
+    if (apiRef?.current?.setRowSelectionModel) {
+      apiRef.current.setRowSelectionModel(rowSelectionModel || []);
+      changeIsCustomDataGridFirstTimeRender && changeIsCustomDataGridFirstTimeRender(true);
+    }
+  }, [rowSelectionModel, apiRef, changeIsCustomDataGridFirstTimeRender]);
+
   const { t } = useTranslation();
 
   return (
     <Box className={classes.tableWrapper}>
       <DataGrid
+        apiRef={apiRef}
         getRowId={getRowId}
         loading={loading}
         rows={dataList}
@@ -165,7 +182,10 @@ const CustomDataGrid = (props: DataGridProps) => {
         showColumnVerticalBorder={false}
         rowCount={totalElement}
         pageSizeOptions={[5, 10, 15, 20]}
-        onRowSelectionModelChange={rowSelectionHandler}
+        rowSelectionModel={rowSelectionModel}
+        onRowSelectionModelChange={(rowSelectionModel, details) =>
+          rowSelectionHandler(rowSelectionModel, details)
+        }
         onRowClick={onClickRow}
         density='comfortable'
         getCellClassName={getCellClassName}

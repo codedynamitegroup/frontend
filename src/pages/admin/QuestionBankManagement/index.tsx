@@ -343,7 +343,6 @@ const AdminQuestionBankManagement = () => {
               })
             )}
             tableHeader={columns}
-            onSelectData={handleRowClick}
             dataGridToolBar={dataGridToolbar}
             page={page}
             pageSize={rowsPerPage}

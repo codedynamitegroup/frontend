@@ -40,6 +40,7 @@ export interface IFormDataType {
   problems: {
     questionId: string;
     codeQuestionId: string;
+    orgId?: string | null;
     difficulty: string;
     name: string;
     questionText: string;
@@ -137,6 +138,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
             questionId: yup.string().required(t("contest_question_id_required")),
             codeQuestionId: yup.string().required(t("contest_code_question_id_required")),
             difficulty: yup.string().required(t("contest_difficulty_required")),
+            orgId: yup.string().nullable(),
             name: yup.string().default("").trim(""),
             questionText: yup.string().default("").trim(""),
             defaultMark: yup.number().default(0),

@@ -17,7 +17,7 @@ import { millisToFormatTimeString } from "utils/time";
 interface PropsData {
   name: string;
   startTime: string;
-  endTime: string;
+  endTime?: string;
   avtImage: any;
   contestId: string;
 }
@@ -39,6 +39,7 @@ const TrendingContestCard = ({ name, startTime, avtImage, contestId, endTime }: 
 
   useEffect(() => {
     setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18next.language]);
 
   const { t } = useTranslation();

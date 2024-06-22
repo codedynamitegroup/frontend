@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar, Switch } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -27,9 +27,11 @@ import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "store";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { setEditMode } from "reduxes/EditMode";
 
 interface ILinkMenu {
   name: string;
@@ -42,7 +44,6 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: "flex-end"
 }));
@@ -57,6 +58,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const { toggleDrawer } = props;
   const { loggedUser, logout, isLecturer, isStudent, isSystemAdmin, isMoodleAdmin } = useAuth();
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus.isOpen);
+  const editMode = useSelector((state: RootState) => state.editMode);
+  const dispatch = useDispatch();
 
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -137,7 +140,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
     window.addEventListener("resize", handleResize);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -180,7 +182,12 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     });
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
+  const editModeState = useSelector((state: RootState) => state.editMode);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newChecked = event.target.checked;
+    dispatch(setEditMode(newChecked));
+  };
   return (
     <AppBar
       position='fixed'
@@ -199,7 +206,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 aria-label='open drawer'
                 onClick={toggleDrawer}
                 sx={{
-                  mr: 2,
                   backgroundColor: sidebarStatus ? "var(--blue-light-4)" : "#EEEEEE",
                   transform: sidebarStatus ? "scaleX(1)" : "scaleX(-1)",
                   color: sidebarStatus ? "#002db3" : "var(--gray-80)"
@@ -332,136 +338,128 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 <HeaderNotification />
               </Grid>
               <Grid item>
-                <Button
-                  onClick={handleClick}
-                  className={classes.profile}
-                  size='small'
-                  sx={{ ml: 2, textTransform: "none" }}
-                  aria-controls={open ? "account-menu" : undefined}
-                  aria-haspopup='true'
-                  aria-expanded={open ? "true" : undefined}
-                >
-                  <Avatar
-                    sx={{
-                      bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
-                    }}
-                    alt={loggedUser.email}
-                    src={loggedUser.avatarUrl}
-                    className={classes.avatarProfile}
-                  >
-                    {loggedUser.firstName.charAt(0)}
-                  </Avatar>
+                <PopupState variant='popover' popupId='demo-popup-menu'>
+                  {(popupState) => (
+                    <React.Fragment>
+                      <Button className={classes.profile} {...bindTrigger(popupState)}>
+                        <Avatar
+                          sx={{
+                            bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
+                          }}
+                          alt={loggedUser.email}
+                          src={loggedUser.avatarUrl}
+                          className={classes.avatarProfile}
+                        >
+                          {loggedUser.firstName.charAt(0)}
+                        </Avatar>
 
-                  <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
-                    {`${loggedUser.firstName} ${loggedUser.lastName}`}
-                  </ParagraphSmall>
-                </Button>
+                        <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
+                          {`${loggedUser.firstName} ${loggedUser.lastName}`}
+                        </ParagraphSmall>
+                      </Button>
+                      <Menu className={classes.menuProfile} {...bindMenu(popupState)}>
+                        <MenuItem
+                          onClick={() => {
+                            activeRoute(routes.admin.homepage.root)
+                              ? navigate(routes.admin.information)
+                              : activeRoute(routes.org_admin.homepage.root)
+                                ? navigate(routes.org_admin.information)
+                                : navigate(routes.user.information);
+                          }}
+                          translation-key='common_account_info'
+                        >
+                          <ListItemIcon>
+                            <Person fontSize='small' />
+                          </ListItemIcon>
+                          {t("common_account_info")}
+                        </MenuItem>
+                        {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
+                          <MenuItem
+                            onClick={() => navigate(routes.admin.dashboard)}
+                            translation-key='common_admin_page'
+                          >
+                            <ListItemIcon>
+                              <Box className={classes.imgIcon}>
+                                <img
+                                  src={images.admin.adminManagement}
+                                  alt='admin management img'
+                                />
+                              </Box>
+                            </ListItemIcon>
+
+                            {t("common_admin_page")}
+                          </MenuItem>
+                        )}
+                        {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
+                          (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
+                          <MenuItem
+                            onClick={() => navigate(routes.user.dashboard.root)}
+                            translation-key='common_user_page'
+                          >
+                            <ListItemIcon>
+                              <Box className={classes.imgIcon}>
+                                <img src={images.admin.clientPage} alt='client page img' />
+                              </Box>
+                            </ListItemIcon>
+
+                            {t("common_user_page")}
+                          </MenuItem>
+                        )}
+                        {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
+                          <MenuItem
+                            onClick={() => navigate(routes.org_admin.users.root)}
+                            translation-key='common_admin_page'
+                          >
+                            <ListItemIcon>
+                              <Box className={classes.imgIcon}>
+                                <img
+                                  src={images.admin.adminManagement}
+                                  alt='admin management img'
+                                />
+                              </Box>
+                            </ListItemIcon>
+
+                            {t("common_admin_page")}
+                          </MenuItem>
+                        )}
+                        <MenuItem
+                          className={classes.logout}
+                          onClick={logout}
+                          translation-key='common_logout'
+                        >
+                          <ListItemIcon>
+                            <Logout className={classes.iconLogout} fontSize='small' />
+                          </ListItemIcon>
+                          {t("common_logout")}
+                        </MenuItem>
+                      </Menu>
+                    </React.Fragment>
+                  )}
+                </PopupState>
               </Grid>
+              {isLecturer && (
+                <Grid item marginTop='5px'>
+                  <Box style={{ display: "flex", alignItems: "center" }}>
+                    <Switch
+                      value={editMode}
+                      onChange={handleChange}
+                      inputProps={{ "aria-label": "controlled" }}
+                    />
+                    <ParagraphSmall
+                      fontWeight={600}
+                      colorname={"--gray-50"}
+                      translation-key='header_switch'
+                    >
+                      {t("header_switch")}
+                    </ParagraphSmall>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           )}
         </Box>
       </Toolbar>
-      <Menu
-        anchorEl={anchorEl}
-        id='account-menu'
-        className={classes.menuProfile}
-        open={openMenu}
-        onClose={handleClose}
-        onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1
-            },
-            "&::before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0
-            }
-          }
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem
-          onClick={() => {
-            activeRoute(routes.admin.homepage.root)
-              ? navigate(routes.admin.information)
-              : activeRoute(routes.org_admin.homepage.root)
-                ? navigate(routes.org_admin.information)
-                : navigate(routes.user.information);
-          }}
-          translation-key='common_account_info'
-        >
-          <ListItemIcon>
-            <Person fontSize='small' />
-          </ListItemIcon>
-          {t("common_account_info")}
-        </MenuItem>
-        {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
-          <MenuItem
-            onClick={() => navigate(routes.admin.dashboard)}
-            translation-key='common_admin_page'
-          >
-            <ListItemIcon>
-              <Box className={classes.imgIcon}>
-                <img src={images.admin.adminManagement} alt='admin management img' />
-              </Box>
-            </ListItemIcon>
 
-            {t("common_admin_page")}
-          </MenuItem>
-        )}
-        {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
-          (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
-          <MenuItem
-            onClick={() => navigate(routes.user.dashboard.root)}
-            translation-key='common_user_page'
-          >
-            <ListItemIcon>
-              <Box className={classes.imgIcon}>
-                <img src={images.admin.clientPage} alt='client page img' />
-              </Box>
-            </ListItemIcon>
-
-            {t("common_user_page")}
-          </MenuItem>
-        )}
-        {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
-          <MenuItem
-            onClick={() => navigate(routes.org_admin.users.root)}
-            translation-key='common_admin_page'
-          >
-            <ListItemIcon>
-              <Box className={classes.imgIcon}>
-                <img src={images.admin.adminManagement} alt='admin management img' />
-              </Box>
-            </ListItemIcon>
-
-            {t("common_admin_page")}
-          </MenuItem>
-        )}
-        <MenuItem className={classes.logout} onClick={logout} translation-key='common_logout'>
-          <ListItemIcon>
-            <Logout className={classes.iconLogout} fontSize='small' />
-          </ListItemIcon>
-          {t("common_logout")}
-        </MenuItem>
-      </Menu>
       <Drawer
         className={classes.drawer}
         sx={{
