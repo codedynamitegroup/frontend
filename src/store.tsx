@@ -11,6 +11,7 @@ import courseReducer from "reduxes/courseService/course/index";
 import sectionReducer from "reduxes/courseService/section/index";
 import submissionAssignmentReducer from "reduxes/courseService/submission_assignment/index";
 import examReducer from "reduxes/courseService/exam/index";
+import gradeExamSubmissionReducer from "reduxes/courseService/gradeExamSubmission/index";
 import assignmentReducer from "reduxes/courseService/assignment/index";
 import courseTypeReducer from "reduxes/courseService/course_type/index";
 import questionReducer from "reduxes/courseService/question/index";
@@ -64,6 +65,7 @@ const store = configureStore({
     assignment: assignmentReducer,
     submissionAssignment: submissionAssignmentReducer,
     exam: examReducer,
+    gradeExamSubmission: gradeExamSubmissionReducer,
     searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
     question: questionReducer,
     codeQuestion: codeQuestionReducer,

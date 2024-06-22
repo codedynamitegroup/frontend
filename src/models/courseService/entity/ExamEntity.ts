@@ -1,3 +1,5 @@
+import { SubmissionStatusSubmitted } from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions";
+
 export interface ExamEntity {
   id: string;
   courseId: string;
@@ -90,4 +92,16 @@ export interface ExamSubmissionDetail {
   submitTime: Date;
   status: string;
   userId: string;
+}
+
+export interface GradeExamSubmission {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+  lastSubmitAt: string;
+  lastMarkAt: string;
+  score: number;
+  maxScore: number;
 }

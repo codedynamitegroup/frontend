@@ -34,9 +34,9 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import CreateReportConfirmDialog from "./components/CreateReportConfirmDialog";
@@ -45,7 +45,15 @@ import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestion
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store";
+import { AppDispatch, RootState } from "store";
+import { ExamService } from "services/courseService/ExamService";
+import { setErrorMess } from "reduxes/AppStatus";
+import { PaginationList } from "models/general";
+import { GradeExamSubmission } from "models/courseService/entity/ExamEntity";
+import { randomUUID } from "crypto";
+import { set } from "date-fns";
+import { current } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -55,6 +63,21 @@ export enum SubmissionStatusSubmitted {
 export enum SubmissionStatusGraded {
   GRADED = "Đã chấm",
   NOT_GRADED = "Chưa chấm"
+}
+
+interface GradeExamSubmissionProps {
+  id: string;
+  student_name: string;
+  student_email: string;
+  submission_status_submitted?: string;
+  grade_status?: string;
+  last_submission_time: string;
+  last_grade_time?: string;
+}
+
+interface GradeExamChartProps {
+  student: number;
+  range: string;
 }
 
 const LecturerCourseExamSubmissions = () => {
@@ -84,62 +107,8 @@ const LecturerCourseExamSubmissions = () => {
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
   const [isPlagiarismDetectionLoading, setIsPlagiarismDetectionLoading] = useState(false);
   const [isCheckReportExistLoading, setIsCheckReportExistLoading] = useState(false);
-
-  const submissionDataset = [
-    {
-      student: 59,
-      range: "0.00 - 5.00"
-    },
-    {
-      student: 50,
-      range: "5.00 - 6.00"
-    },
-    {
-      student: 47,
-      range: "6.00 - 7.00"
-    },
-    {
-      student: 54,
-      range: "7.00 - 8.00"
-    },
-    {
-      student: 57,
-      range: "8.00 - 9.00"
-    },
-    {
-      student: 60,
-      range: "9.00 - 10.00"
-    },
-    {
-      student: 59,
-      range: "10.00 - 11.00"
-    },
-    {
-      student: 65,
-      range: "11.00 - 12.00"
-    },
-    {
-      student: 51,
-      range: "12.00 - 13.00"
-    },
-    {
-      student: 60,
-      range: "13.00 - 14.00"
-    },
-    {
-      student: 67,
-      range: "14.00 - 15.00"
-    },
-    {
-      student: 61,
-      range: "15.00 - 16.00"
-    }
-  ];
 
   const examData = {
     id: 1,
@@ -186,80 +155,12 @@ const LecturerCourseExamSubmissions = () => {
       }
     ]
   };
+
   const filterExamQuestionData = examData.questions.map((value) => ({
     question: value.title,
     questionId: value.id
   }));
   filterExamQuestionData.unshift({ question: "Câu hỏi 11 đến 20", questionId: "-1" });
-
-  const submissionList = [
-    {
-      id: 1,
-      student_name: "Nguyễn Đinh Quang Khánh",
-      student_email: "khanhndq2002@gmail.com",
-      status: {
-        submission_status_submitted: SubmissionStatusSubmitted.SUBMITTED,
-        grade_status: SubmissionStatusGraded.GRADED,
-        late_submission: {
-          is_late: true,
-          late_duration: "1 ngày 2 giờ"
-        }
-      },
-      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-      current_final_grade: 0,
-      grades: [
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 10
-        },
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 8
-        },
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 5
-        }
-      ]
-    },
-    {
-      id: 2,
-      student_name: "Nguyễn Quốc Tuấn",
-      student_email: "tuannguyen@gmail.com",
-      status: {
-        submission_status_submitted: SubmissionStatusSubmitted.NOT_SUBMITTED,
-        grade_status: SubmissionStatusGraded.NOT_GRADED,
-        late_submission: {
-          is_late: false,
-          late_duration: "1 ngày 2 giờ"
-        }
-      },
-      last_submission_time: "Saturday, 3 February 2024, 9:46 AM",
-      last_grade_time: "Saturday, 3 February 2024, 9:46 AM",
-      current_final_grade: 10,
-      grades: [
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 8
-        },
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 10
-        },
-        {
-          question_id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
-          grade_status: SubmissionStatusGraded.GRADED,
-          current_grade: 9
-        }
-      ]
-    }
-  ];
 
   const tableHeading: GridColDef[] = [
     {
@@ -269,52 +170,20 @@ const LecturerCourseExamSubmissions = () => {
     },
     { field: "student_email", headerName: "Email", width: 200 },
     {
-      field: "status",
+      field: "submission_status_submitted",
       headerName: t("common_status"),
-      width: 250,
+      width: 150,
       renderCell: (params) => {
         return (
           <Box padding='5px' width='100%'>
             <Box
               sx={{
                 padding: "5px",
-                backgroundColor:
-                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                    ? "var(--green-300)"
-                    : "#f5f5f5",
+                backgroundColor: params.value === "SUBMITTED" ? "var(--green-300)" : "#f5f5f5",
                 fontSize: "17px"
               }}
             >
-              {params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                ? "Đã nộp"
-                : "Chưa nộp"}
-            </Box>
-            <Box
-              sx={{
-                padding: "5px",
-                backgroundColor: "#EFCFCF",
-                fontSize: "17px",
-                display: params.value.late_submission.is_late ? "block" : "none"
-              }}
-            >
-              {"Quá hạn "}
-              {params.value.late_submission.late_duration}
-            </Box>
-            <Box
-              sx={{
-                padding: "5px",
-                backgroundColor:
-                  params.value.submission_status_submitted === SubmissionStatusSubmitted.SUBMITTED
-                    ? "var(--green-300)"
-                    : "#f5f5f5",
-                fontSize: "17px",
-                display:
-                  params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
-              }}
-            >
-              {params.value.grade_status === SubmissionStatusGraded.GRADED
-                ? "Đã chấm"
-                : "Chưa chấm"}
+              {params.value === "SUBMITTED" ? "Đã nộp" : "Chưa nộp"}
             </Box>
           </Box>
         );
@@ -324,6 +193,18 @@ const LecturerCourseExamSubmissions = () => {
       field: "last_submission_time",
       headerName: t("course_lecturer_sub_last_submission_time"),
       width: 200
+      // renderCell: (params) => {
+      //   console.log(params.value, params.value);
+      //   return (
+      //     <Box
+      //       sx={{
+      //         padding: "10px 0"
+      //       }}
+      //     >
+      //       <TextTitle>{params.value.last_submission_time}</TextTitle>
+      //     </Box>
+      //   );
+      // }
     },
     {
       field: "last_grade_time",
@@ -341,6 +222,20 @@ const LecturerCourseExamSubmissions = () => {
               padding: "10px 0"
             }}
           >
+            <TextTitle>
+              {params.value === undefined ? "-" : params.value} / {maxGrade}
+            </TextTitle>
+          </Box>
+        );
+      }
+    },
+    {
+      field: "action",
+      headerName: t("common_action"),
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <Box>
             <Button
               btnType={BtnType.Primary}
               onClick={() => {
@@ -351,9 +246,6 @@ const LecturerCourseExamSubmissions = () => {
             >
               {t("course_lecturer_assignment_grading")}
             </Button>
-            <TextTitle>
-              {params.value} / {examData.max_grade}
-            </TextTitle>
           </Box>
         );
       }
@@ -409,21 +301,6 @@ const LecturerCourseExamSubmissions = () => {
       console.error(error);
     }
   };
-
-  // const fetchAllCodeQuestionsByOrgId = async (orgId: string) => {
-  //   const codePlagiarismDetectionApiUrl =
-  //     process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
-  //   setIsPlagiarismDetectionLoading(true);
-
-  //   try {
-  //     const response = await axios.get(`${codePlagiarismDetectionApiUrl}`);
-  //     setIsPlagiarismDetectionLoading(false);
-  //     return response.data;
-  //   } catch (error) {
-  //     setIsPlagiarismDetectionLoading(false);
-  //     throw error;
-  //   }
-  // };
 
   const fetchCheckCodeQuestionIdsReportExists = async (codeQuestionIds: string[]) => {
     const codePlagiarismDetectionApiUrl =
@@ -561,40 +438,126 @@ const LecturerCourseExamSubmissions = () => {
   }, []);
 
   const [openCheckCheating, setOpenCheckCheeting] = useState(false);
-  useEffect(() => {
-    const filterSet = new Set<number>();
-    const tableHeadingTemp: GridColDef[] = [];
 
-    filterValues.forEach((value) => {
-      const start = value[0];
-      const end = value[1];
-      for (let i = start; i <= end; i++) {
-        if (!filterSet.has(i)) {
-          filterSet.add(i);
-          const question = examData.questions[i - 1];
-          tableHeadingTemp.push({
-            field: `question-${question.id}`,
-            headerName: question.title,
-            width: 180,
-            renderCell: () => {
-              for (let i = 0; i < submissionList.length; i++) {
-                for (let j = 0; j < submissionList[i].grades.length; j++) {
-                  if (submissionList[i].grades[j].question_id === question.id) {
-                    return (
-                      <TextTitle>
-                        {submissionList[i].grades[j].current_grade} / {question.max_grade}
-                      </TextTitle>
-                    );
-                  }
-                }
-              }
-            }
-          });
+  const dispatch = useDispatch<AppDispatch>();
+  const examId = useParams<{ examId: string }>().examId;
+  const [gradeExamSubmissionState, setGradeExamSubmissionState] = useState<
+    PaginationList<GradeExamSubmission>
+  >({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(
+    () => gradeExamSubmissionState.totalItems || 0,
+    [gradeExamSubmissionState.totalItems]
+  );
+
+  const [maxGrade, setMaxGrade] = useState(10);
+  const initRangeData = (maxGrade: number): GradeExamChartProps[] => {
+    const numberOfRanges = 10;
+    const rangeSize = maxGrade / numberOfRanges;
+    const ranges: GradeExamChartProps[] = [];
+    const precision = 2;
+
+    for (let i = 0; i < numberOfRanges; i++) {
+      const rangeStart = (i * rangeSize).toFixed(precision);
+      const rangeEnd = ((i + 1) * rangeSize - (i === numberOfRanges - 1 ? 0 : 0.01)).toFixed(
+        precision
+      );
+      ranges.push({
+        student: 0,
+        range: `${rangeStart}-${rangeEnd}`
+      });
+    }
+
+    return ranges;
+  };
+
+  const processExamResults = (results: any[], maxGrade: number): GradeExamChartProps[] => {
+    const ranges = initRangeData(maxGrade);
+
+    results.forEach((result) => {
+      const score = result.score;
+      const index = Math.min(Math.floor(score / (maxGrade / 10)), 9);
+      ranges[index].student += 1;
+    });
+
+    return ranges;
+  };
+
+  const [submissionDataset, setSubmissionDataset] = useState<GradeExamChartProps[]>(
+    initRangeData(maxGrade)
+  );
+
+  const gradeExamSubmissionListTable: GradeExamSubmissionProps[] = useMemo(() => {
+    if (gradeExamSubmissionState.items.length === 0) return [];
+
+    console.log(gradeExamSubmissionState.items, "gradeExamSubmissionState.items");
+    return gradeExamSubmissionState.items.map((value) => ({
+      id: value.userId,
+      student_name: value.lastName + " " + value.firstName,
+      student_email: value.email,
+      current_final_grade: value.score,
+      submission_status_submitted: value.status,
+      last_submission_time: value.lastSubmitAt
+        ? dayjs(value.lastSubmitAt).format("DD/MM/YYYY HH:mm")
+        : "",
+      last_grade_time: value.lastMarkAt ? dayjs(value.lastMarkAt).format("DD/MM/YYYY HH:mm") : ""
+    }));
+  }, [gradeExamSubmissionState.items]);
+
+  const handleGetSubmitions = useCallback(
+    async ({
+      search,
+      pageNo,
+      pageSize
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      try {
+        const result = await ExamService.gradeExamSubmission({
+          examId: examId || "",
+          search,
+          pageNo,
+          pageSize
+        });
+        setGradeExamSubmissionState({
+          currentPage: result.currentPage,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages,
+          items: result.grades
+        });
+
+        const processedData = processExamResults(result.grades, maxGrade);
+        setSubmissionDataset(processedData);
+
+        console.log(result, "result");
+      } catch (error: any) {
+        console.error(error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
       }
-    });
-    setTableHeadingPlus(tableHeadingTemp);
-  }, [filterValues]);
+    },
+    [examState.examDetail.id]
+  );
+
+  useEffect(() => {
+    const fetchSubmissionList = async () => {
+      await handleGetSubmitions({
+        search: "",
+        pageNo: 0,
+        pageSize: 10
+      });
+    };
+    fetchSubmissionList();
+  }, []);
 
   return (
     <>
@@ -706,13 +669,13 @@ const LecturerCourseExamSubmissions = () => {
             <ExamSubmissionFeatureBar />
           </Grid>
           <Grid item xs={12}>
-            <Stack direction={"row"} alignItems={"center"}>
+            {/* <Stack direction={"row"} alignItems={"center"}>
               <Heading4>Lọc câu hỏi</Heading4>
               <IconButton onClick={() => setOpenFilterSettingDialog(true)}>
                 <AddCircleIcon />
               </IconButton>
-            </Stack>
-            <Dialog
+            </Stack> */}
+            {/* <Dialog
               open={openFilterSettingDialog}
               onClose={handleCloseDialog}
               aria-labelledby='alert-dialog-title'
@@ -795,9 +758,9 @@ const LecturerCourseExamSubmissions = () => {
                   Lưu
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
-            <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
+            {/* <Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
               {filterValues.map((value, index) => (
                 <Chip
                   key={index}
@@ -809,7 +772,7 @@ const LecturerCourseExamSubmissions = () => {
                   }}
                 />
               ))}
-            </Stack>
+            </Stack> */}
           </Grid>
           <Grid item xs={12} marginTop={3}>
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
@@ -873,7 +836,7 @@ const LecturerCourseExamSubmissions = () => {
 
           <Grid item xs={12}>
             <CustomDataGrid
-              dataList={submissionList}
+              dataList={gradeExamSubmissionListTable}
               tableHeader={[...tableHeading, ...tableHeadingPlus]}
               onSelectData={rowSelectionHandler}
               visibleColumn={visibleColumnList}
@@ -896,3 +859,6 @@ const LecturerCourseExamSubmissions = () => {
 };
 
 export default LecturerCourseExamSubmissions;
+function ran() {
+  return Math.floor(Math.random() * 100);
+}

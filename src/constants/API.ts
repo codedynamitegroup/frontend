@@ -138,6 +138,7 @@ export const API = {
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",
+      SUBMISSION_GRADE: "/course/exam/:id/grade",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam",
       EDIT: "/course/exam/:id",
