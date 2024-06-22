@@ -257,6 +257,7 @@
   "header_course": "Course",
   "header_login_button": "Login",
   "header_register_button": "Register",
+  "header_switch": "Edit mode",
 
   "footer_description": "CodeDynamite is a website that helps users learn, compete and improve their programming skills.",
   "footer_resource_link_title": "Resources",

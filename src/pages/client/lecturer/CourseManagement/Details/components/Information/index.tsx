@@ -46,6 +46,8 @@ const LecturerCourseInformation = () => {
   const [isOpenEditTitle, setIsOpenEditTitle] = useState<Array<Boolean>>([]);
 
   const courseState = useSelector((state: RootState) => state.course);
+  const editModeState = useSelector((state: RootState) => state.editMode);
+  console.log(editModeState.editMode);
 
   useEffect(() => {
     const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
