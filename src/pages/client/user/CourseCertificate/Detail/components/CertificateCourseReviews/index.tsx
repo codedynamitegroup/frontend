@@ -10,32 +10,39 @@ import {
   Stack,
   TextareaAutosize
 } from "@mui/material";
+import CustomPagination from "components/common/pagination/CustomPagination";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import classes from "./styles.module.scss";
+import useAuth from "hooks/useAuth";
+import i18next from "i18next";
+import { CertificateCourseReviewMetadataEntity } from "models/coreService/entity/CertificateCourseReviewMetadataEntity";
 import { ReviewEntity } from "models/coreService/entity/ReviewEntity";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ReviewService } from "services/coreService/ReviewService";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { ReviewService } from "services/coreService/ReviewService";
 import { showEmailWithAsterisks } from "utils/email";
-import i18next from "i18next";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import CustomPagination from "components/common/pagination/CustomPagination";
-import useAuth from "hooks/useAuth";
 import { calcPercentageInHundred } from "utils/number";
+import classes from "./styles.module.scss";
 
 const CertificateCourseReviews = ({
-  certificateCourseDetails,
+  reviewMetadata,
+  handleGetRatingCountByCertificateCourseId,
+  isRegistered,
   certificateCourseId,
   dispatch
 }: {
-  certificateCourseDetails: CertificateCourseEntity;
+  reviewMetadata: {
+    data: CertificateCourseReviewMetadataEntity;
+    isLoading: boolean;
+  };
+  handleGetRatingCountByCertificateCourseId: (certificateCourseId: string) => void;
+  isRegistered: boolean;
   certificateCourseId: string;
   dispatch: any;
 }) => {
@@ -116,7 +123,8 @@ const CertificateCourseReviews = ({
         });
         if (createReviewResponse && createReviewResponse.reviewId) {
           dispatch(setSuccessMess("Đánh giá thành công"));
-          handleGetReviewsByCertificateCourseId({ certificateCourseId });
+          await handleGetRatingCountByCertificateCourseId(certificateCourseId);
+          await handleGetReviewsByCertificateCourseId({ certificateCourseId });
         } else {
           dispatch(setErrorMess("Đánh giá thất bại"));
         }
@@ -126,7 +134,7 @@ const CertificateCourseReviews = ({
         setSubmitLoading(false);
       }
     },
-    [dispatch, handleGetReviewsByCertificateCourseId]
+    [dispatch, handleGetRatingCountByCertificateCourseId, handleGetReviewsByCertificateCourseId]
   );
 
   const starPercentList = useMemo(() => {
@@ -134,40 +142,40 @@ const CertificateCourseReviews = ({
       {
         key: 1,
         value: calcPercentageInHundred(
-          certificateCourseDetails.numOfOneStarReviews || 0,
-          certificateCourseDetails.numOfReviews
+          reviewMetadata.data.numOfOneStarReviews || 0,
+          reviewMetadata.data.numOfReviews
         )
       },
       {
         key: 2,
         value: calcPercentageInHundred(
-          certificateCourseDetails.numOfTwoStarReviews || 0,
-          certificateCourseDetails.numOfReviews
+          reviewMetadata.data.numOfTwoStarReviews || 0,
+          reviewMetadata.data.numOfReviews
         )
       },
       {
         key: 3,
         value: calcPercentageInHundred(
-          certificateCourseDetails.numOfThreeStarReviews || 0,
-          certificateCourseDetails.numOfReviews
+          reviewMetadata.data.numOfThreeStarReviews || 0,
+          reviewMetadata.data.numOfReviews
         )
       },
       {
         key: 4,
         value: calcPercentageInHundred(
-          certificateCourseDetails.numOfFourStarReviews || 0,
-          certificateCourseDetails.numOfReviews
+          reviewMetadata.data.numOfFourStarReviews || 0,
+          reviewMetadata.data.numOfReviews
         )
       },
       {
         key: 5,
         value: calcPercentageInHundred(
-          certificateCourseDetails.numOfFiveStarReviews || 0,
-          certificateCourseDetails.numOfReviews
+          reviewMetadata.data.numOfFiveStarReviews || 0,
+          reviewMetadata.data.numOfReviews
         )
       }
     ];
-  }, [certificateCourseDetails]);
+  }, [reviewMetadata]);
 
   const {
     control,
@@ -203,8 +211,16 @@ const CertificateCourseReviews = ({
   };
 
   useEffect(() => {
-    handleGetReviewsByCertificateCourseId({ certificateCourseId });
-  }, [certificateCourseId, handleGetReviewsByCertificateCourseId]);
+    const fetchReviewData = async () => {
+      await handleGetRatingCountByCertificateCourseId(certificateCourseId);
+      await handleGetReviewsByCertificateCourseId({ certificateCourseId });
+    };
+    fetchReviewData();
+  }, [
+    certificateCourseId,
+    handleGetRatingCountByCertificateCourseId,
+    handleGetReviewsByCertificateCourseId
+  ]);
 
   return (
     <Box id={classes.introduction}>
@@ -222,34 +238,47 @@ const CertificateCourseReviews = ({
           }}
         >
           <Grid item xs={3.5}>
-            <Stack direction={"column"} spacing={2} sx={{ padding: "10px", borderRadius: "10px" }}>
-              <TextTitle fontSize={"35px"}>
-                {certificateCourseDetails.avgRating.toFixed(1)}
-              </TextTitle>
-              <Rating
-                value={certificateCourseDetails.avgRating}
-                readOnly
-                precision={0.5}
-                size='large'
-              />
-              <ParagraphSmall colorname='--gray-50'>
-                ({certificateCourseDetails.numOfReviews} {t("common_review").toLowerCase()})
-              </ParagraphSmall>
-            </Stack>
+            {reviewMetadata.isLoading ? (
+              <Stack
+                direction={"column"}
+                spacing={2}
+                sx={{ padding: "10px", borderRadius: "10px" }}
+              >
+                <Skeleton variant='text' width={60} height={100} />
+                <Skeleton variant='text' width={100} />
+                <Skeleton variant='text' width={100} />
+              </Stack>
+            ) : (
+              <Stack
+                direction={"column"}
+                spacing={2}
+                sx={{ padding: "10px", borderRadius: "10px" }}
+              >
+                <TextTitle fontSize={"35px"}>{reviewMetadata.data.avgRating.toFixed(1)}</TextTitle>
+                <Rating
+                  value={reviewMetadata.data.avgRating}
+                  readOnly
+                  precision={0.5}
+                  size='large'
+                />
+                <ParagraphSmall colorname='--gray-50'>
+                  ({reviewMetadata.data.numOfReviews} {t("common_review").toLowerCase()})
+                </ParagraphSmall>
+              </Stack>
+            )}
           </Grid>
           <Grid item xs={8}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                padding: "10px",
-                borderRadius: "10px",
-                gap: "10px"
-              }}
-            >
-              {starPercentList
-                .sort((a, b) => b.key - a.key)
-                .map((item, index) => {
+            {reviewMetadata.isLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  gap: "10px"
+                }}
+              >
+                {[1, 2, 3, 4, 5].map((item, index) => {
                   return (
                     <Stack
                       key={index}
@@ -261,24 +290,64 @@ const CertificateCourseReviews = ({
                       }}
                     >
                       <ParagraphBody>
-                        {item.key} {t("common_star").toLowerCase()}
+                        {item} {t("common_star").toLowerCase()}
                       </ParagraphBody>
                       <LinearProgress
                         determinate
-                        value={item.value}
+                        value={0}
                         sx={{
                           color: "#F9BE08",
                           height: "10px"
                         }}
                       />
-                      <ParagraphBody>{item.value}%</ParagraphBody>
+                      <ParagraphBody>0%</ParagraphBody>
                     </Stack>
                   );
                 })}
-            </Box>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  gap: "10px"
+                }}
+              >
+                {starPercentList
+                  .sort((a, b) => b.key - a.key)
+                  .map((item, index) => {
+                    return (
+                      <Stack
+                        key={index}
+                        direction={"row"}
+                        gap={2}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center"
+                        }}
+                      >
+                        <ParagraphBody>
+                          {item.key} {t("common_star").toLowerCase()}
+                        </ParagraphBody>
+                        <LinearProgress
+                          determinate
+                          value={item.value}
+                          sx={{
+                            color: "#F9BE08",
+                            height: "10px"
+                          }}
+                        />
+                        <ParagraphBody>{item.value}%</ParagraphBody>
+                      </Stack>
+                    );
+                  })}
+              </Box>
+            )}
           </Grid>
         </Grid>
-        {isLoggedIn && certificateCourseDetails.isRegistered && (
+        {isLoggedIn && isRegistered === true && (
           <Box
             className={classes.commentBox}
             sx={{

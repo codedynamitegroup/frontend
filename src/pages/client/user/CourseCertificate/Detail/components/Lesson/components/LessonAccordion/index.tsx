@@ -47,9 +47,9 @@ export default function LessonAccordion({
             <Grid item xs={0.5} md={0.5}></Grid>
             <Grid item xs={10.5} md={10.5}>
               <Heading3>{chapter?.title || ""}</Heading3>
-              <ParagraphBody className={classes.description}>
+              {/* <ParagraphBody className={classes.description}>
                 {chapter?.description || ""}
-              </ParagraphBody>
+              </ParagraphBody> */}
             </Grid>
           </Grid>
         </AccordionSummary>

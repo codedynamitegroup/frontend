@@ -17,7 +17,7 @@ interface PropsData {
   avtImage: any;
   contestId: string;
   startTime: string;
-  endTime: string;
+  endTime?: string;
 }
 const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: PropsData) => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
 
   useEffect(() => {
     setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18next.language]);
 
   const contestStatusChipLabel = useMemo(() => {
@@ -80,7 +81,14 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
               </Grid>
               <Grid item xs={12}>
                 <Stack direction={"row"} alignItems={"center"}>
-                  {endTime && moment().utc().isAfter(endTime) ? (
+                  {!endTime ? (
+                    <>
+                      <ClockIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
+                      <Heading6 colorname={"--gray-80"} fontWeight={600} margin='10px 5px 10px 5px'>
+                        {t("this_contest_has_no_end_time")}
+                      </Heading6>
+                    </>
+                  ) : moment().utc().isAfter(endTime) ? (
                     <>
                       <ClockIcon fontSize='small' sx={{ color: "var(--gray-80)" }} />
                       <TextTitle margin='10px 5px 10px 5px'>{t("common_ended")}</TextTitle>
@@ -89,7 +97,7 @@ const ContestContentCard = ({ name, avtImage, contestId, startTime, endTime }: P
                       </Heading6>
                     </>
                   ) : (
-                    <Heading6 colorname={"--gray-80"} fontWeight={300}>
+                    <Heading6 colorname={"--gray-80"} fontWeight={300} margin='10px 0'>
                       {standardlizeUTCStringToLocaleString(startTime, currentLang)}
                     </Heading6>
                   )}
