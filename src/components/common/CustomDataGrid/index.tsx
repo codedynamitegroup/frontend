@@ -8,7 +8,7 @@ import { GridRowClassNameParams, GridRowSelectionModel } from "@mui/x-data-grid/
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 
@@ -101,6 +101,7 @@ interface DataGridProps {
   getRowClassName?: (params: GridRowClassNameParams<any>) => string;
   personalSx?: boolean;
   getRowId?: (params: any) => string;
+  changeIsCustomDataGridFirstTimeRender?: (value: boolean) => void;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -129,7 +130,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     getCellClassName,
     getRowClassName,
     personalSx,
-    getRowId
+    getRowId,
+    changeIsCustomDataGridFirstTimeRender
   } = props;
   const apiRef = useGridApiRef();
 
@@ -154,8 +156,9 @@ const CustomDataGrid = (props: DataGridProps) => {
   useEffect(() => {
     if (apiRef?.current?.setRowSelectionModel) {
       apiRef.current.setRowSelectionModel(rowSelectionModel || []);
+      changeIsCustomDataGridFirstTimeRender && changeIsCustomDataGridFirstTimeRender(true);
     }
-  }, [rowSelectionModel, apiRef]);
+  }, [rowSelectionModel, apiRef, changeIsCustomDataGridFirstTimeRender]);
 
   const { t } = useTranslation();
 

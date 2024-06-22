@@ -1,3 +1,5 @@
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 import {
   Grid,
   IconButton,
@@ -10,26 +12,24 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import ConfirmUpdate from "components/common/dialogs/ConfirmUpdate";
 import Heading4 from "components/text/Heading4";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import { useTranslation } from "react-i18next";
-import classes from "./styles.module.scss";
 import Heading6 from "components/text/Heading6";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Link as RouterLink } from "react-router-dom";
-import { routes } from "routes/routes";
-import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { IFormDataType } from "..";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
-import { useState } from "react";
-import { AppDispatch } from "store";
+import { useCallback, useState } from "react";
+import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { routes } from "routes/routes";
+import { AppDispatch } from "store";
+import { IFormDataType } from "..";
 import AddContestProblemDialog from "./components/AddContestProblemDialog";
-import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
-import ConfirmAdd from "components/common/dialogs/ConfirmAdd";
+import classes from "./styles.module.scss";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;
@@ -44,16 +44,16 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [isOpenConfirmAdd, setIsOpenConfirmAdd] = useState(false);
   const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
-  const [newProblem, setNewProblem] = useState<ContestQuestionEntity | null>(null);
+  const [isOpenConfirmUpdateProblems, setIsOpenConfirmUpdateProblems] = useState(false);
+  const [newProblems, setNewProblems] = useState<ContestQuestionEntity[] | null>(null);
 
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
-  const onCancelConfirmAdd = () => {
-    setIsOpenConfirmAdd(false);
-    setIsOpenedAddProblemDialog(true);
+
+  const onCancelConfirmUpdateProblems = () => {
+    setIsOpenConfirmUpdateProblems(false);
   };
 
   const onDeleteConfirmDelete = async () => {
@@ -63,16 +63,22 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
     dispatch(setSuccessMess(t("contest_delete_problem_success")));
   };
 
-  const onAddConfirmAdd = async () => {
-    setIsOpenConfirmAdd(false);
-    if (!newProblem) {
-      dispatch(setErrorMess(t("contest_add_problem_error")));
+  const handleOpenConfirmUpdateProblems = useCallback((newProblems: ContestQuestionEntity[]) => {
+    setIsOpenConfirmUpdateProblems(true);
+    setNewProblems(newProblems);
+  }, []);
+
+  const handleUpdateProblems = useCallback(() => {
+    setIsOpenConfirmUpdateProblems(false);
+    if (!newProblems) {
+      dispatch(setErrorMess(t("contest_update_problems_error")));
       return;
     }
-    const newProblems = [...problems, newProblem];
     setValue("problems", newProblems);
-    dispatch(setSuccessMess(t("contest_add_problem_success")));
-  };
+    dispatch(setSuccessMess(t("contest_update_problems_success")));
+    setNewProblems(null);
+    setIsOpenedAddProblemDialog(false);
+  }, [dispatch, newProblems, setValue, t]);
 
   const [isOpenedAddProblemDialog, setIsOpenedAddProblemDialog] = useState(false);
 
@@ -93,14 +99,7 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
           handleClose={handleCloseAddProblemDialog}
           maxWidth='md'
           currentQuestionList={problems}
-          handleAddProblem={(newProblem: ContestQuestionEntity) => {
-            setNewProblem(newProblem);
-            setIsOpenConfirmAdd(true);
-          }}
-          handleDeleteProblem={(questionId: string) => {
-            setDeletedQuestionId(questionId);
-            setIsOpenConfirmDelete(true);
-          }}
+          onHanldeConfirm={handleOpenConfirmUpdateProblems}
         />
       )}
       <ConfirmDelete
@@ -110,12 +109,12 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <ConfirmAdd
-        isOpen={isOpenConfirmAdd}
-        title={t("dialog_confirm_add_contest_problem_title")}
-        description={t("dialog_confirm_add_contest_problem_description")}
-        onCancel={onCancelConfirmAdd}
-        onAdd={onAddConfirmAdd}
+      <ConfirmUpdate
+        isOpen={isOpenConfirmUpdateProblems}
+        title={t("dialog_confirm_update_problems_title")}
+        description={t("dialog_confirm_update_problems_description")}
+        onCancel={onCancelConfirmUpdateProblems}
+        onUpdate={handleUpdateProblems}
       />
       <Grid
         container
