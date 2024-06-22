@@ -218,9 +218,11 @@
   "dialog_confirm_add_contest_problem_title": "Xác nhận thêm bài toán",
   "dialog_confirm_add_contest_problem_description": "Bạn có chắc chắn muốn thêm bài toán này vào cuộc thi không ?",
   "dialog_confirm_delete_shared_solution": "Bạn có chắc muốn xóa bài giải này không?",
+  "dialog_confirm_update_problems_title": "Xác nhận cập nhật bài toán",
+  "dialog_confirm_update_problems_description": "Bạn có chắc chắn muốn cập nhật bài toán không? Lưu ý rằng bài toán công khai có thể được xem bởi tất cả người dùng trong danh sách bài toán công khai",
 
   "side_bar_dashboard": "Trang chủ",
-  "side_bar_contest_management": "Quản lý cuộc thi",
+  "side_bar_contest_management": "Cuộc thi",
 
   "register_login_alternative": "Hoặc đăng nhập với",
   "login_register_account": "Chưa có tài khoản ? Đăng ký ngay",
@@ -325,6 +327,8 @@
   "contest_thumbnail": "Ảnh cuộc thi",
   "contest_delete_problem_success": "Xoá bài toán khỏi cuộc thi thành công",
   "contest_delete_contest_success": "Xoá cuộc thi thành công",
+  "contest_update_problems_error": "Cập nhật bài toán thất bại",
+  "contest_update_problems_success": "Cập nhật bài toán thành công",
   "contest_delete_contest_fail": "Xoá cuộc thi thất bại",
   "contest_details_problems_success_rates": "Tỉ lệ thành công của bài toán",
   "contest_not_registered": "Bạn chưa đăng ký tham gia cuộc thi này",

@@ -1,13 +1,10 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { Checkbox, Grid, Link, Stack } from "@mui/material";
+import { Checkbox, Grid } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
 import {
-  GridActionsCellItem,
   GridCallbackDetails,
   GridColDef,
   GridPaginationModel,
-  GridRowParams,
+  GridRowId,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
@@ -16,21 +13,20 @@ import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFea
 import Heading3 from "components/text/Heading3";
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import useAuth from "hooks/useAuth";
+import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink } from "react-router-dom";
-import classes from "./styles.module.scss";
-import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
-import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
-import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
-import useAuth from "hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "store";
 import { setErrorMess } from "reduxes/AppStatus";
+import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
+import { AppDispatch } from "store";
 
 interface OrgAdminAddContestProblemDialogQuestionInterface {
   id: string;
   questionId: string;
+  orgId?: string;
   no: number;
   name: string;
   difficulty: string;
@@ -47,11 +43,9 @@ interface OrgAdminAddContestProblemDialogProps extends DialogProps {
   cancelText?: string;
   confirmText?: string;
   onHandleCancel?: () => void;
-  onHanldeConfirm?: () => void;
+  onHanldeConfirm?: (newProblems: ContestQuestionEntity[]) => void;
   isConfirmLoading?: boolean;
   currentQuestionList: ContestQuestionEntity[];
-  handleAddProblem: (value: ContestQuestionEntity) => void;
-  handleDeleteProblem: (questionId: string) => void;
 }
 
 enum FilterValue {
@@ -73,9 +67,6 @@ export default function OrgAdminAddContestProblemDialog({
   isConfirmLoading = false,
   isReportExisted,
   currentQuestionList,
-  // changeCurrentQuestionList,
-  handleAddProblem,
-  handleDeleteProblem,
   ...props
 }: OrgAdminAddContestProblemDialogProps) {
   const { t } = useTranslation();
@@ -129,7 +120,7 @@ export default function OrgAdminAddContestProblemDialog({
           return;
         }
         const getAdminCodeQuestionsResponse =
-          await CoreCodeQuestionService.getOrgAdminCodeQuestions({
+          await CoreCodeQuestionService.getOrgAdminIsAllowedToImportCodeQuestions({
             orgId: loggedUser.organization.organizationId,
             search,
             isPublic,
@@ -143,6 +134,11 @@ export default function OrgAdminAddContestProblemDialog({
               item: {
                 id: string;
                 question: {
+                  organization?: {
+                    id: string;
+                    name: string;
+                    description: string;
+                  };
                   id: string;
                   name: string;
                   questionText: string;
@@ -157,6 +153,7 @@ export default function OrgAdminAddContestProblemDialog({
             ) => ({
               id: item.id,
               questionId: item.question.id,
+              orgId: item.question.organization?.id,
               no: pageNo * pageSize + index + 1,
               name: item.question.name,
               difficulty: item.question.difficulty,
@@ -210,13 +207,7 @@ export default function OrgAdminAddContestProblemDialog({
       headerName: t("list_problem_problem_name"),
       flex: 1.5,
       renderCell: (params) => {
-        return (
-          <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
-            <Link component={RouterLink} to={"#"} underline='hover' color='inherit'>
-              {params.row.name}
-            </Link>
-          </ParagraphSmall>
-        );
+        return <ParagraphSmall fontWeight={"500"}>{params.row.name}</ParagraphSmall>;
       }
     },
     {
@@ -281,76 +272,80 @@ export default function OrgAdminAddContestProblemDialog({
           />
         );
       }
-    },
-    {
-      field: "action",
-      headerName: t("common_action"),
-      type: "actions",
-      flex: 0.6,
-      renderHeader: () => {
-        return (
-          <Heading6 width={"auto"} sx={{ textAlign: "left" }}>
-            {t("common_action")}
-          </Heading6>
-        );
-      },
-      getActions: (params) => {
-        return [
-          currentQuestionList.find((item) => item.questionId === params.row.questionId) ? (
-            <GridActionsCellItem
-              label='Remove'
-              onClick={() => {
-                handleDeleteProblem(params.row.questionId);
-              }}
-              icon={
-                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
-                  <RemoveCircleOutlineIcon htmlColor='#EF4743' />
-                  <Heading6
-                    fontWeight={"700"}
-                    colorname={"--red-text"}
-                    translate-key='common_remove'
-                  >
-                    {t("common_remove")}
-                  </Heading6>
-                </Stack>
-              }
-            />
-          ) : (
-            <GridActionsCellItem
-              label='Add'
-              onClick={() => {
-                const newProblem: ContestQuestionEntity = {
-                  codeQuestionId: params.row.id,
-                  questionId: params.row.questionId,
-                  difficulty: params.row.difficulty,
-                  name: params.row.name,
-                  questionText: "",
-                  defaultMark: params.row.defaultMark,
-                  maxGrade: params.row.maxGrade
-                };
-                handleAddProblem(newProblem);
-              }}
-              icon={
-                <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
-                  <AddCircleOutlineIcon htmlColor='#1976d2' />
-                  <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
-                    {t("common_add")}
-                  </Heading6>
-                </Stack>
-              }
-            />
-          )
-        ];
-      }
     }
   ];
 
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
+
+  const [rowSelection, setRowSelection] = React.useState<GridRowId[]>(
+    currentQuestionList.map((item) => item.codeQuestionId) as GridRowId[]
+  );
+
+  const [selectedCodeQuestions, setSelectedCodeQuestions] = React.useState<ContestQuestionEntity[]>(
+    currentQuestionList.map((item) => ({
+      codeQuestionId: item.codeQuestionId,
+      questionId: item.questionId,
+      difficulty: item.difficulty,
+      name: item.name,
+      questionText: item.questionText,
+      defaultMark: item.defaultMark,
+      maxGrade: item.maxGrade
+    }))
+  );
+
+  const rowSelectionHandler = React.useCallback(
+    (selectedRowId: GridRowSelectionModel, details: GridCallbackDetails<any>) => {
+      if (selectedRowId.length === 0) {
+        // dispatch(setErrorMess("Please select at least one problem to add"));
+        return;
+      }
+      const newCotestQuestionEntityList: ContestQuestionEntity[] = [];
+      for (const id of selectedRowId) {
+        const selectedRow = data.codeQuestions.find((item) => item.id === id);
+        if (selectedRow) {
+          newCotestQuestionEntityList.push({
+            questionId: selectedRow.questionId,
+            codeQuestionId: selectedRow.id,
+            difficulty: selectedRow.difficulty,
+            name: selectedRow.name,
+            questionText: "",
+            defaultMark: selectedRow.defaultMark,
+            maxGrade: selectedRow.maxGrade
+          });
+        }
+      }
+
+      const selectedRowsUncheckedInCurrentPage = data.codeQuestions.filter(
+        (item) => !selectedRowId.includes(item.id)
+      );
+      const newSelectedRowId: GridRowId[] = [...rowSelection, ...selectedRowId]
+        .filter((item, index, self) => self.indexOf(item) === index)
+        .filter((item) => {
+          // check if the item is unchecked then remove it from the list
+          if (selectedRowsUncheckedInCurrentPage.find((row) => row.id === item)) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+
+      setRowSelection(newSelectedRowId);
+      setSelectedCodeQuestions((prev) =>
+        [...prev, ...newCotestQuestionEntityList]
+          .filter(
+            (item, index, self) =>
+              self.findIndex((t) => t.codeQuestionId === item.codeQuestionId) === index
+          )
+          .filter((item) => newSelectedRowId.includes(item.codeQuestionId))
+      );
+    },
+    [data.codeQuestions, rowSelection]
+  );
+
+  const pageChangeHandler = async (
+    model: GridPaginationModel,
     details: GridCallbackDetails<any>
-  ) => {};
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+  ) => {
     setPage(model.page);
     setPageSize(model.pageSize);
     handleGetOrgAdminCodeQuestions({
@@ -362,10 +357,6 @@ export default function OrgAdminAddContestProblemDialog({
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(5);
   const totalElement = data.totalItems;
-
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    // console.log(params);
-  };
 
   const handleSearchChange = React.useCallback(
     (value: string) => {
@@ -386,6 +377,12 @@ export default function OrgAdminAddContestProblemDialog({
     [handleGetOrgAdminCodeQuestions, pageSize, filters]
   );
 
+  const handleConfirm = React.useCallback(() => {
+    if (onHanldeConfirm) {
+      onHanldeConfirm(selectedCodeQuestions);
+    }
+  }, [onHanldeConfirm, selectedCodeQuestions]);
+
   React.useEffect(() => {
     handleGetOrgAdminCodeQuestions({});
   }, [handleGetOrgAdminCodeQuestions]);
@@ -399,7 +396,8 @@ export default function OrgAdminAddContestProblemDialog({
       open={open}
       handleClose={handleClose}
       title={t("contest_import_problem_button")}
-      actionsDisabled={true}
+      onHanldeConfirm={handleConfirm}
+      onHandleCancel={onHandleCancel}
       minWidth={"1000px"}
       {...props}
     >
@@ -471,14 +469,18 @@ export default function OrgAdminAddContestProblemDialog({
             loading={isLoading}
             dataList={data.codeQuestions}
             tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
+            checkboxSelection={true}
+            rowSelectionModel={rowSelection}
+            onSelectData={(rowSelectionModel, details) =>
+              rowSelectionHandler(rowSelectionModel, details)
+            }
             dataGridToolBar={dataGridToolbar}
             page={page}
             pageSize={pageSize}
             totalElement={totalElement}
             onPaginationModelChange={pageChangeHandler}
             showVerticalCellBorder={false}
-            onClickRow={rowClickHandler}
+            // onClickRow={rowClickHandler}
             sx={{
               "& .MuiDataGrid-cell": {
                 border: "none"
