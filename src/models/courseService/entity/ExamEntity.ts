@@ -96,6 +96,7 @@ export interface ExamSubmissionDetail {
 
 export interface GradeExamSubmission {
   userId: string;
+  submissionId: string;
   firstName: string;
   lastName: string;
   email: string;

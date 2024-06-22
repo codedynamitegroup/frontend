@@ -67,8 +67,10 @@ export enum SubmissionStatusGraded {
 
 interface GradeExamSubmissionProps {
   id: string;
+  submission_id: string;
   student_name: string;
   student_email: string;
+  current_final_grade: number;
   submission_status_submitted?: string;
   grade_status?: string;
   last_submission_time: string;
@@ -168,7 +170,7 @@ const LecturerCourseExamSubmissions = () => {
       headerName: `${t("common_fullname")} ${i18next.format(t("common_student"), "lowercase")}`,
       width: 200
     },
-    { field: "student_email", headerName: "Email", width: 200 },
+    { field: "student_email", headerName: "Email", width: 250 },
     {
       field: "submission_status_submitted",
       headerName: t("common_status"),
@@ -192,24 +194,12 @@ const LecturerCourseExamSubmissions = () => {
     {
       field: "last_submission_time",
       headerName: t("course_lecturer_sub_last_submission_time"),
-      width: 200
-      // renderCell: (params) => {
-      //   console.log(params.value, params.value);
-      //   return (
-      //     <Box
-      //       sx={{
-      //         padding: "10px 0"
-      //       }}
-      //     >
-      //       <TextTitle>{params.value.last_submission_time}</TextTitle>
-      //     </Box>
-      //   );
-      // }
+      width: 150
     },
     {
       field: "last_grade_time",
       headerName: t("course_lecturer_sub_last_grading_time"),
-      width: 200
+      width: 150
     },
     {
       field: "current_final_grade",
@@ -239,7 +229,12 @@ const LecturerCourseExamSubmissions = () => {
             <Button
               btnType={BtnType.Primary}
               onClick={() => {
-                navigate(routes.lecturer.exam.grading);
+                navigate(
+                  routes.lecturer.exam.grading
+                    .replace(":courseId", courseId ?? "")
+                    .replace(":examId", examId ?? "")
+                    .replace(":submissionId", params.row.submission_id)
+                );
               }}
               margin='0 0 10px 0'
               translation-key='course_lecturer_assignment_grading'
@@ -441,6 +436,7 @@ const LecturerCourseExamSubmissions = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const examId = useParams<{ examId: string }>().examId;
+  const courseId = useParams<{ courseId: string }>().courseId;
   const [gradeExamSubmissionState, setGradeExamSubmissionState] = useState<
     PaginationList<GradeExamSubmission>
   >({
@@ -495,10 +491,9 @@ const LecturerCourseExamSubmissions = () => {
 
   const gradeExamSubmissionListTable: GradeExamSubmissionProps[] = useMemo(() => {
     if (gradeExamSubmissionState.items.length === 0) return [];
-
-    console.log(gradeExamSubmissionState.items, "gradeExamSubmissionState.items");
     return gradeExamSubmissionState.items.map((value) => ({
       id: value.userId,
+      submission_id: value.submissionId,
       student_name: value.lastName + " " + value.firstName,
       student_email: value.email,
       current_final_grade: value.score,
@@ -626,7 +621,9 @@ const LecturerCourseExamSubmissions = () => {
           btnType={BtnType.Primary}
           onClick={() => {
             navigate(
-              routes.lecturer.exam.detail.replace(":courseId", examState.examDetail.courseId)
+              routes.lecturer.exam.detail
+                .replace(":courseId", courseId ?? "")
+                .replace(":examId", examId ?? "")
             );
           }}
           startIcon={
@@ -859,6 +856,3 @@ const LecturerCourseExamSubmissions = () => {
 };
 
 export default LecturerCourseExamSubmissions;
-function ran() {
-  return Math.floor(Math.random() * 100);
-}
