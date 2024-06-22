@@ -50,8 +50,8 @@ const OrgAdminContestEditProblems = ({
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [isOpenConfirmUpdateProblems, setIsOpenConfirmUpdateProblems] = useState(false);
   const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+  const [isOpenConfirmUpdateProblems, setIsOpenConfirmUpdateProblems] = useState(false);
   const [newProblems, setNewProblems] = useState<ContestQuestionEntity[] | null>(null);
 
   const onCancelConfirmDelete = () => {

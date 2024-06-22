@@ -293,10 +293,15 @@ export default function OrgAdminAddContestProblemDialog({
     }))
   );
 
+  const [isCustomDataGridFirstTimeRender, setIsCustomDataGridFirstTimeRender] =
+    React.useState<boolean>(false);
+
   const rowSelectionHandler = React.useCallback(
     (selectedRowId: GridRowSelectionModel, details: GridCallbackDetails<any>) => {
       if (selectedRowId.length === 0) {
-        // dispatch(setErrorMess("Please select at least one problem to add"));
+        if (rowSelection.length === 1 && isCustomDataGridFirstTimeRender) {
+          dispatch(setErrorMess("Please select at least one question"));
+        }
         return;
       }
       const newCotestQuestionEntityList: ContestQuestionEntity[] = [];
@@ -339,7 +344,7 @@ export default function OrgAdminAddContestProblemDialog({
           .filter((item) => newSelectedRowId.includes(item.codeQuestionId))
       );
     },
-    [data.codeQuestions, rowSelection]
+    [data.codeQuestions, dispatch, isCustomDataGridFirstTimeRender, rowSelection]
   );
 
   const pageChangeHandler = async (
@@ -474,6 +479,7 @@ export default function OrgAdminAddContestProblemDialog({
             onSelectData={(rowSelectionModel, details) =>
               rowSelectionHandler(rowSelectionModel, details)
             }
+            changeIsCustomDataGridFirstTimeRender={setIsCustomDataGridFirstTimeRender}
             dataGridToolBar={dataGridToolbar}
             page={page}
             pageSize={pageSize}
