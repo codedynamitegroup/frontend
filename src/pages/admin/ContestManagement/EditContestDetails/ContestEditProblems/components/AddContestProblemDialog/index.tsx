@@ -292,13 +292,6 @@ export default function AddContestProblemDialog({
               icon={
                 <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
                   <RemoveCircleOutlineIcon htmlColor='#EF4743' />
-                  <Heading6
-                    fontWeight={"700"}
-                    colorname={"--red-text"}
-                    translate-key='common_remove'
-                  >
-                    {t("common_remove")}
-                  </Heading6>
                 </Stack>
               }
             />
@@ -320,9 +313,6 @@ export default function AddContestProblemDialog({
               icon={
                 <Stack direction='row' gap={1} display='flex' alignItems='center' padding={0.5}>
                   <AddCircleOutlineIcon htmlColor='#1976d2' />
-                  <Heading6 fontWeight={"700"} colorname={"--blue-link"} translate-key='common_add'>
-                    {t("common_add")}
-                  </Heading6>
                 </Stack>
               }
             />

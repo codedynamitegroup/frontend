@@ -1,6 +1,11 @@
 export interface ContestQuestionEntity {
   questionId: string;
   codeQuestionId: string;
+  organization?: {
+    id: string;
+    name: string;
+    description: string;
+  };
   difficulty: string;
   name: string;
   questionText: string;

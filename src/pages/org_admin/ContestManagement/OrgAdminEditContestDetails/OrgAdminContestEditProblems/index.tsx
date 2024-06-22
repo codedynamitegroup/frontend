@@ -1,35 +1,36 @@
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import LockIcon from "@mui/icons-material/Lock";
+import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 import {
   Grid,
   IconButton,
-  Link,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip
 } from "@mui/material";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import ConfirmUpdate from "components/common/dialogs/ConfirmUpdate";
 import Heading4 from "components/text/Heading4";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import { useTranslation } from "react-i18next";
-import classes from "./styles.module.scss";
 import Heading6 from "components/text/Heading6";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Link as RouterLink } from "react-router-dom";
-import { routes } from "routes/routes";
-import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import { ContestQuestionEntity } from "models/coreService/entity/ContestQuestionEntity";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
-import { useState } from "react";
-import { AppDispatch } from "store";
+import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
+import { useCallback, useState } from "react";
+import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { AppDispatch } from "store";
 import AddContestProblemDialog from "./components/OrgAdminAddContestProblemDialog";
-import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
-import ConfirmAdd from "components/common/dialogs/ConfirmAdd";
-import { IFormDataType } from "pages/admin/ContestManagement/EditContestDetails";
+import classes from "./styles.module.scss";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;
@@ -49,16 +50,16 @@ const OrgAdminContestEditProblems = ({
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [isOpenConfirmAdd, setIsOpenConfirmAdd] = useState(false);
+  const [isOpenConfirmUpdateProblems, setIsOpenConfirmUpdateProblems] = useState(false);
   const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
-  const [newProblem, setNewProblem] = useState<ContestQuestionEntity | null>(null);
+  const [newProblems, setNewProblems] = useState<ContestQuestionEntity[] | null>(null);
 
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
-  const onCancelConfirmAdd = () => {
-    setIsOpenConfirmAdd(false);
-    setIsOpenedAddProblemDialog(true);
+
+  const onCancelConfirmUpdateProblems = () => {
+    setIsOpenConfirmUpdateProblems(false);
   };
 
   const onDeleteConfirmDelete = async () => {
@@ -68,16 +69,22 @@ const OrgAdminContestEditProblems = ({
     dispatch(setSuccessMess(t("contest_delete_problem_success")));
   };
 
-  const onAddConfirmAdd = async () => {
-    setIsOpenConfirmAdd(false);
-    if (!newProblem) {
-      dispatch(setErrorMess(t("contest_add_problem_error")));
+  const handleOpenConfirmUpdateProblems = useCallback((newProblems: ContestQuestionEntity[]) => {
+    setIsOpenConfirmUpdateProblems(true);
+    setNewProblems(newProblems);
+  }, []);
+
+  const handleUpdateProblems = useCallback(() => {
+    setIsOpenConfirmUpdateProblems(false);
+    if (!newProblems) {
+      dispatch(setErrorMess(t("contest_update_problems_error")));
       return;
     }
-    const newProblems = [...problems, newProblem];
     setValue("problems", newProblems);
-    dispatch(setSuccessMess(t("contest_add_problem_success")));
-  };
+    dispatch(setSuccessMess(t("contest_update_problems_success")));
+    setNewProblems(null);
+    setIsOpenedAddProblemDialog(false);
+  }, [dispatch, newProblems, setValue, t]);
 
   const [isOpenedAddProblemDialog, setIsOpenedAddProblemDialog] = useState(false);
 
@@ -98,14 +105,7 @@ const OrgAdminContestEditProblems = ({
           handleClose={handleCloseAddProblemDialog}
           maxWidth='md'
           currentQuestionList={problems}
-          handleAddProblem={(newProblem: ContestQuestionEntity) => {
-            setNewProblem(newProblem);
-            setIsOpenConfirmAdd(true);
-          }}
-          handleDeleteProblem={(questionId: string) => {
-            setDeletedQuestionId(questionId);
-            setIsOpenConfirmDelete(true);
-          }}
+          onHanldeConfirm={handleOpenConfirmUpdateProblems}
         />
       )}
       <ConfirmDelete
@@ -115,12 +115,12 @@ const OrgAdminContestEditProblems = ({
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <ConfirmAdd
-        isOpen={isOpenConfirmAdd}
-        title={t("dialog_confirm_add_contest_problem_title")}
-        description={t("dialog_confirm_add_contest_problem_description")}
-        onCancel={onCancelConfirmAdd}
-        onAdd={onAddConfirmAdd}
+      <ConfirmUpdate
+        isOpen={isOpenConfirmUpdateProblems}
+        title={t("dialog_confirm_update_problems_title")}
+        description={t("dialog_confirm_update_problems_description")}
+        onCancel={onCancelConfirmUpdateProblems}
+        onUpdate={handleUpdateProblems}
       />
       <Grid
         container
@@ -226,19 +226,7 @@ const OrgAdminContestEditProblems = ({
                     >
                       <TableCell align='left'>{rowIndex + 1}</TableCell>
                       <TableCell className={classes.tableCell}>
-                        <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
-                          <Link
-                            component={RouterLink}
-                            to={routes.user.problem.detail.description.replace(
-                              ":problemId",
-                              row.codeQuestionId
-                            )}
-                            underline='hover'
-                            color='inherit'
-                          >
-                            {row.name}
-                          </Link>
-                        </ParagraphSmall>
+                        <ParagraphSmall fontWeight={"500"}>{row.name}</ParagraphSmall>
                       </TableCell>
                       <TableCell>{row.maxGrade}</TableCell>
                       <TableCell>
@@ -262,15 +250,43 @@ const OrgAdminContestEditProblems = ({
                         </Heading6>
                       </TableCell>
                       <TableCell align='center'>
-                        <IconButton
-                          translate-key='contest_edit_problem_button'
-                          onClick={() => {
-                            setDeletedQuestionId(row.questionId);
-                            setIsOpenConfirmDelete(true);
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Stack direction='row' spacing={1}>
+                          <IconButton
+                            translate-key='contest_edit_problem_button'
+                            onClick={() => {
+                              if (!row?.organization?.id) {
+                                return;
+                              }
+                              // navigate to edit problem page
+                            }}
+                            sx={{
+                              "&:hover": {
+                                cursor: `${row?.organization?.id ? "pointer" : "not-allowed"}`
+                              }
+                            }}
+                          >
+                            {row?.organization?.id ? (
+                              <EditIcon />
+                            ) : (
+                              <Tooltip
+                                title={
+                                  "This question is owned by CodeDynamite and cannot be modified "
+                                }
+                              >
+                                <LockIcon />
+                              </Tooltip>
+                            )}
+                          </IconButton>
+                          <IconButton
+                            translate-key='contest_edit_problem_button'
+                            onClick={() => {
+                              setDeletedQuestionId(row.questionId);
+                              setIsOpenConfirmDelete(true);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   ))}
