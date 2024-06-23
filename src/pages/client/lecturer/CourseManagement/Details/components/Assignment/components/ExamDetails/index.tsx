@@ -40,6 +40,7 @@ import { CircularProgress } from "@mui/joy";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 import GradingExamTable from "./components/GradingExamTable";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
 
 const LecturerCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -47,7 +48,6 @@ const LecturerCourseExamDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
-  const startAt = useSelector((state: RootState) => state.takeExam.startAt);
   const [examSubmissions, setExamSubmissions] = useState<ExamSubmissionDetail[]>([]);
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
@@ -107,7 +107,7 @@ const LecturerCourseExamDetails = () => {
 
   const handleGetSubmissions = async (examId: string, userId: string) => {
     try {
-      const response = await ExamService.getAllAttemptByExamIdAndUserId(examId, userId);
+      const response = await ExamSubmissionService.getAllAttemptByExamIdAndUserId(examId, userId);
       setExamSubmissions(response);
     } catch (error) {
       console.error(error);
@@ -314,7 +314,8 @@ const LecturerCourseExamDetails = () => {
             height: "fit-content"
           }}
         >
-          {startAt ? t("exam_detail_test") : t("exam_detail_start")}
+          {/* {startAt ? t("exam_detail_test") : t("exam_detail_start")} */}
+          {"Start at time"}
         </ButtonBack>
       </Stack>
 

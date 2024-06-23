@@ -13,8 +13,7 @@ import {
   Stack,
   TextField
 } from "@mui/material";
-import { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
 import TextTitle from "components/text/TextTitle";
@@ -48,15 +47,26 @@ import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import Checkbox from "@mui/joy/Checkbox";
 import Heading2 from "components/text/Heading2";
-import moment from "moment";
-import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
 import { Helmet } from "react-helmet";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import useAuth from "hooks/useAuth";
+import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
+import {
+  GetQuestionSubmissionEntity,
+  SubmitQuestionList
+} from "models/courseService/entity/QuestionSubmissionEntity";
+import moment from "moment";
 
 const drawerWidth = 370;
+
+interface QuestionSubmissionMap {
+  [key: string]: GetQuestionSubmissionEntity;
+}
 
 export default function TakeExam() {
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
+  const auth = useAuth();
 
   const courseId = useParams<{ courseId: string }>().courseId;
 
@@ -82,7 +92,6 @@ export default function TakeExam() {
   }, [questionList]);
 
   const examData = useAppSelector((state) => state.takeExam.examData);
-  const startTime = useAppSelector((state) => state.takeExam.startAt);
   const [open, setOpen] = React.useState(true);
   const [isShowTimeLeft, setIsShowTimeLeft] = React.useState(true);
   const [drawerVariant, setDrawerVariant] = React.useState<
@@ -95,69 +104,66 @@ export default function TakeExam() {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
   const [submitted, setSubmitted] = React.useState(false);
-  const [timeLimit, setTimeLimit] = React.useState(() => {
-    if (!startTime) return 0;
+  const [endTime, setEndTime] = React.useState<any | undefined>(undefined);
+  const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
 
-    const startTimeMil = new Date(startTime).getTime();
-
-    return startTimeMil + (examData?.timeLimit || 0) * 1000;
-  });
   const getTimeUntil = (inputTime: any) => {
+    console.log("inputTime", inputTime);
     if (!inputTime) {
       return;
     }
     const time = moment(inputTime).diff(moment().utc(), "milliseconds");
 
     if (time < 0) {
-      const endTime = new Date(
+      const submitTime = new Date(
         new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
       ).toISOString();
 
       // if enable auto submit ==> submit exam
       if (examData.overdueHanding === "AUTOSUBMIT" && !submitted) {
         setSubmitted(true);
-        const questions = questionListRef.current.map((question) => {
-          return {
-            questionId: question.questionData.id,
-            content: question.content,
-            numFile: question.files?.length || 0
-          };
-        });
+        // const questions = questionListRef.current.map((question) => {
+        //   return {
+        //     questionId: question.questionData.id,
+        //     content: question.content,
+        //     numFile: question.files?.length || 0
+        //   };
+        // });
 
-        console.log("questions", questions);
+        // console.log("questions", questions);
 
-        const startAtTime = new Date(
-          new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
-        ).toISOString();
-        const submitData: SubmitExamRequest = {
-          examId: examId || storageExamID,
-          userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
-          questions: questions,
-          startTime: startAtTime,
-          submitTime: endTime
-        };
+        // const startAtTime = new Date(
+        //   new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
+        // ).toISOString();
+        // const submitData: SubmitExamRequest = {
+        //   examId: examId || storageExamID,
+        //   userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
+        //   questions: questions,
+        //   startTime: startAtTime,
+        //   submitTime: endTime
+        // };
 
-        ExamService.submitExam(submitData)
-          .then((response) => {
-            dispatch(cleanTakeExamState());
-            navigate(
-              routes.student.exam.review
-                .replace(":courseId", courseId || examData.courseId)
-                .replace(":examId", examId || examData.id)
-                .replace(":submissionId", response.examSubmissionId)
-            );
-          })
-          .catch((error) => {})
-          .finally(() => {});
+        // ExamService.submitExam(submitData)
+        //   .then((response) => {
+        //     dispatch(cleanTakeExamState());
+        //     navigate(
+        //       routes.student.exam.review
+        //         .replace(":courseId", courseId || examData.courseId)
+        //         .replace(":examId", examId || examData.id)
+        //         .replace(":submissionId", response.examSubmissionId)
+        //     );
+        //   })
+        //   .catch((error) => {})
+        //   .finally(() => {});
       } else {
-        console.log("abandon exam");
         // else ==> abandon exam
-        dispatch(cleanTakeExamState());
-        navigate(
-          routes.student.exam.detail
-            .replace(":courseId", courseId || examData.courseId)
-            .replace(":examId", examId || examData.id)
-        );
+        // console.log("abandon exam");
+        // dispatch(cleanTakeExamState());
+        // navigate(
+        //   routes.student.exam.detail
+        //     .replace(":courseId", courseId || examData.courseId)
+        //     .replace(":examId", examId || examData.id)
+        // );
       }
 
       return;
@@ -169,10 +175,10 @@ export default function TakeExam() {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => getTimeUntil(timeLimit), 500);
+    const interval = setInterval(() => getTimeUntil(endTime), 500);
 
     return () => clearInterval(interval);
-  }, [timeLimit]);
+  }, [endTime]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -197,33 +203,117 @@ export default function TakeExam() {
     ref: headerRef
   });
 
+  const handleStartExam = async () => {
+    try {
+      const response = await ExamSubmissionService.startExam({
+        examId: examId ?? examData.id,
+        userId: auth.loggedUser.userId,
+        examStartTime: new Date().toISOString()
+      });
+
+      setEndTime(new Date(response.endTime).getTime());
+      setExamSubmissionId(response.examSubmissionId);
+    } catch (error: any) {}
+  };
+
+  const handleGetExamSubmissionDetail = async () => {
+    try {
+      const response = await ExamSubmissionService.getLatestOnGoingExamSubmission(
+        examId ?? examData.id,
+        auth.loggedUser.userId
+      );
+
+      console.log("exam detail", response);
+      setEndTime(new Date(response.endTime).getTime());
+      setExamSubmissionId(response.examSubmissionId);
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+
+  const handleSaveQuestionState = React.useCallback(() => {
+    const submitQuestionListData: SubmitQuestionList = {
+      examId: examId ?? examData.id,
+      userId: auth.loggedUser.userId,
+      questionSubmissionCommands: questionList.map((question) => {
+        return {
+          questionId: question.questionData.id,
+          content: question.content,
+          numFile: question.files?.length || 0,
+          answerStatus: question.answered,
+          flag: question.flag
+        };
+      })
+    };
+
+    try {
+      QuestionSubmissionService.submitQuestionList(submitQuestionListData);
+    } catch (error: any) {}
+  }, [examId, examData.id, auth.loggedUser.userId, questionList]);
+
+  const handleGetQuestionSubmissionData = async (questionSubmissionIds: string[]) => {
+    try {
+      const response = await QuestionSubmissionService.getQuestionSubmission({
+        examId: examId ?? examData.id,
+        userId: auth.loggedUser.userId,
+        questionSubmissionIds: questionSubmissionIds
+      });
+      return response.questionSubmissions;
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+
   // get whole question list if storage is empty (first time load page)
   // start the timer
   React.useEffect(() => {
-    // exam litmit
-    // if(examData)
-    if (questionList === undefined || questionList?.length <= 0 || examId !== storageExamID)
+    if (examSubmissionId === "" || examSubmissionId === undefined || endTime === undefined) {
+      handleGetExamSubmissionDetail();
+    }
+    if (questionList === undefined || questionList?.length <= 0 || examId !== storageExamID) {
+      handleStartExam();
+
       ExamService.getExamQuestionById(examId ?? examData.id, null)
-        .then((res) => {
-          const questionFromAPI = res.questions.map((question: GetQuestionExam, index: number) => {
-            return {
-              flag: false,
-              answered: false,
-              content: "",
-              questionData: question,
-              files: []
-            };
-          });
+        .then(async (res) => {
+          // Handle question data
+          const questionSubmissions = await handleGetQuestionSubmissionData(
+            res.questions.map((question: GetQuestionExam) => question.id)
+          );
+          let questionFromAPI: any[] = [];
 
-          // const startTime = new Date(new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" }));
-          const startTime = new Date();
-          console.log("startTIme", startTime);
+          if (questionSubmissions) {
+            const questionSubmissionHashmap = questionSubmissions.reduce(
+              (acc: QuestionSubmissionMap, question: GetQuestionSubmissionEntity) => {
+                acc[question.questionId] = question;
+                return acc;
+              },
+              {}
+            );
 
-          setTimeLimit(startTime.getTime() + (examData?.timeLimit || 0) * 1000);
+            questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+              return {
+                flag: questionSubmissionHashmap[question.id]?.flag || false,
+                answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
+                content: questionSubmissionHashmap[question.id]?.content || "",
+                questionData: question,
+                files: []
+              };
+            });
+          } else {
+            questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+              return {
+                flag: false,
+                answered: false,
+                content: "",
+                questionData: question,
+                files: []
+              };
+            });
+          }
+
           dispatch(
             setExam({
               examId: examId ?? examData.id,
-              startAt: startTime.toISOString(),
               questionList: questionFromAPI
             })
           );
@@ -231,6 +321,7 @@ export default function TakeExam() {
         .catch((err) => {
           console.log(err);
         });
+    }
   }, []);
 
   const handleSubmitExam = () => {
@@ -328,6 +419,7 @@ export default function TakeExam() {
     setIsSelectedQtypeChanged(true);
   };
 
+  // Filter by Question type
   React.useEffect(() => {
     if (!isSelectedQtypeChanged) return;
     setIsSelectedQtypeChanged(false);
@@ -363,6 +455,19 @@ export default function TakeExam() {
 
     return () => clearInterval(checkExist);
   }, [location]);
+
+  // Save current exam state every 60 seconds
+  React.useEffect(() => {
+    const saveQuestionInterval = setInterval(() => {
+      handleSaveQuestionState();
+    }, 60000); // 1000 milliseconds = 1 seconds
+
+    return () => clearInterval(saveQuestionInterval);
+  }, [handleSaveQuestionState, questionList]);
+
+  React.useEffect(() => {
+    console.log("end time", endTime);
+  }, [endTime]);
 
   return (
     <>
@@ -557,6 +662,9 @@ export default function TakeExam() {
                           .replace(":examId", examId ?? examData.id),
                         search: `?page=${questionPageIndex - 1}`
                       }}
+                      onClick={() => {
+                        handleSaveQuestionState();
+                      }}
                     >
                       <Button variant='soft' color='neutral'>
                         Trang trước
@@ -579,6 +687,9 @@ export default function TakeExam() {
                           .replace(":courseId", courseId ?? examData.courseId)
                           .replace(":examId", examId ?? examData.id),
                         search: `?page=${questionPageIndex + 1}`
+                      }}
+                      onClick={() => {
+                        handleSaveQuestionState();
                       }}
                     >
                       <Button onClick={() => {}} variant='solid' color='primary'>

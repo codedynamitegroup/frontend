@@ -36,6 +36,7 @@ import { Helmet } from "react-helmet";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import i18next from "i18next";
 import { CircularProgress } from "@mui/joy";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
 
 const StudentCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ const StudentCourseExamDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
-  const startAt = useSelector((state: RootState) => state.takeExam.startAt);
+  // const startAt = useSelector((state: RootState) => state.takeExam.startAt);
   const [examSubmissions, setExamSubmissions] = useState<ExamSubmissionDetail[]>([]);
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
@@ -86,7 +87,7 @@ const StudentCourseExamDetails = () => {
 
   const handleGetSubmissions = async (examId: string, userId: string) => {
     try {
-      const response = await ExamService.getAllAttemptByExamIdAndUserId(examId, userId);
+      const response = await ExamSubmissionService.getAllAttemptByExamIdAndUserId(examId, userId);
       setExamSubmissions(response);
     } catch (error) {
       console.error(error);
@@ -295,7 +296,8 @@ const StudentCourseExamDetails = () => {
             height: "fit-content"
           }}
         >
-          {startAt ? t("exam_detail_continue") : t("exam_detail_start")}
+          {/* {startAt ? t("exam_detail_continue") : t("exam_detail_start")} */}
+          startAT STRING
         </Button>
         <CircularProgress
           thickness={3}

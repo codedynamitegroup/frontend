@@ -63,9 +63,16 @@ export interface ExamOverview {
   submitted: number;
 }
 
-export interface StartEndExamRequest {
+export interface StartExamCommand {
   examId: string;
   userId: string;
+  examStartTime: string;
+}
+
+export interface EndExamCommand {
+  examId: string;
+  userId: string;
+  examSubmissionTime: string;
 }
 
 export interface SubmitExamRequest {

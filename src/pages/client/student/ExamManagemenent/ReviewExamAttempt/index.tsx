@@ -32,6 +32,7 @@ import { QuestionService } from "services/coreService/QuestionService";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import { Helmet } from "react-helmet";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
 
 interface SubmissionData {
   examSubmissionId: string;
@@ -166,7 +167,7 @@ export default function StudentReviewExamAttempt() {
 
       // Get exam submission data
       if (submissionId !== undefined)
-        ExamService.getExamSubmissionById(submissionId)
+        ExamSubmissionService.getExamSubmissionById(submissionId)
           .then((res) => {
             console.log("Get exam submission data");
             setSubmissionData(res);

@@ -46,7 +46,7 @@ const SubmitExamSummary = () => {
   const user: User = useSelector(selectCurrentUser);
   const examId = useParams<{ examId: string }>().examId;
   const storageExamID = useAppSelector((state) => state.takeExam.examId);
-  const startTime = useAppSelector((state) => state.takeExam.startAt);
+  // const startTime = useAppSelector((state) => state.takeExam.startAt);
   const examData = useAppSelector((state) => state.takeExam.examData);
   const timeClose = new Date(examData.timeClose);
 
@@ -59,13 +59,7 @@ const SubmitExamSummary = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [timeLimit, setTimeLimit] = React.useState(() => {
-    if (!startTime) return 0;
 
-    const startTimeMil = new Date(startTime).getTime();
-
-    return startTimeMil + (examData?.timeLimit || 0) * 1000;
-  });
   const [timeLeft, setTimeLeft] = React.useState(0);
 
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -98,37 +92,37 @@ const SubmitExamSummary = () => {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
-  const getTimeUntil = (inputTime: any) => {
-    if (!inputTime) {
-      return;
-    }
-    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
-    setTimeLeft(time);
+  // const getTimeUntil = (inputTime: any) => {
+  //   if (!inputTime) {
+  //     return;
+  //   }
+  //   const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+  //   setTimeLeft(time);
 
-    if (time < 0) {
-      if (examData.id !== "" && examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
-      else {
-        navigate(
-          routes.lecturer.exam.detail
-            .replace(":courseId", courseId || examData.courseId)
-            .replace(":examId", examId || examData.id),
-          { replace: true }
-        );
-      }
+  //   if (time < 0) {
+  //     if (examData.id !== "" && examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
+  //     else {
+  //       navigate(
+  //         routes.lecturer.exam.detail
+  //           .replace(":courseId", courseId || examData.courseId)
+  //           .replace(":examId", examId || examData.id),
+  //         { replace: true }
+  //       );
+  //     }
 
-      return;
-    } else {
-      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-      setMinutes(Math.floor((time / 1000 / 60) % 60));
-      setSeconds(Math.floor((time / 1000) % 60));
-    }
-  };
+  //     return;
+  //   } else {
+  //     setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+  //     setMinutes(Math.floor((time / 1000 / 60) % 60));
+  //     setSeconds(Math.floor((time / 1000) % 60));
+  //   }
+  // };
 
-  React.useEffect(() => {
-    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
 
-    return () => clearInterval(interval);
-  }, [timeLimit]);
+  //   return () => clearInterval(interval);
+  // }, [timeLimit]);
 
   React.useEffect(() => {
     if (examData.id === "") {
@@ -175,9 +169,11 @@ const SubmitExamSummary = () => {
       };
     });
 
-    const startAtTime = new Date(
-      new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
-    ).toISOString();
+    // const startAtTime = new Date(
+    //   new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
+    // ).toISOString();
+    const startAtTime = new Date().toISOString();
+
     console.log("start at time", new Date(startAtTime));
     const submitData: SubmitExamRequest = {
       examId: examId || storageExamID,

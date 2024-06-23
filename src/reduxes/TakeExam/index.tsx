@@ -4,8 +4,6 @@ import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 
 export interface InitialState {
   examId: string;
-  startAt?: string;
-  endAt?: string;
   examData: ReduxExamEntity;
   questionList: {
     flag: boolean;
@@ -39,8 +37,6 @@ const initState: InitialState = {
     createdAt: "",
     updatedAt: ""
   },
-  startAt: undefined,
-  endAt: undefined,
   questionList: []
 };
 
@@ -52,7 +48,6 @@ const takeExamSlice = createSlice({
       state,
       action: PayloadAction<{
         examId: string;
-        startAt: string;
         questionList: {
           flag: boolean;
           answered: boolean;
@@ -66,7 +61,6 @@ const takeExamSlice = createSlice({
       }>
     ) => {
       state.examId = action.payload.examId;
-      state.startAt = action.payload.startAt;
       state.questionList = action.payload.questionList;
       return state;
     },
@@ -152,8 +146,6 @@ const takeExamSlice = createSlice({
     },
     cleanTakeExamState: (state) => {
       state.examId = "";
-      state.startAt = undefined;
-      state.endAt = undefined;
       state.examData = initState.examData;
       state.questionList = [];
 
