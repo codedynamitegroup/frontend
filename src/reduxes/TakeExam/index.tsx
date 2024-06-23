@@ -1,12 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 
 export interface InitialState {
   examId: string;
-  startAt?: string;
-  endAt?: string;
-  examData: ReduxExamEntity;
   questionList: {
     flag: boolean;
     answered: boolean;
@@ -21,26 +17,7 @@ export interface InitialState {
 
 const initState: InitialState = {
   examId: "",
-  examData: {
-    id: "",
-    courseId: "",
-    name: "",
-    scores: 0,
-    maxScores: 0,
-    timeOpen: "",
-    timeClose: "",
-    timeLimit: 0,
-    intro: "",
-    overdueHanding: "",
-    canRedoQuestions: false,
-    maxAttempts: 0,
-    shuffleAnswers: false,
-    gradeMethod: "",
-    createdAt: "",
-    updatedAt: ""
-  },
-  startAt: undefined,
-  endAt: undefined,
+
   questionList: []
 };
 
@@ -52,7 +29,6 @@ const takeExamSlice = createSlice({
       state,
       action: PayloadAction<{
         examId: string;
-        startAt: string;
         questionList: {
           flag: boolean;
           answered: boolean;
@@ -66,14 +42,10 @@ const takeExamSlice = createSlice({
       }>
     ) => {
       state.examId = action.payload.examId;
-      state.startAt = action.payload.startAt;
       state.questionList = action.payload.questionList;
       return state;
     },
-    setExamData: (state, action: PayloadAction<ReduxExamEntity>) => {
-      state.examData = action.payload;
-      return state;
-    },
+
     setExamId: (state, action: PayloadAction<string>) => {
       state.examId = action.payload;
       return state;
@@ -151,11 +123,7 @@ const takeExamSlice = createSlice({
       return state;
     },
     cleanTakeExamState: (state) => {
-      state.examId = "";
-      state.startAt = undefined;
-      state.endAt = undefined;
-      state.examData = initState.examData;
-      state.questionList = [];
+      state = initState;
 
       return state;
     }
@@ -171,7 +139,6 @@ export const {
   addFileToExamQuesiton,
   removeFileFromExamQuestion,
   removeAllFilesFromExamQuestion,
-  setExamData,
   cleanTakeExamState
 } = takeExamSlice.actions;
 

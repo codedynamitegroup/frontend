@@ -11,7 +11,7 @@ import Sheet from "@mui/joy/Sheet";
 import { Checkbox } from "@mui/joy";
 import { setAnswered, setFlag } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   page: number;
@@ -66,10 +66,6 @@ const MultipleChoiceExamQuestion = (props: Props) => {
 
     console.log(selectedList);
   };
-
-  useEffect(() => {
-    if (questionMultiChoice.shuffleAnswers) setAnswerList(shuffleArray(answerList));
-  }, []);
 
   return (
     <Grid container spacing={1}>
@@ -188,17 +184,17 @@ const MultipleChoiceExamQuestion = (props: Props) => {
   );
 };
 
-function shuffleArray(array: any[] | undefined) {
-  if (!array) return [];
+// function shuffleArray(array: any[] | undefined) {
+//   if (!array) return [];
 
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
+//   for (var i = array.length - 1; i > 0; i--) {
+//     var j = Math.floor(Math.random() * (i + 1));
+//     var temp = array[i];
+//     array[i] = array[j];
+//     array[j] = temp;
+//   }
 
-  return array;
-}
+//   return array;
+// }
 
 export default MultipleChoiceExamQuestion;

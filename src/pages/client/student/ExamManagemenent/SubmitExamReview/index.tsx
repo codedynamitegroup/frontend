@@ -3,7 +3,7 @@ import classes from "./styles.module.scss";
 import { Box, CssBaseline, Drawer, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Button from "@mui/joy/Button";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import MenuIcon from "@mui/icons-material/MenuOpen";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -29,41 +29,52 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { Chip } from "@mui/joy";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import moment from "moment";
-import { SubmitExamRequest } from "models/courseService/entity/ExamEntity";
+import { EndExamCommand, GetExamDetails } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
-import { setLoading } from "reduxes/Loading";
 import { useDispatch } from "react-redux";
-import { cleanTakeExamState } from "reduxes/TakeExam";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { cleanTakeExamState, setExam } from "reduxes/TakeExam";
 import { Helmet } from "react-helmet";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import useAuth from "hooks/useAuth";
+import {
+  GetQuestionSubmissionEntity,
+  SubmitQuestionList
+} from "models/courseService/entity/QuestionSubmissionEntity";
+import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
+import CustomDialog from "components/common/dialogs/CustomDialog";
+import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
+import { QuestionSubmissionMap } from "../TakeExam";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const drawerWidth = 370;
 
 const SubmitExamSummary = () => {
   const dispatch = useDispatch();
   const examId = useParams<{ examId: string }>().examId;
-  const storageExamID = useAppSelector((state) => state.takeExam.examId);
-  const startTime = useAppSelector((state) => state.takeExam.startAt);
-  const examData = useAppSelector((state) => state.takeExam.examData);
-  const timeClose = new Date(examData.timeClose);
-
-  // snack bar config
-  const [openSnackAlert, setOpenSnackAlert] = React.useState(false);
-  const [snackBarAlertMessage, setSnackBarAlertMessage] = React.useState("");
-  const [snackBarType, setSnackBarType] = React.useState(AlertType.Success);
-
   const courseId = useParams<{ courseId: string }>().courseId;
+  const [timeClose, setTimeClose] = useState<Date>(new Date());
+  const auth = useAuth();
+
+  const [endTime, setEndTime] = React.useState<any | undefined>(undefined);
+  const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [submitTime, setSubmitTime] = React.useState<string>("");
+  const [examDetails, setExamDetails] = React.useState<GetExamDetails>({
+    examId: "",
+    courseId: "",
+    name: "",
+    timeOpen: "",
+    timeClose: "",
+    timeLimit: 0,
+    intro: "",
+    overdueHanding: "",
+    canRedoQuestions: false,
+    shuffleAnswers: false
+  });
+
   const theme = useTheme();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [timeLimit, setTimeLimit] = React.useState(() => {
-    if (!startTime) return 0;
-
-    const startTimeMil = new Date(startTime).getTime();
-
-    return startTimeMil + (examData?.timeLimit || 0) * 1000;
-  });
-  const [timeLeft, setTimeLeft] = React.useState(0);
 
   const headerRef = React.useRef<HTMLDivElement>(null);
   const { height: headerHeight } = useBoxDimensions({
@@ -95,51 +106,6 @@ const SubmitExamSummary = () => {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
-  const getTimeUntil = (inputTime: any) => {
-    if (!inputTime) {
-      return;
-    }
-    const time = moment(inputTime).diff(moment().utc(), "milliseconds");
-    setTimeLeft(time);
-
-    if (time < 0) {
-      if (examData.id !== "" && examData.overdueHanding === "AUTOSUBMIT") submitExamHandler();
-      else {
-        navigate(
-          routes.student.exam.detail
-            .replace(":courseId", courseId || examData.courseId)
-            .replace(":examId", examId || examData.id),
-          { replace: true }
-        );
-      }
-
-      return;
-    } else {
-      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-      setMinutes(Math.floor((time / 1000 / 60) % 60));
-      setSeconds(Math.floor((time / 1000) % 60));
-    }
-  };
-
-  React.useEffect(() => {
-    const interval = setInterval(() => getTimeUntil(timeLimit), 1000);
-
-    return () => clearInterval(interval);
-  }, [timeLimit]);
-
-  React.useEffect(() => {
-    if (examData.id === "") {
-      navigate(
-        routes.student.exam.detail
-          .replace(":courseId", courseId || examData.courseId)
-          .replace(":examId", examId || examData.id),
-        {
-          replace: true
-        }
-      );
-    }
-  }, []);
-
   const questionList = useAppSelector((state) => state.takeExam.questionList);
   const handleQuestionNavigateButton = (question: any) => {
     const slug = convertUuidToHashSlug(question.questionData.id);
@@ -157,61 +123,196 @@ const SubmitExamSummary = () => {
     { value: t("common_question"), width: "40%" },
     { value: t("common_status"), width: "" }
   ];
-
-  const submitExamHandler = async () => {
-    const endTime = new Date(
-      new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
-    ).toISOString();
-    dispatch(setLoading(true));
-
-    const questions = questionList.map((question) => {
-      return {
-        questionId: question.questionData.id,
-        content: question.content,
-        numFile: question.files?.length || 0
-      };
-    });
-
-    const startAtTime = new Date(
-      new Date(startTime || "").toLocaleString("en", { timeZone: "Asia/Bangkok" })
-    ).toISOString();
-    console.log("start at time", new Date(startAtTime));
-    const submitData: SubmitExamRequest = {
-      examId: examId || storageExamID,
-      userId: "2d7ed5a0-fb21-4927-9a25-647c17d29668",
-      questions: questions,
-      startTime: startAtTime,
-      submitTime: endTime
-    };
-
-    ExamService.submitExam(submitData)
-      .then((response) => {
-        console.log("response", response);
-        dispatch(cleanTakeExamState());
-
-        setSnackBarAlertMessage("Nộp bài thành công");
-        setSnackBarType(AlertType.Success);
-        setOpenSnackAlert(true);
-        navigate(
-          routes.student.exam.review
-            .replace(":courseId", courseId || examData.courseId)
-            .replace(":examId", examId || examData.id)
-            .replace(":submissionId", response.examSubmissionId),
-          {
-            replace: true
-          }
-        );
-      })
-      .catch((error) => {
-        setSnackBarAlertMessage("Nộp bài thất bại");
-        setSnackBarType(AlertType.Error);
-        setOpenSnackAlert(true);
-      })
-      .finally(() => {
-        dispatch(setLoading(false));
+  const handleGetQuestionSubmissionData = async (questionSubmissionIds: string[]) => {
+    try {
+      const response = await QuestionSubmissionService.getQuestionSubmission({
+        examId: examId ?? examDetails.examId,
+        userId: auth.loggedUser.userId,
+        questionSubmissionIds: questionSubmissionIds
       });
+      return response.questionSubmissions;
+    } catch (error: any) {
+      console.log("error", error);
+    }
   };
+  const handleGetExamSubmissionDetail = async () => {
+    try {
+      const response = await ExamSubmissionService.getLatestOnGoingExamSubmission(
+        examId ?? examDetails.examId,
+        auth.loggedUser.userId
+      );
 
+      setEndTime(new Date(response.endTime).getTime());
+      setExamSubmissionId(response.examSubmissionId);
+      setExamDetails(response.examSubmissionExamResponse);
+      setTimeClose(new Date(response.examSubmissionExamResponse.timeClose));
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+  const handleEndExam = useCallback(
+    async (submitTime: string) => {
+      const endExamCommand: EndExamCommand = {
+        examId: examId ?? examDetails.examId,
+        userId: auth.loggedUser.userId,
+        examSubmissionTime: submitTime
+      };
+
+      ExamSubmissionService.endExam(endExamCommand)
+        .then((response) => {
+          dispatch(setSuccessMess(t("exam_submit_success")));
+
+          dispatch(cleanTakeExamState());
+          navigate(
+            routes.student.exam.detail
+              .replace(":courseId", courseId || examDetails.courseId)
+              .replace(":examId", examId || examDetails.examId),
+            { replace: true }
+          );
+        })
+        .catch((error) => {
+          dispatch(setErrorMess(t("exam_submit_failed")));
+        });
+    },
+    [
+      auth.loggedUser.userId,
+      courseId,
+      dispatch,
+      examDetails.courseId,
+      examDetails.examId,
+      examId,
+      navigate,
+      t
+    ]
+  );
+  const handleSaveQuestionState = React.useCallback(
+    async (submitTime: string) => {
+      const submitQuestionListData: SubmitQuestionList = {
+        examId: examId ?? examDetails.examId,
+        userId: auth.loggedUser.userId,
+        questionSubmissionCommands: questionList.map((question) => {
+          return {
+            questionId: question.questionData.id,
+            content: question.content,
+            numFile: question.files?.length || 0,
+            answerStatus: question.answered,
+            flag: question.flag
+          };
+        })
+      };
+
+      try {
+        await QuestionSubmissionService.submitQuestionList(submitQuestionListData);
+        handleEndExam(submitTime);
+      } catch (error: any) {}
+    },
+    [examId, examDetails.examId, auth.loggedUser.userId, questionList, handleEndExam]
+  );
+  React.useEffect(() => {
+    if (examSubmissionId === "" || examSubmissionId === undefined || endTime === undefined) {
+      handleGetExamSubmissionDetail();
+    }
+    if (questionList === undefined || questionList?.length <= 0) {
+      ExamService.getExamQuestionById(examId ?? examDetails.examId, null)
+        .then(async (res) => {
+          // Handle question data
+          const questionSubmissions = await handleGetQuestionSubmissionData(
+            res.questions.map((question: GetQuestionExam) => question.id)
+          );
+          let questionFromAPI: any[] = [];
+
+          if (questionSubmissions) {
+            const questionSubmissionHashmap = questionSubmissions.reduce(
+              (acc: QuestionSubmissionMap, question: GetQuestionSubmissionEntity) => {
+                acc[question.questionId] = question;
+                return acc;
+              },
+              {}
+            );
+
+            questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+              return {
+                flag: questionSubmissionHashmap[question.id]?.flag || false,
+                answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
+                content: questionSubmissionHashmap[question.id]?.content || "",
+                questionData: question,
+                files: []
+              };
+            });
+          } else {
+            questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+              return {
+                flag: false,
+                answered: false,
+                content: "",
+                questionData: question,
+                files: []
+              };
+            });
+          }
+
+          dispatch(
+            setExam({
+              examId: examId ?? examDetails.examId,
+              questionList: questionFromAPI
+            })
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
+
+  const submitExamHandler = useCallback(async () => {
+    handleSaveQuestionState(submitTime);
+  }, [handleSaveQuestionState, submitTime]);
+
+  const getTimeUntil = useCallback(
+    (inputTime: any) => {
+      if (!inputTime) {
+        return;
+      }
+      const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+
+      if (time < 0 && endTime !== undefined) {
+        if (examDetails.overdueHanding === "AUTOSUBMIT") {
+          console.log("submit exam time", new Date(endTime).toISOString());
+          setSubmitTime(new Date(endTime).toISOString());
+          submitExamHandler();
+        } else {
+          navigate(
+            routes.student.exam.detail
+              .replace(":courseId", courseId || examDetails.courseId)
+              .replace(":examId", examId || examDetails.examId),
+            { replace: true }
+          );
+        }
+
+        return;
+      } else {
+        setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+        setMinutes(Math.floor((time / 1000 / 60) % 60));
+        setSeconds(Math.floor((time / 1000) % 60));
+      }
+    },
+    [
+      courseId,
+      endTime,
+      examDetails.courseId,
+      examDetails.examId,
+      examDetails.overdueHanding,
+      examId,
+      navigate,
+      submitExamHandler
+    ]
+  );
+
+  React.useEffect(() => {
+    const interval = setInterval(() => getTimeUntil(endTime), 1000);
+
+    return () => clearInterval(interval);
+  }, [endTime, getTimeUntil]);
   const monthNames = [
     t("common_january"),
     t("common_february"),
@@ -237,23 +338,35 @@ const SubmitExamSummary = () => {
     t("common_saturday")
   ];
 
+  const submitButtonClickHandler = () => {
+    const tempSubmitTime = new Date(
+      new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
+    ).toISOString();
+
+    setSubmitTime(tempSubmitTime);
+    setOpenDialog(true);
+  };
+
   return (
     <>
       <Helmet>
         <title>
           {t("exam_summary")}
           {" | "}
-          {examData.name}
+          {examDetails.name}
         </title>
       </Helmet>
-      <Grid className={classes.root}>
-        <SnackbarAlert
-          open={openSnackAlert}
-          setOpen={setOpenSnackAlert}
-          content={snackBarAlertMessage}
-          type={snackBarType}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      {openDialog && (
+        <CustomDialog
+          title={t("exam_submit_and_finish")}
+          children={"Submit at " + submitTime}
+          open={openDialog}
+          onHandleCancel={() => setOpenDialog(false)}
+          onHanldeConfirm={submitExamHandler}
+          handleClose={() => setOpenDialog(false)}
         />
+      )}
+      <Grid className={classes.root}>
         <Header ref={headerRef} />
         <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
           <CssBaseline />
@@ -275,9 +388,9 @@ const SubmitExamSummary = () => {
           />
 
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>{examData.name}</Heading1>
+            <Heading1 fontWeight={"500"}>{examDetails.name}</Heading1>
             <Heading2>
-              <div dangerouslySetInnerHTML={{ __html: examData.intro }}></div>
+              <div dangerouslySetInnerHTML={{ __html: examDetails.intro }}></div>
             </Heading2>
             <Button
               onClick={() => {
@@ -441,7 +554,7 @@ const SubmitExamSummary = () => {
                 time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
               })}
             </ParagraphBody>
-            <Button sx={{ width: "fit-content" }} onClick={submitExamHandler}>
+            <Button sx={{ width: "fit-content" }} onClick={submitButtonClickHandler}>
               {t("exam_submit_and_finish")}
             </Button>
           </Box>

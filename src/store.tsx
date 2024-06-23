@@ -37,16 +37,16 @@ import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
 import EditMode from "reduxes/EditMode";
 
-const persistConfig = {
-  key: "takeExam",
-  storage,
-  whitelist: ["questionList", "examId", "startAt", "endAt", "examData"],
-  debug: true
-};
-const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> = persistReducer(
-  persistConfig,
-  takeExam
-);
+// const persistConfig = {
+//   key: "takeExam",
+//   storage,
+//   whitelist: ["questionList", "examId", "startAt", "endAt", "examData"],
+//   debug: true
+// };
+// const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> = persistReducer(
+//   persistConfig,
+//   takeExam
+// );
 
 const store = configureStore({
   reducer: {
@@ -76,7 +76,7 @@ const store = configureStore({
     executeResultData: ExecuteResult,
     auth: auth,
     questionCreate: questionCreate,
-    takeExam: takeExamPersistedReducer,
+    takeExam: takeExam,
     questionCategory: questionCategory,
     loading: loading,
     appStatus: appStatus,

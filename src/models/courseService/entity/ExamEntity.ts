@@ -65,9 +65,16 @@ export interface ExamOverview {
   submitted: number;
 }
 
-export interface StartEndExamRequest {
+export interface StartExamCommand {
   examId: string;
   userId: string;
+  examStartTime: string;
+}
+
+export interface EndExamCommand {
+  examId: string;
+  userId: string;
+  examSubmissionTime: string;
 }
 
 export interface SubmitExamRequest {
@@ -105,4 +112,16 @@ export interface GradeExamSubmission {
   lastMarkAt: string;
   score: number;
   maxScore: number;
+}
+export interface GetExamDetails {
+  examId: string;
+  courseId: string;
+  name: string;
+  timeOpen: string;
+  timeClose: string;
+  timeLimit: number;
+  intro: string;
+  overdueHanding: string;
+  canRedoQuestions: boolean;
+  shuffleAnswers: boolean;
 }

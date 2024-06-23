@@ -146,8 +146,12 @@ export const API = {
       START: "/course/exam/question/start-exam",
       END: "/course/exam/question/end-exam",
       SUBMIT: "/course/exam/question/submit",
-      SUBMISSION: "/course/exam/question/submit/:id",
-      SUBMISSION_STUDENT: "/course/exam/:id/submission"
+      SUBMISSION: "/course/exam/question/submit/:id"
+    },
+    EXAM_SUBMISSION: {
+      SUBMISSION_STUDENT: "/course/exam/:id/submission",
+      SUBMISSION_DETAIL: "/course/exam/submission/:id",
+      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
@@ -164,6 +168,11 @@ export const API = {
       UPDATE_BY_ID: "/course/question/bank/category/:id",
       DELETE_BY_ID: "/course/question/bank/category/:id",
       CREATE: "/course/question/bank/category/create"
+    },
+    QUESTION_SUBMISSION: {
+      SUBMIT_LIST: "/course/question/submit-all",
+      SUBMIT_ONE: "/course/question/submit-one",
+      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId"
     }
   },
   CODE_ASSESSMENT: {
