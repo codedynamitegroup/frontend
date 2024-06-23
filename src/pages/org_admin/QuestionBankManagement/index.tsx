@@ -346,7 +346,7 @@ const OrgAdminQuestionBankManagement = () => {
               })
             )}
             tableHeader={columns}
-            onSelectData={handleRowClick}
+            onSelectData={undefined}
             dataGridToolBar={dataGridToolbar}
             page={page}
             pageSize={rowsPerPage}

@@ -1,4 +1,14 @@
-import { Box, Button, Chip, CircularProgress, Container, Grid, Stack } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Grid,
+  Snackbar,
+  Stack
+} from "@mui/material";
 import Header from "components/Header";
 import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
@@ -48,6 +58,7 @@ export default function AssignmentGrading() {
   const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState(
     submissionId?.toString() ?? ""
   );
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = React.useState(false);
 
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const assignmentState = useSelector((state: RootState) => state.assignment);
@@ -443,6 +454,23 @@ export default function AssignmentGrading() {
         >
           Lưu và tiếp tục
         </Button>
+        {/* <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={openSuccessSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenSuccessSnackbar(false)}
+        >
+          <Alert
+            severity='success'
+            sx={{ width: "100%" }}
+            onClose={() => setOpenSuccessSnackbar(false)}
+          >
+            {"Chấm thành công"}
+          </Alert>
+        </Snackbar> */}
       </Box>
     </Grid>
   );

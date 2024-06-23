@@ -1,8 +1,18 @@
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Avatar, Box, Card, Divider, Stack } from "@mui/material";
+import { Avatar, Box, Stack } from "@mui/material";
+import {
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridRowParams,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import CustomDataGrid from "components/common/CustomDataGrid";
 import Heading1 from "components/text/Heading1";
+import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
+import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,20 +23,9 @@ import { routes } from "routes/routes";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";
-import classes from "./styles.module.scss";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import {
-  GridCallbackDetails,
-  GridColDef,
-  GridPaginationModel,
-  GridRowParams,
-  GridRowSelectionModel
-} from "@mui/x-data-grid";
-import Heading6 from "components/text/Heading6";
-import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
-import CustomBreadCrumb from "components/common/Breadcrumb";
+import classes from "./styles.module.scss";
 
 const AdminContestSubmissions = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);

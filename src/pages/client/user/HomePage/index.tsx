@@ -199,9 +199,9 @@ export default function HomePage() {
                             />
                             <CardContent className={classes.courseCard}>
                               <Heading3>{certificateCourse.name}</Heading3>
-                              <ParagraphBody className={classes.courseDescription}>
+                              {/* <ParagraphBody className={classes.courseDescription}>
                                 {certificateCourse.topic.description}
-                              </ParagraphBody>
+                              </ParagraphBody> */}
                               <Box className={classes.iconCourse}>
                                 <img
                                   src={images.icLevel}
@@ -300,9 +300,9 @@ export default function HomePage() {
                             />
                             <CardContent className={classes.courseCard}>
                               <Heading3>{certificateCourse.name}</Heading3>
-                              <ParagraphBody className={classes.courseDescription}>
+                              {/* <ParagraphBody className={classes.courseDescription}>
                                 {certificateCourse.topic.description}
-                              </ParagraphBody>
+                              </ParagraphBody> */}
                               <Box className={classes.iconCourse}>
                                 <img
                                   src={images.icLevel}

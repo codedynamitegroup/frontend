@@ -329,7 +329,6 @@ const QuestionBankManagement = () => {
                 })
               )}
               tableHeader={columns}
-              onSelectData={handleRowClick}
               dataGridToolBar={dataGridToolbar}
               page={page}
               pageSize={rowsPerPage}
@@ -386,7 +385,6 @@ const QuestionBankManagement = () => {
                 })
               )}
               tableHeader={columns}
-              onSelectData={handleRowClick}
               dataGridToolBar={dataGridToolbar}
               page={page}
               pageSize={rowsPerPage}
