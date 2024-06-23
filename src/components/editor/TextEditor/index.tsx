@@ -8,6 +8,9 @@ import QuillImageDropAndPaste from "quill-image-drop-and-paste";
 import { IconButton, Dialog, DialogContent, DialogTitle, Grid, Box } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/ZoomOutMap";
 import CloseIcon from "@mui/icons-material/Close";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+window.katex = katex;
 
 declare global {
   interface Window {
@@ -37,7 +40,8 @@ const formats = [
   "color",
   "background",
   "code-block",
-  "align"
+  "align",
+  "formula"
 ];
 
 interface OnChangeHandler {
@@ -81,7 +85,16 @@ const TextEditor: React.FC<Props> = ({
             container: [
               // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
               [{ header: [1, 2, 3, 4, 5, 6, false] }],
-              ["bold", "italic", "underline", "strike", "blockquote", "code-block", "code"],
+              [
+                "bold",
+                "italic",
+                "underline",
+                "strike",
+                "blockquote",
+                "code-block",
+                "code",
+                "formula"
+              ],
               [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
               ["link", "image"],
               [{ color: [] }, { background: [] }, { align: [] }],
