@@ -79,13 +79,7 @@ const OrgAdminEditContestDetails = ({ isDrawerOpen }: any) => {
     return yup.object().shape({
       isNoEndTime: yup.boolean().required(t("contest_is_no_end_time_required")),
       name: yup.string().required(t("contest_name_required")).trim(""),
-      startTime: yup
-        .string()
-        .required(t("contest_start_time_required"))
-        .trim("")
-        .test("startTime", t("contest_start_time_greater_than_current_time"), function (value) {
-          return moment(value).isAfter(moment().utc());
-        }),
+      startTime: yup.string().required(t("contest_start_time_required")).trim(""),
       endTime: yup
         .string()
         .nullable()

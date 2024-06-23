@@ -3,7 +3,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import StarIcon from "@mui/icons-material/Star";
 import { LinearProgress } from "@mui/joy";
 import JoyButton from "@mui/joy/Button";
-import { Box, Container, Grid, Skeleton, Tab, Tabs, Tooltip } from "@mui/material";
+import { Box, Container, Grid, Skeleton, Stack, Tab, Tabs, Tooltip } from "@mui/material";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -30,6 +30,8 @@ import CertificateCourseReviews from "./components/CertificateCourseReviews";
 import CourseCertificateIntroduction from "./components/Introduction";
 import CourseCertificateLesson from "./components/Lesson";
 import classes from "./styles.module.scss";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 const enum CertificateCourseCompletedStatus {
   START = "START",
@@ -298,7 +300,30 @@ const CourseCertificateDetail = () => {
                 {certificateCourseDetails.isLoading ? (
                   <Skeleton variant='rectangular' width={200} height={30} />
                 ) : (
-                  <Heading2>{certificateCourseDetails.data?.name}</Heading2>
+                  <Stack direction={"column"} spacing={1}>
+                    <Heading2>{certificateCourseDetails.data?.name}</Heading2>
+                    {certificateCourseCompletedStatus === CertificateCourseCompletedStatus.DONE && (
+                      <Stack
+                        direction='row'
+                        spacing={1}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center"
+                        }}
+                      >
+                        <CheckCircleIcon
+                          htmlColor='#1BA94C'
+                          sx={{
+                            width: "18px",
+                            height: "18px"
+                          }}
+                        />
+                        <ParagraphSmall translate-key='certificate_detail_certification_completed'>
+                          {t("certificate_detail_certification_completed")}
+                        </ParagraphSmall>
+                      </Stack>
+                    )}
+                  </Stack>
                 )}
               </Box>
               <Grid container>
@@ -420,22 +445,11 @@ const CourseCertificateDetail = () => {
                   <Box id={classes.courseProgress}>
                     <Box id={classes.progressTitle}>
                       <ParagraphBody colorname='--gray-80' translation-key={"common_progress"}>
-                        {i18next.format(t("common_progress"), "firstUppercase")}:{" "}
-                        {calcCertificateCourseProgress(
-                          certificateCourseDetails.data?.numOfCompletedResources || 0,
-                          certificateCourseDetails.data?.numOfResources || 0
-                        )}
-                        %
+                        {i18next.format(t("common_progress"), "firstUppercase")}: {progress}%
                       </ParagraphBody>
                       <FlagIcon id={classes.icFlag} />
                     </Box>
-                    <LinearProgress
-                      determinate
-                      value={calcCertificateCourseProgress(
-                        certificateCourseDetails.data?.numOfCompletedResources || 0,
-                        certificateCourseDetails.data?.numOfResources || 0
-                      )}
-                    />
+                    <LinearProgress determinate value={progress} />
                   </Box>
                 </Grid>
                 <Grid item md={1}></Grid>
@@ -578,7 +592,16 @@ const CourseCertificateDetail = () => {
                       />
                     }
                   />
-                  <Route path={"certificate"} element={<CertificateDetails />} />
+                  <Route
+                    path={"certificate"}
+                    element={
+                      <CertificateDetails
+                        isCompleted={
+                          certificateCourseCompletedStatus === CertificateCourseCompletedStatus.DONE
+                        }
+                      />
+                    }
+                  />
                   <Route
                     path={"review"}
                     element={

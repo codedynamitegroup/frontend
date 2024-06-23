@@ -76,21 +76,13 @@ const ContestDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
-  const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
-
-  const contestStatus = useMemo(() => {
-    if (contestDetails) {
-      if (contestDetails.startTime && moment().utc().isBefore(contestDetails.startTime)) {
-        return ContestStartTimeFilterEnum.UPCOMING;
-      } else if (contestDetails.endTime && moment().utc().isAfter(contestDetails.endTime)) {
-        return ContestStartTimeFilterEnum.ENDED;
-      } else {
-        return ContestStartTimeFilterEnum.HAPPENING;
-      }
-    } else {
-      return ContestStartTimeFilterEnum.UPCOMING;
-    }
-  }, [contestDetails]);
+  const [data, setData] = useState<{
+    contestDetails: ContestEntity | null;
+    contestStatus: ContestStartTimeFilterEnum | null;
+  }>({
+    contestDetails: null,
+    contestStatus: null
+  });
 
   const topUserRank = useMemo(() => {
     if (contestLeaderboard?.contestLeaderboard) {
@@ -145,17 +137,23 @@ const ContestDetails = () => {
           ) {
             await handleGetContestLeaderboard(id);
           }
-          setContestDetails(getContestDetailsResponse);
+          // setContestDetails(getContestDetailsResponse);
+          setData({
+            contestDetails: getContestDetailsResponse,
+            contestStatus: getContestDetailsResponse.startTime
+              ? moment().utc().isBefore(getContestDetailsResponse.startTime)
+                ? ContestStartTimeFilterEnum.UPCOMING
+                : getContestDetailsResponse.endTime
+                  ? moment().utc().isAfter(getContestDetailsResponse.endTime)
+                    ? ContestStartTimeFilterEnum.ENDED
+                    : ContestStartTimeFilterEnum.HAPPENING
+                  : ContestStartTimeFilterEnum.UPCOMING
+              : null
+          });
         }
         dispatch(setInititalLoading(false));
       } catch (error: any) {
-        console.error("Failed to fetch contests", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
         dispatch(setInititalLoading(false));
-        // Show snackbar here
       }
     },
     [dispatch, handleGetContestLeaderboard]
@@ -170,27 +168,26 @@ const ContestDetails = () => {
     fetchInitialData();
   }, [contestId, dispatch, handleGetContestById, handleGetContestLeaderboard]);
 
-  if (!contestDetails || !contestId) {
+  if (!data.contestDetails || !contestId) {
     return null;
   }
   return (
     <Box id={classes.contestDetailsRoot}>
       <ContestTimeInformation
-        status={contestStatus}
-        startDate={contestDetails.startTime}
-        endDate={contestDetails.endTime}
-        joinContest={contestDetails.isRegistered || false}
-        contestName={contestDetails.name || ""}
+        contestDetails={data.contestDetails}
+        contestStatus={data.contestStatus}
         contestId={contestId || ""}
+        handleChangeContestStatus={() => handleGetContestById(contestId)}
       />
       <Container className={classes.bodyContainer}>
         <Grid container gap={2}>
           <Grid
             item
-            xs={activeTab !== 2 && contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 8 : 12}
+            xs={
+              activeTab !== 2 && data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? 8 : 12
+            }
           >
             <Box className={classes.bodyWrapper}>
-              {/* <TabContext value={activeTab}> */}
               <Box sx={{ borderBottom: "1px solid var(--gray-10)" }}>
                 <Tabs
                   value={activeTab}
@@ -203,15 +200,14 @@ const ContestDetails = () => {
                     translation-key='contest_detail_description'
                     value={0}
                   />
-                  {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
-                  contestDetails.isRegistered === true ? (
+                  {data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
                     <Tab
                       label={t("contest_detail_problems")}
                       translation-key='contest_detail_problems'
                       value={1}
                     />
                   ) : null}
-                  {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
+                  {data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
                     <Tab
                       label={t("contest_detail_leaderboard")}
                       translation-key='contest_detail_leaderboard'
@@ -238,7 +234,7 @@ const ContestDetails = () => {
                             {t("common_description")}
                           </Heading4>
                           <ReactQuill
-                            value={contestDetails.description || ""}
+                            value={data.contestDetails.description || ""}
                             readOnly={true}
                             theme={"bubble"}
                           />
@@ -252,7 +248,7 @@ const ContestDetails = () => {
                           <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
 
                           <ReactQuill
-                            value={contestDetails.prizes || ""}
+                            value={data.contestDetails.prizes || ""}
                             readOnly={true}
                             theme={"bubble"}
                           />
@@ -265,7 +261,7 @@ const ContestDetails = () => {
                         <Stack direction='column' gap={1}>
                           <Heading4 translation-key='common_rules'>{t("common_rules")}</Heading4>
                           <ReactQuill
-                            value={contestDetails.rules || ""}
+                            value={data.contestDetails.rules || ""}
                             readOnly={true}
                             theme={"bubble"}
                           />
@@ -280,7 +276,7 @@ const ContestDetails = () => {
                             {t("common_scoring")}
                           </Heading4>
                           <ReactQuill
-                            value={contestDetails.scoring || ""}
+                            value={data.contestDetails.scoring || ""}
                             readOnly={true}
                             theme={"bubble"}
                           />
@@ -292,12 +288,12 @@ const ContestDetails = () => {
                     path={"problems"}
                     element={
                       <>
-                        {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
-                        contestDetails.isRegistered === true &&
+                        {data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
                         activeTab === 1 ? (
                           <Grid container spacing={3}>
-                            {contestDetails.questions && contestDetails.questions.length > 0 ? (
-                              contestDetails.questions.map((problem) => (
+                            {data.contestDetails.questions &&
+                            data.contestDetails.questions.length > 0 ? (
+                              data.contestDetails.questions.map((problem) => (
                                 <Grid item xs={12} key={problem.name}>
                                   <ContestProblemItem
                                     contestId={contestId}
@@ -338,7 +334,7 @@ const ContestDetails = () => {
                     path={"leaderboard"}
                     element={
                       <>
-                        {contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
+                        {data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING &&
                         activeTab === 2 ? (
                           <>
                             <Heading1>{t("contest_detail_leaderboard")}</Heading1>
@@ -349,7 +345,7 @@ const ContestDetails = () => {
                               setPageSize={setLeaderboardPageSize}
                               currentUserRank={contestLeaderboard?.participantRank}
                               rankingList={contestLeaderboard?.contestLeaderboard || []}
-                              problemList={contestDetails.questions}
+                              problemList={data.contestDetails.questions}
                               totalPages={contestLeaderboard?.totalPages || 0}
                               totalItems={contestLeaderboard?.totalItems || 0}
                             />
@@ -364,7 +360,7 @@ const ContestDetails = () => {
           </Grid>
           {activeTab !== 2 ? (
             <Grid item xs={3}>
-              {contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
+              {data.contestStatus !== ContestStartTimeFilterEnum.UPCOMING ? (
                 <Paper
                   sx={{
                     padding: "1px 20px",
