@@ -1,28 +1,19 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { Divider, Grid, Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
-import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
-import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToFormatTimeString } from "utils/time";
 import ExamAttemptSummaryTable from "./components/ExamAttemptSummaryTable";
 import classes from "./styles.module.scss";
 import { useEffect, useState } from "react";
-import {
-  ExamEntity,
-  ExamOverview,
-  ExamSubmissionDetail,
-  ReduxExamEntity
-} from "models/courseService/entity/ExamEntity";
+import { ExamEntity, ExamSubmissionDetail } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
-import { setExamDetail, setExamOverview } from "reduxes/courseService/exam";
-import { setExamData } from "reduxes/TakeExam";
+import { setExamDetail } from "reduxes/courseService/exam";
 import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import StartRoundedIcon from "@mui/icons-material/StartRounded";
@@ -37,6 +28,7 @@ import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import i18next from "i18next";
 import { CircularProgress } from "@mui/joy";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import useAuth from "hooks/useAuth";
 
 const StudentCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -52,6 +44,7 @@ const StudentCourseExamDetails = () => {
   const [errorPage, setErrorPage] = useState(false);
   const [errorTitle, setErrorTitle] = useState("");
   const [highestScore, setHighestScore] = useState<number>(0);
+  const auth = useAuth();
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -121,10 +114,7 @@ const StudentCourseExamDetails = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await handleGetExamById(examId ?? examState.examDetail.id);
-      await handleGetSubmissions(
-        examId ?? examState.examDetail.id,
-        "2d7ed5a0-fb21-4927-9a25-647c17d29668"
-      );
+      await handleGetSubmissions(examId ?? examState.examDetail.id, auth.loggedUser.userId);
       setMainSkeleton(false);
     };
     fetchInitialData();
@@ -138,30 +128,6 @@ const StudentCourseExamDetails = () => {
   const navigate = useNavigate();
 
   const startAttemptButtonHandler = () => {
-    const timeOpen = exam.timeOpen ? new Date(exam.timeOpen) : new Date();
-    const timeClose = exam.timeClose ? new Date(exam.timeClose) : new Date();
-    const createdAt = exam.createdAt ? new Date(exam.createdAt) : new Date();
-    const updatedAt = exam.updatedAt ? new Date(exam.updatedAt) : new Date();
-
-    const examStateData: ReduxExamEntity = {
-      id: exam.id,
-      courseId: exam.courseId,
-      name: exam.name,
-      scores: exam.scores,
-      maxScores: exam.maxScores,
-      timeOpen: timeOpen.toISOString(),
-      timeClose: timeClose.toISOString(),
-      timeLimit: exam.timeLimit,
-      intro: exam.intro,
-      overdueHanding: exam.overdueHanding,
-      canRedoQuestions: exam.canRedoQuestions,
-      maxAttempts: exam.maxAttempts,
-      shuffleAnswers: exam.shuffleAnswers,
-      gradeMethod: exam.gradeMethod,
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt.toISOString()
-    };
-    dispatch(setExamData(examStateData));
     navigate(
       routes.student.exam.take
         .replace(":courseId", courseId || examState.examDetail.courseId)
@@ -205,7 +171,7 @@ const StudentCourseExamDetails = () => {
           {exam.name}
         </title>
       </Helmet>
-      <Heading1>{exam.name}</Heading1>
+      <Heading2>{exam.name}</Heading2>
 
       <Button
         variant='soft'
@@ -236,15 +202,14 @@ const StudentCourseExamDetails = () => {
             <Stack direction='row' spacing={1.5} alignItems={"center"}>
               <StartRoundedIcon sx={{ color: "#707070", fontSize: "20px" }} />
               <Stack direction='row' spacing={0.5}>
-                <ParagraphBody
+                <ParagraphSmall
                   fontWeight={"bolder"}
                   translation-key='course_assignment_detail_open_time'
                   color={"#434343"}
-                  fontSize={"12px"}
                 >
                   {`${t("course_assignment_detail_open_time")}: `}
-                </ParagraphBody>
-                <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                </ParagraphSmall>
+                <ParagraphSmall color={"#434343"}>
                   {" "}
                   {t("common_show_time", {
                     weekDay: weekdayNames[timeOpenString.getDay()],
@@ -253,7 +218,7 @@ const StudentCourseExamDetails = () => {
                     year: timeOpenString.getFullYear(),
                     time: `${timeOpenString.getHours() < 10 ? `0${timeOpenString.getHours()}` : timeOpenString.getHours()}:${timeOpenString.getMinutes() < 10 ? `0${timeOpenString.getMinutes()}` : timeOpenString.getMinutes()}`
                   })}
-                </ParagraphBody>
+                </ParagraphSmall>
               </Stack>
               <MoreHorizRoundedIcon
                 sx={{
@@ -262,15 +227,14 @@ const StudentCourseExamDetails = () => {
                 }}
               />{" "}
               <Stack direction='row' spacing={0.5}>
-                <ParagraphBody
+                <ParagraphSmall
                   fontWeight={"bolder"}
                   color={"#434343"}
-                  fontSize={"12px"}
                   translation-key='course_assignment_detail_close_time'
                 >
                   {`${t("course_assignment_detail_close_time")}: `}
-                </ParagraphBody>
-                <ParagraphBody color={"#434343"} fontSize={"12px"}>
+                </ParagraphSmall>
+                <ParagraphSmall color={"#434343"}>
                   {t("common_show_time", {
                     weekDay: weekdayNames[timeCloseString.getDay()],
                     day: timeCloseString.getDate(),
@@ -278,7 +242,7 @@ const StudentCourseExamDetails = () => {
                     year: timeCloseString.getFullYear(),
                     time: `${timeCloseString.getHours() < 10 ? `0${timeCloseString.getHours()}` : timeCloseString.getHours()}:${timeCloseString.getMinutes() < 10 ? `0${timeCloseString.getMinutes()}` : timeCloseString.getMinutes()}`
                   })}
-                </ParagraphBody>
+                </ParagraphSmall>
               </Stack>
             </Stack>
           </Grid>
@@ -296,8 +260,7 @@ const StudentCourseExamDetails = () => {
             height: "fit-content"
           }}
         >
-          {/* {startAt ? t("exam_detail_continue") : t("exam_detail_start")} */}
-          startAT STRING
+          Take exam
         </Button>
         <CircularProgress
           thickness={3}
@@ -341,18 +304,17 @@ const StudentCourseExamDetails = () => {
               }}
             />
             <Stack direction='row' spacing={0.5}>
-              <ParagraphBody
+              <ParagraphSmall
                 translation-key='exam_detail_time_limit'
                 fontWeight={"bolder"}
                 color={"#434343"}
-                fontSize={"12px"}
               >
                 {t("exam_detail_time_limit")}
                 {": "}
-              </ParagraphBody>
-              <ParagraphBody color={"#434343"} fontSize={"12px"}>
+              </ParagraphSmall>
+              <ParagraphSmall color={"#434343"}>
                 {millisToFormatTimeString((exam.timeLimit ?? 0) * 1000, i18next.language)}
-              </ParagraphBody>
+              </ParagraphSmall>
             </Stack>
           </Stack>
 
@@ -364,16 +326,15 @@ const StudentCourseExamDetails = () => {
               }}
             />
             <Stack direction='row' spacing={0.5}>
-              <ParagraphBody
+              <ParagraphSmall
                 translation-key='exam_detail_grading_method'
                 fontWeight={"bolder"}
                 color={"#434343"}
-                fontSize={"12px"}
               >
                 {t("exam_detail_grading_method")}
                 {": "}
-              </ParagraphBody>
-              <ParagraphBody color={"#434343"} fontSize={"12px"}>
+              </ParagraphSmall>
+              <ParagraphSmall color={"#434343"}>
                 {exam.gradeMethod === "QUIZ_GRADEHIGHEST"
                   ? t("exam_detail_grading_method_high_score")
                   : exam.gradeMethod === "QUIZ_GRADEAVERAGE"
@@ -383,7 +344,7 @@ const StudentCourseExamDetails = () => {
                       : exam.gradeMethod === "QUIZ_ATTEMPTLAST"
                         ? t("exam_detail_grading_method_last_submit")
                         : ""}
-              </ParagraphBody>
+              </ParagraphSmall>
             </Stack>
           </Stack>
           <Stack direction='row' spacing={1.5} alignItems={"center"}>
@@ -394,17 +355,16 @@ const StudentCourseExamDetails = () => {
               }}
             />
             <Stack direction='row' spacing={0.5}>
-              <ParagraphBody
+              <ParagraphSmall
                 fontWeight={"bolder"}
                 color={"#434343"}
-                fontSize={"12px"}
                 translation-key='exam_detail_max_attempt'
               >
-                {`${exam.maxAttempts === 0 ? t("exam_detail_attempt_unlimited") : t("exam_detail_max_attempt")}: `}
-              </ParagraphBody>
-              <ParagraphBody color={"#434343"} fontSize={"12px"}>
-                {exam.maxAttempts}
-              </ParagraphBody>
+                {`${t("exam_detail_max_attempt")}: `}
+              </ParagraphSmall>
+              <ParagraphSmall color={"#434343"}>
+                {exam.maxAttempts === 0 ? t("exam_detail_attempt_unlimited") : exam.maxAttempts}
+              </ParagraphSmall>
             </Stack>
           </Stack>
         </Stack>

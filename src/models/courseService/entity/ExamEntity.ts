@@ -98,3 +98,16 @@ export interface ExamSubmissionDetail {
   status: string;
   userId: string;
 }
+
+export interface GetExamDetails {
+  examId: string;
+  courseId: string;
+  name: string;
+  timeOpen: string;
+  timeClose: string;
+  timeLimit: number;
+  intro: string;
+  overdueHanding: string;
+  canRedoQuestions: boolean;
+  shuffleAnswers: boolean;
+}
