@@ -3,6 +3,7 @@ import { SubmissionStatusSubmitted } from "pages/client/lecturer/CourseManagemen
 export interface ExamEntity {
   id: string;
   courseId: string;
+  courseName?: string;
   name: string;
   scores?: number;
   maxScores?: number;
