@@ -1,5 +1,7 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CodeIcon from "@mui/icons-material/Code";
+import CalendarIcon from "@mui/icons-material/DateRange";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PublishIcon from "@mui/icons-material/Publish";
 import JoyButton from "@mui/joy/Button";
@@ -11,12 +13,14 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   Tabs
 } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import { Box } from "@mui/system";
 import CodeEditor from "components/editor/CodeEditor";
 import ParagraphBody from "components/text/ParagraphBody";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import { UUID } from "crypto";
 import { useAppDispatch, useAppSelector } from "hooks";
 import useAuth from "hooks/useAuth";
@@ -24,12 +28,16 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import cloneDeep from "lodash/cloneDeep";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
+import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
+import moment from "moment";
 import { Resizable } from "re-resizable";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "react-quill/dist/quill.bubble.css"; // hoặc 'react-quill/dist/quill.bubble.css' cho theme bubble
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
+import { setErrorMess } from "reduxes/AppStatus";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import {
   setCpuTimeLimit,
@@ -43,22 +51,19 @@ import {
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
-import { setLoading } from "reduxes/Loading";
+import { setLoading as setInititalLoading, setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import { ContestService } from "services/coreService/ContestService";
 import ProblemDetailDescription from "../../DetailProblem/components/Description";
 import ProblemDetailSolution from "../../DetailProblem/components/ListSolution";
 import Result from "../../DetailProblem/components/Result";
 import ProblemDetailSubmission from "../../DetailProblem/components/Submission";
 import TestCase from "../../DetailProblem/components/TestCase";
+import ContestTimeDisplay from "../ContestDetails/components/TimeDisplay";
 import classes from "./styles.module.scss";
-import { ContestService } from "services/coreService/ContestService";
-import { ContestEntity } from "models/coreService/entity/ContestEntity";
-import { setErrorMess } from "reduxes/AppStatus";
-import { setLoading as setInititalLoading } from "reduxes/Loading";
-import moment from "moment";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
@@ -77,19 +82,13 @@ export default function TakeContestProblem() {
 
   const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
 
-  const [contestDetails, setContestDetails] = useState<ContestEntity | null>(null);
-
-  const isContestEnded = useMemo(() => {
-    if (
-      contestDetails &&
-      contestDetails?.endTime &&
-      moment(contestDetails.endTime).isBefore(moment())
-    ) {
-      dispatch(setErrorMess(t("contest_ended")));
-      return true;
-    }
-    return false;
-  }, [contestDetails, dispatch, t]);
+  const [data, setData] = useState<{
+    contestDetails: ContestEntity | null;
+    contestStatus: ContestStartTimeFilterEnum | null;
+  }>({
+    contestDetails: null,
+    contestStatus: null
+  });
 
   const handleGetContestById = useCallback(
     async (id: string) => {
@@ -97,7 +96,17 @@ export default function TakeContestProblem() {
       try {
         const getContestDetailsResponse = await ContestService.getContestById(id);
         if (getContestDetailsResponse) {
-          setContestDetails(getContestDetailsResponse);
+          // setContestDetails(getContestDetailsResponse);
+          setData({
+            contestDetails: getContestDetailsResponse,
+            contestStatus: moment().utc().isBefore(getContestDetailsResponse.startTime)
+              ? ContestStartTimeFilterEnum.UPCOMING
+              : getContestDetailsResponse.endTime
+                ? moment().utc().isAfter(getContestDetailsResponse.endTime)
+                  ? ContestStartTimeFilterEnum.ENDED
+                  : ContestStartTimeFilterEnum.HAPPENING
+                : ContestStartTimeFilterEnum.UPCOMING
+          });
         }
         dispatch(setInititalLoading(false));
       } catch (error: any) {
@@ -210,7 +219,7 @@ export default function TakeContestProblem() {
   };
 
   const tabs: string[] = useMemo(() => {
-    if (contestDetails?.isDisabledForum === true)
+    if (data.contestDetails?.isDisabledForum === true)
       return [
         routes.user.contest.detail.problems.description,
         routes.user.contest.detail.problems.submission
@@ -221,7 +230,7 @@ export default function TakeContestProblem() {
         routes.user.contest.detail.problems.solution,
         routes.user.contest.detail.problems.submission
       ];
-  }, [contestDetails?.isDisabledForum]);
+  }, [data.contestDetails?.isDisabledForum]);
 
   const activeRoute = (routeName: string) => {
     const match = matchPath(pathname, routeName);
@@ -349,6 +358,43 @@ export default function TakeContestProblem() {
     setTimer(newTimer);
   };
 
+  const [years, setYears] = useState(0);
+  const [months, setMonths] = useState(0);
+  const [days, setDays] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
+  const getTimeUntil = useCallback(
+    (inputTime: any) => {
+      if (!inputTime) {
+        return;
+      }
+      const time = moment(inputTime).diff(moment().utc(), "milliseconds");
+      if (time < 0) {
+        if (contestId && data.contestStatus !== ContestStartTimeFilterEnum.ENDED) {
+          handleGetContestById(contestId);
+        }
+        return;
+      } else {
+        setYears(Math.floor(time / (1000 * 60 * 60 * 24 * 365)));
+        setMonths(Math.floor((time / (1000 * 60 * 60 * 24 * 30)) % 12));
+        setDays(Math.floor((time / (1000 * 60 * 60 * 24)) % 30));
+        setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+        setMinutes(Math.floor((time / 1000 / 60) % 60));
+        setSeconds(Math.floor((time / 1000) % 60));
+      }
+    },
+    [contestId, data.contestStatus, handleGetContestById]
+  );
+
+  const convertedEndDate = useMemo(() => {
+    if (data.contestDetails?.endTime) {
+      return new Date(data.contestDetails.endTime);
+    }
+    return null;
+  }, [data.contestDetails?.endTime]);
+
   const marginRef = useRef<number>(10);
 
   useEffect(() => {
@@ -360,8 +406,35 @@ export default function TakeContestProblem() {
     fetchInitialData();
   }, [contestId, dispatch, handleGetContestById]);
 
-  if (!contestId || !contestDetails || !problemId) return null;
-  if (contestDetails.isRegistered !== true) {
+  useEffect(() => {
+    if (!data.contestDetails) return;
+    const interval = setInterval(
+      () =>
+        getTimeUntil(
+          data.contestStatus === ContestStartTimeFilterEnum.UPCOMING
+            ? data.contestDetails?.startTime
+            : data.contestDetails?.endTime
+        ),
+      1000
+    );
+
+    return () => clearInterval(interval);
+  }, [
+    data.contestDetails,
+    data.contestDetails?.endTime,
+    data.contestDetails?.startTime,
+    data.contestStatus,
+    getTimeUntil
+  ]);
+
+  if (!contestId || !data.contestDetails || !data.contestStatus || !problemId) return null;
+  if (data.contestStatus === ContestStartTimeFilterEnum.UPCOMING) {
+    dispatch(setErrorMess(t("contest_not_started")));
+    navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
+  } else if (
+    data.contestStatus === ContestStartTimeFilterEnum.HAPPENING &&
+    data.contestDetails.isRegistered !== true
+  ) {
     dispatch(setErrorMess(t("contest_not_registered")));
     navigate(routes.user.contest.detail.information.replace(":contestId", contestId));
   }
@@ -425,7 +498,11 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_execute'
                   focusRipple
                   onClick={handleExecuteCode}
-                  disabled={!auth.isLoggedIn || isContestEnded}
+                  disabled={
+                    !auth.isLoggedIn ||
+                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
+                    data.contestDetails.isRegistered !== true
+                  }
                 >
                   <PlayArrowIcon />
                   {t("detail_problem_execute")}
@@ -436,7 +513,11 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_submit'
                   onClick={handleSubmitCode}
                   focusRipple
-                  disabled={!auth.isLoggedIn || isContestEnded}
+                  disabled={
+                    !auth.isLoggedIn ||
+                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
+                    data.contestDetails.isRegistered !== true
+                  }
                 >
                   {submissionLoading && <CircularProgress size={20} />}
                   {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
@@ -445,10 +526,133 @@ export default function TakeContestProblem() {
             )}
           </Box>
           <Box
-            style={{
-              width: `${breadcumpWrapperWidth}px`
+            sx={{
+              width: `${breadcumpWrapperWidth}px`,
+              display: "flex",
+              justifyContent: "flex-end"
             }}
-          ></Box>
+          >
+            <Stack>
+              {data.contestStatus === ContestStartTimeFilterEnum.UPCOMING && (
+                <Box className={classes.timeDetailContainer}>
+                  <Stack direction={"row"} justifyContent={"center"}>
+                    <CalendarIcon fontSize='small' />
+                    <ParagraphSmall
+                      className={classes.timeDescriptionText}
+                      translation-key='contest_detail_feature_status'
+                    >
+                      {t("contest_detail_feature_status")}
+                    </ParagraphSmall>
+                  </Stack>
+                  <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    sx={{ marginTop: "5px" }}
+                  >
+                    {years > 0 && (
+                      <ContestTimeDisplay time={years} type={t("contest_detail_feature_year")} />
+                    )}
+                    {months > 0 && (
+                      <ContestTimeDisplay time={months} type={t("contest_detail_feature_month")} />
+                    )}
+                    {days > 0 && (
+                      <ContestTimeDisplay time={days} type={t("contest_detail_feature_day")} />
+                    )}
+                    <ContestTimeDisplay time={hours} type={t("contest_detail_feature_hour")} />
+                    <ContestTimeDisplay time={minutes} type={t("contest_detail_feature_minute")} />
+                    <ContestTimeDisplay time={seconds} type={t("contest_detail_feature_second")} />
+                  </Stack>
+                </Box>
+              )}
+              {data.contestStatus === ContestStartTimeFilterEnum.HAPPENING &&
+                (data.contestDetails.endTime ? (
+                  <Box className={classes.timeDetailContainer}>
+                    <Stack direction={"row"} justifyContent={"center"}>
+                      <CalendarIcon fontSize='small' />
+                      <ParagraphSmall
+                        className={classes.timeDescriptionText}
+                        translation-key='contest_detail_happening_status'
+                      >
+                        {t("contest_detail_happening_status")}
+                      </ParagraphSmall>
+                    </Stack>
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      sx={{ marginTop: "5px" }}
+                    >
+                      {years > 0 && (
+                        <ContestTimeDisplay time={years} type={t("contest_detail_feature_year")} />
+                      )}
+                      {months > 0 && (
+                        <ContestTimeDisplay
+                          time={months}
+                          type={t("contest_detail_feature_month")}
+                        />
+                      )}
+                      {days > 0 && (
+                        <ContestTimeDisplay time={days} type={t("contest_detail_feature_day")} />
+                      )}
+                      <ContestTimeDisplay time={hours} type={t("contest_detail_feature_hour")} />
+                      <ContestTimeDisplay
+                        time={minutes}
+                        type={t("contest_detail_feature_minute")}
+                      />
+                      <ContestTimeDisplay
+                        time={seconds}
+                        type={t("contest_detail_feature_second")}
+                      />
+                    </Stack>
+                  </Box>
+                ) : (
+                  <Box className={classes.timeDetailContainer}>
+                    <Stack direction={"row"} justifyContent={"center"}>
+                      <CalendarIcon fontSize='small' />
+                      <ParagraphSmall
+                        className={classes.timeDescriptionText}
+                        translation-key='this_contest_has_no_end_time'
+                      >
+                        {t("this_contest_has_no_end_time")}
+                      </ParagraphSmall>
+                    </Stack>
+                  </Box>
+                ))}
+              {convertedEndDate && data.contestStatus === ContestStartTimeFilterEnum.ENDED && (
+                <Box className={classes.timeDetailContainer}>
+                  <Stack direction={"row"} justifyContent={"center"}>
+                    <NotificationsActiveIcon fontSize='small' />
+                    <ParagraphSmall
+                      className={classes.timeDescriptionText}
+                      translation-key='contest_detail_ended_status'
+                    >
+                      {t("contest_detail_ended_status")}
+                    </ParagraphSmall>
+                  </Stack>
+                  <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    sx={{ marginTop: "5px" }}
+                  >
+                    <ContestTimeDisplay
+                      time={convertedEndDate.getDate()}
+                      type={t("contest_detail_feature_day")}
+                    />
+                    <ContestTimeDisplay
+                      time={convertedEndDate.getMonth() + 1}
+                      type={t("contest_detail_feature_month")}
+                    />
+                    <ContestTimeDisplay
+                      time={convertedEndDate.getFullYear() % 100}
+                      type={t("contest_detail_feature_year")}
+                    />
+                  </Stack>
+                </Box>
+              )}
+            </Stack>
+          </Box>
         </Box>
         <Grid
           container
@@ -487,7 +691,7 @@ export default function TakeContestProblem() {
                     label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
                     value={0}
                   />
-                  {contestDetails?.isDisabledForum === true && (
+                  {data.contestDetails?.isDisabledForum === true && (
                     <Tab
                       sx={{ textTransform: "none" }}
                       translation-key='detail_problem_submission'
@@ -495,7 +699,7 @@ export default function TakeContestProblem() {
                       value={1}
                     />
                   )}
-                  {contestDetails?.isDisabledForum !== true && (
+                  {data.contestDetails?.isDisabledForum !== true && (
                     <Tab
                       sx={{ textTransform: "none" }}
                       translation-key='detail_problem_discussion'
@@ -503,7 +707,7 @@ export default function TakeContestProblem() {
                       value={1}
                     />
                   )}
-                  {contestDetails?.isDisabledForum !== true && (
+                  {data.contestDetails?.isDisabledForum !== true && (
                     <Tab
                       sx={{ textTransform: "none" }}
                       translation-key='detail_problem_submission'
@@ -522,7 +726,7 @@ export default function TakeContestProblem() {
               >
                 <Routes>
                   <Route path={"description"} element={<ProblemDetailDescription />} />
-                  {contestDetails?.isDisabledForum === true ? null : (
+                  {data.contestDetails?.isDisabledForum === true ? null : (
                     <Route path={"solution"} element={<ProblemDetailSolution />} />
                   )}
                   <Route
@@ -534,7 +738,7 @@ export default function TakeContestProblem() {
                           contestId: contestId,
                           problemId: problemId
                         }}
-                        isShareSolutionDisabled={contestDetails?.isDisabledForum}
+                        isShareSolutionDisabled={data.contestDetails?.isDisabledForum}
                       />
                     }
                   />
