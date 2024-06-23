@@ -115,14 +115,7 @@ const ContestDetails = () => {
     try {
       const getContestsResponse = await ContestService.getContestLeaderboard(id);
       setContestLeaderboard(getContestsResponse);
-    } catch (error: any) {
-      console.error("Failed to fetch contests", {
-        code: error.response?.code || 503,
-        status: error.response?.status || "Service Unavailable",
-        message: error.response?.message || error.message
-      });
-      // Show snackbar here
-    }
+    } catch (error: any) {}
   }, []);
 
   const handleGetContestById = useCallback(
