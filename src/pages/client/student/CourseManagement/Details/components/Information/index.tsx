@@ -6,18 +6,8 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CircularProgress,
-  Collapse,
-  Divider,
-  List,
-  Paper
-} from "@mui/material";
+import { CircularProgress, Collapse } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import { useState, useEffect } from "react";
@@ -38,6 +28,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AssignmentResource from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import dayjs from "dayjs";
+import Heading2 from "components/text/Heading2";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
   const topicList = [
@@ -163,9 +154,9 @@ const StudentCourseInformation = () => {
             className={classes.courseImage}
             src='https://picsum.photos/1800/300'
           />
-          <Typography variant='h1' className={classes.classNameOverlay}>
+          <Heading2 className={classes.classNameOverlay} colorname='--white'>
             Tên khóa học dài
-          </Typography>
+          </Heading2>
         </Card>
       </Grid>
 

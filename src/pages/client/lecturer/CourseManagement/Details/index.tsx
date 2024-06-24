@@ -34,6 +34,7 @@ const LecturerCourseDetail = memo((props: Props) => {
     "& .MuiTabs-flexContainer": {
       width: "fit-content",
       padding: "4px 3px",
+      gap: "10px",
       borderRadius: 8
     }
   });

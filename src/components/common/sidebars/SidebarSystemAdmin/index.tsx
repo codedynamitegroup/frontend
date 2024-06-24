@@ -56,14 +56,14 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.contest.root
     },
     {
-      name: t("user_management"),
-      "translation-key": "user_management",
+      name: t("side_bar_user_management"),
+      "translation-key": "side_bar_user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.admin.users.root
     },
     {
-      name: t("certificate_course_management_title"),
-      "translation-key": "certificate_course_management_title",
+      name: t("side_bar_certificate_course"),
+      "translation-key": "side_bar_certificate_course",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.certificate.root,
       children: [
@@ -77,20 +77,20 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       ]
     },
     {
-      name: t("code_management_title"),
-      "translation-key": "code_management_title",
+      name: t("side_bar_code_management"),
+      "translation-key": "side_bar_code_management",
       icon: <CodeIcon className={classes.itemIcon} />,
       link: routes.admin.code_question.root
     },
     {
-      name: t("question_bank_management"),
-      "translation-key": "question_bank_management",
+      name: t("side_bar_question_bank_management"),
+      "translation-key": "side_bar_question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.admin.question_bank.root
     },
     {
-      name: t("organization_management"),
-      "translation-key": "organization_management",
+      name: t("side_bar_organization_management"),
+      "translation-key": "side_bar_organization_management",
       icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
       link: routes.admin.organizations.root
     }

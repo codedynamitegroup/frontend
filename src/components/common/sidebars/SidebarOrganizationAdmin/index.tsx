@@ -58,13 +58,13 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
       link: routes.org_admin.contest.root
     },
     {
-      name: t("user_management"),
+      name: t("side_bar_user_management"),
       "translation-key": "user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.org_admin.users.root
     },
     {
-      name: t("question_bank_management"),
+      name: t("side_bar_question_bank_management"),
       "translation-key": "question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.org_admin.question_bank.root
