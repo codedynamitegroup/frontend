@@ -29,6 +29,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AssignmentResource from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import dayjs from "dayjs";
 import Heading2 from "components/text/Heading2";
+import course from "reduxes/courseService/course";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
   const topicList = [
@@ -144,7 +146,23 @@ const StudentCourseInformation = () => {
         return ECourseResourceType.file;
     }
   };
+  const [courseData, setCourseData] = useState<CourseEntity | null>(null);
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId ?? "");
+    };
+
+    fetchData();
+  }, [courseId]);
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
@@ -152,10 +170,10 @@ const StudentCourseInformation = () => {
           <CardMedia
             component='img'
             className={classes.courseImage}
-            src='https://picsum.photos/1800/300'
+            src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
           <Heading2 className={classes.classNameOverlay} colorname='--white'>
-            Tên khóa học dài
+            {courseData?.name}
           </Heading2>
         </Card>
       </Grid>

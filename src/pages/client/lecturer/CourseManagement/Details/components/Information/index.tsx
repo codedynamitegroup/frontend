@@ -48,7 +48,23 @@ const LecturerCourseInformation = () => {
   const courseState = useSelector((state: RootState) => state.course);
   const editModeState = useSelector((state: RootState) => state.editMode);
   console.log(editModeState.editMode);
+  const [courseData, setCourseData] = useState<CourseEntity | null>(null);
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId ?? "");
+    };
+
+    fetchData();
+  }, [courseId]);
   useEffect(() => {
     const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
     console.log(course);
@@ -125,10 +141,10 @@ const LecturerCourseInformation = () => {
           <CardMedia
             component='img'
             className={classes.courseImage}
-            src='https://picsum.photos/1800/300'
+            src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
           <Typography variant='h1' className={classes.classNameOverlay}>
-            {/* Tên khóa học dài */}
+            {courseData?.name}
           </Typography>
         </Card>
       </Grid>
