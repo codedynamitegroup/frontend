@@ -21,10 +21,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { UserService } from "services/authService/UserService";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import ErrorMessage from "components/text/ErrorMessage";
 import JoyButton from "@mui/joy/Button";
+import { InputPhone } from "components/common/inputs/InputPhone";
 interface IFormDataUpdateProfileUser {
   firstName: string;
   lastName: string;
@@ -179,11 +178,11 @@ const UserInformationDetailsDialog = ({
               name='phone'
               render={({ field }) => {
                 return (
-                  <PhoneInput
-                    placeholder='Enter phone number'
+                  <InputPhone
+                    label={t("common_phone")}
+                    errorMessage={errors?.phone?.message}
                     value={field.value}
                     onChange={field.onChange}
-                    className={classes.phoneInput}
                   />
                 );
               }}

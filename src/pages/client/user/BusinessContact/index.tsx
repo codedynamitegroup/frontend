@@ -16,10 +16,10 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
-import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 interface IFormData {
   businessEmail: string;
@@ -104,11 +104,11 @@ export default function BusinessContact() {
                     name='businessPhone'
                     render={({ field }) => {
                       return (
-                        <PhoneInput
+                        <InputPhone
+                          label={t("common_phone")}
+                          errorMessage={errors?.businessPhone?.message}
                           value={field.value}
                           onChange={field.onChange}
-                          className={classes.phoneInput}
-                          defaultCountry='VN'
                         />
                       );
                     }}

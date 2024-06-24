@@ -18,12 +18,12 @@ import { ERoleName } from "models/authService/entity/role";
 import TextTitle from "components/text/TextTitle";
 import { CreatedUserByAdminRequest } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import InputSelect from "components/common/inputs/InputSelect";
 import { IOptionItem } from "models/general";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 interface IFormDataType {
   email: string;
@@ -172,12 +172,11 @@ const CreateUser = () => {
                 name='phone'
                 render={({ field }) => {
                   return (
-                    <PhoneInput
+                    <InputPhone
+                      label={t("common_phone")}
+                      errorMessage={errors?.phone?.message}
                       value={field.value}
-                      placeholder='Enter phone number'
                       onChange={field.onChange}
-                      className={classes.phoneInput}
-                      defaultCountry='VN'
                     />
                   );
                 }}

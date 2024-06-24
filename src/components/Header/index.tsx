@@ -188,6 +188,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     const newChecked = event.target.checked;
     dispatch(setEditMode(newChecked));
   };
+  console.log(toggleDrawer, sidebarStatus);
   return (
     <AppBar
       position='fixed'
@@ -341,7 +342,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 <PopupState variant='popover' popupId='demo-popup-menu'>
                   {(popupState) => (
                     <React.Fragment>
-                      <Button className={classes.profile} {...bindTrigger(popupState)}>
+                      <Button
+                        sx={{ textTransform: "none" }}
+                        className={classes.profile}
+                        {...bindTrigger(popupState)}
+                      >
                         <Avatar
                           sx={{
                             bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
