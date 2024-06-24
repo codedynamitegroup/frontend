@@ -138,6 +138,7 @@ export const API = {
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",
+      SUBMISSION_GRADE: "/course/exam/:id/grade",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam",
       EDIT: "/course/exam/:id",
@@ -148,6 +149,7 @@ export const API = {
       SUBMISSION: "/course/exam/question/submit/:id"
     },
     EXAM_SUBMISSION: {
+      STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/submission/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
