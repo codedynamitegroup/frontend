@@ -30,6 +30,7 @@ import { ContestService } from "services/coreService/ContestService";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -248,13 +249,13 @@ export default function UserDashboard() {
                             />
                           </Box>
                           {course.numOfResources ? (
-                            <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                            <ParagraphSmall translation-key='dashboard_current_lesson'>
                               {t("dashboard_current_lesson")}: {course.currentResource?.title || ""}
-                            </ParagraphExtraSmall>
+                            </ParagraphSmall>
                           ) : (
-                            <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
+                            <ParagraphSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
                               {t("dashboard_this_certificate_course_has_no_lesson")}
-                            </ParagraphExtraSmall>
+                            </ParagraphSmall>
                           )}
                         </Box>
                       </Box>
