@@ -126,3 +126,18 @@ export interface GetExamDetails {
   canRedoQuestions: boolean;
   shuffleAnswers: boolean;
 }
+
+export interface StudentExamSubmission {
+  examSubmissionId?: string;
+  examId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+  statusGrade: string;
+  mark: number;
+  totalMark: number;
+  grade: number;
+  totalGrade: number;
+}

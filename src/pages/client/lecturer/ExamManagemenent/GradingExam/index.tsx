@@ -74,10 +74,12 @@ import MultipleChoiceExamQuestion from "./ExamQuestion/MultipleChoiceExamQuestio
 import TrueFalseExamQuestion from "./ExamQuestion/TrueFalseExamQuestion";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
+import { ExamEntity, StudentExamSubmission } from "models/courseService/entity/ExamEntity";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import { s } from "@fullcalendar/core/internal-common";
+import { set } from "lodash";
 
 interface SubmissionData {
   examSubmissionId: string;
@@ -386,9 +388,11 @@ export default function GradingExam() {
     console.log(model);
   };
 
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [totalElements, setTotalElements] = React.useState(0);
+
+  const [searchValue, setSearchValue] = React.useState("");
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -419,28 +423,29 @@ export default function GradingExam() {
     }
   }, [width]);
   const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
-  const studentData = [
-    { id: "123456", name: "Nguyễn văn A", status: EGradingStatus.GRADING },
-    { id: "12346", name: "Nguyễn văn A", status: EGradingStatus.QUEUED },
-    { id: "1234356", name: "Nguyễn văn A", status: EGradingStatus.GRADED }
-  ];
   const chooseStudentHeading: GridColDef[] = [
-    { field: "id", headerName: "Mssv", flex: 1 },
-    { field: "name", headerName: "Tên", flex: 2 },
+    { field: "email", headerName: "Email", flex: 2 },
+    { field: "name", headerName: "Tên", flex: 1.5 },
     {
       field: "status",
-      headerName: "Trạng thái",
+      headerName: "Trạng thái nộp bài",
       flex: 1,
       renderCell: (params) =>
-        params.value === EGradingStatus.GRADED ? (
-          <Chip label='Đã chấm' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
-        ) : params.value === EGradingStatus.QUEUED ? (
-          <Chip label='Chưa chấm' />
+        params.value === "SUBMITED" ? (
+          <Chip label='Đã nộp' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
         ) : (
-          <Chip
-            label='Đang chấm'
-            sx={{ backgroundColor: "rgb(190, 215, 243)", color: "rgb(25, 118, 210)" }}
-          />
+          <Chip label='Chưa nộp' />
+        )
+    },
+    {
+      field: "statusGrade",
+      headerName: "Trạng thái chấm",
+      flex: 1,
+      renderCell: (params) =>
+        params.value === "GRADED" ? (
+          <Chip label='Đã chấm' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
+        ) : (
+          <Chip label='Chưa chấm' />
         )
     }
     // {
@@ -471,8 +476,14 @@ export default function GradingExam() {
   const courseId = useParams<{ courseId: string }>().courseId;
   const submissionId = useParams<{ submissionId: string }>().submissionId;
   const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
+  const [studentExamSubmission, setStudentExamSubmission] = React.useState<StudentExamSubmission[]>(
+    []
+  );
   const [questions, setQuestions] = React.useState<any[]>([]);
   const [submissionData, setSubmissionData] = React.useState<SubmissionData | undefined>(undefined);
+  const [studentSubmissionCurrent, setStudentSubmissionCurrent] = React.useState<
+    StudentExamSubmission | undefined
+  >(studentExamSubmission[0]);
   const isShowAllQuesionsInOnePage = searchParams.get("showall");
   const questionPageIndex = parseInt(searchParams.get("page") || "0");
 
@@ -483,6 +494,18 @@ export default function GradingExam() {
         .then((res) => {
           console.log("Get exam data");
           setExamData(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      // Get student exam submission
+      ExamSubmissionService.getStudentExamSubmission(examId)
+        .then((res) => {
+          console.log("Get student exam submission");
+          setStudentExamSubmission(res.studentExamSubmissionResponses);
+          setStudentSubmissionCurrent(res.studentExamSubmissionResponses[0]);
+          setTotalElements(res.totalItems);
         })
         .catch((error) => {
           console.error(error);
@@ -534,35 +557,35 @@ export default function GradingExam() {
         });
 
       // Get exam submission data
-      if (submissionId !== undefined)
-        ExamSubmissionService.getExamSubmissionById(submissionId)
-          .then((res: any) => {
-            console.log("Get exam submission data");
-            setSubmissionData(res);
+      // if (submissionId !== undefined)
+      // ExamSubmissionService.getExamSubmissionById(submissionId)
+      //   .then((res: any) => {
+      //     console.log("Get exam submission data");
+      //     setSubmissionData(res);
 
-            // Calculate time taken
-            const openTime = new Date(res.startTime);
-            const closeTime = new Date(res.submitTime);
+      //     // Calculate time taken
+      //     const openTime = new Date(res.startTime);
+      //     const closeTime = new Date(res.submitTime);
 
-            const diffMs = closeTime.getTime() - openTime.getTime(); // milliseconds between openTime & closeTime
-            const diffDays = Math.floor(diffMs / 86400000); // days
-            const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-            const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-            const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000); // seconds
-            // setTimeOpen(openTime);
-            // setTimeClose(closeTime);
+      //     const diffMs = closeTime.getTime() - openTime.getTime(); // milliseconds between openTime & closeTime
+      //     const diffDays = Math.floor(diffMs / 86400000); // days
+      //     const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+      //     const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+      //     const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000); // seconds
+      //     // setTimeOpen(openTime);
+      //     // setTimeClose(closeTime);
 
-            // setTimeTaken({
-            //   days: diffDays,
-            //   hours: diffHrs,
-            //   minutes: diffMins,
-            //   seconds: diffSecs
-            // });
-          })
-          .catch((error: any) => {
-            console.error(error);
-          })
-          .finally(() => {});
+      //     // setTimeTaken({
+      //     //   days: diffDays,
+      //     //   hours: diffHrs,
+      //     //   minutes: diffMins,
+      //     //   seconds: diffSecs
+      //     // });
+      //   })
+      //   .catch((error: any) => {
+      //     console.error(error);
+      //   })
+      //   .finally(() => {});
     }
   }, []);
 
@@ -1102,7 +1125,10 @@ export default function GradingExam() {
                   sx={{ backgroundColor: "rgb(217, 226, 237)", ":hover": { cursor: "pointer" } }}
                   onClick={() => setOpenChooseStudent(true)}
                 >
-                  <ParagraphBody>123456789 - Nguyễn Văn A</ParagraphBody> <ArrowDropDownIcon />
+                  <ParagraphBody>
+                    {studentSubmissionCurrent?.lastName + " " + studentSubmissionCurrent?.firstName}
+                  </ParagraphBody>{" "}
+                  <ArrowDropDownIcon />
                 </Stack>
                 <Dialog
                   open={openChooseStudent}
@@ -1129,7 +1155,6 @@ export default function GradingExam() {
                                 onChange={(e) => setGradingStatus(e.target.value as number)}
                               >
                                 <MenuItem value={0}>Tất cả</MenuItem>
-
                                 <MenuItem value={1}>Đang chấm</MenuItem>
                                 <MenuItem value={2}>Chưa chấm</MenuItem>
                                 <MenuItem value={3}>Đã chấm</MenuItem>
@@ -1140,7 +1165,11 @@ export default function GradingExam() {
                       </Box>
                     </Paper>
                     <CustomDataGrid
-                      dataList={studentData}
+                      dataList={studentExamSubmission.map((item, index) => ({
+                        ...item,
+                        id: index,
+                        name: item.firstName + " " + item.lastName
+                      }))}
                       personalSx={true}
                       sx={{
                         "& .MuiDataGrid-cell:nth-last-child(n+2)": {
@@ -1162,15 +1191,15 @@ export default function GradingExam() {
                       // visibleColumn={visibleColumnList}
                       dataGridToolBar={dataGridToolbar}
                       page={page}
-                      pageSize={pageSize}
-                      totalElement={totalElement}
+                      pageSize={rowsPerPage}
+                      totalElement={totalElements}
                       onPaginationModelChange={pageChangeHandler}
                       showVerticalCellBorder={true}
                       getRowHeight={() => "auto"}
                       onClickRow={(params, event) => {
-                        if (params.row.status === EGradingStatus.GRADING)
-                          event.defaultMuiPrevented = true;
-                        else setOpenChooseStudent(false);
+                        console.log(params.row, event, "click row");
+                        setStudentSubmissionCurrent(params.row);
+                        setOpenChooseStudent(false);
                       }}
                       // slots={{toolbar:}}
                       // columnGroupingModel={columnGroupingModelPlus}
@@ -1182,67 +1211,20 @@ export default function GradingExam() {
                     </Button>
                   </DialogActions>
                 </Dialog>
-
-                {/* <BasicSelect
-                  labelId='select-assignment-submission-student-label'
-                  value={dumvalue}
-                  onHandleChange={(value) => setDumvalue(value)}
-                  onClick={() => setOpenChooseStudent(true)}
-                  items={[
-                    {
-                      value: "0",
-                      label: "123456789 - Nguyễn Văn A",
-                      customNode: (
-                        <Box>
-                          <TextTitle fontWeight={"500"}>Nguyễn Văn A</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>
-                            MSSV: 123456789 - đã chấm
-                          </ParagraphBody>
-                        </Box>
-                      )
-                    },
-                    {
-                      value: "1",
-                      label: "123456789 - Nguyễn Văn B",
-                      customNode: (
-                        <Box>
-                          <TextTitle fontWeight={"500"}>Nguyễn Văn B</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>
-                            MSSV: 123456789 - đang chấm
-                          </ParagraphBody>
-                        </Box>
-                      )
-                    },
-                    {
-                      value: "2",
-                      label: "123456789 - Nguyễn Văn C",
-                      customNode: (
-                        <Box>
-                          <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>
-                            MSSV: 123456789 - đang chấm
-                          </ParagraphBody>
-                        </Box>
-                      )
-                    },
-                    {
-                      value: "3",
-                      label: "123456789 - Nguyễn Văn D",
-                      customNode: (
-                        <Box>
-                          <TextTitle fontWeight={"500"}>Nguyễn Văn C</TextTitle>
-                          <ParagraphBody colorname='--gray-50'>
-                            MSSV: 123456789 - chưa chấm
-                          </ParagraphBody>
-                        </Box>
-                      )
-                    }
-                  ]}
-                  backgroundColor='#D9E2ED'
-                /> */}
               </Box>
               <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='course_lecturer_score_on_range'>
+                <TextTitle>
+                  Điểm của câu hỏi:{" "}
+                  {studentSubmissionCurrent?.mark + " / " + studentSubmissionCurrent?.totalMark}
+                </TextTitle>
+              </Box>
+              <Box className={classes.drawerFieldContainer}>
+                <TextTitle>
+                  Điểm bài kiểm tra:{" "}
+                  {studentSubmissionCurrent?.grade + " / " + studentSubmissionCurrent?.totalGrade}
+                </TextTitle>
+
+                {/* <TextTitle translation-key='course_lecturer_score_on_range'>
                   {t("course_lecturer_score_on_range", { range: 100 })}
                 </TextTitle>
                 <InputTextField
@@ -1252,7 +1234,7 @@ export default function GradingExam() {
                   placeholder={t("exam_management_create_enter_score")}
                   backgroundColor='#D9E2ED'
                   translation-key='exam_management_create_enter_score'
-                />
+                /> */}
               </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_grade_comment'>

@@ -149,6 +149,7 @@ export const API = {
       SUBMISSION: "/course/exam/question/submit/:id"
     },
     EXAM_SUBMISSION: {
+      STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/submission/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
