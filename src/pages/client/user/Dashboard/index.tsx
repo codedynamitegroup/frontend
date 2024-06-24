@@ -14,7 +14,6 @@ import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import images from "config/images";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
@@ -31,6 +30,7 @@ import { ContestService } from "services/coreService/ContestService";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -249,13 +249,13 @@ export default function UserDashboard() {
                             />
                           </Box>
                           {course.numOfResources ? (
-                            <ParagraphExtraSmall translation-key='dashboard_current_lesson'>
+                            <ParagraphSmall translation-key='dashboard_current_lesson'>
                               {t("dashboard_current_lesson")}: {course.currentResource?.title || ""}
-                            </ParagraphExtraSmall>
+                            </ParagraphSmall>
                           ) : (
-                            <ParagraphExtraSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
+                            <ParagraphSmall translation-key='dashboard_this_certificate_course_has_no_lesson'>
                               {t("dashboard_this_certificate_course_has_no_lesson")}
-                            </ParagraphExtraSmall>
+                            </ParagraphSmall>
                           )}
                         </Box>
                       </Box>
@@ -335,7 +335,8 @@ export default function UserDashboard() {
                               <Grid item xs={3} className={classes.imgCourse}>
                                 <img alt='img course' src={course.topic.thumbnailUrl} />
                               </Grid>
-                              <Grid item xs={9} className={classes.nameCourse}>
+                              <Grid item xs={1}></Grid>
+                              <Grid item xs={8} className={classes.nameCourse}>
                                 <Heading5>{course.name}</Heading5>
                               </Grid>
                             </Grid>
@@ -399,27 +400,27 @@ export default function UserDashboard() {
                   {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
-                    <ParagraphBody>{firstMostPopularContest?.name}</ParagraphBody>
+                    <Heading5>{firstMostPopularContest?.name}</Heading5>
                   )}
                   {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
-                    <ParagraphSmall fontWeight={500} translation-key='dashboard_participant_num'>
+                    <ParagraphBody fontWeight={500} translation-key='dashboard_participant_num'>
                       {t("dashboard_participant_num", { participantNum: 1000 })}
-                    </ParagraphSmall>
+                    </ParagraphBody>
                   )}
 
                   {mostPopularContestData.isLoading ? (
                     <Skeleton variant='text' />
                   ) : (
-                    <ParagraphSmall fontWeight={500} translation-key='dashboard_contest_end'>
+                    <ParagraphBody fontWeight={500} translation-key='dashboard_contest_end'>
                       {firstMostPopularContest && firstMostPopularContest.endTime
                         ? `${t("dashboard_contest_end")} ${standardlizeUTCStringToLocaleString(
                             firstMostPopularContest.endTime,
                             i18next.language
                           )}`
                         : t("this_contest_has_no_end_time")}
-                    </ParagraphSmall>
+                    </ParagraphBody>
                   )}
                 </CardContent>
                 <CardActions>

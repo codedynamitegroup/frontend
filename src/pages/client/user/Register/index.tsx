@@ -17,10 +17,7 @@ import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import TextTitle from "components/text/TextTitle";
-import PhoneInput from "react-phone-number-input";
-import ErrorMessage from "components/text/ErrorMessage";
-import "react-phone-number-input/style.css";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 interface IFormData {
   email: string;
@@ -153,17 +150,15 @@ export default function Register() {
                   name='phone'
                   render={({ field }) => {
                     return (
-                      <PhoneInput
+                      <InputPhone
+                        label={t("common_phone")}
+                        errorMessage={errors?.phone?.message}
                         value={field.value}
-                        placeholder='Enter phone number'
                         onChange={field.onChange}
-                        className={classes.phoneInput}
-                        defaultCountry='VN'
                       />
                     );
                   }}
                 />
-                {errors.phone?.message && <ErrorMessage>{errors.phone?.message}</ErrorMessage>}
                 <LoadButton
                   loading={isRegisteredLoading}
                   btnType={BtnType.Primary}

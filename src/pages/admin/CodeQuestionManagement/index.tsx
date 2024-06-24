@@ -269,23 +269,7 @@ const AdminCodeQuestionManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
       />
-      <Card
-        sx={{
-          margin: "20px",
-          "& .MuiDataGrid-root": {
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px"
-          }
-        }}
-      >
-        <Box className={classes.breadcump} ref={breadcumpRef}>
-          <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='code_management_title'>
-              {t("code_management_title")}
-            </ParagraphSmall>
-          </Box>
-        </Box>
-        <Divider />
+      <Box>
         <Grid
           container
           spacing={2}
@@ -398,7 +382,7 @@ const AdminCodeQuestionManagement = () => {
             />
           </Grid>
         </Grid>
-      </Card>
+      </Box>
     </>
   );
 };

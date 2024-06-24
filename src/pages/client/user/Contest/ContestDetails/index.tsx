@@ -410,16 +410,16 @@ const ContestDetails = () => {
                         ))}
                       </Stack>
                     ) : (
-                      <ParagraphSmall
+                      <ParagraphBody
                         sx={{
                           margin: "10px"
                         }}
-                        color='var(--gray-30)'
+                        colorname='--gray-50'
                         textAlign={"center"}
                         translation-key='contest_detail_leaderboard_no_data'
                       >
                         {t("contest_detail_leaderboard_no_data")}
-                      </ParagraphSmall>
+                      </ParagraphBody>
                     )}
                   </Grid>
                 </Paper>

@@ -13,7 +13,7 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -163,9 +163,9 @@ const OrganizationManagement = () => {
             justifyContent='flex-start'
             margin={"5px"}
           >
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.email}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -182,7 +182,7 @@ const OrganizationManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.name}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.name}</ParagraphBody>;
       }
     },
     {
@@ -197,7 +197,7 @@ const OrganizationManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.phone}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.phone}</ParagraphBody>;
       }
     },
     {
@@ -213,9 +213,9 @@ const OrganizationManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.updatedAt as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
