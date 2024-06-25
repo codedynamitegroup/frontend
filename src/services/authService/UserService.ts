@@ -104,25 +104,7 @@ export class UserService {
       });
     }
   }
-  static async refreshToken(accessToken: string, refreshToken: string) {
-    try {
-      const response = await api({
-        baseURL: authServiceApiUrl
-      }).post(`${API.AUTH.USER.REFRESH_TOKEN}`, {
-        accessToken: accessToken,
-        refreshToken: refreshToken
-      });
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error: any) {
-      return Promise.reject({
-        code: error.code || 503,
-        status: error.status || "Service Unavailable",
-        message: error.message
-      });
-    }
-  }
+
   static async logout() {
     try {
       const response = await api({

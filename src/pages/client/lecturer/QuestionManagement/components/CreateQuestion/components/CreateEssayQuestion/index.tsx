@@ -50,6 +50,7 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import ModeIcon from "@mui/icons-material/Mode";
 import { Card } from "@mui/joy";
+import { RootState } from "store";
 
 interface Props {
   courseId?: string;
@@ -123,11 +124,9 @@ const CreateEssayQuestion = (props: Props) => {
 
   const navigate = useNavigate();
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  let { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-  if (props.insideCrumb) headerHeight = 0;
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -539,7 +538,7 @@ const CreateEssayQuestion = (props: Props) => {
         <title>Create essay question</title>
       </Helmet>
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
+        <Header />
         <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
           <CustomBreadCrumb
             breadCrumbData={breadCrumbData}

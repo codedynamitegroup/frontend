@@ -23,23 +23,21 @@ import NotFoundPage from "pages/common/NotFoundPage";
 import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
 import BusinessContact from "./BusinessContact";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 type Props = {};
 
 const UserHomepage = (props: Props) => {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   return (
     <Grid id={classes.userPageRoot}>
-      <Header ref={headerRef} />
+      <Header />
       <main
         id={classes.userPageMain}
         style={{
-          marginTop: `${headerHeight}px`,
-          height: `calc(100% - ${headerHeight}px)`,
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`,
           overflow: "auto"
         }}
       >

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 import { API } from "constants/API";
 import { CreateSubmissionAssignmentCommand } from "models/courseService/entity/create/CreateSubmissionAssignmentCommand";
 import { UpdateSubmissionAssignment } from "models/courseService/entity/update/UpdateSubmissionAssignment";
@@ -84,12 +84,12 @@ export class SubmissionAssignmentService {
   }
   static async countSubmissionToGrade(assignmentId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT.COUNT_TO_GRADE}`,
-        {
-          params: { assignmentId }
-        }
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.SUBMISSION_ASSIGNMENT.COUNT_TO_GRADE}`, {
+        params: { assignmentId }
+      });
 
       if (response.status === 200) {
         return response.data;
@@ -105,12 +105,12 @@ export class SubmissionAssignmentService {
   }
   static async countAllSubmission(assignmentId: string) {
     try {
-      const response = await axios.get(
-        `${courseServiceApiUrl}${API.COURSE.SUBMISSION_ASSIGNMENT.COUNT_ALL}`,
-        {
-          params: { assignmentId }
-        }
-      );
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.SUBMISSION_ASSIGNMENT.COUNT_ALL}`, {
+        params: { assignmentId }
+      });
 
       if (response.status === 200) {
         return response.data;
