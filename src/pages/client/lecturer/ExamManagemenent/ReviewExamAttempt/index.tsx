@@ -33,6 +33,8 @@ import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import { Helmet } from "react-helmet";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 interface SubmissionData {
   examSubmissionId: string;
@@ -103,10 +105,7 @@ export default function LecturerReviewExamAttempt() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   React.useEffect(() => {
     if (examId) {
@@ -240,8 +239,8 @@ export default function LecturerReviewExamAttempt() {
         <title>{`${t("exam_review_attempt_title")} | ${examData?.name}`}</title>
       </Helmet>
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+        <Header />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
 
           <CssBaseline />
@@ -252,7 +251,7 @@ export default function LecturerReviewExamAttempt() {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -546,7 +545,7 @@ export default function LecturerReviewExamAttempt() {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}

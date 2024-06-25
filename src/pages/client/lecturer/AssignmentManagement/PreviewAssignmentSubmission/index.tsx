@@ -22,6 +22,8 @@ import { routes } from "routes/routes";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useTranslation } from "react-i18next";
 import { ExtFile } from "@files-ui/react";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const drawerWidth = 450;
 
@@ -98,11 +100,7 @@ export default function PreviewAssignmentSubmission() {
     </div>
     `;
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
     ref: header2Ref
@@ -110,18 +108,18 @@ export default function PreviewAssignmentSubmission() {
 
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight}px`
+          marginTop: `${sidebarStatus.headerHeight}px`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            top: `${headerHeight + 1}px`,
+            top: `${sidebarStatus.headerHeight + 1}px`,
             backgroundColor: "white",
             boxShadow: "0px 2px 4px #00000026"
           }}

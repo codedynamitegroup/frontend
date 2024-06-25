@@ -1,134 +1,291 @@
-import { Box, Grid, Paper } from "@mui/material";
-import Link from "@mui/material/Link";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Avatar, Box, Grid, Stack } from "@mui/material";
+import { useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
-import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridActionsCellItem";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourseUser } from "reduxes/courseService/courseUser";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import { AppDispatch, RootState } from "store";
+import ParagraphBody from "components/text/ParagraphBody";
+import Heading5 from "components/text/Heading5";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+
+interface CourseParticipantProps {
+  id: string;
+  no: number;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
 
 const LecturerCourseParticipant = () => {
-  const [searchText, setSearchText] = useState("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
   const courseUserState = useSelector((state: RootState) => state.courseUser);
-  const searchHandle = async (searchText: string) => {
-    setSearchText(searchText);
-  };
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(() => courseUserState.totalItems || 0, [courseUserState.totalItems]);
+  const { t } = useTranslation();
   const { courseId } = useParams<{ courseId: string }>();
-  const handleGetCourseUser = async ({
-    search = searchText,
-    pageNo = currentPage,
-    pageSize = rowsPerPage
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    try {
-      const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId ?? "", {
-        search,
-        pageNo,
-        pageSize
-      });
-      console.log(getCourseUserResponse);
-      dispatch(setCourseUser(getCourseUserResponse));
-    } catch (error) {
-      console.error("Failed to fetch course user", error);
+  const [filters, setFilters] = useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: t("common_all"),
+      value: "role"
     }
-  };
+  ]);
+  const handleGetCourseUser = useCallback(
+    async ({
+      search,
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      if (
+        !courseId ||
+        (courseId === courseUserState.courseId && courseUserState.users.length > 0)
+      ) {
+        return;
+      }
+
+      try {
+        const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
+          search,
+          pageNo,
+          pageSize
+        });
+
+        dispatch(
+          setCourseUser({
+            users: getCourseUserResponse.users,
+            currentPage: getCourseUserResponse.currentPage,
+            totalItems: getCourseUserResponse.totalItems,
+            totalPages: getCourseUserResponse.totalPages,
+            courseId: courseId
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch course user", error);
+      }
+    },
+    [courseId, courseUserState.users, courseUserState.courseId, dispatch]
+  );
 
   useEffect(() => {
-    handleGetCourseUser({ search: searchText });
-  }, [searchText]);
-
-  const { t } = useTranslation();
+    handleGetCourseUser({ search: searchValue });
+  }, [searchValue, handleGetCourseUser]);
 
   const tableHeading: GridColDef[] = [
-    { field: "id", headerName: "STT", minWidth: 1 },
+    {
+      field: "id",
+      headerName: "STT",
+      flex: 0.8,
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            STT
+          </Heading5>
+        );
+      },
+      renderCell: (params) => <ParagraphBody fontWeight={500}>{params.row.no}</ParagraphBody>
+    },
+    {
+      field: "email",
+      headerName: t("common_email"),
+      flex: 3,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_email")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Stack
+            direction='row'
+            gap={2}
+            alignItems='center'
+            justifyContent='flex-start'
+            margin={"5px"}
+          >
+            <Avatar
+              sx={{
+                bgcolor: `${generateHSLColorByRandomText(`${params.row.firstName} ${params.row.lastName}`)}`
+              }}
+              alt={params.row.email}
+              src={params.row.avatarUrl}
+            >
+              {params.row.firstName.charAt(0)}
+            </Avatar>
+            <ParagraphBody width={"auto"} fontWeight={500}>
+              {params.row.email}
+            </ParagraphBody>
+          </Stack>
+        );
+      }
+    },
     {
       field: "name",
       headerName: t("common_fullname"),
-      width: 200,
-      flex: 0.8,
+      flex: 2,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_fullname")}
+          </Heading5>
+        );
+      },
       renderCell: (params) => (
-        <Link component={RouterLink} to={`${params.row.id}`}>
-          {params.value}
-        </Link>
+        <ParagraphBody>
+          {params.row.firstName} {params.row.lastName}
+        </ParagraphBody>
       )
-    },
-    { field: "email", headerName: "Email", width: 200, flex: 0.8 },
-    { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 },
-    {
-      field: "action",
-      headerName: t("common_action"),
-      type: "actions",
-      width: 200,
-      flex: 0.5,
-      getActions: () => [
-        <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
-        <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
-      ]
     }
+    // { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 },
+    // {
+    //   field: "action",
+    //   headerName: t("common_action"),
+    //   type: "actions",
+    //   width: 200,
+    //   flex: 0.5,
+    //   getActions: () => [
+    //     <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+    //     <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+    //   ]
+    // }
   ];
-  const visibleColumnList = { id: false, name: true, email: true, role: true, action: false };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    setCurrentPage(model.page);
-    setRowsPerPage(model.pageSize);
-    handleGetCourseUser({ search: searchText, pageNo: model.page, pageSize: model.pageSize });
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetCourseUser({ search: searchValue, pageNo: model.page, pageSize: model.pageSize });
   };
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      handleGetCourseUser({
+        search: value
+      });
+    },
+    [handleGetCourseUser]
+  );
+
+  const courseParticipantListTable: CourseParticipantProps[] = useMemo(() => {
+    if (courseUserState.users.length > 0) {
+      return courseUserState.users.map((user, index) => ({
+        id: user.userId,
+        no: index + 1,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role
+      }));
+    } else {
+      return [];
+    }
+  }, [courseUserState.users]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
 
+  const handleApplyFilter = useCallback(() => {
+    handleGetCourseUser({
+      search: searchValue
+    });
+  }, [handleGetCourseUser, searchValue]);
+
+  const handleCancelFilter = useCallback(() => {
+    handleGetCourseUser({
+      search: searchValue
+    });
+  }, [handleGetCourseUser, searchValue]);
+
   return (
     <Box className={classes.participantBody}>
       <Grid item xs={12}>
-        <Heading1>Danh sách thành viên</Heading1>
+        <Heading1 translation-key='course_list_member'>{t("course_list_member")}</Heading1>
       </Grid>
       <Grid item xs={12}>
-        <CourseParticipantFeatureBar />
+        <CustomSearchFeatureBar
+          isLoading={courseUserState.isLoading}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onHandleChange={handleSearchChange}
+          numOfResults={totalElement}
+          filterKeyList={[
+            {
+              label: t("common_all"),
+              value: "role"
+            }
+          ]}
+          filterValueList={{
+            role: [
+              {
+                label: t("common_all"),
+                value: "ALL"
+              }
+            ]
+          }}
+          filters={filters}
+          handleChangeFilters={(newFilters: { key: string; value: string }[]) => {
+            setFilters(newFilters);
+          }}
+          onHandleApplyFilter={handleApplyFilter}
+          onHandleCancelFilter={handleCancelFilter}
+        />
       </Grid>
       <Grid item xs={12}>
         <CustomDataGrid
-          dataList={courseUserState.users.map((user, index) => ({
-            id: user.userId,
-            name: user.firstName + " " + user.lastName,
-            email: user.email,
-            roles: user.role
-          }))}
+          loading={courseUserState.isLoading}
+          dataList={courseParticipantListTable}
           tableHeader={tableHeading}
           onSelectData={rowSelectionHandler}
-          visibleColumn={visibleColumnList}
           dataGridToolBar={dataGridToolbar}
-          page={currentPage}
-          pageSize={rowsPerPage}
-          totalElement={courseUserState.totalItems}
+          page={page}
+          pageSize={pageSize}
+          totalElement={totalElement}
           onPaginationModelChange={pageChangeHandler}
-          showVerticalCellBorder={false}
+          showVerticalCellBorder={true}
+          getRowHeight={() => "auto"}
           onClickRow={rowClickHandler}
+          sx={{
+            "& .MuiDataGrid-cell": {
+              border: "none"
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f5f9fb"
+            },
+            "& .MuiDataGrid-toolbarContainer": {
+              backgroundColor: "#f5f9fb"
+            }
+          }}
+          personalSx={true}
         />
       </Grid>
     </Box>

@@ -22,14 +22,18 @@ import OrgAdminCreateContest from "./ContestManagement/OrgAdminCreateContest";
 import OrgAdminEditContestDetails from "./ContestManagement/OrgAdminEditContestDetails";
 import OrgAdminContestSubmissionDetails from "./ContestManagement/OrgAdminContestSubmissionDetails";
 import OrgAdminContestSubmissions from "./ContestManagement/OrgAdminContestSubmissions";
+import { toggleSidebar } from "reduxes/SidebarStatus";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
 const OrganizationAdminHomepage = (props: Props) => {
   const [open, setOpen] = React.useState(true);
+  const dispatch = useDispatch();
 
   const toggleDrawer = () => {
     setOpen((pre) => !pre);
+    dispatch(toggleSidebar());
   };
 
   return (
