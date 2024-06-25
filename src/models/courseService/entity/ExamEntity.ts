@@ -1,5 +1,3 @@
-import { SubmissionStatusSubmitted } from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions";
-
 export interface ExamEntity {
   id: string;
   courseId: string;

@@ -11,6 +11,7 @@ export interface QuestionSubmission {
   answerStatus: boolean;
 }
 
+// Submit all
 export interface SubmitQuestionList {
   examId: string;
   userId: string;
@@ -28,6 +29,8 @@ export interface SubmitQuestion {
 export interface SubmitQuestionFile {
   fileUrl: string;
   fileName: string;
+  fileSize: number;
+  fileType: string;
 }
 
 export interface GetQuestionSubmissionCommand {
@@ -49,4 +52,20 @@ export interface GetQuestionSubmissionEntity {
 
 export interface GetQuestionSubmissionResponse {
   questionSubmissions: GetQuestionSubmissionEntity[];
+}
+
+export interface SubmissionDetail {
+  examSubmissionId: string;
+  examId: string;
+  userId: string;
+  startTime: Date;
+  submitTime: Date;
+  status: string;
+  courseId: string;
+  courseName: string;
+  name: string;
+  intro: string;
+  attemptCount: number;
+  maxScores: number;
+  questionSubmissionResponses: GetQuestionSubmissionEntity[];
 }

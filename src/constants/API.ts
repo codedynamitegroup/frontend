@@ -151,7 +151,7 @@ export const API = {
     EXAM_SUBMISSION: {
       STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
-      SUBMISSION_DETAIL: "/course/exam/submission/:id",
+      SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
     },
     EXAM_QUESTION: {

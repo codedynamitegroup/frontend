@@ -1124,6 +1124,9 @@
   "edit_certificate_course_success": "Edit certificate course successfully",
   "edit_certificate_course_error": "Edit certificate course failed",
   "create_certificate_course_failed": "Create certificate course failed",
+  "exam_review_status_submitted": "Submitted",
+  "exam_review_status_not_submitted": "Not submitted",
+  "exam_review_status_graded": "Graded",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

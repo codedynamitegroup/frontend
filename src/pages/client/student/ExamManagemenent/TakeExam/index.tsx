@@ -341,7 +341,6 @@ export default function TakeExam() {
               );
 
               questionFromAPI = res.questions.map((question: GetQuestionExam) => {
-                console.log("file: ", questionSubmissionHashmap[question.id]?.files);
                 return {
                   flag: questionSubmissionHashmap[question.id]?.flag || false,
                   answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
