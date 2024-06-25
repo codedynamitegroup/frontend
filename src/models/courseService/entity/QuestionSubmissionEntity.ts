@@ -20,9 +20,14 @@ export interface SubmitQuestionList {
 export interface SubmitQuestion {
   questionId: string;
   content: string;
-  numFile: number;
+  files: SubmitQuestionFile[];
   answerStatus: boolean;
   flag: boolean;
+}
+
+export interface SubmitQuestionFile {
+  fileUrl: string;
+  fileName: string;
 }
 
 export interface GetQuestionSubmissionCommand {
@@ -37,7 +42,7 @@ export interface GetQuestionSubmissionEntity {
   grade: number;
   content: string;
   rightAnswer: string;
-  numFile: number;
+  files: SubmitQuestionFile[];
   flag: boolean;
   answerStatus: boolean;
 }

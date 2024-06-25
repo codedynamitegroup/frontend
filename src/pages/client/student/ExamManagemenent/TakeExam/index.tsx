@@ -228,7 +228,7 @@ export default function TakeExam() {
         return {
           questionId: question.questionData.id,
           content: question.content,
-          numFile: question.files?.length || 0,
+          files: question.files || [],
           answerStatus: question.answered,
           flag: question.flag
         };
@@ -342,12 +342,13 @@ export default function TakeExam() {
               );
 
               questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+                console.log("file: ", questionSubmissionHashmap[question.id]?.files);
                 return {
                   flag: questionSubmissionHashmap[question.id]?.flag || false,
                   answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
                   content: questionSubmissionHashmap[question.id]?.content || "",
                   questionData: question,
-                  files: []
+                  files: questionSubmissionHashmap[question.id]?.files || []
                 };
               });
             } else {
@@ -517,6 +518,23 @@ export default function TakeExam() {
 
     return () => clearInterval(saveQuestionInterval);
   }, [handleSaveQuestionState, questionList]);
+
+  React.useEffect(() => {
+    const handleBeforeUnload = async (event: any) => {
+      try {
+        await handleSaveQuestionState();
+      } catch (error) {
+        console.error("Error during beforeunload API call", error);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [handleSaveQuestionState]);
 
   return (
     <>
