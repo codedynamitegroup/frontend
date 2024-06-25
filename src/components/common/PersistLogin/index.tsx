@@ -8,7 +8,6 @@ import {
   selectCurrentUser,
   selectLoginStatus,
   loginStatus,
-  logOut,
   fetchStatus,
   EFetchingUser,
   selectFetchingStatus

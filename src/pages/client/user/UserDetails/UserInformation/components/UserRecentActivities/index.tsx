@@ -7,20 +7,60 @@ import { Card, Divider, Link, Tab, Tabs } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
-import { useState } from "react";
-import UserRecentSolutionsTable from "./components/UserRecentSolutionsTable";
-import UserRecentSubmissionsTable from "./components/UserRecentSubmissionsTable";
+import { useCallback, useEffect, useState } from "react";
+import UserRecentSharedSolution from "./components/UserRecentSharedSolution";
+import UserRecentCodeQuestion from "./components/UserRecentCodeQuestion";
 import classes from "./styles.module.scss";
 import CustomHeatMap from "components/heatmap/CustomHeatMap";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { routes } from "routes/routes";
+import { useDispatch } from "react-redux";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { setErrorMess } from "reduxes/AppStatus";
 
 const UserRecentActivities = () => {
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
   const [submissionViewTypeIndex, setSubmissionViewTypeIndex] = useState(0);
+  const [data, setData] = useState<
+    {
+      date: string;
+      count: number;
+    }[]
+  >([]);
+
+  const dispatch = useDispatch();
+
+  const handleGetHeatMap = useCallback(
+    async ({ year = 2024 }: { year?: number }) => {
+      try {
+        const getHeatMapResponse = await CodeSubmissionService.getHeatMap(year);
+        const formattedData = getHeatMapResponse.map((item: any) => ({
+          date: item.date,
+          count: item.numOfSubmission
+        }));
+        setData(formattedData);
+      } catch (error: any) {
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+      }
+    },
+    [dispatch, t]
+  );
+
+  useEffect(() => {
+    const fetchRecentHeatMap = async () => {
+      // dispatch(setInititalLoading(true));
+      await handleGetHeatMap({});
+      // dispatch(setInititalLoading(false));
+    };
+
+    fetchRecentHeatMap();
+  }, [dispatch, handleGetHeatMap]);
 
   return (
     <Box>
@@ -56,15 +96,6 @@ const UserRecentActivities = () => {
                 {t("user_detail_get_certification")} <ChevronRightIcon />
               </Link>
             </ParagraphBody>
-
-            {/* <Button
-              btnType={BtnType.Text}
-              onClick={() => {}}
-              endIcon={<ChevronRightIcon />}
-              
-            >
-              {t("user_detail_get_certification")}
-            </Button> */}
           </Box>
         </Box>
       </Card>
@@ -81,19 +112,7 @@ const UserRecentActivities = () => {
             {t("user_detail_activity_stats")}
           </Heading1>
           <Divider />
-          <CustomHeatMap
-            value={[
-              { date: "2016/01/11", count: 2 },
-              ...[...Array(17)].map((_, idx) => ({ date: `2016/01/${idx + 10}`, count: idx })),
-              ...[...Array(17)].map((_, idx) => ({ date: `2016/02/${idx + 10}`, count: idx })),
-              { date: "2016/04/12", count: 2 },
-              { date: "2016/05/01", count: 5 },
-              { date: "2016/05/02", count: 5 },
-              { date: "2016/05/03", count: 1 },
-              { date: "2016/05/04", count: 11 },
-              { date: "2016/05/08", count: 32 }
-            ]}
-          />
+          <CustomHeatMap value={data} />
         </Box>
       </Card>
 
@@ -126,21 +145,14 @@ const UserRecentActivities = () => {
                 translation-key='user_detail_problem'
               />
               <Tab
-                label={t("user_detail_submission")}
+                label={t("user_detail_shared_solution")}
                 icon={<AssignmentTurnedInIcon />}
                 iconPosition='start'
-                translation-key='user_detail_submission'
+                translation-key='user_detail_shared_solution'
               />
             </Tabs>
             {tabIndex === 0 ? (
-              <Button
-                btnType={BtnType.Text}
-                onClick={() => {}}
-                endIcon={<ChevronRightIcon />}
-                translation-key='user_detail_see_all_submission'
-              >
-                {t("user_detail_see_all_submission")}
-              </Button>
+              <></>
             ) : (
               <Tabs
                 value={submissionViewTypeIndex}
@@ -177,7 +189,7 @@ const UserRecentActivities = () => {
               </Tabs>
             )}
           </Box>
-          {tabIndex === 0 ? <UserRecentSubmissionsTable /> : <UserRecentSolutionsTable />}
+          {tabIndex === 0 ? <UserRecentCodeQuestion /> : <UserRecentSharedSolution />}
         </Box>
       </Card>
     </Box>
