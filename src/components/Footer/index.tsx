@@ -62,12 +62,11 @@ export default function Footer() {
             {t("footer_about_title")}
           </Heading5>
           <ParagraphBody colorname='--gray-20'>
-            <Link to='#!' className={classes.textLink} translation-key='footer_link_about_us'>
-              {t("footer_link_about_us")}
-            </Link>
-          </ParagraphBody>
-          <ParagraphBody colorname='--gray-20'>
-            <Link to='#!' className={classes.textLink} translation-key='footer_link_contact'>
+            <Link
+              to={routes.user.business_contact.root}
+              className={classes.textLink}
+              translation-key='footer_link_contact'
+            >
               {t("footer_link_contact")}
             </Link>
           </ParagraphBody>

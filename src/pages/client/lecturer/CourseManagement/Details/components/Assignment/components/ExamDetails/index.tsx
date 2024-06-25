@@ -436,7 +436,7 @@ const LecturerCourseExamDetails = () => {
         <Button
           btnType={BtnType.Primary}
           onClick={() => {
-            navigate(routes.lecturer.exam.grading);
+            navigate(routes.lecturer.exam.grading.replace(":examId", exam.id));
           }}
         >
           <ParagraphBody translation-key='course_lecturer_assignment_grading'>

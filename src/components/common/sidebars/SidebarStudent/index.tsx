@@ -3,14 +3,16 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import Header from "components/Header";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useDispatch } from "react-redux";
-import { toggleSidebar } from "reduxes/SidebarStatus";
+import { setSidebarWidth, toggleSidebar } from "reduxes/SidebarStatus";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 270;
 const sideBarItemListData: SidebarItem[] = [
@@ -31,7 +33,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   flexGrow: 1,
   width: `calc(100% - ${drawerWidth}px)`,
   overflow: "auto",
-  padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -55,16 +56,22 @@ export default function SidebarStudent({ children }: any) {
     dispatch(toggleSidebar());
   };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const { width: sidebarWidth } = useBoxDimensions({
+    ref: sidebarRef
   });
+
+  useEffect(() => {
+    dispatch(setSidebarWidth(sidebarWidth));
+  }, [sidebarWidth, dispatch]);
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <Header toggleDrawer={toggleDrawer} ref={headerRef} />
+      <Header toggleDrawer={toggleDrawer} />
       <Drawer
         className={classes.drawer}
+        ref={sidebarRef}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -81,7 +88,10 @@ export default function SidebarStudent({ children }: any) {
       </Drawer>
       <Main
         open={open}
-        sx={{ marginTop: `${headerHeight}px`, height: `calc(100% - ${headerHeight}px)` }}
+        sx={{
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`
+        }}
       >
         {children}
       </Main>

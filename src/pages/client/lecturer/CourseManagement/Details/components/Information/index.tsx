@@ -7,21 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import EditImageIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import AddIcon from "@mui/icons-material/AddCircleOutline";
-import SettingIcon from "@mui/icons-material/Settings";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CircularProgress,
-  Collapse,
-  Divider,
-  List,
-  Paper,
-  TextField
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
+import { CircularProgress, Collapse, TextField } from "@mui/material";
+import { ECourseResourceType } from "models/courseService/course";
 import { useState, useEffect } from "react";
 import CourseResource from "./components/CourseResource";
 import { useTranslation } from "react-i18next";
@@ -32,7 +19,6 @@ import { CourseService } from "services/courseService/CourseService";
 import { setLoading, setSections } from "reduxes/courseService/section";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import dayjs from "dayjs";
 import { setCourseDetail } from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 
@@ -46,12 +32,26 @@ const LecturerCourseInformation = () => {
   const [isOpenEditTitle, setIsOpenEditTitle] = useState<Array<Boolean>>([]);
 
   const courseState = useSelector((state: RootState) => state.course);
-  const editModeState = useSelector((state: RootState) => state.editMode);
-  console.log(editModeState.editMode);
+  const [courseData, setCourseData] = useState<CourseEntity | null>(null);
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId ?? "");
+    };
+
+    fetchData();
+  }, [courseId]);
+  useEffect(() => {
     const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
-    console.log(course);
+
     if (course) {
       dispatch(setCourseDetail({ courseDetail: course }));
     }
@@ -125,10 +125,10 @@ const LecturerCourseInformation = () => {
           <CardMedia
             component='img'
             className={classes.courseImage}
-            src='https://picsum.photos/1800/300'
+            src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
           <Typography variant='h1' className={classes.classNameOverlay}>
-            {/* Tên khóa học dài */}
+            {courseData?.name}
           </Typography>
         </Card>
       </Grid>

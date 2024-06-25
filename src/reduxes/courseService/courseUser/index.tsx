@@ -4,38 +4,33 @@ import { CourseUserResponse } from "models/courseService/entity/UserCourseEntity
 
 interface InitialState {
   isLoading: boolean;
+  courseId: string | null;
   users: CourseUserResponse[];
   currentPage: number;
   totalItems: number;
   totalPages: number;
   amountStudent: number;
-  courses: CourseEntity[];
-  currentPageCourse: number;
-  totalItemsCourse: number;
-  totalPagesCourse: number;
 }
 
 const initialState: InitialState = {
+  courseId: null,
   isLoading: false,
   users: [],
-  courses: [],
   currentPage: 0,
   totalItems: 0,
   totalPages: 0,
-  amountStudent: 0,
-  currentPageCourse: 0,
-  totalItemsCourse: 0,
-  totalPagesCourse: 0
+  amountStudent: 0
 };
 
 const courseUserSlice = createSlice({
-  name: "users",
+  name: "courseUser",
   initialState: initialState,
   reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload.isLoading;
     },
     setCourseUser: (state, action) => {
+      state.courseId = action.payload.courseId;
       state.users = action.payload.users;
       state.currentPage = action.payload.currentPage;
       state.totalItems = action.payload.totalItems;
@@ -43,16 +38,10 @@ const courseUserSlice = createSlice({
     },
     setAmountStudent: (state, action) => {
       state.amountStudent = action.payload.amountStudent;
-    },
-    setCourses: (state, action) => {
-      state.courses = action.payload.courses;
-      state.currentPageCourse = action.payload.currentPageCourse;
-      state.totalItemsCourse = action.payload.totalItemsCourse;
-      state.totalPagesCourse = action.payload.totalPagesCourse;
     }
   }
 });
 
-export const { setLoading, setCourseUser, setAmountStudent, setCourses } = courseUserSlice.actions;
+export const { setLoading, setCourseUser, setAmountStudent } = courseUserSlice.actions;
 
 export default courseUserSlice.reducer;

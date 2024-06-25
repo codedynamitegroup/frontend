@@ -11,7 +11,7 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading3 from "components/text/Heading3";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import classes from "./styles.module.scss";
@@ -170,9 +170,9 @@ export default function AssignUserToOrganizationDialog({
             >
               {params.row.firstName.charAt(0)}
             </Avatar>
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.email}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -190,9 +190,9 @@ export default function AssignUserToOrganizationDialog({
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {params.row.firstName} {params.row.lastName}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -209,9 +209,9 @@ export default function AssignUserToOrganizationDialog({
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -282,7 +282,7 @@ export default function AssignUserToOrganizationDialog({
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.roleName}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.roleName}</ParagraphBody>;
       }
     }
   ];

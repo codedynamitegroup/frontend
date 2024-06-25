@@ -11,8 +11,8 @@ const ParagraphSmall = styled(Typography)<Props>`
   font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 400};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 12px;
+  line-height: 18px;
 `;
 
 export default ParagraphSmall;

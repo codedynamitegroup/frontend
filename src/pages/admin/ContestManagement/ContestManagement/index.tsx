@@ -14,7 +14,7 @@ import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
@@ -190,9 +190,9 @@ const ContestManagement = () => {
             >
               {params.row.name.charAt(0)}
             </Avatar>
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.name}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -210,9 +210,9 @@ const ContestManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.startTime as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -229,11 +229,11 @@ const ContestManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {params.row.endTime
               ? standardlizeUTCStringToLocaleString(params.row.endTime, currentLang)
               : t("contest_details_has_no_end_time")}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -250,7 +250,7 @@ const ContestManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.numOfParticipants}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.numOfParticipants}</ParagraphBody>;
       }
     },
     {
@@ -311,7 +311,7 @@ const ContestManagement = () => {
                   ? "success"
                   : "error"
             }
-            component={ParagraphSmall}
+            component={ParagraphBody}
           />
         );
       }

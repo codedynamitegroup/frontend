@@ -49,10 +49,11 @@ const createInstance = ({
           originalRequest._retry = true;
           const newRefreshToken = localStorage.getItem("refresh_token");
           const newAccessToken = localStorage.getItem("access_token");
+
           return axios
             .post(`${AUTH_SERVICE_API_URL}${API.AUTH.USER.REFRESH_TOKEN}`, {
-              newAccessToken,
-              newRefreshToken
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken
             })
             .then((res) => {
               if (res.status === 200) {

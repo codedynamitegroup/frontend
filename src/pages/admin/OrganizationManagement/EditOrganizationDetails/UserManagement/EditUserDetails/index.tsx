@@ -9,8 +9,6 @@ import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
 import { User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import ParagraphBody from "components/text/ParagraphBody";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
@@ -18,6 +16,7 @@ import images from "config/images";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Button, { BtnType } from "components/common/buttons/Button";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 const EditUserDetailsOrganization = () => {
   const { t } = useTranslation();
@@ -101,12 +100,11 @@ const EditUserDetailsOrganization = () => {
                 <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
               </Grid>
               <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
-                <PhoneInput
-                  placeholder='Enter phone number'
+                <InputPhone
+                  label={t("common_phone")}
                   value={user?.phone}
                   onChange={() => {}}
                   disabled
-                  className={classes.phoneInput}
                 />
               </Grid>
             </Grid>

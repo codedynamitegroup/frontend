@@ -37,14 +37,26 @@ const StudentCourseParticipant = () => {
     pageNo?: number;
     pageSize?: number;
   }) => {
+    if (!courseId || (courseId === courseUserState.courseId && courseUserState.users.length > 0)) {
+      return;
+    }
+
     dispatch(setLoading(true));
     try {
-      const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId ?? "", {
+      const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
         search,
         pageNo,
         pageSize
       });
-      dispatch(setCourseUser(getCourseUserResponse));
+      dispatch(
+        setCourseUser({
+          users: getCourseUserResponse.data,
+          currentPage: getCourseUserResponse.currentPage,
+          totalItems: getCourseUserResponse.totalItems,
+          totalPages: getCourseUserResponse.totalPages,
+          courseId: courseId
+        })
+      );
       dispatch(setLoading(false));
     } catch (error) {
       console.error("Failed to fetch course user", error);

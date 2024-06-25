@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
@@ -16,6 +16,10 @@ import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOu
 import images from "config/images";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import CodeIcon from "@mui/icons-material/Code";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { setSidebarWidth } from "reduxes/SidebarStatus";
+import { useDispatch } from "react-redux";
 
 const drawerWidth = 270;
 
@@ -56,14 +60,14 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.contest.root
     },
     {
-      name: t("user_management"),
-      "translation-key": "user_management",
+      name: t("side_bar_user_management"),
+      "translation-key": "side_bar_user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.admin.users.root
     },
     {
-      name: t("certificate_course_management_title"),
-      "translation-key": "certificate_course_management_title",
+      name: t("side_bar_certificate_course"),
+      "translation-key": "side_bar_certificate_course",
       icon: <WorkspacePremiumOutlinedIcon className={classes.itemIcon} />,
       link: routes.admin.certificate.root,
       children: [
@@ -77,20 +81,20 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       ]
     },
     {
-      name: t("code_management_title"),
-      "translation-key": "code_management_title",
+      name: t("side_bar_code_management"),
+      "translation-key": "side_bar_code_management",
       icon: <CodeIcon className={classes.itemIcon} />,
       link: routes.admin.code_question.root
     },
     {
-      name: t("question_bank_management"),
-      "translation-key": "question_bank_management",
+      name: t("side_bar_question_bank_management"),
+      "translation-key": "side_bar_question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.admin.question_bank.root
     },
     {
-      name: t("organization_management"),
-      "translation-key": "organization_management",
+      name: t("side_bar_organization_management"),
+      "translation-key": "side_bar_organization_management",
       icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
       link: routes.admin.organizations.root
     }
@@ -101,16 +105,23 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
   //   setOpen((pre) => !pre);
   // };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const { width: sidebarWidth } = useBoxDimensions({
+    ref: sidebarRef
   });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setSidebarWidth(sidebarWidth));
+  }, [sidebarWidth, dispatch]);
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <Header toggleDrawer={toggleDrawer} ref={headerRef} />
+      <Header toggleDrawer={toggleDrawer} />
       <Drawer
         className={classes.drawer}
+        ref={sidebarRef}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -127,7 +138,10 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       </Drawer>
       <Main
         open={open}
-        sx={{ marginTop: `${headerHeight}px`, height: `calc(100% - ${headerHeight}px)` }}
+        sx={{
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`
+        }}
       >
         {children}
       </Main>

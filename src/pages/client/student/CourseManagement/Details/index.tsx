@@ -39,7 +39,8 @@ const StudentCourseDetail = memo((props: Props) => {
     "& .MuiTabs-flexContainer": {
       width: "fit-content",
       padding: "4px 3px",
-      borderRadius: 8
+      borderRadius: 8,
+      gap: "10px"
     }
   });
   interface StyledTabProps {

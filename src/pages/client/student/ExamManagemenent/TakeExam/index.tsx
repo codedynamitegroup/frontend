@@ -58,6 +58,8 @@ import {
 import moment from "moment";
 import { EndExamCommand, GetExamDetails } from "models/courseService/entity/ExamEntity";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 370;
 
@@ -172,10 +174,7 @@ export default function TakeExam() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const handleStartExam = async () => {
     try {
@@ -228,7 +227,7 @@ export default function TakeExam() {
         return {
           questionId: question.questionData.id,
           content: question.content,
-          numFile: question.files?.length || 0,
+          files: question.files || [],
           answerStatus: question.answered,
           flag: question.flag
         };
@@ -342,12 +341,13 @@ export default function TakeExam() {
               );
 
               questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+                console.log("file: ", questionSubmissionHashmap[question.id]?.files);
                 return {
                   flag: questionSubmissionHashmap[question.id]?.flag || false,
                   answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
                   content: questionSubmissionHashmap[question.id]?.content || "",
                   questionData: question,
-                  files: []
+                  files: questionSubmissionHashmap[question.id]?.files || []
                 };
               });
             } else {
@@ -518,6 +518,23 @@ export default function TakeExam() {
     return () => clearInterval(saveQuestionInterval);
   }, [handleSaveQuestionState, questionList]);
 
+  React.useEffect(() => {
+    const handleBeforeUnload = async (event: any) => {
+      try {
+        await handleSaveQuestionState();
+      } catch (error) {
+        console.error("Error during beforeunload API call", error);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [handleSaveQuestionState]);
+
   return (
     <>
       <Helmet>
@@ -529,8 +546,8 @@ export default function TakeExam() {
       </Helmet>
 
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+        <Header />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
 
           {/* <DrawerHeader /> */}
@@ -540,7 +557,7 @@ export default function TakeExam() {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -761,7 +778,7 @@ export default function TakeExam() {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}

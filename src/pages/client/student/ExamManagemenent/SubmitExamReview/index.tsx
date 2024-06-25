@@ -3,7 +3,7 @@ import classes from "./styles.module.scss";
 import { Box, CssBaseline, Drawer, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Button from "@mui/joy/Button";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import MenuIcon from "@mui/icons-material/MenuOpen";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -45,6 +45,8 @@ import CustomDialog from "components/common/dialogs/CustomDialog";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { QuestionSubmissionMap } from "../TakeExam";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const drawerWidth = 370;
 
@@ -76,10 +78,7 @@ const SubmitExamSummary = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -185,7 +184,7 @@ const SubmitExamSummary = () => {
       t
     ]
   );
-  const handleSaveQuestionState = React.useCallback(
+  const handleFinalSave = React.useCallback(
     async (submitTime: string) => {
       const submitQuestionListData: SubmitQuestionList = {
         examId: examId ?? examDetails.examId,
@@ -194,7 +193,7 @@ const SubmitExamSummary = () => {
           return {
             questionId: question.questionData.id,
             content: question.content,
-            numFile: question.files?.length || 0,
+            files: question.files || [],
             answerStatus: question.answered,
             flag: question.flag
           };
@@ -215,7 +214,7 @@ const SubmitExamSummary = () => {
     if (questionList === undefined || questionList?.length <= 0) {
       ExamService.getExamQuestionById(examId ?? examDetails.examId, null)
         .then(async (res) => {
-          // Handle question data
+          // Get question submission data detail (submitted answer detail flag, answer status,...)
           const questionSubmissions = await handleGetQuestionSubmissionData(
             res.questions.map((question: GetQuestionExam) => question.id)
           );
@@ -265,8 +264,8 @@ const SubmitExamSummary = () => {
   }, []);
 
   const submitExamHandler = useCallback(async () => {
-    handleSaveQuestionState(submitTime);
-  }, [handleSaveQuestionState, submitTime]);
+    handleFinalSave(submitTime);
+  }, [handleFinalSave, submitTime]);
 
   const getTimeUntil = useCallback(
     (inputTime: any) => {
@@ -347,6 +346,44 @@ const SubmitExamSummary = () => {
     setOpenDialog(true);
   };
 
+  const handleSaveQuestionState = React.useCallback(() => {
+    const submitQuestionListData: SubmitQuestionList = {
+      examId: examId ?? examDetails.examId,
+      userId: auth.loggedUser.userId,
+      questionSubmissionCommands: questionList.map((question) => {
+        return {
+          questionId: question.questionData.id,
+          content: question.content,
+          files: question.files || [],
+          answerStatus: question.answered,
+          flag: question.flag
+        };
+      })
+    };
+
+    try {
+      const response = QuestionSubmissionService.submitQuestionList(submitQuestionListData);
+      return response;
+    } catch (error: any) {}
+  }, [examId, examDetails.examId, auth.loggedUser.userId, questionList]);
+
+  React.useEffect(() => {
+    const handleBeforeUnload = async (event: any) => {
+      try {
+        await handleSaveQuestionState();
+      } catch (error) {
+        console.error("Error during beforeunload API call", error);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [handleSaveQuestionState]);
+
   return (
     <>
       <Helmet>
@@ -367,8 +404,8 @@ const SubmitExamSummary = () => {
         />
       )}
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+        <Header />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
           {/* <DrawerHeader /> */}
           <Button
@@ -377,7 +414,7 @@ const SubmitExamSummary = () => {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -568,7 +605,7 @@ const SubmitExamSummary = () => {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}
