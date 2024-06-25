@@ -16,8 +16,9 @@ export default function useAuth() {
   const navigate = useNavigate();
 
   const logout = async () => {
+    if (!loggedUser) return;
     dispatch(setLoading(true));
-    UserService.logout()
+    UserService.logout(loggedUser.email)
       .then(() => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
