@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 import { API } from "constants/API";
 import { CreateSubmissionGradeCommand } from "models/courseService/entity/create/CreateSubmissionGradeCommand";
 import { UpdateSubmissionGradeCommand } from "models/courseService/entity/update/UpdateSubmissionGradeCommand";

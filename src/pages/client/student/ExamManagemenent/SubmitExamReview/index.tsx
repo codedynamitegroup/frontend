@@ -45,6 +45,8 @@ import CustomDialog from "components/common/dialogs/CustomDialog";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import { QuestionSubmissionMap } from "../TakeExam";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const drawerWidth = 370;
 
@@ -76,10 +78,7 @@ const SubmitExamSummary = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -405,8 +404,8 @@ const SubmitExamSummary = () => {
         />
       )}
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+        <Header />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
           {/* <DrawerHeader /> */}
           <Button
@@ -415,7 +414,7 @@ const SubmitExamSummary = () => {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -606,7 +605,7 @@ const SubmitExamSummary = () => {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}

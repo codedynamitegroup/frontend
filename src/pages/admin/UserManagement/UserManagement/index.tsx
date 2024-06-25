@@ -13,17 +13,15 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
-import { AppDispatch, RootState } from "store";
+import { AppDispatch } from "store";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import classes from "./styles.module.scss";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { EBelongToOrg, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
@@ -31,6 +29,7 @@ import { ERoleName } from "models/authService/entity/role";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { PaginationList } from "models/general";
+import ParagraphBody from "components/text/ParagraphBody";
 
 interface UserManagementProps {
   id: string;
@@ -181,9 +180,9 @@ const UserManagement = () => {
             >
               {params.row.firstName.charAt(0)}
             </Avatar>
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.email}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -201,9 +200,9 @@ const UserManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {params.row.firstName} {params.row.lastName}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -220,9 +219,9 @@ const UserManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -292,7 +291,7 @@ const UserManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.roleName}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.roleName}</ParagraphBody>;
       }
     },
     {
@@ -493,7 +492,6 @@ const UserManagement = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          {/* #F5F9FB */}
           <CustomDataGrid
             loading={isLoadingListUsers}
             dataList={userListTable}

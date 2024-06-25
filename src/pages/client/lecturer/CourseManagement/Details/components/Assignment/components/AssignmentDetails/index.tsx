@@ -47,17 +47,16 @@ const LecturerCourseAssignmentDetails = () => {
       const response = await AssignmentService.getAssignmentById(id);
       dispatch(setAssignmentDetails(response));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const handleCountStudentInCourse = async (courseId: string) => {
     try {
       const response = await CourseUserService.countStudentByCourseId(courseId);
-      console.log(response);
       dispatch(setAmountStudent({ amountStudent: response }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -66,7 +65,7 @@ const LecturerCourseAssignmentDetails = () => {
       const response = await SubmissionAssignmentService.countSubmissionToGrade(assignmentId);
       dispatch(setAmountSubmissionToGrade({ amountSubmissionToGrade: response }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   const handleCountSubmission = async (assignmentId: string) => {
@@ -74,7 +73,7 @@ const LecturerCourseAssignmentDetails = () => {
       const response = await SubmissionAssignmentService.countAllSubmission(assignmentId);
       dispatch(setAmountSubmission({ amountSubmission: response }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
@@ -97,7 +96,7 @@ const LecturerCourseAssignmentDetails = () => {
     handleCountSubmissionToGrade(assignmentId ?? "");
     handleCountSubmission(assignmentId ?? "");
     handleGetSubmissionAssignmentByAssignment(assignmentId ?? "");
-  }, []);
+  }, [assignmentId, courseId]);
 
   function calculateTimeDifference(
     date1: Date,

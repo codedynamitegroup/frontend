@@ -31,26 +31,21 @@ import useWindowDimensions from "hooks/useWindowDimensions";
 import classes from "./styles.module.scss";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-import moment, { Moment } from "moment";
-import { ExtFile, ServerResponse, UPLOADSTATUS } from "@files-ui/react";
+import moment from "moment";
+import { ExtFile } from "@files-ui/react";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Heading2 from "components/text/Heading2";
-import { Close, NavigateNext } from "@mui/icons-material";
+import { NavigateNext } from "@mui/icons-material";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import Heading3 from "components/text/Heading3";
-import { idID } from "@mui/material/locale";
-import download from "downloadjs";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import { max } from "d3";
 import i18next from "i18next";
 import { CreateAssignmentCommand } from "models/courseService/entity/create/CreateAssignmentCommand";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import { useParams } from "react-router-dom";
-import { co, ex } from "@fullcalendar/core/internal-common";
 import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
-import CloseIcon from "@mui/icons-material/Close";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
 import { useSelector } from "react-redux";
@@ -432,9 +427,6 @@ export default function AssignmentCreated() {
     }
   }, [width]);
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({ ref: headerRef });
-
   const header2Ref = useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
 
@@ -459,10 +451,12 @@ export default function AssignmentCreated() {
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
-      <Box sx={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+      <Header />
+      <Box sx={{ marginTop: `${sidebarStatus.headerHeight}px` }} className={classes.container}>
         <Container>
           <Toolbar className={classes.toolBar}>
             <Box id={classes.breadcumpWrapper}>
@@ -516,7 +510,7 @@ export default function AssignmentCreated() {
           <form
             className={classes.mainContent}
             style={{
-              height: `calc(100% - ${header2Height + headerHeight}px)`,
+              height: `calc(100% - ${header2Height + sidebarStatus.headerHeight}px)`,
               marginTop: `${header2Height}px`
             }}
             onSubmit={handleSubmit(submitHandler)}

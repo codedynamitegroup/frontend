@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { AppBar, Box, Tab, Tabs, Toolbar } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -14,6 +14,8 @@ import classes from "./styles.module.scss";
 import LecturerCourseExamDetails from "./components/Assignment/components/ExamDetails";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface Props {}
 
@@ -34,6 +36,7 @@ const LecturerCourseDetail = memo((props: Props) => {
     "& .MuiTabs-flexContainer": {
       width: "fit-content",
       padding: "4px 3px",
+      gap: "10px",
       borderRadius: 8
     }
   });
@@ -97,10 +100,10 @@ const LecturerCourseDetail = memo((props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
 
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   return (
     <>
       <Box
-        className={classes.tabWrapper}
         translation-key={[
           "course_detail_classroom",
           "course_detail_assignment",
@@ -108,17 +111,36 @@ const LecturerCourseDetail = memo((props: Props) => {
           "course_detail_participant"
         ]}
       >
-        <AntTabs
-          value={activeTab}
-          onChange={handleChange}
-          aria-label='basic tabs example'
+        <AppBar
+          position='fixed'
           className={classes.tabs}
+          sx={{
+            top: `${sidebarStatus.headerHeight}px`,
+            left: `${sidebarStatus.sidebarWidth}px`
+          }}
         >
-          <AntTab sx={{ textTransform: "none" }} label={t("course_detail_classroom")} value={0} />
-          <AntTab sx={{ textTransform: "none" }} label={t("course_detail_assignment")} value={1} />
-          <AntTab sx={{ textTransform: "none" }} label={t("common_grade")} value={2} />
-          <AntTab sx={{ textTransform: "none" }} label={t("course_detail_participant")} value={3} />
-        </AntTabs>
+          <Toolbar>
+            <AntTabs value={activeTab} onChange={handleChange} aria-label='basic tabs example'>
+              <AntTab
+                sx={{ textTransform: "none" }}
+                label={t("course_detail_classroom")}
+                value={0}
+              />
+              <AntTab
+                sx={{ textTransform: "none" }}
+                label={t("course_detail_assignment")}
+                value={1}
+              />
+              <AntTab sx={{ textTransform: "none" }} label={t("common_grade")} value={2} />
+              <AntTab
+                sx={{ textTransform: "none" }}
+                label={t("course_detail_participant")}
+                value={3}
+              />
+            </AntTabs>
+          </Toolbar>
+        </AppBar>
+        <Toolbar />
       </Box>
 
       <Box id={classes.courseDetailBody}>

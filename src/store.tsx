@@ -11,6 +11,7 @@ import courseReducer from "reduxes/courseService/course/index";
 import sectionReducer from "reduxes/courseService/section/index";
 import submissionAssignmentReducer from "reduxes/courseService/submission_assignment/index";
 import examReducer from "reduxes/courseService/exam/index";
+import gradeExamSubmissionReducer from "reduxes/courseService/gradeExamSubmission/index";
 import assignmentReducer from "reduxes/courseService/assignment/index";
 import courseTypeReducer from "reduxes/courseService/course_type/index";
 import questionReducer from "reduxes/courseService/question/index";
@@ -25,7 +26,6 @@ import takeExam from "reduxes/TakeExam";
 import codeQuestionReducer from "reduxes/coreService/CodeQuestion";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import { InitialState as TakeExamInitialState } from "reduxes/TakeExam";
 import { PersistPartial } from "redux-persist/lib/persistReducer";
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import questionCategory from "reduxes/coreService/questionCategory";
@@ -34,7 +34,6 @@ import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/Ex
 import appStatus from "reduxes/AppStatus";
 import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
-import EditMode from "reduxes/EditMode";
 
 // const persistConfig = {
 //   key: "takeExam",
@@ -50,7 +49,6 @@ import EditMode from "reduxes/EditMode";
 const store = configureStore({
   reducer: {
     selected: selectedReducer,
-    editMode: EditMode,
     codePlagiarism: codePlagiarismReducer,
     selectRubricDialog: selectRubricDialogReducer,
     rubricDialog: rubricDialogReducer,
@@ -64,6 +62,7 @@ const store = configureStore({
     assignment: assignmentReducer,
     submissionAssignment: submissionAssignmentReducer,
     exam: examReducer,
+    gradeExamSubmission: gradeExamSubmissionReducer,
     searchAndDifficultyAndSolved: SearchAndDifficultyAndSolved,
     question: questionReducer,
     codeQuestion: codeQuestionReducer,

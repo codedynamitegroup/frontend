@@ -32,7 +32,7 @@
   "common_level_other": "Levels",
   "common_participant": "participant",
   "common_participant_other": "participants",
-  "common_continue": "continue",
+  "common_continue": "Continue",
   "common_password": "Password",
   "common_forget_password": "Forgot password",
   "common_send": "Send",
@@ -426,6 +426,7 @@
   "role_user": "User",
 
   "organization_management": "Organization management",
+  "side_bar_organization_management": "Organization",
   "organization_please_verified": "Please verify organization to continue this action",
   "organization_create": "Create organization",
   "organization_update": "Update organization",
@@ -445,6 +446,7 @@
   "user_belong_to_organization": "Belong to organization",
   "user_not_belong_to_organization": "Not belong to organization",
   "user_management": "User management",
+  "side_bar_user_management": "User",
   "user_create": "Create user",
   "user_assign_to_organization": "Assign to organization",
   "user_update": "Update user",
@@ -475,6 +477,7 @@
   "common_find_by_col": "Find by column",
   "common_classify_category": "Category",
 
+  "course_list_member": "Member list",
   "course_list_title": "Course list",
   "course_filter": "Filter by category",
   "course_see_all_teacher": "See all teachers",
@@ -723,6 +726,7 @@
   "question_bank_create_category_name": "Category name",
 
   "question_bank_management": "Question bank management",
+  "side_bar_question_bank_management": "Question bank",
 
   "code_question_name": "Question name",
   "code_question_difficulty": "Difficulty",
@@ -775,6 +779,7 @@
   "calendar_event_name_time_minute": "Time range in minutes",
 
   "code_management_title": "Code question management",
+  "side_bar_code_management": "Code question",
   "code_management_create_new_title": "Create new code question",
   "code_management_create_description": "Code question description",
   "code_management_create_statement": "Code question statement",
@@ -1089,6 +1094,7 @@
   "common_avg_rating": "Average rating",
   "certificate_course_create_btn": "Add certificate course",
   "certificate_course_management_title": "Certificate course management",
+  "side_bar_certificate_course": "Certificate course",
   "create_certificate_course_title": "Create certificate course",
   "certificate_course_management": "Certificate course management",
   "common_add_chapter": "Add chapter",

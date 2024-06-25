@@ -14,8 +14,8 @@ const ParagraphBody = styled(Typography)<Props>`
   font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 400};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
-  font-size: ${(props) => props.fontSize || "16px"};
-  line-height: "24px";
+  font-size: ${(props) => props.fontSize || "14px"};
+  line-height: "21px";
   word-wrap: ${(props) => props.wordWrap || undefined};
 
   ${(props) =>

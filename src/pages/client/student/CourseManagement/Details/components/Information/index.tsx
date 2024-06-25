@@ -6,18 +6,8 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CircularProgress,
-  Collapse,
-  Divider,
-  List,
-  Paper
-} from "@mui/material";
+import { CircularProgress, Collapse } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import { useState, useEffect } from "react";
@@ -38,6 +28,9 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AssignmentResource from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import dayjs from "dayjs";
+import Heading2 from "components/text/Heading2";
+import course from "reduxes/courseService/course";
+import { CourseEntity } from "models/courseService/entity/CourseEntity";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
   const topicList = [
@@ -153,7 +146,23 @@ const StudentCourseInformation = () => {
         return ECourseResourceType.file;
     }
   };
+  const [courseData, setCourseData] = useState<CourseEntity | null>(null);
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId ?? "");
+    };
+
+    fetchData();
+  }, [courseId]);
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
@@ -161,11 +170,11 @@ const StudentCourseInformation = () => {
           <CardMedia
             component='img'
             className={classes.courseImage}
-            src='https://picsum.photos/1800/300'
+            src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
-          <Typography variant='h1' className={classes.classNameOverlay}>
-            Tên khóa học dài
-          </Typography>
+          <Heading2 className={classes.classNameOverlay} colorname='--white'>
+            {courseData?.name}
+          </Heading2>
         </Card>
       </Grid>
 

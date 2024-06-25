@@ -177,4 +177,39 @@ export class ExamService {
       });
     }
   }
+
+  static async gradeExamSubmission({
+    examId,
+    search = "",
+    pageNo = 0,
+    pageSize = 10
+  }: {
+    examId: string;
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.EXAM.SUBMISSION_GRADE.replace(":id", examId)}`, {
+        params: {
+          search,
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch exam submission", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

@@ -14,7 +14,7 @@ import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
@@ -197,9 +197,9 @@ const OrgAdminContestManagement = () => {
             >
               {params.row.name.charAt(0)}
             </Avatar>
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.name}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -217,9 +217,9 @@ const OrgAdminContestManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.startTime as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -236,11 +236,11 @@ const OrgAdminContestManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {params.row.endTime
               ? standardlizeUTCStringToLocaleString(params.row.endTime, currentLang)
               : t("contest_details_has_no_end_time")}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -257,7 +257,7 @@ const OrgAdminContestManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.numOfParticipants}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.numOfParticipants}</ParagraphBody>;
       }
     },
     {
@@ -318,7 +318,7 @@ const OrgAdminContestManagement = () => {
                   ? "success"
                   : "error"
             }
-            component={ParagraphSmall}
+            component={ParagraphBody}
           />
         );
       }
@@ -471,9 +471,9 @@ const OrgAdminContestManagement = () => {
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
           <Box id={classes.breadcumpWrapper}>
-            <ParagraphSmall colorname='--blue-500' translate-key='contest_management_title'>
+            <ParagraphBody colorname='--blue-500' translate-key='contest_management_title'>
               {t("contest_management_title")}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Box>
         </Box>
         <Divider />

@@ -1,6 +1,9 @@
+import { SubmissionStatusSubmitted } from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions";
+
 export interface ExamEntity {
   id: string;
   courseId: string;
+  courseName?: string;
   name: string;
   scores?: number;
   maxScores?: number;
@@ -99,6 +102,18 @@ export interface ExamSubmissionDetail {
   userId: string;
 }
 
+export interface GradeExamSubmission {
+  userId: string;
+  submissionId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+  lastSubmitAt: string;
+  lastMarkAt: string;
+  score: number;
+  maxScore: number;
+}
 export interface GetExamDetails {
   examId: string;
   courseId: string;
@@ -110,4 +125,19 @@ export interface GetExamDetails {
   overdueHanding: string;
   canRedoQuestions: boolean;
   shuffleAnswers: boolean;
+}
+
+export interface StudentExamSubmission {
+  examSubmissionId?: string;
+  examId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+  statusGrade: string;
+  mark: number;
+  totalMark: number;
+  grade: number;
+  totalGrade: number;
 }

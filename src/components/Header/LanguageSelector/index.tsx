@@ -4,10 +4,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import images from "config/images";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 
 const langList = ["en", "vi"];
 
@@ -36,16 +36,16 @@ const LanguageSelector = () => {
               {currentLang === "vi" ? (
                 <>
                   <img alt='upload' src={images.flagIcon.flagVietnam} className={classes.imgFile} />
-                  <ParagraphSmall colorname='--gray-60' fontWeight={600}>
+                  <ParagraphBody colorname='--gray-60' fontWeight={600}>
                     {i18n.t("language_vn")}
-                  </ParagraphSmall>
+                  </ParagraphBody>
                 </>
               ) : (
                 <>
                   <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
-                  <ParagraphSmall colorname='--gray-60' fontWeight={600}>
+                  <ParagraphBody colorname='--gray-60' fontWeight={600}>
                     {i18n.t("language_us")}
-                  </ParagraphSmall>
+                  </ParagraphBody>
                 </>
               )}
             </Box>
