@@ -16,7 +16,7 @@ const CustomHeatMap = ({ value }: CustomHeatMapProps) => {
       <HeatMap
         width={"100%"}
         value={value}
-        startDate={new Date("2016/01/01")}
+        startDate={new Date("2024/01/01")}
         rectSize={14}
         rectRender={(props, data) => {
           if (selected !== "") {
