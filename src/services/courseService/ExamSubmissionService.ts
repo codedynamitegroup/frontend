@@ -11,7 +11,7 @@ export class ExamSubmissionService {
         baseURL: courseServiceApiUrl,
         isAuthorization: true
       }).post(`${API.COURSE.EXAM.START}`, examData);
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {
@@ -102,9 +102,9 @@ export class ExamSubmissionService {
     } catch (error: any) {
       console.error("Failed to fetch exam submission", error);
       return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message || error.message
       });
     }
   }
