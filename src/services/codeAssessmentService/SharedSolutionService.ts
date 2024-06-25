@@ -232,19 +232,19 @@ export class SharedSolutionService {
     }
   ) {
     try {
-      const response = await axios.get(
-        `${codeAssessmentServiceApiUrl}${API.CODE_ASSESSMENT.SHARED_SOLUTION.DEFAULT}`,
-        {
-          params: {
-            codeQuestionId,
-            search: filter.searchKey,
-            orderBy: filter.newest ? "DESC" : "ASC",
-            filterTagIds: filter.filterTags?.map((value) => value.id).join(", "),
-            pageNo: pagination.pageNum,
-            pageSize: pagination.pageSize
-          }
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        disableHeaderToken: true
+      }).get(API.CODE_ASSESSMENT.SHARED_SOLUTION.DEFAULT, {
+        params: {
+          codeQuestionId,
+          search: filter.searchKey,
+          orderBy: filter.newest ? "DESC" : "ASC",
+          filterTagIds: filter.filterTags?.map((value) => value.id).join(", "),
+          pageNo: pagination.pageNum,
+          pageSize: pagination.pageSize
         }
-      );
+      });
 
       if (response.status === 200) {
         return response.data;
