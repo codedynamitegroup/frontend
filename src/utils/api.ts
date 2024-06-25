@@ -63,9 +63,9 @@ const createInstance = ({
             .catch((err: any) => {
               // if status Please authenticate
               if (err?.code === 401 || err?.code === 403) {
-                // localStorage.removeItem("access_token");
-                // localStorage.removeItem("refresh_token");
-                // localStorage.removeItem("provider");
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+                localStorage.removeItem("provider");
                 window.location.replace("/#/");
                 window.location.reload();
               }
