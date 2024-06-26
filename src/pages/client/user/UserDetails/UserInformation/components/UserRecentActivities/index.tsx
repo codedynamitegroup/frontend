@@ -20,10 +20,17 @@ import { useDispatch } from "react-redux";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setErrorMess } from "reduxes/AppStatus";
 
+export enum ESharedSolutionType {
+  RECENT = 0,
+  MOST_COMMENT = 1
+}
 const UserRecentActivities = () => {
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
-  const [submissionViewTypeIndex, setSubmissionViewTypeIndex] = useState(0);
+  const [sharedSolutionTypeIndex, setSharedSolutionTypeIndex] = useState<ESharedSolutionType>(
+    ESharedSolutionType.RECENT
+  );
+
   const [data, setData] = useState<
     {
       date: string;
@@ -155,14 +162,15 @@ const UserRecentActivities = () => {
               <></>
             ) : (
               <Tabs
-                value={submissionViewTypeIndex}
+                value={sharedSolutionTypeIndex}
                 onChange={(e, newValue) => {
-                  setSubmissionViewTypeIndex(newValue);
+                  setSharedSolutionTypeIndex(newValue);
                 }}
               >
                 <Tab
                   label={t("user_detail_recent")}
                   icon={<AccessTimeIcon fontSize='small' />}
+                  value={ESharedSolutionType.RECENT}
                   iconPosition='start'
                   sx={{
                     fontSize: "12px"
@@ -181,6 +189,7 @@ const UserRecentActivities = () => {
                   label={t("user_detail_most_comment")}
                   icon={<WhatshotIcon fontSize='small' />}
                   iconPosition='start'
+                  value={ESharedSolutionType.MOST_COMMENT}
                   sx={{
                     fontSize: "12px"
                   }}
@@ -189,7 +198,11 @@ const UserRecentActivities = () => {
               </Tabs>
             )}
           </Box>
-          {tabIndex === 0 ? <UserRecentCodeQuestion /> : <UserRecentSharedSolution />}
+          {tabIndex === 0 ? (
+            <UserRecentCodeQuestion />
+          ) : (
+            <UserRecentSharedSolution sharedSolutionType={sharedSolutionTypeIndex} />
+          )}
         </Box>
       </Card>
     </Box>
