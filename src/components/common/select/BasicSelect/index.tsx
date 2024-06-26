@@ -44,7 +44,6 @@ const BasicSelect = ({
   backgroundColor,
   width,
   borderRadius,
-
   ...props
 }: BasicSelectProps) => {
   var defaultValue: ItemProps | null = null;
@@ -73,7 +72,7 @@ const BasicSelect = ({
             borderRadius: borderRadius || 0
           }}
           labelId={labelId}
-          id='select-id'
+          id={labelId}
           value={value}
           label={label}
           onChange={(e) => onHandleChange(e.target.value as string)}

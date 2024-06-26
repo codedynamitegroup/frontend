@@ -233,6 +233,8 @@
   "dialog_confirm_update_problems_title": "Update Problems",
   "dialog_confirm_update_problems_description": "Are you sure you want to update problems?. Note that public problems can be viewed by all users in the public problem list",
 
+  "calendar_today": "Today",
+
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest",
 

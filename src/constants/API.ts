@@ -163,6 +163,10 @@ export const API = {
       UPDATE_BY_ID: "/course/question/bank/category/:id",
       DELETE_BY_ID: "/course/question/bank/category/:id",
       CREATE: "/course/question/bank/category/create"
+    },
+    EVENT_CALENDAR: {
+      DEFAULT: "/course/calendar-events/query/my-calendar-events",
+      CREATE: "/course/calendar-events/create"
     }
   },
   CODE_ASSESSMENT: {

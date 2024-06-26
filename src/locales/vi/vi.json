@@ -221,6 +221,8 @@
   "dialog_confirm_update_problems_title": "Xác nhận cập nhật bài toán",
   "dialog_confirm_update_problems_description": "Bạn có chắc chắn muốn cập nhật bài toán không? Lưu ý rằng bài toán công khai có thể được xem bởi tất cả người dùng trong danh sách bài toán công khai",
 
+  "calendar_today": "Hôm nay",
+
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Cuộc thi",
 
