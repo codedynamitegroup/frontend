@@ -116,7 +116,7 @@ export default function StudentExamAttemptSummaryTable({
                 <td>{(row.markTotal / examMark) * examGrade}</td>
                 <td>
                   <RouteLink
-                    to={`${routes.lecturer.exam.preview
+                    to={`${routes.lecturer.exam.review
                       .replace(":courseId", courseId)
                       .replace(":examId", examId)
                       .replace(":submissionId", row.examSubmissionId)}`}

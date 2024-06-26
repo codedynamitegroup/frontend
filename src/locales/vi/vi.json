@@ -1049,6 +1049,9 @@
   "exam_submit_success": "Nộp bài kiểm tra thành công",
   "exam_submit_fail": "Nộp bài kiểm tra thất bại",
 
+  "student_not_take_exam": "Học sinh chưa làm bài kiểm tra",
+  "warning": "Cảnh báo",
+
   "exam_detail_time_limit": "Thời gian làm",
   "exam_detail_grading_method": "Cách tính điểm",
   "exam_detail_grading_method_high_score": "Điểm cao nhất",

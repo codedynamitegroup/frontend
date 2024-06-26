@@ -1074,6 +1074,9 @@
   "exam_detail_continue": "Continue exam",
   "exam_detail_test": "Test exam",
 
+  "student_not_take_exam": "Student haven't taken this exam yet",
+  "warning": "Warning",
+
   "course_error_page": "Error | Course",
   "course_error": "Course Error",
   "course_error_exam_not_found": "Exam with the provided ID cant not be found",
