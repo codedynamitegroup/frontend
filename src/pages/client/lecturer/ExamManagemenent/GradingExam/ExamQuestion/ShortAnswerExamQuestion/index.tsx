@@ -1,5 +1,5 @@
-import { Textarea } from "@mui/joy";
-import { Grid, Stack, Divider, Box } from "@mui/material";
+import { Button, Checkbox, Sheet, Textarea } from "@mui/joy";
+import { Grid, Stack, Divider, Box, TextField } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -93,6 +93,68 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
           maxRows={1}
           disabled
         />
+      </Grid>
+
+      <Grid item xs={12} md={12} marginTop={2}>
+        <Stack direction={"row"} spacing={2}>
+          <Box
+            sx={{
+              backgroundColor: "#f5f5f5"
+            }}
+            borderRadius={1}
+            padding={".35rem 1rem"}
+          >
+            <ParagraphBody fontSize={"12px"} color={"#212121"}>
+              Đáp án
+            </ParagraphBody>
+          </Box>
+        </Stack>
+        <Sheet variant='outlined'>
+          <Checkbox
+            disabled
+            onChange={() => {}}
+            value={"questionMultiChoice.question.name"}
+            checked
+            size='sm'
+            overlay
+            label={
+              <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
+                {/* {
+                  questionMultiChoice.question.answers?.find((answer: any) => answer.id === "1")
+                    ?.answer
+                } */}
+              </ParagraphBody>
+            }
+          />
+        </Sheet>
+
+        <Stack direction={"row"} spacing={2} marginTop={2}>
+          {/* <Box
+            sx={{
+              backgroundColor: "#f5f5f5"
+            }}
+            borderRadius={1}
+            padding={".35rem 1rem"}
+          >
+            <ParagraphBody fontSize={"12px"} color={"#212121"}>
+              Điểm
+            </ParagraphBody>
+          </Box> */}
+          <TextField
+            id='outlined-basic'
+            label='Điểm'
+            variant='outlined'
+            size='small'
+            value={questionSubmitContent?.mark}
+            // onChange={(e) => {
+            //   setQuestionSubmitContent({
+            //     ...questionSubmitContent,
+            //     mark: e.target.value
+            //   });
+            // }}
+          />
+          <Button color='primary'>Cập nhật điểm</Button>
+        </Stack>
       </Grid>
     </Grid>
   );

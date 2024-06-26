@@ -1,12 +1,10 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { Divider, Grid, Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import Button, { BtnType } from "components/common/buttons/Button";
-import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { millisToFormatTimeString } from "utils/time";
@@ -16,8 +14,7 @@ import { useEffect, useState } from "react";
 import {
   ExamEntity,
   ExamOverview,
-  ExamSubmissionDetail,
-  ReduxExamEntity
+  ExamSubmissionDetail
 } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,9 +32,6 @@ import CourseErrorPage from "pages/client/student/CourseError";
 import { Helmet } from "react-helmet";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import i18next from "i18next";
-import { CircularProgress } from "@mui/joy";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 import GradingExamTable from "./components/GradingExamTable";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
 import useAuth from "hooks/useAuth";
@@ -433,16 +427,20 @@ const LecturerCourseExamDetails = () => {
             {t("course_lecturer_assignment_see_submit")}
           </ParagraphBody>
         </Button>
-        <Button
+        {/* <Button
           btnType={BtnType.Primary}
           onClick={() => {
-            navigate(routes.lecturer.exam.grading.replace(":examId", exam.id));
+            navigate(
+              routes.lecturer.exam.grading
+                .replace(":examId", exam.id)
+                .replace(":courseId", exam.courseId)
+            );
           }}
         >
           <ParagraphBody translation-key='course_lecturer_assignment_grading'>
             {t("course_lecturer_assignment_grading")}
           </ParagraphBody>
-        </Button>
+        </Button> */}
       </Box>
 
       <Heading2 translation-key='exam_detail_summary_previous_attempt'>
