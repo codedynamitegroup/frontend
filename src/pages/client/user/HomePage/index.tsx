@@ -220,8 +220,8 @@ export default function HomePage() {
                               </Box>
                               <Box className={classes.courseDetail}>
                                 <Box className={classes.userLearning}>
-                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
                                   <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
                                 </Box>
                                 <Box className={classes.userRating}>
                                   <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>
@@ -322,8 +322,8 @@ export default function HomePage() {
                               </Box>
                               <Box className={classes.courseDetail}>
                                 <Box className={classes.userLearning}>
-                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
                                   <FontAwesomeIcon icon={faUser} className={classes.icUser} />
+                                  <ParagraphBody>{certificateCourse.numOfStudents}</ParagraphBody>
                                 </Box>
                                 <Box className={classes.userRating}>
                                   <ParagraphBody>{certificateCourse.avgRating}</ParagraphBody>

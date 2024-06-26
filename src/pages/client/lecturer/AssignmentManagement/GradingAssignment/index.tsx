@@ -73,11 +73,6 @@ export default function AssignmentGrading() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-
   const handleSave = async (continueToNext = false) => {
     const submissionGrade = submissionAssignmentState.submissionAssignments.find(
       (submission) => submission.id === assignmentSubmissionStudent
@@ -208,9 +203,11 @@ export default function AssignmentGrading() {
     (submission) => submission.id === assignmentSubmissionStudent
   )?.content;
 
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       {submissionAssignmentState.isLoading ? (
         <Box
           sx={{
@@ -229,7 +226,7 @@ export default function AssignmentGrading() {
           <Box
             className={classes.contentContainer}
             sx={{
-              marginTop: `${headerHeight}px`
+              marginTop: `${sidebarStatus.headerHeight}px`
             }}
           >
             <Container

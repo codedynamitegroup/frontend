@@ -38,6 +38,8 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
   NOT_SUBMITTED = "Chưa nộp"
@@ -83,10 +85,7 @@ const AIScoring = () => {
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {};
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const page = 0;
   const pageSize = 5;
@@ -439,11 +438,11 @@ const AIScoring = () => {
         </Box>
       ) : (
         <Grid className={classes.root}>
-          <Header ref={headerRef} />
+          <Header />
           <Box
             className={classes.container}
             sx={{
-              marginTop: `${headerHeight + 80}px`
+              marginTop: `${sidebarStatus.headerHeight + 80}px`
             }}
           >
             <CssBaseline />

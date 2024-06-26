@@ -1,28 +1,17 @@
 import { Box, Grid, Stack, Divider } from "@mui/material";
-import TextEditor from "components/editor/TextEditor";
-import FlagIcon from "@mui/icons-material/Flag";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/QuestionEntity";
-import {
-  addFileToExamQuesiton,
-  removeAllFilesFromExamQuestion,
-  removeFileFromExamQuestion,
-  setAnswered,
-  setFlag
-} from "reduxes/TakeExam";
-import { useDispatch } from "react-redux";
-import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
-import { useState } from "react";
+
+import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
+import { FileCard } from "@files-ui/react";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
   questionIndex: number;
-  questionSubmitContent?: any;
+  questionSubmitContent?: GetQuestionSubmissionEntity;
 }
 
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
@@ -48,16 +37,13 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
         <Stack direction={"row"} spacing={2}>
           <Box
             sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
+              backgroundColor: questionSubmitContent?.answerStatus ? "#e6eaf7" : "#FDF6EA"
             }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
+              {questionSubmitContent?.answerStatus
                 ? t("common_answered")
                 : t("common_not_answered")}
             </ParagraphBody>
@@ -114,7 +100,7 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
               color={"#212121"}
               lineHeight={"1.5"}
               dangerouslySetInnerHTML={{
-                __html: questionSubmitContent?.content
+                __html: questionSubmitContent?.content || ""
               }}
             />
           )}
@@ -128,23 +114,25 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
         </Box>
       </Grid>
 
-      {/* {(questionEssayQuestion.responseFormat === "no_online" ||
+      {(questionEssayQuestion.responseFormat === "no_online" ||
         questionEssayQuestion.attachments !== 0) && (
         <Grid item xs={12}>
-          <AdvancedDropzoneForEssayExam
-            maxFileSize={convertedFileSize}
-            accept={fileTypeList}
-            maxFiles={questionEssayQuestion.attachments}
-            stopAutoUpload
-            disableDownload
-            relatedId={questionEssayQuestion.question.id}
-            relatedDispatch={addFileToExamQuesiton}
-            relatedRemoveDispatch={removeFileFromExamQuestion}
-            filesFromUrl={questionState?.files}
-            relatedRemoveAllDispatch={removeAllFilesFromExamQuestion}
-          />
+          <Grid container gap={1}>
+            {questionSubmitContent?.files?.map((file, index) => (
+              <Grid>
+                <FileCard
+                  id={file.fileUrl}
+                  key={index}
+                  name={file.fileName}
+                  downloadUrl={file.fileUrl}
+                  type={file.fileType}
+                  size={file.fileSize}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
-      )} */}
+      )}
     </Grid>
   );
 };

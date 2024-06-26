@@ -138,6 +138,7 @@ export const API = {
     EXAM: {
       DEFAULT: "/course/:courseId/exam",
       OVERVIEW: "/course/exam/:id/overview",
+      SUBMISSION_GRADE: "/course/exam/:id/grade",
       GET_BY_ID: "/course/exam/:id",
       CREATE: "/course/exam",
       EDIT: "/course/exam/:id",
@@ -145,8 +146,13 @@ export const API = {
       START: "/course/exam/question/start-exam",
       END: "/course/exam/question/end-exam",
       SUBMIT: "/course/exam/question/submit",
-      SUBMISSION: "/course/exam/question/submit/:id",
-      SUBMISSION_STUDENT: "/course/exam/:id/submission"
+      SUBMISSION: "/course/exam/question/submit/:id"
+    },
+    EXAM_SUBMISSION: {
+      STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
+      SUBMISSION_STUDENT: "/course/exam/:id/submission",
+      SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
+      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
@@ -167,6 +173,11 @@ export const API = {
     EVENT_CALENDAR: {
       DEFAULT: "/course/calendar-events/query/my-calendar-events",
       CREATE: "/course/calendar-events/create"
+    },
+    QUESTION_SUBMISSION: {
+      SUBMIT_LIST: "/course/question/submit-all",
+      SUBMIT_ONE: "/course/question/submit-one",
+      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId"
     }
   },
   CODE_ASSESSMENT: {
@@ -182,10 +193,13 @@ export const API = {
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
       GET_BY_ID: "/code-assessment/code-submission/:id",
-      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission"
+      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission",
+      RECENT_CODE_QUESTION: "/code-assessment/code-submission/recent-code-question",
+      HEAT_MAP: "/code-assessment/code-submission/heat-map"
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",
+      GET_RECENT: "/code-assessment/shared-solution",
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
         DEFAULT: "code-assessment/shared-solution/:id/comment",
@@ -207,7 +221,7 @@ export const API = {
       SOCIAL_LOGIN: "/auth/users/social-login",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",
-      LOGOUT: "/auth/users/logout",
+      LOGOUT: "/auth/users/logout/:email",
       REGISTER: "/auth/users/register",
       CREATE_USER_BY_ADMIN: "/auth/users",
       GET_USER_BY_EMAIL: "/auth/users/get-by-email",

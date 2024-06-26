@@ -1,12 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 
 export interface InitialState {
   examId: string;
-  startAt?: string;
-  endAt?: string;
-  examData: ReduxExamEntity;
   questionList: {
     flag: boolean;
     answered: boolean;
@@ -15,32 +11,15 @@ export interface InitialState {
     files?: {
       fileUrl: string;
       fileName: string;
+      fileSize: number;
+      fileType: string;
     }[];
   }[];
 }
 
 const initState: InitialState = {
   examId: "",
-  examData: {
-    id: "",
-    courseId: "",
-    name: "",
-    scores: 0,
-    maxScores: 0,
-    timeOpen: "",
-    timeClose: "",
-    timeLimit: 0,
-    intro: "",
-    overdueHanding: "",
-    canRedoQuestions: false,
-    maxAttempts: 0,
-    shuffleAnswers: false,
-    gradeMethod: "",
-    createdAt: "",
-    updatedAt: ""
-  },
-  startAt: undefined,
-  endAt: undefined,
+
   questionList: []
 };
 
@@ -52,7 +31,6 @@ const takeExamSlice = createSlice({
       state,
       action: PayloadAction<{
         examId: string;
-        startAt: string;
         questionList: {
           flag: boolean;
           answered: boolean;
@@ -61,19 +39,17 @@ const takeExamSlice = createSlice({
           files?: {
             fileUrl: string;
             fileName: string;
+            fileSize: number;
+            fileType: string;
           }[];
         }[];
       }>
     ) => {
       state.examId = action.payload.examId;
-      state.startAt = action.payload.startAt;
       state.questionList = action.payload.questionList;
       return state;
     },
-    setExamData: (state, action: PayloadAction<ReduxExamEntity>) => {
-      state.examData = action.payload;
-      return state;
-    },
+
     setExamId: (state, action: PayloadAction<string>) => {
       state.examId = action.payload;
       return state;
@@ -111,20 +87,26 @@ const takeExamSlice = createSlice({
 
     addFileToExamQuesiton: (
       state,
-      action: PayloadAction<{ id: string; fileUrl: string; fileName: string }>
+      action: PayloadAction<{
+        id: string;
+        fileUrl: string;
+        fileName: string;
+        fileSize: number;
+        fileType: string;
+      }>
     ) => {
       const index = state.questionList.findIndex(
         (question) => question.questionData.id === action.payload.id
       );
 
-      console.log("index redux", index);
-      console.log("curr files", action.payload.fileUrl);
-
       if (index !== -1) {
         state.questionList[index].files?.push({
           fileUrl: action.payload.fileUrl,
-          fileName: action.payload.fileName
+          fileName: action.payload.fileName,
+          fileSize: action.payload.fileSize,
+          fileType: action.payload.fileType
         });
+        state.questionList[index].answered = true;
       }
       return state;
     },
@@ -138,6 +120,15 @@ const takeExamSlice = createSlice({
           (file) => file.fileUrl !== action.payload.fileUrl
         );
       }
+      if (
+        state.questionList[index].files?.length === 0 &&
+        (state.questionList[index].content === null ||
+          state.questionList[index].content === undefined ||
+          state.questionList[index].content === "<p><br></p>" ||
+          state.questionList[index].content === "")
+      ) {
+        state.questionList[index].answered = false;
+      }
       return state;
     },
     removeAllFilesFromExamQuestion: (state, action: PayloadAction<string>) => {
@@ -148,14 +139,17 @@ const takeExamSlice = createSlice({
       if (index !== -1) {
         state.questionList[index].files = [];
       }
+      if (
+        state.questionList[index].content === null ||
+        state.questionList[index].content === undefined ||
+        state.questionList[index].content === "<p><br></p>" ||
+        state.questionList[index].content === ""
+      )
+        state.questionList[index].answered = false;
       return state;
     },
     cleanTakeExamState: (state) => {
-      state.examId = "";
-      state.startAt = undefined;
-      state.endAt = undefined;
-      state.examData = initState.examData;
-      state.questionList = [];
+      state = initState;
 
       return state;
     }
@@ -171,7 +165,6 @@ export const {
   addFileToExamQuesiton,
   removeFileFromExamQuestion,
   removeAllFilesFromExamQuestion,
-  setExamData,
   cleanTakeExamState
 } = takeExamSlice.actions;
 

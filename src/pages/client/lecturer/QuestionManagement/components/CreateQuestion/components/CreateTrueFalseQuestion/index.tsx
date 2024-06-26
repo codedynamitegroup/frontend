@@ -36,6 +36,7 @@ import Heading2 from "components/text/Heading2";
 import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
 import { Card } from "@mui/joy";
 import ParagraphBody from "components/text/ParagraphBody";
+import { RootState } from "store";
 
 interface Props {
   qtype: String;
@@ -67,11 +68,9 @@ const CreateTrueFalseQuestion = (props: Props) => {
 
   const navigate = useNavigate();
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  let { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-  if (props.insideCrumb) headerHeight = 0;
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -287,7 +286,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
       </Helmet>
 
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
+        <Header />
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
             <CustomBreadCrumb

@@ -14,11 +14,11 @@ import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
-import PhoneInput from "react-phone-number-input";
 import ErrorMessage from "components/text/ErrorMessage";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 interface IFormDataType {
   email: string;
@@ -119,12 +119,11 @@ const CreateOrganization = () => {
                   name='phone'
                   render={({ field }) => {
                     return (
-                      <PhoneInput
+                      <InputPhone
+                        label={t("common_phone")}
+                        errorMessage={errors?.phone?.message}
                         value={field.value}
-                        placeholder='Enter phone number'
                         onChange={field.onChange}
-                        className={classes.phoneInput}
-                        defaultCountry='VN'
                       />
                     );
                   }}

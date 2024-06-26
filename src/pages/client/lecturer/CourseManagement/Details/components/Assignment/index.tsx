@@ -19,39 +19,68 @@ import { AppDispatch, RootState } from "store";
 import { ExamService } from "services/courseService/ExamService";
 import { setExamList, setExams } from "reduxes/courseService/exam";
 import { AssignmentService } from "services/courseService/AssignmentService";
-import assignment, { setAssignments } from "reduxes/courseService/assignment";
+import { setAssignments } from "reduxes/courseService/assignment";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
 import { clearExamCreate } from "reduxes/coreService/questionCreate";
+import { setLoading } from "reduxes/Loading";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
   const examState = useSelector((state: RootState) => state.exam);
   const assignmentState = useSelector((state: RootState) => state.assignment);
   const { courseId } = useParams<{ courseId: string }>();
+  const handleGetExams = useCallback(
+    async (id: string) => {
+      if (id === examState.courseId && examState.exams) {
+        return;
+      }
+      dispatch(setLoading(true));
+      try {
+        const response = await ExamService.getExamsByCourseId(id);
+        dispatch(
+          setExams({
+            exams: response.exams,
+            courseId: id,
+            currentPage: response.currentPage,
+            totalItems: response.totalItems,
+            totalPages: response.totalPages
+          })
+        );
+      } catch (error) {
+        console.error(error);
+      }
+      dispatch(setLoading(false));
+    },
+    [dispatch, examState.courseId, examState.exams]
+  );
 
-  const handleGetExams = async (id: string) => {
-    try {
-      const response = await ExamService.getExamsByCourseId(id);
-      dispatch(setExams(response));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleGetAssignments = async (id: string) => {
-    try {
-      const response = await AssignmentService.getAssignmentsByCourseId(id);
-      dispatch(setAssignments(response));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const handleGetAssignments = useCallback(
+    async (id: string) => {
+      if (id === assignmentState.courseId && assignmentState.assignments) {
+        return;
+      }
+      dispatch(setLoading(true));
+      try {
+        const response = await AssignmentService.getAssignmentsByCourseId(id);
+        dispatch(
+          setAssignments({
+            assignments: response.assignments,
+            courseId: id
+          })
+        );
+      } catch (error) {
+        console.error(error);
+      }
+      dispatch(setLoading(false));
+    },
+    [dispatch, assignmentState.courseId, assignmentState.assignments]
+  );
 
   useEffect(() => {
-    handleGetExams(courseId ?? "");
-    handleGetAssignments(courseId ?? "");
-  }, [courseId]);
+    if (courseId) {
+      Promise.all([handleGetExams(courseId), handleGetAssignments(courseId)]);
+    }
+  }, [courseId, handleGetAssignments, handleGetExams]);
 
   const handleDeleteAssignment = useCallback(
     async (id: string) => {
@@ -62,7 +91,7 @@ const LecturerCourseAssignment = () => {
           dispatch(setAssignments({ assignments: result }));
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     [assignmentState.assignments, dispatch]
@@ -77,7 +106,7 @@ const LecturerCourseAssignment = () => {
           dispatch(setExamList({ exams: result }));
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     [examState.exams.exams, dispatch]
@@ -90,43 +119,43 @@ const LecturerCourseAssignment = () => {
   const navigate = useNavigate();
 
   const onCreateNewAssignment = (popupState: any) => {
-    navigate(routes.lecturer.assignment.create.replace(":courseId", courseId?.toString() ?? ""));
+    if (courseId) navigate(routes.lecturer.assignment.create.replace(":courseId", courseId));
     popupState.close();
   };
 
   const onCreateNewExam = (popupState: any) => {
     dispatch(clearExamCreate());
-    navigate(routes.lecturer.exam.create.replace(":courseId", courseId?.toString() ?? ""));
+    if (courseId) navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
     popupState.close();
   };
 
   const [isReusedCourseResourceOpen, setIsReusedCourseResourceOpen] = useState(false);
 
-  const onOpenReusedCourseResourceDialog = (popupState: any) => {
-    setIsReusedCourseResourceOpen(true);
-    popupState.close();
-  };
+  // const onOpenReusedCourseResourceDialog = (popupState: any) => {
+  //   setIsReusedCourseResourceOpen(true);
+  //   popupState.close();
+  // };
 
-  const onCloseReusedCourseResourceDialog = () => {
-    setIsReusedCourseResourceOpen(false);
-  };
+  // const onCloseReusedCourseResourceDialog = () => {
+  //   setIsReusedCourseResourceOpen(false);
+  // };
 
-  const [isReusedResourceOpen, setIsReusedResourceOpen] = useState(false);
+  // const [isReusedResourceOpen, setIsReusedResourceOpen] = useState(false);
 
-  const onOpenReusedResourceDialog = () => {
-    setIsReusedCourseResourceOpen(false);
-    setIsReusedResourceOpen(true);
-  };
+  // const onOpenReusedResourceDialog = () => {
+  //   setIsReusedCourseResourceOpen(false);
+  //   setIsReusedResourceOpen(true);
+  // };
 
-  const onCloseReusedResourceDialog = () => {
-    setIsReusedCourseResourceOpen(false);
-    setIsReusedResourceOpen(false);
-  };
+  // const onCloseReusedResourceDialog = () => {
+  //   setIsReusedCourseResourceOpen(false);
+  //   setIsReusedResourceOpen(false);
+  // };
 
-  const onBackReusedCourseResourceDialog = () => {
-    setIsReusedCourseResourceOpen(true);
-    setIsReusedResourceOpen(false);
-  };
+  // const onBackReusedCourseResourceDialog = () => {
+  //   setIsReusedCourseResourceOpen(true);
+  //   setIsReusedResourceOpen(false);
+  // };
 
   return (
     <>
@@ -154,11 +183,11 @@ const LecturerCourseAssignment = () => {
                 {
                   label: t("course_lecturer_assignment_create_exam"),
                   onClick: onCreateNewExam
-                },
-                {
-                  label: t("course_lecturer_assignment_reuse_resource"),
-                  onClick: onOpenReusedCourseResourceDialog
                 }
+                // {
+                //   label: t("course_lecturer_assignment_reuse_resource"),
+                //   onClick: onOpenReusedCourseResourceDialog
+                // }
               ]}
               translation-key={[
                 "common_add_new",
@@ -207,7 +236,7 @@ const LecturerCourseAssignment = () => {
           </Box>
         </Box>
       </Box>
-      <ReusedCourseResourceDialog
+      {/* <ReusedCourseResourceDialog
         title={t("course_list_title")}
         onOpenReuseResourceDialog={onOpenReusedResourceDialog}
         open={isReusedCourseResourceOpen}
@@ -221,7 +250,7 @@ const LecturerCourseAssignment = () => {
         onHandleCancel={onBackReusedCourseResourceDialog}
         handleClose={onCloseReusedResourceDialog}
         translation-key={["course_lecturer_resource_list", "common_back"]}
-      />
+      /> */}
     </>
   );
 };

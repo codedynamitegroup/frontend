@@ -123,10 +123,7 @@ export default function Lessons() {
     setOpen(false);
   };
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
@@ -298,11 +295,11 @@ export default function Lessons() {
   }
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight + 1}px`
+          marginTop: `${sidebarStatus.headerHeight + 1}px`
         }}
       >
         <CssBaseline />

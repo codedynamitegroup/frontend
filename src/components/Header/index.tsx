@@ -22,7 +22,6 @@ import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar, Switch } from "@mui/m
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import HeaderNotification from "./HeaderNotification";
 import clsx from "clsx";
 import useAuth from "hooks/useAuth";
@@ -31,7 +30,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "store";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { setEditMode } from "reduxes/EditMode";
+import ParagraphBody from "components/text/ParagraphBody";
+import useBoxDimensions from "hooks/useBoxDimensions";
+import { setHeaderHeight } from "reduxes/SidebarStatus";
 
 interface ILinkMenu {
   name: string;
@@ -58,7 +59,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const { toggleDrawer } = props;
   const { loggedUser, logout, isLecturer, isStudent, isSystemAdmin, isMoodleAdmin } = useAuth();
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus.isOpen);
-  const editMode = useSelector((state: RootState) => state.editMode);
   const dispatch = useDispatch();
 
   interface AppBarProps extends MuiAppBarProps {
@@ -182,18 +182,21 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     });
     setPagesHeader(pagesHeaderUpdated);
   }, [pathname, loggedUser]);
-  const editModeState = useSelector((state: RootState) => state.editMode);
+  const headerRef = React.useRef<HTMLDivElement>(null);
+  const { height: headerHeight } = useBoxDimensions({
+    ref: headerRef
+  });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newChecked = event.target.checked;
-    dispatch(setEditMode(newChecked));
-  };
+  useEffect(() => {
+    dispatch(setHeaderHeight(headerHeight));
+  }, [dispatch, headerHeight]);
+
   return (
     <AppBar
       position='fixed'
       open={open}
       className={classes.header}
-      ref={ref}
+      ref={headerRef}
       sx={{
         paddingLeft: sidebarStatus && toggleDrawer ? "240px" : "0px"
       }}
@@ -208,7 +211,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 sx={{
                   backgroundColor: sidebarStatus ? "var(--blue-light-4)" : "#EEEEEE",
                   transform: sidebarStatus ? "scaleX(1)" : "scaleX(-1)",
-                  color: sidebarStatus ? "#002db3" : "var(--gray-80)"
+                  color: sidebarStatus ? "#002db3" : "var(--gray-80)",
+                  marginRight: "10px"
                 }}
                 variant='soft'
               >
@@ -216,7 +220,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               </IconButton>
             )}
 
-            {(!toggleDrawer || (!!toggleDrawer && !sidebarStatus)) && (
+            {(!toggleDrawer || sidebarStatus === false) && (
               <Box className={classes.logo}>
                 <Link
                   component={RouterLink}
@@ -244,7 +248,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               pagesHeader
                 .filter((page) => page.position === "left")
                 .map((page, index) => (
-                  <ParagraphSmall
+                  <ParagraphBody
                     key={index}
                     className={clsx([page.isActive ? classes.isActive : "", classes.item])}
                     fontWeight={600}
@@ -259,11 +263,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     >
                       {t(page.name)}
                     </Link>
-                  </ParagraphSmall>
+                  </ParagraphBody>
                 ))}
 
             {isStudent && (
-              <ParagraphSmall
+              <ParagraphBody
                 className={clsx([
                   activeRoute(routes.student.course.root) ? classes.isActive : "",
                   classes.item
@@ -280,10 +284,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 >
                   {t("header_course")}
                 </Link>
-              </ParagraphSmall>
+              </ParagraphBody>
             )}
             {isLecturer && (
-              <ParagraphSmall
+              <ParagraphBody
                 className={clsx([
                   activeRoute(routes.lecturer.course.management) ? classes.isActive : "",
                   classes.item
@@ -300,7 +304,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 >
                   {t("header_course")}
                 </Link>
-              </ParagraphSmall>
+              </ParagraphBody>
             )}
           </Box>
         </Box>
@@ -314,7 +318,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               {pagesHeader
                 .filter((page) => page.position === "right")
                 .map((page, index) => (
-                  <ParagraphSmall
+                  <ParagraphBody
                     key={index}
                     className={clsx([page.isActive ? classes.isActive : "", classes.item])}
                     fontWeight={600}
@@ -329,7 +333,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     >
                       {t(page.name)}
                     </Link>
-                  </ParagraphSmall>
+                  </ParagraphBody>
                 ))}
             </Box>
           ) : (
@@ -341,7 +345,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 <PopupState variant='popover' popupId='demo-popup-menu'>
                   {(popupState) => (
                     <React.Fragment>
-                      <Button className={classes.profile} {...bindTrigger(popupState)}>
+                      <Button
+                        sx={{ textTransform: "none" }}
+                        className={classes.profile}
+                        {...bindTrigger(popupState)}
+                      >
                         <Avatar
                           sx={{
                             bgcolor: `${generateHSLColorByRandomText(`${loggedUser.firstName} ${loggedUser.lastName}`)}`
@@ -353,9 +361,9 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                           {loggedUser.firstName.charAt(0)}
                         </Avatar>
 
-                        <ParagraphSmall fontWeight={600} colorname={"--gray-50"}>
+                        <ParagraphBody fontWeight={600} colorname={"--gray-50"}>
                           {`${loggedUser.firstName} ${loggedUser.lastName}`}
-                        </ParagraphSmall>
+                        </ParagraphBody>
                       </Button>
                       <Menu className={classes.menuProfile} {...bindMenu(popupState)}>
                         <MenuItem
@@ -437,24 +445,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   )}
                 </PopupState>
               </Grid>
-              {isLecturer && (
-                <Grid item marginTop='5px'>
-                  <Box style={{ display: "flex", alignItems: "center" }}>
-                    <Switch
-                      value={editMode}
-                      onChange={handleChange}
-                      inputProps={{ "aria-label": "controlled" }}
-                    />
-                    <ParagraphSmall
-                      fontWeight={600}
-                      colorname={"--gray-50"}
-                      translation-key='header_switch'
-                    >
-                      {t("header_switch")}
-                    </ParagraphSmall>
-                  </Box>
-                </Grid>
-              )}
             </Grid>
           )}
         </Box>
@@ -487,9 +477,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               <ListItem key={index} disablePadding>
                 <ListItemButton>
                   <ListItemText
-                    primary={
-                      <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
-                    }
+                    primary={<ParagraphBody translation-key={item.name}>{item.name}</ParagraphBody>}
                   />
                 </ListItemButton>
               </ListItem>
@@ -503,9 +491,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
               <ListItem key={index} disablePadding>
                 <ListItemButton>
                   <ListItemText
-                    primary={
-                      <ParagraphSmall translation-key={item.name}>{item.name}</ParagraphSmall>
-                    }
+                    primary={<ParagraphBody translation-key={item.name}>{item.name}</ParagraphBody>}
                   />
                 </ListItemButton>
               </ListItem>

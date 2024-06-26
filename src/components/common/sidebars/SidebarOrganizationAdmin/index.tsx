@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { routes } from "routes/routes";
 import SidebarManagement, { SidebarItem } from "../SidebarManagement";
 import classes from "./styles.module.scss";
@@ -13,6 +13,10 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { setSidebarWidth } from "reduxes/SidebarStatus";
+import { useDispatch } from "react-redux";
 
 const drawerWidth = 270;
 
@@ -58,13 +62,13 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
       link: routes.org_admin.contest.root
     },
     {
-      name: t("user_management"),
+      name: t("side_bar_user_management"),
       "translation-key": "user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.org_admin.users.root
     },
     {
-      name: t("question_bank_management"),
+      name: t("side_bar_question_bank_management"),
       "translation-key": "question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.org_admin.question_bank.root
@@ -76,16 +80,23 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
   //   setOpen((pre) => !pre);
   // };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const { width: sidebarWidth } = useBoxDimensions({
+    ref: sidebarRef
   });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setSidebarWidth(sidebarWidth));
+  }, [sidebarWidth, dispatch]);
 
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
-      <Header toggleDrawer={toggleDrawer} ref={headerRef} />
+      <Header toggleDrawer={toggleDrawer} />
       <Drawer
         className={classes.drawer}
+        ref={sidebarRef}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -102,7 +113,10 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
       </Drawer>
       <Main
         open={open}
-        sx={{ marginTop: `${headerHeight}px`, height: `calc(100% - ${headerHeight}px)` }}
+        sx={{
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`
+        }}
       >
         {children}
       </Main>

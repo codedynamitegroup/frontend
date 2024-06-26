@@ -30,6 +30,8 @@ import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import cloneDeep from "lodash.clonedeep";
 import { SharedSolutionService } from "services/codeAssessmentService/SharedSolutionService";
 import { UUID } from "crypto";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 type FormSolutionValue = {
   solution: string;
   title: string;
@@ -71,10 +73,7 @@ export default function ShareSolution() {
   const initTag: { id: UUID; name: string }[] | undefined = state ? state.tags : undefined;
   const solutionId: string | undefined = state ? state.solutionId : undefined;
   const edit: boolean | undefined = state ? state.edit : undefined;
-  const headerRef = useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const tag = useAppSelector((state) => state.algorithmnTag);
   const sortedTag = cloneDeep(tag.tagList).sort((a, b) =>
     a.name < b.name ? 1 : a.name === b.name ? 0 : -1
@@ -188,12 +187,12 @@ ${sourceCode}
   };
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       <Container
         className={classes.container}
         style={{
-          marginTop: `${headerHeight}px`,
-          height: `calc(100% - ${headerHeight}px)`
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`
         }}
       >
         <Box className={classes.stickyBack} onClick={handleBackButton}>

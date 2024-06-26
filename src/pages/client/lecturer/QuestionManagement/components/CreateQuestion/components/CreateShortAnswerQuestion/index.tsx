@@ -41,6 +41,7 @@ import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import { Card } from "@mui/joy";
+import { RootState } from "store";
 
 interface Props {
   qtype: String;
@@ -82,11 +83,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  let { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-  if (props.insideCrumb) headerHeight = 0;
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -298,7 +297,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
         <Helmet>
           <title>Course | Create short answer question</title>
         </Helmet>
-        <Header ref={headerRef} />
+        <Header />
 
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <AlertDialog isBlocking={openAlertDiaglog} />

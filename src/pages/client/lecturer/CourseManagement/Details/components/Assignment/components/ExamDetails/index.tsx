@@ -23,7 +23,6 @@ import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
 import { setExamDetail, setExamOverview } from "reduxes/courseService/exam";
-import { setExamData } from "reduxes/TakeExam";
 import ButtonBack from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import StartRoundedIcon from "@mui/icons-material/StartRounded";
@@ -40,6 +39,8 @@ import { CircularProgress } from "@mui/joy";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 import GradingExamTable from "./components/GradingExamTable";
+import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
+import useAuth from "hooks/useAuth";
 
 const LecturerCourseExamDetails = () => {
   const { t } = useTranslation();
@@ -47,7 +48,6 @@ const LecturerCourseExamDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
   const examState = useSelector((state: RootState) => state.exam);
-  const startAt = useSelector((state: RootState) => state.takeExam.startAt);
   const [examSubmissions, setExamSubmissions] = useState<ExamSubmissionDetail[]>([]);
   const [mainSkeleton, setMainSkeleton] = useState(true);
   const [timeOpenString, setTimeOpenString] = useState<Date>(new Date());
@@ -55,7 +55,7 @@ const LecturerCourseExamDetails = () => {
   const [errorPage, setErrorPage] = useState(false);
   const [errorTitle, setErrorTitle] = useState("");
   const [highestScore, setHighestScore] = useState<number>(0);
-  const user: User = useSelector(selectCurrentUser);
+  const auth = useAuth();
 
   const [exam, setExam] = useState<ExamEntity>({
     id: "",
@@ -107,7 +107,7 @@ const LecturerCourseExamDetails = () => {
 
   const handleGetSubmissions = async (examId: string, userId: string) => {
     try {
-      const response = await ExamService.getAllAttemptByExamIdAndUserId(examId, userId);
+      const response = await ExamSubmissionService.getAllAttemptByExamIdAndUserId(examId, userId);
       setExamSubmissions(response);
     } catch (error) {
       console.error(error);
@@ -142,7 +142,7 @@ const LecturerCourseExamDetails = () => {
     const fetchInitialData = async () => {
       await handleGetExamById(examId ?? examState.examDetail.id);
       await handleGetOverviews(examId ?? examState.examDetail.id);
-      await handleGetSubmissions(examId ?? examState.examDetail.id, user.userId);
+      await handleGetSubmissions(examId ?? examState.examDetail.id, auth.loggedUser.userId);
       setMainSkeleton(false);
     };
     fetchInitialData();
@@ -156,30 +156,6 @@ const LecturerCourseExamDetails = () => {
   const navigate = useNavigate();
 
   const startAttemptButtonHandler = () => {
-    const timeOpen = exam.timeOpen ? new Date(exam.timeOpen) : new Date();
-    const timeClose = exam.timeClose ? new Date(exam.timeClose) : new Date();
-    const createdAt = exam.createdAt ? new Date(exam.createdAt) : new Date();
-    const updatedAt = exam.updatedAt ? new Date(exam.updatedAt) : new Date();
-
-    const examStateData: ReduxExamEntity = {
-      id: exam.id,
-      courseId: exam.courseId,
-      name: exam.name,
-      scores: exam.scores,
-      maxScores: exam.maxScores,
-      timeOpen: timeOpen.toISOString(),
-      timeClose: timeClose.toISOString(),
-      timeLimit: exam.timeLimit,
-      intro: exam.intro,
-      overdueHanding: exam.overdueHanding,
-      canRedoQuestions: exam.canRedoQuestions,
-      maxAttempts: exam.maxAttempts,
-      shuffleAnswers: exam.shuffleAnswers,
-      gradeMethod: exam.gradeMethod,
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt.toISOString()
-    };
-    dispatch(setExamData(examStateData));
     navigate(
       routes.lecturer.exam.take
         .replace(":courseId", courseId || examState.examDetail.courseId)
@@ -314,7 +290,8 @@ const LecturerCourseExamDetails = () => {
             height: "fit-content"
           }}
         >
-          {startAt ? t("exam_detail_test") : t("exam_detail_start")}
+          {/* {startAt ? t("exam_detail_test") : t("exam_detail_start")} */}
+          {"Start at time"}
         </ButtonBack>
       </Stack>
 
@@ -459,7 +436,7 @@ const LecturerCourseExamDetails = () => {
         <Button
           btnType={BtnType.Primary}
           onClick={() => {
-            navigate(routes.lecturer.exam.grading);
+            navigate(routes.lecturer.exam.grading.replace(":examId", exam.id));
           }}
         >
           <ParagraphBody translation-key='course_lecturer_assignment_grading'>

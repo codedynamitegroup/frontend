@@ -102,11 +102,6 @@ export default function SubmitAssignment() {
 
   const { loggedUser } = useAuth();
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
     ref: header2Ref
@@ -334,9 +329,11 @@ export default function SubmitAssignment() {
     }
   }, []);
 
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       {submissionAssignmentState.isLoading ? (
         <Box
           sx={{
@@ -355,7 +352,7 @@ export default function SubmitAssignment() {
           <Box
             className={classes.contentContainer}
             sx={{
-              marginTop: `${headerHeight}px`
+              marginTop: `${sidebarStatus.headerHeight}px`
             }}
           >
             <Container

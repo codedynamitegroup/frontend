@@ -11,8 +11,8 @@ const Heading1 = styled(Typography)<Props>`
   font-family: "Montserrat";
   font-style: ${(props) => props.fontStyle || "normal"};
   font-weight: ${(props) => props.fontWeight || 600};
-  font-size: ${(props) => props.fontSize || "32px"};
-  line-height: 48px;
+  font-size: ${(props) => props.fontSize || "30px"};
+  line-height: 45px;
   color: ${(props) => `var(${props.colorname || "--eerie-black"})`};
   @media only screen and (max-width: 767px) {
     font-size: 18px;

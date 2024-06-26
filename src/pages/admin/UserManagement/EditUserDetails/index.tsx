@@ -19,8 +19,6 @@ import { UpdateUserByAdminRequest, User } from "models/authService/entity/user";
 import { UserService } from "services/authService/UserService";
 import { format, parse } from "date-fns";
 import ErrorMessage from "components/text/ErrorMessage";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -32,6 +30,7 @@ import InputSelect from "components/common/inputs/InputSelect";
 import images from "config/images";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import { InputPhone } from "components/common/inputs/InputPhone";
 
 interface IFormDataType {
   firstName: string;
@@ -235,11 +234,11 @@ const EditUserDetails = () => {
                   name='phone'
                   render={({ field }) => {
                     return (
-                      <PhoneInput
-                        placeholder='Enter phone number'
+                      <InputPhone
+                        label={t("common_phone")}
+                        errorMessage={errors?.phone?.message}
                         value={field.value}
                         onChange={field.onChange}
-                        className={classes.phoneInput}
                       />
                     );
                   }}

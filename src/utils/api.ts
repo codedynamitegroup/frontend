@@ -5,10 +5,12 @@ const AUTH_SERVICE_API_URL = process.env.REACT_APP_AUTH_SERVICE_API_URL || "";
 
 const createInstance = ({
   baseURL,
-  isAuthorization = false
+  isAuthorization = false,
+  disableHeaderToken = false
 }: {
   baseURL: string;
   isAuthorization?: boolean;
+  disableHeaderToken?: boolean;
 }) => {
   // const accessToken = localStorage.getItem("access_token");
   const refreshToken = localStorage.getItem("refresh_token");
@@ -47,10 +49,11 @@ const createInstance = ({
           originalRequest._retry = true;
           const newRefreshToken = localStorage.getItem("refresh_token");
           const newAccessToken = localStorage.getItem("access_token");
+
           return axios
             .post(`${AUTH_SERVICE_API_URL}${API.AUTH.USER.REFRESH_TOKEN}`, {
-              newAccessToken,
-              newRefreshToken
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken
             })
             .then((res) => {
               if (res.status === 200) {
@@ -87,7 +90,7 @@ const createInstance = ({
     instance.interceptors.request.use(
       (config) => {
         const newAccessToken = localStorage.getItem("access_token");
-        if (newAccessToken) {
+        if (newAccessToken && !disableHeaderToken) {
           config.headers["Access-Token"] = newAccessToken;
         }
         return config;

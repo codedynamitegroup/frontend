@@ -9,8 +9,6 @@ import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
 import ErrorMessage from "components/text/ErrorMessage";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
@@ -22,6 +20,7 @@ import { OrganizationService } from "services/authService/OrganizationService";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import { Box, Checkbox, Grid, TextareaAutosize } from "@mui/material";
+import { InputPhone } from "components/common/inputs/InputPhone";
 type Props = {};
 
 interface IFormDataType {
@@ -125,12 +124,11 @@ const OrganizationDetails = (props: Props) => {
           <TextTitle translation-key='organization_phone'>{t("organization_phone")}</TextTitle>
         </Grid>
         <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
-          <PhoneInput
-            placeholder='Enter phone number'
+          <InputPhone
+            label={t("common_phone")}
             value={organization?.phone}
             onChange={() => {}}
             disabled
-            className={classes.phoneInput}
           />
         </Grid>
       </Grid>

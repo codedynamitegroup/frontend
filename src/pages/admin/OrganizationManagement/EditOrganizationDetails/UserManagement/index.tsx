@@ -12,7 +12,7 @@ import {
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import Heading5 from "components/text/Heading5";
-import ParagraphSmall from "components/text/ParagraphSmall";
+import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import i18next from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -183,9 +183,9 @@ const OrganizationUserManagement = () => {
             >
               {params.row.firstName.charAt(0)}
             </Avatar>
-            <ParagraphSmall width={"auto"} fontWeight={500}>
+            <ParagraphBody width={"auto"} fontWeight={500}>
               {params.row.email}
-            </ParagraphSmall>
+            </ParagraphBody>
           </Stack>
         );
       }
@@ -203,9 +203,9 @@ const OrganizationUserManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {params.row.firstName} {params.row.lastName}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -222,9 +222,9 @@ const OrganizationUserManagement = () => {
       },
       renderCell: (params) => {
         return (
-          <ParagraphSmall width={"auto"}>
+          <ParagraphBody width={"auto"}>
             {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
-          </ParagraphSmall>
+          </ParagraphBody>
         );
       }
     },
@@ -268,7 +268,7 @@ const OrganizationUserManagement = () => {
         );
       },
       renderCell: (params) => {
-        return <ParagraphSmall width={"auto"}>{params.row.roleName}</ParagraphSmall>;
+        return <ParagraphBody width={"auto"}>{params.row.roleName}</ParagraphBody>;
       }
     },
     {

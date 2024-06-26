@@ -24,10 +24,10 @@ root.render(
     <GoogleOAuthProvider clientId={googleClientId}>
       <MsalProvider instance={pca}>
         <React.Suspense fallback={<LinearProgress />}>
-          <PersistGate loading={null} persistor={persistor}>
-            <AppStatus />
-            <App />
-          </PersistGate>
+          {/* <PersistGate loading={null} persistor={persistor}> */}
+          <AppStatus />
+          <App />
+          {/* </PersistGate> */}
         </React.Suspense>
       </MsalProvider>
     </GoogleOAuthProvider>

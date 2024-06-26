@@ -259,7 +259,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
-  "header_business_contact": "Liên hệ doanh nghiệp",
+  "header_business_contact": "Liên hệ",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -422,6 +422,7 @@
   "role_user": "Người dùng",
 
   "organization_management": "Quản lý tổ chức",
+  "side_bar_organization_management": "Tổ chức",
   "organization_please_verified": "Vui lòng xác thực tổ chức để sử dụng các tính năng",
   "organization_create": "Tạo tổ chức",
   "organization_update": "Cập nhật tổ chức",
@@ -441,6 +442,7 @@
   "user_belong_to_organization": "Thuộc tổ chức",
   "user_not_belong_to_organization": "Không thuộc tổ chức nào",
   "user_management": "Quản lý người dùng",
+  "side_bar_user_management": "Người dùng",
   "user_create": "Tạo người dùng",
   "user_assign_to_organization": "Gán cho tổ chức",
   "user_update": "Cập nhật người dùng",
@@ -453,7 +455,7 @@
   "user_detail_activity_stats": "Thống kê hoạt động",
   "user_detail_recent_activity": "Hoạt động gần đây",
   "user_detail_problem": "Bài làm",
-  "user_detail_submission": "Bài giải",
+  "user_detail_shared_solution": "Bài giải",
   "user_detail_recent": "Gần đây nhất",
   "user_detail_most_comment": "Nhiều bình chọn nhất",
   "user_detail_dialog_title": "Chỉnh sửa thông tin cá nhân",
@@ -469,6 +471,7 @@
   "user_detail_see_all_submission": "Xem tất cả bài làm",
   "user_detail_no_submission": "Chưa có bài làm nào",
 
+  "course_list_member": "Danh sách thành viên",
   "course_list_title": "Danh sách khóa học",
   "course_filter": "Lọc theo loại",
   "course_see_all_teacher": "Xem tất cả giảng viên",
@@ -719,6 +722,7 @@
   "question_bank_create_category_name": "Tên danh mục",
 
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
+  "side_bar_question_bank_management": "Ngân hàng câu hỏi",
 
   "code_question_name": "Tên câu hỏi code",
   "code_question_difficulty": "Độ khó",
@@ -776,6 +780,7 @@
   "calendar_event_name_time_minute": "Khoảng thời gian tính theo phút",
 
   "code_management_title": "Quản lý câu hỏi code",
+  "side_bar_code_management": "Câu hỏi code",
   "code_management_create_new_title": "Tạo câu hỏi code mới",
   "code_management_create_description": "Mô tả bài toán",
   "code_management_create_statement": "Phát biểu bài toán",
@@ -1068,7 +1073,7 @@
   "exam_detail_graded": "Đã chấm",
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
-  "exam_detail_attempt_unlimited": "Không giới hạn lần làm",
+  "exam_detail_attempt_unlimited": "Không giới hạn số lần",
 
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
