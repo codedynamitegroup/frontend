@@ -11,6 +11,8 @@ export interface InitialState {
     files?: {
       fileUrl: string;
       fileName: string;
+      fileSize: number;
+      fileType: string;
     }[];
   }[];
 }
@@ -37,6 +39,8 @@ const takeExamSlice = createSlice({
           files?: {
             fileUrl: string;
             fileName: string;
+            fileSize: number;
+            fileType: string;
           }[];
         }[];
       }>
@@ -83,7 +87,13 @@ const takeExamSlice = createSlice({
 
     addFileToExamQuesiton: (
       state,
-      action: PayloadAction<{ id: string; fileUrl: string; fileName: string }>
+      action: PayloadAction<{
+        id: string;
+        fileUrl: string;
+        fileName: string;
+        fileSize: number;
+        fileType: string;
+      }>
     ) => {
       const index = state.questionList.findIndex(
         (question) => question.questionData.id === action.payload.id
@@ -92,7 +102,9 @@ const takeExamSlice = createSlice({
       if (index !== -1) {
         state.questionList[index].files?.push({
           fileUrl: action.payload.fileUrl,
-          fileName: action.payload.fileName
+          fileName: action.payload.fileName,
+          fileSize: action.payload.fileSize,
+          fileType: action.payload.fileType
         });
         state.questionList[index].answered = true;
       }

@@ -151,7 +151,7 @@ export const API = {
     EXAM_SUBMISSION: {
       STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
-      SUBMISSION_DETAIL: "/course/exam/submission/:id",
+      SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
     },
     EXAM_QUESTION: {
@@ -189,10 +189,13 @@ export const API = {
     CODE_SUBMISSION: {
       DEFAULT: "/code-assessment/code-submission",
       GET_BY_ID: "/code-assessment/code-submission/:id",
-      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission"
+      ADMIN_CODE_SUBMISSION: "/code-assessment/code-submission/admin-code-submission",
+      RECENT_CODE_QUESTION: "/code-assessment/code-submission/recent-code-question",
+      HEAT_MAP: "/code-assessment/code-submission/heat-map"
     },
     SHARED_SOLUTION: {
       DEFAULT: "/code-assessment/shared-solution",
+      GET_RECENT: "/code-assessment/shared-solution",
       GET_BY_ID: "code-assessment/shared-solution/:id",
       COMMENT: {
         DEFAULT: "code-assessment/shared-solution/:id/comment",
@@ -214,7 +217,7 @@ export const API = {
       SOCIAL_LOGIN: "/auth/users/social-login",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",
-      LOGOUT: "/auth/users/logout",
+      LOGOUT: "/auth/users/logout/:email",
       REGISTER: "/auth/users/register",
       CREATE_USER_BY_ADMIN: "/auth/users",
       GET_USER_BY_EMAIL: "/auth/users/get-by-email",

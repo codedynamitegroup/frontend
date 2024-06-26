@@ -82,7 +82,9 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
               relatedDispatch({
                 id: relatedId,
                 fileUrl: url, // slice blob: from url
-                fileName: incommingFiles[i].name
+                fileName: incommingFiles[i].name,
+                fileSize: incommingFiles[i].size,
+                fileType: incommingFiles[i].type
               })
             );
           }

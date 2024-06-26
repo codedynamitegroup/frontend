@@ -99,6 +99,51 @@ export class CodeSubmissionService {
     }
   }
 
+  static async getRecentCodeQuestion(pageNo: number, pageSize: number) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.RECENT_CODE_QUESTION}`, {
+        params: {
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async getHeatMap(year: number) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.HEAT_MAP}`, {
+        params: {
+          year
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getAdminCodeSubmissionList({
     cerCourseId,
     contestId,

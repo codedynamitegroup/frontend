@@ -12,7 +12,6 @@ export class CodeQuestionService {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
       }).get(API.CODE_ASSESSMENT.CODE_QUESTION.RECOMMENED);
-      console.log(response.data, response.status);
       if (response.status === 200) {
         return response.data;
       }

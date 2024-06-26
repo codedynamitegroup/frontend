@@ -105,12 +105,11 @@ export class UserService {
     }
   }
 
-  static async logout() {
+  static async logout(email: string) {
     try {
       const response = await api({
-        baseURL: authServiceApiUrl,
-        isAuthorization: true
-      }).post(`${API.AUTH.USER.LOGOUT}`);
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.USER.LOGOUT.replace(":email", email)}`);
       if (response.status === 200) {
         return response.data;
       }
