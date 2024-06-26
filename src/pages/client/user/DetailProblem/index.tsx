@@ -103,9 +103,9 @@ export default function DetailProblem() {
   useEffect(() => {
     if (problemId !== undefined) {
       dispatch(setLoading(true));
-      CodeQuestionService.getDetailCodeQuestion(problemId)
-        .then((data: CodeQuestionEntity) => {
-          dispatch(setCodeQuestion(updateLanguageSourceCode(data)));
+      CodeQuestionService.getDetailCodeQuestion([problemId])
+        .then((data: CodeQuestionEntity[]) => {
+          if (data.length > 0) dispatch(setCodeQuestion(updateLanguageSourceCode(data[0])));
         })
         .catch((err) => console.log(err))
         .finally(() => dispatch(setLoading(false)));

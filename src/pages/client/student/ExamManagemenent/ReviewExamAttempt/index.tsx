@@ -16,11 +16,9 @@ import MultipleChoiceExamQuestion from "./components/ExamQuestion/MultipleChoice
 import ShortAnswerExamQuestion from "./components/ExamQuestion/ShortAnswerExamQuestion";
 import TrueFalseExamQuestion from "./components/ExamQuestion/TrueFalseExamQuestion";
 import classes from "./styles.module.scss";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { ExamService } from "services/courseService/ExamService";
 import { GetQuestionExam } from "models/courseService/entity/QuestionEntity";
 import Button from "@mui/joy/Button";
-import { ExamEntity } from "models/courseService/entity/ExamEntity";
 import { useTranslation } from "react-i18next";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import IconButton from "@mui/joy/IconButton";
@@ -33,27 +31,32 @@ import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import { Helmet } from "react-helmet";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
-
-interface SubmissionData {
-  examSubmissionId: string;
-  examId: string;
-  userId: string;
-  startTime: Date;
-  submitTime: Date;
-  status: string;
-  questionSubmissionResponses: {
-    questionId: string;
-    examSubmissionId: string;
-    userId: string;
-    passStatus: string;
-    grade: number;
-    content: string;
-    rightAnswer: string;
-    numFile: number;
-  }[];
-}
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import {
+  GetQuestionSubmissionEntity,
+  SubmissionDetail
+} from "models/courseService/entity/QuestionSubmissionEntity";
+import DonutLargeRoundedIcon from "@mui/icons-material/DonutLargeRounded";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import ModeIcon from "@mui/icons-material/Mode";
+import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
+import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import Badge from "@mui/joy/Badge";
+import FlagIcon from "@mui/icons-material/Flag";
 
 const drawerWidth = 370;
+
+export interface QuestionDetailMap {
+  [key: string]: QuestionDetail;
+}
+
+interface QuestionDetail {
+  flag: boolean;
+  answered: boolean;
+  id: string;
+}
 
 export default function StudentReviewExamAttempt() {
   const { t } = useTranslation();
@@ -69,8 +72,9 @@ export default function StudentReviewExamAttempt() {
   const [open, setOpen] = React.useState(true);
   const [inputIndexValue, setInputIndexValue] = React.useState(1);
   const [questions, setQuestions] = React.useState<any[]>([]);
-  const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
-  const [submissionData, setSubmissionData] = React.useState<SubmissionData | undefined>(undefined);
+  const [submissionData, setSubmissionData] = React.useState<SubmissionDetail | undefined>(
+    undefined
+  );
   const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
   const [timeClose, setTimeClose] = React.useState<Date>(new Date());
   const [mainSkeleton, setMainSkeleton] = React.useState<boolean>(true);
@@ -85,6 +89,21 @@ export default function StudentReviewExamAttempt() {
     minutes: 0,
     seconds: 0
   });
+  const questionDetailMap = React.useMemo(() => {
+    return (
+      submissionData?.questionSubmissionResponses.reduce(
+        (acc: QuestionDetailMap, question: GetQuestionSubmissionEntity) => {
+          acc[question.questionId] = {
+            flag: question.flag,
+            answered: question.answerStatus,
+            id: question.questionId
+          };
+          return acc;
+        },
+        {}
+      ) || undefined
+    );
+  }, [submissionData]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -103,100 +122,97 @@ export default function StudentReviewExamAttempt() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
-  React.useEffect(() => {
-    if (examId) {
-      // Get exam data
-      ExamService.getExamById(examId)
-        .then((res) => {
-          console.log("Get exam data");
-          setExamData(res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+  const handleGetExamQuestion = React.useCallback(async () => {
+    if (examId === undefined) return;
+    ExamService.getExamQuestionById(examId, null)
+      .then((res) => {
+        console.log("Get exam questions");
+        const questionIds = res.questions.map((question: GetQuestionExam) => ({
+          questionId: question.id,
+          qtype: question.qtype
+        }));
+        const postQuestionDetailList: PostQuestionDetailList = {
+          questionCommands: questionIds
+        };
 
-      // Get exam questions
-      ExamService.getExamQuestionById(examId, null)
-        .then((res) => {
-          console.log("Get exam questions");
-          const questionIds = res.questions.map((question: GetQuestionExam) => ({
-            questionId: question.id,
-            qtype: question.qtype
-          }));
-          const postQuestionDetailList: PostQuestionDetailList = {
-            questionCommands: questionIds
-          };
-
-          // Get question detail
-          QuestionService.getQuestionDetail(postQuestionDetailList)
-            .then((res) => {
-              console.log("Get question detail");
-              const transformList = res.questionResponses.map((question: any) => {
-                const data = question.qtypeEssayQuestion
-                  ? question.qtypeEssayQuestion
-                  : question.qtypeShortAnswerQuestion
-                    ? question.qtypeShortAnswerQuestion
-                    : question.qtypeMultichoiceQuestion
-                      ? question.qtypeMultichoiceQuestion
-                      : question.qtypeTrueFalseQuestion
-                        ? question.qtypeTrueFalseQuestion
-                        : question.qtypeCodeQuestion;
-                return {
-                  data
-                };
-              });
-              setQuestions(transformList);
-            })
-            .catch((error) => {
-              console.error(error);
-            })
-            .finally(() => {});
-        })
-        .catch((error) => {
-          setMainSkeleton(false);
-          console.error(error);
-        })
-        .finally(() => {
-          setMainSkeleton(false);
-        });
-
-      // Get exam submission data
-      if (submissionId !== undefined)
-        ExamSubmissionService.getExamSubmissionById(submissionId)
+        // Get question detail
+        QuestionService.getQuestionDetail(postQuestionDetailList)
           .then((res) => {
-            console.log("Get exam submission data");
-            setSubmissionData(res);
-
-            // Calculate time taken
-            const openTime = new Date(res.startTime);
-            const closeTime = new Date(res.submitTime);
-
-            const diffMs = closeTime.getTime() - openTime.getTime(); // milliseconds between openTime & closeTime
-            const diffDays = Math.floor(diffMs / 86400000); // days
-            const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-            const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-            const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000); // seconds
-            setTimeOpen(openTime);
-            setTimeClose(closeTime);
-
-            setTimeTaken({
-              days: diffDays,
-              hours: diffHrs,
-              minutes: diffMins,
-              seconds: diffSecs
+            console.log("Get question detail");
+            const transformList = res.questionResponses.map((question: any) => {
+              const data = question.qtypeEssayQuestion
+                ? question.qtypeEssayQuestion
+                : question.qtypeShortAnswerQuestion
+                  ? question.qtypeShortAnswerQuestion
+                  : question.qtypeMultichoiceQuestion
+                    ? question.qtypeMultichoiceQuestion
+                    : question.qtypeTrueFalseQuestion
+                      ? question.qtypeTrueFalseQuestion
+                      : question.qtypeCodeQuestion;
+              return {
+                data
+              };
             });
+            setQuestions(transformList);
           })
           .catch((error) => {
             console.error(error);
           })
           .finally(() => {});
-    }
-  }, []);
+      })
+      .catch((error) => {
+        setMainSkeleton(false);
+        console.error(error);
+      })
+      .finally(() => {
+        setMainSkeleton(false);
+      });
+  }, [examId]);
+
+  const handleGetExamSubmission = React.useCallback(async () => {
+    if (submissionId !== undefined)
+      ExamSubmissionService.getExamSubmissionById(submissionId)
+        .then((res) => {
+          console.log("Get exam submission data");
+          setSubmissionData(res);
+
+          // Calculate time taken
+          const openTime = new Date(res.startTime);
+          const closeTime = new Date(res.submitTime);
+
+          const diffMs = closeTime.getTime() - openTime.getTime(); // milliseconds between openTime & closeTime
+          const diffDays = Math.floor(diffMs / 86400000); // days
+          const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+          const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+          const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000); // seconds
+          setTimeOpen(openTime);
+          setTimeClose(closeTime);
+
+          setTimeTaken({
+            days: diffDays,
+            hours: diffHrs,
+            minutes: diffMins,
+            seconds: diffSecs
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {});
+  }, [submissionId]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      // Get exam questions
+      handleGetExamQuestion();
+
+      // Get exam submission data
+      handleGetExamSubmission();
+    };
+    fetchData();
+  }, [handleGetExamQuestion, handleGetExamSubmission]);
 
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
@@ -234,17 +250,31 @@ export default function StudentReviewExamAttempt() {
     t("common_saturday")
   ];
 
+  const breadCrumbData = [
+    {
+      navLink: `${routes.student.course.detail.replace(":courseId", courseId || "")}`,
+      label: submissionData?.courseName || ""
+    },
+    {
+      navLink: `${routes.student.course.assignment.replace(":courseId", courseId || "")}`,
+      label: t("common_type_assignment")
+    },
+    {
+      navLink: `${routes.student.exam.detail
+        .replace(":courseId", courseId || "")
+        .replace(":examId", examId || "")}`,
+      label: submissionData?.name || ""
+    }
+  ];
   return (
     <>
       <Helmet>
-        <title>{`${t("exam_review_attempt_title")} | ${examData?.name}`}</title>
+        <title>{`${t("exam_review_attempt_title")} | ${submissionData?.name}`}</title>
       </Helmet>
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
-          <CssBaseline />
+        <Header />
 
-          <CssBaseline />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           {/* <DrawerHeader /> */}
           <Button
             // aria-label='open drawer'
@@ -252,7 +282,7 @@ export default function StudentReviewExamAttempt() {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -261,8 +291,20 @@ export default function StudentReviewExamAttempt() {
             endDecorator={<MenuIcon color='action' />}
             variant='soft'
           />
+
           <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>{examData?.name}</Heading1>
+            <Box
+              sx={{
+                marginLeft: "-7px"
+              }}
+              width={"100%"}
+            >
+              <CustomBreadCrumb
+                breadCrumbData={breadCrumbData}
+                lastBreadCrumbLabel={t("exam_review_attempt_title")}
+              />
+            </Box>
+            <Heading1 fontWeight={"500"}>{submissionData?.name}</Heading1>
             <Button
               onClick={() => {
                 if (courseId && examId)
@@ -289,6 +331,25 @@ export default function StudentReviewExamAttempt() {
                 </>
               ) : (
                 <>
+                  <ExamReviewBoxContent
+                    textTitle={t("exam_review_status")}
+                    textContent={
+                      submissionData?.status === "SUBMITTED"
+                        ? t("exam_review_status_submitted").toUpperCase()
+                        : submissionData?.status === "GRADED"
+                          ? t("exam_review_status_graded").toUpperCase()
+                          : t("exam_review_status_not_submitted").toUpperCase() ||
+                            t("common_unknown")
+                    }
+                    icon={
+                      <DonutLargeRoundedIcon
+                        sx={{
+                          fontSize: "15px",
+                          marginBottom: "3px"
+                        }}
+                      />
+                    }
+                  />
                   <ExamReviewBoxContent
                     textTitle={t("exam_review_started_on")}
                     textContent={t("common_show_time", {
@@ -416,7 +477,7 @@ export default function StudentReviewExamAttempt() {
                     </React.Fragment>
                   ))}
                 </Grid>
-              ) : questions[questionPageIndex].data.question.qtype === qtype.essay.code ? (
+              ) : questions[questionPageIndex]?.data?.question?.qtype === qtype.essay.code ? (
                 <EssayExamQuestion
                   questionIndex={questionPageIndex}
                   questionEssayQuestion={questions[questionPageIndex].data}
@@ -425,7 +486,8 @@ export default function StudentReviewExamAttempt() {
                       submittedQuestion.questionId === questions[questionPageIndex].data.question.id
                   )}
                 />
-              ) : questions[questionPageIndex].data.question.qtype === qtype.short_answer.code ? (
+              ) : questions[questionPageIndex]?.data?.question?.qtype ===
+                qtype.short_answer.code ? (
                 <ShortAnswerExamQuestion
                   questionIndex={questionPageIndex}
                   questionShortAnswer={questions[questionPageIndex].data}
@@ -434,7 +496,7 @@ export default function StudentReviewExamAttempt() {
                       submittedQuestion.questionId === questions[questionPageIndex].data.question.id
                   )}
                 />
-              ) : questions[questionPageIndex].data.question.qtype ===
+              ) : questions[questionPageIndex]?.data?.question?.qtype ===
                 qtype.multiple_choice.code ? (
                 <MultipleChoiceExamQuestion
                   questionIndex={questionPageIndex}
@@ -444,7 +506,7 @@ export default function StudentReviewExamAttempt() {
                       submittedQuestion.questionId === questions[questionPageIndex].data.question.id
                   )}
                 />
-              ) : questions[questionPageIndex].data.question.qtype === qtype.true_false.code ? (
+              ) : questions[questionPageIndex]?.data?.question?.qtype === qtype.true_false.code ? (
                 <TrueFalseExamQuestion
                   questionIndex={questionPageIndex}
                   questionTrueFalse={questions[questionPageIndex].data}
@@ -495,7 +557,10 @@ export default function StudentReviewExamAttempt() {
                     {questionPageIndex !== 0 && (
                       <Link
                         to={{
-                          pathname: routes.student.exam.review,
+                          pathname: `${routes.student.exam.review
+                            .replace(":courseId", courseId || "")
+                            .replace(":examId", examId || "")
+                            .replace(":submissionId", submissionId || "")}`,
                           search: `?showall=0&page=${questionPageIndex - 1}`
                         }}
                       >
@@ -516,7 +581,10 @@ export default function StudentReviewExamAttempt() {
                     {questionPageIndex !== questions.length - 1 ? (
                       <Link
                         to={{
-                          pathname: routes.student.exam.review,
+                          pathname: `${routes.student.exam.review
+                            .replace(":courseId", courseId || "")
+                            .replace(":examId", examId || "")
+                            .replace(":submissionId", submissionId || "")}`,
                           search: `?showall=0&page=${questionPageIndex + 1}`
                         }}
                       >
@@ -525,7 +593,15 @@ export default function StudentReviewExamAttempt() {
                     ) : (
                       <Button
                         onClick={() => {
-                          navigate(routes.student.exam.detail);
+                          if (courseId && examId)
+                            navigate(
+                              `${routes.student.exam.detail
+                                .replace(":courseId", courseId)
+                                .replace(":examId", examId)}`
+                            );
+                          else {
+                            navigate(routes.student.root);
+                          }
                         }}
                         translation-key='exam_finish_review'
                       >
@@ -546,7 +622,7 @@ export default function StudentReviewExamAttempt() {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}
@@ -623,37 +699,82 @@ export default function StudentReviewExamAttempt() {
 
                 <Grid container spacing={1} className={classes.pageNavigationDrawer}>
                   {questions.map((question, index) => (
-                    <Grid item key={index}>
-                      <Button
-                        variant={"outlined"}
-                        sx={{
-                          borderRadius: "1000px",
-                          width: "40px",
-                          height: "40px"
-                          // backgroundColor: question.answered ? "#e1e1e1" : ""
-                        }}
-                        onClick={() => {
-                          if (isShowAllQuesionsInOnePage === "0") {
-                            if (courseId && examId && submissionId)
-                              navigate(
-                                `${routes.student.exam.review
-                                  .replace(":courseId", courseId)
-                                  .replace(":examId", examId)
-                                  .replace(":submissionId", submissionId)}?showall=0&page=${index}`
-                              );
-                            else {
-                              // navigate to unknown page
-                              // navigate();
-                            }
-                          } else {
-                            const slug = convertUuidToHashSlug(question.data.question.id);
-                            const element = document.getElementById(slug);
-                            element?.scrollIntoView({ behavior: "smooth" });
-                          }
+                    <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
+                      <Badge
+                        color='neutral'
+                        variant='outlined'
+                        badgeContent={
+                          question.data.question.qtype === qtype.essay.code ? (
+                            <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                          ) : question.data.question.qtype === qtype.short_answer.code ? (
+                            <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                          ) : question.data.question.qtype === qtype.true_false.code ? (
+                            <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                          ) : (
+                            <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
+                          )
+                        }
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right"
                         }}
                       >
-                        {index + 1}
-                      </Button>
+                        <Badge
+                          color='neutral'
+                          variant='outlined'
+                          badgeContent={
+                            <FlagIcon
+                              sx={{
+                                width: "10px",
+                                height: "15px",
+                                color: "red"
+                              }}
+                            />
+                          }
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "right"
+                          }}
+                          invisible={!questionDetailMap?.[question.data.question.id]?.flag}
+                        >
+                          <Button
+                            variant={"outlined"}
+                            sx={{
+                              borderRadius: "1000px",
+                              width: "40px",
+                              height: "40px",
+                              backgroundColor: questionDetailMap?.[question.data.question.id]
+                                ?.answered
+                                ? "#e1e1e1"
+                                : ""
+                            }}
+                            onClick={() => {
+                              if (isShowAllQuesionsInOnePage === "0") {
+                                if (courseId && examId && submissionId)
+                                  navigate(
+                                    `${routes.student.exam.review
+                                      .replace(":courseId", courseId)
+                                      .replace(":examId", examId)
+                                      .replace(
+                                        ":submissionId",
+                                        submissionId
+                                      )}?showall=0&page=${index}`
+                                  );
+                                else {
+                                  // navigate to unknown page
+                                  // navigate();
+                                }
+                              } else {
+                                const slug = convertUuidToHashSlug(question.data.question.id);
+                                const element = document.getElementById(slug);
+                                element?.scrollIntoView({ behavior: "smooth" });
+                              }
+                            }}
+                          >
+                            {index + 1}
+                          </Button>
+                        </Badge>
+                      </Badge>
                     </Grid>
                   ))}
                 </Grid>

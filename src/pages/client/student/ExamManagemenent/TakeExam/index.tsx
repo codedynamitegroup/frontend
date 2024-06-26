@@ -58,6 +58,9 @@ import {
 import moment from "moment";
 import { EndExamCommand, GetExamDetails } from "models/courseService/entity/ExamEntity";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
+import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 
 const drawerWidth = 370;
 
@@ -118,6 +121,8 @@ export default function TakeExam() {
   const [submitted, setSubmitted] = React.useState(false);
   const [endTime, setEndTime] = React.useState<any | undefined>(undefined);
   const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
+  const [canStartExam, setCanStartExam] = React.useState(false);
+  const [isFinishedFetching, setIsFinishedFetching] = React.useState(false);
 
   const handleEndExam = React.useCallback(
     async (submitTime: string) => {
@@ -172,20 +177,16 @@ export default function TakeExam() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const handleStartExam = async () => {
     try {
-      await ExamSubmissionService.startExam({
+      const response = await ExamSubmissionService.startExam({
         examId: examId ?? examDetails.examId,
         userId: auth.loggedUser.userId,
         examStartTime: new Date().toISOString()
       });
-      // console.log("Start end time: ", response.endTime);
-      // setEndTime(new Date(response.endTime).getTime());
+      setEndTime(new Date(response.endTime).getTime());
       // setExamSubmissionId(response.examSubmissionId);
     } catch (error: any) {
       console.log("error", error);
@@ -204,8 +205,6 @@ export default function TakeExam() {
   };
 
   const handleGetExamSubmissionDetail = async () => {
-    await handleStartExam();
-
     try {
       const response = await ExamSubmissionService.getLatestOnGoingExamSubmission(
         examId ?? examDetails.examId,
@@ -216,7 +215,8 @@ export default function TakeExam() {
       setExamSubmissionId(response.examSubmissionId);
       setExamDetails(response.examSubmissionExamResponse);
     } catch (error: any) {
-      console.log("error", error);
+      console.log("start error", error);
+      if (error.code === 404) setCanStartExam(true);
     }
   };
 
@@ -228,7 +228,7 @@ export default function TakeExam() {
         return {
           questionId: question.questionData.id,
           content: question.content,
-          numFile: question.files?.length || 0,
+          files: question.files || [],
           answerStatus: question.answered,
           flag: question.flag
         };
@@ -316,6 +316,57 @@ export default function TakeExam() {
     return () => clearInterval(interval);
   }, [endTime, getTimeUntil]);
 
+  const handleGetExamQuestion = async () => {
+    try {
+      const res = await ExamService.getExamQuestionById(examId ?? examDetails.examId, null);
+
+      // Handle question data
+      const questionSubmissions = await handleGetQuestionSubmissionData(
+        res.questions.map((question: GetQuestionExam) => question.id)
+      );
+      let questionFromAPI: any[] = [];
+
+      if (questionSubmissions) {
+        const questionSubmissionHashmap = questionSubmissions.reduce(
+          (acc: QuestionSubmissionMap, question: GetQuestionSubmissionEntity) => {
+            acc[question.questionId] = question;
+            return acc;
+          },
+          {}
+        );
+
+        questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+          return {
+            flag: questionSubmissionHashmap[question.id]?.flag || false,
+            answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
+            content: questionSubmissionHashmap[question.id]?.content || "",
+            questionData: question,
+            files: questionSubmissionHashmap[question.id]?.files || []
+          };
+        });
+      } else {
+        questionFromAPI = res.questions.map((question: GetQuestionExam) => {
+          return {
+            flag: false,
+            answered: false,
+            content: "",
+            questionData: question,
+            files: []
+          };
+        });
+      }
+
+      dispatch(
+        setExam({
+          examId: examId ?? examDetails.examId,
+          questionList: questionFromAPI
+        })
+      );
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+
   // get whole question list if storage is empty (first time load page)
   // start the timer
   React.useEffect(() => {
@@ -324,58 +375,19 @@ export default function TakeExam() {
         await handleGetExamSubmissionDetail();
       }
       if (questionList === undefined || questionList?.length <= 0 || examId !== storageExamID) {
-        ExamService.getExamQuestionById(examId ?? examDetails.examId, null)
-          .then(async (res) => {
-            // Handle question data
-            const questionSubmissions = await handleGetQuestionSubmissionData(
-              res.questions.map((question: GetQuestionExam) => question.id)
-            );
-            let questionFromAPI: any[] = [];
-
-            if (questionSubmissions) {
-              const questionSubmissionHashmap = questionSubmissions.reduce(
-                (acc: QuestionSubmissionMap, question: GetQuestionSubmissionEntity) => {
-                  acc[question.questionId] = question;
-                  return acc;
-                },
-                {}
-              );
-
-              questionFromAPI = res.questions.map((question: GetQuestionExam) => {
-                return {
-                  flag: questionSubmissionHashmap[question.id]?.flag || false,
-                  answered: questionSubmissionHashmap[question.id]?.answerStatus || false,
-                  content: questionSubmissionHashmap[question.id]?.content || "",
-                  questionData: question,
-                  files: []
-                };
-              });
-            } else {
-              questionFromAPI = res.questions.map((question: GetQuestionExam) => {
-                return {
-                  flag: false,
-                  answered: false,
-                  content: "",
-                  questionData: question,
-                  files: []
-                };
-              });
-            }
-
-            dispatch(
-              setExam({
-                examId: examId ?? examDetails.examId,
-                questionList: questionFromAPI
-              })
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        await handleGetExamQuestion();
       }
+
+      setIsFinishedFetching(true);
     };
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    if (isFinishedFetching && canStartExam) {
+      handleStartExam();
+    }
+  }, [canStartExam, isFinishedFetching]);
 
   const handleSubmitExam = () => {
     navigate(
@@ -388,44 +400,43 @@ export default function TakeExam() {
     );
   };
 
+  const handleGetQuestionDetail = async () => {
+    const currentQuestionList = questionList
+      .filter((question: any) => question.questionData.page === questionPageIndex)
+      .map((question: any) => ({
+        questionId: question.questionData.id,
+        qtype: question.questionData.qtype
+      }));
+
+    const postQuestionDetailList: PostQuestionDetailList = {
+      questionCommands: currentQuestionList
+    };
+
+    if (currentQuestionList.length === 0) return;
+
+    const res = await QuestionService.getQuestionDetail(postQuestionDetailList);
+    const transformList = res.questionResponses.map((question: any) => {
+      const data = question.qtypeEssayQuestion
+        ? question.qtypeEssayQuestion
+        : question.qtypeShortAnswerQuestion
+          ? question.qtypeShortAnswerQuestion
+          : question.qtypeMultichoiceQuestion
+            ? question.qtypeMultichoiceQuestion
+            : question.qtypeTrueFalseQuestion
+              ? question.qtypeTrueFalseQuestion
+              : question.qtypeCodeQuestion;
+      return {
+        data
+      };
+    });
+    setCurrentQuestionList(transformList);
+  };
+
   // get current page question list
   React.useEffect(() => {
     if (questionList !== undefined) {
       // get all question with the current page index
-      const currentQuestionList = questionList
-        .filter((question) => question.questionData.page === questionPageIndex)
-        .map((question) => ({
-          questionId: question.questionData.id,
-          qtype: question.questionData.qtype
-        }));
-
-      const postQuestionDetailList: PostQuestionDetailList = {
-        questionCommands: currentQuestionList
-      };
-
-      if (currentQuestionList.length === 0) return;
-
-      QuestionService.getQuestionDetail(postQuestionDetailList)
-        .then((res) => {
-          const transformList = res.questionResponses.map((question: any) => {
-            const data = question.qtypeEssayQuestion
-              ? question.qtypeEssayQuestion
-              : question.qtypeShortAnswerQuestion
-                ? question.qtypeShortAnswerQuestion
-                : question.qtypeMultichoiceQuestion
-                  ? question.qtypeMultichoiceQuestion
-                  : question.qtypeTrueFalseQuestion
-                    ? question.qtypeTrueFalseQuestion
-                    : question.qtypeCodeQuestion;
-            return {
-              data
-            };
-          });
-          setCurrentQuestionList(transformList);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      handleGetQuestionDetail();
     }
   }, [questionPageIndex, storageExamID]);
 
@@ -451,6 +462,7 @@ export default function TakeExam() {
   };
 
   const [isSelectedQtypeChanged, setIsSelectedQtypeChanged] = React.useState(false);
+
   // Handler for selecting question type autocomplte
   const selectQtypeHandler = (event: any, value: any) => {
     if (value.length === 0) {
@@ -518,6 +530,24 @@ export default function TakeExam() {
     return () => clearInterval(saveQuestionInterval);
   }, [handleSaveQuestionState, questionList]);
 
+  // Save exam every unload
+  React.useEffect(() => {
+    const handleBeforeUnload = async (event: any) => {
+      try {
+        await handleSaveQuestionState();
+      } catch (error) {
+        console.error("Error during beforeunload API call", error);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [handleSaveQuestionState]);
+
   return (
     <>
       <Helmet>
@@ -529,8 +559,8 @@ export default function TakeExam() {
       </Helmet>
 
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
-        <Box className={classes.container} style={{ marginTop: `${headerHeight}px` }}>
+        <Header />
+        <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
 
           {/* <DrawerHeader /> */}
@@ -540,7 +570,7 @@ export default function TakeExam() {
             sx={{
               ...(open && { display: "none" }),
               position: "fixed",
-              top: `${headerHeight + 10}px`,
+              top: `${sidebarStatus.headerHeight + 10}px`,
               right: 0,
               height: "44px",
               width: "49px"
@@ -761,7 +791,7 @@ export default function TakeExam() {
                 borderTop: "1px solid #E1E1E1",
                 borderRadius: "12px 0px",
                 width: drawerWidth,
-                top: `${headerHeight + 10}px `
+                top: `${sidebarStatus.headerHeight + 10}px `
               }
             }}
             variant={drawerVariant}

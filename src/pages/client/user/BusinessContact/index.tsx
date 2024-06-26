@@ -83,95 +83,87 @@ export default function BusinessContact() {
 
   return (
     <Box id={classes.contactUsRoot}>
-      <Container>
-        <Grid container className={classes.contactUsContainer}>
-          <Grid item xs={12} md={6} id={classes.contactUsBodyLeft}>
-            <Box className={classes.contactUsImg}>
-              <img src={images.contactUsIc} alt='contact us' />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box className={classes.form}>
-              <Heading1 translation-key='common_contact_us'>{t("common_contact_us")}</Heading1>
-              <ParagraphBody translation-key='common_contact_us_description'>
-                {t("common_contact_us_description")}
-              </ParagraphBody>
-              <form className={classes.formControl} onSubmit={handleSubmit(handleSubmitContactUs)}>
-                <Grid container columns={12} className={classes.inputItem}>
-                  <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
-                  <Controller
-                    control={control}
-                    name='businessPhone'
-                    render={({ field }) => {
-                      return (
-                        <InputPhone
-                          label={t("common_phone")}
-                          errorMessage={errors?.businessPhone?.message}
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      );
-                    }}
-                  />
-                  {errors.businessPhone?.message && (
-                    <ErrorMessage>{errors.businessPhone?.message}</ErrorMessage>
-                  )}
-                </Grid>
-                <Grid container columns={12} className={classes.inputItem}>
-                  <TextTitle translation-key='Email'>{t("business_email")}</TextTitle>
-                  <InputTextField
-                    type='text'
-                    inputRef={register("businessEmail")}
-                    width='100%'
-                    errorMessage={errors?.businessEmail?.message}
-                  />
-                </Grid>
-                <Grid container columns={12} className={classes.inputItem}>
-                  <TextTitle translation-key='Email'>{t("business_name")}</TextTitle>
-                  <InputTextField
-                    type='text'
-                    inputRef={register("businessName")}
-                    width='100%'
-                    errorMessage={errors?.businessName?.message}
-                  />
-                </Grid>
-                <Grid container columns={12} className={classes.inputItem}>
-                  <TextTitle translation-key='business_address'>{t("business_address")}</TextTitle>
-                  <InputTextField
-                    type='text'
-                    inputRef={register("businessAddress")}
-                    width='100%'
-                    errorMessage={errors?.businessName?.message}
-                  />
-                </Grid>
-                <Grid container columns={12} className={classes.inputItem}>
-                  <TextTitle translation-key='common_description'>
-                    {t("common_description")}
-                  </TextTitle>
-                  <TextareaAutosize
-                    aria-label='empty textarea'
-                    translation-key='common_description'
-                    className={classes.textArea}
-                    minRows={5}
-                    {...register("businessDescription")}
-                    aria-invalid={errors.businessDescription ? true : false}
-                  />
-                </Grid>
-                <LoadButton
-                  loading={isLoggedLoading}
-                  btnType={BtnType.Primary}
-                  colorname='--white'
-                  autoFocus
-                  translation-key='common_contact_us'
-                  isTypeSubmit
-                >
-                  {t("common_contact_us")}
-                </LoadButton>
-              </form>
-            </Box>
-          </Grid>
+      <Grid container className={classes.contactUsContainer}>
+        <Grid item xs={12} md={12} id={classes.contactUsBodyWrapper}>
+          <Box className={classes.form}>
+            <Heading1 translation-key='common_contact_us'>{t("common_contact_us")}</Heading1>
+            <ParagraphBody translation-key='common_contact_us_description'>
+              {t("common_contact_us_description")}
+            </ParagraphBody>
+            <form className={classes.formControl} onSubmit={handleSubmit(handleSubmitContactUs)}>
+              <Grid container columns={12} className={classes.inputItem}>
+                <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
+                <Controller
+                  control={control}
+                  name='businessPhone'
+                  render={({ field }) => {
+                    return (
+                      <InputPhone
+                        errorMessage={errors?.businessPhone?.message}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    );
+                  }}
+                />
+                {errors.businessPhone?.message && (
+                  <ErrorMessage>{errors.businessPhone?.message}</ErrorMessage>
+                )}
+              </Grid>
+              <Grid container columns={12} className={classes.inputItem}>
+                <TextTitle translation-key='Email'>{t("business_email")}</TextTitle>
+                <InputTextField
+                  type='text'
+                  inputRef={register("businessEmail")}
+                  width='100%'
+                  errorMessage={errors?.businessEmail?.message}
+                />
+              </Grid>
+              <Grid container columns={12} className={classes.inputItem}>
+                <TextTitle translation-key='Email'>{t("business_name")}</TextTitle>
+                <InputTextField
+                  type='text'
+                  inputRef={register("businessName")}
+                  width='100%'
+                  errorMessage={errors?.businessName?.message}
+                />
+              </Grid>
+              <Grid container columns={12} className={classes.inputItem}>
+                <TextTitle translation-key='business_address'>{t("business_address")}</TextTitle>
+                <InputTextField
+                  type='text'
+                  inputRef={register("businessAddress")}
+                  width='100%'
+                  errorMessage={errors?.businessName?.message}
+                />
+              </Grid>
+              <Grid container columns={12} className={classes.inputItem}>
+                <TextTitle translation-key='common_description'>
+                  {t("common_description")}
+                </TextTitle>
+                <TextareaAutosize
+                  aria-label='empty textarea'
+                  translation-key='common_description'
+                  className={classes.textArea}
+                  minRows={5}
+                  {...register("businessDescription")}
+                  aria-invalid={errors.businessDescription ? true : false}
+                />
+              </Grid>
+              <LoadButton
+                loading={isLoggedLoading}
+                btnType={BtnType.Primary}
+                colorname='--white'
+                autoFocus
+                translation-key='common_contact_us'
+                isTypeSubmit
+              >
+                {t("common_contact_us")}
+              </LoadButton>
+            </form>
+          </Box>
         </Grid>
-      </Container>
+      </Grid>
     </Box>
   );
 }

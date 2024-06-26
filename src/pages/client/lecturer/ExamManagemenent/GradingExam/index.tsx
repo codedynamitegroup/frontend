@@ -80,6 +80,8 @@ import { QuestionService } from "services/coreService/QuestionService";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
 import { s } from "@fullcalendar/core/internal-common";
 import { set } from "lodash";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface SubmissionData {
   examSubmissionId: string;
@@ -461,10 +463,7 @@ export default function GradingExam() {
   ];
 
   const [gradingStatus, setGradingStatus] = React.useState(0);
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
@@ -632,18 +631,18 @@ export default function GradingExam() {
       </>
 
       <Grid className={classes.root}>
-        <Header ref={headerRef} />
+        <Header />
         <Box
           className={classes.container}
           sx={{
-            marginTop: `${headerHeight}px`
+            marginTop: `${sidebarStatus.headerHeight}px`
           }}
         >
           <CssBaseline />
           <AppBar
             position='fixed'
             sx={{
-              top: `${headerHeight + 1}px`,
+              top: `${sidebarStatus.headerHeight + 1}px`,
               backgroundColor: "white",
               boxShadow: "0px 2px 4px #00000026"
             }}
@@ -1098,8 +1097,8 @@ export default function GradingExam() {
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "fixed",
-                height: `calc(100% - ${headerHeight + 1}px)`,
-                top: `${headerHeight + 1}px`
+                height: `calc(100% - ${sidebarStatus.headerHeight + 1}px)`,
+                top: `${sidebarStatus.headerHeight + 1}px`
               }
             }}
             variant='persistent'

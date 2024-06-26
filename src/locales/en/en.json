@@ -460,7 +460,7 @@
   "user_detail_activity_stats": "Activity statistics",
   "user_detail_recent_activity": "Recent activity",
   "user_detail_problem": "Problem",
-  "user_detail_submission": "Submission",
+  "user_detail_shared_solution": "Shared solution",
   "user_detail_recent": "Recent",
   "user_detail_most_comment": "Most commented",
   "user_detail_dialog_title": "Edit account",
@@ -478,6 +478,7 @@
   "common_find_by_col": "Find by column",
   "common_classify_category": "Category",
 
+  "course_list_member": "Member list",
   "course_list_title": "Course list",
   "course_filter": "Filter by category",
   "course_see_all_teacher": "See all teachers",
@@ -1124,6 +1125,9 @@
   "edit_certificate_course_success": "Edit certificate course successfully",
   "edit_certificate_course_error": "Edit certificate course failed",
   "create_certificate_course_failed": "Create certificate course failed",
+  "exam_review_status_submitted": "Submitted",
+  "exam_review_status_not_submitted": "Not submitted",
+  "exam_review_status_graded": "Graded",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

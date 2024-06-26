@@ -1,5 +1,3 @@
-import { s } from "@fullcalendar/core/internal-common";
-import axios from "axios";
 import { API } from "constants/API";
 import qs from "qs";
 import api from "utils/api";

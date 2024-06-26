@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "constants/API";
 import api from "utils/api";
 

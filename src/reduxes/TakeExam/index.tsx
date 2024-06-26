@@ -11,6 +11,8 @@ export interface InitialState {
     files?: {
       fileUrl: string;
       fileName: string;
+      fileSize: number;
+      fileType: string;
     }[];
   }[];
 }
@@ -37,6 +39,8 @@ const takeExamSlice = createSlice({
           files?: {
             fileUrl: string;
             fileName: string;
+            fileSize: number;
+            fileType: string;
           }[];
         }[];
       }>
@@ -83,20 +87,26 @@ const takeExamSlice = createSlice({
 
     addFileToExamQuesiton: (
       state,
-      action: PayloadAction<{ id: string; fileUrl: string; fileName: string }>
+      action: PayloadAction<{
+        id: string;
+        fileUrl: string;
+        fileName: string;
+        fileSize: number;
+        fileType: string;
+      }>
     ) => {
       const index = state.questionList.findIndex(
         (question) => question.questionData.id === action.payload.id
       );
 
-      console.log("index redux", index);
-      console.log("curr files", action.payload.fileUrl);
-
       if (index !== -1) {
         state.questionList[index].files?.push({
           fileUrl: action.payload.fileUrl,
-          fileName: action.payload.fileName
+          fileName: action.payload.fileName,
+          fileSize: action.payload.fileSize,
+          fileType: action.payload.fileType
         });
+        state.questionList[index].answered = true;
       }
       return state;
     },
@@ -110,6 +120,15 @@ const takeExamSlice = createSlice({
           (file) => file.fileUrl !== action.payload.fileUrl
         );
       }
+      if (
+        state.questionList[index].files?.length === 0 &&
+        (state.questionList[index].content === null ||
+          state.questionList[index].content === undefined ||
+          state.questionList[index].content === "<p><br></p>" ||
+          state.questionList[index].content === "")
+      ) {
+        state.questionList[index].answered = false;
+      }
       return state;
     },
     removeAllFilesFromExamQuestion: (state, action: PayloadAction<string>) => {
@@ -120,6 +139,13 @@ const takeExamSlice = createSlice({
       if (index !== -1) {
         state.questionList[index].files = [];
       }
+      if (
+        state.questionList[index].content === null ||
+        state.questionList[index].content === undefined ||
+        state.questionList[index].content === "<p><br></p>" ||
+        state.questionList[index].content === ""
+      )
+        state.questionList[index].answered = false;
       return state;
     },
     cleanTakeExamState: (state) => {

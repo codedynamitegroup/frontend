@@ -139,12 +139,16 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   });
 
   useEffect(() => {
-    if (lesson !== undefined) {
+    if (
+      lesson !== undefined &&
+      lesson?.question !== undefined &&
+      lesson.question.codeQuestionId !== undefined
+    ) {
       // dispatch(setLoading(true));
       setIsQuestionLoading(true);
-      CodeQuestionService.getDetailCodeQuestion(lesson?.question?.codeQuestionId || "")
-        .then((data: CodeQuestionEntity) => {
-          dispatch(setCodeQuestion(updateLanguageSourceCode(data)));
+      CodeQuestionService.getDetailCodeQuestion([lesson.question.codeQuestionId])
+        .then((data: CodeQuestionEntity[]) => {
+          if (data.length > 0) dispatch(setCodeQuestion(updateLanguageSourceCode(data[0])));
         })
         .catch((err) => console.log(err))
         .finally(() => setIsQuestionLoading(false));
