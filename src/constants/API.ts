@@ -182,7 +182,7 @@ export const API = {
     },
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
-      GET_BY_ID: "/code-assessment/code-question/:id",
+      GET_BY_IDS: "/code-assessment/code-question/detail",
       RECOMMENED: "/code-assessment/code-question/most-practicing-recently",
       ADMIN_CODE_QUESTION: "/code-assessment/code-question/admin-code-question"
     },
