@@ -13,6 +13,7 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
+import CachedIcon from "@mui/icons-material/Cached";
 
 const drawerWidth = 270;
 
@@ -68,6 +69,12 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
       "translation-key": "question_bank_management",
       icon: <AccountBalanceIcon className={classes.itemIcon} />,
       link: routes.org_admin.question_bank.root
+    },
+    {
+      name: t("side_bar_synchronize_managment"),
+      "translation-key": "side_bar_synchronize_managment",
+      icon: <CachedIcon className={classes.itemIcon} />,
+      link: routes.org_admin.synchronize.root
     }
   ];
   // const [open, setOpen] = React.useState(true);

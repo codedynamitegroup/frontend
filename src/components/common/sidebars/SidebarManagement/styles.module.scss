@@ -15,7 +15,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 .logo {
@@ -25,14 +24,15 @@
     height: 100%;
     object-fit: fill;
     margin-top: 5px;
-    filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%)
-      contrast(101%);
+    filter: invert(4%) sepia(89%) saturate(7497%) hue-rotate(241deg) brightness(99%) contrast(101%);
   }
   cursor: pointer;
 }
 
 .item {
   margin-bottom: 3px !important;
+  display: flex;
+  gap: 10px;
   .itemIcon {
     font-size: inherit;
     min-width: 25px;
@@ -44,7 +44,7 @@
     text-decoration: none;
     .itemIcon {
       color: #002db3;
-    } 
+    }
   }
 
   &:hover {

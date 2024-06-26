@@ -328,6 +328,10 @@ export const routes = {
         details: "/org-admin/users/edit/:userId/details"
       }
     },
+    synchronize: {
+      root: "/org-admin/synchronize",
+      detail: "/org-admin/synchronize/:synchronizeId"
+    },
     question_bank: {
       root: "/org-admin/question-bank-management",
       detail: "/org-admin/question-bank-management/:categoryId",

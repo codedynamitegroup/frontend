@@ -11,10 +11,47 @@ import { ECourseResourceType } from "models/courseService/course";
 import GradeSummary from "./components/GradeSummary";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import useAuth from "hooks/useAuth";
+import { useEffect, useState } from "react";
+import { AssignmentGradeEntity } from "models/courseService/entity/AssignmentGradeEntity";
 const StudentCourseGrade = () => {
   const { t } = useTranslation();
+  const { courseId } = useParams<{ courseId: string }>();
+  const { loggedUser } = useAuth();
+  const [assignmentList, setAssignmentList] = useState<AssignmentGradeEntity[]>([]);
+  const getAssignmentGradeByStudent = async (courseId: string, userId: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (loggedUser?.userId && courseId) {
+      getAssignmentGradeByStudent(courseId, loggedUser.userId).then((response) => {
+        setAssignmentList(response);
+      });
+    }
+  }, [courseId, loggedUser]);
+
+  // const courseAssignmentList = assignmentList?.map((assignment) => {
+  //   return {
+  //     id: assignment.id,
+  //     item: assignment.title,
+  //     type: assignment.type,
+  //     weight: assignment.maxScore,
+  //     grade: assignment.grade,
+  //     range: assignment.maxScore,
+  //     percentage: (assignment.grade / assignment.maxScore) * 100,
+  //     feedback: assignment.feedback
+  //   };
+  // });
+  console.log(assignmentList);
   const courseAssignmentList = [
     {
       id: 1,
