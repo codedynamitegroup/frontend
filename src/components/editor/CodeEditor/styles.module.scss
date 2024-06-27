@@ -4,4 +4,7 @@
   [class~="cm-editor"] {
     height: 100%;
   }
+  [class~='cm-focused'] {
+    outline: none;
+  }
 }

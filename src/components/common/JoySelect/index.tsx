@@ -11,11 +11,21 @@ interface PropsData {
   fontFamily?: string;
   fontSize?: string;
   fontWeight?: string;
+  width?: string;
 }
 
 const JoySelect = (props: PropsData) => {
-  const { value, onChange, options, borderRadius, height, fontFamily, fontSize, fontWeight } =
-    props;
+  const {
+    value,
+    onChange,
+    options,
+    borderRadius,
+    height,
+    fontFamily,
+    fontSize,
+    fontWeight,
+    width
+  } = props;
 
   return (
     <Select
@@ -26,7 +36,8 @@ const JoySelect = (props: PropsData) => {
         height: height || "38px",
         fontFamily: fontFamily || "Roboto,sans-serif",
         fontSize: fontSize || "14px",
-        fontWeight: fontWeight || "400"
+        fontWeight: fontWeight || "400",
+        width: width || "100%"
       }}
     >
       {options.map((option) => (
