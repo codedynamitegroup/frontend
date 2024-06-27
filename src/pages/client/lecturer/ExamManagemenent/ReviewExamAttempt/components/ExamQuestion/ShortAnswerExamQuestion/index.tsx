@@ -4,11 +4,12 @@ import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
 import { ShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 
 interface ShortAnswerExamQuestionProps {
   readOnly?: boolean;
   questionShortAnswer: ShortAnswerQuestion;
-  questionSubmitContent?: any;
+  questionSubmitContent?: GetQuestionSubmissionEntity;
   questionIndex: number;
 }
 
@@ -35,16 +36,13 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
         <Stack direction={"row"} spacing={2}>
           <Box
             sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
+              backgroundColor: questionSubmitContent?.answerStatus ? "#e6eaf7" : "#FDF6EA"
             }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
+              {questionSubmitContent?.answerStatus
                 ? t("common_answered")
                 : t("common_not_answered")}
             </ParagraphBody>
@@ -86,7 +84,7 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
               color: "#212121"
             },
             marginBottom: 1,
-            backgroundColor: questionSubmitContent?.content !== "" ? "" : "#feeded"
+            backgroundColor: questionSubmitContent?.answerStatus ? "" : "#feeded"
           }}
           defaultValue={questionSubmitContent?.content}
           minRows={1}

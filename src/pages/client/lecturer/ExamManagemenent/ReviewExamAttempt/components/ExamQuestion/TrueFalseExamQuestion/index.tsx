@@ -4,10 +4,11 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 
 interface PreviewMultipleChoiceProps {
   questionIndex: number;
-  questionSubmitContent?: any;
+  questionSubmitContent?: GetQuestionSubmissionEntity;
   questionTrueFalse: MultiChoiceQuestion;
 }
 
@@ -44,16 +45,13 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
         <Stack direction={"row"} spacing={2}>
           <Box
             sx={{
-              backgroundColor:
-                questionSubmitContent && questionSubmitContent.content !== ""
-                  ? "#e6eaf7"
-                  : "#FDF6EA"
+              backgroundColor: questionSubmitContent?.answerStatus ? "#e6eaf7" : "#FDF6EA"
             }}
             borderRadius={1}
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {questionSubmitContent && questionSubmitContent.content !== ""
+              {questionSubmitContent?.answerStatus
                 ? t("common_answered")
                 : t("common_not_answered")}
             </ParagraphBody>
@@ -99,7 +97,7 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
         <JoyRadioGroup
           color='primary'
           onChange={() => {}}
-          value={questionSubmitContent?.content}
+          value={questionSubmitContent?.content || ""}
           values={answerList}
           orientation='vertical'
           size='md'

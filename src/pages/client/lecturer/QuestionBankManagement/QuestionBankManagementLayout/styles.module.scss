@@ -2,7 +2,20 @@
   border-bottom: 1px solid var(--gray-10);
   display: flex;
   align-items: center;
-  padding: 15px 40px;
+  padding: 5px;
+}
+
+.tabs {
+  & [class~="Mui-selected"] {
+    & [class~="MuiTypography-root"] {
+      font-weight: 700;
+      color: var(--blue-500);
+    }
+  }
+
+  & [class~="MuiTabs-indicator"] {
+    background-color: var(--blue-500);
+  }
 }
 
 .formBody {

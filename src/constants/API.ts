@@ -50,6 +50,7 @@ export const API = {
     QUESTION: {
       DEFAULT: "/core/questions",
       CLONE: "/core/questions/clone",
+      ANSWER: "/core/questions/answer/:questionId",
       GET_BY_CATEGORY_ID: "/core/questions/category/:categoryId",
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
@@ -154,7 +155,8 @@ export const API = {
       STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
-      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
+      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission",
+      SET_GRADE_STATUS: "/course/exam//grading/submission/:id"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
@@ -175,7 +177,8 @@ export const API = {
     QUESTION_SUBMISSION: {
       SUBMIT_LIST: "/course/question/submit-all",
       SUBMIT_ONE: "/course/question/submit-one",
-      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId"
+      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId",
+      MARK: "/course/question/mark"
     }
   },
   CODE_ASSESSMENT: {

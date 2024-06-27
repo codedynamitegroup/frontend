@@ -127,4 +127,23 @@ export class ExamSubmissionService {
       });
     }
   }
+
+  static async setGradeStatus(examSubmissionId: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).patch(`${API.COURSE.EXAM_SUBMISSION.SET_GRADE_STATUS.replace(":id", examSubmissionId)}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to set grade status", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import images from "config/images";
-
+import classes from "./styles.module.scss";
 const EmptyListView = ({ message = "No data available" }) => {
   return (
     <Box
@@ -16,7 +16,7 @@ const EmptyListView = ({ message = "No data available" }) => {
       }}
     >
       {images.null.mailboxEmpty && (
-        <img src={images.null.mailboxEmpty} alt='Null' width={"150px"} />
+        <img id={classes.imgEmpty} src={images.null.mailboxEmpty} alt='Null' width={"150px"} />
       )}
       <ParagraphBody>{message}</ParagraphBody>
     </Box>

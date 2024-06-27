@@ -22,6 +22,7 @@ import { SharedSolutionService } from "services/codeAssessmentService/SharedSolu
 import { setErrorMess } from "reduxes/AppStatus";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
+import { ESharedSolutionType } from "../..";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -43,7 +44,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
-export default function UserRecentSharedSolution() {
+interface UserRecentSharedSolutionProps {
+  sharedSolutionType: ESharedSolutionType;
+}
+
+export default function UserRecentSharedSolution({
+  sharedSolutionType
+}: UserRecentSharedSolutionProps) {
   const { t } = useTranslation();
   const [data, setData] = useState<{
     isLoading: boolean;
@@ -77,14 +84,14 @@ export default function UserRecentSharedSolution() {
     async ({
       pageNo = 0,
       pageSize = 10,
-      newest = true,
-      sortBy = "createdAt"
+      newest = true
     }: {
       pageNo?: number;
       pageSize?: number;
       newest?: boolean;
-      sortBy?: string;
     }) => {
+      const sortBy =
+        sharedSolutionType === ESharedSolutionType.RECENT ? "createdAt" : "totalComment";
       try {
         const getRecentSharedSolutionResponse = await SharedSolutionService.getRecentSharedSolution(
           pageSize,
@@ -108,7 +115,7 @@ export default function UserRecentSharedSolution() {
         }
       }
     },
-    [dispatch, t]
+    [dispatch, t, sharedSolutionType]
   );
 
   useEffect(() => {
@@ -141,70 +148,76 @@ export default function UserRecentSharedSolution() {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label='customized table'>
-          <TableBody>
-            {data.sharedSolutions.sharedSolutions.map((sharedSolution) => (
-              <StyledTableRow key={sharedSolution.sharedSolutionId}>
-                <StyledTableCell component='th' scope='row'>
-                  <Stack direction={"column"}>
-                    <TextTitle>{sharedSolution.title}</TextTitle>
-                    <ParagraphBody>
-                      {standardlizeUTCStringToLocaleString(
-                        sharedSolution.createdAt as string,
-                        currentLang
-                      )}
-                    </ParagraphBody>
-                  </Stack>
-                </StyledTableCell>
-                <StyledTableCell align='right'>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "5px",
-                      justifyContent: "flex-end",
-                      alignItems: "center"
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faThumbsUp} />
-                    <ParagraphBody>{sharedSolution.totalVote}</ParagraphBody>
-                  </Box>
-                </StyledTableCell>
-                <StyledTableCell align='right'>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "5px",
-                      justifyContent: "flex-end",
-                      alignItems: "center"
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faEye} />
-                    <ParagraphBody>{sharedSolution.totalView}</ParagraphBody>
-                  </Box>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-        <CustomPagination
-          count={data.sharedSolutions.totalPages}
-          page={pageNo}
-          handlePageChange={handlePageChange}
-          showFirstButton
-          showLastButton
-          size={"large"}
-        />
-      </Grid>
+      {data.sharedSolutions.sharedSolutions.length === 0 ? (
+        <EmptyListView />
+      ) : (
+        <>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+              <TableBody>
+                {data.sharedSolutions.sharedSolutions.map((sharedSolution) => (
+                  <StyledTableRow key={sharedSolution.sharedSolutionId}>
+                    <StyledTableCell component='th' scope='row'>
+                      <Stack direction={"column"}>
+                        <TextTitle>{sharedSolution.title}</TextTitle>
+                        <ParagraphBody>
+                          {standardlizeUTCStringToLocaleString(
+                            sharedSolution.createdAt as string,
+                            currentLang
+                          )}
+                        </ParagraphBody>
+                      </Stack>
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "5px",
+                          justifyContent: "flex-end",
+                          alignItems: "center"
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faThumbsUp} />
+                        <ParagraphBody>{sharedSolution.totalVote}</ParagraphBody>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "5px",
+                          justifyContent: "flex-end",
+                          alignItems: "center"
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faEye} />
+                        <ParagraphBody>{sharedSolution.totalView}</ParagraphBody>
+                      </Box>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <CustomPagination
+              count={data.sharedSolutions.totalPages}
+              page={pageNo}
+              handlePageChange={handlePageChange}
+              showFirstButton
+              showLastButton
+              size={"large"}
+            />
+          </Grid>
+        </>
+      )}
     </>
   );
 }
