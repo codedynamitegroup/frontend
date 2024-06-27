@@ -9,7 +9,7 @@ import Heading1 from "components/text/Heading1";
 import useAuth from "hooks/useAuth";
 import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
@@ -21,6 +21,35 @@ import { AppDispatch } from "store";
 import AddEventDialog from "./components/AddEventDialog";
 import EventDetailsDialog from "./components/EventDetailsDialog";
 import classes from "./styles.module.scss";
+import { CourseUserService } from "services/courseService/CourseUserService";
+
+export interface ICalendarEventCourse {
+  id: string;
+  courseIdMoodle: number;
+  teachers: [
+    {
+      userId: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      role: string;
+    }
+  ];
+  organization: {
+    organizationId: string;
+    name: string;
+    description: string;
+  };
+  name: string;
+  courseType: {
+    courseTypeId: string;
+    moodleId: number;
+    name: string;
+  };
+  visisble: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface IFullCalendarEvent {
   id: string;
@@ -42,33 +71,7 @@ export interface IFullCalendarEvent {
     fullName: string;
     email: string;
   };
-  course?: {
-    id: string;
-    courseIdMoodle: number;
-    teachers: [
-      {
-        userId: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        role: string;
-      }
-    ];
-    organization: {
-      organizationId: string;
-      name: string;
-      description: string;
-    };
-    name: string;
-    courseType: {
-      courseTypeId: string;
-      moodleId: number;
-      name: string;
-    };
-    visisble: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
+  course?: ICalendarEventCourse;
   editable: boolean;
   exam?: {};
   assignment?: {};
@@ -96,8 +99,8 @@ const LecturerEventCalendar = () => {
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
 
   const [allMyCoursesData, setAllMyCoursesData] = useState<{
-    data: [];
-    isLoading: false;
+    data: ICalendarEventCourse[];
+    isLoading: boolean;
   }>({
     data: [],
     isLoading: false
@@ -229,6 +232,41 @@ const LecturerEventCalendar = () => {
     [data.filterCourse, dispatch, loggedUser?.userId, t]
   );
 
+  const handleGetAllCoursesByUserId = useCallback(async () => {
+    setAllMyCoursesData((pre) => {
+      return {
+        ...pre,
+        isLoading: true
+      };
+    });
+    try {
+      const getAllCourseByUserIdResponse = await CourseUserService.getAllCourseByUserId(
+        loggedUser?.userId || "",
+        {
+          pageNo: 0,
+          pageSize: 999999
+        }
+      );
+      if (getAllCourseByUserIdResponse) {
+        setAllMyCoursesData((pre) => {
+          return {
+            ...pre,
+            data: getAllCourseByUserIdResponse.courses || [],
+            isLoading: false
+          };
+        });
+        return;
+      }
+    } catch (error: any) {
+      setAllMyCoursesData((pre) => {
+        return {
+          ...pre,
+          isLoading: false
+        };
+      });
+    }
+  }, [loggedUser?.userId]);
+
   const handleUpdateCalendarEventById = useCallback(
     async (
       id: string,
@@ -265,7 +303,7 @@ const LecturerEventCalendar = () => {
     [currentRange.end, currentRange.start, dispatch, handleGetCalendarEvents, t]
   );
 
-  const handleCreateCalendarEventById = useCallback(
+  const handleCreateCalendarEvent = useCallback(
     async (data: CreateEventCalendarEvent) => {
       try {
         const createCalendarEventResponse = await EventCalendarService.createEventCalendar(data);
@@ -301,6 +339,26 @@ const LecturerEventCalendar = () => {
     [currentRange.end, currentRange.start, dispatch, handleGetCalendarEvents, t]
   );
 
+  const selectCourseItems = useMemo(() => {
+    const res = allMyCoursesData.data.map((value) => {
+      return {
+        value: value.id,
+        label: value.name
+      };
+    });
+
+    res.unshift({
+      value: "ALL",
+      label: t("calendar_all_course")
+    });
+
+    return res;
+  }, [allMyCoursesData.data, t]);
+
+  useEffect(() => {
+    handleGetAllCoursesByUserId();
+  }, [handleGetAllCoursesByUserId]);
+
   return (
     <>
       {isAddEventDialogOpen && (
@@ -315,6 +373,7 @@ const LecturerEventCalendar = () => {
               };
             });
           }}
+          allMyCoursesData={allMyCoursesData}
           title={t("calendar_add_event")}
           cancelText={t("common_cancel")}
           confirmText={t("common_create")}
@@ -328,7 +387,7 @@ const LecturerEventCalendar = () => {
             });
           }}
           translation-key={["common_cancel", "common_create", "calendar_add_event"]}
-          onHanldeConfirm={handleCreateCalendarEventById}
+          onHanldeConfirm={handleCreateCalendarEvent}
         />
       )}
 
@@ -426,20 +485,7 @@ const LecturerEventCalendar = () => {
                   };
                 });
               }}
-              items={[
-                {
-                  value: "ALL",
-                  label: t("calendar_all_course")
-                },
-                {
-                  value: "1",
-                  label: "Nhập môn lập trình"
-                },
-                {
-                  value: "2",
-                  label: "Lập trình hướng đối tượng"
-                }
-              ]}
+              items={selectCourseItems}
               translation-key='calendar_all_course'
             />
           </Stack>

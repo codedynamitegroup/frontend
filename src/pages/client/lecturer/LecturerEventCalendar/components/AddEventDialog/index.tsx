@@ -28,6 +28,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { CreateEventCalendarEvent } from "services/courseService/EventCalendarService";
 import * as yup from "yup";
+import { ICalendarEventCourse } from "../..";
 
 interface IEditEventFormData {
   durationRadioIndex: string;
@@ -42,6 +43,10 @@ interface IEditEventFormData {
 }
 
 interface AddEventDialogProps extends DialogProps {
+  allMyCoursesData: {
+    data: ICalendarEventCourse[];
+    isLoading: boolean;
+  };
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
@@ -52,7 +57,6 @@ interface AddEventDialogProps extends DialogProps {
 }
 
 const AddEventDialog = ({
-  // handleChangData,
   open,
   title,
   handleClose,
@@ -61,6 +65,7 @@ const AddEventDialog = ({
   confirmText,
   onHandleCancel,
   onHanldeConfirm,
+  allMyCoursesData,
   ...props
 }: AddEventDialogProps) => {
   const { t } = useTranslation();
@@ -68,6 +73,15 @@ const AddEventDialog = ({
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const selectCourseItems = useMemo(() => {
+    return allMyCoursesData.data.map((value) => {
+      return {
+        value: value.id,
+        label: value.name
+      };
+    });
+  }, [allMyCoursesData.data]);
 
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -106,7 +120,7 @@ const AddEventDialog = ({
       start: moment().toISOString(),
       allDay: false,
       eventType: NotificationEventTypeEnum.USER,
-      courseId: "ALL"
+      courseId: selectCourseItems.length > 0 ? selectCourseItems[0].value : ""
     }
   });
 
@@ -117,8 +131,6 @@ const AddEventDialog = ({
       title={title}
       cancelText={cancelText}
       confirmText={confirmText}
-      onHandleCancel={onHandleCancel}
-      // onHanldeConfirm={onHanldeConfirm}
       minWidth='800px'
       actionsDisabled={true}
       customActions={
@@ -294,20 +306,7 @@ const AddEventDialog = ({
                         setValue("courseId", value);
                       }}
                       sx={{ maxWidth: "300px" }}
-                      items={[
-                        {
-                          value: "ALL",
-                          label: t("calendar_all_course")
-                        },
-                        {
-                          value: "1",
-                          label: "Nhập môn lập trình"
-                        },
-                        {
-                          value: "2",
-                          label: "Lập trình hướng đối tượng"
-                        }
-                      ]}
+                      items={selectCourseItems}
                       translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
                     />
                     {/* Show error */}
