@@ -50,7 +50,7 @@ const StudentCourseParticipant = () => {
       });
       dispatch(
         setCourseUser({
-          users: getCourseUserResponse.data,
+          users: getCourseUserResponse.users,
           currentPage: getCourseUserResponse.currentPage,
           totalItems: getCourseUserResponse.totalItems,
           totalPages: getCourseUserResponse.totalPages,
@@ -69,6 +69,8 @@ const StudentCourseParticipant = () => {
   }, [searchText]);
 
   const { t } = useTranslation();
+
+  console.log(courseUserState?.users);
 
   const tableHeading: GridColDef[] = [
     { field: "id", headerName: "STT", minWidth: 1 },
