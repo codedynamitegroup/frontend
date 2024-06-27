@@ -92,7 +92,7 @@ const CodeExamQuestion = (props: Props) => {
   const codeFormat = useMemo(() => {
     if (selectedLanguage === undefined) return "";
     if (codeQuestionLanguageState.codes && codeQuestionLanguageState.codes[selectedLanguage]) {
-      return codeQuestionLanguageState.codes[selectedLanguage];
+      return codeQuestionLanguageState.codes[selectedLanguage].code;
     }
     return `${languageMap?.[selectedLanguage]?.headCode}\n\n${languageMap?.[selectedLanguage]?.bodyCode}\n\n${languageMap?.[selectedLanguage]?.tailCode}`;
   }, [languageMap, selectedLanguage]);
@@ -122,7 +122,14 @@ const CodeExamQuestion = (props: Props) => {
         dispatch(
           initCode({
             questionId: questionId,
-            languageIdList: questionCode?.languages.map((language) => language.id)
+            codeLanguageDataList: questionCode?.languages.map((language) => {
+              return {
+                languageId: language.id,
+                code: `${language.headCode}\n\n${language.bodyCode}\n\n${language.tailCode}`,
+                cpuLimit: language.timeLimit,
+                memoryLimit: language.memoryLimit
+              };
+            })
           })
         );
     }
@@ -283,12 +290,11 @@ const CodeExamQuestion = (props: Props) => {
             onChange={(event, newValue) => setTabValue(Number(newValue) || 0)}
             sx={{
               borderRadius: "12px",
-
-              "& .Mui-selected": {
-                borderTopLeftRadius: tabValue === 0 ? "12px" : "0px"
+              "& .Mui-selected:first-of-type": {
+                borderTopLeftRadius: "12px"
               },
-              "& hover": {
-                borderTopLeftRadius: tabValue === 0 ? "12px" : "0px"
+              "& MuiTab-horizontal:first-of-type:hover": {
+                borderTopLeftRadius: "12px"
               }
             }}
           >
@@ -297,7 +303,7 @@ const CodeExamQuestion = (props: Props) => {
               <Tab>Result</Tab>
             </TabList>
             <TabPanel value={0}>
-              <TestCase />
+              <TestCase questionId={questionId} />
             </TabPanel>
             <TabPanel value={1}>
               <Result />

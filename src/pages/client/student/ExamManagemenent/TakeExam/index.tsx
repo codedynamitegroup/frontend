@@ -284,16 +284,13 @@ export default function TakeExam() {
     const submitTime = new Date(
       new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
     ).toISOString();
-    console.log("saving hihi: ", questionList);
 
-    console.log("auto submitting");
     await handleSaveQuestionState();
     handleEndExam(submitTime);
   }, [handleEndExam, handleSaveQuestionState, questionList]);
 
   const getTimeUntil = React.useCallback(
     (inputTime: any) => {
-      console.log("inputTime", inputTime);
       if (!inputTime) {
         return;
       }
