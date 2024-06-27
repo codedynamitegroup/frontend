@@ -223,7 +223,7 @@ const StudentEventCalendar = () => {
           </Grid>
         </Box>
         <Box>
-          <CustomFullCalendar events={data.currentEvents} handleDateSelect={handleDateSelect} />
+          {/* <CustomFullCalendar events={data.currentEvents} handleDateSelect={handleDateSelect} /> */}
         </Box>
       </Box>
     </>

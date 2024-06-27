@@ -239,7 +239,6 @@ const ContestDetails = () => {
                         />
                         <Stack direction='column' gap={1}>
                           <Heading4 translation-key='common_prizes'>{t("common_prizes")}</Heading4>
-
                           <ReactQuill
                             value={data.contestDetails.prizes || ""}
                             readOnly={true}
