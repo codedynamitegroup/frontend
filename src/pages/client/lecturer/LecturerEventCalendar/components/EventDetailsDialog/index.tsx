@@ -26,6 +26,7 @@ interface EventDetailsDialogProps extends DialogProps {
   confirmText?: string;
   onHandleCancel?: () => void;
   onHanldeConfirm?: () => void;
+  openEditEventDialog?: (event: IFullCalendarEvent) => void;
 }
 
 const EventDetailsDialog = ({
@@ -38,6 +39,7 @@ const EventDetailsDialog = ({
   confirmText,
   onHandleCancel,
   onHanldeConfirm,
+  openEditEventDialog,
   ...props
 }: EventDetailsDialogProps) => {
   const { t } = useTranslation();
@@ -62,7 +64,9 @@ const EventDetailsDialog = ({
       confirmText='Edit'
       cancelText='Delete'
       onHandleCancel={onHandleCancel}
-      onHanldeConfirm={() => {}}
+      onHanldeConfirm={() => {
+        if (openEditEventDialog) openEditEventDialog(data);
+      }}
       customActions={
         (data.exam || data.assignment) && (
           <DialogActions>
