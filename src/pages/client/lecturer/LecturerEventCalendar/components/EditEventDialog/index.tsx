@@ -26,11 +26,11 @@ import moment from "moment";
 import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { CreateEventCalendarEvent } from "services/courseService/EventCalendarService";
+import { UpdateEventCalendarEvent } from "services/courseService/EventCalendarService";
 import * as yup from "yup";
 import { ICalendarEventCourse } from "../..";
 
-interface IEditEventFormData {
+export interface IEditEventFormData {
   durationRadioIndex: string;
   durationInMinute: number;
   eventTitle: string;
@@ -42,21 +42,25 @@ interface IEditEventFormData {
   courseId: string;
 }
 
-interface AddEventDialogProps extends DialogProps {
+interface EditEventDialogProps extends DialogProps {
   allMyCoursesData: {
     data: ICalendarEventCourse[];
     isLoading: boolean;
   };
+  eventId: string;
+  defaultValues: IEditEventFormData;
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
   cancelText?: string;
   confirmText?: string;
   onHandleCancel?: () => void;
-  onHanldeConfirm?: (data: CreateEventCalendarEvent) => void;
+  onHanldeConfirm?: (id: string, body: UpdateEventCalendarEvent) => void;
 }
 
-const AddEventDialog = ({
+const EditEventDialog = ({
+  eventId,
+  defaultValues,
   open,
   title,
   handleClose,
@@ -67,7 +71,7 @@ const AddEventDialog = ({
   onHanldeConfirm,
   allMyCoursesData,
   ...props
-}: AddEventDialogProps) => {
+}: EditEventDialogProps) => {
   const { t } = useTranslation();
   const { loggedUser } = useAuth();
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
@@ -100,7 +104,7 @@ const AddEventDialog = ({
         }),
       allDay: yup.boolean().required(),
       eventType: yup.string().required(t("calendar_event_type_required")),
-      courseId: yup.string().required(t("calendar_event_course_required"))
+      courseId: yup.string().default("")
     });
   }, [t]);
 
@@ -112,16 +116,7 @@ const AddEventDialog = ({
     setValue
   } = useForm<IEditEventFormData>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      durationRadioIndex: "0",
-      durationInMinute: 1,
-      eventTitle: "",
-      eventDescription: "",
-      start: moment().toISOString(),
-      allDay: false,
-      eventType: NotificationEventTypeEnum.USER,
-      courseId: selectCourseItems.length > 0 ? selectCourseItems[0].value : ""
-    }
+    defaultValues
   });
 
   return (
@@ -154,18 +149,18 @@ const AddEventDialog = ({
       }
       onHandleSubmit={handleSubmit((data) => {
         setIsConfirmLoading(true);
-        const newEvent: CreateEventCalendarEvent = {
+        const newEvent: UpdateEventCalendarEvent = {
           name: data.eventTitle,
           description: data.eventDescription,
           startTime: data.start,
           endTime:
             data.end && data.end.length > 0 && moment(data.end).isValid() ? data.end : undefined,
           eventType: data.eventType as NotificationEventTypeEnum,
-          courseId: data.courseId === "ALL" ? undefined : data.courseId,
+          courseId: data.courseId === "" ? undefined : data.courseId,
           userId: data.eventType === NotificationEventTypeEnum.USER ? loggedUser.userId : undefined,
           component: NotificationComponentTypeEnum.REMINDER
         };
-        onHanldeConfirm && onHanldeConfirm(newEvent);
+        onHanldeConfirm && onHanldeConfirm(eventId, newEvent);
         setIsConfirmLoading(false);
         handleClose();
       })}
@@ -464,4 +459,4 @@ const AddEventDialog = ({
   );
 };
 
-export default AddEventDialog;
+export default EditEventDialog;

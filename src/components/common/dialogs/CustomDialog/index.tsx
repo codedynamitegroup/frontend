@@ -1,13 +1,13 @@
 import CloseIcon from "@mui/icons-material/Close";
+import JoyButton from "@mui/joy/Button";
 import { Box, Divider, IconButton } from "@mui/material";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button, { BtnType } from "components/common/buttons/Button";
-import LoadButton from "components/common/buttons/LoadingButton";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import classes from "./styles.module.scss";
 
 interface CustomDialogProps extends DialogProps {
   title?: string;
@@ -22,6 +22,9 @@ interface CustomDialogProps extends DialogProps {
   actionsDisabled?: boolean;
   confirmDisabled?: boolean;
   isConfirmLoading?: boolean;
+  titleBackground?: string;
+  customActions?: React.ReactNode;
+  onHandleSubmit?: () => void;
 }
 
 export default function CustomDialog({
@@ -38,6 +41,9 @@ export default function CustomDialog({
   actionsDisabled,
   confirmDisabled,
   isConfirmLoading = false,
+  titleBackground,
+  customActions,
+  onHandleSubmit,
   ...props
 }: CustomDialogProps) {
   const { t } = useTranslation();
@@ -51,12 +57,18 @@ export default function CustomDialog({
         "& .MuiDialog-paper": {
           minWidth: minWidth || "550px",
           maxHeight: maxHeight || null
+          // overflow: "hidden"
         }
       }}
       PaperProps={{ sx: { borderRadius: "10px" } }}
       {...props}
     >
-      <DialogTitle id='id'>
+      <DialogTitle
+        id='id'
+        sx={{
+          backgroundColor: titleBackground ? titleBackground : undefined
+        }}
+      >
         <Box display='flex' alignItems='center'>
           <Box flexGrow={1}>{title || ""}</Box>
           <Box>
@@ -67,29 +79,42 @@ export default function CustomDialog({
         </Box>
       </DialogTitle>
       <Divider />
-      <DialogContent>{children}</DialogContent>
-      {actionsDisabled && actionsDisabled === true ? null : (
-        <DialogActions>
-          <Button
-            onClick={onHandleCancel ? onHandleCancel : handleClose}
-            btnType={BtnType.Outlined}
-            translation-key='common_cancel'
-          >
-            {cancelText || t("common_cancel")}
-          </Button>
-          <LoadButton
-            loading={isConfirmLoading}
-            onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
-            colorname={"--white"}
-            btnType={BtnType.Primary}
-            autoFocus
-            disabled={confirmDisabled}
-            translation-key='common_confirm'
-          >
-            {confirmText || t("common_confirm")}
-          </LoadButton>
-        </DialogActions>
-      )}
+
+      <Box
+        component='form'
+        autoComplete='off'
+        onSubmit={
+          onHandleSubmit
+            ? (e) => {
+                e.preventDefault();
+                onHandleSubmit();
+              }
+            : undefined
+        }
+      >
+        <DialogContent>{children}</DialogContent>
+        {actionsDisabled && actionsDisabled === true ? null : (
+          <DialogActions>
+            <JoyButton
+              onClick={onHandleCancel ? onHandleCancel : handleClose}
+              variant='outlined'
+              translation-key='common_cancel'
+            >
+              {cancelText || t("common_cancel")}
+            </JoyButton>
+            <JoyButton
+              loading={isConfirmLoading}
+              onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
+              autoFocus
+              disabled={confirmDisabled}
+              translation-key='common_confirm'
+            >
+              {confirmText || t("common_confirm")}
+            </JoyButton>
+          </DialogActions>
+        )}
+        {customActions && customActions}
+      </Box>
     </Dialog>
   );
 }
