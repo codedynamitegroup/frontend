@@ -69,7 +69,7 @@ const BasicSelect = ({
         <Select
           style={{
             backgroundColor: backgroundColor || "white",
-            borderRadius: borderRadius || 0
+            borderRadius: borderRadius || "8px"
           }}
           labelId={labelId}
           id={labelId}

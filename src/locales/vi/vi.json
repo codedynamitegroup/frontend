@@ -75,6 +75,7 @@
   "common_assignment_guide": "Hướng dẫn nộp bài tập",
   "common_assignment_enter_name": "Nhập tên bài tập",
   "common_course_management": "Quản lý khoá học",
+  "common_course": "Khoá học",
   "common_do_time": "Thời gian làm",
   "common_enter_quan": "Nhập số lượng",
   "common_turn_on": "Bật",
@@ -220,6 +221,14 @@
   "dialog_confirm_delete_shared_solution": "Bạn có chắc muốn xóa bài giải này không?",
   "dialog_confirm_update_problems_title": "Xác nhận cập nhật bài toán",
   "dialog_confirm_update_problems_description": "Bạn có chắc chắn muốn cập nhật bài toán không? Lưu ý rằng bài toán công khai có thể được xem bởi tất cả người dùng trong danh sách bài toán công khai",
+  "dialog_confirm_delete_calendar_event": "Bạn có chắc chắn muốn xóa sự kiện \"{{eventTitle}}\" không?",
+  "calendar_event_update_event_success": "Cập nhật sự kiện thành công",
+  "calendar_event_update_event_fail": "Cập nhật sự kiện thất bại",
+  "calendar_event_name_required": "Tên sự kiện không được để trống",
+  "calendar_event_description_required": "Mô tả sự kiện không được để trống",
+  "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
+  "calendar_event_type_required": "Loại sự kiện không được để trống",
+  "calendar_event_course_required": "Khoá học không được để trống",
 
   "calendar_today": "Hôm nay",
 
@@ -778,6 +787,8 @@
   "calendar_event_name_time_no_range": "Không có khoảng thời gian",
   "calendar_event_name_time_till": "Đến khi",
   "calendar_event_name_time_minute": "Khoảng thời gian tính theo phút",
+  "calendar_event_delete_event_success": "Xóa sự kiện thành công",
+  "calendar_event_delete_event_failed": "Xóa sự kiện thất bại",
 
   "code_management_title": "Quản lý câu hỏi code",
   "side_bar_code_management": "Câu hỏi code",

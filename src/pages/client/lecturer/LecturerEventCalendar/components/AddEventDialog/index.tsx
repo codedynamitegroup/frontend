@@ -1,54 +1,58 @@
-import { Collapse, DialogProps, FormControlLabel, Grid, Radio, RadioGroup } from "@mui/material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import JoyButton from "@mui/joy/Button";
+import {
+  Collapse,
+  DialogActions,
+  DialogProps,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { BtnType } from "components/common/buttons/Button";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import InputTextField from "components/common/inputs/InputTextField";
-import TextEditor from "components/editor/TextEditor";
-import TextTitle from "components/text/TextTitle";
-import dayjs from "dayjs";
-import { useCallback } from "react";
-import classes from "./styles.module.scss";
 import BasicSelect from "components/common/select/BasicSelect";
-import useWindowDimensions from "hooks/useWindowDimensions";
-import { useTranslation } from "react-i18next";
+import TextEditor from "components/editor/TextEditor";
+import ErrorMessage from "components/text/ErrorMessage";
+import TextTitle from "components/text/TextTitle";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import useAuth from "hooks/useAuth";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
+import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
 import moment from "moment";
+import { useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { CreateEventCalendarEvent } from "services/courseService/EventCalendarService";
+import * as yup from "yup";
+
+interface IEditEventFormData {
+  durationRadioIndex: string;
+  durationInMinute: number;
+  eventTitle: string;
+  eventDescription: string;
+  start: string;
+  end?: string;
+  allDay: boolean;
+  eventType: string;
+  courseId: string;
+}
 
 interface AddEventDialogProps extends DialogProps {
-  data: {
-    isExpanded: boolean;
-    durationRadioIndex: string;
-    durationInMinute: number;
-    eventTitle: string;
-    eventDescription: string;
-    start: string;
-    end: string;
-    allDay: boolean;
-    eventType: string;
-  };
-  handleChangData: (newData: {
-    isExpanded: boolean;
-    durationRadioIndex: string;
-    durationInMinute: number;
-    eventTitle: string;
-    eventDescription: string;
-    start: string;
-    end: string;
-    allDay: boolean;
-    eventType: string;
-  }) => void;
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
   cancelText?: string;
   confirmText?: string;
   onHandleCancel?: () => void;
-  onHanldeConfirm?: () => void;
+  onHanldeConfirm?: (data: CreateEventCalendarEvent) => void;
 }
 
 const AddEventDialog = ({
-  data,
-  handleChangData,
+  // handleChangData,
   open,
   title,
   handleClose,
@@ -60,20 +64,51 @@ const AddEventDialog = ({
   ...props
 }: AddEventDialogProps) => {
   const { t } = useTranslation();
-  const handleToggle = useCallback(() => {
-    handleChangData({
-      isExpanded: !data.isExpanded,
-      durationRadioIndex: data.durationRadioIndex,
-      durationInMinute: data.durationInMinute,
-      eventTitle: data.eventTitle,
-      eventDescription: data.eventDescription,
-      start: data.start,
-      end: data.end,
-      allDay: data.allDay,
-      eventType: data.eventType
+  const { loggedUser } = useAuth();
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      durationRadioIndex: yup.string().required(),
+      durationInMinute: yup.number().required(),
+      eventTitle: yup.string().required(t("calendar_event_name_required")),
+      eventDescription: yup.string().default(""),
+      start: yup.string().required(t("calendar_event_start_required")),
+      end: yup
+        .string()
+        .test("end", t("contest_end_time_greater_than_start_time"), function (value) {
+          if (this.parent.durationRadioIndex === "0") {
+            return true;
+          }
+          return moment(value).isAfter(this.parent.startTime);
+        }),
+      allDay: yup.boolean().required(),
+      eventType: yup.string().required(t("calendar_event_type_required")),
+      courseId: yup.string().required(t("calendar_event_course_required"))
     });
-  }, [data, handleChangData]);
-  const { height } = useWindowDimensions();
+  }, [t]);
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue
+  } = useForm<IEditEventFormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      durationRadioIndex: "0",
+      durationInMinute: 1,
+      eventTitle: "",
+      eventDescription: "",
+      start: moment().toISOString(),
+      allDay: false,
+      eventType: NotificationEventTypeEnum.USER,
+      courseId: "ALL"
+    }
+  });
 
   return (
     <CustomDialog
@@ -83,126 +118,258 @@ const AddEventDialog = ({
       cancelText={cancelText}
       confirmText={confirmText}
       onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm}
+      // onHanldeConfirm={onHanldeConfirm}
       minWidth='800px'
-      maxHeight={`${0.6 * height}px`}
+      actionsDisabled={true}
+      customActions={
+        <DialogActions>
+          <JoyButton
+            onClick={onHandleCancel ? onHandleCancel : handleClose}
+            variant='outlined'
+            translation-key='common_cancel'
+          >
+            {cancelText || t("common_cancel")}
+          </JoyButton>
+          <JoyButton
+            loading={isConfirmLoading}
+            autoFocus
+            type='submit'
+            translation-key='common_confirm'
+          >
+            {confirmText || t("common_confirm")}
+          </JoyButton>
+        </DialogActions>
+      }
+      onHandleSubmit={handleSubmit((data) => {
+        setIsConfirmLoading(true);
+        const newEvent: CreateEventCalendarEvent = {
+          name: data.eventTitle,
+          description: data.eventDescription,
+          startTime: data.start,
+          endTime:
+            data.end && data.end.length > 0 && moment(data.end).isValid() ? data.end : undefined,
+          eventType: data.eventType as NotificationEventTypeEnum,
+          courseId: data.courseId === "ALL" ? undefined : data.courseId,
+          userId: data.eventType === NotificationEventTypeEnum.USER ? loggedUser.userId : undefined,
+          component: NotificationComponentTypeEnum.REMINDER
+        };
+        onHanldeConfirm && onHanldeConfirm(newEvent);
+        setIsConfirmLoading(false);
+        handleClose();
+      })}
       {...props}
     >
-      <Box component='form' className={classes.formBody} autoComplete='off'>
-        <InputTextField
-          type='text'
-          title={t("calendar_event_name")}
-          translation-key='calendar_event_name'
-          value={data.eventTitle}
-          onChange={(e) => {
-            handleChangData({
-              isExpanded: data.isExpanded,
-              durationRadioIndex: data.durationRadioIndex,
-              durationInMinute: data.durationInMinute,
-              eventTitle: e.target.value,
-              start: data.start,
-              end: data.end,
-              allDay: data.allDay,
-              eventDescription: data.eventDescription,
-              eventType: data.eventType
-            });
-          }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "15px"
+        }}
+      >
+        <Controller
+          control={control}
+          name='eventTitle'
+          rules={{ required: true }}
+          render={({ field: { ref, ...field } }) => (
+            <>
+              <InputTextField
+                error={Boolean(errors?.eventTitle)}
+                errorMessage={errors.eventTitle?.message}
+                title={`${t("calendar_event_name")}`}
+                type='text'
+                placeholder={t("calendar_event_name")}
+                titleRequired={true}
+                translation-key='calendar_event_name'
+                inputRef={ref}
+                width='350px'
+                fullWidth
+                {...field}
+              />
+            </>
+          )}
         />
-        <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
-            <TextTitle translation-key='calendar_event_date'>{t("calendar_event_date")}</TextTitle>
-          </Grid>
-          <Grid item xs={9}>
-            <CustomDateTimePicker
-              value={moment(data.start)}
-              onHandleValueChange={(newValue) => {
-                handleChangData({
-                  isExpanded: data.isExpanded,
-                  durationRadioIndex: data.durationRadioIndex,
-                  durationInMinute: data.durationInMinute,
-                  eventTitle: data.eventTitle,
-                  start: newValue?.toString() || "",
-                  end: data.end,
-                  allDay: data.allDay,
-                  eventDescription: data.eventDescription,
-                  eventType: data.eventType
-                });
-              }}
+
+        <Grid container spacing={2} columns={12}>
+          <Controller
+            control={control}
+            name='start'
+            rules={{ required: true }}
+            render={({ field: { ref, ...field } }) => (
+              <>
+                <Grid item xs={12} md={4}>
+                  <TitleWithInfoTip
+                    translate-key='calendar_event_date'
+                    title={t("calendar_event_date")}
+                    titleRequired={true}
+                    // tooltipDescription={t("contest_start_time_tooltip")}
+                  />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <CustomDateTimePicker
+                    value={moment(field.value)}
+                    onHandleValueChange={(newValue) => {
+                      if (newValue) {
+                        setValue("start", newValue.toISOString());
+                      }
+                    }}
+                    width='350px'
+                  />
+                  {/* Show error */}
+                  {errors.start && (
+                    <Grid item xs={12}>
+                      {errors.start.message && (
+                        <ErrorMessage>{errors.start.message || ""}</ErrorMessage>
+                      )}
+                    </Grid>
+                  )}
+                </Grid>
+              </>
+            )}
+          />
+        </Grid>
+
+        <Grid container spacing={2} columns={12}>
+          <Controller
+            control={control}
+            name='eventType'
+            rules={{ required: true }}
+            render={({ field: { ref, ...field } }) => (
+              <>
+                <Grid item xs={12} md={4}>
+                  <TitleWithInfoTip
+                    translate-key='calendar_event_type'
+                    title={t("calendar_event_type")}
+                  />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <BasicSelect
+                    labelId='select-assignment-section-label'
+                    value={field.value}
+                    onHandleChange={(value) => {
+                      setValue("eventType", value);
+                    }}
+                    sx={{ maxWidth: "200px" }}
+                    items={[
+                      {
+                        value: NotificationEventTypeEnum.USER,
+                        label: t("calendar_event_type_user")
+                      },
+                      {
+                        value: NotificationEventTypeEnum.COURSE,
+                        label: t("calendar_event_type_course")
+                      }
+                    ]}
+                    translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
+                  />
+                  {/* Show error */}
+                  {errors.eventType && (
+                    <Grid item xs={12}>
+                      {errors.eventType.message && (
+                        <ErrorMessage>{errors.eventType.message || ""}</ErrorMessage>
+                      )}
+                    </Grid>
+                  )}
+                </Grid>
+              </>
+            )}
+          />
+        </Grid>
+
+        {watch("eventType") === NotificationEventTypeEnum.COURSE && (
+          <Grid container spacing={2} columns={12}>
+            <Controller
+              control={control}
+              name='courseId'
+              rules={{ required: true }}
+              render={({ field: { ref, ...field } }) => (
+                <>
+                  <Grid item xs={12} md={4}>
+                    <TitleWithInfoTip translate-key='common_course' title={t("common_course")} />
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <BasicSelect
+                      labelId='select-assignment-section-label'
+                      value={field.value}
+                      onHandleChange={(value) => {
+                        setValue("courseId", value);
+                      }}
+                      sx={{ maxWidth: "300px" }}
+                      items={[
+                        {
+                          value: "ALL",
+                          label: t("calendar_all_course")
+                        },
+                        {
+                          value: "1",
+                          label: "Nhập môn lập trình"
+                        },
+                        {
+                          value: "2",
+                          label: "Lập trình hướng đối tượng"
+                        }
+                      ]}
+                      translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
+                    />
+                    {/* Show error */}
+                    {errors.courseId && (
+                      <Grid item xs={12}>
+                        {errors.courseId.message && (
+                          <ErrorMessage>{errors.courseId.message || ""}</ErrorMessage>
+                        )}
+                      </Grid>
+                    )}
+                  </Grid>
+                </>
+              )}
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={1} columns={12}>
-          <Grid item xs={3}>
-            <TextTitle translation-key='calendar_event_type'>{t("calendar_event_type")}</TextTitle>
-          </Grid>
-          <Grid item xs={9}>
-            <BasicSelect
-              labelId='select-assignment-section-label'
-              value={data.eventType}
-              onHandleChange={(value) => {
-                handleChangData({
-                  isExpanded: data.isExpanded,
-                  durationRadioIndex: data.durationRadioIndex,
-                  durationInMinute: data.durationInMinute,
-                  eventTitle: data.eventTitle,
-                  start: data.start,
-                  end: data.end,
-                  allDay: data.allDay,
-                  eventDescription: data.eventDescription,
-                  eventType: value
-                });
-              }}
-              sx={{ maxWidth: "200px" }}
-              items={[
-                {
-                  value: "0",
-                  label: t("calendar_event_type_user")
-                },
-                {
-                  value: "1",
-                  label: t("calendar_event_type_course")
-                }
-              ]}
-              translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
-            />
-          </Grid>
-        </Grid>
+        )}
+
         <Button
           btnType={BtnType.Text}
-          onClick={handleToggle}
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+          }}
           width='fit-content'
           padding='0px'
           translation-key={["calendar_event_collapse", "calendar_event_expand"]}
         >
-          {data.isExpanded
-            ? `${t("calendar_event_collapse")}...`
-            : `${t("calendar_event_expand")}...`}
+          {isExpanded ? `${t("calendar_event_collapse")}...` : `${t("calendar_event_expand")}...`}
         </Button>
-        <Collapse in={data.isExpanded}>
-          <Grid container spacing={1} columns={12}>
-            <Grid item xs={3}>
-              <TextTitle translation-key='detail_problem_description'>
-                {t("detail_problem_description")}
-              </TextTitle>
-            </Grid>
-            <Grid item xs={9} className={classes.textEditor}>
-              <TextEditor
-                value={data.eventDescription}
-                onChange={(newValue) => {
-                  handleChangData({
-                    isExpanded: data.isExpanded,
-                    durationRadioIndex: data.durationRadioIndex,
-                    durationInMinute: data.durationInMinute,
-                    eventTitle: data.eventTitle,
-                    start: data.start,
-                    end: data.end,
-                    allDay: data.allDay,
-                    eventDescription: newValue,
-                    eventType: data.eventType
-                  });
-                }}
-              />
-            </Grid>
+        <Collapse in={isExpanded}>
+          <Grid container spacing={2} columns={12}>
+            <Controller
+              control={control}
+              name='eventDescription'
+              rules={{ required: true }}
+              render={({ field: { ref, ...field } }) => (
+                <>
+                  <Grid item xs={12} md={4}>
+                    <TitleWithInfoTip
+                      translate-key='detail_problem_description'
+                      title={t("detail_problem_description")}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <TextEditor
+                      value={field.value}
+                      onChange={(newValue) => {
+                        setValue("eventDescription", newValue);
+                      }}
+                      maxLines={5}
+                    />
+                    {/* Show error */}
+                    {errors.eventDescription && (
+                      <Grid item xs={12}>
+                        {errors.eventDescription.message && (
+                          <ErrorMessage>{errors.eventDescription.message || ""}</ErrorMessage>
+                        )}
+                      </Grid>
+                    )}
+                  </Grid>
+                </>
+              )}
+            />
           </Grid>
           <Grid
             container
@@ -214,7 +381,7 @@ const AddEventDialog = ({
           >
             <Grid
               item
-              xs={3}
+              xs={4}
               sx={{
                 marginTop: "10px"
               }}
@@ -223,23 +390,23 @@ const AddEventDialog = ({
                 {t("calendar_event_time_range")}
               </TextTitle>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={8}>
               <RadioGroup
                 aria-label={"duration"}
                 name={"duration"}
-                value={data.durationRadioIndex}
+                value={watch("durationRadioIndex")}
                 onChange={(e) => {
-                  handleChangData({
-                    isExpanded: data.isExpanded,
-                    durationRadioIndex: e.target.value,
-                    durationInMinute: data.durationInMinute,
-                    eventTitle: data.eventTitle,
-                    start: data.start,
-                    end: data.end,
-                    allDay: data.allDay,
-                    eventDescription: data.eventDescription,
-                    eventType: data.eventType
-                  });
+                  setValue("durationRadioIndex", e.target.value);
+                  if (e.target.value === "0") {
+                    setValue("end", undefined);
+                  } else if (e.target.value === "1") {
+                    setValue("end", moment(watch("end")).toISOString());
+                  } else if (e.target.value === "2") {
+                    setValue(
+                      "end",
+                      moment(watch("start")).add(watch("durationInMinute"), "minute").toISOString()
+                    );
+                  }
                 }}
               >
                 <FormControlLabel
@@ -257,21 +424,12 @@ const AddEventDialog = ({
                   translation-key='calendar_event_name_time_till'
                 />
                 <CustomDateTimePicker
-                  value={moment(data.end)}
+                  value={moment(watch("end"))}
                   onHandleValueChange={(newValue) => {
-                    handleChangData({
-                      isExpanded: data.isExpanded,
-                      durationRadioIndex: data.durationRadioIndex,
-                      durationInMinute: data.durationInMinute,
-                      eventTitle: data.eventTitle,
-                      start: data.start,
-                      end: newValue?.toString() || "",
-                      allDay: data.allDay,
-                      eventDescription: data.eventDescription,
-                      eventType: data.eventType
-                    });
+                    if (!newValue) return;
+                    setValue("end", newValue.toISOString());
                   }}
-                  disabled={data.durationRadioIndex !== "1"}
+                  disabled={watch("durationRadioIndex") !== "1"}
                 />
                 <FormControlLabel
                   key={2}
@@ -282,27 +440,23 @@ const AddEventDialog = ({
                 />
                 <InputTextField
                   type='number'
-                  value={data.durationInMinute}
+                  value={watch("durationInMinute")}
                   onChange={(e) => {
-                    const endTime = dayjs(data.start)
+                    const endTime = moment(watch("start"))
                       .add(Number(e.target.value), "minute")
-                      .toString();
-                    handleChangData({
-                      isExpanded: data.isExpanded,
-                      durationRadioIndex: data.durationRadioIndex,
-                      durationInMinute: Number(e.target.value),
-                      eventTitle: data.eventTitle,
-                      start: data.start,
-                      end: endTime,
-                      allDay: data.allDay,
-                      eventDescription: data.eventDescription,
-                      eventType: data.eventType
-                    });
+                      .toISOString();
+                    setValue("end", endTime);
+                    setValue("durationInMinute", Number(e.target.value));
                   }}
-                  disabled={data.durationRadioIndex !== "2"}
+                  disabled={watch("durationRadioIndex") !== "2"}
                   maxWith='200px'
                 />
               </RadioGroup>
+              {errors.end && (
+                <Grid item xs={12}>
+                  {errors.end.message && <ErrorMessage>{errors.end.message || ""}</ErrorMessage>}
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Collapse>

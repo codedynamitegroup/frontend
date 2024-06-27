@@ -1,44 +1,71 @@
-import { DateSelectArg, EventContentArg } from "@fullcalendar/core";
+import { DateSelectArg, EventClickArg, EventContentArg } from "@fullcalendar/core";
 import enLocale from "@fullcalendar/core/locales/en-gb";
 import viLocale from "@fullcalendar/core/locales/vi";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { EventDragStopArg } from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { Box, IconButton, Stack, ToggleButton, Tooltip } from "@mui/material";
-import Heading2 from "components/text/Heading2";
-import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import TextTitle from "components/text/TextTitle";
-import i18next from "i18next";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import JoyButton from "@mui/joy/Button";
-import "./index.scss";
+import { Box, CircularProgress, IconButton, Link, Stack, Tooltip } from "@mui/material";
+import Heading2 from "components/text/Heading2";
 import dayjs from "dayjs";
+import i18next from "i18next";
+import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
 import moment from "moment";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "./index.scss";
+import { IFullCalendarEvent } from "pages/client/lecturer/LecturerEventCalendar";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
+
 interface CustomFullCalendarProps {
+  isEventsLoading: boolean;
+  currentRange: {
+    start: string;
+    end: string;
+  };
+  handleChangeCurrentRange: (range: { start: string; end: string }) => void;
   calendarViewType?: string;
-  events: any[];
+  events: IFullCalendarEvent[];
   handleDateSelect?: (selectInfo: DateSelectArg) => void;
-  editable?: boolean;
   handleGetCalendarEvents: ({
     fromTime,
     toTime
   }: {
     fromTime: string;
     toTime: string;
-  }) => Promise<void>;
+  }) => Promise<any>;
+  handleOpenEventDetailsDialog?: (event: IFullCalendarEvent) => void;
+  handleUpdateCalendarEventById?: (
+    id: string,
+    body: {
+      name?: string;
+      description?: string;
+      eventType?: NotificationEventTypeEnum;
+      startTime?: string;
+      endTime?: string;
+      userId?: string;
+      courseId?: string;
+      examId?: string;
+      assignmentId?: string;
+      contestId?: string;
+      component?: NotificationComponentTypeEnum;
+    }
+  ) => void;
 }
 
 export default function CustomFullCalendar({
+  isEventsLoading,
   calendarViewType,
   events,
   handleDateSelect,
-  editable,
-  handleGetCalendarEvents
+  handleGetCalendarEvents,
+  handleOpenEventDetailsDialog,
+  currentRange,
+  handleChangeCurrentRange,
+  handleUpdateCalendarEventById
 }: CustomFullCalendarProps) {
   const { t } = useTranslation();
   const calendarRef = useRef(null);
@@ -52,20 +79,13 @@ export default function CustomFullCalendar({
   }, [i18next.language]);
 
   const [calendarViewTitle, setCalendarViewTitle] = useState("");
-  const [currentRange, setCurrentRange] = useState<{
-    start: string;
-    end: string;
-  }>({
-    start: "",
-    end: ""
-  });
 
   const goPrev = () => {
     /* @ts-ignore */
     const calendarApi = calendarRef.current.getApi();
     calendarApi.prev();
     setCalendarViewTitle(calendarApi.view.title);
-    setCurrentRange({
+    handleChangeCurrentRange({
       start: moment(calendarApi.view.currentStart).toISOString(),
       end: moment(calendarApi.view.currentEnd).toISOString()
     });
@@ -76,7 +96,7 @@ export default function CustomFullCalendar({
     const calendarApi = calendarRef.current.getApi();
     calendarApi.next();
     setCalendarViewTitle(calendarApi.view.title);
-    setCurrentRange({
+    handleChangeCurrentRange({
       start: moment(calendarApi.view.currentStart).toISOString(),
       end: moment(calendarApi.view.currentEnd).toISOString()
     });
@@ -87,7 +107,7 @@ export default function CustomFullCalendar({
     const calendarApi = calendarRef.current.getApi();
     calendarApi.today();
     setCalendarViewTitle(calendarApi.view.title);
-    setCurrentRange({
+    handleChangeCurrentRange({
       start: moment(calendarApi.view.currentStart).toISOString(),
       end: moment(calendarApi.view.currentEnd).toISOString()
     });
@@ -97,7 +117,10 @@ export default function CustomFullCalendar({
     if (calendarRef.current) {
       /* @ts-ignore */
       const calendarApi = calendarRef.current.getApi();
-      return calendarApi.view.title === dayjs().format("MMMM YYYY");
+      return (
+        calendarApi.view.title === dayjs().format("MMMM YYYY") ||
+        calendarApi.view.title === dayjs().format("DD MMMM YYYY")
+      );
     }
     return false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,34 +132,46 @@ export default function CustomFullCalendar({
       const calendarApi = calendarRef.current.getApi();
       console.log("calendarApi", calendarApi);
       setCalendarViewTitle(calendarApi.view.title);
-      setCurrentRange({
+      handleChangeCurrentRange({
         start: moment(calendarApi.view.currentStart).toISOString(),
         end: moment(calendarApi.view.currentEnd).toISOString()
       });
     }
-  }, []);
+  }, [handleChangeCurrentRange]);
+
+  const handleEventClick = useCallback(
+    (arg: EventClickArg) => {
+      const findEvent = events.find((event) => event.id === arg.event.id);
+      if (findEvent && handleOpenEventDetailsDialog) handleOpenEventDetailsDialog(findEvent);
+    },
+    [events, handleOpenEventDetailsDialog]
+  );
 
   useEffect(() => {
     if (calendarRef.current) {
       /* @ts-ignore */
       const calendarApi = calendarRef.current.getApi();
       calendarApi.changeView(calendarViewType === "0" ? "dayGridMonth" : "dayGridDay");
+      setCalendarViewTitle(calendarApi.view.title);
+      handleChangeCurrentRange({
+        start: moment(calendarApi.view.currentStart).toISOString(),
+        end: moment(calendarApi.view.currentEnd).toISOString()
+      });
     }
-  }, [calendarViewType]);
+  }, [calendarViewType, handleChangeCurrentRange]);
 
-  // useEffect(() => {
-  //   if (calendarRef.current) {
-  //     /* @ts-ignore */
-  //     const calendarApi = calendarRef.current.getApi();
-  //     calendarApi.refetchEvents();
-  //   }
-  // }, [events]);
-
-  // console.log("currentRange", currentRange);
-
-  // console.log(moment("Wed May 29 2024 07:00:00 GMT+0700 (Indochina Time)").utc());
-
-  // console.log("calendarRef.current", calendarRef.current);
+  useEffect(() => {
+    if (
+      currentRange.start &&
+      currentRange.end &&
+      currentRange.start !== "" &&
+      currentRange.end !== ""
+    )
+      handleGetCalendarEvents({
+        fromTime: currentRange.start,
+        toTime: currentRange.end
+      });
+  }, [currentRange, handleGetCalendarEvents]);
 
   return (
     <Stack direction={"column"} gap={2}>
@@ -179,56 +214,74 @@ export default function CustomFullCalendar({
           </JoyButton>
         </Box>
       </Box>
+      <Box
+        sx={{
+          position: "relative"
+        }}
+      >
+        <Box className='demo-app'>
+          <Box className='demo-app-main'>
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              headerToolbar={false}
+              initialView={"dayGridMonth"}
+              selectable={true}
+              selectMirror={true}
+              dayMaxEvents={true}
+              select={(arg: DateSelectArg) => {
+                console.log("arg", arg);
+                /* @ts-ignore */
+                const calendarApi = calendarRef.current.getApi();
+                calendarApi.unselect(); // clear date selection
+              }}
+              eventDrop={(arg: EventDragStopArg) => {
+                handleUpdateCalendarEventById &&
+                  handleUpdateCalendarEventById(arg.event.id, {
+                    startTime: moment(arg.event.start).utc().toISOString(),
+                    endTime: moment(arg.event.end).utc().toISOString()
+                  });
+              }}
+              eventContent={renderEventContent}
+              eventClick={handleEventClick}
+              events={events}
+              editable={false}
+              ref={calendarRef}
+              locale={currentLang === "en" ? enLocale : viLocale}
+              timeZone='UTC'
 
-      <Box className='demo-app'>
-        <Box className='demo-app-main'>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            headerToolbar={false}
-            initialView={"dayGridMonth"}
-            editable={editable || false}
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            select={(arg: DateSelectArg) => {
-              // check if the arg is in the current range
-              console.log("arg", arg);
-              // if (currentRange.start !== "" && currentRange.end !== "") {
-              //   if (
-              //     moment(arg.startStr).isBefore(moment(currentRange.start)) ||
-              //     moment(arg.endStr).isAfter(moment(currentRange.end))
-              //   ) {
-              //     return;
-              //   }
-              // } else {
-              //   handleDateSelect && handleDateSelect(arg);
-              // }
-            }}
-            eventContent={renderEventContent} // custom render function
-            eventClick={function () {}}
-            events={events}
-            eventSources={[
-              function (fetchInfo, successCallback, failureCallback) {
-                console.log("fetchInfo", fetchInfo);
-                handleGetCalendarEvents({
-                  fromTime: fetchInfo.startStr,
-                  toTime: fetchInfo.endStr
-                });
-                successCallback(events);
-              }
-            ]}
-            ref={calendarRef}
-            locale={currentLang === "en" ? enLocale : viLocale}
-            timeZone='UTC'
-
-            // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-            /* you can update a remote database when these fire:
+              // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+              /* you can update a remote database when these fire:
             eventAdd={function(){}}
             eventChange={function(){}}
             eventRemove={function(){}}
             */
-          />
+            />
+          </Box>
         </Box>
+        {isEventsLoading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "0",
+              right: "0",
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+              opacity: "0.5",
+              zIndex: "50"
+            }}
+          >
+            <CircularProgress
+              color='inherit'
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+              }}
+            />
+          </Box>
+        )}
       </Box>
     </Stack>
   );
@@ -237,45 +290,51 @@ export default function CustomFullCalendar({
 function renderEventContent(eventContent: EventContentArg) {
   return (
     <Tooltip title={eventContent.event.title} placement='top-start'>
-      <Box
+      <Stack
+        direction={"row"}
+        display={"flex"}
+        padding={"5px 3px"}
+        alignItems={"center"}
         sx={{
-          padding: "5px",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          "@media (max-width: 600px)": {
-            fontSize: "10px",
-            padding: "3px"
-          }
+          width: "100%",
+          backgroundColor: "#3688D8",
+          borderRadius: "3px"
         }}
       >
-        <ParagraphExtraSmall
-          sx={{ fontSize: "12px", "@media (max-width: 600px)": { fontSize: "10px" } }}
-        >
-          {eventContent.timeText}
-        </ParagraphExtraSmall>
-        <TextTitle
+        {eventContent.event.extendedProps.eventType === NotificationEventTypeEnum.COURSE ? (
+          <Box
+            sx={{
+              width: "13px",
+              height: "13px",
+              borderRadius: "50%",
+              backgroundColor: "#FFD3BD",
+              border: "2px solid #D34500"
+            }}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: "13px",
+              height: "13px",
+              borderRadius: "50%",
+              backgroundColor: "#DCE7EB",
+              border: "2px solid #4D7C91"
+            }}
+          />
+        )}
+        <Link
           sx={{
+            marginLeft: "5px",
+            whiteSpace: "nowrap",
             color: "white",
-            textWrap: "nowrap",
             overflow: "hidden",
-            textOverflow: "ellipsis",
-            fontSize: "13px",
-            "@media (max-width: 600px)": { fontSize: "11px" }
+            textOverflow: "ellipsis"
           }}
+          underline='hover'
         >
           {eventContent.event.title}
-        </TextTitle>
-        <ParagraphBody
-          sx={{
-            fontSize: "12px",
-            color: "grey",
-            "@media (max-width: 600px)": { fontSize: "10px" }
-          }}
-        >
-          {eventContent.event.extendedProps.description || "No description"}
-        </ParagraphBody>
-      </Box>
+        </Link>
+      </Stack>
     </Tooltip>
   );
 }

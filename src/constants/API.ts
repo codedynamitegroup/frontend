@@ -172,7 +172,9 @@ export const API = {
     },
     EVENT_CALENDAR: {
       DEFAULT: "/course/calendar-events/query/my-calendar-events",
-      CREATE: "/course/calendar-events/create"
+      CREATE: "/course/calendar-events/create",
+      DELETE_BY_ID: "/course/calendar-events/:id",
+      UPDATE_BY_ID: "/course/calendar-events/:id"
     },
     QUESTION_SUBMISSION: {
       SUBMIT_LIST: "/course/question/submit-all",
