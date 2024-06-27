@@ -16,7 +16,7 @@ const qtype = {
     en_name: "Yes / No question"
   },
   source_code: {
-    code: "source-code",
+    code: "CODE",
     vi_name: "Câu hỏi lập trình",
     en_name: "Programming question"
   },
