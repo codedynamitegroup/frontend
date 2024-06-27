@@ -956,6 +956,7 @@ export default function GradingExam() {
                               />
                             ) : question.data.question.qtype === qtype.multiple_choice.code ? (
                               <MultipleChoiceExamQuestion
+                                questionId={question.data.question.id}
                                 questionIndex={index}
                                 questionMultiChoice={question.data}
                                 questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -1008,6 +1009,7 @@ export default function GradingExam() {
                   ) : questions[questionPageIndex]?.data?.question?.qtype ===
                     qtype.multiple_choice.code ? (
                     <MultipleChoiceExamQuestion
+                      questionId={questions[questionPageIndex].data.question.id}
                       questionIndex={questionPageIndex}
                       questionMultiChoice={questions[questionPageIndex].data}
                       questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -1039,7 +1041,7 @@ export default function GradingExam() {
                           justifyContent: "flex-end"
                         }}
                       >
-                        <Button
+                        {/* <Button
                           onClick={() => {
                             if (courseId && examId)
                               navigate(
@@ -1054,7 +1056,7 @@ export default function GradingExam() {
                           }}
                         >
                           {t("exam_finish_review")}
-                        </Button>
+                        </Button> */}
                       </Grid>
                     </Grid>
                   ) : (
@@ -1103,22 +1105,23 @@ export default function GradingExam() {
                             <Button>{t("course_management_exam_preview_next_page")}</Button>
                           </Link>
                         ) : (
-                          <Button
-                            onClick={() => {
-                              if (courseId && examId)
-                                navigate(
-                                  `${routes.lecturer.exam.detail
-                                    .replace(":courseId", courseId)
-                                    .replace(":examId", examId)}`
-                                );
-                              else {
-                                navigate(routes.lecturer.root);
-                              }
-                            }}
-                            translation-key='exam_finish_review'
-                          >
-                            {t("exam_finish_review")}
-                          </Button>
+                          // <Button
+                          //   onClick={() => {
+                          //     if (courseId && examId)
+                          //       navigate(
+                          //         `${routes.lecturer.exam.detail
+                          //           .replace(":courseId", courseId)
+                          //           .replace(":examId", examId)}`
+                          //       );
+                          //     else {
+                          //       navigate(routes.lecturer.root);
+                          //     }
+                          //   }}
+                          //   translation-key='exam_finish_review'
+                          // >
+                          //   {t("exam_finish_review")}
+                          // </Button>
+                          <></>
                         )}
                       </Grid>
                     </Grid>

@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
 import { Button, Checkbox, Sheet } from "@mui/joy";
+import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
+import { useState, useEffect } from "react";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface PreviewMultipleChoiceProps {
   questionIndex: number;
@@ -25,6 +28,34 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
       label: t("common_false")
     }
   ];
+
+  const [answerOfQuestions, setAnswerOfQuestion] = useState<AnswerOfQuestion[]>([]);
+  const [mark, setMark] = useState<number>(0);
+
+  const handleGetAnsweryQuestionId = (questionId: string) => {
+    QuestionService.getAnswerByQuestionId(questionId)
+      .then((res) => {
+        const data = res.filter((item: AnswerOfQuestion) => item.fraction !== 0);
+        setAnswerOfQuestion(data);
+        const matchedAnswer = data.find(
+          (item: AnswerOfQuestion) => item.answer === questionSubmitContent.content
+        );
+        if (matchedAnswer) {
+          const defaultMark = questionTrueFalse.question.defaultMark;
+          setMark(matchedAnswer.fraction * defaultMark);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("done");
+      });
+  };
+
+  useEffect(() => {
+    handleGetAnsweryQuestionId(questionTrueFalse.question.id);
+  }, []);
 
   return (
     <Grid container spacing={1}>
@@ -121,11 +152,11 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Đáp án
+              {t("correct_answer")}
             </ParagraphBody>
           </Box>
         </Stack>
-        <Sheet variant='outlined'>
+        <Sheet variant='outlined' sx={{ backgroundColor: "#e6f4ea", marginTop: 1 }}>
           <Checkbox
             disabled
             onChange={() => {}}
@@ -135,41 +166,24 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
             overlay
             label={
               <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                {/* {
-                  questionMultiChoice.question.answers?.find((answer: any) => answer.id === "1")
-                    ?.answer
-                } */}
+                {answerOfQuestions[0]?.answer === "true" ? t("common_true") : t("common_false")}
               </ParagraphBody>
             }
           />
         </Sheet>
 
         <Stack direction={"row"} spacing={2} marginTop={2}>
-          {/* <Box
-            sx={{
-              backgroundColor: "#f5f5f5"
-            }}
-            borderRadius={1}
-            padding={".35rem 1rem"}
-          >
-            <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm
-            </ParagraphBody>
-          </Box> */}
           <TextField
             id='outlined-basic'
-            label='Điểm'
+            label={t("common_grade")}
             variant='outlined'
             size='small'
-            value={questionSubmitContent?.mark}
-            // onChange={(e) => {
-            //   setQuestionSubmitContent({
-            //     ...questionSubmitContent,
-            //     mark: e.target.value
-            //   });
-            // }}
+            value={mark}
+            onChange={(e) => {
+              setMark(Number(e.target.value));
+            }}
           />
-          <Button color='primary'>Cập nhật điểm</Button>
+          <Button color='primary'>{t("update_grade")}</Button>
         </Stack>
       </Grid>
     </Grid>

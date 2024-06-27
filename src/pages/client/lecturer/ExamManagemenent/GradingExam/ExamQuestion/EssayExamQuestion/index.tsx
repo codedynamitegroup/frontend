@@ -29,6 +29,8 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
   const { t } = useTranslation();
 
+  const [mark, setMark] = useState<number>(0);
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
@@ -147,64 +149,18 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
       )} */}
 
       <Grid item xs={12} md={12} marginTop={2}>
-        <Stack direction={"row"} spacing={2}>
-          <Box
-            sx={{
-              backgroundColor: "#f5f5f5"
-            }}
-            borderRadius={1}
-            padding={".35rem 1rem"}
-          >
-            <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Đáp án
-            </ParagraphBody>
-          </Box>
-        </Stack>
-        <Sheet variant='outlined'>
-          <Checkbox
-            disabled
-            onChange={() => {}}
-            value={"questionMultiChoice.question.name"}
-            checked
-            size='sm'
-            overlay
-            label={
-              <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                {/* {
-                  questionMultiChoice.question.answers?.find((answer: any) => answer.id === "1")
-                    ?.answer
-                } */}
-              </ParagraphBody>
-            }
-          />
-        </Sheet>
-
         <Stack direction={"row"} spacing={2} marginTop={2}>
-          {/* <Box
-            sx={{
-              backgroundColor: "#f5f5f5"
-            }}
-            borderRadius={1}
-            padding={".35rem 1rem"}
-          >
-            <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm
-            </ParagraphBody>
-          </Box> */}
           <TextField
             id='outlined-basic'
-            label='Điểm'
+            label={t("common_grade")}
             variant='outlined'
             size='small'
-            value={questionSubmitContent?.mark}
-            // onChange={(e) => {
-            //   setQuestionSubmitContent({
-            //     ...questionSubmitContent,
-            //     mark: e.target.value
-            //   });
-            // }}
+            value={mark}
+            onChange={(e) => {
+              setMark(Number(e.target.value));
+            }}
           />
-          <Button color='primary'>Cập nhật điểm</Button>
+          <Button color='primary'>{t("update_grade")}</Button>
         </Stack>
       </Grid>
     </Grid>

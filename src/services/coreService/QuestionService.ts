@@ -229,4 +229,23 @@ export class QuestionService {
       });
     }
   }
+
+  static async getAnswerByQuestionId(questionId: string) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.CORE.QUESTION.ANSWER.replace(":questionId", questionId)}`);
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to get answer by question id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

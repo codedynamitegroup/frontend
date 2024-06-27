@@ -4,6 +4,9 @@ import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
 import { ShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
+import { useState, useEffect } from "react";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface ShortAnswerExamQuestionProps {
   readOnly?: boolean;
@@ -15,6 +18,34 @@ interface ShortAnswerExamQuestionProps {
 const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
   const { t } = useTranslation();
   const { questionShortAnswer, questionSubmitContent, questionIndex } = props;
+
+  const [answerOfQuestions, setAnswerOfQuestion] = useState<AnswerOfQuestion[]>([]);
+  const [mark, setMark] = useState<number>(0);
+
+  const handleGetAnsweryQuestionId = (questionId: string) => {
+    QuestionService.getAnswerByQuestionId(questionId)
+      .then((res) => {
+        const data = res.filter((item: AnswerOfQuestion) => item.fraction !== 0);
+        setAnswerOfQuestion(data);
+        const matchedAnswer = data.find(
+          (item: AnswerOfQuestion) => item.answer === questionSubmitContent
+        );
+        if (matchedAnswer) {
+          const defaultMark = questionShortAnswer.question.defaultMark;
+          setMark(matchedAnswer.fraction * defaultMark);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("done");
+      });
+  };
+
+  useEffect(() => {
+    handleGetAnsweryQuestionId(questionShortAnswer.question.id);
+  }, []);
 
   return (
     <Grid container spacing={1}>
@@ -105,55 +136,39 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
             padding={".35rem 1rem"}
           >
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Đáp án
+              {t("correct_answer")}
             </ParagraphBody>
           </Box>
         </Stack>
-        <Sheet variant='outlined'>
-          <Checkbox
-            disabled
-            onChange={() => {}}
-            value={"questionMultiChoice.question.name"}
-            checked
-            size='sm'
-            overlay
-            label={
-              <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                {/* {
-                  questionMultiChoice.question.answers?.find((answer: any) => answer.id === "1")
-                    ?.answer
-                } */}
-              </ParagraphBody>
-            }
-          />
-        </Sheet>
-
+        {answerOfQuestions.map((answerOfQuestion: AnswerOfQuestion) => (
+          <Sheet variant='outlined' sx={{ backgroundColor: "#e6f4ea", marginTop: 1 }}>
+            <Checkbox
+              disabled
+              onChange={() => {}}
+              value={answerOfQuestion.id}
+              checked
+              size='sm'
+              overlay
+              label={
+                <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
+                  {answerOfQuestion.answer}
+                </ParagraphBody>
+              }
+            />
+          </Sheet>
+        ))}
         <Stack direction={"row"} spacing={2} marginTop={2}>
-          {/* <Box
-            sx={{
-              backgroundColor: "#f5f5f5"
-            }}
-            borderRadius={1}
-            padding={".35rem 1rem"}
-          >
-            <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              Điểm
-            </ParagraphBody>
-          </Box> */}
           <TextField
             id='outlined-basic'
-            label='Điểm'
+            label={t("common_grade")}
             variant='outlined'
             size='small'
-            value={questionSubmitContent?.mark}
-            // onChange={(e) => {
-            //   setQuestionSubmitContent({
-            //     ...questionSubmitContent,
-            //     mark: e.target.value
-            //   });
-            // }}
+            value={mark}
+            onChange={(e) => {
+              setMark(Number(e.target.value));
+            }}
           />
-          <Button color='primary'>Cập nhật điểm</Button>
+          <Button color='primary'>{t("update_grade")}</Button>
         </Stack>
       </Grid>
     </Grid>

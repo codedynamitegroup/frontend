@@ -1132,6 +1132,9 @@
   "exam_review_status_not_submitted": "Not submitted",
   "exam_review_status_graded": "Graded",
 
+  "update_grade": "Update grade",
+  "correct_answer": "Correct answer",
+
   "business_email": "Business email",
   "business_phone": "Business phone",
   "business_address": "Business address",

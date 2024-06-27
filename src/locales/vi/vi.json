@@ -1077,6 +1077,9 @@
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
   "exam_detail_attempt_unlimited": "Không giới hạn số lần",
 
+  "update_grade": "Cập nhật điểm",
+  "correct_answer": "Đáp án đúng",
+
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
   "business_address": "Địa chỉ doanh nghiệp",

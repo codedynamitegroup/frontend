@@ -50,6 +50,7 @@ export const API = {
     QUESTION: {
       DEFAULT: "/core/questions",
       CLONE: "/core/questions/clone",
+      ANSWER: "/core/questions/answer/:questionId",
       GET_BY_CATEGORY_ID: "/core/questions/category/:categoryId",
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
