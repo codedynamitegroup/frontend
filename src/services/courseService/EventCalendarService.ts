@@ -19,7 +19,7 @@ export interface CreateEventCalendarEvent {
   component: NotificationComponentTypeEnum;
 }
 
-interface UpdateEventCalendarEvent {
+export interface UpdateEventCalendarEvent {
   name?: string;
   description?: string;
   eventType?: NotificationEventTypeEnum;

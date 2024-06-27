@@ -9,19 +9,21 @@ import Heading1 from "components/text/Heading1";
 import useAuth from "hooks/useAuth";
 import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
+import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { CourseUserService } from "services/courseService/CourseUserService";
 import {
   CreateEventCalendarEvent,
   EventCalendarService
 } from "services/courseService/EventCalendarService";
 import { AppDispatch } from "store";
 import AddEventDialog from "./components/AddEventDialog";
+import EditEventDialog from "./components/EditEventDialog";
 import EventDetailsDialog from "./components/EventDetailsDialog";
 import classes from "./styles.module.scss";
-import { CourseUserService } from "services/courseService/CourseUserService";
 
 export interface ICalendarEventCourse {
   id: string;
@@ -97,6 +99,8 @@ const LecturerEventCalendar = () => {
   });
 
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
+  const [isEditEventDialogOpen, setIsEditEventDialogOpen] = useState(false);
+  const [editEventFormData, setEditEventFormData] = useState<IFullCalendarEvent | null>(null);
 
   const [allMyCoursesData, setAllMyCoursesData] = useState<{
     data: ICalendarEventCourse[];
@@ -149,6 +153,22 @@ const LecturerEventCalendar = () => {
 
   const closeAddEventDialog = useCallback(() => {
     setIsAddEventDialogOpen(false);
+  }, []);
+
+  const openEditEventDialog = useCallback((event: IFullCalendarEvent) => {
+    setEventDetailsDialogData((pre) => {
+      return {
+        ...pre,
+        open: false
+      };
+    });
+    setEditEventFormData(event);
+    setIsEditEventDialogOpen(true);
+  }, []);
+
+  const closeEditEventDialog = useCallback(() => {
+    setIsEditEventDialogOpen(false);
+    setEditEventFormData(null);
   }, []);
 
   const [calendarViewType, setCalendarViewType] = useState("0");
@@ -391,6 +411,39 @@ const LecturerEventCalendar = () => {
         />
       )}
 
+      {isEditEventDialogOpen && editEventFormData && (
+        <EditEventDialog
+          open={isEditEventDialogOpen}
+          handleClose={() => {
+            closeEditEventDialog();
+          }}
+          allMyCoursesData={allMyCoursesData}
+          title={t("calendar_add_event")}
+          cancelText={t("common_cancel")}
+          confirmText={t("common_create")}
+          onHandleCancel={() => {
+            closeEditEventDialog();
+          }}
+          translation-key={["common_cancel", "common_create", "calendar_add_event"]}
+          eventId={editEventFormData.id}
+          defaultValues={{
+            durationRadioIndex: editEventFormData.end ? "1" : "0",
+            durationInMinute: 1,
+            eventTitle: editEventFormData.title,
+            eventDescription: editEventFormData.description,
+            start: moment(editEventFormData.start).toISOString(),
+            end: editEventFormData.end ? moment(editEventFormData.end).toISOString() : undefined,
+            allDay: editEventFormData.end ? false : true,
+            eventType: editEventFormData.eventType,
+            courseId:
+              editEventFormData.eventType === NotificationEventTypeEnum.COURSE
+                ? editEventFormData.course?.id || ""
+                : ""
+          }}
+          onHanldeConfirm={handleUpdateCalendarEventById}
+        />
+      )}
+
       {eventDetailsDialogData.data && (
         <EventDetailsDialog
           open={eventDetailsDialogData.open}
@@ -413,6 +466,7 @@ const LecturerEventCalendar = () => {
               };
             });
           }}
+          openEditEventDialog={openEditEventDialog}
         />
       )}
       <ConfirmDelete
