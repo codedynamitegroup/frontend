@@ -246,6 +246,7 @@
 
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest",
+  "side_bar_synchronize_managment": "Synchronize",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -1086,6 +1087,9 @@
   "exam_detail_continue": "Continue exam",
   "exam_detail_test": "Test exam",
 
+  "student_not_take_exam": "Student haven't taken this exam yet",
+  "warning": "Warning",
+
   "course_error_page": "Error | Course",
   "course_error": "Course Error",
   "course_error_exam_not_found": "Exam with the provided ID cant not be found",
@@ -1140,6 +1144,17 @@
   "exam_review_status_submitted": "Submitted",
   "exam_review_status_not_submitted": "Not submitted",
   "exam_review_status_graded": "Graded",
+
+  "update_grade": "Update grade",
+  "correct_answer": "Correct answer",
+  "update_grade_success": "Update grade successfully",
+  "update_grade_failed": "Update grade failed",
+  "finish_grading": "Finish grading",
+  "question_grade": "Question grade",
+  "exam_grade": "Exam grade",
+  "exam_grade_success": "Exam grade successfully",
+  "exam_grade_failed": "Exam grade failed",
+  "exam_notify": "Notify",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

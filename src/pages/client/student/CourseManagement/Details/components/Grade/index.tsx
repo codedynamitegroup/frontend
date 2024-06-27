@@ -11,61 +11,108 @@ import { ECourseResourceType } from "models/courseService/course";
 import GradeSummary from "./components/GradeSummary";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import useAuth from "hooks/useAuth";
+import { useEffect, useState } from "react";
+import { AssignmentGradeEntity } from "models/courseService/entity/AssignmentGradeEntity";
+import { AllAssignmentGradeEntity } from "models/courseService/entity/AllAssignmentGradeEntity";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 const StudentCourseGrade = () => {
   const { t } = useTranslation();
-  const courseAssignmentList = [
-    {
-      id: 1,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 1",
-      weight: 0,
-      grade: undefined,
-      range: 100,
-      percentage: 10
-    },
-    {
-      id: 2,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 2",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 3,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 3",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 4,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 1",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 5,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 2",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 6,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 3",
-      weight: 0,
-      grade: 10,
-      range: 100
+  const { courseId } = useParams<{ courseId: string }>();
+  const courseState = useSelector((state: RootState) => state.course);
+  const { loggedUser } = useAuth();
+  const [assignmentList, setAssignmentList] = useState<AllAssignmentGradeEntity | null>(null);
+  const getAssignmentGradeByStudent = async (courseId: string, userId: string) => {
+    try {
+      const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId);
+      return response;
+    } catch (error) {
+      console.log(error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    if (loggedUser?.userId && courseId) {
+      getAssignmentGradeByStudent(courseId, loggedUser.userId).then((response) => {
+        setAssignmentList(response);
+      });
+    }
+  }, [courseId, loggedUser]);
+
+  const courseAssignmentList = assignmentList
+    ? assignmentList.assignments?.map((assignment) => {
+        return {
+          id: assignment.id,
+          item: assignment.title,
+          type:
+            assignment.type === "ASSIGNMENT"
+              ? ECourseResourceType.assignment
+              : ECourseResourceType.file,
+          weight: assignment.maxScore,
+          grade: assignment.grade ? assignment.grade : undefined,
+          range: assignment.maxScore,
+          percentage: (assignment.grade / assignment.maxScore) * 100,
+          feedback: assignment.feedback
+        };
+      })
+    : [];
+  console.log(courseAssignmentList);
+  // const courseAssignmentList = [
+  //   {
+  //     id: 1,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 1",
+  //     weight: 0,
+  //     grade: undefined,
+  //     range: 100,
+  //     percentage: 10
+  //   },
+  //   {
+  //     id: 2,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 2",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 3,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 3",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 4,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 1",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 5,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 2",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 6,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 3",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   }
+  // ];
+
   const tableHeading: GridColDef[] = [
     { field: "id", headerName: "STT", minWidth: 1 },
     {
@@ -150,11 +197,8 @@ const StudentCourseGrade = () => {
       minWidth: 200,
       disableColumnMenu: true,
       flex: 0.2,
-      renderCell: (params: any) => (
-        <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-          {Number(params.value) ? `${params.value}%` : "_"}
-        </Box>
-      )
+      renderCell: (params: any) =>
+        params?.value ? <div dangerouslySetInnerHTML={{ __html: params.value }} /> : "-"
     }
   ];
 
@@ -181,7 +225,11 @@ const StudentCourseGrade = () => {
         <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
       <Grid item xs={12}>
-        <GradeSummary />
+        <GradeSummary
+          title={courseState?.courseDetail?.name}
+          average={0}
+          submitted={assignmentList?.countSubmission}
+        />
       </Grid>
       <Grid item xs={12}>
         <CustomDataGrid

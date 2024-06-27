@@ -50,6 +50,7 @@ export const API = {
     QUESTION: {
       DEFAULT: "/core/questions",
       CLONE: "/core/questions/clone",
+      ANSWER: "/core/questions/answer/:questionId",
       GET_BY_CATEGORY_ID: "/core/questions/category/:categoryId",
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
@@ -107,7 +108,9 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
-      INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
+      INTRO_ATTACHMENT: "/course/assignment/intro-attachment",
+      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/grade",
+      GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES: "course/assignment/student-assignment"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",
@@ -152,7 +155,8 @@ export const API = {
       STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
-      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
+      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission",
+      SET_GRADE_STATUS: "/course/exam//grading/submission/:id"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
@@ -179,7 +183,8 @@ export const API = {
     QUESTION_SUBMISSION: {
       SUBMIT_LIST: "/course/question/submit-all",
       SUBMIT_ONE: "/course/question/submit-one",
-      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId"
+      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId",
+      MARK: "/course/question/mark"
     }
   },
   CODE_ASSESSMENT: {
@@ -188,7 +193,7 @@ export const API = {
     },
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
-      GET_BY_ID: "/code-assessment/code-question/:id",
+      GET_BY_IDS: "/code-assessment/code-question/detail",
       RECOMMENED: "/code-assessment/code-question/most-practicing-recently",
       ADMIN_CODE_QUESTION: "/code-assessment/code-question/admin-code-question"
     },

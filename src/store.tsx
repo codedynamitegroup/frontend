@@ -34,17 +34,18 @@ import ExecuteResult from "reduxes/CodeAssessmentService/CodeQuestion/Execute/Ex
 import appStatus from "reduxes/AppStatus";
 import adminCertificateCourse from "reduxes/coreService/AdminCertificateCourse";
 import SidebarStatus from "reduxes/SidebarStatus";
+import takeExamCodeQuestion, {
+  TakeExamCodeQuestionInitState
+} from "reduxes/TakeExam/TakeExamCodeQuestion";
 
-// const persistConfig = {
-//   key: "takeExam",
-//   storage,
-//   whitelist: ["questionList", "examId", "startAt", "endAt", "examData"],
-//   debug: true
-// };
-// const takeExamPersistedReducer: Reducer<TakeExamInitialState & PersistPartial> = persistReducer(
-//   persistConfig,
-//   takeExam
-// );
+const persistConfig = {
+  key: "takeExamCodeQuestion",
+  storage,
+  whitelist: ["codeQuestion"],
+  debug: true
+};
+const takeExamPersistedReducer: Reducer<TakeExamCodeQuestionInitState & PersistPartial> =
+  persistReducer(persistConfig, takeExamCodeQuestion);
 
 const store = configureStore({
   reducer: {
@@ -78,7 +79,8 @@ const store = configureStore({
     loading: loading,
     appStatus: appStatus,
     adminCertificateCourse: adminCertificateCourse,
-    sidebarStatus: SidebarStatus
+    sidebarStatus: SidebarStatus,
+    takeExamCodeQuestion: takeExamPersistedReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

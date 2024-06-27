@@ -63,12 +63,16 @@ export class CodeQuestionService {
     }
   }
 
-  static async getDetailCodeQuestion(codeQuestionId: UUID | string) {
+  static async getDetailCodeQuestion(codeQuestionId: (UUID | string)[]) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
         // isAuthorization: true
-      }).get(`${API.CODE_ASSESSMENT.CODE_QUESTION.GET_BY_ID.replace(":id", codeQuestionId)}`);
+      }).get(API.CODE_ASSESSMENT.CODE_QUESTION.GET_BY_IDS, {
+        params: {
+          codeQuestionIds: codeQuestionId.join(", ")
+        }
+      });
 
       if (response.status === 200) {
         return response.data;

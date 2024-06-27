@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { Link as RouterLink, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import images from "config/images";
-import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar, Switch } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, Grid, Link, Avatar } from "@mui/material";
 import { Logout, Person } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -144,14 +144,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const openMenu = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const { pathname } = useLocation();
 
@@ -196,12 +188,11 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       position='fixed'
       open={open}
       className={classes.header}
-      ref={headerRef}
       sx={{
         paddingLeft: sidebarStatus && toggleDrawer ? "240px" : "0px"
       }}
     >
-      <Toolbar disableGutters className={classes.toolbar}>
+      <Toolbar disableGutters className={classes.toolbar} ref={headerRef}>
         <Box className={classes.toolbarGroup}>
           <Box className={classes.wrapper}>
             {toggleDrawer && (

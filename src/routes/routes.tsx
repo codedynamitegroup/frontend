@@ -102,7 +102,7 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions",
       preview: "/lecturer/courses/:courseId/assignments/exams/:examId/preview",
-      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review",
+      review: "/lecturer/courses/:courseId/assignments/exams/:examId/review/:submissionId",
       code_plagiarism_detection:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId",
       code_plagiarism_detection_submissions:
@@ -327,6 +327,10 @@ export const routes = {
         root: "/org-admin/users/edit/:userId/*",
         details: "/org-admin/users/edit/:userId/details"
       }
+    },
+    synchronize: {
+      root: "/org-admin/synchronize",
+      detail: "/org-admin/synchronize/:synchronizeId"
     },
     question_bank: {
       root: "/org-admin/question-bank-management",

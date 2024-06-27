@@ -204,9 +204,13 @@ export class SharedSolutionService {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl
-      }).get(API.CODE_ASSESSMENT.SHARED_SOLUTION.GET_BY_ID.replace(":id", sharedSolutionId));
+      }).get(API.CODE_ASSESSMENT.SHARED_SOLUTION.GET_BY_ID.replace(":id", sharedSolutionId), {
+        withCredentials: true
+      });
 
       if (response.status === 200) {
+        console.log('cc')
+        console.log(response.headers["set-cookie"]);
         return response.data;
       }
     } catch (error: any) {
