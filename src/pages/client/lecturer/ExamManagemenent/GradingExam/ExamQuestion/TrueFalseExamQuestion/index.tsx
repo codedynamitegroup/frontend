@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Divider, TextField } from "@mui/material";
+import { Box, Grid, Stack, Divider, TextField, Snackbar, SnackbarContent } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,12 @@ import { Button, Checkbox, Sheet } from "@mui/joy";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { useState, useEffect } from "react";
 import { QuestionService } from "services/coreService/QuestionService";
+import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
+import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
+import SnackbarAlert from "components/common/SnackbarAlert";
+import { AlertType } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 
 interface PreviewMultipleChoiceProps {
   questionIndex: number;
@@ -18,6 +24,43 @@ interface PreviewMultipleChoiceProps {
 const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
   const { questionIndex, questionSubmitContent, questionTrueFalse } = props;
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const submissionId = useParams<{ submissionId: string }>().submissionId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examId = useParams<{ examId: string }>().examId;
+  const handleUpdateGrade = () => {
+    const questionId = questionTrueFalse.question.id;
+    const rightAnswer = "";
+    const submission: GradeSubmission[] = [
+      { examSubmissionId: submissionId || "", questionId, grade: mark, rightAnswer }
+    ];
+
+    QuestionSubmissionService.gradeQuestionSubmission(submission)
+      .then((response) => {
+        console.log("Grade updated successfully", response);
+      })
+      .catch((error) => {
+        console.error("Failed to update grade", error);
+        setSnackbarType(AlertType.Error);
+        setSnackbarContent(t("update_grade_failed"));
+      })
+      .finally(() => {
+        navigate(
+          routes.lecturer.exam.grading
+            .replace(":submissionId", submissionId || "")
+            .replace(":examId", examId || "")
+            .replace(":courseId", courseId || "")
+        );
+        setSnackbarType(AlertType.Success);
+        setSnackbarContent(t("update_grade_success"));
+        setOpenSnackbar(true);
+      });
+  };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
+  const [snackbarContent, setSnackbarContent] = useState<string>("");
+
   const answerList = [
     {
       value: "true",
@@ -37,13 +80,14 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
       .then((res) => {
         const data = res.filter((item: AnswerOfQuestion) => item.fraction !== 0);
         setAnswerOfQuestion(data);
-        const matchedAnswer = data.find(
-          (item: AnswerOfQuestion) => item.answer === questionSubmitContent.content
-        );
-        if (matchedAnswer) {
-          const defaultMark = questionTrueFalse.question.defaultMark;
-          setMark(matchedAnswer.fraction * defaultMark);
-        }
+        setMark(questionSubmitContent?.grade || 0);
+        // const matchedAnswer = data.find(
+        //   (item: AnswerOfQuestion) => item.answer === questionSubmitContent.content
+        // );
+        // if (matchedAnswer) {
+        //   const defaultMark = questionTrueFalse.question.defaultMark;
+        //   setMark(matchedAnswer.fraction * defaultMark);
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -183,9 +227,18 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
               setMark(Number(e.target.value));
             }}
           />
-          <Button color='primary'>{t("update_grade")}</Button>
+          <Button color='primary' onClick={handleUpdateGrade}>
+            {t("update_grade")}
+          </Button>
         </Stack>
       </Grid>
+      <SnackbarAlert
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        type={snackbarType}
+        content={snackbarContent}
+      />
     </Grid>
   );
 };

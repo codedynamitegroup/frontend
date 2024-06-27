@@ -105,6 +105,7 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useState } from "react";
+import exam from "reduxes/courseService/exam";
 interface SubmissionData {
   examSubmissionId: string;
   examId: string;
@@ -209,6 +210,7 @@ export default function GradingExam() {
   const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const submissionId = useParams<{ submissionId: string }>().submissionId;
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
   const examDescriptionRawHTML = `
     <div>
@@ -427,8 +429,23 @@ export default function GradingExam() {
     console.log(params);
   };
 
+  const handleSetGradeStatus = (examSubmissionId: string) => {
+    ExamSubmissionService.setGradeStatus(examSubmissionId)
+      .then((res) => {
+        console.log("Set grade status successfully", res);
+      })
+      .catch((error) => {
+        console.error("Failed to set grade status", error);
+      })
+      .finally(() => {
+        setDialogOpen2(true);
+      });
+  };
+
   function handleClick() {
     setLoading(true);
+
+    handleSetGradeStatus(submissionId || "");
 
     setTimeout(() => {
       setLoading(false);
@@ -460,7 +477,7 @@ export default function GradingExam() {
       headerName: "Trạng thái nộp bài",
       flex: 1,
       renderCell: (params) =>
-        params.value === "SUBMITED" ? (
+        params.value === "SUBMITTED" ? (
           <Chip label='Đã nộp' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
         ) : (
           <Chip label='Chưa nộp' />
@@ -500,7 +517,7 @@ export default function GradingExam() {
   const [searchParams] = useSearchParams();
   const examId = useParams<{ examId: string }>().examId;
   const courseId = useParams<{ courseId: string }>().courseId;
-  const submissionId = useParams<{ submissionId: string }>().submissionId;
+
   const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
   const [studentExamSubmission, setStudentExamSubmission] = React.useState<StudentExamSubmission[]>(
     []
@@ -707,6 +724,19 @@ export default function GradingExam() {
     setDialogOpen(false);
   };
 
+  const [dialogOpen2, setDialogOpen2] = useState(false);
+  const handleClose2 = () => {
+    // Get exam questions
+    handleGetExamQuestion();
+
+    // Get exam submission data
+    handleGetExamSubmission();
+
+    // Get student exam submission
+    handleGetStudentExamSubmission();
+    setDialogOpen2(false);
+  };
+
   return (
     <>
       <Dialog open={dialogOpen} onClose={handleClose}>
@@ -716,6 +746,18 @@ export default function GradingExam() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
+            {t("common_confirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={dialogOpen2} onClose={handleClose2}>
+        <DialogTitle>{t("exam_notify")}</DialogTitle>
+        <DialogContent>
+          <Typography>{t("exam_grade_success")}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose2} color='primary'>
             {t("common_confirm")}
           </Button>
         </DialogActions>
@@ -1266,13 +1308,13 @@ export default function GradingExam() {
               </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle>
-                  Điểm của câu hỏi:{" "}
+                  {t("question_grade")}:{" "}
                   {studentSubmissionCurrent?.mark + " / " + studentSubmissionCurrent?.totalMark}
                 </TextTitle>
               </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle>
-                  Điểm bài kiểm tra:{" "}
+                  {t("exam_grade")}:{" "}
                   {studentSubmissionCurrent?.grade + " / " + studentSubmissionCurrent?.totalGrade}
                 </TextTitle>
 
@@ -1288,7 +1330,7 @@ export default function GradingExam() {
                   translation-key='exam_management_create_enter_score'
                 /> */}
               </Box>
-              <Box className={classes.drawerFieldContainer}>
+              {/* <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_grade_comment'>
                   {t("course_lecturer_grade_comment")}
                 </TextTitle>
@@ -1301,7 +1343,7 @@ export default function GradingExam() {
                     onChange={setAssignmentFeedback}
                   />
                 </Box>
-              </Box>
+              </Box> */}
               <LoadButton
                 btnType={BtnType.Outlined}
                 fullWidth
@@ -1309,9 +1351,9 @@ export default function GradingExam() {
                 padding='10px'
                 loading={loading}
                 onClick={handleClick}
-                translation-key='course_lecturer_evaluate'
+                translation-key='finish_grading'
               >
-                {t("course_lecturer_evaluate")}
+                {t("finish_grading")}
               </LoadButton>
             </Box>
           </Drawer>

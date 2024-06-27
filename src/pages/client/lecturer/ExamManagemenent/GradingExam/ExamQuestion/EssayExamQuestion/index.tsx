@@ -18,6 +18,12 @@ import {
 import { useDispatch } from "react-redux";
 import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
 import { useState } from "react";
+import SnackbarAlert from "components/common/SnackbarAlert";
+import { AlertType } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
+import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
+import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
@@ -30,6 +36,43 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const { t } = useTranslation();
 
   const [mark, setMark] = useState<number>(0);
+
+  const navigate = useNavigate();
+  const submissionId = useParams<{ submissionId: string }>().submissionId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examId = useParams<{ examId: string }>().examId;
+  const handleUpdateGrade = () => {
+    const questionId = questionEssayQuestion.question.id;
+    const rightAnswer = "";
+    const submission: GradeSubmission[] = [
+      { examSubmissionId: submissionId || "", questionId, grade: mark, rightAnswer }
+    ];
+
+    QuestionSubmissionService.gradeQuestionSubmission(submission)
+      .then((response) => {
+        console.log("Grade updated successfully", response);
+      })
+      .catch((error) => {
+        console.error("Failed to update grade", error);
+        setSnackbarType(AlertType.Error);
+        setSnackbarContent(t("update_grade_failed"));
+      })
+      .finally(() => {
+        navigate(
+          routes.lecturer.exam.grading
+            .replace(":submissionId", submissionId || "")
+            .replace(":examId", examId || "")
+            .replace(":courseId", courseId || "")
+        );
+        setSnackbarType(AlertType.Success);
+        setSnackbarContent(t("update_grade_success"));
+        setOpenSnackbar(true);
+      });
+  };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
+  const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   return (
     <Grid container spacing={1}>
@@ -155,14 +198,23 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             label={t("common_grade")}
             variant='outlined'
             size='small'
-            value={mark}
+            value={questionSubmitContent?.grade || 0}
             onChange={(e) => {
               setMark(Number(e.target.value));
             }}
           />
-          <Button color='primary'>{t("update_grade")}</Button>
+          <Button color='primary' onClick={handleUpdateGrade}>
+            {t("update_grade")}
+          </Button>
         </Stack>
       </Grid>
+      <SnackbarAlert
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        type={snackbarType}
+        content={snackbarContent}
+      />
     </Grid>
   );
 };

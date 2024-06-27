@@ -1134,6 +1134,14 @@
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",
+  "update_grade_success": "Update grade successfully",
+  "update_grade_failed": "Update grade failed",
+  "finish_grading": "Finish grading",
+  "question_grade": "Question grade",
+  "exam_grade": "Exam grade",
+  "exam_grade_success": "Exam grade successfully",
+  "exam_grade_failed": "Exam grade failed",
+  "exam_notify": "Notify",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

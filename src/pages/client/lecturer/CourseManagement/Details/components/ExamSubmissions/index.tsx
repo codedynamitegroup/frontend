@@ -771,7 +771,7 @@ const LecturerCourseExamSubmissions = () => {
               ))}
             </Stack> */}
           </Grid>
-          <Grid item xs={12} marginTop={3}>
+          {/* <Grid item xs={12} marginTop={3}>
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <LoadButton
                 // loading={isPlagiarismDetectionLoading}
@@ -829,7 +829,7 @@ const LecturerCourseExamSubmissions = () => {
                 </Button>
               </DialogActions>
             </Dialog>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <CustomDataGrid

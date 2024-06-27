@@ -1079,6 +1079,14 @@
 
   "update_grade": "Cập nhật điểm",
   "correct_answer": "Đáp án đúng",
+  "update_grade_success": "Cập nhật điểm thành công",
+  "update_grade_fail": "Cập nhật điểm thất bại",
+  "finish_grading": "Hoàn thành chấm điểm",
+  "question_grade": "Điểm của câu hỏi",
+  "exam_grade": "Điểm bài kiểm tra",
+  "exam_grade_success": "Chấm điểm bài kiểm tra thành công",
+  "exam_grade_fail": "Chấm điểm bài kiểm tra thất bại",
+  "exam_notify": "Thông báo",
 
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
