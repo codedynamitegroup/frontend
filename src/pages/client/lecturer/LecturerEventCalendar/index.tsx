@@ -76,16 +76,6 @@ export interface IFullCalendarEvent {
 }
 
 export interface IEventCalendarData {
-  isExpanded: boolean;
-  durationRadioIndex: string;
-  durationInMinute: number;
-  eventTitle: string;
-  eventDescription: string;
-  start: string;
-  end: string;
-  allDay: boolean;
-  eventType: NotificationEventTypeEnum;
-  // isAddEventDialogOpen: boolean;
   selectDateInfo: DateSelectArg | null;
   filterCourse: string;
   isLoading: boolean;
@@ -97,17 +87,7 @@ const LecturerEventCalendar = () => {
   const { loggedUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const [data, setData] = useState<IEventCalendarData>({
-    isExpanded: false,
-    durationRadioIndex: "0",
-    durationInMinute: 0,
-    eventTitle: "",
-    eventDescription: "",
-    start: "",
-    end: "",
-    allDay: false,
-    eventType: NotificationEventTypeEnum.USER,
     selectDateInfo: null,
-    // isAddEventDialogOpen: false,
     filterCourse: "ALL",
     isLoading: false,
     currentEvents: []
@@ -154,11 +134,10 @@ const LecturerEventCalendar = () => {
     setData((pre) => {
       return {
         ...pre,
-        start: selectInfo.startStr,
-        selectDateInfo: selectInfo,
-        isAddEventDialogOpen: true
+        selectDateInfo: selectInfo
       };
     });
+    setIsAddEventDialogOpen(true);
   }, []);
 
   const openAddEventDialog = useCallback(() => {
