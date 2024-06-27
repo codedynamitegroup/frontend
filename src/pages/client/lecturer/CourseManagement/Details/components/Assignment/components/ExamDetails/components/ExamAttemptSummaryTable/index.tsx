@@ -112,8 +112,8 @@ export default function StudentExamAttemptSummaryTable({
                     time: `${submitTime.getHours() < 10 ? `0${submitTime.getHours()}` : submitTime.getHours()}:${submitTime.getMinutes() < 10 ? `0${submitTime.getMinutes()}` : submitTime.getMinutes()}`
                   })}`}</ParagraphBody>
                 </td>
-                <td>{row.markTotal}</td>
-                <td>{(row.markTotal / examMark) * examGrade}</td>
+                <td>{row.mark}</td>
+                <td>{row.grade}</td>
                 <td>
                   <RouteLink
                     to={`${routes.lecturer.exam.review
