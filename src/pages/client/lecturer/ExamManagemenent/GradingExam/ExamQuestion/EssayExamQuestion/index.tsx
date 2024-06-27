@@ -35,7 +35,7 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
   const { t } = useTranslation();
 
-  const [mark, setMark] = useState<number>(0);
+  const [mark, setMark] = useState<number>(questionSubmitContent?.grade || 0);
 
   const navigate = useNavigate();
   const submissionId = useParams<{ submissionId: string }>().submissionId;
@@ -198,7 +198,7 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             label={t("common_grade")}
             variant='outlined'
             size='small'
-            value={questionSubmitContent?.grade || 0}
+            value={mark}
             onChange={(e) => {
               setMark(Number(e.target.value));
             }}
