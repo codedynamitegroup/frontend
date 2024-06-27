@@ -12,12 +12,13 @@ import { Grid } from "@mui/material";
 import CustomPagination from "components/common/pagination/CustomPagination";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { useDispatch } from "react-redux";
 import { setErrorMess } from "reduxes/AppStatus";
 import Heading6 from "components/text/Heading6";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { routes } from "routes/routes";
 
 interface UserRecentCodeQuestionProps {
   id: string;
@@ -133,6 +134,7 @@ export default function UserRecentCodeQuestion() {
     fetchRecentCodeQuestion();
   }, [dispatch, handleGetRecentCodeQuestion]);
 
+  const navigate = useNavigate();
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     // navigate({
     //   pathname: routes.user.contest.root,
@@ -144,39 +146,55 @@ export default function UserRecentCodeQuestion() {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label='customized table'>
-          <TableBody>
-            {data.codeQuestions.codeQuestions.map((codeQuestion) => (
-              <StyledTableRow key={codeQuestion.id}>
-                <StyledTableCell component='th' scope='row'>
-                  <TextTitle>{codeQuestion.name}</TextTitle>
-                </StyledTableCell>
-                <StyledTableCell align='right'>
-                  {renderLevel(codeQuestion.difficulty)}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-        <CustomPagination
-          count={data.codeQuestions.totalPages}
-          page={pageNo}
-          handlePageChange={handlePageChange}
-          showFirstButton
-          showLastButton
-          size={"large"}
-        />
-      </Grid>
+      {data.codeQuestions.codeQuestions.length === 0 ? (
+        <EmptyListView />
+      ) : (
+        <>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+              <TableBody>
+                {data.codeQuestions.codeQuestions.map((codeQuestion) => (
+                  <StyledTableRow
+                    key={codeQuestion.id}
+                    onClick={() => {
+                      navigate(
+                        routes.user.problem.detail.description.replace(
+                          ":problemId",
+                          codeQuestion.id
+                        )
+                      );
+                    }}
+                  >
+                    <StyledTableCell component='th' scope='row'>
+                      <TextTitle>{codeQuestion.name}</TextTitle>
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      {renderLevel(codeQuestion.difficulty)}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <CustomPagination
+              count={data.codeQuestions.totalPages}
+              page={pageNo}
+              handlePageChange={handlePageChange}
+              showFirstButton
+              showLastButton
+              size={"large"}
+            />
+          </Grid>
+        </>
+      )}
     </>
   );
 }

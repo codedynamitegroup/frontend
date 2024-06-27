@@ -721,6 +721,7 @@
 
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
   "side_bar_question_bank_management": "Ngân hàng câu hỏi",
+  "side_bar_synchronize_managment": "Đồng bộ",
 
   "code_question_name": "Tên câu hỏi code",
   "code_question_difficulty": "Độ khó",
@@ -1048,6 +1049,9 @@
   "exam_submit_success": "Nộp bài kiểm tra thành công",
   "exam_submit_fail": "Nộp bài kiểm tra thất bại",
 
+  "student_not_take_exam": "Học sinh chưa làm bài kiểm tra",
+  "warning": "Cảnh báo",
+
   "exam_detail_time_limit": "Thời gian làm",
   "exam_detail_grading_method": "Cách tính điểm",
   "exam_detail_grading_method_high_score": "Điểm cao nhất",
@@ -1072,6 +1076,9 @@
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
   "exam_detail_attempt_unlimited": "Không giới hạn số lần",
+
+  "update_grade": "Cập nhật điểm",
+  "correct_answer": "Đáp án đúng",
 
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",

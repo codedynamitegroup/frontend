@@ -31,7 +31,7 @@ const PreviewAssignmentSubmission = lazy(
 );
 const PreviewExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/PreviewExam"));
 const GradingExam = lazy(() => import("pages/client/lecturer/ExamManagemenent/GradingExam"));
-const ReviewExamAttempt = lazy(
+const LecturerReviewExamAttempt = lazy(
   () => import("pages/client/lecturer/ExamManagemenent/ReviewExamAttempt")
 );
 const StudentReviewExamAttempt = lazy(
@@ -169,7 +169,7 @@ const router = createHashRouter(
           <Route path={routes.lecturer.exam.edit} element={<EditExam />} />
           <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
           <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
-          <Route path={routes.lecturer.exam.review} element={<ReviewExamAttempt />} />
+          <Route path={routes.lecturer.exam.review} element={<LecturerReviewExamAttempt />} />
           <Route
             path={routes.lecturer.exam.code_plagiarism_detection}
             element={<LecturerSourceCodePlagiarismManagement />}

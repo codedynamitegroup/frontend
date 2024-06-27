@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Divider } from "@mui/material";
+import { Box, Grid, Stack, Divider, TextField } from "@mui/material";
 import TextEditor from "components/editor/TextEditor";
 import FlagIcon from "@mui/icons-material/Flag";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
@@ -6,7 +6,7 @@ import Button from "@mui/joy/Button";
 import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Textarea } from "@mui/joy";
+import { Checkbox, Sheet, Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/QuestionEntity";
 import {
   addFileToExamQuesiton,
@@ -28,6 +28,8 @@ interface EssayExamQuestionProps {
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
   const { t } = useTranslation();
+
+  const [mark, setMark] = useState<number>(0);
 
   return (
     <Grid container spacing={1}>
@@ -145,6 +147,22 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           />
         </Grid>
       )} */}
+
+      <Grid item xs={12} md={12} marginTop={2}>
+        <Stack direction={"row"} spacing={2} marginTop={2}>
+          <TextField
+            id='outlined-basic'
+            label={t("common_grade")}
+            variant='outlined'
+            size='small'
+            value={mark}
+            onChange={(e) => {
+              setMark(Number(e.target.value));
+            }}
+          />
+          <Button color='primary'>{t("update_grade")}</Button>
+        </Stack>
+      </Grid>
     </Grid>
   );
 };

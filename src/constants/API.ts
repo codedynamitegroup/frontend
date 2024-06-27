@@ -50,6 +50,7 @@ export const API = {
     QUESTION: {
       DEFAULT: "/core/questions",
       CLONE: "/core/questions/clone",
+      ANSWER: "/core/questions/answer/:questionId",
       GET_BY_CATEGORY_ID: "/core/questions/category/:categoryId",
       GET_BY_ID: "/core/questions/:id",
       UPDATE_BY_ID: "/core/questions/:id",
@@ -107,7 +108,8 @@ export const API = {
       CREATE: "/course/assignment",
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
-      INTRO_ATTACHMENT: "/course/assignment/intro-attachment"
+      INTRO_ATTACHMENT: "/course/assignment/intro-attachment",
+      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/user"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",

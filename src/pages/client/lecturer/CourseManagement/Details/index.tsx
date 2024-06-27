@@ -116,7 +116,7 @@ const LecturerCourseDetail = memo((props: Props) => {
           className={classes.tabs}
           sx={{
             top: `${sidebarStatus.headerHeight}px`,
-            left: `${sidebarStatus.sidebarWidth}px`
+            left: sidebarStatus.isOpen ? `${sidebarStatus.sidebarWidth}px` : 0
           }}
         >
           <Toolbar>
