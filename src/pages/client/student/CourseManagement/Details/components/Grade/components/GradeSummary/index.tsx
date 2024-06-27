@@ -2,7 +2,13 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import classes from "./styles.module.scss";
 import ExportIcon from "@mui/icons-material/SystemUpdateAlt";
 import { useTranslation } from "react-i18next";
-const GradeSummary = () => {
+
+interface Props {
+  title?: string;
+  average: number;
+  submitted?: number;
+}
+const GradeSummary = (props: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -11,8 +17,7 @@ const GradeSummary = () => {
         <Grid item xs={12}>
           <Box className={classes.courseDetail}>
             <Box>
-              <Typography variant='h4'>Tên khóa học</Typography>
-              <Typography sx={{ color: "var(--gray-50)" }}>mô tả khóa học</Typography>
+              <Typography variant='h4'>{props.title}</Typography>
             </Box>
             <Button
               startIcon={<ExportIcon />}
@@ -35,7 +40,7 @@ const GradeSummary = () => {
             sx={{ backgroundColor: "var(--green-200)" }}
           >
             <Typography variant='h5' className={classes.badgeTypoText}>
-              100
+              {props.average}
             </Typography>
           </Box>
         </Grid>
@@ -49,7 +54,7 @@ const GradeSummary = () => {
             sx={{ backgroundColor: "var(--blue-200)" }}
           >
             <Typography variant='h5' className={classes.badgeTypoText}>
-              7
+              {props.submitted}
             </Typography>
           </Box>
         </Grid>

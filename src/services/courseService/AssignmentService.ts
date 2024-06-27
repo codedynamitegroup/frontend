@@ -156,4 +156,27 @@ export class AssignmentService {
       });
     }
   }
+  static async getRetrieveStudentAssignmentGrades(courseId: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.ASSIGNMENT.GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES}`, {
+        params: {
+          courseId
+        }
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch assignment grade by student", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

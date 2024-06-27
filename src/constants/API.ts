@@ -109,7 +109,8 @@ export const API = {
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
       INTRO_ATTACHMENT: "/course/assignment/intro-attachment",
-      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/user"
+      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/grade",
+      GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES: "course/assignment/student-assignment"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",
