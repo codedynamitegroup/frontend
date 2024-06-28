@@ -17,17 +17,7 @@ const CourseCertificateIntroduction = ({ description }: Props) => {
         id={classes.courseDescription}
         translation-key='certificate_detail_certification_information'
       >
-        <Heading2 colorname='--blue-500'>
-          {t("certificate_detail_certification_information")}
-        </Heading2>
-        <ReactQuill
-          value={description}
-          readOnly={true}
-          theme={"bubble"}
-          style={{
-            marginTop: "15px"
-          }}
-        />
+        <ReactQuill value={description} readOnly={true} theme={"bubble"} />
       </Box>
     </Box>
   );

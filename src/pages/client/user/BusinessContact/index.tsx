@@ -1,8 +1,6 @@
 import classes from "./styles.module.scss";
-import { Container, Grid, TextareaAutosize } from "@mui/material";
+import { Grid, TextareaAutosize, Tooltip } from "@mui/material";
 import { Box } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import images from "config/images";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -12,14 +10,14 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Heading1 from "components/text/Heading1";
 import InputTextField from "components/common/inputs/InputTextField";
-import LoadButton from "components/common/buttons/LoadingButton";
-import { BtnType } from "components/common/buttons/Button";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import TextTitle from "components/text/TextTitle";
 import ErrorMessage from "components/text/ErrorMessage";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
 import { InputPhone } from "components/common/inputs/InputPhone";
+import useAuth from "hooks/useAuth";
+import JoyButton from "@mui/joy/Button";
 
 interface IFormData {
   businessEmail: string;
@@ -31,7 +29,8 @@ interface IFormData {
 
 export default function BusinessContact() {
   const { t } = useTranslation();
-  const [isLoggedLoading, setIsLoggedLoading] = useState(false);
+  const [isSubmitBusinessContact, setIsSubmitBusinessContact] = useState(false);
+  const { isLoggedIn } = useAuth();
   const dispatch = useDispatch();
 
   const schema = useMemo(() => {
@@ -61,7 +60,7 @@ export default function BusinessContact() {
       address: data.businessAddress,
       description: data.businessDescription
     };
-    setIsLoggedLoading(true);
+    setIsSubmitBusinessContact(true);
     OrganizationService.createOrganizationByContactUs(createOrganizationData)
       .then(async (response) => {
         dispatch(
@@ -77,7 +76,7 @@ export default function BusinessContact() {
         });
       })
       .finally(() => {
-        setIsLoggedLoading(false);
+        setIsSubmitBusinessContact(false);
       });
   };
 
@@ -86,9 +85,11 @@ export default function BusinessContact() {
       <Grid container className={classes.contactUsContainer}>
         <Grid item xs={12} md={12} id={classes.contactUsBodyWrapper}>
           <Box className={classes.form}>
-            <Heading1 translation-key='common_contact_us'>{t("common_contact_us")}</Heading1>
-            <ParagraphBody translation-key='common_contact_us_description'>
-              {t("common_contact_us_description")}
+            <Heading1 translation-key='business_create_organization'>
+              {t("business_create_organization")}
+            </Heading1>
+            <ParagraphBody translation-key='business_create_organization_description'>
+              {t("business_create_organization_description")}
             </ParagraphBody>
             <form className={classes.formControl} onSubmit={handleSubmit(handleSubmitContactUs)}>
               <Grid container columns={12} className={classes.inputItem}>
@@ -150,16 +151,24 @@ export default function BusinessContact() {
                   aria-invalid={errors.businessDescription ? true : false}
                 />
               </Grid>
-              <LoadButton
-                loading={isLoggedLoading}
-                btnType={BtnType.Primary}
-                colorname='--white'
-                autoFocus
-                translation-key='common_contact_us'
-                isTypeSubmit
+              <Tooltip
+                title={isLoggedIn === false ? t("business_contact_submit_register_tooltip") : ""}
+                placement='top'
+                arrow
               >
-                {t("common_contact_us")}
-              </LoadButton>
+                <span>
+                  <JoyButton
+                    loading={isSubmitBusinessContact}
+                    color='primary'
+                    type='submit'
+                    translation-key='business_create_organization'
+                    fullWidth
+                    disabled={isLoggedIn === false}
+                  >
+                    {t("business_create_organization")}
+                  </JoyButton>
+                </span>
+              </Tooltip>
             </form>
           </Box>
         </Grid>

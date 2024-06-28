@@ -1,6 +1,4 @@
 {
-  "common_contact_us": "Liên hệ với chúng tôi",
-  "common_contact_us_description": "Vui lòng điền biểu mẫu dưới đây để liên hệ với chúng tôi.",
   "common_is_blocked": "Tình trạng khóa",
   "common_is_belong_to_organization": "Thuộc tổ chức",
   "common_organization_name": "Tên tổ chức",
@@ -119,6 +117,7 @@
   "common_logout": "Đăng xuất",
   "common_account_info": "Thông tin tài khoản",
   "common_admin_page": "Trang quản trị viên",
+  "common_organization_page": "Trang tổ chức",
   "common_user_page": "Trang người dùng",
   "common_dashboard": "Trang chủ",
   "common_notification": "Thông báo",
@@ -270,7 +269,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
-  "header_business_contact": "Liên hệ",
+  "header_create_organization": "Tổ chức",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -1107,5 +1106,8 @@
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
   "business_address": "Địa chỉ doanh nghiệp",
-  "business_name": "Tên doanh nghiệp"
+  "business_name": "Tên doanh nghiệp",
+  "business_contact_submit_register_tooltip": "Hãy đăng nhập hoặc đăng ký tài khoản để gửi thông tin của bạn",
+  "business_create_organization": "Tạo tổ chức",
+  "business_create_organization_description": "Vui lòng điền thông tin của tổ chức của bạn"
 }
