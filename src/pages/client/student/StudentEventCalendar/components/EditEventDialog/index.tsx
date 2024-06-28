@@ -23,42 +23,33 @@ import useAuth from "hooks/useAuth";
 import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
 import moment from "moment";
+import { ICalendarEventCourse } from "pages/client/lecturer/LecturerEventCalendar";
+import { IEditEventFormData } from "pages/client/lecturer/LecturerEventCalendar/components/AddEventDialog";
 import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { CreateEventCalendarEvent } from "services/courseService/EventCalendarService";
+import { UpdateEventCalendarEvent } from "services/courseService/EventCalendarService";
 import * as yup from "yup";
-import { ICalendarEventCourse } from "../..";
-import { DateSelectArg } from "@fullcalendar/core";
 
-export interface IEditEventFormData {
-  durationRadioIndex: string;
-  durationInMinute: number;
-  eventTitle: string;
-  eventDescription: string;
-  start: string;
-  end?: string;
-  allDay: boolean;
-  eventType: string;
-  courseId?: string;
-}
-
-interface AddEventDialogProps extends DialogProps {
+interface EditEventDialogProps extends DialogProps {
   allMyCoursesData: {
     data: ICalendarEventCourse[];
     isLoading: boolean;
   };
+  eventId: string;
+  defaultValues: IEditEventFormData;
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
   cancelText?: string;
   confirmText?: string;
   onHandleCancel?: () => void;
-  onHanldeConfirm?: (data: CreateEventCalendarEvent) => void;
-  selectDateInfo: DateSelectArg | null;
+  onHanldeConfirm?: (id: string, body: UpdateEventCalendarEvent) => void;
 }
 
-const AddEventDialog = ({
+const EditEventDialog = ({
+  eventId,
+  defaultValues,
   open,
   title,
   handleClose,
@@ -68,9 +59,8 @@ const AddEventDialog = ({
   onHandleCancel,
   onHanldeConfirm,
   allMyCoursesData,
-  selectDateInfo,
   ...props
-}: AddEventDialogProps) => {
+}: EditEventDialogProps) => {
   const { t } = useTranslation();
   const { loggedUser } = useAuth();
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
@@ -122,16 +112,7 @@ const AddEventDialog = ({
     setValue
   } = useForm<IEditEventFormData>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      durationRadioIndex: "0",
-      durationInMinute: 1,
-      eventTitle: "",
-      eventDescription: "",
-      start: selectDateInfo ? selectDateInfo.startStr : moment().toISOString(),
-      allDay: false,
-      eventType: NotificationEventTypeEnum.USER,
-      courseId: selectCourseItems.length > 0 ? selectCourseItems[0].value : ""
-    }
+    defaultValues
   });
 
   return (
@@ -164,7 +145,7 @@ const AddEventDialog = ({
       }
       onHandleSubmit={handleSubmit((data) => {
         setIsConfirmLoading(true);
-        const newEvent: CreateEventCalendarEvent = {
+        const newEvent: UpdateEventCalendarEvent = {
           name: data.eventTitle,
           description: data.eventDescription,
           startTime: data.start,
@@ -175,7 +156,7 @@ const AddEventDialog = ({
           userId: data.eventType === NotificationEventTypeEnum.USER ? loggedUser.userId : undefined,
           component: NotificationComponentTypeEnum.REMINDER
         };
-        onHanldeConfirm && onHanldeConfirm(newEvent);
+        onHanldeConfirm && onHanldeConfirm(eventId, newEvent);
         setIsConfirmLoading(false);
         handleClose();
       })}
@@ -275,10 +256,6 @@ const AddEventDialog = ({
                       {
                         value: NotificationEventTypeEnum.USER,
                         label: t("calendar_event_type_user")
-                      },
-                      {
-                        value: NotificationEventTypeEnum.COURSE,
-                        label: t("calendar_event_type_course")
                       }
                     ]}
                     translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
@@ -474,4 +451,4 @@ const AddEventDialog = ({
   );
 };
 
-export default AddEventDialog;
+export default EditEventDialog;

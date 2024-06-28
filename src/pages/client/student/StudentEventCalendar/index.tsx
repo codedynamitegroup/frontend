@@ -1,230 +1,498 @@
 import { DateSelectArg } from "@fullcalendar/core";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Divider, Grid } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import CustomFullCalendar from "components/calendar/CustomFullCalendar";
-import { createEventId } from "components/calendar/CustomFullCalendar/event-utils";
 import Button, { BtnType } from "components/common/buttons/Button";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import BasicSelect from "components/common/select/BasicSelect";
 import Heading1 from "components/text/Heading1";
-import dayjs from "dayjs";
-import { useCallback, useState } from "react";
-import AddEventDialog from "./components/AddEventDialog";
-import classes from "./styles.module.scss";
+import useAuth from "hooks/useAuth";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
+import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
+import moment from "moment";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { useDispatch } from "react-redux";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { CourseUserService } from "services/courseService/CourseUserService";
+import {
+  CreateEventCalendarEvent,
+  EventCalendarService
+} from "services/courseService/EventCalendarService";
+import { AppDispatch } from "store";
+import AddEventDialog from "./components/AddEventDialog";
+import EditEventDialog from "./components/EditEventDialog";
+import EventDetailsDialog from "./components/EventDetailsDialog";
+import classes from "./styles.module.scss";
+import {
+  ICalendarEventCourse,
+  IEventCalendarData,
+  IFullCalendarEvent
+} from "pages/client/lecturer/LecturerEventCalendar";
 
 const StudentEventCalendar = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [data, setData] = useState<{
-    isExpanded: boolean;
-    durationRadioIndex: string;
-    durationInMinute: number;
-    eventTitle: string;
-    eventDescription: string;
+  const { loggedUser } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+  const [data, setData] = useState<IEventCalendarData>({
+    selectDateInfo: null,
+    filterCourse: "ALL",
+    isLoading: false,
+    currentEvents: []
+  });
+
+  const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
+  const [isEditEventDialogOpen, setIsEditEventDialogOpen] = useState(false);
+  const [editEventFormData, setEditEventFormData] = useState<IFullCalendarEvent | null>(null);
+
+  const [allMyCoursesData, setAllMyCoursesData] = useState<{
+    data: ICalendarEventCourse[];
+    isLoading: boolean;
+  }>({
+    data: [],
+    isLoading: false
+  });
+
+  const [eventDetailsDialogData, setEventDetailsDialogData] = useState<{
+    open: boolean;
+    data: IFullCalendarEvent | null;
+  }>({
+    open: false,
+    data: null
+  });
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [currentRange, setCurrentRange] = useState<{
     start: string;
     end: string;
-    allDay: boolean;
-    isAddEventDialogOpen: boolean;
-    selectDateInfo: DateSelectArg | null;
-    filterCourse: string;
-    currentEvents: any[];
   }>({
-    isExpanded: false,
-    durationRadioIndex: "0",
-    durationInMinute: 0,
-    eventTitle: "",
-    eventDescription: "",
     start: "",
-    end: "",
-    allDay: false,
-    isAddEventDialogOpen: false,
-    selectDateInfo: null,
-    filterCourse: "0",
-    currentEvents: [
-      {
-        id: createEventId(),
-        title: "Sự kiện nộp bài nhập môn lập trình",
-        start: "2024-02-28",
-        end: "2024-03-02",
-        allDay: true,
-        description: "Nộp bài tập lớn"
-      },
-      {
-        id: createEventId(),
-        title: "Sự kiện thi cuối kì nhập môn lập trình",
-        start: "2024-02-20",
-        end: "2024-02-22",
-        allDay: true,
-        description: "Thi cuối kì"
-      }
-    ]
+    end: ""
   });
+
+  const handleOpenEventDetailsDialog = useCallback((event: IFullCalendarEvent) => {
+    setEventDetailsDialogData((pre) => {
+      return {
+        ...pre,
+        open: true,
+        data: event
+      };
+    });
+  }, []);
 
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     setData((pre) => {
       return {
         ...pre,
-        start: selectInfo.startStr,
-        selectDateInfo: selectInfo,
-        isAddEventDialogOpen: true
+        selectDateInfo: selectInfo
       };
     });
+    setIsAddEventDialogOpen(true);
   }, []);
 
   const openAddEventDialog = useCallback(() => {
-    setData((pre) => {
-      return {
-        ...pre,
-        isAddEventDialogOpen: true,
-        selectDateInfo: null,
-        eventTitle: "",
-        start: dayjs().toString(),
-        end: dayjs().toString()
-      };
-    });
+    setIsAddEventDialogOpen(true);
   }, []);
 
   const closeAddEventDialog = useCallback(() => {
-    setData((pre) => {
-      return {
-        ...pre,
-        isAddEventDialogOpen: false
-      };
-    });
+    setIsAddEventDialogOpen(false);
   }, []);
 
-  const onHanldeConfirmAddEvent = useCallback(() => {
-    setData((pre) => {
+  const openEditEventDialog = useCallback((event: IFullCalendarEvent) => {
+    setEventDetailsDialogData((pre) => {
       return {
         ...pre,
-        currentEvents: [
-          ...pre.currentEvents,
-          {
-            id: createEventId(),
-            title: pre.eventTitle,
-            start: data.selectDateInfo?.startStr || "",
-            end: data.selectDateInfo?.endStr || "",
-            allDay: data.selectDateInfo?.allDay || false,
-            description: pre.eventDescription
-          }
-        ]
+        open: false
       };
     });
-    closeAddEventDialog();
-  }, [closeAddEventDialog, data.selectDateInfo]);
+    setEditEventFormData(event);
+    setIsEditEventDialogOpen(true);
+  }, []);
+
+  const closeEditEventDialog = useCallback(() => {
+    setIsEditEventDialogOpen(false);
+    setEditEventFormData(null);
+  }, []);
+
+  const [calendarViewType, setCalendarViewType] = useState("0");
+
+  const handleGetCalendarEvents = useCallback(
+    async ({ fromTime, toTime }: { fromTime: string; toTime: string }) => {
+      setData((pre) => {
+        return {
+          ...pre,
+          isLoading: true
+        };
+      });
+      try {
+        const getCertificateCoursesResponse = await EventCalendarService.getEventCalendars({
+          courseId: data.filterCourse === "ALL" ? undefined : data.filterCourse,
+          fromTime,
+          toTime
+        });
+        if (getCertificateCoursesResponse.calendarEvents.length === 0) {
+          setData((pre) => {
+            return {
+              ...pre,
+              currentEvents: [],
+              isLoading: false
+            };
+          });
+          return;
+        }
+        setData((pre) => {
+          return {
+            ...pre,
+            currentEvents: getCertificateCoursesResponse.calendarEvents.map((value: any) => {
+              return {
+                id: value.calendarEventId,
+                title: value.name,
+                start: value.startTime,
+                end: value.endTime || "",
+                allDay: value.endTime ? false : true,
+                description: value.description,
+                eventType: value.eventType,
+                component: value.component,
+                user: value.user,
+                course: value.course,
+                exam: value.exam,
+                assignment: value.assignment,
+                createdAt: value.createdAt,
+                editable: value.eventType === NotificationEventTypeEnum.USER ? true : false
+              };
+            }),
+            isLoading: false
+          };
+        });
+      } catch (error: any) {
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+        setData((pre) => {
+          return {
+            ...pre,
+            isLoading: false
+          };
+        });
+      }
+    },
+    [data.filterCourse, dispatch, loggedUser?.userId, t]
+  );
+
+  const handleGetAllCoursesByUserId = useCallback(async () => {
+    setAllMyCoursesData((pre) => {
+      return {
+        ...pre,
+        isLoading: true
+      };
+    });
+    try {
+      const getAllCourseByUserIdResponse = await CourseUserService.getAllCourseByUserId(
+        loggedUser?.userId || "",
+        {
+          pageNo: 0,
+          pageSize: 999999
+        }
+      );
+      if (getAllCourseByUserIdResponse) {
+        setAllMyCoursesData((pre) => {
+          return {
+            ...pre,
+            data: getAllCourseByUserIdResponse.courses || [],
+            isLoading: false
+          };
+        });
+        return;
+      }
+    } catch (error: any) {
+      setAllMyCoursesData((pre) => {
+        return {
+          ...pre,
+          isLoading: false
+        };
+      });
+    }
+  }, [loggedUser?.userId]);
+
+  const handleUpdateCalendarEventById = useCallback(
+    async (
+      id: string,
+      body: {
+        name?: string;
+        description?: string;
+        eventType?: NotificationEventTypeEnum;
+        startTime?: string;
+        endTime?: string;
+        userId?: string;
+        courseId?: string;
+        examId?: string;
+        assignmentId?: string;
+        contestId?: string;
+        component?: NotificationComponentTypeEnum;
+      }
+    ) => {
+      try {
+        const updateCalendarEventResponse = await EventCalendarService.updateEventCalendar(
+          id,
+          body
+        );
+        if (updateCalendarEventResponse && currentRange.start !== "" && currentRange.end !== "") {
+          await handleGetCalendarEvents({
+            fromTime: currentRange.start,
+            toTime: currentRange.end
+          });
+          dispatch(setSuccessMess(t("calendar_event_update_event_success")));
+        }
+      } catch (error: any) {
+        dispatch(setErrorMess(t("calendar_event_update_event_failed")));
+      }
+    },
+    [currentRange.end, currentRange.start, dispatch, handleGetCalendarEvents, t]
+  );
+
+  const handleCreateCalendarEvent = useCallback(
+    async (data: CreateEventCalendarEvent) => {
+      try {
+        const createCalendarEventResponse = await EventCalendarService.createEventCalendar(data);
+        if (createCalendarEventResponse && currentRange.start !== "" && currentRange.end !== "") {
+          await handleGetCalendarEvents({
+            fromTime: currentRange.start,
+            toTime: currentRange.end
+          });
+          dispatch(setSuccessMess(t("calendar_event_create_event_success")));
+        }
+      } catch (error: any) {
+        dispatch(setErrorMess(t("calendar_event_create_event_failed")));
+      }
+    },
+    [currentRange.end, currentRange.start, dispatch, handleGetCalendarEvents, t]
+  );
+
+  const handleDeleteCalendarEventById = useCallback(
+    async (id: string) => {
+      try {
+        const deleteCalendarEventResponse = await EventCalendarService.deleteEventCalendarById(id);
+        if (deleteCalendarEventResponse && currentRange.start !== "" && currentRange.end !== "") {
+          await handleGetCalendarEvents({
+            fromTime: currentRange.start,
+            toTime: currentRange.end
+          });
+          dispatch(setSuccessMess(t("calendar_event_delete_event_success")));
+        }
+      } catch (error: any) {
+        dispatch(setErrorMess(t("calendar_event_delete_event_failed")));
+      }
+    },
+    [currentRange.end, currentRange.start, dispatch, handleGetCalendarEvents, t]
+  );
+
+  const selectCourseItems = useMemo(() => {
+    const res = allMyCoursesData.data.map((value) => {
+      return {
+        value: value.id,
+        label: value.name
+      };
+    });
+
+    res.unshift({
+      value: "ALL",
+      label: t("calendar_all_course")
+    });
+
+    return res;
+  }, [allMyCoursesData.data, t]);
+
+  useEffect(() => {
+    handleGetAllCoursesByUserId();
+  }, [handleGetAllCoursesByUserId]);
 
   return (
     <>
-      <AddEventDialog
-        open={data.isAddEventDialogOpen}
-        handleClose={() => {
-          closeAddEventDialog();
-          setData((pre) => {
+      {isAddEventDialogOpen && (
+        <AddEventDialog
+          open={isAddEventDialogOpen}
+          handleClose={() => {
+            closeAddEventDialog();
+            setData((pre) => {
+              return {
+                ...pre,
+                isExpanded: false
+              };
+            });
+          }}
+          allMyCoursesData={allMyCoursesData}
+          title={t("calendar_add_event")}
+          cancelText={t("common_cancel")}
+          confirmText={t("common_create")}
+          onHandleCancel={() => {
+            closeAddEventDialog();
+            setData((pre) => {
+              return {
+                ...pre,
+                isExpanded: false
+              };
+            });
+          }}
+          translation-key={["common_cancel", "common_create", "calendar_add_event"]}
+          onHanldeConfirm={handleCreateCalendarEvent}
+          selectDateInfo={data.selectDateInfo}
+        />
+      )}
+
+      {isEditEventDialogOpen && editEventFormData && (
+        <EditEventDialog
+          open={isEditEventDialogOpen}
+          handleClose={() => {
+            closeEditEventDialog();
+          }}
+          allMyCoursesData={allMyCoursesData}
+          title={t("calendar_add_event")}
+          cancelText={t("common_cancel")}
+          confirmText={t("common_create")}
+          onHandleCancel={() => {
+            closeEditEventDialog();
+          }}
+          translation-key={["common_cancel", "common_create", "calendar_add_event"]}
+          eventId={editEventFormData.id}
+          defaultValues={{
+            durationRadioIndex: editEventFormData.end ? "1" : "0",
+            durationInMinute: 1,
+            eventTitle: editEventFormData.title,
+            eventDescription: editEventFormData.description,
+            start: moment(editEventFormData.start).toISOString(),
+            end: editEventFormData.end ? moment(editEventFormData.end).toISOString() : undefined,
+            allDay: editEventFormData.end ? false : true,
+            eventType: editEventFormData.eventType,
+            courseId:
+              editEventFormData.eventType === NotificationEventTypeEnum.COURSE
+                ? editEventFormData.course?.id || ""
+                : ""
+          }}
+          onHanldeConfirm={handleUpdateCalendarEventById}
+        />
+      )}
+
+      {eventDetailsDialogData.data && (
+        <EventDetailsDialog
+          open={eventDetailsDialogData.open}
+          data={eventDetailsDialogData.data}
+          handleClose={() => {
+            setEventDetailsDialogData((pre) => {
+              return {
+                ...pre,
+                open: false,
+                data: null
+              };
+            });
+          }}
+          onHandleCancel={() => {
+            setIsOpenConfirmDelete(true);
+            setEventDetailsDialogData((pre) => {
+              return {
+                ...pre,
+                open: false
+              };
+            });
+          }}
+          openEditEventDialog={openEditEventDialog}
+        />
+      )}
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={t("dialog_confirm_delete_title")}
+        description={t("dialog_confirm_delete_calendar_event", {
+          eventTitle: eventDetailsDialogData.data?.title
+        })}
+        onCancel={() => {
+          setIsOpenConfirmDelete(false);
+          setEventDetailsDialogData((pre) => {
             return {
               ...pre,
-              isExpanded: false
+              open: true
             };
           });
         }}
-        data={data}
-        handleChangData={(newData) => {
-          setData((pre) => {
-            return {
-              ...pre,
-              isExpanded: newData.isExpanded,
-              durationRadioIndex: newData.durationRadioIndex,
-              durationInMinute: newData.durationInMinute,
-              eventTitle: newData.eventTitle,
-              start: newData.start,
-              end: newData.end,
-              allDay: newData.allDay
-            };
-          });
-        }}
-        title={t("calendar_add_event")}
-        cancelText={t("common_cancel")}
-        confirmText={t("common_add")}
-        onHandleCancel={() => {
-          closeAddEventDialog();
-          setData((pre) => {
-            return {
-              ...pre,
-              isExpanded: false
-            };
-          });
-        }}
-        translation-key={["calendar_add_event", "common_add", "common_cancel"]}
-        onHanldeConfirm={() => {
-          onHanldeConfirmAddEvent();
+        onDelete={() => {
+          if (eventDetailsDialogData.data) {
+            handleDeleteCalendarEventById(eventDetailsDialogData.data.id);
+            setIsOpenConfirmDelete(false);
+          }
         }}
       />
       <Box id={classes.calendarBody}>
         <Heading1 translation-key='calendar_title'>{t("calendar_title")}</Heading1>
         <Divider />
-        <Box sx={{ marginBottom: "10px" }}>
-          <Grid
-            container
-            spacing={2}
-            alignItems='center'
-            direction={isSmallScreen ? "column" : "row"}
+        <Box
+          sx={{
+            display: "flex",
+            direction: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "10px"
+          }}
+        >
+          <Stack
+            direction='row'
+            spacing={1}
+            sx={{
+              alignItems: "center"
+            }}
           >
-            <Grid item xs={12} sm={12} md={6}>
-              <BasicSelect
-                labelId='select-assignment-section-label'
-                value={data.filterCourse}
-                onHandleChange={(value) => {
-                  setData((pre) => {
-                    return {
-                      ...pre,
-                      filterCourse: value
-                    };
-                  });
-                }}
-                sx={{ width: "100%" }}
-                items={[
-                  {
-                    value: "0",
-                    label: t("calendar_all_course")
-                  },
-                  {
-                    value: "1",
-                    label: "Nhập môn lập trình"
-                  },
-                  {
-                    value: "2",
-                    label: "Lập trình hướng đối tượng"
-                  }
-                ]}
-                translation-key='calendar_all_course'
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={6}
-              container
-              justifyContent={isSmallScreen ? "flex-start" : "flex-end"}
-            >
-              <Button
-                btnType={BtnType.Outlined}
-                onClick={() => {
-                  openAddEventDialog();
-                }}
-                startIcon={<AddIcon />}
-                translation-key='calendar_add_event'
-              >
-                {t("calendar_add_event")}
-              </Button>
-            </Grid>
-          </Grid>
+            <BasicSelect
+              labelId='select-calendar-type-label'
+              value={calendarViewType}
+              onHandleChange={(value) => {
+                setCalendarViewType(value);
+              }}
+              width={"120px"}
+              items={[
+                {
+                  value: "0",
+                  label: "Month"
+                },
+                {
+                  value: "1",
+                  label: "Day"
+                }
+              ]}
+            />
+            <BasicSelect
+              labelId='select-assignment-section-label'
+              value={data.filterCourse}
+              onHandleChange={(value) => {
+                setData((pre) => {
+                  return {
+                    ...pre,
+                    filterCourse: value
+                  };
+                });
+              }}
+              items={selectCourseItems}
+              translation-key='calendar_all_course'
+            />
+          </Stack>
+          <Button
+            btnType={BtnType.Outlined}
+            onClick={() => {
+              openAddEventDialog();
+            }}
+            startIcon={<AddIcon />}
+            translation-key='calendar_add_event'
+          >
+            {t("calendar_add_event")}
+          </Button>
         </Box>
-        <Box>
-          {/* <CustomFullCalendar events={data.currentEvents} handleDateSelect={handleDateSelect} /> */}
-        </Box>
+        <CustomFullCalendar
+          isEventsLoading={data.isLoading}
+          calendarViewType={calendarViewType}
+          events={data.currentEvents}
+          handleDateSelect={handleDateSelect}
+          handleGetCalendarEvents={handleGetCalendarEvents}
+          handleOpenEventDetailsDialog={handleOpenEventDetailsDialog}
+          currentRange={currentRange}
+          handleChangeCurrentRange={setCurrentRange}
+          handleUpdateCalendarEventById={handleUpdateCalendarEventById}
+        />
       </Box>
     </>
   );

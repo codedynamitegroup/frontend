@@ -233,6 +233,8 @@ export default function CustomFullCalendar({
                 /* @ts-ignore */
                 const calendarApi = calendarRef.current.getApi();
                 calendarApi.unselect(); // clear date selection
+
+                if (handleDateSelect) handleDateSelect(arg);
               }}
               eventDrop={(arg: EventDragStopArg) => {
                 handleUpdateCalendarEventById &&
