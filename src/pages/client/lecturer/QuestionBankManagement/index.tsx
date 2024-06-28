@@ -397,10 +397,10 @@ const QuestionBankManagement = () => {
                   border: "none"
                 },
                 "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f9fb"
+                  backgroundColor: "var(--blue-5)"
                 },
                 "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "#f5f9fb"
+                  backgroundColor: "var(--blue-5)"
                 }
               }}
               personalSx={true}

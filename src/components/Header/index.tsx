@@ -359,6 +359,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                       <Menu className={classes.menuProfile} {...bindMenu(popupState)}>
                         <MenuItem
                           onClick={() => {
+                            popupState.close();
                             activeRoute(routes.admin.homepage.root)
                               ? navigate(routes.admin.information)
                               : activeRoute(routes.org_admin.homepage.root)
@@ -374,7 +375,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         </MenuItem>
                         {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
                           <MenuItem
-                            onClick={() => navigate(routes.admin.dashboard)}
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.admin.dashboard);
+                            }}
                             translation-key='common_admin_page'
                           >
                             <ListItemIcon>
@@ -392,7 +396,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
                           (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
                           <MenuItem
-                            onClick={() => navigate(routes.user.dashboard.root)}
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.user.dashboard.root);
+                            }}
                             translation-key='common_user_page'
                           >
                             <ListItemIcon>
@@ -406,7 +413,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         )}
                         {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
                           <MenuItem
-                            onClick={() => navigate(routes.org_admin.users.root)}
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.org_admin.users.root);
+                            }}
                             translation-key='common_admin_page'
                           >
                             <ListItemIcon>
@@ -423,7 +433,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         )}
                         <MenuItem
                           className={classes.logout}
-                          onClick={logout}
+                          onClick={() => {
+                            popupState.close();
+                            logout();
+                          }}
                           translation-key='common_logout'
                         >
                           <ListItemIcon>
