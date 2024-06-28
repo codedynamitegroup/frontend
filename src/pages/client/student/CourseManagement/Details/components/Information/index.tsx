@@ -57,7 +57,7 @@ const StudentCourseInformation = () => {
     }
     dispatch(setLoadingSections(false));
   }, [courseId, dispatch, sectionState.courseId, sectionState.sections]);
-  const initialCollapseState = Array(sectionState.sections.length).fill(false);
+  const initialCollapseState = Array(sectionState.sections.length).fill(true);
 
   const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>(initialCollapseState);
   useEffect(() => {

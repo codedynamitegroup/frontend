@@ -132,7 +132,19 @@ export class AssignmentService {
       return this.handleError(error);
     }
   }
-  static async getAssignmentGradeByStudent(courseId: string, userId: string) {
+  static async getAssignmentGradeByStudent(
+    courseId: string,
+    userId: string,
+    {
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
     try {
       const response = await api({
         baseURL: courseServiceApiUrl,
@@ -140,7 +152,10 @@ export class AssignmentService {
       }).get(`${API.COURSE.ASSIGNMENT.GET_ASSIGNMENT_GRADE_BY_STUDENT}`, {
         params: {
           courseId,
-          userId
+          userId,
+          search,
+          pageNo,
+          pageSize
         }
       });
 
