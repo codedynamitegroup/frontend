@@ -232,7 +232,9 @@ const LecturerCourseParticipant = () => {
   return (
     <Box className={classes.participantBody}>
       <Grid item xs={12}>
-        <Heading1 translation-key='course_list_member'>{t("course_list_member")}</Heading1>
+        <Heading1 translation-key='course_participant_title'>
+          {t("course_participant_title")}
+        </Heading1>
       </Grid>
       <Grid item xs={12}>
         <CustomSearchFeatureBar

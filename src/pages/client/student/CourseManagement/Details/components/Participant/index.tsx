@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid } from "@mui/material";
+import { Avatar, Box, CircularProgress, Grid, Stack } from "@mui/material";
 import Link from "@mui/material/Link";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -12,148 +12,289 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import { setLoadingCourseUser, setCourseUser } from "reduxes/courseService/courseUser";
+import ParagraphBody from "components/text/ParagraphBody";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import Heading5 from "components/text/Heading5";
+import classes from "./styles.module.scss";
+import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+interface CourseParticipantProps {
+  id: string;
+  no: number;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
 
 const StudentCourseParticipant = () => {
-  const [searchText, setSearchText] = useState("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
   const courseUserState = useSelector((state: RootState) => state.courseUser);
-  const searchHandle = async (searchText: string) => {
-    setSearchText(searchText);
-  };
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(() => courseUserState.totalItems || 0, [courseUserState.totalItems]);
+  const { t } = useTranslation();
   const { courseId } = useParams<{ courseId: string }>();
-  const handleGetCourseUser = async ({
-    search = searchText,
-    pageNo = currentPage,
-    pageSize = rowsPerPage
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-  }) => {
-    if (!courseId || (courseId === courseUserState.courseId && courseUserState.users.length > 0)) {
-      return;
+  const [filters, setFilters] = useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "role",
+      value: t("common_all")
     }
+  ]);
+  const handleGetCourseUser = useCallback(
+    async ({
+      search,
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }) => {
+      if (
+        !courseId ||
+        (courseId === courseUserState.courseId && courseUserState.users.length > 0)
+      ) {
+        return;
+      }
 
-    dispatch(setLoadingCourseUser(true));
-    try {
-      const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
-        search,
-        pageNo,
-        pageSize
-      });
-      dispatch(
-        setCourseUser({
-          users: getCourseUserResponse.users,
-          currentPage: getCourseUserResponse.currentPage,
-          totalItems: getCourseUserResponse.totalItems,
-          totalPages: getCourseUserResponse.totalPages,
-          courseId: courseId
-        })
-      );
+      dispatch(setLoadingCourseUser(true));
+      try {
+        const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
+          search,
+          pageNo,
+          pageSize
+        });
+
+        dispatch(
+          setCourseUser({
+            users: getCourseUserResponse.users,
+            currentPage: getCourseUserResponse.currentPage,
+            totalItems: getCourseUserResponse.totalItems,
+            totalPages: getCourseUserResponse.totalPages,
+            courseId: courseId
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch course user", error);
+      }
       dispatch(setLoadingCourseUser(false));
-    } catch (error) {
-      console.error("Failed to fetch course user", error);
-      dispatch(setLoadingCourseUser(false));
-    }
-  };
+    },
+    [courseId, courseUserState.users, courseUserState.courseId, dispatch]
+  );
 
   useEffect(() => {
-    handleGetCourseUser({ search: searchText });
-  }, [searchText]);
-
-  const { t } = useTranslation();
-
-  console.log(courseUserState?.users);
+    handleGetCourseUser({ search: searchValue });
+  }, [searchValue, handleGetCourseUser]);
 
   const tableHeading: GridColDef[] = [
-    { field: "id", headerName: "STT", minWidth: 1 },
+    {
+      field: "id",
+      headerName: "STT",
+      flex: 0.8,
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            STT
+          </Heading5>
+        );
+      },
+      renderCell: (params) => <ParagraphBody fontWeight={500}>{params.row.no}</ParagraphBody>
+    },
+    {
+      field: "email",
+      headerName: t("common_email"),
+      flex: 3,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_email")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => {
+        return (
+          <Stack
+            direction='row'
+            gap={2}
+            alignItems='center'
+            justifyContent='flex-start'
+            margin={"5px"}
+          >
+            <Avatar
+              sx={{
+                bgcolor: `${generateHSLColorByRandomText(`${params.row.firstName} ${params.row.lastName}`)}`
+              }}
+              alt={params.row.email}
+              src={params.row.avatarUrl}
+            >
+              {params.row.firstName.charAt(0)}
+            </Avatar>
+            <ParagraphBody width={"auto"} fontWeight={500}>
+              {params.row.email}
+            </ParagraphBody>
+          </Stack>
+        );
+      }
+    },
     {
       field: "name",
       headerName: t("common_fullname"),
-      width: 200,
-      flex: 0.8,
+      flex: 2,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_fullname")}
+          </Heading5>
+        );
+      },
       renderCell: (params) => (
-        <Link component={RouterLink} to={`${params.row.id}`}>
-          {params.value}
-        </Link>
+        <ParagraphBody>
+          {params.row.firstName} {params.row.lastName}
+        </ParagraphBody>
       )
     },
-    { field: "email", headerName: "Email", width: 200, flex: 0.8 },
-    { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 }
+    {
+      field: "roles",
+      headerName: t("common_role"),
+      flex: 2,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_role")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => <ParagraphBody>{params.row.role}</ParagraphBody>
+    }
   ];
-  const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    setCurrentPage(model.page);
-    setRowsPerPage(model.pageSize);
-    handleGetCourseUser({ search: searchText, pageNo: model.page, pageSize: model.pageSize });
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetCourseUser({ search: searchValue, pageNo: model.page, pageSize: model.pageSize });
   };
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      handleGetCourseUser({
+        search: value
+      });
+    },
+    [handleGetCourseUser]
+  );
+
+  const courseParticipantListTable: CourseParticipantProps[] = useMemo(() => {
+    if (courseUserState.users.length > 0) {
+      return courseUserState.users.map((user, index) => ({
+        id: user.userId,
+        no: index + 1,
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role
+      }));
+    } else {
+      return [];
+    }
+  }, [courseUserState.users]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
 
+  const handleApplyFilter = useCallback(() => {
+    handleGetCourseUser({
+      search: searchValue
+    });
+  }, [handleGetCourseUser, searchValue]);
+
+  const handleCancelFilter = useCallback(() => {
+    handleGetCourseUser({
+      search: searchValue
+    });
+  }, [handleGetCourseUser, searchValue]);
+
   return (
-    <Grid container spacing={1}>
+    <Box className={classes.participantBody}>
       <Grid item xs={12}>
         <Heading1 translation-key='course_participant_title'>
           {t("course_participant_title")}
         </Heading1>
       </Grid>
       <Grid item xs={12}>
-        <CourseParticipantFeatureBar />
-      </Grid>
-
-      {!courseUserState.isLoading ? (
-        <Grid item xs={12}>
-          <CustomDataGrid
-            dataList={courseUserState.users.map((user, index) => ({
-              id: user.userId,
-              name: user.firstName + " " + user.lastName,
-              email: user.email,
-              roles: user.role
-            }))}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            getRowClassName={(params) => {
-              return params.row.id === 0 ? "even-row" : "odd-row";
-            }}
-            page={currentPage}
-            pageSize={rowsPerPage}
-            totalElement={courseUserState.totalItems}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={false}
-            onClickRow={rowClickHandler}
-          />
-        </Grid>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            gap: "10px"
+        <CustomSearchFeatureBar
+          isLoading={courseUserState.isLoading}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onHandleChange={handleSearchChange}
+          numOfResults={totalElement}
+          filterKeyList={[
+            {
+              label: t("common_role"),
+              value: "role"
+            }
+          ]}
+          filterValueList={{
+            role: [
+              {
+                label: t("common_all"),
+                value: t("common_all")
+              }
+            ]
           }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
-    </Grid>
+          filters={filters}
+          handleChangeFilters={(newFilters: { key: string; value: string }[]) => {
+            setFilters(newFilters);
+          }}
+          onHandleApplyFilter={handleApplyFilter}
+          onHandleCancelFilter={handleCancelFilter}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <CustomDataGrid
+          loading={courseUserState.isLoading}
+          dataList={courseParticipantListTable}
+          tableHeader={tableHeading}
+          onSelectData={rowSelectionHandler}
+          dataGridToolBar={dataGridToolbar}
+          page={page}
+          pageSize={pageSize}
+          totalElement={totalElement}
+          onPaginationModelChange={pageChangeHandler}
+          showVerticalCellBorder={true}
+          getRowHeight={() => "auto"}
+          onClickRow={rowClickHandler}
+          sx={{
+            "& .MuiDataGrid-cell": {
+              border: "none"
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "var(--blue-5)"
+            },
+            "& .MuiDataGrid-toolbarContainer": {
+              backgroundColor: "var(--blue-5)"
+            }
+          }}
+          personalSx={true}
+        />
+      </Grid>
+    </Box>
   );
 };
 

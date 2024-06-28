@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { CircularProgress, Collapse } from "@mui/material";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CourseResource from "./components/CourseResource";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,8 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Heading2 from "components/text/Heading2";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { setCourseDetail } from "reduxes/courseService/course";
+import Heading1 from "components/text/Heading1";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
 
@@ -42,27 +44,25 @@ const StudentCourseInformation = () => {
   const dispatch = useDispatch<AppDispatch>();
   const sectionState = useSelector((state: RootState) => state.section);
   const { courseId } = useParams<{ courseId: string }>();
-  const handleGetSections = async () => {
+  const handleGetSections = useCallback(async () => {
+    if (!courseId || (sectionState.courseId === courseId && sectionState.sections.length > 0)) {
+      return;
+    }
     dispatch(setLoadingSections(true));
     try {
-      if (courseId) {
-        const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
-        dispatch(setSections(getSectionsResponse));
-      } else {
-        console.error("courseId is undefined");
-      }
+      const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
+      dispatch(setSections({ sections: getSectionsResponse.sections, courseId: courseId }));
     } catch (error) {
       console.error("Failed to fetch sections", error);
-      dispatch(setLoadingSections(false));
     }
-  };
+    dispatch(setLoadingSections(false));
+  }, [courseId, dispatch, sectionState.courseId, sectionState.sections]);
   const initialCollapseState = Array(sectionState.sections.length).fill(false);
 
   const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>(initialCollapseState);
-
   useEffect(() => {
     handleGetSections();
-  }, []);
+  }, [handleGetSections, courseId]);
 
   const type = (typeModule: string) => {
     switch (typeModule) {
@@ -79,22 +79,30 @@ const StudentCourseInformation = () => {
     }
   };
   const [courseData, setCourseData] = useState<CourseEntity | null>(null);
-  const getCouseData = async (courseId: string) => {
-    try {
-      const response = await CourseService.getCourseDetail(courseId);
-      setCourseData(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const courseState = useSelector((state: RootState) => state.course);
+  const getCouseData = useCallback(
+    async (courseId: string) => {
+      try {
+        const courseResponse = await CourseService.getCourseDetail(courseId);
+        setCourseData(courseResponse);
+        dispatch(setCourseDetail({ courseDetail: courseResponse }));
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    const fetchData = async () => {
-      getCouseData(courseId ?? "");
-    };
+    const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
 
-    fetchData();
-  }, [courseId]);
+    if (course) {
+      setCourseData(course);
+      dispatch(setCourseDetail({ courseDetail: course }));
+    } else {
+      getCouseData(courseId ?? "");
+    }
+  }, [courseId, courseState.courses, dispatch, getCouseData]);
   return (
     <Grid container spacing={1} className={classes.gridContainer}>
       <Grid item xs={12}>
@@ -104,13 +112,13 @@ const StudentCourseInformation = () => {
             className={classes.courseImage}
             src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
-          <Heading2 className={classes.classNameOverlay} colorname='--white'>
+          <Heading1 className={classes.classNameOverlay} colorname='--white'>
             {courseData?.name}
-          </Heading2>
+          </Heading1>
         </Card>
       </Grid>
 
-      {!sectionState.isLoading ? (
+      {sectionState.isLoading === false ? (
         <Grid item xs={12}>
           <Box margin={1} padding={0}>
             <Grid container className={classes.gridBodyContainer}>

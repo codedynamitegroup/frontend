@@ -18,6 +18,10 @@ import { CourseUserService } from "services/courseService/CourseUserService";
 import useAuth from "hooks/useAuth";
 import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { useDispatch } from "react-redux";
+import { setCourses } from "reduxes/courseService/course";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 enum EView {
   cardView = 1,
@@ -27,12 +31,13 @@ enum EView {
 const StudentCourses: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [courseTypes, setCourseTypes] = useState<CourseTypeEntity[]>([]);
-  const [courses, setCourses] = useState<CourseEntity[]>([]);
+  // const [courses, setCourses] = useState<CourseEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [viewType, setViewType] = useState<EView>(EView.listView);
-
+  const dispatch = useDispatch();
   const { loggedUser } = useAuth();
+  const courseState = useSelector((state: RootState) => state.course);
 
   const fetchCourseTypes = useCallback(async () => {
     setIsLoading(true);
@@ -59,19 +64,19 @@ const StudentCourses: React.FC = () => {
           pageNo,
           pageSize
         });
-        setCourses(getCourseResponse.courses);
+        dispatch(setCourses(getCourseResponse));
       } catch (error) {
         console.error("Failed to fetch courses", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [searchText, selectedCategories, loggedUser?.userId]
+    [searchText, selectedCategories, loggedUser?.userId, dispatch]
   );
 
   useEffect(() => {
     fetchCourseTypes();
-  }, []);
+  }, [fetchCourseTypes]);
 
   useEffect(() => {
     if (loggedUser?.userId) {
@@ -94,9 +99,11 @@ const StudentCourses: React.FC = () => {
   const { t } = useTranslation();
 
   const filteredCourses = useMemo(() => {
-    if (!selectedCategories.length) return courses;
-    return courses.filter((course) => selectedCategories.includes(course.courseType.name));
-  }, [courses, selectedCategories]);
+    if (!selectedCategories.length) return courseState.courses;
+    return courseState.courses.filter((course) =>
+      selectedCategories.includes(course.courseType.name)
+    );
+  }, [courseState.courses, selectedCategories]);
 
   return (
     <Box id={classes.coursesBody}>
