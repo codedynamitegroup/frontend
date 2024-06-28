@@ -8,88 +8,22 @@ import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 
 import { CircularProgress, Collapse } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
 import { useState, useEffect } from "react";
 import CourseResource from "./components/CourseResource";
-import StudentCourseEvent from "./components/CourseEvent";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { useParams } from "react-router-dom";
 import { CourseService } from "services/courseService/CourseService";
-import { di } from "@fullcalendar/core/internal-common";
-import { setLoading, setSections } from "reduxes/courseService/section";
-import { NavigateNext } from "@mui/icons-material";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import Heading3 from "components/text/Heading3";
+import { setLoadingSections, setSections } from "reduxes/courseService/section";
 import Heading4 from "components/text/Heading4";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import AssignmentResource from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
-import dayjs from "dayjs";
 import Heading2 from "components/text/Heading2";
-import course from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
-  const topicList = [
-    {
-      title: "Topic 1",
-      resource: [
-        { name: "Test topic 1 Resource 1", type: ECourseResourceType.assignment },
-        { name: "Test topic 1 Resource 2", type: ECourseResourceType.assignment },
-        { name: "Test topic 1 Resource 3", type: ECourseResourceType.file },
-        { name: "Test topic 1 Resource 4", type: ECourseResourceType.assignment }
-      ]
-    },
-    {
-      title: "Topic 2",
-      resource: [
-        { name: "Test topic 2 Resource 1", type: ECourseResourceType.assignment },
-        { name: "Test topic 2 Resource 2", type: ECourseResourceType.assignment },
-        { name: "Test topic 2 Resource 3", type: ECourseResourceType.file },
-        { name: "Test topic 2 Resource 4", type: ECourseResourceType.file },
-        { name: "Test topic 2 Resource 5", type: ECourseResourceType.assignment },
-        { name: "Test topic 2 Resource 6", type: ECourseResourceType.file },
-        { name: "Test topic 2 Resource 7", type: ECourseResourceType.assignment }
-      ]
-    }
-  ];
-  const eventList = [
-    {
-      id: 1,
-      name: "Assignment 1",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.submitted
-    },
-    {
-      id: 2,
-      name: "Assignment 2",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.notSubmitted
-    },
-    {
-      id: 3,
-      name: "Assignment 3",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.notSubmitted
-    },
-    {
-      id: 4,
-      name: "Assignment 4",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.submitted
-    }
-  ];
 
   const toggleItem = (index: number) => {
     if (collapseOpen[index] === undefined)
@@ -109,19 +43,17 @@ const StudentCourseInformation = () => {
   const sectionState = useSelector((state: RootState) => state.section);
   const { courseId } = useParams<{ courseId: string }>();
   const handleGetSections = async () => {
-    dispatch(setLoading(true));
+    dispatch(setLoadingSections(true));
     try {
       if (courseId) {
         const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
         dispatch(setSections(getSectionsResponse));
-        dispatch(setLoading(false));
       } else {
         console.error("courseId is undefined");
-        dispatch(setLoading(false));
       }
     } catch (error) {
       console.error("Failed to fetch sections", error);
-      dispatch(setLoading(false));
+      dispatch(setLoadingSections(false));
     }
   };
   const initialCollapseState = Array(sectionState.sections.length).fill(false);

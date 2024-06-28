@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { useEffect, useState } from "react";
 import { CourseUserService } from "services/courseService/CourseUserService";
-import { setLoading, setCourseUser } from "reduxes/courseService/courseUser";
+import { setLoadingCourseUser, setCourseUser } from "reduxes/courseService/courseUser";
 
 const StudentCourseParticipant = () => {
   const [searchText, setSearchText] = useState("");
@@ -41,7 +41,7 @@ const StudentCourseParticipant = () => {
       return;
     }
 
-    dispatch(setLoading(true));
+    dispatch(setLoadingCourseUser(true));
     try {
       const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
         search,
@@ -57,10 +57,10 @@ const StudentCourseParticipant = () => {
           courseId: courseId
         })
       );
-      dispatch(setLoading(false));
+      dispatch(setLoadingCourseUser(false));
     } catch (error) {
       console.error("Failed to fetch course user", error);
-      dispatch(setLoading(false));
+      dispatch(setLoadingCourseUser(false));
     }
   };
 

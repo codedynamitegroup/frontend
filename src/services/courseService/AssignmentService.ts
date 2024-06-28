@@ -156,14 +156,28 @@ export class AssignmentService {
       });
     }
   }
-  static async getRetrieveStudentAssignmentGrades(courseId: string) {
+  static async getRetrieveStudentAssignmentGrades(
+    courseId: string,
+    {
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
     try {
       const response = await api({
         baseURL: courseServiceApiUrl,
         isAuthorization: true
       }).get(`${API.COURSE.ASSIGNMENT.GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES}`, {
         params: {
-          courseId
+          courseId,
+          search,
+          pageNo,
+          pageSize
         }
       });
 
