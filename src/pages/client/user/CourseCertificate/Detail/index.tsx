@@ -474,31 +474,32 @@ const CourseCertificateDetail = () => {
                             : "certificate_detail_register_button"
                         }
                         onClick={() => {
-                          if (
-                            certificateCourseDetails.data?.isRegistered === true &&
-                            certificateCourseDetails.data?.currentResource
-                          ) {
-                            const url =
-                              certificateCourseDetails.data?.currentResource.resourceType ===
-                              ResourceTypeEnum.CODE
-                                ? routes.user.course_certificate.detail.lesson.description
-                                    .replace(":courseId", courseId)
-                                    .replace(
-                                      ":lessonId",
-                                      certificateCourseDetails.data?.currentResource
-                                        ?.chapterResourceId || ""
-                                    )
-                                    .replace("*", "")
-                                : routes.user.course_certificate.detail.lesson.detail
-                                    .replace(":courseId", courseId)
-                                    .replace(
-                                      ":lessonId",
-                                      certificateCourseDetails.data?.currentResource
-                                        ?.chapterResourceId || ""
-                                    )
-                                    .replace("*", "");
+                          if (certificateCourseDetails.data?.isRegistered === true) {
+                            if (certificateCourseDetails.data?.currentResource) {
+                              const url =
+                                certificateCourseDetails.data?.currentResource.resourceType ===
+                                ResourceTypeEnum.CODE
+                                  ? routes.user.course_certificate.detail.lesson.description
+                                      .replace(":courseId", courseId)
+                                      .replace(
+                                        ":lessonId",
+                                        certificateCourseDetails.data?.currentResource
+                                          ?.chapterResourceId || ""
+                                      )
+                                      .replace("*", "")
+                                  : routes.user.course_certificate.detail.lesson.detail
+                                      .replace(":courseId", courseId)
+                                      .replace(
+                                        ":lessonId",
+                                        certificateCourseDetails.data?.currentResource
+                                          ?.chapterResourceId || ""
+                                      )
+                                      .replace("*", "");
 
-                            navigate(url);
+                              navigate(url);
+                            } else {
+                              dispatch(setErrorMess(t("certificate_detail_no_resources")));
+                            }
                           } else {
                             handleRegisterCertificateCourseById(courseId);
                           }

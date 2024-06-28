@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ReduxExamEntity } from "models/courseService/entity/ExamEntity";
 
 interface InitialState {
+  isLoading: boolean;
   courseId: string | null;
   exams: {
     exams: ReduxExamEntity[];
@@ -17,6 +18,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
+  isLoading: false,
   courseId: null,
   exams: {
     exams: [],
@@ -52,6 +54,9 @@ const examSlice = createSlice({
   name: "exams",
   initialState: initialState,
   reducers: {
+    setLoadingExams: (state, action) => {
+      state.isLoading = action.payload;
+    },
     setExams: (state, action) => {
       state.courseId = action.payload.courseId;
       state.exams.exams = action.payload.exams;
@@ -72,5 +77,6 @@ const examSlice = createSlice({
   }
 });
 
-export const { setExams, setExamList, setExamDetail, setExamOverview } = examSlice.actions;
+export const { setLoadingExams, setExams, setExamList, setExamDetail, setExamOverview } =
+  examSlice.actions;
 export default examSlice.reducer;

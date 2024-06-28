@@ -44,7 +44,6 @@ const BasicSelect = ({
   backgroundColor,
   width,
   borderRadius,
-
   ...props
 }: BasicSelectProps) => {
   var defaultValue: ItemProps | null = null;
@@ -70,10 +69,10 @@ const BasicSelect = ({
         <Select
           style={{
             backgroundColor: backgroundColor || "white",
-            borderRadius: borderRadius || 0
+            borderRadius: borderRadius || "8px"
           }}
           labelId={labelId}
-          id='select-id'
+          id={labelId}
           value={value}
           label={label}
           onChange={(e) => onHandleChange(e.target.value as string)}

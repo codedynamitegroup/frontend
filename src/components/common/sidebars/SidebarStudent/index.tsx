@@ -13,20 +13,10 @@ import { useDispatch } from "react-redux";
 import { setSidebarWidth, toggleSidebar } from "reduxes/SidebarStatus";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 270;
-const sideBarItemListData: SidebarItem[] = [
-  {
-    name: "Trang chủ",
-    icon: <DashboardIcon className={classes.itemIcon} />,
-    link: routes.student.course.management
-  },
-  {
-    name: "Lịch",
-    icon: <CalendarIcon className={classes.itemIcon} />,
-    link: routes.student.calendar
-  }
-];
+
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
@@ -50,6 +40,21 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 export default function SidebarStudent({ children }: any) {
   const [open, setOpen] = React.useState(true);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const sideBarItemListData: SidebarItem[] = [
+    {
+      name: t("side_bar_dashboard"),
+      "translation-key": "side_bar_dashboard",
+      icon: <DashboardIcon className={classes.itemIcon} />,
+      link: routes.student.course.management
+    },
+    {
+      name: t("calendar_title"),
+      "translation-key": "calendar_title",
+      icon: <CalendarIcon className={classes.itemIcon} />,
+      link: routes.student.calendar
+    }
+  ];
 
   const toggleDrawer = () => {
     setOpen((pre) => !pre);

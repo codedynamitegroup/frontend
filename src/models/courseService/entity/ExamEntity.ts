@@ -98,6 +98,10 @@ export interface ExamSubmissionDetail {
   submitTime: Date;
   status: string;
   userId: string;
+  mark: number;
+  totalMark: number;
+  grade: number;
+  totalGrade: number;
 }
 
 export interface GradeExamSubmission {

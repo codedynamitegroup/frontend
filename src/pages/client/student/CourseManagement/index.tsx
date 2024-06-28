@@ -18,6 +18,11 @@ import { CourseUserService } from "services/courseService/CourseUserService";
 import useAuth from "hooks/useAuth";
 import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import { useDispatch } from "react-redux";
+import { setCourses } from "reduxes/courseService/course";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import CustomPagination from "components/common/pagination/CustomPagination";
 
 enum EView {
   cardView = 1,
@@ -27,12 +32,14 @@ enum EView {
 const StudentCourses: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [courseTypes, setCourseTypes] = useState<CourseTypeEntity[]>([]);
-  const [courses, setCourses] = useState<CourseEntity[]>([]);
+  // const [courses, setCourses] = useState<CourseEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [viewType, setViewType] = useState<EView>(EView.listView);
-
+  const dispatch = useDispatch();
   const { loggedUser } = useAuth();
+  const courseState = useSelector((state: RootState) => state.course);
+  const [pageNo, setPageNo] = useState(1);
 
   const fetchCourseTypes = useCallback(async () => {
     setIsLoading(true);
@@ -47,7 +54,7 @@ const StudentCourses: React.FC = () => {
   }, []);
 
   const fetchCourses = useCallback(
-    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
+    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 4 }) => {
       if (!loggedUser?.userId) return;
 
       setIsLoading(true);
@@ -59,19 +66,19 @@ const StudentCourses: React.FC = () => {
           pageNo,
           pageSize
         });
-        setCourses(getCourseResponse.courses);
+        dispatch(setCourses(getCourseResponse));
       } catch (error) {
         console.error("Failed to fetch courses", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [searchText, selectedCategories, loggedUser?.userId]
+    [searchText, selectedCategories, loggedUser?.userId, dispatch]
   );
 
   useEffect(() => {
     fetchCourseTypes();
-  }, []);
+  }, [fetchCourseTypes]);
 
   useEffect(() => {
     if (loggedUser?.userId) {
@@ -94,10 +101,18 @@ const StudentCourses: React.FC = () => {
   const { t } = useTranslation();
 
   const filteredCourses = useMemo(() => {
-    if (!selectedCategories.length) return courses;
-    return courses.filter((course) => selectedCategories.includes(course.courseType.name));
-  }, [courses, selectedCategories]);
+    if (!selectedCategories.length) return courseState.courses;
+    return courseState.courses.filter((course) =>
+      selectedCategories.includes(course.courseType.name)
+    );
+  }, [courseState.courses, selectedCategories]);
 
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    if (loggedUser?.userId) {
+      setPageNo(value);
+      fetchCourses({ search: searchText, courseType: selectedCategories, pageNo: value - 1 });
+    }
+  };
   return (
     <Box id={classes.coursesBody}>
       <Heading1 className={classes.pageTitle} translation-key='course_list_title'>
@@ -177,6 +192,23 @@ const StudentCourses: React.FC = () => {
               )}
             </Grid>
           ))}
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <CustomPagination
+              count={courseState.totalPages}
+              page={pageNo}
+              handlePageChange={handlePageChange}
+              showFirstButton
+              showLastButton
+              size={"large"}
+            />
+          </Grid>
         </Grid>
       </Box>
     </Box>

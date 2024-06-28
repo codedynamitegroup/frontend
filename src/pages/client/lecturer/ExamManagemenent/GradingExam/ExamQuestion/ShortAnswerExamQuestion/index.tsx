@@ -7,6 +7,11 @@ import { ShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { useState, useEffect } from "react";
 import { QuestionService } from "services/coreService/QuestionService";
+import { useNavigate, useParams } from "react-router-dom";
+import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
+import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
+import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
+import { routes } from "routes/routes";
 
 interface ShortAnswerExamQuestionProps {
   readOnly?: boolean;
@@ -21,19 +26,56 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
 
   const [answerOfQuestions, setAnswerOfQuestion] = useState<AnswerOfQuestion[]>([]);
   const [mark, setMark] = useState<number>(0);
+  const navigate = useNavigate();
+  const submissionId = useParams<{ submissionId: string }>().submissionId;
+  const courseId = useParams<{ courseId: string }>().courseId;
+  const examId = useParams<{ examId: string }>().examId;
+  const handleUpdateGrade = () => {
+    const questionId = questionShortAnswer.question.id;
+    const rightAnswer = "";
+    const submission: GradeSubmission[] = [
+      { examSubmissionId: submissionId || "", questionId, grade: mark, rightAnswer }
+    ];
+
+    QuestionSubmissionService.gradeQuestionSubmission(submission)
+      .then((response) => {
+        console.log("Grade updated successfully", response);
+      })
+      .catch((error) => {
+        console.error("Failed to update grade", error);
+        setSnackbarType(AlertType.Error);
+        setSnackbarContent(t("update_grade_failed"));
+      })
+      .finally(() => {
+        navigate(
+          routes.lecturer.exam.grading
+            .replace(":submissionId", submissionId || "")
+            .replace(":examId", examId || "")
+            .replace(":courseId", courseId || "")
+        );
+        setSnackbarType(AlertType.Success);
+        setSnackbarContent(t("update_grade_success"));
+        setOpenSnackbar(true);
+      });
+  };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
+  const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   const handleGetAnsweryQuestionId = (questionId: string) => {
     QuestionService.getAnswerByQuestionId(questionId)
       .then((res) => {
         const data = res.filter((item: AnswerOfQuestion) => item.fraction !== 0);
         setAnswerOfQuestion(data);
-        const matchedAnswer = data.find(
-          (item: AnswerOfQuestion) => item.answer === questionSubmitContent
-        );
-        if (matchedAnswer) {
-          const defaultMark = questionShortAnswer.question.defaultMark;
-          setMark(matchedAnswer.fraction * defaultMark);
-        }
+        // const matchedAnswer = data.find(
+        //   (item: AnswerOfQuestion) => item.answer === questionSubmitContent
+        // );
+        // if (matchedAnswer) {
+        //   const defaultMark = questionShortAnswer.question.defaultMark;
+        //   setMark(matchedAnswer.fraction * defaultMark);
+        // }
+        setMark(questionSubmitContent?.grade || 0);
       })
       .catch((error) => {
         console.log(error);
@@ -45,6 +87,9 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
 
   useEffect(() => {
     handleGetAnsweryQuestionId(questionShortAnswer.question.id);
+    console.log("questionShortAnswer", questionShortAnswer);
+    console.log("questionSubmitContent", questionSubmitContent);
+    console.log("questionIndex", questionIndex);
   }, []);
 
   return (
@@ -168,9 +213,18 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
               setMark(Number(e.target.value));
             }}
           />
-          <Button color='primary'>{t("update_grade")}</Button>
+          <Button color='primary' onClick={handleUpdateGrade}>
+            {t("update_grade")}
+          </Button>
         </Stack>
       </Grid>
+      <SnackbarAlert
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        type={snackbarType}
+        content={snackbarContent}
+      />
     </Grid>
   );
 };
