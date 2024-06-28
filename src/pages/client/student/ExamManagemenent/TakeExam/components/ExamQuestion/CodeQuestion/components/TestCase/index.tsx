@@ -1,120 +1,156 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import classes from "./styles.module.scss";
-import { Box, Chip, Container, IconButton, Stack, TextField } from "@mui/material";
-import Heading5 from "components/text/Heading5";
+import { Box, Stack, TextField } from "@mui/material";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 import { useAppSelector, useAppDispatch } from "hooks";
-import { setTestCases as setExeTestCases } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
-import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
-import { setSampleTestCases } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import AddIcon from "@mui/icons-material/Add";
-import cloneDeep from "lodash.clonedeep";
+import {
+  addTestCase,
+  deleteTestCase,
+  setInputData,
+  setOutputData,
+  setSampleTestCase
+} from "reduxes/TakeExam/TakeExamCodeQuestion";
+import { debounce } from "lodash";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import Chip from "@mui/joy/Chip";
+import { Badge, IconButton } from "@mui/joy";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 
-export default function TestCase() {
-  const codeQuestion = useAppSelector((state) => state.detailCodeQuestion.codeQuestion);
-  let [testCases, setTestCases] = useState<TestCaseEntity[]>([]);
+interface PropsData {
+  questionId: string;
+  sampleTestCases?: TestCaseEntity[];
+}
+
+export default function TestCase(props: PropsData) {
+  const { questionId, sampleTestCases } = props;
+  const testCases = useAppSelector(
+    (state) => state.takeExamCodeQuestion.codeQuestion?.[questionId]?.testCase
+  );
   const [focusTestCase, setFocusTestCase] = useState(0);
   const dispatch = useAppDispatch();
 
-  const onUnmount = useRef<() => void>(() => {});
-  onUnmount.current = () => {
-    dispatch(setSampleTestCases(testCases));
+  const handleAddTestCase = () => {
+    setFocusTestCase(testCases?.length ?? 0);
+    dispatch(addTestCase({ questionId }));
   };
-  useEffect(() => {
-    return () => onUnmount.current();
-  }, []);
+
+  const handleDeleteTestCase = (index: number) => {
+    if (focusTestCase !== 0) setFocusTestCase((prev) => prev - 1);
+    dispatch(deleteTestCase({ questionId, index }));
+  };
+
+  const handleChangeInputData = debounce((value: string) => {
+    dispatch(setInputData({ questionId: questionId, index: focusTestCase, value: value }));
+  }, 0);
+
+  const handleChangeOutputData = debounce((value: string) => {
+    dispatch(setOutputData({ questionId: questionId, index: focusTestCase, value: value }));
+  }, 0);
 
   useEffect(() => {
-    if (codeQuestion?.sampleTestCases && codeQuestion.sampleTestCases.length > 0) {
-      const clone = cloneDeep(codeQuestion.sampleTestCases);
-      setTestCases(clone.slice(0, Math.min(clone.length, 5)));
-      // dispatch(setStdin(codeQuestion?.sampleTestCases[0].inputData));
-      // dispatch(setExpectedOutput(codeQuestion?.sampleTestCases[0].outputData));
+    if (testCases?.length === 0) {
+      dispatch(setSampleTestCase({ questionId, sampleTestCases: sampleTestCases || [] }));
     }
-  }, [codeQuestion?.sampleTestCases]);
-  useEffect(() => {
-    dispatch(setExeTestCases(testCases));
-  }, [testCases]);
-  const handleDeleteTestCase = (index: number) => {
-    if (index >= 0 && index < testCases.length) {
-      if (index <= focusTestCase && focusTestCase !== 0) setFocusTestCase((value) => value - 1);
-      let newList = [...testCases];
-      newList.splice(index, 1);
-      setTestCases(newList);
-    }
-  };
-  const handleAddTestCase = () => {
-    if (testCases.length < 5) {
-      let newList = [...testCases];
-      newList.push({
-        inputData: "",
-        outputData: "",
-        id: "sampleid",
-        isSample: true
-      });
-      setTestCases(newList);
-    }
-  };
+  }, [dispatch, questionId, sampleTestCases, testCases?.length]);
 
   return (
     <Box id={classes.root}>
-      <Container sx={{ marginTop: 1 }}>
-        <Stack direction={"row"} spacing={1} alignItems={"center"}>
-          {testCases.map((_, index) => (
+      <Stack direction={"row"} spacing={3} alignItems={"center"}>
+        {testCases?.map((_, index) => (
+          <Badge
+            color='neutral'
+            variant='plain'
+            size='sm'
+            badgeContent={
+              <IconButton
+                onClick={() => handleDeleteTestCase(index)}
+                sx={{
+                  padding: "2px",
+                  borderRadius: "100%",
+                  minHeight: "fit-content",
+                  minWidth: "fit-content",
+                  ":hover": {
+                    backgroundColor: "white",
+                    borderRadius: "100%",
+                    color: "var(--gray-30)"
+                  }
+                }}
+              >
+                <HighlightOffRoundedIcon
+                  sx={{
+                    padding: 0,
+                    fontSize: "16px",
+                    ":hover": {
+                      borderRadius: "100%"
+                    }
+                  }}
+                />
+              </IconButton>
+            }
+            invisible={testCases?.length <= 1}
+            sx={{
+              minHeight: "fit-content",
+              minWidth: "fit-content",
+              width: "fit-content",
+              height: "fit-content"
+            }}
+          >
             <Chip
+              size='lg'
               key={index}
-              sx={{ border: focusTestCase === index ? 1 : 0 }}
-              label={`Case ${index + 1}`}
-              onDelete={() => handleDeleteTestCase(index)}
+              color='neutral'
+              variant={focusTestCase === index ? "solid" : "soft"}
               onClick={() => setFocusTestCase(index)}
-            ></Chip>
-          ))}
-          {testCases.length < 5 && (
-            <IconButton onClick={handleAddTestCase}>
-              <AddIcon />
-            </IconButton>
-          )}
-        </Stack>
-        {testCases.length > 0 && (
-          <>
-            <Box className={classes.testCase}>
-              <ParagraphExtraSmall>Input:</ParagraphExtraSmall>
-              <TextField
-                fullWidth
-                multiline
-                id='outlined-basic'
-                variant='outlined'
-                onChange={(e) => {
-                  let newList = cloneDeep(testCases);
-                  newList[focusTestCase].inputData = e.target.value;
-                  setTestCases(newList);
-                }}
-                value={testCases[focusTestCase].inputData}
-                size='small'
-                className={classes.input}
-              />
-            </Box>
-
-            <Box className={classes.testCase}>
-              <ParagraphExtraSmall>Output:</ParagraphExtraSmall>
-              <TextField
-                fullWidth
-                multiline
-                id='outlined-basic'
-                variant='outlined'
-                size='small'
-                onChange={(e) => {
-                  let newList = cloneDeep(testCases);
-                  newList[focusTestCase].outputData = e.target.value;
-                  setTestCases(newList);
-                }}
-                value={testCases[focusTestCase].outputData}
-                className={classes.input}
-              />
-            </Box>
-          </>
+              sx={{
+                borderRadius: "8px",
+                padding: "5px 10px"
+              }}
+            >
+              {`Case ${index + 1}`}
+            </Chip>
+          </Badge>
+        ))}
+        {(testCases?.length ?? 0) < 5 && (
+          <IconButton onClick={handleAddTestCase} variant='soft' color='primary'>
+            <AddIcon />
+          </IconButton>
         )}
-      </Container>
+      </Stack>
+      {(testCases?.length ?? 0) > 0 && (
+        <>
+          <Box className={classes.testCase}>
+            <ParagraphExtraSmall>Input:</ParagraphExtraSmall>
+            <TextField
+              fullWidth
+              multiline
+              id='outlined-basic'
+              variant='outlined'
+              onChange={(e) => handleChangeInputData(e.target.value)}
+              value={testCases?.[focusTestCase]?.inputData || ""}
+              size='small'
+              className={classes.input}
+              sx={{
+                borderRadius: "8px"
+              }}
+            />
+          </Box>
+
+          <Box className={classes.testCase}>
+            <ParagraphExtraSmall>Output:</ParagraphExtraSmall>
+            <TextField
+              fullWidth
+              multiline
+              id='outlined-basic'
+              variant='outlined'
+              size='small'
+              onChange={(e) => handleChangeOutputData(e.target.value)}
+              value={testCases?.[focusTestCase]?.outputData || ""}
+              className={classes.input}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 }

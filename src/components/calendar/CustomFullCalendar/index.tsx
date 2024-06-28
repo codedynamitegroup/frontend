@@ -233,6 +233,8 @@ export default function CustomFullCalendar({
                 /* @ts-ignore */
                 const calendarApi = calendarRef.current.getApi();
                 calendarApi.unselect(); // clear date selection
+
+                if (handleDateSelect) handleDateSelect(arg);
               }}
               eventDrop={(arg: EventDragStopArg) => {
                 handleUpdateCalendarEventById &&
@@ -304,8 +306,8 @@ function renderEventContent(eventContent: EventContentArg) {
         {eventContent.event.extendedProps.eventType === NotificationEventTypeEnum.COURSE ? (
           <Box
             sx={{
-              width: "13px",
-              height: "13px",
+              minWidth: "13px",
+              minHeight: "13px",
               borderRadius: "50%",
               backgroundColor: "#FFD3BD",
               border: "2px solid #D34500"
@@ -314,8 +316,8 @@ function renderEventContent(eventContent: EventContentArg) {
         ) : (
           <Box
             sx={{
-              width: "13px",
-              height: "13px",
+              minWidth: "13px",
+              minHeight: "13px",
               borderRadius: "50%",
               backgroundColor: "#DCE7EB",
               border: "2px solid #4D7C91"

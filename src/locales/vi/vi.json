@@ -1,6 +1,4 @@
 {
-  "common_contact_us": "Liên hệ với chúng tôi",
-  "common_contact_us_description": "Vui lòng điền biểu mẫu dưới đây để liên hệ với chúng tôi.",
   "common_is_blocked": "Tình trạng khóa",
   "common_is_belong_to_organization": "Thuộc tổ chức",
   "common_organization_name": "Tên tổ chức",
@@ -119,6 +117,7 @@
   "common_logout": "Đăng xuất",
   "common_account_info": "Thông tin tài khoản",
   "common_admin_page": "Trang quản trị viên",
+  "common_organization_page": "Trang tổ chức",
   "common_user_page": "Trang người dùng",
   "common_dashboard": "Trang chủ",
   "common_notification": "Thông báo",
@@ -224,6 +223,8 @@
   "dialog_confirm_delete_calendar_event": "Bạn có chắc chắn muốn xóa sự kiện \"{{eventTitle}}\" không?",
   "calendar_event_update_event_success": "Cập nhật sự kiện thành công",
   "calendar_event_update_event_fail": "Cập nhật sự kiện thất bại",
+  "calendar_event_create_event_success": "Tạo sự kiện thành công",
+  "calendar_event_create_event_fail": "Tạo sự kiện thất bại",
   "calendar_event_name_required": "Tên sự kiện không được để trống",
   "calendar_event_description_required": "Mô tả sự kiện không được để trống",
   "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
@@ -268,7 +269,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
-  "header_business_contact": "Liên hệ",
+  "header_create_organization": "Tổ chức",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -413,6 +414,7 @@
   "certificate_not_registered": "Chưa đăng ký",
   "certificate_detail_register_tooltip": "Hãy đăng nhập để có thể đăng ký khóa học này",
   "certificate_detail_chapter_resources": "Bài học của khóa học",
+  "certificate_detail_no_resources": "Khóa học này chưa có bài học nào",
 
   "dashboard_start_title": "Bắt đầu khóa học của bạn",
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
@@ -1104,5 +1106,8 @@
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
   "business_address": "Địa chỉ doanh nghiệp",
-  "business_name": "Tên doanh nghiệp"
+  "business_name": "Tên doanh nghiệp",
+  "business_contact_submit_register_tooltip": "Hãy đăng nhập hoặc đăng ký tài khoản để gửi thông tin của bạn",
+  "business_create_organization": "Tạo tổ chức",
+  "business_create_organization_description": "Vui lòng điền thông tin của tổ chức của bạn"
 }

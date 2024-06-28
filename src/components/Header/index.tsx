@@ -57,7 +57,15 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const drawerWidth = 240;
   const { t } = useTranslation();
   const { toggleDrawer } = props;
-  const { loggedUser, logout, isLecturer, isStudent, isSystemAdmin, isMoodleAdmin } = useAuth();
+  const {
+    loggedUser,
+    logout,
+    isLecturer,
+    isStudent,
+    isSystemAdmin,
+    isMoodleAdmin,
+    isBelongToOrganization
+  } = useAuth();
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus.isOpen);
   const dispatch = useDispatch();
 
@@ -102,12 +110,6 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     {
       name: "header_contest",
       path: routes.user.contest.root,
-      isActive: false,
-      position: "left"
-    },
-    {
-      name: "header_business_contact",
-      path: routes.user.business_contact.root,
       isActive: false,
       position: "left"
     },
@@ -297,6 +299,26 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 </Link>
               </ParagraphBody>
             )}
+            {!isBelongToOrganization && (
+              <ParagraphBody
+                className={clsx([
+                  activeRoute(routes.user.organization.root) ? classes.isActive : "",
+                  classes.item
+                ])}
+                fontWeight={600}
+                translation-key='header_create_organization'
+                colorname={"--gray-50"}
+              >
+                <Link
+                  component={RouterLink}
+                  to={routes.user.organization.root}
+                  translation-key='header_create_organization'
+                  className={classes.textLink}
+                >
+                  {t("header_create_organization")}
+                </Link>
+              </ParagraphBody>
+            )}
           </Box>
         </Box>
 
@@ -359,6 +381,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                       <Menu className={classes.menuProfile} {...bindMenu(popupState)}>
                         <MenuItem
                           onClick={() => {
+                            popupState.close();
                             activeRoute(routes.admin.homepage.root)
                               ? navigate(routes.admin.information)
                               : activeRoute(routes.org_admin.homepage.root)
@@ -374,7 +397,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         </MenuItem>
                         {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
                           <MenuItem
-                            onClick={() => navigate(routes.admin.dashboard)}
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.admin.dashboard);
+                            }}
                             translation-key='common_admin_page'
                           >
                             <ListItemIcon>
@@ -392,7 +418,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         {((isSystemAdmin && activeRoute(routes.admin.homepage.root)) ||
                           (isMoodleAdmin && activeRoute(routes.org_admin.homepage.root))) && (
                           <MenuItem
-                            onClick={() => navigate(routes.user.dashboard.root)}
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.user.dashboard.root);
+                            }}
                             translation-key='common_user_page'
                           >
                             <ListItemIcon>
@@ -406,24 +435,27 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         )}
                         {isMoodleAdmin && !activeRoute(routes.org_admin.homepage.root) && (
                           <MenuItem
-                            onClick={() => navigate(routes.org_admin.users.root)}
-                            translation-key='common_admin_page'
+                            onClick={() => {
+                              popupState.close();
+                              navigate(routes.org_admin.users.root);
+                            }}
+                            translation-key='common_organization_page'
                           >
                             <ListItemIcon>
                               <Box className={classes.imgIcon}>
-                                <img
-                                  src={images.admin.adminManagement}
-                                  alt='admin management img'
-                                />
+                                <img src={images.admin.organizationIc} alt='admin management img' />
                               </Box>
                             </ListItemIcon>
 
-                            {t("common_admin_page")}
+                            {t("common_organization_page")}
                           </MenuItem>
                         )}
                         <MenuItem
                           className={classes.logout}
-                          onClick={logout}
+                          onClick={() => {
+                            popupState.close();
+                            logout();
+                          }}
                           translation-key='common_logout'
                         >
                           <ListItemIcon>

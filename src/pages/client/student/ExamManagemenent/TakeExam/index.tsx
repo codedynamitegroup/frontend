@@ -65,6 +65,7 @@ import CodeExamQuestion from "./components/ExamQuestion/CodeQuestion";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { code } from "@uiw/react-md-editor";
+import { cleanCodeQuestion } from "reduxes/TakeExam/TakeExamCodeQuestion";
 
 const drawerWidth = 370;
 
@@ -194,6 +195,7 @@ export default function TakeExam() {
         userId: auth.loggedUser.userId,
         examStartTime: new Date().toISOString()
       });
+      dispatch(cleanCodeQuestion());
       setEndTime(new Date(response.endTime).getTime());
       // setExamSubmissionId(response.examSubmissionId);
     } catch (error: any) {
@@ -284,16 +286,13 @@ export default function TakeExam() {
     const submitTime = new Date(
       new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
     ).toISOString();
-    console.log("saving hihi: ", questionList);
 
-    console.log("auto submitting");
     await handleSaveQuestionState();
     handleEndExam(submitTime);
   }, [handleEndExam, handleSaveQuestionState, questionList]);
 
   const getTimeUntil = React.useCallback(
     (inputTime: any) => {
-      console.log("inputTime", inputTime);
       if (!inputTime) {
         return;
       }

@@ -225,12 +225,10 @@ const CertificateCourseReviews = ({
   return (
     <Box id={classes.introduction}>
       <Box id={classes.courseDescription} translation-key='certificate_detail_review'>
-        <Heading2 colorname='--blue-500'>{t("certificate_detail_review")}</Heading2>
         <Grid
           container
           sx={{
             display: "flex",
-            marginTop: "20px",
             background: "#EDF0FD",
             borderRadius: "10px",
             width: "700px",
