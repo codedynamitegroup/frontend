@@ -176,7 +176,7 @@ const StudentEventCalendar = () => {
         });
       }
     },
-    [data.filterCourse, dispatch, loggedUser?.userId, t]
+    [data.filterCourse, dispatch, t]
   );
 
   const handleGetAllCoursesByUserId = useCallback(async () => {
