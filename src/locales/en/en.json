@@ -1,6 +1,4 @@
 {
-  "common_contact_us": "Contact us",
-  "common_contact_us_description": "Please fill out the form below, and we'll contact you shortly.",
   "common_is_blocked": "Blocked status",
   "common_is_belong_to_organization": "Belong to organization",
   "common_organization_name": "Organization name",
@@ -129,6 +127,7 @@
   "common_logout": "Log out",
   "common_account_info": "Account information",
   "common_admin_page": "Administration page",
+  "common_organization_page": "Organization page",
   "common_user_page": "Client page",
   "common_dashboard": "Dashboard",
   "common_notification": "Notification",
@@ -269,7 +268,7 @@
 
   "header_explore_course": "Explore",
   "header_contest": "Contest",
-  "header_business_contact": "Business contact",
+  "header_create_organization": "Organization",
   "header_course": "Course",
   "header_login_button": "Login",
   "header_register_button": "Register",
@@ -1162,5 +1161,8 @@
   "business_email": "Business email",
   "business_phone": "Business phone",
   "business_address": "Business address",
-  "business_name": "Business name"
+  "business_name": "Business name",
+  "business_contact_submit_register_tooltip": "Please sign in to submit your business information",
+  "business_create_organization": "Create organization",
+  "business_create_organization_description": "Please fill in the information below to create your organization"
 }
