@@ -6,22 +6,17 @@
 }
 
 .tabs {
-  & [class~="Mui-selected"] {
-    & [class~="MuiTypography-root"] {
-      font-weight: 700;
-      color: var(--blue-500);
-    }
-  }
-
-  & [class~="MuiTabs-indicator"] {
-    background-color: var(--blue-500);
-  }
+  box-shadow: 0 0px 0px #00000026 !important;
+  border-top: 1px solid var(--gray-10);
+  border-bottom: 1px solid var(--gray-10);
+  box-sizing: border-box;
+  background-color: white;
 }
 
 #courseDetailBody {
   display: flex;
   flex-direction: column;
-  padding: 20px 20px;
+  padding: 20px 40px;
   gap: 15px;
 }
 .eventContainer {

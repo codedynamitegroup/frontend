@@ -231,7 +231,7 @@ const StudentCourseGrade = () => {
           submitted={assignmentList?.countSubmission}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} mt={2}>
         <CustomDataGrid
           dataList={courseAssignmentList}
           tableHeader={tableHeading}
@@ -244,6 +244,18 @@ const StudentCourseGrade = () => {
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={true}
           onClickRow={rowClickHandler}
+          sx={{
+            "& .MuiDataGrid-cell": {
+              border: "none"
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "var(--blue-5)"
+            },
+            "& .MuiDataGrid-toolbarContainer": {
+              backgroundColor: "var(--blue-5)"
+            }
+          }}
+          personalSx={true}
         />
       </Grid>
     </Grid>

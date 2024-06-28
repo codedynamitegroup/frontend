@@ -8,7 +8,6 @@ import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDet
 import { GridColDef, GridRowSelectionModel, GridPaginationModel } from "@mui/x-data-grid";
 import Heading1 from "components/text/Heading1";
 import CustomDataGrid from "components/common/CustomDataGrid";
-import CourseGradeFeatureBar from "./components/FeatureBar";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 import { AssignmentService } from "services/courseService/AssignmentService";
