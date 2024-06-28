@@ -32,7 +32,16 @@ export default function useAuth() {
         navigate(0);
       })
       .catch((error) => {
-        dispatch(setErrorMess("Failed to logout, please try again later."));
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        const provider = localStorage.getItem("provider");
+        if (provider === ESocialLoginProvider.MICROSOFT) {
+          sessionStorage.clear();
+        }
+        localStorage.removeItem("provider");
+        dispatch(setSuccessMess("Logout successfully"));
+        navigate(routes.user.homepage.root);
+        navigate(0);
         console.error("Failed to logout", {
           code: error.response?.code || 503,
           status: error.response?.status || "Service Unavailable",

@@ -1,9 +1,7 @@
 import { Box, Grid } from "@mui/material";
-import { useRef } from "react";
 import classes from "./styles.module.scss";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { Route, Routes } from "react-router";
 import CourseCertificates from "./CourseCertificate";
 import HomePage from "./HomePage";

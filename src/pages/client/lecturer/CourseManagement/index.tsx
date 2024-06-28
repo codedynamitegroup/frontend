@@ -23,6 +23,7 @@ import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "store";
 import { setCourses } from "reduxes/courseService/course";
+import CustomPagination from "components/common/pagination/CustomPagination";
 
 enum EView {
   cardView = 1,
@@ -37,6 +38,7 @@ const LecturerCourses = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [viewType, setViewType] = useState<EView>(EView.listView);
   const courseState = useSelector((state: RootState) => state.course);
+  const [pageNo, setPageNo] = useState(1);
   const dispatch = useDispatch();
 
   const { loggedUser } = useAuth();
@@ -54,7 +56,7 @@ const LecturerCourses = () => {
   }, []);
 
   const fetchCourses = useCallback(
-    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 10 }) => {
+    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 4 }) => {
       if (!loggedUser?.userId) return;
 
       setIsLoading(true);
@@ -73,18 +75,18 @@ const LecturerCourses = () => {
         setIsLoading(false);
       }
     },
-    [searchText, selectedCategories, loggedUser?.userId]
+    [searchText, selectedCategories, loggedUser?.userId, dispatch]
   );
 
   useEffect(() => {
     fetchCourseTypes();
-  }, []);
+  }, [fetchCourseTypes]);
 
   useEffect(() => {
     if (loggedUser?.userId) {
-      fetchCourses({ search: searchText, courseType: selectedCategories });
+      fetchCourses({ search: searchText, courseType: selectedCategories, pageNo: pageNo - 1 });
     }
-  }, [searchText, selectedCategories, loggedUser?.userId, fetchCourses]);
+  }, [searchText, selectedCategories, loggedUser?.userId, fetchCourses, pageNo]);
 
   const handleViewChange = useCallback((event: React.MouseEvent<HTMLElement>, nextView: EView) => {
     setViewType(nextView);
@@ -106,6 +108,12 @@ const LecturerCourses = () => {
       selectedCategories.includes(course.courseType.name)
     );
   }, [courseState.courses, selectedCategories]);
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    if (loggedUser?.userId) {
+      setPageNo(value);
+      fetchCourses({ search: searchText, courseType: selectedCategories, pageNo: value - 1 });
+    }
+  };
 
   return (
     <Box id={classes.coursesBody}>
@@ -198,6 +206,23 @@ const LecturerCourses = () => {
           )}
         </>
       )}
+      <Grid
+        item
+        xs={12}
+        sx={{
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <CustomPagination
+          count={courseState.totalPages}
+          page={pageNo}
+          handlePageChange={handlePageChange}
+          showFirstButton
+          showLastButton
+          size={"large"}
+        />
+      </Grid>
     </Box>
   );
 };
