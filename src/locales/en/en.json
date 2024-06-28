@@ -236,6 +236,8 @@
   "dialog_confirm_delete_calendar_event": "Are you sure you want to delete the \"{{eventTitle}}\" event?",
   "calendar_event_update_event_success": "Update event successfully",
   "calendar_event_update_event_fail": "Update event failed",
+  "calendar_event_create_event_success": "Create event successfully",
+  "calendar_event_create_event_fail": "Create event failed",
   "calendar_event_name_required": "Event name is required",
   "calendar_event_description_required": "Event description is required",
   "calendar_event_start_required": "Event start time is required",
@@ -414,6 +416,7 @@
   "certificate_not_registered": "Not registered",
   "certificate_detail_register_tooltip": "Please sign in to register for this course",
   "certificate_detail_chapter_resources": "Certificate Course Lessons",
+  "certificate_detail_no_resources": "No lessons available",
 
   "dashboard_start_title": "Let's start your courses",
   "dashboard_continue_title": "Let's continue your courses",

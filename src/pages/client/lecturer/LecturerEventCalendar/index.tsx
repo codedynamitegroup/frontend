@@ -408,6 +408,7 @@ const LecturerEventCalendar = () => {
           }}
           translation-key={["common_cancel", "common_create", "calendar_add_event"]}
           onHanldeConfirm={handleCreateCalendarEvent}
+          selectDateInfo={data.selectDateInfo}
         />
       )}
 

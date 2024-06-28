@@ -23,13 +23,13 @@ import useAuth from "hooks/useAuth";
 import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
 import moment from "moment";
+import { ICalendarEventCourse } from "pages/client/lecturer/LecturerEventCalendar";
+import { IEditEventFormData } from "pages/client/lecturer/LecturerEventCalendar/components/AddEventDialog";
 import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { UpdateEventCalendarEvent } from "services/courseService/EventCalendarService";
 import * as yup from "yup";
-import { ICalendarEventCourse } from "../..";
-import { IEditEventFormData } from "../AddEventDialog";
 
 interface EditEventDialogProps extends DialogProps {
   allMyCoursesData: {
@@ -256,10 +256,6 @@ const EditEventDialog = ({
                       {
                         value: NotificationEventTypeEnum.USER,
                         label: t("calendar_event_type_user")
-                      },
-                      {
-                        value: NotificationEventTypeEnum.COURSE,
-                        label: t("calendar_event_type_course")
                       }
                     ]}
                     translation-key={["calendar_event_type_course", "calendar_event_type_user"]}
