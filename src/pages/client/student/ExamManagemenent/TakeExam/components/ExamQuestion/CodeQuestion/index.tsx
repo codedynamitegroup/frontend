@@ -1,4 +1,4 @@
-import { Grid, Stack, Divider, Box } from "@mui/material";
+import { Grid, Stack, Divider, Box, CircularProgress } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
 import Heading4 from "components/text/Heading4";
 import Button from "@mui/joy/Button";
@@ -26,7 +26,17 @@ import Heading5 from "components/text/Heading5";
 import ReactQuill from "react-quill";
 import { ViewUpdate } from "@uiw/react-codemirror";
 import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
-import { initCode, setCode, setSelectedLanguageId } from "reduxes/TakeExam/TakeExamCodeQuestion";
+import {
+  initCode,
+  setCode,
+  setCodeQuestionExamResult,
+  setCodeQuestionExamResultError,
+  setSelectedLanguageId
+} from "reduxes/TakeExam/TakeExamCodeQuestion";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
+import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 
 interface Props {
   page: number;
@@ -47,15 +57,21 @@ const CodeExamQuestion = (props: Props) => {
   const codeQuestionLanguageState = useAppSelector(
     (state) => state.takeExamCodeQuestion.codeQuestion[questionId]
   );
+  const testCases = useAppSelector(
+    (state) => state.takeExamCodeQuestion.codeQuestion?.[questionId]?.testCase
+  );
   const [currentCode, setCurrentCode] = useState<string>("");
+  const [executeLoading, setExecuteLoading] = useState<boolean>(false);
 
   const flagQuestionHandle = () => {
     if (isFlagged !== undefined) dispatch(setFlag({ id: questionId, flag: !isFlagged }));
   };
 
+  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
   const debouncedHandleOnInputChange = debounce((value: string, viewUpdate: ViewUpdate) => {
     let isAnswered = true;
     if (value === "") isAnswered = false;
+    if (!selectedLanguage) return;
 
     dispatch(
       setAnswered({
@@ -63,6 +79,7 @@ const CodeExamQuestion = (props: Props) => {
         answered: isAnswered,
         content: JSON.stringify({
           languageId: selectedLanguage,
+          judge0Id: codeQuestionLanguageState.codes[selectedLanguage].judge0Id,
           code: value
         })
       })
@@ -80,7 +97,6 @@ const CodeExamQuestion = (props: Props) => {
     label: language.name,
     value: language.id
   }));
-  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
   const [tabValue, setTabValue] = useState(0);
   const languageMap = useMemo(() => {
     return questionCode?.languages.reduce((acc: LanguageMap, cur: ProgrammingLanguageEntity) => {
@@ -124,6 +140,7 @@ const CodeExamQuestion = (props: Props) => {
             questionId: questionId,
             codeLanguageDataList: questionCode?.languages.map((language) => {
               return {
+                judge0Id: language.judge0Id,
                 languageId: language.id,
                 code: `${language.headCode}\n\n${language.bodyCode}\n\n${language.tailCode}`,
                 cpuLimit: language.timeLimit,
@@ -139,6 +156,42 @@ const CodeExamQuestion = (props: Props) => {
       else setSelectedLanguage(questionCode?.languages[0]?.id);
     }
   }, [codeQuestionLanguageState?.codes, dispatch, questionCode?.languages, questionId]);
+
+  const handleExecuteCode = () => {
+    setExecuteLoading(true);
+    if (selectedLanguage) {
+      Promise.all(
+        testCases.map((testCase) =>
+          ExecuteService.execute(
+            codeQuestionLanguageState.codes[selectedLanguage].judge0Id,
+            testCase.inputData,
+            testCase.outputData,
+            codeQuestionLanguageState.codes[selectedLanguage].cpuLimit,
+            codeQuestionLanguageState.codes[selectedLanguage].memoryLimit,
+            codeQuestionLanguageState.codes[selectedLanguage].code
+          )
+        )
+      )
+        .then((judge0Response: Judge0ResponseEntity[]) => {
+          testCases.forEach((testCase, index) => {
+            judge0Response[index].input_data = testCase.inputData;
+            judge0Response[index].output_data = testCase.outputData;
+          });
+
+          dispatch(setCodeQuestionExamResult({ questionId: questionId, result: judge0Response }));
+        })
+        .catch((error) => {
+          let message: string | undefined = error.message;
+          if (message === undefined) message = "Unexpected error";
+          console.log(error);
+          dispatch(setCodeQuestionExamResultError({ questionId: questionId, error: message }));
+        })
+        .finally(() => {
+          setExecuteLoading(false);
+          setTabValue(1);
+        });
+    }
+  };
 
   return (
     <Grid container spacing={1}>
@@ -249,6 +302,8 @@ const CodeExamQuestion = (props: Props) => {
                 sx={{
                   marginRight: "10px"
                 }}
+                onClick={handleExecuteCode}
+                loading={executeLoading}
               >
                 Execute
               </Button>
@@ -276,19 +331,23 @@ const CodeExamQuestion = (props: Props) => {
             />
           </Box>
         </Box>
-        <Box
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "12px",
-            marginTop: "20px"
-          }}
-        >
-          <Tabs
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Box
+              sx={{
+                border: "1px solid #e0e0e0",
+                borderRadius: "12px",
+                marginTop: "20px"
+              }}
+            >
+              {/* <Tabs
             aria-label='Basic tabs'
             defaultValue={tabValue}
             value={tabValue}
             onChange={(event, newValue) => setTabValue(Number(newValue) || 0)}
             sx={{
+              backgroundColor: "white",
               borderRadius: "12px",
               "& .Mui-selected:first-of-type": {
                 borderTopLeftRadius: "12px"
@@ -306,21 +365,81 @@ const CodeExamQuestion = (props: Props) => {
               <TestCase questionId={questionId} />
             </TabPanel>
             <TabPanel value={1}>
-              <Result />
+              <Result questionId={questionId} loading={executeLoading} />
             </TabPanel>
-          </Tabs>
-        </Box>
+          </Tabs> */}
+              <Box
+                sx={{
+                  backgroundColor: "var(--gray-1)",
+                  borderTopLeftRadius: "12px",
+                  borderTopRightRadius: "12px",
+                  padding: "10px"
+                }}
+                display='flex'
+                flexDirection={"row"}
+                alignItems='center'
+                gap={1}
+              >
+                <BugReportRoundedIcon
+                  sx={{
+                    fontSize: "15px"
+                  }}
+                />
+                <Heading5>Testcase</Heading5>
+              </Box>
+              <Box
+                sx={{
+                  padding: "20px 10px"
+                }}
+              >
+                <TestCase questionId={questionId} sampleTestCases={questionCode?.sampleTestCases} />
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box
+              sx={{
+                border: "1px solid #e0e0e0",
+                borderRadius: "12px",
+                marginTop: "20px"
+              }}
+            >
+              <Box
+                sx={{
+                  backgroundColor: "var(--gray-1)",
+                  borderTopLeftRadius: "12px",
+                  borderTopRightRadius: "12px",
+                  padding: "10px"
+                }}
+                display='flex'
+                flexDirection={"row"}
+                alignItems='center'
+                gap={1}
+              >
+                {executeLoading ? (
+                  <CircularProgress size={15} />
+                ) : (
+                  <CheckBoxRoundedIcon
+                    sx={{
+                      fontSize: "15px"
+                    }}
+                  />
+                )}
+                <Heading5>Result</Heading5>
+              </Box>
+              <Box
+                sx={{
+                  padding: "20px 10px"
+                }}
+              >
+                <Result questionId={questionId} loading={executeLoading} />
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
 };
 
 export default CodeExamQuestion;
-
-const parseQuestionData = (questionData: string) => {
-  try {
-    return JSON.parse(questionData);
-  } catch (error) {
-    return {};
-  }
-};

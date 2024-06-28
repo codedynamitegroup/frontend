@@ -16,6 +16,7 @@ export interface CodeQuestionState {
   selectedLanguageId: string;
   testCase: TestCaseEntity[];
   result: Judge0ResponseEntity[];
+  error: string | null;
   codes: CodeLanaguageMap;
 }
 
@@ -26,6 +27,7 @@ interface CodeLanaguageMap {
 
 export interface CodeLanguageStateData {
   languageId: string;
+  judge0Id: number;
   code: string;
   cpuLimit: number;
   memoryLimit: number;
@@ -39,6 +41,10 @@ const takeExamCodeQuestionSlice = createSlice({
   name: "takeExamCodeQuestion",
   initialState: initState,
   reducers: {
+    cleanCodeQuestion: (state) => {
+      state.codeQuestion = {};
+      return state;
+    },
     initCode: (
       state,
       action: PayloadAction<{ questionId: string; codeLanguageDataList: CodeLanguageStateData[] }>
@@ -48,6 +54,7 @@ const takeExamCodeQuestionSlice = createSlice({
         selectedLanguageId: action.payload.codeLanguageDataList[0].languageId,
         testCase: [],
         result: [],
+        error: null,
         codes: action.payload.codeLanguageDataList.reduce(
           (acc: CodeLanaguageMap, cur: CodeLanguageStateData) => {
             acc[cur.languageId] = cur;
@@ -114,6 +121,39 @@ const takeExamCodeQuestionSlice = createSlice({
     deleteTestCase(state, action: PayloadAction<{ questionId: string; index: number }>) {
       state.codeQuestion[action.payload.questionId].testCase?.splice(action.payload.index, 1);
       return state;
+    },
+    cleanResult(state, action: PayloadAction<{ questionId: string }>) {
+      state.codeQuestion[action.payload.questionId].result = [];
+      return state;
+    },
+    setCodeQuestionExamResult(
+      state,
+      action: PayloadAction<{
+        questionId: string;
+        result: Judge0ResponseEntity[];
+      }>
+    ) {
+      state.codeQuestion[action.payload.questionId].error = null;
+      state.codeQuestion[action.payload.questionId].result = action.payload.result;
+      return state;
+    },
+    setCodeQuestionExamResultError(
+      state,
+      action: PayloadAction<{
+        questionId: string;
+        error: string;
+      }>
+    ) {
+      state.codeQuestion[action.payload.questionId].result = [];
+      state.codeQuestion[action.payload.questionId].error = action.payload.error;
+      return state;
+    },
+    setSampleTestCase(
+      state,
+      action: PayloadAction<{ questionId: string; sampleTestCases: TestCaseEntity[] }>
+    ) {
+      state.codeQuestion[action.payload.questionId].testCase = action.payload.sampleTestCases;
+      return state;
     }
   }
 });
@@ -125,6 +165,11 @@ export const {
   addTestCase,
   setInputData,
   setOutputData,
-  deleteTestCase
+  deleteTestCase,
+  cleanCodeQuestion,
+  cleanResult,
+  setCodeQuestionExamResult,
+  setCodeQuestionExamResultError,
+  setSampleTestCase
 } = takeExamCodeQuestionSlice.actions;
 export default takeExamCodeQuestionSlice.reducer;
