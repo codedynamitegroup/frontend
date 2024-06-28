@@ -26,8 +26,8 @@ const courseUserSlice = createSlice({
   name: "courseUser",
   initialState: initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.isLoading = action.payload.isLoading;
+    setLoadingCourseUser: (state, action) => {
+      state.isLoading = action.payload;
     },
     setCourseUser: (state, action) => {
       state.courseId = action.payload.courseId;
@@ -42,6 +42,6 @@ const courseUserSlice = createSlice({
   }
 });
 
-export const { setLoading, setCourseUser, setAmountStudent } = courseUserSlice.actions;
+export const { setLoadingCourseUser, setCourseUser, setAmountStudent } = courseUserSlice.actions;
 
 export default courseUserSlice.reducer;

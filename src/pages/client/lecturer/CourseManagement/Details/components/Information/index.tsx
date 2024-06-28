@@ -9,18 +9,19 @@ import EditImageIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { CircularProgress, Collapse, TextField } from "@mui/material";
 import { ECourseResourceType } from "models/courseService/course";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CourseResource from "./components/CourseResource";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { useParams } from "react-router-dom";
 import { CourseService } from "services/courseService/CourseService";
-import { setLoading, setSections } from "reduxes/courseService/section";
+import { setLoadingSections, setSections } from "reduxes/courseService/section";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { setCourseDetail } from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
+import Heading1 from "components/text/Heading1";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -33,29 +34,29 @@ const LecturerCourseInformation = () => {
 
   const courseState = useSelector((state: RootState) => state.course);
   const [courseData, setCourseData] = useState<CourseEntity | null>(null);
-  const getCouseData = async (courseId: string) => {
-    try {
-      const response = await CourseService.getCourseDetail(courseId);
-      setCourseData(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const getCouseData = useCallback(
+    async (courseId: string) => {
+      try {
+        const courseResponse = await CourseService.getCourseDetail(courseId);
+        setCourseData(courseResponse);
+        dispatch(setCourseDetail({ courseDetail: courseResponse }));
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dispatch]
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      getCouseData(courseId ?? "");
-    };
-
-    fetchData();
-  }, [courseId]);
   useEffect(() => {
     const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
 
     if (course) {
+      setCourseData(course);
       dispatch(setCourseDetail({ courseDetail: course }));
+    } else {
+      getCouseData(courseId ?? "");
     }
-  }, [courseId, courseState.courses, dispatch]);
+  }, [courseId, courseState.courses, dispatch, getCouseData]);
 
   const toggleItem = (index: number) => {
     if (collapseOpen[index] === undefined)
@@ -85,24 +86,24 @@ const LecturerCourseInformation = () => {
     }));
   };
 
-  const handleGetSections = async () => {
-    dispatch(setLoading(true));
+  const handleGetSections = useCallback(async () => {
+    if (!courseId || (sectionState.courseId === courseId && sectionState.sections.length > 0)) {
+      return;
+    }
+
+    dispatch(setLoadingSections(true));
     try {
-      if (courseId) {
-        const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
-        dispatch(setSections(getSectionsResponse));
-      } else {
-        console.error("courseId is undefined");
-      }
+      const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
+      dispatch(setSections({ sections: getSectionsResponse.sections, courseId: courseId }));
     } catch (error) {
       console.error("Failed to fetch sections", error);
     }
-    dispatch(setLoading(false));
-  };
+    dispatch(setLoadingSections(false));
+  }, [courseId, dispatch, sectionState.courseId, sectionState.sections]);
 
   useEffect(() => {
     handleGetSections();
-  }, [courseId]);
+  }, [courseId, handleGetSections]);
 
   const type = (typeModule: string) => {
     switch (typeModule) {
@@ -127,13 +128,13 @@ const LecturerCourseInformation = () => {
             className={classes.courseImage}
             src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
-          <Typography variant='h1' className={classes.classNameOverlay}>
+          <Heading1 className={classes.nameCourseOverlay} colorname='--white'>
             {courseData?.name}
-          </Typography>
+          </Heading1>
         </Card>
       </Grid>
 
-      {!sectionState.isLoading ? (
+      {sectionState.isLoading === false ? (
         <Grid item xs={12}>
           <Box margin={1} padding={0}>
             <Grid container className={classes.gridBodyContainer}>

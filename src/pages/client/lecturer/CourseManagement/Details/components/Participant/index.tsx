@@ -11,7 +11,7 @@ import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCourseUser } from "reduxes/courseService/courseUser";
+import { setCourseUser, setLoadingCourseUser } from "reduxes/courseService/courseUser";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import { AppDispatch, RootState } from "store";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -46,8 +46,8 @@ const LecturerCourseParticipant = () => {
     }[]
   >([
     {
-      key: t("common_all"),
-      value: "role"
+      key: "role",
+      value: t("common_all")
     }
   ]);
   const handleGetCourseUser = useCallback(
@@ -67,6 +67,7 @@ const LecturerCourseParticipant = () => {
         return;
       }
 
+      dispatch(setLoadingCourseUser(true));
       try {
         const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
           search,
@@ -86,6 +87,7 @@ const LecturerCourseParticipant = () => {
       } catch (error) {
         console.error("Failed to fetch course user", error);
       }
+      dispatch(setLoadingCourseUser(false));
     },
     [courseId, courseUserState.users, courseUserState.courseId, dispatch]
   );
@@ -160,19 +162,20 @@ const LecturerCourseParticipant = () => {
           {params.row.firstName} {params.row.lastName}
         </ParagraphBody>
       )
+    },
+    {
+      field: "roles",
+      headerName: t("common_role"),
+      flex: 2,
+      renderHeader: () => {
+        return (
+          <Heading5 nonoverflow width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_role")}
+          </Heading5>
+        );
+      },
+      renderCell: (params) => <ParagraphBody>{params.row.role}</ParagraphBody>
     }
-    // { field: "roles", headerName: t("common_role"), width: 50, flex: 0.4 },
-    // {
-    //   field: "action",
-    //   headerName: t("common_action"),
-    //   type: "actions",
-    //   width: 200,
-    //   flex: 0.5,
-    //   getActions: () => [
-    //     <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
-    //     <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
-    //   ]
-    // }
   ];
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -240,7 +243,7 @@ const LecturerCourseParticipant = () => {
           numOfResults={totalElement}
           filterKeyList={[
             {
-              label: t("common_all"),
+              label: t("common_role"),
               value: "role"
             }
           ]}
@@ -248,7 +251,7 @@ const LecturerCourseParticipant = () => {
             role: [
               {
                 label: t("common_all"),
-                value: "ALL"
+                value: t("common_all")
               }
             ]
           }}
@@ -279,10 +282,10 @@ const LecturerCourseParticipant = () => {
               border: "none"
             },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#f5f9fb"
+              backgroundColor: "var(--blue-5)"
             },
             "& .MuiDataGrid-toolbarContainer": {
-              backgroundColor: "#f5f9fb"
+              backgroundColor: "var(--blue-5)"
             }
           }}
           personalSx={true}

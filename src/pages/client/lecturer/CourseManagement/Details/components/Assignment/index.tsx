@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import { BtnType } from "components/common/buttons/Button";
 import MenuPopup from "components/common/menu/MenuPopup";
@@ -17,12 +17,11 @@ import i18next from "i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { ExamService } from "services/courseService/ExamService";
-import { setExamList, setExams } from "reduxes/courseService/exam";
+import { setExamList, setExams, setLoadingExams } from "reduxes/courseService/exam";
 import { AssignmentService } from "services/courseService/AssignmentService";
-import { setAssignments } from "reduxes/courseService/assignment";
+import { setAssignments, setLoadingAssignments } from "reduxes/courseService/assignment";
 import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { clearExamCreate } from "reduxes/coreService/questionCreate";
-import { setLoading } from "reduxes/Loading";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +33,7 @@ const LecturerCourseAssignment = () => {
       if (id === examState.courseId && examState.exams) {
         return;
       }
-      dispatch(setLoading(true));
+      dispatch(setLoadingExams(true));
       try {
         const response = await ExamService.getExamsByCourseId(id);
         dispatch(
@@ -49,17 +48,17 @@ const LecturerCourseAssignment = () => {
       } catch (error) {
         console.error(error);
       }
-      dispatch(setLoading(false));
+      dispatch(setLoadingExams(false));
     },
     [dispatch, examState.courseId, examState.exams]
   );
 
   const handleGetAssignments = useCallback(
     async (id: string) => {
-      if (id === assignmentState.courseId && assignmentState.assignments) {
+      if (id === assignmentState.courseId && assignmentState.assignments.length > 0) {
         return;
       }
-      dispatch(setLoading(true));
+      dispatch(setLoadingAssignments(true));
       try {
         const response = await AssignmentService.getAssignmentsByCourseId(id);
         dispatch(
@@ -71,7 +70,7 @@ const LecturerCourseAssignment = () => {
       } catch (error) {
         console.error(error);
       }
-      dispatch(setLoading(false));
+      dispatch(setLoadingAssignments(false));
     },
     [dispatch, assignmentState.courseId, assignmentState.assignments]
   );
@@ -128,7 +127,6 @@ const LecturerCourseAssignment = () => {
     if (courseId) navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
     popupState.close();
   };
-
   const [isReusedCourseResourceOpen, setIsReusedCourseResourceOpen] = useState(false);
 
   // const onOpenReusedCourseResourceDialog = (popupState: any) => {
@@ -203,7 +201,21 @@ const LecturerCourseAssignment = () => {
             <Heading3 translation-key='course_detail_assignment'>
               {t("course_detail_assignment")}
             </Heading3>
-            {assignmentState.assignments &&
+            {assignmentState.isLoading === true ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: "10px"
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              assignmentState.assignments.length > 0 &&
               assignmentState.assignments.map((assignment: AssignmentEntity) => (
                 <AssignmentResource
                   key={assignment.id}
@@ -216,23 +228,40 @@ const LecturerCourseAssignment = () => {
                   type={ResourceType.assignment}
                   onDelete={handleDeleteAssignment}
                 />
-              ))}
+              ))
+            )}
           </Box>
           <Box className={classes.topic}>
             <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
-            {examState.exams.exams.map((exam) => (
-              <AssignmentResource
-                key={exam.id}
-                courseId={courseId}
-                examId={exam.id}
-                resourceTitle={exam.name}
-                resourceOpenDate={exam.timeOpen}
-                resourceEndedDate={exam.timeClose}
-                intro={exam.intro}
-                type={ResourceType.exam}
-                onDelete={handleDeleteExam}
-              />
-            ))}
+            {examState.isLoading === true ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: "10px"
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              examState.exams.exams.length > 0 &&
+              examState.exams.exams.map((exam) => (
+                <AssignmentResource
+                  key={exam.id}
+                  courseId={courseId}
+                  examId={exam.id}
+                  resourceTitle={exam.name}
+                  resourceOpenDate={exam.timeOpen}
+                  resourceEndedDate={exam.timeClose}
+                  intro={exam.intro}
+                  type={ResourceType.exam}
+                  onDelete={handleDeleteExam}
+                />
+              ))
+            )}
           </Box>
         </Box>
       </Box>

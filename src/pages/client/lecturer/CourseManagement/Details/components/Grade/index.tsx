@@ -7,14 +7,15 @@ import { GridColumnMenuProps } from "@mui/x-data-grid/components/menu/columnMenu
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef, GridRowSelectionModel, GridPaginationModel } from "@mui/x-data-grid";
 import Heading1 from "components/text/Heading1";
-import CustomDataGrid from "../../../../../../../components/common/CustomDataGrid";
+import CustomDataGrid from "components/common/CustomDataGrid";
 import CourseGradeFeatureBar from "./components/FeatureBar";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
 import { AssignmentService } from "services/courseService/AssignmentService";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { StudentAssignmentList } from "models/courseService/entity/StudentAssignmentList";
 import { useParams } from "react-router-dom";
+import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 
 function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
   const { customEditHandler, customEditValue } = props;
@@ -70,26 +71,64 @@ const LecturerCourseGrade = () => {
   const { t } = useTranslation();
   const [studentAssignmentGrades, setStudentAssignmentGrades] =
     useState<StudentAssignmentList | null>(null);
+  const [isLoadingStudentAssignmentGrades, setIsLoadingStudentAssignmentGrades] =
+    useState<boolean>(false);
 
   const { courseId } = useParams<{ courseId: string }>();
-  const handleGetRetrieveStudentAssignmentGrades = async (courseId: string) => {
-    try {
-      const response = await AssignmentService.getRetrieveStudentAssignmentGrades(courseId);
-      return response;
-    } catch (error) {
-      console.log(error);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [filters, setFilters] = useState<
+    {
+      key: string;
+      value: string;
+    }[]
+  >([
+    {
+      key: "role",
+      value: t("common_all")
     }
-  };
+  ]);
+
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(
+    () => studentAssignmentGrades?.totalItems || 0,
+    [studentAssignmentGrades?.totalItems]
+  );
+
+  const handleGetRetrieveStudentAssignmentGrades = useCallback(
+    async ({
+      search,
+      pageNo = 0,
+      pageSize = 10,
+      courseId
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+      courseId: string;
+    }) => {
+      setIsLoadingStudentAssignmentGrades(true);
+      try {
+        const response = await AssignmentService.getRetrieveStudentAssignmentGrades(courseId, {
+          search,
+          pageNo,
+          pageSize
+        });
+        console.log(response);
+        setStudentAssignmentGrades(response);
+      } catch (error) {
+        console.log(error);
+      }
+      setIsLoadingStudentAssignmentGrades(false);
+    },
+    []
+  );
 
   useEffect(() => {
     if (courseId) {
-      handleGetRetrieveStudentAssignmentGrades(courseId).then((response) => {
-        setStudentAssignmentGrades(response);
-      });
+      handleGetRetrieveStudentAssignmentGrades({ courseId: courseId });
     }
-  }, [courseId]);
-
-  console.log(studentAssignmentGrades);
+  }, [courseId, handleGetRetrieveStudentAssignmentGrades]);
 
   // Transform API data for DataGrid
   const courseAssignmentList =
@@ -159,24 +198,69 @@ const LecturerCourseGrade = () => {
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
 
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      handleGetRetrieveStudentAssignmentGrades({
+        search: value,
+        courseId: courseId ? courseId : ""
+      });
+    },
+    [handleGetRetrieveStudentAssignmentGrades, courseId]
+  );
+
+  const handleApplyFilter = useCallback(() => {
+    // handleGetCourseUser({
+    //   search: searchValue
+    // });
+  }, [searchValue]);
+
+  const handleCancelFilter = useCallback(() => {
+    // handleGetCourseUser({
+    //   search: searchValue
+    // });
+  }, [searchValue]);
   return (
     <Box className={classes.gradeBody}>
       <Grid item xs={12}>
         <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
       <Grid item xs={12}>
-        <CourseGradeFeatureBar />
+        <CustomSearchFeatureBar
+          isLoading={isLoadingStudentAssignmentGrades}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onHandleChange={handleSearchChange}
+          numOfResults={totalElement}
+          filterKeyList={[
+            {
+              label: t("common_role"),
+              value: "role"
+            }
+          ]}
+          filterValueList={{
+            role: [
+              {
+                label: t("common_all"),
+                value: t("common_all")
+              }
+            ]
+          }}
+          filters={filters}
+          handleChangeFilters={(newFilters: { key: string; value: string }[]) => {
+            setFilters(newFilters);
+          }}
+          onHandleApplyFilter={handleApplyFilter}
+          onHandleCancelFilter={handleCancelFilter}
+        />
       </Grid>
       <Grid item xs={12}>
         <CustomDataGrid
+          loading={isLoadingStudentAssignmentGrades}
           dataList={participantList}
           tableHeader={tableHeading}
           onSelectData={rowSelectionHandler}
@@ -189,6 +273,15 @@ const LecturerCourseGrade = () => {
           showVerticalCellBorder={true}
           customColumnMenu={CustomColumnMenu}
           onClickRow={rowClickHandler}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "var(--blue-5)"
+            },
+            "& .MuiDataGrid-toolbarContainer": {
+              backgroundColor: "var(--blue-5)"
+            }
+          }}
+          personalSx={true}
         />
       </Grid>
     </Box>
