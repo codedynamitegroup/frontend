@@ -29,18 +29,7 @@ import { useTranslation } from "react-i18next";
 import { UpdateEventCalendarEvent } from "services/courseService/EventCalendarService";
 import * as yup from "yup";
 import { ICalendarEventCourse } from "../..";
-
-export interface IEditEventFormData {
-  durationRadioIndex: string;
-  durationInMinute: number;
-  eventTitle: string;
-  eventDescription: string;
-  start: string;
-  end?: string;
-  allDay: boolean;
-  eventType: string;
-  courseId: string;
-}
+import { IEditEventFormData } from "../AddEventDialog";
 
 interface EditEventDialogProps extends DialogProps {
   allMyCoursesData: {
@@ -104,7 +93,14 @@ const EditEventDialog = ({
         }),
       allDay: yup.boolean().required(),
       eventType: yup.string().required(t("calendar_event_type_required")),
-      courseId: yup.string().default("")
+      courseId: yup
+        .string()
+        .test("courseId", t("calendar_event_course_required"), function (value) {
+          if (this.parent.eventType === NotificationEventTypeEnum.COURSE) {
+            return value !== "";
+          }
+          return true;
+        })
     });
   }, [t]);
 
@@ -296,7 +292,7 @@ const EditEventDialog = ({
                   <Grid item xs={12} md={8}>
                     <BasicSelect
                       labelId='select-assignment-section-label'
-                      value={field.value}
+                      value={field.value || ""}
                       onHandleChange={(value) => {
                         setValue("courseId", value);
                       }}

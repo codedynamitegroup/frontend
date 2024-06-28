@@ -30,7 +30,7 @@ import { CreateEventCalendarEvent } from "services/courseService/EventCalendarSe
 import * as yup from "yup";
 import { ICalendarEventCourse } from "../..";
 
-interface IEditEventFormData {
+export interface IEditEventFormData {
   durationRadioIndex: string;
   durationInMinute: number;
   eventTitle: string;
@@ -39,7 +39,7 @@ interface IEditEventFormData {
   end?: string;
   allDay: boolean;
   eventType: string;
-  courseId: string;
+  courseId?: string;
 }
 
 interface AddEventDialogProps extends DialogProps {
@@ -100,7 +100,14 @@ const AddEventDialog = ({
         }),
       allDay: yup.boolean().required(),
       eventType: yup.string().required(t("calendar_event_type_required")),
-      courseId: yup.string().required(t("calendar_event_course_required"))
+      courseId: yup
+        .string()
+        .test("courseId", t("calendar_event_course_required"), function (value) {
+          if (this.parent.eventType === NotificationEventTypeEnum.COURSE) {
+            return value !== "";
+          }
+          return true;
+        })
     });
   }, [t]);
 
@@ -120,7 +127,8 @@ const AddEventDialog = ({
       start: moment().toISOString(),
       allDay: false,
       eventType: NotificationEventTypeEnum.USER,
-      courseId: selectCourseItems.length > 0 ? selectCourseItems[0].value : ""
+      // courseId: selectCourseItems.length > 0 ? selectCourseItems[0].value : ""
+      courseId: ""
     }
   });
 
@@ -161,7 +169,7 @@ const AddEventDialog = ({
           endTime:
             data.end && data.end.length > 0 && moment(data.end).isValid() ? data.end : undefined,
           eventType: data.eventType as NotificationEventTypeEnum,
-          courseId: data.courseId === "ALL" ? undefined : data.courseId,
+          courseId: data.courseId === "" ? undefined : data.courseId,
           userId: data.eventType === NotificationEventTypeEnum.USER ? loggedUser.userId : undefined,
           component: NotificationComponentTypeEnum.REMINDER
         };
@@ -301,7 +309,7 @@ const AddEventDialog = ({
                   <Grid item xs={12} md={8}>
                     <BasicSelect
                       labelId='select-assignment-section-label'
-                      value={field.value}
+                      value={field.value || ""}
                       onHandleChange={(value) => {
                         setValue("courseId", value);
                       }}

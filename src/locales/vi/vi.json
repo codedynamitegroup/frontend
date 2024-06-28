@@ -224,6 +224,8 @@
   "dialog_confirm_delete_calendar_event": "Bạn có chắc chắn muốn xóa sự kiện \"{{eventTitle}}\" không?",
   "calendar_event_update_event_success": "Cập nhật sự kiện thành công",
   "calendar_event_update_event_fail": "Cập nhật sự kiện thất bại",
+  "calendar_event_create_event_success": "Tạo sự kiện thành công",
+  "calendar_event_create_event_fail": "Tạo sự kiện thất bại",
   "calendar_event_name_required": "Tên sự kiện không được để trống",
   "calendar_event_description_required": "Mô tả sự kiện không được để trống",
   "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
@@ -413,6 +415,7 @@
   "certificate_not_registered": "Chưa đăng ký",
   "certificate_detail_register_tooltip": "Hãy đăng nhập để có thể đăng ký khóa học này",
   "certificate_detail_chapter_resources": "Bài học của khóa học",
+  "certificate_detail_no_resources": "Khóa học này chưa có bài học nào",
 
   "dashboard_start_title": "Bắt đầu khóa học của bạn",
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
