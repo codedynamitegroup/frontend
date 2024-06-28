@@ -12,10 +12,6 @@ import CodeEditor from "components/editor/CodeEditor";
 import CodeIcon from "@mui/icons-material/Code";
 import JoySelect from "components/common/JoySelect";
 import { useEffect, useMemo, useState } from "react";
-import Tabs from "@mui/joy/Tabs";
-import TabList from "@mui/joy/TabList";
-import Tab from "@mui/joy/Tab";
-import TabPanel from "@mui/joy/TabPanel";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import TestCase from "./components/TestCase";
 import Result from "./components/Result";
@@ -30,13 +26,13 @@ import {
   initCode,
   setCode,
   setCodeQuestionExamResult,
-  setCodeQuestionExamResultError,
-  setSelectedLanguageId
+  setCodeQuestionExamResultError
 } from "reduxes/TakeExam/TakeExamCodeQuestion";
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
+import { decodeBase64, encodeBase64 } from "utils/base64";
 
 interface Props {
   page: number;
@@ -60,7 +56,6 @@ const CodeExamQuestion = (props: Props) => {
   const testCases = useAppSelector(
     (state) => state.takeExamCodeQuestion.codeQuestion?.[questionId]?.testCase
   );
-  const [currentCode, setCurrentCode] = useState<string>("");
   const [executeLoading, setExecuteLoading] = useState<boolean>(false);
 
   const flagQuestionHandle = () => {
@@ -79,8 +74,8 @@ const CodeExamQuestion = (props: Props) => {
         answered: isAnswered,
         content: JSON.stringify({
           languageId: selectedLanguage,
-          judge0Id: codeQuestionLanguageState.codes[selectedLanguage].judge0Id,
-          code: value
+          codeQuestionId: questionCode.id,
+          code: encodeBase64(value)
         })
       })
     );
@@ -97,7 +92,6 @@ const CodeExamQuestion = (props: Props) => {
     label: language.name,
     value: language.id
   }));
-  const [tabValue, setTabValue] = useState(0);
   const languageMap = useMemo(() => {
     return questionCode?.languages.reduce((acc: LanguageMap, cur: ProgrammingLanguageEntity) => {
       acc[cur.id] = cur;
@@ -105,23 +99,31 @@ const CodeExamQuestion = (props: Props) => {
     }, {});
   }, [questionCode]);
 
-  const codeFormat = useMemo(() => {
-    if (selectedLanguage === undefined) return "";
-    if (codeQuestionLanguageState.codes && codeQuestionLanguageState.codes[selectedLanguage]) {
-      return codeQuestionLanguageState.codes[selectedLanguage].code;
+  const [codeFormat, setCodeFormat] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (selectedLanguage && codeFormat === undefined && languageMap?.[selectedLanguage]) {
+      setCodeFormat(
+        `${languageMap?.[selectedLanguage]?.headCode}\n\n${languageMap?.[selectedLanguage]?.bodyCode}\n\n${languageMap?.[selectedLanguage]?.tailCode}`
+      );
+      return;
     }
-    return `${languageMap?.[selectedLanguage]?.headCode}\n\n${languageMap?.[selectedLanguage]?.bodyCode}\n\n${languageMap?.[selectedLanguage]?.tailCode}`;
-  }, [languageMap, selectedLanguage]);
+    const content = JSON.parse(questionState.content);
+    setSelectedLanguage(content.languageId);
+    setCodeFormat(decodeBase64(content.code));
+  }, [selectedLanguage]);
+
+  useEffect(() => {}, []);
 
   const handleLanguageChange = (newValue: any) => {
-    dispatch(setSelectedLanguageId({ questionId: questionId, selectedLanguageId: newValue }));
     dispatch(
       setAnswered({
         id: questionId,
         answered: true,
         content: JSON.stringify({
           languageId: newValue,
-          code: codeQuestionLanguageState?.codes?.[newValue] || ""
+          codeQuestionId: questionCode.id,
+          code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue].code || "")
         })
       })
     );
@@ -150,11 +152,6 @@ const CodeExamQuestion = (props: Props) => {
           })
         );
     }
-    if (selectedLanguage === undefined && questionCode?.languages?.length) {
-      if (codeQuestionLanguageState?.selectedLanguageId)
-        setSelectedLanguage(codeQuestionLanguageState?.selectedLanguageId);
-      else setSelectedLanguage(questionCode?.languages[0]?.id);
-    }
   }, [codeQuestionLanguageState?.codes, dispatch, questionCode?.languages, questionId]);
 
   const handleExecuteCode = () => {
@@ -168,7 +165,7 @@ const CodeExamQuestion = (props: Props) => {
             testCase.outputData,
             codeQuestionLanguageState.codes[selectedLanguage].cpuLimit,
             codeQuestionLanguageState.codes[selectedLanguage].memoryLimit,
-            codeQuestionLanguageState.codes[selectedLanguage].code
+            decodeBase64(codeQuestionLanguageState.codes[selectedLanguage].code)
           )
         )
       )
@@ -188,7 +185,6 @@ const CodeExamQuestion = (props: Props) => {
         })
         .finally(() => {
           setExecuteLoading(false);
-          setTabValue(1);
         });
     }
   };

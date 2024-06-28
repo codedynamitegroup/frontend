@@ -13,7 +13,6 @@ export interface CodeQuestionStateMap {
 
 export interface CodeQuestionState {
   questionId: string;
-  selectedLanguageId: string;
   testCase: TestCaseEntity[];
   result: Judge0ResponseEntity[];
   error: string | null;
@@ -51,7 +50,6 @@ const takeExamCodeQuestionSlice = createSlice({
     ) => {
       state.codeQuestion[action.payload.questionId] = {
         questionId: action.payload.questionId,
-        selectedLanguageId: action.payload.codeLanguageDataList[0].languageId,
         testCase: [],
         result: [],
         error: null,
@@ -74,14 +72,7 @@ const takeExamCodeQuestionSlice = createSlice({
         action.payload.code;
       return state;
     },
-    setSelectedLanguageId: (
-      state,
-      action: PayloadAction<{ questionId: string; selectedLanguageId: string }>
-    ) => {
-      state.codeQuestion[action.payload.questionId].selectedLanguageId =
-        action.payload.selectedLanguageId;
-      return state;
-    },
+
     addTestCase: (
       state,
       action: PayloadAction<{
@@ -160,7 +151,6 @@ const takeExamCodeQuestionSlice = createSlice({
 
 export const {
   setCode,
-  setSelectedLanguageId,
   initCode,
   addTestCase,
   setInputData,
