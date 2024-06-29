@@ -15,94 +15,127 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import useAuth from "hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AssignmentGradeEntity } from "models/courseService/entity/AssignmentGradeEntity";
+import { AllAssignmentGradeEntity } from "models/courseService/entity/AllAssignmentGradeEntity";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 const StudentCourseGrade = () => {
   const { t } = useTranslation();
   const { courseId } = useParams<{ courseId: string }>();
+  const courseState = useSelector((state: RootState) => state.course);
   const { loggedUser } = useAuth();
-  const [assignmentList, setAssignmentList] = useState<AssignmentGradeEntity[]>([]);
-  const getAssignmentGradeByStudent = async (courseId: string, userId: string) => {
-    try {
-      const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [assignmentList, setAssignmentList] = useState<AllAssignmentGradeEntity | null>(null);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(() => assignmentList?.totalItems || 0, [assignmentList?.totalItems]);
+
+  const getAssignmentGradeByStudent = useCallback(
+    async ({
+      search,
+      pageNo = 0,
+      pageSize = 10,
+      courseId,
+      userId
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+      courseId: string;
+      userId: string;
+    }) => {
+      try {
+        const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId, {
+          search,
+          pageNo,
+          pageSize
+        });
+        setAssignmentList(response);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    if (loggedUser?.userId && courseId) {
-      getAssignmentGradeByStudent(courseId, loggedUser.userId).then((response) => {
-        setAssignmentList(response);
-      });
+    if (loggedUser && loggedUser.userId && courseId) {
+      getAssignmentGradeByStudent({ courseId: courseId, userId: loggedUser.userId });
     }
   }, [courseId, loggedUser]);
 
-  // const courseAssignmentList = assignmentList?.map((assignment) => {
-  //   return {
-  //     id: assignment.id,
-  //     item: assignment.title,
-  //     type: assignment.type,
-  //     weight: assignment.maxScore,
-  //     grade: assignment.grade,
-  //     range: assignment.maxScore,
-  //     percentage: (assignment.grade / assignment.maxScore) * 100,
-  //     feedback: assignment.feedback
-  //   };
-  // });
-  console.log(assignmentList);
-  const courseAssignmentList = [
-    {
-      id: 1,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 1",
-      weight: 0,
-      grade: undefined,
-      range: 100,
-      percentage: 10
-    },
-    {
-      id: 2,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 2",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 3,
-      type: ECourseResourceType.assignment,
-      item: "Bài tập 3",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 4,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 1",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 5,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 2",
-      weight: 0,
-      grade: 10,
-      range: 100
-    },
-    {
-      id: 6,
-      type: ECourseResourceType.assignment,
-      item: "Bài kiểm tra 3",
-      weight: 0,
-      grade: 10,
-      range: 100
-    }
-  ];
+  const courseAssignmentList = assignmentList
+    ? assignmentList.assignments?.map((assignment) => {
+        return {
+          id: assignment.id,
+          item: assignment.title,
+          type:
+            assignment.type === "ASSIGNMENT"
+              ? ECourseResourceType.assignment
+              : assignment.type === "EXAM"
+                ? ECourseResourceType.exam
+                : ECourseResourceType.file,
+          weight: assignment.maxScore,
+          grade: assignment.grade ? assignment.grade : undefined,
+          range: assignment.maxScore,
+          percentage: (assignment.grade / assignment.maxScore) * 100,
+          feedback: assignment.feedback
+        };
+      })
+    : [];
+  console.log(courseAssignmentList);
+  // const courseAssignmentList = [
+  //   {
+  //     id: 1,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 1",
+  //     weight: 0,
+  //     grade: undefined,
+  //     range: 100,
+  //     percentage: 10
+  //   },
+  //   {
+  //     id: 2,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 2",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 3,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài tập 3",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 4,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 1",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 5,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 2",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   },
+  //   {
+  //     id: 6,
+  //     type: ECourseResourceType.assignment,
+  //     item: "Bài kiểm tra 3",
+  //     weight: 0,
+  //     grade: 10,
+  //     range: 100
+  //   }
+  // ];
+
   const tableHeading: GridColDef[] = [
     { field: "id", headerName: "STT", minWidth: 1 },
     {
@@ -126,9 +159,11 @@ const StudentCourseGrade = () => {
         <Typography>
           {params.value === ECourseResourceType.assignment
             ? "Bài tập"
-            : params.value === ECourseResourceType.file
-              ? "File"
-              : "URL"}
+            : params.value === ECourseResourceType.exam
+              ? "Bài kiểm tra"
+              : params.value === ECourseResourceType.file
+                ? "File"
+                : "URL"}
         </Typography>
       )
     },
@@ -187,11 +222,8 @@ const StudentCourseGrade = () => {
       minWidth: 200,
       disableColumnMenu: true,
       flex: 0.2,
-      renderCell: (params: any) => (
-        <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-          {Number(params.value) ? `${params.value}%` : "_"}
-        </Box>
-      )
+      renderCell: (params: any) =>
+        params?.value ? <div dangerouslySetInnerHTML={{ __html: params.value }} /> : "-"
     }
   ];
 
@@ -202,11 +234,17 @@ const StudentCourseGrade = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    if (courseId) {
+      getAssignmentGradeByStudent({
+        courseId: courseId,
+        userId: loggedUser.userId,
+        pageNo: model.page,
+        pageSize: model.pageSize
+      });
+    }
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
@@ -218,9 +256,13 @@ const StudentCourseGrade = () => {
         <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
       <Grid item xs={12}>
-        <GradeSummary />
+        <GradeSummary
+          title={courseState?.courseDetail?.name}
+          average={0}
+          submitted={assignmentList?.countSubmission}
+        />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} mt={2}>
         <CustomDataGrid
           dataList={courseAssignmentList}
           tableHeader={tableHeading}
@@ -233,6 +275,18 @@ const StudentCourseGrade = () => {
           onPaginationModelChange={pageChangeHandler}
           showVerticalCellBorder={true}
           onClickRow={rowClickHandler}
+          sx={{
+            "& .MuiDataGrid-cell": {
+              border: "none"
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "var(--blue-5)"
+            },
+            "& .MuiDataGrid-toolbarContainer": {
+              backgroundColor: "var(--blue-5)"
+            }
+          }}
+          personalSx={true}
         />
       </Grid>
     </Grid>

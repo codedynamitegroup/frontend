@@ -196,11 +196,11 @@ const LecturerCourseExamSubmissions = () => {
       headerName: t("course_lecturer_sub_last_submission_time"),
       width: 150
     },
-    {
-      field: "last_grade_time",
-      headerName: t("course_lecturer_sub_last_grading_time"),
-      width: 150
-    },
+    // {
+    //   field: "last_grade_time",
+    //   headerName: t("course_lecturer_sub_last_grading_time"),
+    //   width: 150
+    // },
     {
       field: "current_final_grade",
       headerName: t("common_final_grade"),
@@ -224,25 +224,28 @@ const LecturerCourseExamSubmissions = () => {
       headerName: t("common_action"),
       width: 200,
       renderCell: (params) => {
-        return (
-          <Box>
-            <Button
-              btnType={BtnType.Primary}
-              onClick={() => {
-                navigate(
-                  routes.lecturer.exam.grading
-                    .replace(":courseId", courseId ?? "")
-                    .replace(":examId", examId ?? "")
-                    .replace(":submissionId", params.row.submission_id)
-                );
-              }}
-              margin='0 0 10px 0'
-              translation-key='course_lecturer_assignment_grading'
-            >
-              {t("course_lecturer_assignment_grading")}
-            </Button>
-          </Box>
-        );
+        if (params.row.submission_status_submitted === "SUBMITTED") {
+          return (
+            <Box>
+              <Button
+                btnType={BtnType.Primary}
+                onClick={() => {
+                  navigate(
+                    routes.lecturer.exam.grading
+                      .replace(":courseId", courseId ?? "")
+                      .replace(":examId", examId ?? "")
+                      .replace(":submissionId", params.row.submission_id)
+                  );
+                }}
+                margin='0 0 10px 0'
+                translation-key='course_lecturer_assignment_grading'
+              >
+                {t("course_lecturer_assignment_grading")}
+              </Button>
+            </Box>
+          );
+        }
+        return null;
       }
     }
   ];
@@ -771,7 +774,7 @@ const LecturerCourseExamSubmissions = () => {
               ))}
             </Stack> */}
           </Grid>
-          <Grid item xs={12} marginTop={3}>
+          {/* <Grid item xs={12} marginTop={3}>
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <LoadButton
                 // loading={isPlagiarismDetectionLoading}
@@ -829,7 +832,7 @@ const LecturerCourseExamSubmissions = () => {
                 </Button>
               </DialogActions>
             </Dialog>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <CustomDataGrid

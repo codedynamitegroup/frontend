@@ -8,15 +8,10 @@
       object-fit: cover;
       height: 100%;
     }
-    .classNameOverlay {
-      font-weight: bold;
-      font-size: 28px;
+    .nameCourseOverlay {
       position: absolute;
-      color: white;
       top: 75%;
       left: 10px;
-      padding: 5px;
-      border-radius: 10px solid;
     }
   }
 }

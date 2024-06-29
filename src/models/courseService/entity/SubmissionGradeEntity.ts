@@ -4,3 +4,10 @@ export interface SubmissionGradeEntity {
   timeCreated: Date;
   timeModified: Date;
 }
+
+export interface GradeSubmission {
+  examSubmissionId: string;
+  questionId: string;
+  grade: number;
+  rightAnswer: string;
+}

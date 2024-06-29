@@ -61,11 +61,19 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
+import CodeExamQuestion from "./components/ExamQuestion/CodeQuestion";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { code } from "@uiw/react-md-editor";
+import { cleanCodeQuestion } from "reduxes/TakeExam/TakeExamCodeQuestion";
 
 const drawerWidth = 370;
 
 export interface QuestionSubmissionMap {
   [key: string]: GetQuestionSubmissionEntity;
+}
+export interface CodeQuestionMap {
+  [key: string]: CodeQuestionEntity;
 }
 
 export default function TakeExam() {
@@ -123,6 +131,7 @@ export default function TakeExam() {
   const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
   const [canStartExam, setCanStartExam] = React.useState(false);
   const [isFinishedFetching, setIsFinishedFetching] = React.useState(false);
+  const [currentCodeQuestionMap, setCurrentCodeQuestionMap] = React.useState<any>({});
 
   const handleEndExam = React.useCallback(
     async (submitTime: string) => {
@@ -186,6 +195,7 @@ export default function TakeExam() {
         userId: auth.loggedUser.userId,
         examStartTime: new Date().toISOString()
       });
+      dispatch(cleanCodeQuestion());
       setEndTime(new Date(response.endTime).getTime());
       // setExamSubmissionId(response.examSubmissionId);
     } catch (error: any) {
@@ -218,6 +228,24 @@ export default function TakeExam() {
       console.log("start error", error);
       if (error.code === 404) setCanStartExam(true);
     }
+  };
+
+  const handleGetCodeQuestionDetail = async (currentQuestionList: any) => {
+    try {
+      const codeQuestionIdList = currentQuestionList
+        .filter((question: any) => question.data.question.qtype === qtype.source_code.code)
+        .map((question: any) => question.data.id);
+
+      if (codeQuestionIdList.length === 0) return;
+
+      const response = await CodeQuestionService.getDetailCodeQuestion(codeQuestionIdList);
+      setCurrentCodeQuestionMap(
+        response.reduce((acc: CodeQuestionMap, codeQuestion: CodeQuestionEntity) => {
+          acc[codeQuestion.id] = codeQuestion;
+          return acc;
+        }, {})
+      );
+    } catch (error: any) {}
   };
 
   const handleSaveQuestionState = React.useCallback(() => {
@@ -258,16 +286,13 @@ export default function TakeExam() {
     const submitTime = new Date(
       new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
     ).toISOString();
-    console.log("saving hihi: ", questionList);
 
-    console.log("auto submitting");
     await handleSaveQuestionState();
     handleEndExam(submitTime);
   }, [handleEndExam, handleSaveQuestionState, questionList]);
 
   const getTimeUntil = React.useCallback(
     (inputTime: any) => {
-      console.log("inputTime", inputTime);
       if (!inputTime) {
         return;
       }
@@ -430,6 +455,7 @@ export default function TakeExam() {
       };
     });
     setCurrentQuestionList(transformList);
+    handleGetCodeQuestionDetail(transformList);
   };
 
   // get current page question list
@@ -721,7 +747,20 @@ export default function TakeExam() {
                                 questionInList.questionData.id === question.data.question.id
                             )}
                           />
-                        ) : null}
+                        ) : (
+                          <CodeExamQuestion
+                            page={questionList.findIndex(
+                              (tempQuestion: any) =>
+                                tempQuestion.questionData.id === question.data.question.id
+                            )}
+                            questionCode={currentCodeQuestionMap[question.data.id]}
+                            questionState={questionList.find(
+                              (questionInList) =>
+                                questionInList.questionData.id === question.data.question.id
+                            )}
+                            questionId={question.data.question.id}
+                          />
+                        )}
                       </Grid>
                       <Grid item xs={12} display={"flex"} justifyContent={"center"}>
                         <Divider
@@ -915,6 +954,8 @@ export default function TakeExam() {
                                   <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
                                 ) : question.questionData.qtype === qtype.true_false.code ? (
                                   <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                ) : question.questionData.qtype === "CODE" ? (
+                                  <CodeRoundedIcon sx={{ width: "15px", height: "15px" }} />
                                 ) : (
                                   <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
                                 )

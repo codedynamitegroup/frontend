@@ -4,26 +4,29 @@ import { SectionEntity } from "models/courseService/entity/SectionEntity";
 interface InitialState {
   isLoading: boolean;
   sections: SectionEntity[];
+  courseId: string | null;
 }
 
 const initialState: InitialState = {
   isLoading: false,
-  sections: []
+  sections: [],
+  courseId: null
 };
 
 const sectionSlice = createSlice({
   name: "section",
   initialState: initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.isLoading = action.payload.isLoading;
+    setLoadingSections: (state, action) => {
+      state.isLoading = action.payload;
     },
     setSections: (state, action) => {
       state.sections = action.payload.sections;
+      state.courseId = action.payload.courseId;
     }
   }
 });
 
-export const { setLoading, setSections } = sectionSlice.actions;
+export const { setLoadingSections, setSections } = sectionSlice.actions;
 
 export default sectionSlice.reducer;

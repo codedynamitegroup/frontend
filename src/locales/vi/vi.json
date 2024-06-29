@@ -1,6 +1,4 @@
 {
-  "common_contact_us": "Liên hệ với chúng tôi",
-  "common_contact_us_description": "Vui lòng điền biểu mẫu dưới đây để liên hệ với chúng tôi.",
   "common_is_blocked": "Tình trạng khóa",
   "common_is_belong_to_organization": "Thuộc tổ chức",
   "common_organization_name": "Tên tổ chức",
@@ -75,6 +73,7 @@
   "common_assignment_guide": "Hướng dẫn nộp bài tập",
   "common_assignment_enter_name": "Nhập tên bài tập",
   "common_course_management": "Quản lý khoá học",
+  "common_course": "Khoá học",
   "common_do_time": "Thời gian làm",
   "common_enter_quan": "Nhập số lượng",
   "common_turn_on": "Bật",
@@ -118,6 +117,7 @@
   "common_logout": "Đăng xuất",
   "common_account_info": "Thông tin tài khoản",
   "common_admin_page": "Trang quản trị viên",
+  "common_organization_page": "Trang tổ chức",
   "common_user_page": "Trang người dùng",
   "common_dashboard": "Trang chủ",
   "common_notification": "Thông báo",
@@ -221,6 +221,18 @@
   "dialog_confirm_delete_shared_solution": "Bạn có chắc muốn xóa bài giải này không?",
   "dialog_confirm_update_problems_title": "Xác nhận cập nhật bài toán",
   "dialog_confirm_update_problems_description": "Bạn có chắc chắn muốn cập nhật bài toán không? Lưu ý rằng bài toán công khai có thể được xem bởi tất cả người dùng trong danh sách bài toán công khai",
+  "dialog_confirm_delete_calendar_event": "Bạn có chắc chắn muốn xóa sự kiện \"{{eventTitle}}\" không?",
+  "calendar_event_update_event_success": "Cập nhật sự kiện thành công",
+  "calendar_event_update_event_fail": "Cập nhật sự kiện thất bại",
+  "calendar_event_create_event_success": "Tạo sự kiện thành công",
+  "calendar_event_create_event_fail": "Tạo sự kiện thất bại",
+  "calendar_event_name_required": "Tên sự kiện không được để trống",
+  "calendar_event_description_required": "Mô tả sự kiện không được để trống",
+  "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
+  "calendar_event_type_required": "Loại sự kiện không được để trống",
+  "calendar_event_course_required": "Khoá học không được để trống",
+
+  "calendar_today": "Hôm nay",
 
   "side_bar_dashboard": "Trang chủ",
   "side_bar_contest_management": "Cuộc thi",
@@ -258,7 +270,7 @@
 
   "header_explore_course": "Khám phá",
   "header_contest": "Cuộc thi",
-  "header_business_contact": "Liên hệ",
+  "header_create_organization": "Tổ chức",
   "header_course": "Khóa học",
   "header_login_button": "Đăng nhập",
   "header_register_button": "Đăng ký",
@@ -403,6 +415,7 @@
   "certificate_not_registered": "Chưa đăng ký",
   "certificate_detail_register_tooltip": "Hãy đăng nhập để có thể đăng ký khóa học này",
   "certificate_detail_chapter_resources": "Bài học của khóa học",
+  "certificate_detail_no_resources": "Khóa học này chưa có bài học nào",
 
   "dashboard_start_title": "Bắt đầu khóa học của bạn",
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",
@@ -778,6 +791,10 @@
   "calendar_event_name_time_no_range": "Không có khoảng thời gian",
   "calendar_event_name_time_till": "Đến khi",
   "calendar_event_name_time_minute": "Khoảng thời gian tính theo phút",
+  "calendar_event_delete_event_success": "Xóa sự kiện thành công",
+  "calendar_event_delete_event_failed": "Xóa sự kiện thất bại",
+  "calendar_event_course_event": "Sự kiện khoá học",
+  "calendar_event_user_event": "Sự kiện người dùng",
 
   "code_management_title": "Quản lý câu hỏi code",
   "side_bar_code_management": "Câu hỏi code",
@@ -1080,9 +1097,20 @@
 
   "update_grade": "Cập nhật điểm",
   "correct_answer": "Đáp án đúng",
+  "update_grade_success": "Cập nhật điểm thành công",
+  "update_grade_fail": "Cập nhật điểm thất bại",
+  "finish_grading": "Hoàn thành chấm điểm",
+  "question_grade": "Điểm của câu hỏi",
+  "exam_grade": "Điểm bài kiểm tra",
+  "exam_grade_success": "Chấm điểm bài kiểm tra thành công",
+  "exam_grade_fail": "Chấm điểm bài kiểm tra thất bại",
+  "exam_notify": "Thông báo",
 
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
   "business_address": "Địa chỉ doanh nghiệp",
-  "business_name": "Tên doanh nghiệp"
+  "business_name": "Tên doanh nghiệp",
+  "business_contact_submit_register_tooltip": "Hãy đăng nhập hoặc đăng ký tài khoản để gửi thông tin của bạn",
+  "business_create_organization": "Tạo tổ chức",
+  "business_create_organization_description": "Vui lòng điền thông tin của tổ chức của bạn"
 }

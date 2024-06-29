@@ -109,7 +109,8 @@ export const API = {
       UPDATE_BY_ID: "/course/assignment/:id",
       DELETE_BY_ID: "/course/assignment/:id",
       INTRO_ATTACHMENT: "/course/assignment/intro-attachment",
-      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/user"
+      GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/grade",
+      GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES: "course/assignment/student-assignment"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",
@@ -154,7 +155,8 @@ export const API = {
       STUDENT_EXAM_SUBMISSION: "/course/exam/:id/student/submission",
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
-      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission"
+      ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission",
+      SET_GRADE_STATUS: "/course/exam/grading/submission/:id"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"
@@ -172,10 +174,17 @@ export const API = {
       DELETE_BY_ID: "/course/question/bank/category/:id",
       CREATE: "/course/question/bank/category/create"
     },
+    EVENT_CALENDAR: {
+      DEFAULT: "/course/calendar-events/query/my-calendar-events",
+      CREATE: "/course/calendar-events/create",
+      DELETE_BY_ID: "/course/calendar-events/:id",
+      UPDATE_BY_ID: "/course/calendar-events/:id"
+    },
     QUESTION_SUBMISSION: {
       SUBMIT_LIST: "/course/question/submit-all",
       SUBMIT_ONE: "/course/question/submit-one",
-      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId"
+      GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId",
+      MARK: "/course/question/mark"
     }
   },
   CODE_ASSESSMENT: {
