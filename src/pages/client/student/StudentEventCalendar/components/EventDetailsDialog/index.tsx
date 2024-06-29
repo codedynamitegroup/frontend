@@ -16,6 +16,7 @@ import JoyButton from "@mui/joy/Button";
 import { routes } from "routes/routes";
 import ReactQuill from "react-quill";
 import { IFullCalendarEvent } from "pages/client/lecturer/LecturerEventCalendar";
+import ParagraphBody from "components/text/ParagraphBody";
 
 interface EventDetailsDialogProps extends DialogProps {
   data: IFullCalendarEvent;
@@ -60,7 +61,10 @@ const EventDetailsDialog = ({
       title={data.title}
       maxHeight={`${0.6 * height}px`}
       titleBackground={data.eventType === NotificationEventTypeEnum.COURSE ? "#FFD3BD" : "#DCE7EB"}
-      actionsDisabled={!data.editable && !data.exam && !data.assignment}
+      actionsDisabled={
+        !data.editable ||
+        (data.editable === true && (data.exam !== undefined || data.assignment !== undefined))
+      }
       confirmText='Edit'
       cancelText='Delete'
       onHandleCancel={onHandleCancel}
@@ -68,7 +72,7 @@ const EventDetailsDialog = ({
         if (openEditEventDialog) openEditEventDialog(data);
       }}
       customActions={
-        (data.exam || data.assignment) && (
+        (data.exam !== undefined || data.assignment !== undefined) && (
           <DialogActions>
             <JoyButton
               onClick={() => {}}
@@ -108,7 +112,12 @@ const EventDetailsDialog = ({
             />
           </Grid>
           <Grid item xs={12} sm={11}>
-            {standardlizeUTCStringToLocaleString(data.start, currentLang)}
+            {data.end
+              ? `${standardlizeUTCStringToLocaleString(data.start, currentLang)} » ${standardlizeUTCStringToLocaleString(
+                  data.end,
+                  currentLang
+                )}`
+              : `${standardlizeUTCStringToLocaleString(data.start, currentLang)}`}
           </Grid>
         </Grid>
 
@@ -131,7 +140,11 @@ const EventDetailsDialog = ({
             />
           </Grid>
           <Grid item xs={12} sm={11}>
-            {data.title}
+            <ParagraphBody>
+              {data.eventType === NotificationEventTypeEnum.COURSE
+                ? t("calendar_event_course_event")
+                : t("calendar_event_user_event")}
+            </ParagraphBody>
           </Grid>
         </Grid>
 
@@ -155,7 +168,14 @@ const EventDetailsDialog = ({
               />
             </Grid>
             <Grid item xs={12} sm={11}>
-              <ReactQuill value={data.description || ""} readOnly={true} theme={"bubble"} />
+              <ReactQuill
+                value={data.description || ""}
+                readOnly={true}
+                theme={"bubble"}
+                style={{
+                  margin: "-12px -15px"
+                }}
+              />
             </Grid>
           </Grid>
         )}
@@ -196,7 +216,20 @@ const EventDetailsDialog = ({
                     );
                 }}
               >
-                {data.course.name || ""}
+                <ParagraphBody
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    color: "var(--blue-3)",
+                    "&:hover": {
+                      textDecoration: "underline",
+                      cursor: "pointer"
+                    }
+                  }}
+                >
+                  {data.course.name || ""}
+                </ParagraphBody>
               </Link>
             </Grid>
           </Grid>

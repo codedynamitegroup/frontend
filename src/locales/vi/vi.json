@@ -792,6 +792,8 @@
   "calendar_event_name_time_minute": "Khoảng thời gian tính theo phút",
   "calendar_event_delete_event_success": "Xóa sự kiện thành công",
   "calendar_event_delete_event_failed": "Xóa sự kiện thất bại",
+  "calendar_event_course_event": "Sự kiện khoá học",
+  "calendar_event_user_event": "Sự kiện người dùng",
 
   "code_management_title": "Quản lý câu hỏi code",
   "side_bar_code_management": "Câu hỏi code",
