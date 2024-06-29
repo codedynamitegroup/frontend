@@ -216,6 +216,7 @@
   "common_cannot_be_blank": "cannot be blank",
   "common_difficulty_level": "Difficulty level",
   "common_users_submitted": "Users submitted",
+  "common_scope": "Scope",
   "common_public": "Public",
   "common_private": "Private",
   "common_max_filter_reach": "Max conditions reached",
