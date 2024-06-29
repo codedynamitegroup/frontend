@@ -12,13 +12,12 @@ import {
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { useForm, Controller } from "react-hook-form";
@@ -26,7 +25,7 @@ import ErrorMessage from "components/text/ErrorMessage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Heading2 from "components/text/Heading2";
-import { PostEssayQuestion } from "models/coreService/entity/QuestionEntity";
+import { PostEssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
@@ -51,6 +50,7 @@ import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDet
 import ModeIcon from "@mui/icons-material/Mode";
 import { Card } from "@mui/joy";
 import { RootState } from "store";
+import { EssayQuestionService } from "services/coreService/QtypeEssayQuestionService";
 
 interface Props {
   courseId?: string;
@@ -262,7 +262,7 @@ const CreateEssayQuestion = (props: Props) => {
     };
     console.log(newEssayQuestion);
 
-    QuestionService.createEssayQuestion(newEssayQuestion)
+    EssayQuestionService.createEssayQuestion(newEssayQuestion)
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);

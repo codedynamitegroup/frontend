@@ -97,6 +97,17 @@ export const routes = {
       take: "/lecturer/courses/:courseId/assignments/exams/:examId/take",
       submitSummary: "/lecturer/courses/:courseId/assignments/exams/:examId/summary",
       edit: "/lecturer/courses/:courseId/assignments/exams/:examId/edit",
+      edit_essay_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/essay-question/:questionId",
+      edit_multi_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/multiple-choice-question/:questionId",
+      edit_true_false_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/true-false-question/:questionId",
+      edit_short_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/short-answer-question/:questionId",
+      edit_code_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/code-question/:questionId",
+
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",

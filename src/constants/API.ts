@@ -65,7 +65,8 @@ export const API = {
       ESSAY_QUESTION: {
         CREATE: "/core/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
-        GET_ALL: "/core/questions/essay-question"
+        GET_ALL: "/core/questions/essay-question",
+        UPDATE: "/core/questions/essay-question"
       },
       MULTIPLE_CHOICE_QUESTION: {
         CREATE: "/core/questions/multichoice-question/create",

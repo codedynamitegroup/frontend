@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
-import { EssayQuestion } from "models/coreService/entity/QuestionEntity";
+import { EssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
 
 import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 import { FileCard } from "@files-ui/react";

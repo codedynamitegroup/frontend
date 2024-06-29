@@ -1,6 +1,5 @@
 import { API } from "constants/API";
 import {
-  PostEssayQuestion,
   PostMultipleChoiceQuestion,
   PostQuestionDetailList,
   PostShortAnswerQuestion,
@@ -23,25 +22,6 @@ export class QuestionService {
       }
     } catch (error: any) {
       console.error("Failed to create short answer question", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
-    }
-  }
-
-  static async createEssayQuestion(essayQuestionData: PostEssayQuestion) {
-    try {
-      const response = await api({
-        baseURL: coreServiceApiUrl,
-        isAuthorization: true
-      }).post(`${API.CORE.QUESTION.ESSAY_QUESTION.CREATE}`, essayQuestionData);
-      if (response.status === 201) {
-        return response.data;
-      }
-    } catch (error: any) {
-      console.error("Failed to create essay question", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

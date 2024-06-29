@@ -30,7 +30,7 @@ interface GetUser {
   firstName: string;
   lastName: string;
 }
-interface GetQuestion {
+export interface GetQuestion {
   id: string;
   organization: GetOrganization;
   difficulty: string;
@@ -44,6 +44,23 @@ interface GetQuestion {
   answers?: AnswerOfQuestion[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PutQuestion {
+  difficulty?: string;
+  name: string;
+  questionText: string;
+  generalFeedback?: string;
+  defaultMark?: number;
+  updatedBy: string;
+  answers: PutAnswer[];
+}
+
+export interface PutAnswer {
+  answerId: string;
+  feedback: string;
+  answer: string;
+  fraction: number;
 }
 
 interface PostAnswer {
@@ -66,33 +83,6 @@ export interface PostShortAnswerQuestion {
   isOrgQuestionBank?: boolean;
   answers: PostAnswer[];
   caseSensitive: boolean;
-}
-
-export interface PostEssayQuestion {
-  organizationId: string;
-  createdBy: string;
-  updatedBy: string;
-  difficulty: string;
-  name: string;
-  questionText: string;
-  generalFeedback: string | null | undefined;
-  defaultMark: number;
-  qType: string;
-  questionBankCategoryId?: string;
-  isOrgQuestionBank?: boolean;
-  responseFormat: string;
-  responseRequired?: number;
-  responseFieldLines: number;
-  attachments: number;
-  attachmentsRequired?: number;
-  graderInfo?: string;
-  graderInfoFormat?: number;
-  responseTemplate?: string;
-  responseTemplateFormat?: number;
-  fileTypesList?: string;
-  minWordLimit: number;
-  maxWordLimit: number;
-  maxBytes?: number;
 }
 
 export interface PostMultipleChoiceQuestion {
@@ -141,25 +131,6 @@ export interface ShortAnswerQuestion {
   id: string;
   question: GetQuestion;
   caseSensitive: boolean;
-}
-
-export interface EssayQuestion {
-  id: string;
-  question: GetQuestion;
-
-  responseFormat: string;
-  responseRequired?: number;
-  responseFieldLines: number;
-  attachments: number;
-  attachmentsRequired?: number;
-  graderInfo?: string;
-  graderInfoFormat?: number;
-  responseTemplate?: string;
-  responseTemplateFormat?: number;
-  fileTypesList?: string;
-  minWordLimit: number;
-  maxWordLimit: number;
-  maxBytes?: number;
 }
 
 export interface PostQuestionDetail {
