@@ -75,7 +75,21 @@ const EventDetailsDialog = ({
         (data.exam !== undefined || data.assignment !== undefined) && (
           <DialogActions>
             <JoyButton
-              onClick={() => {}}
+              onClick={() => {
+                if (data.exam !== undefined && data.course !== undefined) {
+                  navigate(
+                    routes.lecturer.exam.detail
+                      .replace(":courseId", data.course.id || "")
+                      .replace(":examId", data.exam.id)
+                  );
+                } else if (data.assignment !== undefined && data.course !== undefined) {
+                  navigate(
+                    routes.lecturer.assignment.detail
+                      .replace(":courseId", data.course.id || "")
+                      .replace(":assignmentId", data.assignment.id)
+                  );
+                }
+              }}
               variant='plain'
               translation-key='course_assignment_detail_submit'
             >
