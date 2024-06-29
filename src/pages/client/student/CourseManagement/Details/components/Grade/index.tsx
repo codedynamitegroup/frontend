@@ -72,7 +72,9 @@ const StudentCourseGrade = () => {
           type:
             assignment.type === "ASSIGNMENT"
               ? ECourseResourceType.assignment
-              : ECourseResourceType.file,
+              : assignment.type === "EXAM"
+                ? ECourseResourceType.exam
+                : ECourseResourceType.file,
           weight: assignment.maxScore,
           grade: assignment.grade ? assignment.grade : undefined,
           range: assignment.maxScore,
@@ -157,9 +159,11 @@ const StudentCourseGrade = () => {
         <Typography>
           {params.value === ECourseResourceType.assignment
             ? "Bài tập"
-            : params.value === ECourseResourceType.file
-              ? "File"
-              : "URL"}
+            : params.value === ECourseResourceType.exam
+              ? "Bài kiểm tra"
+              : params.value === ECourseResourceType.file
+                ? "File"
+                : "URL"}
         </Typography>
       )
     },

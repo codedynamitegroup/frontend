@@ -205,6 +205,7 @@
   "common_max_score": "Điểm tối đa",
   "common_difficulty_level": "Độ khó",
   "common_users_submitted": "Người dùng đã nộp",
+  "common_scope": "Phạm vi",
   "common_public": "Công khai",
   "common_private": "Cá nhân",
   "common_max_filter_reach": "Bạn đã đạt tối đa số lượng bộ lọc",
@@ -792,6 +793,8 @@
   "calendar_event_name_time_minute": "Khoảng thời gian tính theo phút",
   "calendar_event_delete_event_success": "Xóa sự kiện thành công",
   "calendar_event_delete_event_failed": "Xóa sự kiện thất bại",
+  "calendar_event_course_event": "Sự kiện khoá học",
+  "calendar_event_user_event": "Sự kiện người dùng",
 
   "code_management_title": "Quản lý câu hỏi code",
   "side_bar_code_management": "Câu hỏi code",

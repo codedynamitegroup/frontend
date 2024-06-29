@@ -13,10 +13,13 @@ import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import { QuestionService } from "services/courseService/QuestionService";
 import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
+import TabPanel from "@mui/lab/TabPanel";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
 
 interface Props {}
 
-const LecturerCodeQuestionDetails = memo((props: Props) => {
+const AdminCodeQuestionDetails = (props: Props) => {
   const { questionId } = useParams<{ questionId: string }>();
   const [question, setQuestion] = useState<QuestionEntity>({
     id: "",
@@ -52,8 +55,8 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const handleChange = (_: React.SyntheticEvent, newTab: number) => {
-    if (questionId) navigate(tabs[newTab].replace(":questionId", questionId));
+  const handleChange = (_: React.SyntheticEvent, newTab: string) => {
+    setActiveTab(newTab);
   };
 
   const tabs: string[] = useMemo(() => {
@@ -71,15 +74,8 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
     return !!match;
   };
 
-  const activeTab = useMemo(() => {
-    if (questionId) {
-      const index = tabs.findIndex((it) => activeRoute(it.replace(":questionId", questionId)));
-      if (index === -1) return 0;
-      return index;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, tabs]);
-
+  const [activeTab, setActiveTab] = useState("0");
+  console.log("im here");
   return (
     <>
       <Box>
@@ -87,64 +83,72 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
             <span
               translation-key='code_management_title'
-              onClick={() => navigate(routes.lecturer.code_question.management)}
+              onClick={() => navigate("/admin/code-questions")}
             >
               {t("code_management_title")}
             </span>
-            {">"}
+            {" > "}
             <span
               onClick={() => {
                 if (questionId) navigate(pathname);
               }}
             >
-              {question.name}
+              name
             </span>
           </ParagraphBody>
         </Box>
 
         <Box className={classes.body}>
           <Heading1 fontWeight={"500"}>{question.name}</Heading1>
-          <Box sx={{ border: 1, borderColor: "divider" }}>
-            <Tabs
-              value={activeTab}
-              onChange={handleChange}
-              aria-label='basic tabs example'
-              className={classes.tabs}
-            >
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={
-                  <ParagraphBody translation-key='common_info'>{t("common_info")}</ParagraphBody>
-                }
-                value={0}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={<ParagraphBody>Test cases</ParagraphBody>}
-                value={1}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={
-                  <ParagraphBody translation-key='code_management_detail_stub'>
-                    {t("code_management_detail_stub")}
-                  </ParagraphBody>
-                }
-                value={2}
-              />
-              <Tab
-                sx={{ textTransform: "none" }}
-                label={
-                  <ParagraphBody translation-key='common_language'>
-                    {t("common_language")}
-                  </ParagraphBody>
-                }
-                value={3}
-              />
-            </Tabs>
-          </Box>
-          <Box id={classes.codeQuestionDetailBody}>
-            <Routes>
+          <TabContext value={activeTab}>
+            <Box sx={{ border: 1, borderColor: "divider" }}>
+              <TabList onChange={handleChange}>
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={
+                    <ParagraphBody translation-key='common_info'>{t("common_info")}</ParagraphBody>
+                  }
+                  value='0'
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={<ParagraphBody>Test cases</ParagraphBody>}
+                  value='1'
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={
+                    <ParagraphBody translation-key='code_management_detail_stub'>
+                      {t("code_management_detail_stub")}
+                    </ParagraphBody>
+                  }
+                  value='2'
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  label={
+                    <ParagraphBody translation-key='common_language'>
+                      {t("common_language")}
+                    </ParagraphBody>
+                  }
+                  value='3'
+                />
+              </TabList>
+            </Box>
+            <Box id={classes.codeQuestionDetailBody}>
+              <TabPanel value='0'>
+                <CodeQuestionInformation question={question} />
+              </TabPanel>
+              <TabPanel value='1'>
+                <CodeQuestionTestCases />
+              </TabPanel>
+              <TabPanel value='2'>
+                <CodeQuestionCodeStubs />
+              </TabPanel>
+              <TabPanel value='3'>
+                <CodeQuestionLanguages />
+              </TabPanel>
+              {/* <Routes>
               <Route
                 path={"information"}
                 element={<CodeQuestionInformation question={question} />}
@@ -152,8 +156,9 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
               <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
               <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
               <Route path={"languages"} element={<CodeQuestionLanguages />} />
-            </Routes>
-          </Box>
+            </Routes> */}
+            </Box>
+          </TabContext>
         </Box>
       </Box>
       <Box className={classes.stickyFooterContainer}>
@@ -166,6 +171,6 @@ const LecturerCodeQuestionDetails = memo((props: Props) => {
       </Box>
     </>
   );
-});
+};
 
-export default LecturerCodeQuestionDetails;
+export default AdminCodeQuestionDetails;

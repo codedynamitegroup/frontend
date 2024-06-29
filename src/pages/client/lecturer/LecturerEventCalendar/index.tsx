@@ -53,6 +53,27 @@ export interface ICalendarEventCourse {
   updatedAt: string;
 }
 
+export interface ICalendarEventExam {
+  id: string;
+  courseId: string;
+  courseName: string;
+  name: string;
+  scores: number;
+  maxScores: number;
+  timeOpen: string;
+  timeClose: string;
+  timeLimit: number;
+  intro: string;
+  overdueHanding: string;
+  canRedoQuestions: boolean;
+  maxAttempts: number;
+  shuffleAnswers: boolean;
+  gradeMethod: string;
+  createdAt: string;
+  updatedAt: string;
+  maxPage: number;
+}
+
 export interface IFullCalendarEvent {
   id: string;
   title: string;
@@ -75,8 +96,8 @@ export interface IFullCalendarEvent {
   };
   course?: ICalendarEventCourse;
   editable: boolean;
-  exam?: {};
-  assignment?: {};
+  exam?: ICalendarEventExam;
+  assignment?: any;
   createdAt: string;
 }
 
@@ -231,7 +252,10 @@ const LecturerEventCalendar = () => {
                 editable:
                   value.eventType === NotificationEventTypeEnum.USER
                     ? true
-                    : checkExistTeacherByLoggedUser
+                    : checkExistTeacherByLoggedUser === true &&
+                        (value.exam !== undefined || value.assignment !== undefined)
+                      ? false
+                      : true
               };
             }),
             isLoading: false
