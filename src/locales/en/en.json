@@ -794,6 +794,8 @@
   "calendar_event_name_time_minute": "Time range in minutes",
   "calendar_event_delete_event_success": "Delete event successfully",
   "calendar_event_delete_event_fail": "Delete event failed",
+  "calendar_event_course_event": "Course event",
+  "calendar_event_user_event": "User event",
 
   "code_management_title": "Code question management",
   "side_bar_code_management": "Code question",
