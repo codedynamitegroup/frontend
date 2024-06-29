@@ -45,6 +45,10 @@ import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import Badge from "@mui/joy/Badge";
 import FlagIcon from "@mui/icons-material/Flag";
+import CodeExamQuestion from "./components/ExamQuestion/CodeQuestion";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import CodeIcon from "@mui/icons-material/Code";
 
 const drawerWidth = 370;
 
@@ -104,6 +108,7 @@ export default function StudentReviewExamAttempt() {
       ) || undefined
     );
   }, [submissionData]);
+  const [codeQuestion, setCodeQuestion] = React.useState<CodeQuestionEntity[]>([]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -155,6 +160,8 @@ export default function StudentReviewExamAttempt() {
                 data
               };
             });
+            // Get code question detail
+            handleGetCodeQuestionDetail(transformList);
             setQuestions(transformList);
           })
           .catch((error) => {
@@ -202,6 +209,23 @@ export default function StudentReviewExamAttempt() {
         })
         .finally(() => {});
   }, [submissionId]);
+
+  const handleGetCodeQuestionDetail = async (questions: any[]) => {
+    if (questions.length === 0) return;
+    const codeQuestionIds = questions
+      .filter((question) => question.data.question.qtype === qtype.source_code.code)
+      .map((question) => question.data.id);
+
+    // Get question detail
+    CodeQuestionService.getDetailCodeQuestion(codeQuestionIds)
+      .then((res) => {
+        setCodeQuestion(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {});
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -465,7 +489,18 @@ export default function StudentReviewExamAttempt() {
                                 submittedQuestion.questionId === question.data.question.id
                             )}
                           />
-                        ) : null}
+                        ) : (
+                          <CodeExamQuestion
+                            page={index}
+                            questionCode={codeQuestion.find(
+                              (codeQuestion) => codeQuestion.id === question.data.id
+                            )}
+                            questionState={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
+                          />
+                        )}
                       </Grid>
                       <Grid item xs={12} display={"flex"} justifyContent={"center"}>
                         <Divider
@@ -515,7 +550,19 @@ export default function StudentReviewExamAttempt() {
                       submittedQuestion.questionId === questions[questionPageIndex].data.question.id
                   )}
                 />
-              ) : null}
+              ) : (
+                <CodeExamQuestion
+                  page={questionPageIndex}
+                  questionCode={codeQuestion.find(
+                    (codeQuestion) => codeQuestion.id === questions[questionPageIndex].data.id
+                  )}
+                  questionState={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId ===
+                      questions?.[questionPageIndex]?.data?.question.id
+                  )}
+                />
+              )}
               {isShowAllQuesionsInOnePage !== "0" ? (
                 <Grid container spacing={1}>
                   <Grid item xs={6}></Grid>
@@ -710,8 +757,10 @@ export default function StudentReviewExamAttempt() {
                             <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
                           ) : question.data.question.qtype === qtype.true_false.code ? (
                             <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                          ) : (
+                          ) : question.data.question.qtype === qtype.multiple_choice.code ? (
                             <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
+                          ) : (
+                            <CodeIcon sx={{ width: "15px", height: "15px" }} />
                           )
                         }
                         anchorOrigin={{

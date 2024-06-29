@@ -20,6 +20,9 @@ const StudentCourseGradeAssignment = (props: PropsData) => {
     case ECourseResourceType.assignment:
       resourceImage = images.course.courseAssignment;
       break;
+    case ECourseResourceType.exam:
+      resourceImage = images.course.quizIcon;
+      break;
     case ECourseResourceType.file:
       resourceImage = images.course.courseFile;
       break;

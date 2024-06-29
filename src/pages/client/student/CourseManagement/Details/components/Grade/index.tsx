@@ -15,7 +15,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import useAuth from "hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AssignmentGradeEntity } from "models/courseService/entity/AssignmentGradeEntity";
 import { AllAssignmentGradeEntity } from "models/courseService/entity/AllAssignmentGradeEntity";
 import { useSelector } from "react-redux";
@@ -26,20 +26,41 @@ const StudentCourseGrade = () => {
   const courseState = useSelector((state: RootState) => state.course);
   const { loggedUser } = useAuth();
   const [assignmentList, setAssignmentList] = useState<AllAssignmentGradeEntity | null>(null);
-  const getAssignmentGradeByStudent = async (courseId: string, userId: string) => {
-    try {
-      const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalElement = useMemo(() => assignmentList?.totalItems || 0, [assignmentList?.totalItems]);
+
+  const getAssignmentGradeByStudent = useCallback(
+    async ({
+      search,
+      pageNo = 0,
+      pageSize = 10,
+      courseId,
+      userId
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+      courseId: string;
+      userId: string;
+    }) => {
+      try {
+        const response = await AssignmentService.getAssignmentGradeByStudent(courseId, userId, {
+          search,
+          pageNo,
+          pageSize
+        });
+        setAssignmentList(response);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    if (loggedUser?.userId && courseId) {
-      getAssignmentGradeByStudent(courseId, loggedUser.userId).then((response) => {
-        setAssignmentList(response);
-      });
+    if (loggedUser && loggedUser.userId && courseId) {
+      getAssignmentGradeByStudent({ courseId: courseId, userId: loggedUser.userId });
     }
   }, [courseId, loggedUser]);
 
@@ -51,7 +72,9 @@ const StudentCourseGrade = () => {
           type:
             assignment.type === "ASSIGNMENT"
               ? ECourseResourceType.assignment
-              : ECourseResourceType.file,
+              : assignment.type === "EXAM"
+                ? ECourseResourceType.exam
+                : ECourseResourceType.file,
           weight: assignment.maxScore,
           grade: assignment.grade ? assignment.grade : undefined,
           range: assignment.maxScore,
@@ -136,9 +159,11 @@ const StudentCourseGrade = () => {
         <Typography>
           {params.value === ECourseResourceType.assignment
             ? "Bài tập"
-            : params.value === ECourseResourceType.file
-              ? "File"
-              : "URL"}
+            : params.value === ECourseResourceType.exam
+              ? "Bài kiểm tra"
+              : params.value === ECourseResourceType.file
+                ? "File"
+                : "URL"}
         </Typography>
       )
     },
@@ -209,11 +234,17 @@ const StudentCourseGrade = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    if (courseId) {
+      getAssignmentGradeByStudent({
+        courseId: courseId,
+        userId: loggedUser.userId,
+        pageNo: model.page,
+        pageSize: model.pageSize
+      });
+    }
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);

@@ -63,11 +63,11 @@ export default function Footer() {
           </Heading5>
           <ParagraphBody colorname='--gray-20'>
             <Link
-              to={routes.user.business_contact.root}
+              to={routes.user.organization.root}
               className={classes.textLink}
-              translation-key='footer_link_contact'
+              translation-key='header_create_organization'
             >
-              {t("footer_link_contact")}
+              {t("header_create_organization")}
             </Link>
           </ParagraphBody>
         </Grid>

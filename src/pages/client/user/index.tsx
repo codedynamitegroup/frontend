@@ -1,9 +1,7 @@
 import { Box, Grid } from "@mui/material";
-import { useRef } from "react";
 import classes from "./styles.module.scss";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { Route, Routes } from "react-router";
 import CourseCertificates from "./CourseCertificate";
 import HomePage from "./HomePage";
@@ -51,7 +49,7 @@ const UserHomepage = (props: Props) => {
             <Route path={"contests/:contestId/*"} element={<ContestDetails />} />
             <Route path={"login"} element={<Login />} />
             <Route path={"register"} element={<Register />} />
-            <Route path={"business-contact"} element={<BusinessContact />} />
+            <Route path={"organization"} element={<BusinessContact />} />
             <Route path={"forgot-password"} element={<ForgotPassword />} />
             <Route path={"forgot-password/verify-otp"} element={<VerifyOTP />} />
             <Route path={"forgot-password/reset-password"} element={<ResetPassword />} />
