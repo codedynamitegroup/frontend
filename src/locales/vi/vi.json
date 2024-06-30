@@ -444,6 +444,7 @@
   "organization_information": "Thông tin tổ chức",
   "organization_list_users": "Danh sách người dùng của tổ chức",
   "organization_url": "Đường dẫn tổ chức",
+  "data_synchronization": "Đồng bộ dữ liệu",
 
   "common_updated_at": "Cập nhật lần cuối lúc",
   "common_updated_by": "Cập nhật bởi",
@@ -620,6 +621,10 @@
   "create_successful_assignment": "Tạo bài tập thành công",
   "update_successful_assignment": "Cập nhật bài tập thành công",
   "create_failed_assignment": "Tạo bài tập thất bại",
+
+  "grading_successful_assignment": "Bài tập đã được chấm điểm thành công",
+  "update_grading_successful_assignment": "Cập nhật điểm thành công",
+  "grading_failed_assignment": "Chấm điểm bài tập không thành công",
 
   "common_confirm_deletion": "Xác nhận xóa",
   "assignment_management_delete_assignment": "Bạn có chắc chắn muốn xóa bài tập này?",

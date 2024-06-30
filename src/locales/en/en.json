@@ -452,6 +452,8 @@
   "organization_list_users": "Organization users",
   "organization_url": "Organization Link",
 
+  "data_synchronization": "Data synchronization",
+
   "common_updated_at": "Updated at",
   "common_updated_by": "Updated by",
   "common_is_verified": "Verified status",
@@ -627,6 +629,10 @@
   "create_successful_assignment": "Create successful assignment",
   "update_successful_assignment": "Update successful assignment",
   "create_failed_assignment": "Create failed assignment",
+
+  "grading_successful_assignment": "Successfully graded assignment",
+  "update_grading_successful_assignment": "Update successful grading of assignment",
+  "grading_failed_assignment": "Failed to grade assignment",
 
   "common_confirm_deletion": "Confirm Deletion",
   "assignment_management_delete_assignment": "Are you sure you want to delete this assignment?",

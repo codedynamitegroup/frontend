@@ -37,7 +37,25 @@ import { AssignmentResourceEntity } from "models/courseService/entity/Assignment
 import ParagraphBody from "components/text/ParagraphBody";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import useBoxDimensions from "hooks/useBoxDimensions";
-
+import { SubmissionAssignmentEntity } from "models/courseService/entity/SubmissionAssignmentEntity";
+import { grey } from "@mui/material/colors";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { ArrowDropDown as ArrowDropDownIcon } from "@mui/icons-material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Paper } from "@mui/material";
+import SearchBar from "components/common/search/SearchBar";
+import CustomDataGrid from "components/common/CustomDataGrid";
+import {
+  GridCallbackDetails,
+  GridColDef,
+  GridPaginationModel,
+  GridRowParams,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
+enum EGradingStatus {
+  GRADED,
+  QUEUED,
+  GRADING
+}
 export default function AssignmentGrading() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -58,11 +76,29 @@ export default function AssignmentGrading() {
   const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState(
     submissionId?.toString() ?? ""
   );
+  const [studentSubmissionCurrent, setStudentSubmissionCurrent] =
+    React.useState<SubmissionAssignmentEntity | null>(null);
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = React.useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = React.useState(false);
+
+  const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const [gradingStatus, setGradingStatus] = React.useState(0);
 
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const assignmentState = useSelector((state: RootState) => state.assignment);
   const dispatch = useDispatch();
+
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
+  const totalElements = React.useMemo(
+    () => submissionAssignmentState.totalPages || 0,
+    [submissionAssignmentState.totalPages]
+  );
+
+  const [searchValue, setSearchValue] = React.useState("");
 
   // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
   React.useEffect(() => {
@@ -90,6 +126,10 @@ export default function AssignmentGrading() {
         feedback: assignmentFeedback
       };
       await SubmissionAssignmentService.update(submissionAssignment, submissionId ?? "");
+      setOpenSuccessSnackbar(true);
+      setTimeout(() => {
+        setOpenSuccessSnackbar(false);
+      }, 2000);
     } else {
       const submissionGrade: CreateSubmissionGradeCommand = {
         submissionAssignmentId: submissionId ?? "",
@@ -103,6 +143,10 @@ export default function AssignmentGrading() {
         feedback: assignmentFeedback
       };
       await SubmissionAssignmentService.update(submissionAssignment, submissionId ?? "");
+      setOpenSuccessSnackbar(true);
+      setTimeout(() => {
+        setOpenSuccessSnackbar(false);
+      }, 2000);
     }
 
     if (continueToNext) {
@@ -122,11 +166,24 @@ export default function AssignmentGrading() {
   };
 
   const handleGetSubmissionAssignmentByAssignment = useCallback(
-    async (assignmentId: string) => {
+    async (
+      assignmentId: string,
+      isGraded: Boolean | null = null,
+      search: string = "",
+      pageNo: number = 0,
+      pageSize: number = 10
+    ) => {
       dispatch(setLoading(true));
       try {
-        const response =
-          await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+        const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+          assignmentId,
+          {
+            isGraded,
+            search,
+            pageNo,
+            pageSize
+          }
+        );
         console.log(response);
         dispatch(setSubmissionAssignments(response));
       } catch (error) {
@@ -140,9 +197,18 @@ export default function AssignmentGrading() {
 
   useEffect(() => {
     if (assignmentId) {
-      handleGetSubmissionAssignmentByAssignment(assignmentId);
+      handleGetSubmissionAssignmentByAssignment(
+        assignmentId,
+        gradingStatus === 0 ? null : gradingStatus === 1 ? false : true
+      );
     }
-  }, [assignmentId, handleGetSubmissionAssignmentByAssignment]);
+  }, [
+    assignmentId,
+    handleGetSubmissionAssignmentByAssignment,
+    gradingStatus,
+    searchValue,
+    openChooseStudent
+  ]);
 
   useEffect(() => {
     if (assignmentSubmissionStudent) {
@@ -160,6 +226,7 @@ export default function AssignmentGrading() {
       const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
         assignmentSubmissionStudent
       );
+      setStudentSubmissionCurrent(response);
       const grade = response.submissionGrade?.grade ?? -1;
       setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
       setAssignmentFeedback(response?.feedback ?? "");
@@ -204,6 +271,63 @@ export default function AssignmentGrading() {
   )?.content;
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
+  const dataGridToolbar = { enableToolbar: true };
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    console.log(selectedRowId);
+  };
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    if (assignmentId) {
+      handleGetSubmissionAssignmentByAssignment(
+        assignmentId,
+        gradingStatus === 0 ? null : gradingStatus === 1 ? false : true,
+        searchValue,
+        model.page,
+        model.pageSize
+      );
+    }
+  };
+
+  const rowClickHandler = (params: GridRowParams<any>) => {};
+  const chooseStudentHeading: GridColDef[] = [
+    { field: "email", headerName: "Email", flex: 2 },
+    { field: "name", headerName: "Tên", flex: 1.5 },
+    {
+      field: "status",
+      headerName: "Trạng thái nộp bài",
+      flex: 1,
+      renderCell: (params) =>
+        params.value === "SUBMITTED" ? (
+          <Chip label='Đã nộp' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
+        ) : (
+          <Chip label='Chưa nộp' />
+        )
+    },
+    {
+      field: "statusGrade",
+      headerName: "Trạng thái chấm",
+      flex: 1,
+      renderCell: (params) =>
+        params.value === "GRADED" ? (
+          <Chip label='Đã chấm' sx={{ backgroundColor: "#c7f7d4", color: "#00e676" }} />
+        ) : (
+          <Chip label='Chưa chấm' />
+        )
+    }
+    // {
+    //   field: "action",
+    //   type: "actions",
+    //   headerName: "Hành động",
+    //   getActions: (params) => [
+    //     <IconButton onClick={() => setOpenChooseStudent(false)}>
+    //       <VisibilityIcon />
+    //     </IconButton>
+    //   ]
+    // }
+  ];
 
   return (
     <Grid className={classes.root}>
@@ -272,8 +396,7 @@ export default function AssignmentGrading() {
               }}
               className={classes.gradeContainer}
             >
-              <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
-              <BasicSelect
+              {/* <BasicSelect
                 labelId='select-assignment-submission-student-label'
                 value={assignmentSubmissionStudent}
                 onHandleChange={(value) => setAssignmentSubmissionStudent(value)}
@@ -288,7 +411,120 @@ export default function AssignmentGrading() {
                   )
                 }))}
                 backgroundColor='var(--gray-2)'
-              />
+              /> */}
+              <Box className={classes.drawerFieldContainer}>
+                <TextTitle translation-key='common_student'>{t("common_student")}</TextTitle>
+
+                <Stack
+                  direction={"row"}
+                  justifyContent={"space-between"}
+                  border={1}
+                  borderRadius={1}
+                  padding={1}
+                  sx={{ backgroundColor: "rgb(217, 226, 237)", ":hover": { cursor: "pointer" } }}
+                  onClick={() => setOpenChooseStudent(true)}
+                >
+                  <ParagraphBody>{studentSubmissionCurrent?.user.fullName}</ParagraphBody>{" "}
+                  <ArrowDropDownIcon />
+                </Stack>
+                <Dialog
+                  open={openChooseStudent}
+                  onClose={() => setOpenChooseStudent(false)}
+                  fullWidth={true}
+                  maxWidth='md'
+                >
+                  <DialogTitle>Chọn sinh viên</DialogTitle>
+                  <DialogContent>
+                    <Paper className={classes.containerPaper}>
+                      <Box className={classes.searchWrapper}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={6}>
+                            <SearchBar onSearchClick={() => null} maxWidth='100%' />
+                          </Grid>
+                          <Grid item xs={3}>
+                            <FormControl className={classes.colSearchContainer} size='small'>
+                              <InputLabel id='filter-status'>Lọc</InputLabel>
+                              <Select
+                                labelId='filter-status'
+                                id='colSearchSelect'
+                                value={gradingStatus}
+                                label='Lọc'
+                                onChange={(e) => setGradingStatus(e.target.value as number)}
+                              >
+                                <MenuItem value={0}>Tất cả</MenuItem>
+                                <MenuItem value={1}>Chưa chấm</MenuItem>
+                                <MenuItem value={2}>Đã chấm</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Paper>
+                    <CustomDataGrid
+                      dataList={submissionAssignmentState.submissionAssignments.map(
+                        (item, index) => ({
+                          ...item,
+                          id: item.id,
+                          email: item.user.email,
+                          name: item.user.fullName,
+                          status: item?.submitTime ? "SUBMITTED" : "NOT_SUBMITTED",
+                          statusGrade: item?.submissionGrade ? "GRADED" : "NOT_GRADED"
+                        })
+                      )}
+                      personalSx={true}
+                      sx={{
+                        "& .MuiDataGrid-cell:nth-last-child(n+2)": {
+                          padding: "16px"
+                        },
+                        "& .normal-row:hover": {
+                          cursor: "pointer"
+                        },
+                        "& .disable-row": {
+                          backgroundColor: grey[100]
+                        }
+                      }}
+                      getRowClassName={(params) => {
+                        if (params.row.status === EGradingStatus.GRADING) return "disable-row";
+                        else return "normal-row";
+                      }}
+                      tableHeader={chooseStudentHeading}
+                      onSelectData={rowSelectionHandler}
+                      // visibleColumn={visibleColumnList}
+                      dataGridToolBar={dataGridToolbar}
+                      page={page}
+                      pageSize={pageSize}
+                      totalElement={totalElements}
+                      onPaginationModelChange={pageChangeHandler}
+                      showVerticalCellBorder={true}
+                      getRowHeight={() => "auto"}
+                      onClickRow={(params, event) => {
+                        console.log(params.row, event, "click row");
+
+                        if (params.row.status === "NOT_SUBMITTED") {
+                          setDialogOpen(true);
+                          return;
+                        }
+
+                        setStudentSubmissionCurrent(params.row);
+                        navigate(
+                          routes.lecturer.assignment.grading
+                            .replace(":submissionId", params.row.id)
+                            .replace(":assignmentId", assignmentId || "")
+                            .replace(":courseId", courseId || "")
+                        );
+                        setOpenChooseStudent(false);
+                      }}
+                      // slots={{toolbar:}}
+                      // columnGroupingModel={columnGroupingModelPlus}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    {/* <Button btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(false)}>
+                      Đóng
+                    </Button> */}
+                  </DialogActions>
+                </Dialog>
+              </Box>
               <Box className={classes.drawerFieldContainer}>
                 <TextTitle translation-key='course_lecturer_grading_assignment_type'>
                   {t("course_lecturer_grading_assignment_type")}
@@ -469,6 +705,39 @@ export default function AssignmentGrading() {
           </Alert>
         </Snackbar> */}
       </Box>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        open={openSuccessSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccessSnackbar(false)}
+      >
+        <Alert
+          severity='success'
+          sx={{ width: "100%" }}
+          onClose={() => setOpenSuccessSnackbar(false)}
+        >
+          {studentSubmissionCurrent?.isGraded
+            ? t("update_grading_successful_assignment")
+            : t("grading_successful_assignment")}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        open={openErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenErrorSnackbar(false)}
+      >
+        <Alert severity='error' sx={{ width: "100%" }} onClose={() => setOpenErrorSnackbar(false)}>
+          {t("grading_failed_assignment")}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }
