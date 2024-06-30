@@ -24,6 +24,7 @@ import useAuth from "hooks/useAuth";
 import { Link as RouterLink } from "react-router-dom";
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import Heading5 from "components/text/Heading5";
 
 export default function ProblemTable() {
   const { t } = useTranslation();
@@ -82,20 +83,20 @@ export default function ProblemTable() {
   const renderLevel = (level: QuestionDifficultyEnum) => {
     if (level === QuestionDifficultyEnum.EASY) {
       return (
-        <Heading6 fontWeight={600} colorname={"--green-500"}>
+        <Heading6 fontWeight={500} colorname={"--green-500"}>
           {t("common_easy")}
         </Heading6>
       );
     }
     if (level === QuestionDifficultyEnum.MEDIUM) {
       return (
-        <Heading6 fontWeight={600} colorname={"--orange-5"}>
+        <Heading6 fontWeight={500} colorname={"--orange-5"}>
           {t("common_medium")}
         </Heading6>
       );
     }
     return (
-      <Heading6 fontWeight={600} colorname={"--red-hard"}>
+      <Heading6 fontWeight={500} colorname={"--red-hard"}>
         {t("common_hard")}
       </Heading6>
     );
@@ -133,19 +134,17 @@ export default function ProblemTable() {
                 <TableHead className={classes["table-head"]}>
                   <TableRow>
                     <TableCell align='center' className={classes.status}>
-                      <Heading6 fontWeight={"700"} translation-key='common_status'>
-                        {t("common_status")}
-                      </Heading6>
+                      <Heading5 translation-key='common_status'>{t("common_status")}</Heading5>
                     </TableCell>
                     <TableCell align='left'>
-                      <Heading6 fontWeight={"700"} translation-key='list_problem_problem_name'>
+                      <Heading5 translation-key='list_problem_problem_name'>
                         {t("list_problem_problem_name")}
-                      </Heading6>
+                      </Heading5>
                     </TableCell>
                     <TableCell align='left' className={classes.status}>
-                      <Heading6 fontWeight={"700"} translation-key='common_difficult_level'>
+                      <Heading5 translation-key='common_difficult_level'>
                         {t("common_difficult_level")}
-                      </Heading6>
+                      </Heading5>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -163,7 +162,7 @@ export default function ProblemTable() {
                       >
                         <TableCell align='center'>{row.status}</TableCell>
                         <TableCell className={classes.tableCell}>
-                          <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
+                          <ParagraphBody fontWeight={400} className={classes.linkText}>
                             <Link
                               component={RouterLink}
                               to={routes.user.problem.detail.description.replace(
@@ -175,7 +174,7 @@ export default function ProblemTable() {
                             >
                               {row.name}
                             </Link>
-                          </ParagraphSmall>
+                          </ParagraphBody>
                         </TableCell>
                         <TableCell>{row.level}</TableCell>
                       </TableRow>
