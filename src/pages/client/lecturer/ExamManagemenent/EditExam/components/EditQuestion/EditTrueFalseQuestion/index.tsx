@@ -1,14 +1,13 @@
 import { Box, Container, Grid, Stack, Divider } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { PostMultipleChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { PostMultipleChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
@@ -37,6 +36,7 @@ import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
 import { Card } from "@mui/joy";
 import ParagraphBody from "components/text/ParagraphBody";
 import { RootState } from "store";
+import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
 
 interface Props {
   qtype: String;
@@ -166,7 +166,7 @@ const EditTrueFalseQuestion = (props: Props) => {
     };
     console.log(newQuestion);
 
-    QuestionService.createMultichoiceQuestion(newQuestion)
+    MultichoiceQuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
