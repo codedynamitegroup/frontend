@@ -1,7 +1,7 @@
 import { Box, Grid, Stack, Divider } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { MultiChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { useTranslation } from "react-i18next";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import Sheet from "@mui/joy/Sheet";

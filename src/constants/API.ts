@@ -61,7 +61,8 @@ export const API = {
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
-        GET_ALL: "/core/questions/shortanswer-question"
+        GET_ALL: "/core/questions/shortanswer-question",
+        UPDATE: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
         CREATE: "/core/questions/essay-question/create",
@@ -73,7 +74,8 @@ export const API = {
         CREATE: "/core/questions/multichoice-question/create",
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
-        GET_ALL: "/core/questions/multichoice-question"
+        GET_ALL: "/core/questions/multichoice-question",
+        UPDATE: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
         GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",

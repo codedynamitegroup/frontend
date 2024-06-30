@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useDispatch } from "react-redux";
 import { setAnswered, setFlag } from "reduxes/TakeExam";
-import { ShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { ShortAnswerQuestion } from "models/coreService/entity/ShortAnswerQuestionEntity";
 import { debounce } from "lodash";
 
 interface Props {

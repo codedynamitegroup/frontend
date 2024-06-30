@@ -18,7 +18,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
-import { PostMultipleChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { PostMultipleChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { Helmet } from "react-helmet";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
@@ -42,6 +42,7 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import { Card } from "@mui/joy";
 import { RootState } from "store";
+import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
 
 interface Props {
   qtype: String;
@@ -207,7 +208,7 @@ const EditMultichoiceQuestion = (props: Props) => {
     };
     console.log(newQuestion);
 
-    QuestionService.createMultichoiceQuestion(newQuestion)
+    MultichoiceQuestionService.createMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
