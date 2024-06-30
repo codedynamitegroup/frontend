@@ -283,7 +283,7 @@ const router = createHashRouter(
             />
 
             <Route
-              path={routes.lecturer.question.ai.create}
+              path={routes.lecturer.question_bank.create_question.ai.create}
               element={<AIQuestionCreated />}
               handle={{ crumbName: "default" }}
             />

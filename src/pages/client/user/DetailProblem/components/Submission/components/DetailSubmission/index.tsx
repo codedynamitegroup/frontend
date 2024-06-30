@@ -3,7 +3,6 @@ import i18next from "i18next";
 import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Divider } from "@mui/material";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useRef } from "react";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -17,20 +16,15 @@ import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";
 import LoadingButton from "@mui/lab/LoadingButton";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { useAppSelector } from "hooks";
 import { convert } from "html-to-text";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { kiloByteToMegaByte, roundedNumber } from "utils/number";
-import useAuth from "hooks/useAuth";
-import images from "config/images";
-import { decodeBase64, removeNewLine } from "utils/base64";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import Heading6 from "components/text/Heading6";
 import Heading5 from "components/text/Heading5";
 
 interface Props {
@@ -91,9 +85,6 @@ export default function DetailSolution({
     ref: stickyBackRef
   });
   const [loading, setLoading] = useState(false);
-  const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState<string>("");
-  const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
   const [feedbackContent, setFeedbackContent] = useState<string>(``);
   const [chunckLoading, setChunkLoading] = useState(false);
   const [suggestedCode, setSuggestedCode] = useState<string>("");
@@ -109,7 +100,7 @@ export default function DetailSolution({
 
     try {
       let isFeedback = false;
-      let isSugessted = false;
+      let isSuggestedCode = false;
       let isExplainedCode = false;
 
       for await (const chunk of feedbackCodeByAI(
@@ -119,17 +110,17 @@ export default function DetailSolution({
         if (chunk === "feedback_prompt") {
           isFeedback = true;
           isExplainedCode = false;
-          isSugessted = false;
+          isSuggestedCode = false;
 
           continue;
         } else if (chunk === "suggested_code_prompt") {
           isFeedback = false;
-          isSugessted = true;
+          isSuggestedCode = true;
           isExplainedCode = false;
 
           continue;
         } else if (chunk === "explained_code_prompt") {
-          isSugessted = false;
+          isSuggestedCode = false;
           isFeedback = false;
           isExplainedCode = true;
 
@@ -138,7 +129,7 @@ export default function DetailSolution({
 
         if (isFeedback) {
           setFeedbackContent((prev) => prev + chunk);
-        } else if (isSugessted) {
+        } else if (isSuggestedCode) {
           setSuggestedCode((prev) => prev + chunk);
         } else if (isExplainedCode) {
           setExplainedCode((prev) => prev + chunk);
@@ -418,39 +409,37 @@ export default function DetailSolution({
             </LoadingButton>
           </Box>
           <Box data-color-mode='light'>
-            <MDEditor.Markdown source={"```java\n" + sourceCodeSubmission.source_code} />
+            <MDEditor.Markdown source={"```\n" + sourceCodeSubmission.source_code} />
           </Box>
         </Box>
 
-        {feedbackContent && (
-          <Box className={classes.submissionText}>
-            {feedbackContent && (
+        <Box className={classes.submissionText}>
+          {feedbackContent && (
+            <Box data-color-mode='light'>
+              <MDEditor.Markdown
+                source={feedbackContent.replaceAll("```", "")}
+                className={classes.markdown}
+              />
+            </Box>
+          )}
+          {suggestedCode && (
+            <Box data-color-mode='light'>
+              <MDEditor.Markdown source={"\n" + suggestedCode} />
+            </Box>
+          )}
+          {explainedCode && (
+            <>
               <Box data-color-mode='light'>
-                <MDEditor.Markdown source={feedbackContent} className={classes.markdown} />
+                <MDEditor.Markdown
+                  source={explainedCode.replaceAll("```", "")}
+                  className={classes.markdown}
+                />
               </Box>
-            )}
-            {suggestedCode && (
-              <Box data-color-mode='light'>
-                <MDEditor.Markdown source={"\n" + suggestedCode} />
-              </Box>
-            )}
-            {explainedCode && (
-              <>
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown source={explainedCode} className={classes.markdown} />
-                </Box>
-              </>
-            )}
-          </Box>
-        )}
+            </>
+          )}
+        </Box>
         {chunckLoading && <CircularProgress />}
       </Box>
-      <SnackbarAlert
-        open={openSnackbarAlert}
-        setOpen={setOpenSnackbarAlert}
-        type={alertType}
-        content={alertContent}
-      />
     </Grid>
   );
 }
