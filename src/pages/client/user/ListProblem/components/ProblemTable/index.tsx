@@ -104,7 +104,8 @@ export default function ProblemTable() {
     id: value.id,
     name: value.name,
     status: renderStatus(value.done === true ? 1 : 0),
-    level: renderLevel(value.difficulty)
+    level: renderLevel(value.difficulty),
+    numOfPep: value.numOfPeopleAttend
   }));
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -147,6 +148,11 @@ export default function ProblemTable() {
                         {t("common_difficult_level")}
                       </Heading6>
                     </TableCell>
+                    <TableCell align='left' className={classes.status}>
+                      <Heading6 fontWeight={"700"} translation-key='common_num_of_participants'>
+                        {t("common_num_of_participants")}
+                      </Heading6>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -178,6 +184,7 @@ export default function ProblemTable() {
                           </ParagraphSmall>
                         </TableCell>
                         <TableCell>{row.level}</TableCell>
+                        <TableCell align='center'>{row.numOfPep}</TableCell>
                       </TableRow>
                     ))}
                   {(!data || data.length === 0) && (
