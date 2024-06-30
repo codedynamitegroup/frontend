@@ -4,7 +4,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
@@ -53,7 +53,7 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
-const AIQuestionCreated = (props: Props) => {
+const AICreationQuestion = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
 
@@ -409,4 +409,4 @@ const AIQuestionCreated = (props: Props) => {
   );
 };
 
-export default AIQuestionCreated;
+export default memo(AICreationQuestion);
