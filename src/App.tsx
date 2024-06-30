@@ -16,6 +16,32 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import ScrollToTop from "components/ScrollTop";
+
+const EditEssayQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditEssayQuestion"
+    )
+);
+const EditMultichoiceQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditMultichoiceQuestion"
+    )
+);
+const EditShortAnswerQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditShortAnswerQuestion"
+    )
+);
+const EditTrueFalseQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditTrueFalseQuestion"
+    )
+);
+
 const AssignmentCreated = lazy(
   () => import("pages/client/lecturer/AssignmentManagement/CreateAssigment")
 );
@@ -148,6 +174,23 @@ const router = createHashRouter(
           />
 
           <Route element={<RequireAuth availableRoles={[ERoleName.LECTURER_MOODLE]} />}>
+            <Route
+              path={routes.lecturer.exam.edit_essay_question}
+              element={<EditEssayQuestion qtype={qtype.essay.code} />}
+            />
+            <Route
+              path={routes.lecturer.exam.edit_multi_question}
+              element={<EditMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+            />
+            <Route
+              path={routes.lecturer.exam.edit_short_question}
+              element={<EditShortAnswerQuestion qtype={qtype.short_answer.code} />}
+            />
+            <Route
+              path={routes.lecturer.exam.edit_true_false_question}
+              element={<EditTrueFalseQuestion qtype={qtype.true_false.code} />}
+            />
+
             <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
             <Route path={routes.lecturer.assignment.create} element={<AssignmentCreated />} />
             <Route path={routes.lecturer.assignment.edit} element={<AssignmentUpdated />} />

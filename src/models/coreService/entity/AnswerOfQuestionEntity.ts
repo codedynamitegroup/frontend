@@ -5,3 +5,10 @@ export interface AnswerOfQuestion {
   answer: string;
   fraction: number;
 }
+
+export interface PutAnswer {
+  answerId: string;
+  feedback: string;
+  answer: string;
+  fraction: number;
+}

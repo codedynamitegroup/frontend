@@ -468,7 +468,7 @@
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",
-  "user_detail_certification": "My certifications",
+  "user_detail_completed_certification": "Completed certification",
   "user_detail_non_certification": "You haven't got any certification",
   "user_detail_get_certification": "Get certification now",
   "user_detail_activity_stats": "Activity statistics",

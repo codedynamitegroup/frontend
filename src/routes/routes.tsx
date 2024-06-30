@@ -97,6 +97,17 @@ export const routes = {
       take: "/lecturer/courses/:courseId/assignments/exams/:examId/take",
       submitSummary: "/lecturer/courses/:courseId/assignments/exams/:examId/summary",
       edit: "/lecturer/courses/:courseId/assignments/exams/:examId/edit",
+      edit_essay_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/essay-question/:questionId",
+      edit_multi_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/multiple-choice-question/:questionId",
+      edit_true_false_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/true-false-question/:questionId",
+      edit_short_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/short-answer-question/:questionId",
+      edit_code_question:
+        "/lecturer/courses/:courseId/assignments/exams/:examId/edit/code-question/:questionId",
+
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/:submissionId/grading",
@@ -158,6 +169,7 @@ export const routes = {
         share: "/problems/:problemId/solution/share"
       },
       root: "/problems",
+      root_path: "/problems/*",
       detail: {
         root: "/problems/:problemId/*",
         description: "/problems/:problemId/description",
@@ -167,6 +179,7 @@ export const routes = {
     },
     course_certificate: {
       root: "/certificate-courses",
+      root_path: "/certificate-courses/*",
       detail: {
         root: "/certificate-courses/:courseId/*",
         introduction: "/certificate-courses/:courseId/introduction",
@@ -187,6 +200,7 @@ export const routes = {
     },
     contest: {
       root: "/contests",
+      root_path: "/contests/*",
       detail: {
         root: "/contests/:contestId/*",
         information: "/contests/:contestId/information",

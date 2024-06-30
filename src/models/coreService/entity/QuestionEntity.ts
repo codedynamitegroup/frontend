@@ -30,7 +30,7 @@ interface GetUser {
   firstName: string;
   lastName: string;
 }
-interface GetQuestion {
+export interface GetQuestion {
   id: string;
   organization: GetOrganization;
   difficulty: string;
@@ -46,120 +46,27 @@ interface GetQuestion {
   updatedAt: string;
 }
 
-interface PostAnswer {
+export interface PutQuestion {
+  difficulty?: string;
+  name: string;
+  questionText: string;
+  generalFeedback?: string;
+  defaultMark?: number;
+  updatedBy: string;
+  answers: PutAnswer[];
+}
+
+export interface PutAnswer {
+  answerId: string;
+  feedback: string;
+  answer: string;
+  fraction: number;
+}
+
+export interface PostAnswer {
   feedback: string;
   fraction: number;
   answer: string;
-}
-
-export interface PostShortAnswerQuestion {
-  organizationId: string;
-  createdBy: string;
-  updatedBy: string;
-  difficulty: string;
-  name: string;
-  questionText: string;
-  generalFeedback: string | null | undefined;
-  defaultMark: number;
-  qType: string;
-  questionBankCategoryId?: string;
-  isOrgQuestionBank?: boolean;
-  answers: PostAnswer[];
-  caseSensitive: boolean;
-}
-
-export interface PostEssayQuestion {
-  organizationId: string;
-  createdBy: string;
-  updatedBy: string;
-  difficulty: string;
-  name: string;
-  questionText: string;
-  generalFeedback: string | null | undefined;
-  defaultMark: number;
-  qType: string;
-  questionBankCategoryId?: string;
-  isOrgQuestionBank?: boolean;
-  responseFormat: string;
-  responseRequired?: number;
-  responseFieldLines: number;
-  attachments: number;
-  attachmentsRequired?: number;
-  graderInfo?: string;
-  graderInfoFormat?: number;
-  responseTemplate?: string;
-  responseTemplateFormat?: number;
-  fileTypesList?: string;
-  minWordLimit: number;
-  maxWordLimit: number;
-  maxBytes?: number;
-}
-
-export interface PostMultipleChoiceQuestion {
-  organizationId: string;
-  createdBy: string;
-  updatedBy: string;
-  difficulty: string;
-  name: string;
-  questionText: string;
-  generalFeedback: string | null | undefined;
-  defaultMark: number;
-  qType: string;
-  answers?: PostAnswer[];
-  questionBankCategoryId?: string;
-  isOrgQuestionBank?: boolean;
-  single: boolean;
-  shuffleAnswers?: boolean;
-  correctFeedback?: string;
-  partiallyCorrectFeedback?: string;
-  incorrectFeedback?: string;
-  answerNumbering?: string;
-  showNumCorrect?: number;
-  showStandardInstructions?: string;
-}
-
-export enum MultichoiceNumbering {
-  abc = 1,
-  ABC = 2,
-  n123 = 3
-}
-
-export interface MultiChoiceQuestion {
-  id: string;
-  single: boolean;
-  question: GetQuestion;
-  shuffleAnswers?: boolean | null | undefined;
-  correctFeedback?: string | null | undefined;
-  partiallyCorrectFeedback?: string | null | undefined;
-  incorrectFeedback?: string | null | undefined;
-  answerNumbering?: string | null | undefined;
-  showNumCorrect?: number | null | undefined;
-  showStandardInstructions?: string | null | undefined;
-}
-
-export interface ShortAnswerQuestion {
-  id: string;
-  question: GetQuestion;
-  caseSensitive: boolean;
-}
-
-export interface EssayQuestion {
-  id: string;
-  question: GetQuestion;
-
-  responseFormat: string;
-  responseRequired?: number;
-  responseFieldLines: number;
-  attachments: number;
-  attachmentsRequired?: number;
-  graderInfo?: string;
-  graderInfoFormat?: number;
-  responseTemplate?: string;
-  responseTemplateFormat?: number;
-  fileTypesList?: string;
-  minWordLimit: number;
-  maxWordLimit: number;
-  maxBytes?: number;
 }
 
 export interface PostQuestionDetail {

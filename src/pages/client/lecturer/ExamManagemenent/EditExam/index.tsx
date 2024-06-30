@@ -85,6 +85,7 @@ import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficul
 import { useEffect, useState } from "react";
 import { setExamDetail } from "reduxes/courseService/exam";
 import { di } from "@fullcalendar/core/internal-common";
+import qtype from "utils/constant/Qtype";
 
 const drawerWidth = 400;
 
@@ -358,7 +359,32 @@ export default function ExamEdit() {
         flex: 2,
         minWidth: 150,
         getActions: (params) => [
-          <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            onClick={() => {
+              let navigateString = "";
+
+              if (params.row.qtype === qtype.essay.code) {
+                navigateString = routes.lecturer.exam.edit_essay_question;
+              } else if (params.row.qtype === qtype.multiple_choice.code) {
+                navigateString = routes.lecturer.exam.edit_multi_question;
+              } else if (params.row.qtype === qtype.short_answer.code) {
+                navigateString = routes.lecturer.exam.edit_short_question;
+              } else if (params.row.qtype === qtype.true_false.code) {
+                navigateString = routes.lecturer.exam.edit_true_false_question;
+              } else if (params.row.qtype === qtype.source_code.code) {
+                navigateString = routes.lecturer.exam.edit_code_question;
+              }
+
+              navigate(
+                `${navigateString
+                  .replace(":courseId", courseId ?? "")
+                  .replace(":examId", examId ?? "")
+                  .replace(":questionId", params.row.id ?? "")}`
+              );
+            }}
+          />,
           <GridActionsCellItem
             onClick={() => {
               switch (params.row.qtype) {
@@ -763,7 +789,7 @@ export default function ExamEdit() {
                             .includes(questionCreate.searchQuestion.toLowerCase())
                         )
                         .map((item, index) => ({
-                          stt: index + 1,
+                          stt: item.id,
                           qtypeText:
                             item.qtype === QuestionTypeEnum.SHORT_ANSWER
                               ? "câu hỏi ngắn"
