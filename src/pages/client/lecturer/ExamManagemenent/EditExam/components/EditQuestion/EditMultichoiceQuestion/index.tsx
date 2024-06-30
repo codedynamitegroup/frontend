@@ -11,14 +11,16 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
-import { PostMultipleChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
+import {
+  MultiChoiceQuestion,
+  PutMultipleChoiceQuestion
+} from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { Helmet } from "react-helmet";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
@@ -27,22 +29,25 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import Footer from "components/Footer";
 
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoySelect from "components/common/JoySelect";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
-import { Card } from "@mui/joy";
+import { Button, Card } from "@mui/joy";
 import { RootState } from "store";
 import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import useAuth from "hooks/useAuth";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import qtype from "utils/constant/Qtype";
+import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
+import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 
 interface Props {
   qtype: String;
@@ -54,7 +59,7 @@ interface FormData {
   questionDescription: string;
   defaultScore: string;
   generalDescription?: string;
-  answers: { answer: string; feedback: string; fraction: number }[];
+  answers: { answerId?: string; feedback: string; answer: string; fraction: number }[];
 
   correctFeedback?: string;
   incorrectFeedback?: string;
@@ -66,17 +71,20 @@ interface FormData {
 }
 
 const EditMultichoiceQuestion = (props: Props) => {
+  const { questionId } = useParams<{ questionId: string }>();
+  const { examId } = useParams<{ examId: string }>();
+  const courseId = useParams<{ courseId: string }>().courseId;
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
   const [answerOpen, setAnswerOpen] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
+
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
+  const [multipleChoiceQuestionData, setMultipleChoiceQuestionData] =
+    useState<MultiChoiceQuestion>();
   const navigate = useNavigate();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
@@ -84,6 +92,23 @@ const EditMultichoiceQuestion = (props: Props) => {
   if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
+
+  const handleGetMultichoiceQuestionDetailForm = async (questionId: string) => {
+    try {
+      const questionCommands: PostQuestionDetailList = {
+        questionCommands: [
+          {
+            questionId: questionId,
+            qtype: qtype.multiple_choice.code
+          }
+        ]
+      };
+      const response = await QuestionService.getQuestionDetail(questionCommands);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -114,6 +139,7 @@ const EditMultichoiceQuestion = (props: Props) => {
         .required(t("min_answer_required", { answerNum: 2 }))
         .of(
           yup.object().shape({
+            answerId: yup.string(),
             answer: yup
               .string()
               .required(t("question_answer_content_required"))
@@ -147,7 +173,8 @@ const EditMultichoiceQuestion = (props: Props) => {
     control,
     handleSubmit,
     trigger,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -166,78 +193,77 @@ const EditMultichoiceQuestion = (props: Props) => {
       showNumCorrect: "1"
     }
   });
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "answers"
   });
 
   const location = useLocation();
-  const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
   const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
-  const user: User = useSelector(selectCurrentUser);
+  const user = useAuth().loggedUser;
 
   const submitHandler = async (data: any) => {
-    console.log(data);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
-    const newQuestion: PostMultipleChoiceQuestion = {
-      organizationId: user.organization.organizationId,
-      createdBy: user.userId,
-      updatedBy: user.userId,
-      difficulty: "EASY",
-      name: formSubmittedData.questionName,
-      questionText: formSubmittedData.questionDescription,
-      generalFeedback: formSubmittedData?.generalDescription,
-      defaultMark: Number(formSubmittedData?.defaultScore),
-      qType: "MULTIPLE_CHOICE",
-      answers: formSubmittedData.answers,
-      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
-      isOrgQuestionBank: isOrgQuestionBank,
+    const newQuestion: PutMultipleChoiceQuestion = {
+      qtMultichoiceQuestionId: multipleChoiceQuestionData?.id || "",
       single: Number(formSubmittedData.single) === 1,
       shuffleAnswers: Boolean(Number(formSubmittedData.shuffleAnswer)),
-      showStandardInstructions: formSubmittedData.showInstructions.toString(),
       correctFeedback: formSubmittedData.correctFeedback,
+      partiallyCorrectFeedback: "",
       incorrectFeedback: formSubmittedData.incorrectFeedback,
       answerNumbering: formSubmittedData.numbering,
-      showNumCorrect: Number(formSubmittedData.showNumCorrect)
+      showNumCorrect: Number(formSubmittedData.showNumCorrect),
+      showStandardInstructions: formSubmittedData.showInstructions.toString(),
+
+      question: {
+        difficulty: "EASY",
+        name: formSubmittedData.questionName,
+        questionText: formSubmittedData.questionDescription,
+        generalFeedback: formSubmittedData?.generalDescription,
+        defaultMark: Number(formSubmittedData.defaultScore),
+        updatedBy: user.userId,
+        answers: formSubmittedData.answers
+      }
     };
     console.log(newQuestion);
 
-    MultichoiceQuestionService.createMultichoiceQuestion(newQuestion)
+    MultichoiceQuestionService.updateMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
-        if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
-        setSnackbarType(AlertType.Success);
-        setSnackbarContent(
-          t("question_management_create_question_success", {
-            questionType: t("common_question_type_multi_choice")
-          })
+        // if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
+        dispatch(
+          setSuccessMess(
+            t("question_management_edit_question_success", {
+              questionType: t("common_question_type_multi_choice")
+            })
+          )
         );
       })
       .catch((err) => {
         console.log(err);
-        setSnackbarType(AlertType.Error);
-        setSnackbarContent(
-          t("question_management_create_question_failed", {
-            questionType: t("common_question_type_multi_choice")
-          })
+        dispatch(
+          setErrorMess(
+            t("question_management_edit_question_success", {
+              questionType: t("common_question_type_multi_choice")
+            })
+          )
         );
       })
       .finally(() => {
         setSubmitLoading(false);
-        setOpenSnackbar(true);
-        if (isAdminQuestionBank)
-          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        else if (isOrgAdminQuestionBank)
-          navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        else if (isQuestionBank)
-          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+        // if (isAdminQuestionBank)f
+        //   navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        // else if (isOrgAdminQuestionBank)
+        //   navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        // else if (isQuestionBank)
+        //   navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        // else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       });
   };
 
@@ -250,7 +276,7 @@ const EditMultichoiceQuestion = (props: Props) => {
       console.log(error);
     }
   };
-  const getCouseData = async (courseId: string) => {
+  const getCourseData = async (courseId: string) => {
     try {
       const response = await CourseService.getCourseDetail(courseId);
       setCourseData(response);
@@ -261,11 +287,51 @@ const EditMultichoiceQuestion = (props: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      getCouseData(courseId);
+      if (courseId) getCourseData(courseId);
+
+      if (questionId) {
+        const res = await handleGetMultichoiceQuestionDetailForm(questionId);
+
+        setMultipleChoiceQuestionData(res.questionResponses[0].qtypeMultichoiceQuestion);
+      }
     };
 
     fetchData();
   }, [courseId]);
+
+  useEffect(() => {
+    if (multipleChoiceQuestionData) {
+      setValue("questionName", multipleChoiceQuestionData.question.name);
+      setValue("questionDescription", multipleChoiceQuestionData.question.questionText);
+      setValue("defaultScore", multipleChoiceQuestionData.question.defaultMark.toString());
+      setValue("generalDescription", multipleChoiceQuestionData.question.generalFeedback);
+
+      setValue("correctFeedback", multipleChoiceQuestionData.correctFeedback || "");
+      setValue("incorrectFeedback", multipleChoiceQuestionData.incorrectFeedback || "");
+      setValue("numbering", multipleChoiceQuestionData.answerNumbering || "abc");
+      setValue("single", multipleChoiceQuestionData.single ? "1" : "2");
+      setValue("shuffleAnswer", multipleChoiceQuestionData.shuffleAnswers ? "1" : "0");
+      setValue(
+        "showInstructions",
+        multipleChoiceQuestionData.showStandardInstructions?.toString() || "1"
+      );
+      setValue("showNumCorrect", multipleChoiceQuestionData.showNumCorrect ? "1" : "0");
+
+      const answerOfQuestion = multipleChoiceQuestionData.question.answers?.map(
+        (answer: AnswerOfQuestion) => {
+          return {
+            answerId: answer.id,
+            answer: answer.answer,
+            feedback: answer.feedback,
+            fraction: answer.fraction
+          };
+        }
+      );
+
+      if (answerOfQuestion) replace(answerOfQuestion);
+    }
+  }, [multipleChoiceQuestionData]);
+
   const addAnswer = () => {
     append({ answer: "", feedback: "", fraction: 0 });
   };
@@ -334,535 +400,557 @@ const EditMultichoiceQuestion = (props: Props) => {
           label: t("common_course_management")
         },
         {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId || ""),
           label: courseData?.name
         },
         {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId || ""),
           label: t("common_type_assignment")
         },
         {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
-          label: t("course_lecturer_assignment_create_exam")
+          navLink: routes.lecturer.exam.edit
+            .replace(":courseId", courseId || "")
+            .replace(":examId", examId || ""),
+          label: `${t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
         }
       ];
 
   return (
     <>
-      <SnackbarAlert
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        type={snackbarType}
-        content={snackbarContent}
-      />
       <Helmet>
-        <title>Create multiple choice question</title>
+        <title>Course | Edit multiple choice question</title>
       </Helmet>
 
-      <Grid className={classes.root}>
-        <Header />
-        <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
-          <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
-            <CustomBreadCrumb
-              breadCrumbData={breadCrumbData}
-              lastBreadCrumbLabel={t("create_question_multiple_choice")}
-            />
+      {multipleChoiceQuestionData && (
+        <Grid className={classes.root}>
+          <Header />
 
-            <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-start'>
-              <Box
-                sx={{
-                  borderRadius: "1000px",
-                  backgroundColor: "#FFE0B2",
-                  width: "40px",
-                  height: "40px"
-                }}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-              >
-                <FormatListBulletedIcon
+          <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
+            <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+              <CustomBreadCrumb
+                breadCrumbData={breadCrumbData}
+                lastBreadCrumbLabel={`${t("common_edit")} ${t("common_question_type_with_question_multichoice").toLowerCase()}`}
+              />
+
+              <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-start'>
+                <Box
                   sx={{
-                    color: "#FB8C00"
+                    borderRadius: "1000px",
+                    backgroundColor: "#FFE0B2",
+                    width: "40px",
+                    height: "40px"
                   }}
-                />
-              </Box>
-              <Heading2
-                translation-key={["common_add", "common_question_type_with_question_multichoice"]}
-              >
-                {t("common_add").toUpperCase()}{" "}
-                {t("common_question_type_with_question_multichoice").toUpperCase()}
-              </Heading2>
-            </Stack>
-
-            <Box className={classes.formBody}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Card
-                    variant='soft'
-                    color='primary'
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <FormatListBulletedIcon
                     sx={{
-                      padding: "10px"
+                      color: "#FB8C00"
                     }}
-                  >
-                    <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
-                      {i18next.t("common_general").toUpperCase()}
-                    </ParagraphBody>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={12}>
-                  <Grid container spacing={3}>
-                    {/* Question name */}
-                    <Grid item xs={12} md={6}>
-                      <Controller
-                        defaultValue=''
-                        control={control}
-                        name='questionName'
-                        render={({ field: { ref, ...field } }) => (
-                          <InputTextFieldColumn
-                            useDefaultTitleStyle
-                            error={Boolean(errors?.questionName)}
-                            errorMessage={errors.questionName?.message}
-                            title={`${t("exam_management_create_question_name")}`}
-                            type='text'
-                            placeholder={t("exam_management_create_question_name")}
-                            titleRequired={true}
-                            translation-key='exam_management_create_question_name'
-                            inputRef={ref}
-                            {...field}
-                          />
-                        )}
-                      />
-                    </Grid>
-
-                    {/* Default Score */}
-                    <Grid item xs={12} md={6}>
-                      <Controller
-                        defaultValue={"0"}
-                        control={control}
-                        name='defaultScore'
-                        render={({ field: { ref, ...field } }) => (
-                          <InputTextFieldColumn
-                            useDefaultTitleStyle
-                            inputRef={ref}
-                            titleRequired={true}
-                            error={Boolean(errors?.defaultScore)}
-                            errorMessage={errors.defaultScore?.message}
-                            title={`${t("question_management_default_score")}`}
-                            type='text'
-                            placeholder={t("question_management_default_score")}
-                            required
-                            translation-key={[
-                              "question_management_default_score",
-                              "question_default_score_description"
-                            ]}
-                            tooltipDescription={t("question_default_score_description")}
-                            {...field}
-                          />
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={12}>
-                  <Grid container spacing={3}>
-                    {/* Question description */}
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        translation-key='exam_management_create_question_description'
-                        title={`${t("exam_management_create_question_description")} `}
-                        titleRequired
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} className={classes.textEditor}>
-                          <Controller
-                            defaultValue=''
-                            control={control}
-                            name='questionDescription'
-                            render={({ field }) => (
-                              <TextEditor
-                                submitCount={submitCount}
-                                title={t("exam_management_create_question_description")}
-                                openDialog
-                                roundedBorder={true}
-                                error={Boolean(errors?.questionDescription)}
-                                placeholder={`${t("question_management_enter_question_description")}...`}
-                                required
-                                translation-key='question_management_enter_question_description'
-                                {...field}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          {Boolean(errors?.questionDescription) && (
-                            <ErrorMessage>{errors.questionDescription?.message}</ErrorMessage>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-
-                    {/* General feedback */}
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        translation-key='question_management_general_comment'
-                        title={`${t("question_management_general_comment")} `}
-                        optional
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} className={classes.textEditor}>
-                          <Controller
-                            defaultValue=''
-                            control={control}
-                            name='generalDescription'
-                            render={({ field }) => (
-                              <TextEditor
-                                title={t("question_management_general_comment")}
-                                openDialog
-                                error={Boolean(errors?.generalDescription)}
-                                roundedBorder={true}
-                                placeholder={`${t("question_management_enter_general_comment")}...`}
-                                translation-key='question_management_enter_general_comment'
-                                {...field}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}></Grid>
-                        <Grid item xs={12} md={12}>
-                          {Boolean(errors?.generalDescription) && (
-                            <ErrorMessage marginBottom={"10px"}>
-                              {errors.generalDescription?.message}
-                            </ErrorMessage>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Card
-                    variant='soft'
-                    color='primary'
-                    sx={{
-                      padding: "10px"
-                    }}
-                  >
-                    <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
-                      {i18next.t("common_detail").toUpperCase()}
-                    </ParagraphBody>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={12}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        optional
-                        translation-key='question_multiple_choice_correct_feedback'
-                        title={t("question_multiple_choice_correct_feedback")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} className={classes.textEditor}>
-                          <Controller
-                            defaultValue=''
-                            control={control}
-                            name='correctFeedback'
-                            render={({ field }) => (
-                              <TextEditor
-                                openDialog
-                                title={t("question_multiple_choice_correct_feedback")}
-                                roundedBorder={true}
-                                error={Boolean(errors?.correctFeedback)}
-                                placeholder={`${t("question_multiple_choice_enter_correct_feedback")}...`}
-                                translation-key='question_multiple_choice_enter_correct_feedback'
-                                {...field}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          {Boolean(errors?.correctFeedback) && (
-                            <ErrorMessage>{errors.correctFeedback?.message}</ErrorMessage>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        optional
-                        translation-key='question_multiple_choice_incorrect_feedback'
-                        title={t("question_multiple_choice_incorrect_feedback")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} className={classes.textEditor}>
-                          <Controller
-                            defaultValue=''
-                            control={control}
-                            name='incorrectFeedback'
-                            render={({ field }) => (
-                              <TextEditor
-                                openDialog
-                                title={t("question_multiple_choice_incorrect_feedback")}
-                                roundedBorder={true}
-                                error={Boolean(errors?.correctFeedback)}
-                                placeholder={`${t("question_multiple_choice_enter_incorrect_feedback")}...`}
-                                translation-key='question_multiple_choice_enter_incorrect_feedback'
-                                {...field}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <></>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          {Boolean(errors?.incorrectFeedback) && (
-                            <ErrorMessage>{errors.incorrectFeedback?.message}</ErrorMessage>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12} md={12}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        title={t("question_multiple_choice_numbering")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Controller
-                        name='numbering'
-                        control={control}
-                        defaultValue='abc'
-                        render={({ field: { onChange, value } }) => (
-                          <JoySelect value={value} onChange={onChange} options={numberingOptions} />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        title={t("question_management_scramble")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Controller
-                        name='shuffleAnswer'
-                        control={control}
-                        defaultValue={"1"}
-                        render={({ field: { onChange, value } }) => (
-                          <JoyRadioGroup
-                            value={value}
-                            onChange={onChange}
-                            values={shuffleAnswerOptions}
-                            orientation='horizontal'
-                            size='md'
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        title={t("question_management_one_or_many")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Controller
-                        name='single'
-                        control={control}
-                        defaultValue={"1"}
-                        render={({ field: { onChange, value } }) => (
-                          <JoySelect value={value} onChange={onChange} options={singleOptions} />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        title={t("question_multiple_choice_show_instructions")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Controller
-                        name='showInstructions'
-                        control={control}
-                        defaultValue={"1"}
-                        render={({ field: { onChange, value } }) => (
-                          <JoyRadioGroup
-                            value={value}
-                            onChange={onChange}
-                            values={showInstructionsOptions}
-                            orientation='horizontal'
-                            size='md'
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6} />
-
-                    <Grid item xs={12} md={6}>
-                      <TitleWithInfoTip
-                        title={t("question_multiple_show_num_correct")}
-                        fontSize='12px'
-                        color='var(--gray-60)'
-                        gutterBottom
-                        fontWeight='600'
-                      />
-                      <Controller
-                        name='showNumCorrect'
-                        control={control}
-                        defaultValue={"1"}
-                        render={({ field: { onChange, value } }) => (
-                          <JoyRadioGroup
-                            value={value}
-                            onChange={onChange}
-                            values={showNumCorrectOptions}
-                            orientation='horizontal'
-                            size='md'
-                          />
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <div>
-                <ListItemButton
-                  onClick={() => setAnswerOpen(!answerOpen)}
-                  sx={{ paddingX: 0, marginBottom: "30px" }}
+                  />
+                </Box>
+                <Heading2
+                  translation-key={[
+                    "common_edit",
+                    "common_question_type_with_question_multichoice"
+                  ]}
                 >
-                  <Grid container alignItems={"center"} columns={12}>
-                    <Grid item xs={12}>
-                      <Card
-                        variant='soft'
-                        color='primary'
-                        sx={{
-                          padding: "10px",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          flexDirection: "row"
-                        }}
-                        translation-key='question_management_answer'
-                      >
-                        <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
-                          {t("question_management_answer").toUpperCase()}
-                          {Boolean(errors?.answers) && (
-                            <ErrorMessage>
-                              {errors.answers?.message || errors.answers?.root?.message}
-                            </ErrorMessage>
-                          )}
-                        </ParagraphBody>
-
-                        {answerOpen ? <ExpandLess /> : <ExpandMore />}
-                      </Card>
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-
-                <Collapse in={answerOpen} timeout='auto' unmountOnExit>
-                  <Stack spacing={{ xs: 4 }} useFlexGap>
-                    {fields.map((field, index) => (
-                      <AnswerEditor
-                        key={field.id}
-                        answerNumber={index}
-                        qtype={props.qtype}
-                        {...{ control, index, field, remove, errors }}
-                      />
-                    ))}
-
-                    <Grid container justifyContent={"center"}>
-                      <JoyButton
-                        translation-key='question_answer_add_answer'
-                        onClick={addAnswer}
-                        variant='soft'
-                        startDecorator={<AddIcon />}
-                        sx={{ width: "300px" }}
-                      >
-                        {t("question_answer_add_answer")}
-                      </JoyButton>
-                    </Grid>
-                  </Stack>
-                </Collapse>
-              </div>
-              <Divider />
-              <Stack spacing={{ xs: 2 }} direction={"row"} justifyContent={"center"}>
-                <JoyButton
-                  loading={submitLoading}
-                  variant='solid'
-                  type='submit'
-                  translation-key='question_management_create_question'
-                >
-                  {t("question_management_create_question")}
-                </JoyButton>
-                <JoyButton
-                  variant='outlined'
-                  translation-key='common_cancel'
-                  onClick={() => {
-                    if (isQuestionBank)
-                      navigate(
-                        routes.lecturer.question_bank.detail.replace(
-                          ":categoryId",
-                          categoryId ?? ""
-                        )
-                      );
-                    else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
-                  }}
-                >
-                  {t("common_cancel")}
-                </JoyButton>
+                  {t("common_edit").toUpperCase()}{" "}
+                  {t("common_question_type_with_question_multichoice").toUpperCase()}
+                </Heading2>
               </Stack>
-            </Box>
-          </Container>
-        </form>
-        <Footer />
-      </Grid>
-      <Box className={classes.stickyFooterContainer}>
-        <Box className={classes.stickyFooterItem}></Box>
-      </Box>
+              <Button
+                onClick={() => {
+                  navigate(
+                    routes.lecturer.exam.edit
+                      .replace(":courseId", courseId || "")
+                      .replace(":examId", examId || "")
+                  );
+                }}
+                startDecorator={<ChevronLeftIcon fontSize='small' />}
+                color='neutral'
+                variant='soft'
+                size='md'
+                sx={{ width: "fit-content", marginTop: "20px", marginLeft: "7px" }}
+              >
+                {t("common_back")}
+              </Button>
+              <Box className={classes.formBody}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Card
+                      variant='soft'
+                      color='primary'
+                      sx={{
+                        padding: "10px"
+                      }}
+                    >
+                      <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                        {i18next.t("common_general").toUpperCase()}
+                      </ParagraphBody>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Grid container spacing={3}>
+                      {/* Question name */}
+                      <Grid item xs={12} md={6}>
+                        <Controller
+                          defaultValue=''
+                          control={control}
+                          name='questionName'
+                          render={({ field: { ref, ...field } }) => (
+                            <InputTextFieldColumn
+                              useDefaultTitleStyle
+                              error={Boolean(errors?.questionName)}
+                              errorMessage={errors.questionName?.message}
+                              title={`${t("exam_management_create_question_name")}`}
+                              type='text'
+                              placeholder={t("exam_management_create_question_name")}
+                              titleRequired={true}
+                              translation-key='exam_management_create_question_name'
+                              inputRef={ref}
+                              {...field}
+                            />
+                          )}
+                        />
+                      </Grid>
+
+                      {/* Default Score */}
+                      <Grid item xs={12} md={6}>
+                        <Controller
+                          defaultValue={"0"}
+                          control={control}
+                          name='defaultScore'
+                          render={({ field: { ref, ...field } }) => (
+                            <InputTextFieldColumn
+                              useDefaultTitleStyle
+                              inputRef={ref}
+                              titleRequired={true}
+                              error={Boolean(errors?.defaultScore)}
+                              errorMessage={errors.defaultScore?.message}
+                              title={`${t("question_management_default_score")}`}
+                              type='text'
+                              placeholder={t("question_management_default_score")}
+                              required
+                              translation-key={[
+                                "question_management_default_score",
+                                "question_default_score_description"
+                              ]}
+                              tooltipDescription={t("question_default_score_description")}
+                              {...field}
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Grid container spacing={3}>
+                      {/* Question description */}
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          translation-key='exam_management_create_question_description'
+                          title={`${t("exam_management_create_question_description")} `}
+                          titleRequired
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} md={12} className={classes.textEditor}>
+                            <Controller
+                              defaultValue=''
+                              control={control}
+                              name='questionDescription'
+                              render={({ field }) => (
+                                <TextEditor
+                                  submitCount={submitCount}
+                                  title={t("exam_management_create_question_description")}
+                                  openDialog
+                                  roundedBorder={true}
+                                  error={Boolean(errors?.questionDescription)}
+                                  placeholder={`${t("question_management_enter_question_description")}...`}
+                                  required
+                                  translation-key='question_management_enter_question_description'
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            {Boolean(errors?.questionDescription) && (
+                              <ErrorMessage>{errors.questionDescription?.message}</ErrorMessage>
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+
+                      {/* General feedback */}
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          translation-key='question_management_general_comment'
+                          title={`${t("question_management_general_comment")} `}
+                          optional
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} md={12} className={classes.textEditor}>
+                            <Controller
+                              defaultValue=''
+                              control={control}
+                              name='generalDescription'
+                              render={({ field }) => (
+                                <TextEditor
+                                  title={t("question_management_general_comment")}
+                                  openDialog
+                                  error={Boolean(errors?.generalDescription)}
+                                  roundedBorder={true}
+                                  placeholder={`${t("question_management_enter_general_comment")}...`}
+                                  translation-key='question_management_enter_general_comment'
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}></Grid>
+                          <Grid item xs={12} md={12}>
+                            {Boolean(errors?.generalDescription) && (
+                              <ErrorMessage marginBottom={"10px"}>
+                                {errors.generalDescription?.message}
+                              </ErrorMessage>
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Card
+                      variant='soft'
+                      color='primary'
+                      sx={{
+                        padding: "10px"
+                      }}
+                    >
+                      <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                        {i18next.t("common_detail").toUpperCase()}
+                      </ParagraphBody>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          optional
+                          translation-key='question_multiple_choice_correct_feedback'
+                          title={t("question_multiple_choice_correct_feedback")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} md={12} className={classes.textEditor}>
+                            <Controller
+                              defaultValue=''
+                              control={control}
+                              name='correctFeedback'
+                              render={({ field }) => (
+                                <TextEditor
+                                  openDialog
+                                  title={t("question_multiple_choice_correct_feedback")}
+                                  roundedBorder={true}
+                                  error={Boolean(errors?.correctFeedback)}
+                                  placeholder={`${t("question_multiple_choice_enter_correct_feedback")}...`}
+                                  translation-key='question_multiple_choice_enter_correct_feedback'
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            {Boolean(errors?.correctFeedback) && (
+                              <ErrorMessage>{errors.correctFeedback?.message}</ErrorMessage>
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          optional
+                          translation-key='question_multiple_choice_incorrect_feedback'
+                          title={t("question_multiple_choice_incorrect_feedback")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} md={12} className={classes.textEditor}>
+                            <Controller
+                              defaultValue=''
+                              control={control}
+                              name='incorrectFeedback'
+                              render={({ field }) => (
+                                <TextEditor
+                                  openDialog
+                                  title={t("question_multiple_choice_incorrect_feedback")}
+                                  roundedBorder={true}
+                                  error={Boolean(errors?.correctFeedback)}
+                                  placeholder={`${t("question_multiple_choice_enter_incorrect_feedback")}...`}
+                                  translation-key='question_multiple_choice_enter_incorrect_feedback'
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            <></>
+                          </Grid>
+                          <Grid item xs={12} md={12}>
+                            {Boolean(errors?.incorrectFeedback) && (
+                              <ErrorMessage>{errors.incorrectFeedback?.message}</ErrorMessage>
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item xs={12} md={12}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          title={t("question_multiple_choice_numbering")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Controller
+                          name='numbering'
+                          control={control}
+                          defaultValue='abc'
+                          render={({ field: { onChange, value } }) => (
+                            <JoySelect
+                              value={value}
+                              onChange={onChange}
+                              options={numberingOptions}
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          title={t("question_management_scramble")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Controller
+                          name='shuffleAnswer'
+                          control={control}
+                          defaultValue={"1"}
+                          render={({ field: { onChange, value } }) => (
+                            <JoyRadioGroup
+                              value={value}
+                              onChange={onChange}
+                              values={shuffleAnswerOptions}
+                              orientation='horizontal'
+                              size='md'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          title={t("question_management_one_or_many")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Controller
+                          name='single'
+                          control={control}
+                          defaultValue={"1"}
+                          render={({ field: { onChange, value } }) => (
+                            <JoySelect value={value} onChange={onChange} options={singleOptions} />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          title={t("question_multiple_choice_show_instructions")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Controller
+                          name='showInstructions'
+                          control={control}
+                          defaultValue={"1"}
+                          render={({ field: { onChange, value } }) => (
+                            <JoyRadioGroup
+                              value={value}
+                              onChange={onChange}
+                              values={showInstructionsOptions}
+                              orientation='horizontal'
+                              size='md'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6} />
+
+                      <Grid item xs={12} md={6}>
+                        <TitleWithInfoTip
+                          title={t("question_multiple_show_num_correct")}
+                          fontSize='12px'
+                          color='var(--gray-60)'
+                          gutterBottom
+                          fontWeight='600'
+                        />
+                        <Controller
+                          name='showNumCorrect'
+                          control={control}
+                          defaultValue={"1"}
+                          render={({ field: { onChange, value } }) => (
+                            <JoyRadioGroup
+                              value={value}
+                              onChange={onChange}
+                              values={showNumCorrectOptions}
+                              orientation='horizontal'
+                              size='md'
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <div>
+                  <ListItemButton
+                    onClick={() => setAnswerOpen(!answerOpen)}
+                    sx={{ paddingX: 0, marginBottom: "30px" }}
+                  >
+                    <Grid container alignItems={"center"} columns={12}>
+                      <Grid item xs={12}>
+                        <Card
+                          variant='soft'
+                          color='primary'
+                          sx={{
+                            padding: "10px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            flexDirection: "row"
+                          }}
+                          translation-key='question_management_answer'
+                        >
+                          <ParagraphBody fontWeight={"600"} colorname='--blue-2'>
+                            {t("question_management_answer").toUpperCase()}
+                            {Boolean(errors?.answers) && (
+                              <ErrorMessage>
+                                {errors.answers?.message || errors.answers?.root?.message}
+                              </ErrorMessage>
+                            )}
+                          </ParagraphBody>
+
+                          {answerOpen ? <ExpandLess /> : <ExpandMore />}
+                        </Card>
+                      </Grid>
+                    </Grid>
+                  </ListItemButton>
+
+                  <Collapse in={answerOpen} timeout='auto' unmountOnExit>
+                    <Stack spacing={{ xs: 4 }} useFlexGap>
+                      {fields.map((field, index) => (
+                        <AnswerEditor
+                          key={field.id}
+                          answerNumber={index}
+                          qtype={props.qtype}
+                          {...{ control, index, field, remove, errors }}
+                        />
+                      ))}
+
+                      <Grid container justifyContent={"center"}>
+                        <JoyButton
+                          translation-key='question_answer_add_answer'
+                          onClick={addAnswer}
+                          variant='soft'
+                          startDecorator={<AddIcon />}
+                          sx={{ width: "300px" }}
+                        >
+                          {t("question_answer_add_answer")}
+                        </JoyButton>
+                      </Grid>
+                    </Stack>
+                  </Collapse>
+                </div>
+                <Divider />
+                <Stack spacing={{ xs: 2 }} direction={"row"} justifyContent={"center"}>
+                  <JoyButton
+                    loading={submitLoading}
+                    variant='solid'
+                    type='submit'
+                    translation-key='common_save'
+                  >
+                    {t("common_save")}
+                  </JoyButton>
+                  <JoyButton
+                    variant='outlined'
+                    translation-key='common_cancel'
+                    onClick={() => {
+                      if (isQuestionBank)
+                        navigate(
+                          routes.lecturer.question_bank.detail.replace(
+                            ":categoryId",
+                            categoryId ?? ""
+                          )
+                        );
+                      else
+                        navigate(
+                          routes.lecturer.exam.edit
+                            .replace(":courseId", courseId || "")
+                            .replace(":examId", examId || "")
+                        );
+                    }}
+                  >
+                    {t("common_cancel")}
+                  </JoyButton>
+                </Stack>
+              </Box>
+            </Container>
+          </form>
+          <Footer />
+        </Grid>
+      )}
     </>
   );
 };

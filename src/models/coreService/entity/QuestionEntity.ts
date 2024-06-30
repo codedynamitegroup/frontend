@@ -57,7 +57,7 @@ export interface PutQuestion {
 }
 
 export interface PutAnswer {
-  answerId: string;
+  answerId?: string;
   feedback: string;
   answer: string;
   fraction: number;
