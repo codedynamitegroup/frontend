@@ -34,6 +34,7 @@ import OrganizationManagement from "./OrganizationManagement/OrganizationManagem
 import CreateOrganization from "./OrganizationManagement/CreateOrganization";
 import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
 import UpdateCertificateCourse from "./CertificateCourseManagement/UpdateCertificateCourse";
+import AdminCodeQuestionDetails from "./CodeQuestionManagement/Details";
 
 type Props = {};
 
@@ -109,6 +110,7 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
             <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
+            <Route path='code-questions/detail/:id' element={<AdminCodeQuestionDetails />} />
             <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
           </Routes>
         </Box>

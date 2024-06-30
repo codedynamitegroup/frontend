@@ -1,7 +1,9 @@
-import { Box, Card, Divider, Grid } from "@mui/material";
+import { Box, Divider, Grid, InputLabel, Pagination, Stack } from "@mui/material";
+import { Card } from "@mui/joy";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
-import TableTemplate from "components/common/table/TableTemplate";
+import { PaginationList } from "models/codeAssessmentService/entity/PaginationList";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading1 from "components/text/Heading1";
@@ -30,26 +32,97 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import React from "react";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
-import { setCodeQuestions } from "reduxes/coreService/CodeQuestion";
 import ParagraphBody from "components/text/ParagraphBody";
 import { setSuccessMess } from "reduxes/AppStatus";
-enum FilterValue {
+import BasicSelect from "components/common/select/BasicSelect";
+import { Controller, useForm } from "react-hook-form";
+import { AddCircleRounded } from "@mui/icons-material";
+import AutoSearchBar from "components/common/search/AutoSearchBar";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+enum FilterDifficultValue {
   ALL = "ALL",
   EASY = "EASY",
   MEDIUM = "MEDIUM",
   HARD = "HARD"
 }
+enum FilterScopeValue {
+  ALL = "ALL",
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC"
+}
+type SearchCodeQuestionForm = {
+  scope: FilterScopeValue;
+  difficultLevel: FilterDifficultValue;
+  search: string;
+};
 const AdminCodeQuestionManagement = () => {
   const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
   const [searchText, setSearchText] = useState("");
-  const codeQuestionState = useSelector((state: RootState) => state.codeQuestion);
+  const [codeQuestions, setCodeQuestions] = useState<CodeQuestionEntity[]>([]);
+  const [totalItem, setTotalItem] = useState(0);
+  const [isCodeQuestionLoading, setIsCodeQuestionLoading] = useState(false);
   const searchHandle = async (searchText: string) => {
     setSearchText(searchText);
   };
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const { control: searchControl, watch: searchWatch } = useForm<SearchCodeQuestionForm>({
+    defaultValues: {
+      scope: FilterScopeValue.ALL,
+      difficultLevel: FilterDifficultValue.ALL,
+      search: ""
+    }
+  });
+  const mapFilterScopeValueToIsPublic = (value: FilterScopeValue): boolean | null => {
+    if (value === FilterScopeValue.ALL) return null;
+    if (value === FilterScopeValue.PRIVATE) return false;
+    return true;
+  };
+  const mapFilterDifficultValueToQuestionDifficultyEnum = (
+    value: FilterDifficultValue
+  ): QuestionDifficultyEnum | null => {
+    if (value === FilterDifficultValue.ALL) return null;
+    if (value === FilterDifficultValue.EASY) return QuestionDifficultyEnum.EASY;
+    if (value === FilterDifficultValue.HARD) return QuestionDifficultyEnum.HARD;
+    return QuestionDifficultyEnum.MEDIUM;
+  };
+  const watchAll = searchWatch();
+  const fetchCodeQuestions = useCallback(() => {
+    setIsCodeQuestionLoading(true);
+    CodeQuestionService.getAdminCodeQuestion(
+      {
+        search: watchAll.search,
+        difficulty: mapFilterDifficultValueToQuestionDifficultyEnum(watchAll.difficultLevel),
+        isPublic: mapFilterScopeValueToIsPublic(watchAll.scope)
+      },
+      { pageNum: page, pageSize: rowsPerPage }
+    )
+      .then((data: PaginationList<CodeQuestionEntity>) => {
+        setCodeQuestions(data.codeQuestions);
+        setTotalItem(data.totalItems);
+        console.log(data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        setIsCodeQuestionLoading(false);
+      });
+  }, [watchAll, page, rowsPerPage]);
+  useEffect(() => {
+    fetchCodeQuestions();
+  }, [watchAll.difficultLevel, watchAll.scope, page, rowsPerPage]);
+  const [timer, setTimer] = useState<number | undefined>(undefined);
 
+  useEffect(() => {
+    clearTimeout(timer);
+    const newTimer = window.setTimeout(() => {
+      fetchCodeQuestions();
+    }, 250);
+    setTimer(newTimer);
+  }, [watchAll.search]);
   const tableHeading: GridColDef[] = [
     {
       field: "stt",
@@ -72,53 +145,53 @@ const AdminCodeQuestionManagement = () => {
       renderCell: (params) => {
         return (
           <ParagraphBody>
-            {params.row.difficulty === "HARD"
+            {params.row.difficulty === QuestionDifficultyEnum.HARD
               ? t("common_hard")
-              : params.row.difficulty === "MEDIUM"
+              : params.row.difficulty === QuestionDifficultyEnum.MEDIUM
                 ? t("common_medium")
-                : params.row.difficulty === "EASY"
+                : params.row.difficulty === QuestionDifficultyEnum.EASY
                   ? t("common_easy")
                   : "Không xác định"}
           </ParagraphBody>
         );
       }
     },
-    {
-      field: "updated",
-      sortable: false,
-      flex: 2,
-      headerName: t("code_question_updated"),
-      renderCell: (params) => (
-        <div>
-          <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
-          <div>{dayjs(params.row.updatedAt).format("DD/MM/YYYY HH:mm")}</div>
-        </div>
-      )
-    },
+    // {
+    //   field: "updated",
+    //   sortable: false,
+    //   flex: 2,
+    //   headerName: t("code_question_updated"),
+    //   renderCell: (params) => (
+    //     <div>
+    //       <ParagraphBody>{params.row.updatedByName}</ParagraphBody>
+    //       <div>{dayjs(params.row.updatedAt).format("DD/MM/YYYY HH:mm")}</div>
+    //     </div>
+    //   )
+    // },
     {
       field: "operation",
       sortable: false,
       flex: 1,
       type: "actions",
       cellClassName: "actions",
-      getActions: ({ id }) => {
+      getActions: (params) => {
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
-            label='Save'
+            label='Edit'
             sx={{
               color: "primary.main"
             }}
             onClick={() => {
-              // todo edit question
+              navigate("/admin/code-questions/detail/:id".replace(":id", params.row.id));
             }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
-            label='Cancel'
+            label='Delete'
             className='textPrimary'
             onClick={() => {
-              setDeletedCodeQuestionId(id as string);
+              setDeletedCodeQuestionId(params.id as string);
               setIsOpenConfirmDelete(true);
             }}
             sx={{
@@ -130,51 +203,6 @@ const AdminCodeQuestionManagement = () => {
       headerName: t("common_action")
     }
   ];
-
-  const dispatch = useDispatch();
-
-  const handleGetAdminCodeQuestions = React.useCallback(
-    async ({
-      search,
-      isPublic,
-      difficulty,
-      pageNo = 0,
-      pageSize = 10
-    }: {
-      search?: string;
-      isPublic?: boolean;
-      difficulty?: QuestionDifficultyEnum;
-      pageNo?: number;
-      pageSize?: number;
-    }) => {
-      setIsLoading(true);
-      try {
-        const getAdminCodeQuestionsResponse = await CoreCodeQuestionService.getAdminCodeQuestions({
-          search,
-          isPublic,
-          difficulty,
-          pageNo,
-          pageSize
-        });
-        dispatch(setCodeQuestions(getAdminCodeQuestionsResponse));
-        setIsLoading(false);
-      } catch (error: any) {
-        console.error("error", error);
-        setIsLoading(false);
-      }
-    },
-    [dispatch, t]
-  );
-
-  useEffect(() => {
-    const fetchInitialQuestions = async () => {
-      await handleGetAdminCodeQuestions({ search: searchText });
-    };
-    fetchInitialQuestions();
-  }, [searchText]);
-
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
 
   const onEdit = (questionId: number) => {
     navigate(routes.admin.code_question.information.replace(":questionId", questionId.toString()));
@@ -205,60 +233,15 @@ const AdminCodeQuestionManagement = () => {
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
-  const totalElement = useMemo(
-    () => codeQuestionState.totalItems || 0,
-    [codeQuestionState.questions]
-  );
 
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     setPage(model.page);
     setRowsPerPage(model.pageSize);
-    handleGetAdminCodeQuestions({
-      search: searchText,
-      pageNo: model.page,
-      pageSize: model.pageSize
-    });
   };
 
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
-  const [filters, setFilters] = React.useState<
-    {
-      key: string;
-      value: string;
-    }[]
-  >([
-    {
-      key: "Difficulty level",
-      value: FilterValue.ALL
-    }
-  ]);
-
-  const handleApplyFilter = React.useCallback(() => {
-    const difficulty = filters.find((filter) => filter.key === "Difficulty level")?.value;
-    const isPublic = filters.find((filter) => filter.key === "Is public")?.value;
-    handleGetAdminCodeQuestions({
-      search: searchText,
-      isPublic: !isPublic || isPublic === "ALL" ? undefined : isPublic === "PUBLIC",
-      difficulty:
-        !difficulty || difficulty === FilterValue.ALL
-          ? undefined
-          : (difficulty as QuestionDifficultyEnum)
-    });
-  }, [filters, handleGetAdminCodeQuestions, searchText]);
-
-  const handleCancelFilter = React.useCallback(() => {
-    setFilters([
-      {
-        key: "Difficulty level",
-        value: FilterValue.ALL
-      }
-    ]);
-    handleGetAdminCodeQuestions({
-      search: searchText
-    });
-  }, [handleGetAdminCodeQuestions, searchText]);
 
   return (
     <>
@@ -281,7 +264,139 @@ const AdminCodeQuestionManagement = () => {
             <Heading1 translate-key='code_management_title'>{t("code_management_title")}</Heading1>
           </Grid>
           <Grid item xs={12}>
-            <CustomSearchFeatureBar
+            <Card
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexDirection: "row",
+                padding: "10px 10px"
+              }}
+              variant='outlined'
+              color='neutral'
+            >
+              <Stack direction='row' gap={1} display='flex' alignItems='center' width={"100%"}>
+                <ParagraphBody width={"100px"}>{t("common_filter_by")}</ParagraphBody>
+                <Controller
+                  name='scope'
+                  control={searchControl}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <BasicSelect
+                      labelId='scope-id'
+                      ref={ref}
+                      label={t("common_scope")}
+                      onHandleChange={onChange}
+                      borderRadius='12px'
+                      value={value}
+                      sx={{ maxWidth: "200px" }}
+                      translation-key={[
+                        "common_status",
+                        "common_all",
+                        "list_problem_solved_done",
+                        "list_problem_solved_not_done"
+                      ]}
+                      items={[
+                        {
+                          value: FilterScopeValue.ALL,
+                          label: t("common_all")
+                        },
+                        {
+                          value: FilterScopeValue.PUBLIC,
+                          label: t("common_public")
+                        },
+                        {
+                          value: FilterScopeValue.PRIVATE,
+                          label: t("common_private")
+                        }
+                      ]}
+                      backgroundColor='#FFFFFF'
+                    />
+                  )}
+                />
+                <Controller
+                  name='difficultLevel'
+                  control={searchControl}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <BasicSelect
+                      labelId='difficult-level-id'
+                      ref={ref}
+                      value={value}
+                      label={t("common_difficult_level")}
+                      onHandleChange={onChange}
+                      borderRadius='12px'
+                      sx={{ maxWidth: "200px" }}
+                      translation-key={[
+                        "common_difficult_level",
+                        "common_all",
+                        "common_easy",
+                        "common_medium",
+                        "common_hard"
+                      ]}
+                      items={[
+                        {
+                          value: FilterDifficultValue.ALL,
+                          label: t("common_all")
+                        },
+                        {
+                          value: FilterDifficultValue.EASY,
+                          label: t("common_easy")
+                        },
+                        {
+                          value: FilterDifficultValue.MEDIUM,
+                          label: t("common_medium")
+                        },
+                        {
+                          value: FilterDifficultValue.HARD,
+                          label: t("common_hard")
+                        }
+                      ]}
+                      backgroundColor='#FFFFFF'
+                    />
+                  )}
+                />
+              </Stack>
+            </Card>
+            <Divider sx={{ marginTop: "20px", marginBottom: "10px" }} />
+            <Box className={classes.searchWrapper}>
+              <Stack direction='row' gap={2}>
+                <Controller
+                  name='search'
+                  control={searchControl}
+                  render={({ field }) => (
+                    <AutoSearchBar
+                      value={field.value}
+                      setValue={field.onChange}
+                      onHandleChange={() => {}}
+                      maxWidth='50%'
+                    />
+                  )}
+                />
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    width: "100%"
+                  }}
+                >
+                  <Button
+                    variant='contained'
+                    borderRadius='12px'
+                    onClick={() => {
+                      navigate(routes.admin.code_question.create);
+                    }}
+                    startIcon={<AddCircleRounded />}
+                    sx={{
+                      backgroundColor: "var(--blue-2) !important"
+                    }}
+                  >
+                    <ParagraphBody fontSize={"14px"} fontWeight={"500"} colorname='--ghost-white'>
+                      {t("create_question_code")}
+                    </ParagraphBody>
+                  </Button>
+                </Box>
+              </Stack>
+            </Box>
+            {/* <CustomSearchFeatureBar
               isLoading={codeQuestionState.isLoading}
               searchValue={searchText}
               setSearchValue={setSearchText}
@@ -341,29 +456,24 @@ const AdminCodeQuestionManagement = () => {
               }}
               onHandleApplyFilter={handleApplyFilter}
               onHandleCancelFilter={handleCancelFilter}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12}>
             {/* #F5F9FB */}
             <CustomDataGrid
-              loading={codeQuestionState.isLoading}
-              dataList={codeQuestionState.questions.map((question, index) => ({
-                stt: index + 1,
-                id: question.question.id,
-                name: question.question.name,
-                difficulty: question.question.difficulty,
-                updatedByName:
-                  question.question.updatedBy.lastName +
-                  " " +
-                  question.question.updatedBy.firstName,
-                updated: question.question.updatedAt
+              loading={isCodeQuestionLoading}
+              dataList={codeQuestions.map((question, index) => ({
+                stt: page * rowsPerPage + index + 1,
+                id: question.id,
+                name: question.name,
+                difficulty: question.difficulty
               }))}
               tableHeader={tableHeading}
               onSelectData={rowSelectionHandler}
               dataGridToolBar={dataGridToolbar}
               page={page}
               pageSize={rowsPerPage}
-              totalElement={totalElement}
+              totalElement={totalItem}
               onPaginationModelChange={pageChangeHandler}
               showVerticalCellBorder={true}
               onClickRow={rowClickHandler}

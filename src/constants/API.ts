@@ -3,6 +3,7 @@ export const API = {
     CERTIFICATE_COURSE: {
       DEFAULT: "/core/certificate-courses",
       MY_COURSES: "/core/certificate-courses/me",
+      MY_COMPLETED_CERTIFICATIONS: "/core/certificate-courses/my-certifications",
       MOST_ENROLLED: "/core/certificate-courses/most-enrolled",
       GET_BY_ID: "/core/certificate-courses/:id",
       UPDATE_BY_ID: "/core/certificate-courses/:id",
@@ -60,18 +61,21 @@ export const API = {
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
-        GET_ALL: "/core/questions/shortanswer-question"
+        GET_ALL: "/core/questions/shortanswer-question",
+        UPDATE: "/core/questions/shortanswer-question"
       },
       ESSAY_QUESTION: {
         CREATE: "/core/questions/essay-question/create",
         GET_BY_ID: "/core/questions/essay-question/:id",
-        GET_ALL: "/core/questions/essay-question"
+        GET_ALL: "/core/questions/essay-question",
+        UPDATE: "/core/questions/essay-question"
       },
       MULTIPLE_CHOICE_QUESTION: {
         CREATE: "/core/questions/multichoice-question/create",
         GET_BY_ID: "questions/multichoice-question/:id",
         GET_BY_QUESTION_ID: "questions/multichoice-question/questionId/:questionId",
-        GET_ALL: "/core/questions/multichoice-question"
+        GET_ALL: "/core/questions/multichoice-question",
+        UPDATE: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
         GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",

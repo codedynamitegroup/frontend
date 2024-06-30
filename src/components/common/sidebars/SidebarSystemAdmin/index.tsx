@@ -87,12 +87,6 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
       link: routes.admin.code_question.root
     },
     {
-      name: t("side_bar_question_bank_management"),
-      "translation-key": "side_bar_question_bank_management",
-      icon: <AccountBalanceIcon className={classes.itemIcon} />,
-      link: routes.admin.question_bank.root
-    },
-    {
       name: t("side_bar_organization_management"),
       "translation-key": "side_bar_organization_management",
       icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
