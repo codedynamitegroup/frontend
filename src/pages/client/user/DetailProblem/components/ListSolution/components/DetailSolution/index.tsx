@@ -321,7 +321,6 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
             </>
           )}
         </Stack>
-        <Divider />
       </Box>
 
       <Box

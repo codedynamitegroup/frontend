@@ -42,7 +42,6 @@ interface OrganizationManagementProps {
   moodleUrl: string;
   createdAt: string;
   updatedAt: string;
-  isVerified: boolean;
   isDeleted: boolean;
 }
 
@@ -120,15 +119,14 @@ const OrganizationManagement = () => {
           totalPages: getOrganizationsResponse.totalPages,
           items: getOrganizationsResponse.organizations
         });
-        setIsLoadingListOrganizations(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        setIsLoadingListOrganizations(false);
       }
+      setIsLoadingListOrganizations(false);
     },
     [dispatch, t]
   );
@@ -247,33 +245,6 @@ const OrganizationManagement = () => {
       }
     },
     {
-      field: "isVerified",
-      headerName: t("common_is_verified"),
-      flex: 0.6,
-      align: "center",
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_is_verified")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <Checkbox
-            disableRipple
-            checked={params.row.isVerified === true ? true : false}
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent !important",
-                cursor: "default"
-              }
-            }}
-          />
-        );
-      }
-    },
-    {
       field: "action",
       headerName: t("common_action"),
       type: "actions",
@@ -353,8 +324,7 @@ const OrganizationManagement = () => {
         moodleUrl: organization.moodleUrl,
         createdAt: organization.createdAt,
         updatedAt: organization.updatedAt,
-        isDeleted: organization.isDeleted,
-        isVerified: organization.isVerified
+        isDeleted: organization.isDeleted
       }));
     } else {
       return [];

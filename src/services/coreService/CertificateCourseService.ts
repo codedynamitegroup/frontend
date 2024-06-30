@@ -78,6 +78,29 @@ export class CertificateCourseService {
     }
   }
 
+  static async getMyCompletedCertificateCourses(pageNo = 0, pageSize = 10) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.CORE.CERTIFICATE_COURSE.MY_COMPLETED_CERTIFICATIONS}`, {
+        params: {
+          pageNo,
+          pageSize
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
+
   static async getCertificateCourseById(id: string) {
     try {
       const response = await api({

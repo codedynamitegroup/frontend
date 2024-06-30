@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
-import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
 import { RoleEntity } from "./role";
+import { OrganizationEntity } from "./organization";
 
 export interface User {
   userId: string;
