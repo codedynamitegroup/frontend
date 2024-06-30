@@ -14,7 +14,6 @@ export interface OrganizationEntity {
   createdAt: string;
   updatedAt: string;
   isDeleted: boolean;
-  isVerified: boolean;
 }
 
 export interface CreateOrganizationRequest {
@@ -26,6 +25,5 @@ export interface CreateOrganizationRequest {
 }
 
 export interface UpdateOrganizationBySystemAdminRequest {
-  isVerified: boolean;
   isDeleted: boolean;
 }

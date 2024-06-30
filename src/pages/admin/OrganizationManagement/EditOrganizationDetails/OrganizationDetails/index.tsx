@@ -24,7 +24,6 @@ import { InputPhone } from "components/common/inputs/InputPhone";
 type Props = {};
 
 interface IFormDataType {
-  isVerified: boolean;
   isDeleted: boolean;
 }
 
@@ -34,7 +33,6 @@ const OrganizationDetails = (props: Props) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
-      isVerified: yup.boolean().required(t("organization_is_verified_required")),
       isDeleted: yup.boolean().required(t("organization_is_deleted_required"))
     });
   }, [t]);
@@ -42,8 +40,7 @@ const OrganizationDetails = (props: Props) => {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
-    register
+    reset
   } = useForm<IFormDataType>({
     resolver: yupResolver(schema)
   });
@@ -63,7 +60,6 @@ const OrganizationDetails = (props: Props) => {
         const organizationResponse = await OrganizationService.getOrganizationById(id);
         if (organizationResponse) {
           reset({
-            isVerified: organizationResponse.isVerified,
             isDeleted: organizationResponse.isDeleted
           });
           setOrganization(organizationResponse);
@@ -84,7 +80,6 @@ const OrganizationDetails = (props: Props) => {
   const submitHandler = async (data: any) => {
     const formSubmittedData: IFormDataType = { ...data };
     const updateOrganizationBySystemAdminData: UpdateOrganizationBySystemAdminRequest = {
-      isVerified: formSubmittedData.isVerified,
       isDeleted: formSubmittedData.isDeleted
     };
     await handleUpdateOrganization(updateOrganizationBySystemAdminData);
@@ -198,20 +193,6 @@ const OrganizationDetails = (props: Props) => {
             disabled
             minRows={5}
             value={organization?.description}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={1} columns={12}>
-        <Grid item xs={4} display={"flex"} flexDirection={"row"} alignItems={"center"}>
-          <TextTitle translation-key='common_is_verified'>{t("common_is_verified")}</TextTitle>
-        </Grid>
-        <Grid item xs={7} display={"flex"} flexDirection={"row"} alignItems={"center"} gap={"10px"}>
-          <Controller
-            control={control}
-            name='isVerified'
-            render={({ field }) => {
-              return <Checkbox size='large' checked={!!field.value} {...field} name='isVerified' />;
-            }}
           />
         </Grid>
       </Grid>
