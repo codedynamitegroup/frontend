@@ -72,10 +72,23 @@ export class SubmissionAssignmentService {
       return this.handleError(error);
     }
   }
-  static async getSubmissionAssignmentByAssignmentId(assignmentId: string) {
+  static async getSubmissionAssignmentByAssignmentId(
+    assignmentId: string,
+    {
+      isGraded = null,
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      isGraded?: Boolean | null;
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
     try {
       const response = await this.apiClient.get(`${API.COURSE.SUBMISSION_ASSIGNMENT.DEFAULT}`, {
-        params: { assignmentId }
+        params: { assignmentId, isGraded, search, pageNo, pageSize }
       });
       return this.handleResponse(response);
     } catch (error: any) {

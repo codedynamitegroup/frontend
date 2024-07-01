@@ -1,4 +1,5 @@
-import { GetQuestion, PostAnswer } from "./QuestionEntity";
+import { AnswerOfQuestion } from "./AnswerOfQuestionEntity";
+import { GetQuestion, PostAnswer, PutQuestion } from "./QuestionEntity";
 
 export interface PostMultipleChoiceQuestion {
   organizationId: string;
@@ -40,4 +41,18 @@ export interface MultiChoiceQuestion {
   answerNumbering?: string | null | undefined;
   showNumCorrect?: number | null | undefined;
   showStandardInstructions?: string | null | undefined;
+  answers?: AnswerOfQuestion[];
+}
+
+export interface PutMultipleChoiceQuestion {
+  qtMultichoiceQuestionId: string;
+  question?: PutQuestion;
+  single?: boolean;
+  shuffleAnswers?: boolean;
+  correctFeedback?: string;
+  partiallyCorrectFeedback?: string;
+  incorrectFeedback?: string;
+  answerNumbering?: string;
+  showNumCorrect?: number;
+  showStandardInstructions?: string;
 }

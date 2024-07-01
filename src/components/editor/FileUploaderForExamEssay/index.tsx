@@ -191,10 +191,6 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
     }, 500); // check every 100ms
   }, []);
 
-  React.useEffect(() => {
-    console.log("extFiles", extFiles);
-  }, [extFiles]);
-
   return (
     <>
       <Dropzone
