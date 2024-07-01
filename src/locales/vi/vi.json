@@ -652,6 +652,7 @@
   "phone_number_invalid": "Số điện thoại không hợp lệ",
   "phone_required": "Số điện thoại không được để trống",
   "role_required": "Vai trò không được để trống",
+  "name_required": "Tên không được trống",
 
   "course_management_exam_previous": "Tóm tắt những lần làm bài trước",
   "course_management_exam_try_time": "Lần thử",

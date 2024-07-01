@@ -110,7 +110,10 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
             <Route path={"/code-questions/create"} element={<AdminCodeQuestionCreation />} />
-            <Route path='code-questions/detail/:id' element={<AdminCodeQuestionDetails />} />
+            <Route
+              path='code-questions/detail/:codeQuestionId'
+              element={<AdminCodeQuestionDetails />}
+            />
             <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
           </Routes>
         </Box>
