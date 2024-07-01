@@ -30,6 +30,8 @@ import { decodeBase64, removeNewLine } from "utils/base64";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
+import Heading6 from "components/text/Heading6";
+import Heading5 from "components/text/Heading5";
 
 interface Props {
   handleSubmissionDetail: () => void;
@@ -168,7 +170,6 @@ export default function DetailSolution({
           <ArrowBackIcon className={classes.backIcon} />
           <span translation-key='common_back'>{t("common_back")}</span>
         </Box>
-        <Divider />
       </Box>
       <Box
         className={classes.submissionContainer}
@@ -179,8 +180,8 @@ export default function DetailSolution({
         <Box className={classes.submissionInfo}>
           <Box className={classes.submissionTitle}>
             {codeSubmissionDetail && (
-              <ParagraphBody
-                fontWeight={"700"}
+              <Heading5
+                fontWeight={600}
                 colorname={
                   codeSubmissionDetail.gradingStatus === "GRADING"
                     ? "--orange-4"
@@ -193,7 +194,7 @@ export default function DetailSolution({
                 codeSubmissionDetail.description === undefined
                   ? codeSubmissionDetail.gradingStatus.replace("_", " ")
                   : codeSubmissionDetail.description}
-              </ParagraphBody>
+              </Heading5>
             )}
             <Box className={classes.submissionAuthor}>
               <Avatar
@@ -206,17 +207,17 @@ export default function DetailSolution({
                 {user?.firstName.charAt(0)}
               </Avatar>
 
-              <ParagraphExtraSmall fontWeight={"700"}>
+              <ParagraphBody fontWeight={600}>
                 {i18next.language === "vi"
                   ? `${user?.lastName ?? ""} ${user?.firstName ?? ""}`
                   : `${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
-              </ParagraphExtraSmall>
-              <ParagraphExtraSmall translation-key='detail_problem_submission_detail_user_submission_time'>
+              </ParagraphBody>
+              <ParagraphBody translation-key='detail_problem_submission_detail_user_submission_time'>
                 {t("detail_problem_submission_detail_user_submission_time", {
                   time: toDateFormate(codeSubmissionDetail?.createdAt, i18next.language) ?? "N/A",
                   interpolation: { escapeValue: false }
                 })}
-              </ParagraphExtraSmall>
+              </ParagraphBody>
             </Box>
           </Box>
           {isShareSolutionDisabled === true ? null : (

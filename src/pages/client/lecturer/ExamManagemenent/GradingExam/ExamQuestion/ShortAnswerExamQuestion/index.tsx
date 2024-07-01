@@ -3,7 +3,7 @@ import { Grid, Stack, Divider, Box, TextField } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
-import { ShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { ShortAnswerQuestion } from "models/coreService/entity/ShortAnswerQuestionEntity";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { useState, useEffect } from "react";
 import { QuestionService } from "services/coreService/QuestionService";

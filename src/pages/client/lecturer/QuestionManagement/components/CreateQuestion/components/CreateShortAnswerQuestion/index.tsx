@@ -3,7 +3,7 @@ import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
 import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import AddIcon from "@mui/icons-material/Add";
@@ -11,14 +11,13 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AnswerEditor from "components/editor/AnswerEditor";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
-import { PostShortAnswerQuestion } from "models/coreService/entity/QuestionEntity";
+import { PostShortAnswerQuestion } from "models/coreService/entity/ShortAnswerQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import AlertDialog from "../BlockingDialog";
 import { Helmet } from "react-helmet";
@@ -42,6 +41,7 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import { Card } from "@mui/joy";
 import { RootState } from "store";
+import { ShortAnswerQuestionService } from "services/coreService/QtypeShortAnswerQuestionService";
 
 interface Props {
   qtype: String;
@@ -184,7 +184,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
       caseSensitive: Boolean(formSubmittedData?.caseSensitive)
     };
     console.log(newQuestion);
-    QuestionService.createShortAnswerQuestion(newQuestion)
+    ShortAnswerQuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
       })

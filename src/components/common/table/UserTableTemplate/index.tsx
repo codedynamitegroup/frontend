@@ -84,13 +84,13 @@ function UserTableTemplate({
                   heading === "STT" ? classes["small-heading"] : ""
                 }`}
               >
-                <ParagraphBody fontWeight={700}>{heading}</ParagraphBody>
+                <ParagraphBody fontWeight={600}>{heading}</ParagraphBody>
               </TableCell>
             ))}
             {/* Action column heading */}
             {isActionColumn && (
               <TableCell align='left' className={classes["table-cell"]}>
-                <ParagraphBody fontWeight={700}>Hành động</ParagraphBody>
+                <ParagraphBody fontWeight={600}>Hành động</ParagraphBody>
               </TableCell>
             )}
           </TableRow>

@@ -453,6 +453,8 @@
   "organization_list_users": "Organization users",
   "organization_url": "Organization Link",
 
+  "data_synchronization": "Data synchronization",
+
   "common_updated_at": "Updated at",
   "common_updated_by": "Updated by",
   "common_is_verified": "Verified status",
@@ -468,7 +470,7 @@
   "user_detail_account_management": "Account management",
   "user_detail_edit_account": "Edit account",
   "user_detail": "User detail",
-  "user_detail_certification": "My certifications",
+  "user_detail_completed_certification": "Completed certification",
   "user_detail_non_certification": "You haven't got any certification",
   "user_detail_get_certification": "Get certification now",
   "user_detail_activity_stats": "Activity statistics",
@@ -628,6 +630,10 @@
   "create_successful_assignment": "Create successful assignment",
   "update_successful_assignment": "Update successful assignment",
   "create_failed_assignment": "Create failed assignment",
+
+  "grading_successful_assignment": "Successfully graded assignment",
+  "update_grading_successful_assignment": "Update successful grading of assignment",
+  "grading_failed_assignment": "Failed to grade assignment",
 
   "common_confirm_deletion": "Confirm Deletion",
   "assignment_management_delete_assignment": "Are you sure you want to delete this assignment?",

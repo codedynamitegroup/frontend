@@ -78,8 +78,15 @@ const LecturerCourseAssignmentDetails = () => {
   };
   const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
     try {
-      const response =
-        await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+        assignmentId,
+        {
+          isGraded: null,
+          search: "",
+          pageNo: 0,
+          pageSize: 10
+        }
+      );
       dispatch(setSubmissionAssignments(response));
     } catch (error) {
       console.error("Failed to fetch submission assignment", error);

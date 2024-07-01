@@ -62,3 +62,12 @@
     text-decoration: underline !important;
   }
 }
+
+.imgCourse {
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+}

@@ -47,6 +47,7 @@ interface LanguageMap {
 
 const CodeExamQuestion = (props: Props) => {
   const { page, questionCode, questionState, questionId } = props;
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isFlagged = questionState?.flag;
@@ -102,18 +103,40 @@ const CodeExamQuestion = (props: Props) => {
   const [codeFormat, setCodeFormat] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (selectedLanguage && codeFormat === undefined && languageMap?.[selectedLanguage]) {
+    // If no data --> check state from DB
+    if (questionState.content) {
+      console.log("From DB");
+      const content = JSON.parse(questionState.content);
+
+      setCodeFormat(decodeBase64(content.code));
+    } else if (selectedLanguage !== undefined && codeFormat === undefined) {
+      console.log("DEFAULT");
       setCodeFormat(
         `${languageMap?.[selectedLanguage]?.headCode}\n\n${languageMap?.[selectedLanguage]?.bodyCode}\n\n${languageMap?.[selectedLanguage]?.tailCode}`
       );
-      return;
     }
-    const content = JSON.parse(questionState.content);
-    setSelectedLanguage(content.languageId);
-    setCodeFormat(decodeBase64(content.code));
   }, [selectedLanguage]);
 
-  useEffect(() => {}, []);
+  // Run first time when load
+  useEffect(() => {
+    if (questionState.content && codeFormat === undefined && selectedLanguage === undefined) {
+      const content = JSON.parse(questionState.content);
+      setSelectedLanguage(content.languageId);
+      setCodeFormat(decodeBase64(content.code));
+
+      dispatch(
+        setAnswered({
+          id: questionId,
+          answered: true,
+          content: JSON.stringify({
+            languageId: content.languageId,
+            codeQuestionId: questionCode?.id,
+            code: content.code
+          })
+        })
+      );
+    }
+  }, []);
 
   const handleLanguageChange = (newValue: any) => {
     dispatch(
@@ -123,7 +146,7 @@ const CodeExamQuestion = (props: Props) => {
         content: JSON.stringify({
           languageId: newValue,
           codeQuestionId: questionCode.id,
-          code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue].code || "")
+          code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue]?.code || "")
         })
       })
     );
@@ -141,6 +164,22 @@ const CodeExamQuestion = (props: Props) => {
           initCode({
             questionId: questionId,
             codeLanguageDataList: questionCode?.languages.map((language) => {
+              if (questionState.content) {
+                try {
+                  const content = JSON.parse(questionState.content);
+                  if (language.id === content.languageId) {
+                    return {
+                      judge0Id: language.judge0Id,
+                      languageId: language.id,
+                      code: decodeBase64(content.code),
+                      cpuLimit: language.timeLimit,
+                      memoryLimit: language.memoryLimit
+                    };
+                  }
+                } catch (error) {
+                  console.log("Error", error);
+                }
+              }
               return {
                 judge0Id: language.judge0Id,
                 languageId: language.id,

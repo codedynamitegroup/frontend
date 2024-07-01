@@ -32,8 +32,8 @@ const CustomBreadCrumb = (props: PropsData) => {
         padding: "10px 0"
       }}
     >
-      {breadCrumbData.map((item: BreadCrumbData) => (
-        <Link key={item.label} to={item.navLink}>
+      {breadCrumbData.map((item: BreadCrumbData, index: number) => (
+        <Link key={index} to={item.navLink}>
           <Button variant='plain' color='neutral' sx={{ padding: "0 7px" }}>
             <ParagraphBody fontWeight={"600"} colorname='--gray-60' fontSize={"13px"}>
               {item.label}

@@ -169,6 +169,7 @@ export const routes = {
         share: "/problems/:problemId/solution/share"
       },
       root: "/problems",
+      root_path: "/problems/*",
       detail: {
         root: "/problems/:problemId/*",
         description: "/problems/:problemId/description",
@@ -178,6 +179,7 @@ export const routes = {
     },
     course_certificate: {
       root: "/certificate-courses",
+      root_path: "/certificate-courses/*",
       detail: {
         root: "/certificate-courses/:courseId/*",
         introduction: "/certificate-courses/:courseId/introduction",
@@ -198,6 +200,7 @@ export const routes = {
     },
     contest: {
       root: "/contests",
+      root_path: "/contests/*",
       detail: {
         root: "/contests/:contestId/*",
         information: "/contests/:contestId/information",

@@ -69,6 +69,14 @@ const StudentCourseExamDetails = () => {
     try {
       const response = await ExamService.getExamById(id);
       setExam(response);
+
+      const tempTimeOpen = new Date(response.timeOpen) ? new Date(response.timeOpen) : new Date();
+      const tempTimeClose = new Date(response.timeClose)
+        ? new Date(response.timeClose)
+        : new Date();
+      setTimeOpenString(tempTimeOpen);
+      setTimeCloseString(tempTimeClose);
+
       dispatch(setExamDetail(response));
     } catch (error: any) {
       if (error.code === EHtmlStatusCode.notFound || error.code === EHtmlStatusCode.serverError) {
@@ -118,11 +126,6 @@ const StudentCourseExamDetails = () => {
       setMainSkeleton(false);
     };
     fetchInitialData();
-
-    const tempTimeOpen = new Date(exam.timeOpen) ? new Date(exam.timeOpen) : new Date();
-    const tempTimeClose = new Date(exam.timeClose) ? new Date(exam.timeClose) : new Date();
-    setTimeOpenString(tempTimeOpen);
-    setTimeCloseString(tempTimeClose);
   }, []);
 
   const navigate = useNavigate();
@@ -253,7 +256,10 @@ const StudentCourseExamDetails = () => {
       </Box>
       <Stack direction='row' spacing={1.5} alignItems={"center"}>
         <Button
-          disabled={examSubmissions.length === exam.maxAttempts && exam.maxAttempts !== 0}
+          disabled={
+            (examSubmissions.length === exam.maxAttempts && exam.maxAttempts !== 0) ||
+            (exam.timeClose && new Date(exam.timeClose) < new Date())
+          }
           onClick={startAttemptButtonHandler}
           sx={{
             width: "fit-content",

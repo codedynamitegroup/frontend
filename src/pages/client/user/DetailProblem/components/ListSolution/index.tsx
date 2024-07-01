@@ -408,7 +408,7 @@ export default function ProblemDetailSolution({
                 );
               })}
               {/* <Button onClick={() => setUser([...users, ...users1])}>Load more</Button> */}
-              <Stack alignItems={"center"}>
+              <Stack alignItems={"center"} mt={"16px"}>
                 <Pagination
                   count={totalPage}
                   onChange={handleChangePagination}

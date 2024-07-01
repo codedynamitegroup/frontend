@@ -36,7 +36,8 @@ import { setHeaderHeight } from "reduxes/SidebarStatus";
 
 interface ILinkMenu {
   name: string;
-  path: string;
+  navigate_path: string;
+  root_path: string;
   isActive?: boolean;
   position: "left" | "right";
 }
@@ -97,31 +98,36 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const pagesHeaderDefault: ILinkMenu[] = [
     {
       name: "header_explore_course",
-      path: routes.user.course_certificate.root,
+      navigate_path: routes.user.course_certificate.root,
+      root_path: routes.user.course_certificate.root_path,
       isActive: false,
       position: "left"
     },
     {
       name: "common_practice",
-      path: routes.user.problem.root,
+      navigate_path: routes.user.problem.root,
+      root_path: routes.user.problem.root_path,
       isActive: false,
       position: "left"
     },
     {
       name: "header_contest",
-      path: routes.user.contest.root,
+      navigate_path: routes.user.contest.root,
+      root_path: routes.user.contest.root_path,
       isActive: false,
       position: "left"
     },
     {
       name: "header_login_button",
-      path: routes.user.login.root,
+      navigate_path: routes.user.login.root,
+      root_path: routes.user.login.root,
       isActive: false,
       position: "right"
     },
     {
       name: "header_register_button",
-      path: routes.user.register.root,
+      navigate_path: routes.user.register.root,
+      root_path: routes.user.register.root,
       isActive: false,
       position: "right"
     }
@@ -159,7 +165,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       setPagesHeader(pagesHeaderDefault);
     }
     const headerItem: ILinkMenu | undefined = pagesHeader.find((it: ILinkMenu) =>
-      activeRoute(it.path)
+      activeRoute(it.root_path)
     );
 
     if (!headerItem) {
@@ -244,13 +250,14 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   <ParagraphBody
                     key={index}
                     className={clsx([page.isActive ? classes.isActive : "", classes.item])}
-                    fontWeight={600}
+                    fontWeight={500}
+                    fontSize={"15px"}
                     translation-key={page.name}
                     colorname={"--gray-50"}
                   >
                     <Link
                       component={RouterLink}
-                      to={page.path}
+                      to={page.navigate_path}
                       translation-key={page.name}
                       className={classes.textLink}
                     >
@@ -265,9 +272,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   activeRoute(routes.student.course.root) ? classes.isActive : "",
                   classes.item
                 ])}
-                fontWeight={600}
+                fontWeight={500}
                 translation-key='header_course'
                 colorname={"--gray-50"}
+                fontSize={"15px"}
               >
                 <Link
                   component={RouterLink}
@@ -285,9 +293,10 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   activeRoute(routes.lecturer.course.management) ? classes.isActive : "",
                   classes.item
                 ])}
-                fontWeight={600}
+                fontWeight={500}
                 translation-key='header_course'
                 colorname={"--gray-50"}
+                fontSize={"15px"}
               >
                 <Link
                   component={RouterLink}
@@ -299,26 +308,29 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 </Link>
               </ParagraphBody>
             )}
-            {!isBelongToOrganization && (
-              <ParagraphBody
-                className={clsx([
-                  activeRoute(routes.user.organization.root) ? classes.isActive : "",
-                  classes.item
-                ])}
-                fontWeight={600}
-                translation-key='header_create_organization'
-                colorname={"--gray-50"}
-              >
-                <Link
-                  component={RouterLink}
-                  to={routes.user.organization.root}
+            {!isBelongToOrganization &&
+              !activeRoute(routes.admin.homepage.root) &&
+              !activeRoute(routes.org_admin.homepage.root) && (
+                <ParagraphBody
+                  className={clsx([
+                    activeRoute(routes.user.organization.root) ? classes.isActive : "",
+                    classes.item
+                  ])}
+                  fontWeight={500}
                   translation-key='header_create_organization'
-                  className={classes.textLink}
+                  colorname={"--gray-50"}
+                  fontSize={"15px"}
                 >
-                  {t("header_create_organization")}
-                </Link>
-              </ParagraphBody>
-            )}
+                  <Link
+                    component={RouterLink}
+                    to={routes.user.organization.root}
+                    translation-key='header_create_organization'
+                    className={classes.textLink}
+                  >
+                    {t("header_create_organization")}
+                  </Link>
+                </ParagraphBody>
+              )}
           </Box>
         </Box>
 
@@ -334,13 +346,14 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                   <ParagraphBody
                     key={index}
                     className={clsx([page.isActive ? classes.isActive : "", classes.item])}
-                    fontWeight={600}
+                    fontWeight={500}
                     translation-key={page.name}
                     colorname={"--gray-50"}
+                    fontSize={"15px"}
                   >
                     <Link
                       component={RouterLink}
-                      to={page.path}
+                      to={page.navigate_path}
                       translation-key={page.name}
                       className={classes.textLink}
                     >
@@ -374,7 +387,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                           {loggedUser.firstName.charAt(0)}
                         </Avatar>
 
-                        <ParagraphBody fontWeight={600} colorname={"--gray-50"}>
+                        <ParagraphBody fontWeight={500} colorname={"--gray-50"} fontSize={"15px"}>
                           {`${loggedUser.firstName} ${loggedUser.lastName}`}
                         </ParagraphBody>
                       </Button>

@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper";
 import TextTitle from "components/text/TextTitle";
 import EmptyListView from "../../../EmptyListView";
 import { useTranslation } from "react-i18next";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import CustomPagination from "components/common/pagination/CustomPagination";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
@@ -19,6 +19,7 @@ import { setErrorMess } from "reduxes/AppStatus";
 import Heading6 from "components/text/Heading6";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { routes } from "routes/routes";
+import { CircularProgress } from "@mui/joy";
 
 interface UserRecentCodeQuestionProps {
   id: string;
@@ -49,8 +50,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function UserRecentCodeQuestion() {
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<{
-    isLoading: boolean;
     codeQuestions: {
       codeQuestions: UserRecentCodeQuestionProps[];
       currentPage: number;
@@ -58,7 +59,6 @@ export default function UserRecentCodeQuestion() {
       totalPages: number;
     };
   }>({
-    isLoading: false,
     codeQuestions: {
       codeQuestions: [],
       currentPage: 0,
@@ -66,14 +66,8 @@ export default function UserRecentCodeQuestion() {
       totalPages: 0
     }
   });
-  const [searchParams] = useSearchParams();
-  const pageNo = useMemo(
-    () =>
-      Number.isNaN(parseInt(searchParams.get("page") || "1"))
-        ? 1
-        : parseInt(searchParams.get("page") || "1"),
-    [searchParams]
-  );
+  const [pageNo, setPageNo] = useState(1);
+
   const renderLevel = (level: QuestionDifficultyEnum) => {
     if (level === QuestionDifficultyEnum.EASY) {
       return (
@@ -100,6 +94,7 @@ export default function UserRecentCodeQuestion() {
 
   const handleGetRecentCodeQuestion = useCallback(
     async ({ pageNo = 0, pageSize = 10 }: { pageNo?: number; pageSize?: number }) => {
+      setIsLoading(true);
       try {
         const getRecentCodeQuestionResponse = await CodeSubmissionService.getRecentCodeQuestion(
           pageNo,
@@ -120,15 +115,14 @@ export default function UserRecentCodeQuestion() {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
       }
+      setIsLoading(false);
     },
     [dispatch, t]
   );
 
   useEffect(() => {
     const fetchRecentCodeQuestion = async () => {
-      // dispatch(setInititalLoading(true));
       await handleGetRecentCodeQuestion({});
-      // dispatch(setInititalLoading(false));
     };
 
     fetchRecentCodeQuestion();
@@ -136,17 +130,26 @@ export default function UserRecentCodeQuestion() {
 
   const navigate = useNavigate();
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    // navigate({
-    //   pathname: routes.user.contest.root,
-    //   search: createSearchParams({
-    //     page: value.toString()
-    //   }).toString()
-    // });
+    setPageNo(value);
+    handleGetRecentCodeQuestion({ pageNo: pageNo - 1 });
   };
 
   return (
     <>
-      {data.codeQuestions.codeQuestions.length === 0 ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : data.codeQuestions.codeQuestions.length === 0 ? (
         <EmptyListView />
       ) : (
         <>

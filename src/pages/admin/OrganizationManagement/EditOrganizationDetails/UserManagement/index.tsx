@@ -36,6 +36,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import Heading1 from "components/text/Heading1";
 import { PaginationList } from "models/general";
 import { setLoading } from "reduxes/Loading";
+import { CircularProgress } from "@mui/joy";
 
 interface OrganizationUserManagementProps {
   id: string;
@@ -61,6 +62,7 @@ const OrganizationUserManagement = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { organizationId } = useParams<{ organizationId: string }>();
   const [organization, setOrganization] = useState<OrganizationEntity>();
+  const [isLoadingOrganization, setIsLoadingOrganization] = useState<boolean>(false);
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
@@ -83,21 +85,20 @@ const OrganizationUserManagement = () => {
     totalPages: 0,
     items: []
   });
-  const [isLoadingListUsers, setIsLoadingListUserss] = useState<boolean>(false);
+  const [isLoadingListUsers, setIsLoadingListUsers] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleGetOrganizationById = useCallback(async (id: string) => {
+    setIsLoadingOrganization(true);
     try {
-      dispatch(setLoading(true));
       const organizationResponse = await OrganizationService.getOrganizationById(id);
       if (organizationResponse) {
         setOrganization(organizationResponse);
       }
-      dispatch(setLoading(false));
     } catch (error: any) {
       console.error("error", error);
-      dispatch(setLoading(false));
     }
+    setIsLoadingOrganization(false);
   }, []);
 
   useEffect(() => {
@@ -117,7 +118,7 @@ const OrganizationUserManagement = () => {
       pageSize?: number;
     }) => {
       if (!organizationId) return;
-      setIsLoadingListUserss(true);
+      setIsLoadingListUsers(true);
       try {
         const getUsersResponse = await UserService.getAllUserByOrganization({
           searchName: searchName,
@@ -131,15 +132,14 @@ const OrganizationUserManagement = () => {
           totalPages: getUsersResponse.totalPages,
           items: getUsersResponse.users
         });
-        setIsLoadingListUserss(false);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
         // Show snackbar here
-        setIsLoadingListUserss(false);
       }
+      setIsLoadingListUsers(false);
     },
     [dispatch, organizationId, t]
   );
@@ -436,7 +436,20 @@ const OrganizationUserManagement = () => {
         onCancel={onCancelConfirmDelete}
         onDelete={onUnassignedUserConfirmDelete}
       />
-      {organization && organization?.isVerified === true ? (
+      {isLoadingOrganization ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : organization && organization?.isDeleted === false ? (
         <Grid
           container
           spacing={2}
@@ -546,16 +559,19 @@ const OrganizationUserManagement = () => {
           </Grid>
         </Grid>
       ) : (
-        <Box id={classes.pleaseVerifiedBody}>
-          <VerifiedIcon
-            sx={{
-              fontSize: "100px",
-              color: "var(--green-500)",
-              margin: "0 auto"
-            }}
-          />
-          <Heading1>{t("organization_please_verified")}</Heading1>
-        </Box>
+        organization &&
+        organization?.isDeleted === true && (
+          <Box id={classes.pleaseVerifiedBody}>
+            <VerifiedIcon
+              sx={{
+                fontSize: "100px",
+                color: "var(--green-500)",
+                margin: "0 auto"
+              }}
+            />
+            <Heading1>{t("organization_please_verified")}</Heading1>
+          </Box>
+        )
       )}
     </>
   );

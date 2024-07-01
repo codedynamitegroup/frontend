@@ -3,7 +3,7 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
-import { MultiChoiceQuestion } from "models/coreService/entity/QuestionEntity";
+import { MultiChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { Button, Checkbox, Sheet } from "@mui/joy";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
 import { useState, useEffect } from "react";

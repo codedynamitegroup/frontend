@@ -10,6 +10,7 @@ import {
   Divider,
   Drawer,
   Grid,
+  Skeleton,
   Stack,
   TextField
 } from "@mui/material";
@@ -106,6 +107,7 @@ export default function TakeExam() {
   if (isNaN(questionPageIndex) || questionPageIndex < 0) {
     questionPageIndex = 0;
   }
+  const [skeleton, setSkeleton] = React.useState(true);
 
   const dispatch = useDispatch();
   const questionList = useAppSelector((state) => state.takeExam.questionList);
@@ -197,12 +199,23 @@ export default function TakeExam() {
       });
       dispatch(cleanCodeQuestion());
       setEndTime(new Date(response.endTime).getTime());
+      setSkeleton(false);
       // setExamSubmissionId(response.examSubmissionId);
     } catch (error: any) {
       console.log("error", error);
       if (error.code === 409) {
         // limit exceed
         dispatch(setErrorMess(t("exam_limit_exceed")));
+
+        navigate(
+          routes.student.exam.detail
+            .replace(":courseId", courseId || examDetails.courseId)
+            .replace(":examId", examId || examDetails.examId),
+          { replace: true }
+        );
+      }
+      if (error.code === 403) {
+        dispatch(setErrorMess(t("exam_closed")));
 
         navigate(
           routes.student.exam.detail
@@ -409,8 +422,9 @@ export default function TakeExam() {
   }, []);
 
   React.useEffect(() => {
-    if (isFinishedFetching && canStartExam) {
-      handleStartExam();
+    if (isFinishedFetching) {
+      if (canStartExam) handleStartExam();
+      else setSkeleton(false);
     }
   }, [canStartExam, isFinishedFetching]);
 
@@ -589,453 +603,493 @@ export default function TakeExam() {
         <Box className={classes.container} style={{ marginTop: `${sidebarStatus.headerHeight}px` }}>
           <CssBaseline />
 
-          {/* <DrawerHeader /> */}
-          <Button
-            // aria-label='open drawer'
-            onClick={handleDrawerOpen}
-            sx={{
-              ...(open && { display: "none" }),
-              position: "fixed",
-              top: `${sidebarStatus.headerHeight + 10}px`,
-              right: 0,
-              height: "44px",
-              width: "49px"
-            }}
-            size='sm'
-            endDecorator={<MenuIcon color='action' />}
-            variant='soft'
-          />
+          {skeleton && (
+            <Grid container spacing={1}>
+              <Grid item xs={9}>
+                <Box className={classes.formBody} width={"100%"}>
+                  <Skeleton variant='text' width='50%' height='40px' />
+                  <Skeleton variant='text' width='100%' height='100px' />
+                  <Skeleton variant='rounded' width='100px' height='40px' />
 
-          <Box className={classes.formBody} width={"100%"}>
-            <Heading1 fontWeight={"500"}>{examDetails.name}</Heading1>
-            <Heading2>
-              <div dangerouslySetInnerHTML={{ __html: examDetails.intro }}></div>
-            </Heading2>
+                  <Skeleton variant='rounded' width='100%' height='430px' />
+                  <Skeleton variant='rounded' width='100%' height='430px' />
+                  <Skeleton variant='rounded' width='100%' height='430px' />
+                  <Skeleton variant='rounded' width='100%' height='430px' />
+                </Box>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  marginTop: `30px`
+                }}
+              >
+                <Skeleton variant='rounded' width='100%' height='100%' />
+              </Grid>
+            </Grid>
+          )}
+          {/* <DrawerHeader /> */}
+          {!skeleton && (
             <Button
-              onClick={() => {
-                navigate(
-                  routes.student.exam.detail
-                    .replace(":courseId", courseId || examDetails.courseId)
-                    .replace(":examId", examId || examDetails.examId)
-                );
-              }}
-              startDecorator={<ChevronLeftIcon fontSize='small' />}
-              color='neutral'
-              variant='soft'
-              size='md'
-              sx={{ width: "fit-content" }}
-            >
-              {t("common_back")}
-            </Button>
-            <Box
+              // aria-label='open drawer'
+              onClick={handleDrawerOpen}
               sx={{
-                position: "sticky",
-                top: "74px",
-                zIndex: "1020"
+                ...(open && { display: "none" }),
+                position: "fixed",
+                top: `${sidebarStatus.headerHeight + 10}px`,
+                right: 0,
+                height: "44px",
+                width: "49px"
               }}
-            >
+              size='sm'
+              endDecorator={<MenuIcon color='action' />}
+              variant='soft'
+            />
+          )}
+
+          {!skeleton && (
+            <Box className={classes.formBody} width={"100%"}>
+              <Heading1 fontWeight={"500"}>{examDetails.name}</Heading1>
+              <Heading2>
+                <div dangerouslySetInnerHTML={{ __html: examDetails.intro }}></div>
+              </Heading2>
+              <Button
+                onClick={() => {
+                  navigate(
+                    routes.student.exam.detail
+                      .replace(":courseId", courseId || examDetails.courseId)
+                      .replace(":examId", examId || examDetails.examId)
+                  );
+                }}
+                startDecorator={<ChevronLeftIcon fontSize='small' />}
+                color='neutral'
+                variant='soft'
+                size='md'
+                sx={{ width: "fit-content" }}
+              >
+                {t("common_back")}
+              </Button>
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center"
+                  position: "sticky",
+                  top: "74px",
+                  zIndex: "1020"
                 }}
               >
                 <Box
                   sx={{
-                    padding: "8px 9px 8px 10px",
-                    borderRadius: "40px",
                     display: "flex",
-                    alignItems: "center",
-                    color: "#005742",
-                    backgroundColor: "#EAF4DD",
-                    fontWeight: "500",
-                    position: "sticky",
-                    top: "0"
+                    justifyContent: "flex-end",
+                    alignItems: "center"
                   }}
                 >
-                  <AccessTimeOutlinedIcon
-                    fontSize='medium'
-                    sx={{ marginRight: "0.5rem !important" }}
-                  />
-                  {isShowTimeLeft
-                    ? `Còn lại: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
-                        seconds < 10 ? `0${seconds}` : seconds
-                      }`
-                    : `Thời gian còn lại`}
-
-                  <Button
-                    onClick={() => {
-                      setIsShowTimeLeft(!isShowTimeLeft);
-                    }}
-                    variant='soft'
-                    color='neutral'
+                  <Box
                     sx={{
+                      padding: "8px 9px 8px 10px",
                       borderRadius: "40px",
-                      marginLeft: "16px",
-                      border: "1px solid #bce3da"
+                      display: "flex",
+                      alignItems: "center",
+                      color: "#005742",
+                      backgroundColor: "#EAF4DD",
+                      fontWeight: "500",
+                      position: "sticky",
+                      top: "0"
                     }}
                   >
-                    {isShowTimeLeft ? "Ẩn" : "Hiện"}
-                  </Button>
+                    <AccessTimeOutlinedIcon
+                      fontSize='medium'
+                      sx={{ marginRight: "0.5rem !important" }}
+                    />
+                    {isShowTimeLeft
+                      ? `Còn lại: ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
+                          seconds < 10 ? `0${seconds}` : seconds
+                        }`
+                      : `Thời gian còn lại`}
+
+                    <Button
+                      onClick={() => {
+                        setIsShowTimeLeft(!isShowTimeLeft);
+                      }}
+                      variant='soft'
+                      color='neutral'
+                      sx={{
+                        borderRadius: "40px",
+                        marginLeft: "16px",
+                        border: "1px solid #bce3da"
+                      }}
+                    >
+                      {isShowTimeLeft ? "Ẩn" : "Hiện"}
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
 
-            <Box
-              sx={{
-                borderRadius: "5px",
-                border: "1px solid #E1E1E1",
-                padding: "20px"
-              }}
-            >
-              <Grid container spacing={7}>
-                {currentQuestionList
-                  .filter(
-                    (question: any) =>
-                      selectedQtype.length === 0 ||
-                      selectedQtype.includes(question.data.question.qtype)
-                  )
-                  .map((question: any, index: number) => (
-                    <React.Fragment key={question.data.question.id}>
-                      <Grid item xs={12} id={convertIdToSlug(question.data.question.id)}>
-                        {question.data.question.qtype === qtype.essay.code ? (
-                          <EssayExamQuestion
-                            page={questionList.findIndex(
-                              (tempQuestion: any) =>
-                                tempQuestion.questionData.id === question.data.question.id
-                            )}
-                            questionState={questionList.find(
-                              (questionInList) =>
-                                questionInList.questionData.id === question.data.question.id
-                            )}
-                            questionEssayQuestion={question.data}
+              <Box
+                sx={{
+                  borderRadius: "5px",
+                  border: "1px solid #E1E1E1",
+                  padding: "20px"
+                }}
+              >
+                <Grid container spacing={7}>
+                  {currentQuestionList
+                    .filter(
+                      (question: any) =>
+                        selectedQtype.length === 0 ||
+                        selectedQtype.includes(question.data.question.qtype)
+                    )
+                    .map((question: any, index: number) => (
+                      <React.Fragment key={question.data.question.id}>
+                        <Grid item xs={12} id={convertIdToSlug(question.data.question.id)}>
+                          {question.data.question.qtype === qtype.essay.code ? (
+                            <EssayExamQuestion
+                              page={questionList.findIndex(
+                                (tempQuestion: any) =>
+                                  tempQuestion.questionData.id === question.data.question.id
+                              )}
+                              questionState={questionList.find(
+                                (questionInList) =>
+                                  questionInList.questionData.id === question.data.question.id
+                              )}
+                              questionEssayQuestion={question.data}
+                            />
+                          ) : question.data.question.qtype === qtype.short_answer.code ? (
+                            <ShortAnswerExamQuestion
+                              page={questionList.findIndex(
+                                (tempQuestion: any) =>
+                                  tempQuestion.questionData.id === question.data.question.id
+                              )}
+                              questionShortAnswer={question.data}
+                              questionState={questionList.find(
+                                (questionInList) =>
+                                  questionInList.questionData.id === question.data.question.id
+                              )}
+                            />
+                          ) : question.data.question.qtype === qtype.multiple_choice.code ? (
+                            <MultipleChoiceExamQuestion
+                              page={questionList.findIndex(
+                                (tempQuestion: any) =>
+                                  tempQuestion.questionData.id === question.data.question.id
+                              )}
+                              questionMultiChoice={question.data}
+                              questionState={questionList.find(
+                                (questionInList) =>
+                                  questionInList.questionData.id === question.data.question.id
+                              )}
+                            />
+                          ) : question.data.question.qtype === qtype.true_false.code ? (
+                            <TrueFalseExamQuestion
+                              page={questionList.findIndex(
+                                (tempQuestion: any) =>
+                                  tempQuestion.questionData.id === question.data.question.id
+                              )}
+                              questionTrueFalseQuestion={question.data}
+                              questionState={questionList.find(
+                                (questionInList) =>
+                                  questionInList.questionData.id === question.data.question.id
+                              )}
+                            />
+                          ) : (
+                            <CodeExamQuestion
+                              page={questionList.findIndex(
+                                (tempQuestion: any) =>
+                                  tempQuestion.questionData.id === question.data.question.id
+                              )}
+                              questionCode={currentCodeQuestionMap[question.data.id]}
+                              questionState={questionList.find(
+                                (questionInList) =>
+                                  questionInList.questionData.id === question.data.question.id
+                              )}
+                              questionId={question.data.question.id}
+                            />
+                          )}
+                        </Grid>
+                        <Grid item xs={12} display={"flex"} justifyContent={"center"}>
+                          <Divider
+                            sx={{
+                              width: "100px"
+                            }}
                           />
-                        ) : question.data.question.qtype === qtype.short_answer.code ? (
-                          <ShortAnswerExamQuestion
-                            page={questionList.findIndex(
-                              (tempQuestion: any) =>
-                                tempQuestion.questionData.id === question.data.question.id
-                            )}
-                            questionShortAnswer={question.data}
-                            questionState={questionList.find(
-                              (questionInList) =>
-                                questionInList.questionData.id === question.data.question.id
-                            )}
-                          />
-                        ) : question.data.question.qtype === qtype.multiple_choice.code ? (
-                          <MultipleChoiceExamQuestion
-                            page={questionList.findIndex(
-                              (tempQuestion: any) =>
-                                tempQuestion.questionData.id === question.data.question.id
-                            )}
-                            questionMultiChoice={question.data}
-                            questionState={questionList.find(
-                              (questionInList) =>
-                                questionInList.questionData.id === question.data.question.id
-                            )}
-                          />
-                        ) : question.data.question.qtype === qtype.true_false.code ? (
-                          <TrueFalseExamQuestion
-                            page={questionList.findIndex(
-                              (tempQuestion: any) =>
-                                tempQuestion.questionData.id === question.data.question.id
-                            )}
-                            questionTrueFalseQuestion={question.data}
-                            questionState={questionList.find(
-                              (questionInList) =>
-                                questionInList.questionData.id === question.data.question.id
-                            )}
-                          />
-                        ) : (
-                          <CodeExamQuestion
-                            page={questionList.findIndex(
-                              (tempQuestion: any) =>
-                                tempQuestion.questionData.id === question.data.question.id
-                            )}
-                            questionCode={currentCodeQuestionMap[question.data.id]}
-                            questionState={questionList.find(
-                              (questionInList) =>
-                                questionInList.questionData.id === question.data.question.id
-                            )}
-                            questionId={question.data.question.id}
-                          />
-                        )}
-                      </Grid>
-                      <Grid item xs={12} display={"flex"} justifyContent={"center"}>
-                        <Divider
-                          sx={{
-                            width: "100px"
-                          }}
-                        />
-                      </Grid>
-                    </React.Fragment>
-                  ))}
+                        </Grid>
+                      </React.Fragment>
+                    ))}
 
-                <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>
-                  {questionPageIndex !== 0 ? (
-                    <Link
-                      to={{
-                        pathname: routes.student.exam.take
-                          .replace(":courseId", courseId ?? examDetails.courseId)
-                          .replace(":examId", examId ?? examDetails.examId),
-                        search: `?page=${questionPageIndex - 1}`
-                      }}
-                      onClick={() => {
-                        handleSaveQuestionState();
-                      }}
-                    >
-                      <Button variant='soft' color='neutral'>
-                        Trang trước
+                  <Grid item xs={12} display={"flex"} justifyContent={"space-between"}>
+                    {questionPageIndex !== 0 ? (
+                      <Link
+                        to={{
+                          pathname: routes.student.exam.take
+                            .replace(":courseId", courseId ?? examDetails.courseId)
+                            .replace(":examId", examId ?? examDetails.examId),
+                          search: `?page=${questionPageIndex - 1}`
+                        }}
+                        onClick={() => {
+                          handleSaveQuestionState();
+                        }}
+                      >
+                        <Button variant='soft' color='neutral'>
+                          Trang trước
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Box></Box>
+                    )}
+                    {questionPageIndex ===
+                    (questionList.length > 0
+                      ? questionList[questionList.length - 1].questionData.page
+                      : -1) ? (
+                      <Button onClick={handleSubmitExam} variant='solid' color='primary'>
+                        Kết thúc bài làm...
                       </Button>
-                    </Link>
-                  ) : (
-                    <Box></Box>
-                  )}
-                  {questionPageIndex ===
-                  (questionList.length > 0
-                    ? questionList[questionList.length - 1].questionData.page
-                    : -1) ? (
-                    <Button onClick={handleSubmitExam} variant='solid' color='primary'>
-                      Kết thúc bài làm...
-                    </Button>
-                  ) : (
-                    <Link
-                      to={{
-                        pathname: routes.student.exam.take
-                          .replace(":courseId", courseId ?? examDetails.courseId)
-                          .replace(":examId", examId ?? examDetails.examId),
-                        search: `?page=${questionPageIndex + 1}`
-                      }}
-                      onClick={() => {
-                        handleSaveQuestionState();
-                      }}
-                    >
-                      <Button onClick={() => {}} variant='solid' color='primary'>
-                        Trang sau
-                      </Button>
-                    </Link>
-                  )}
+                    ) : (
+                      <Link
+                        to={{
+                          pathname: routes.student.exam.take
+                            .replace(":courseId", courseId ?? examDetails.courseId)
+                            .replace(":examId", examId ?? examDetails.examId),
+                          search: `?page=${questionPageIndex + 1}`
+                        }}
+                        onClick={() => {
+                          handleSaveQuestionState();
+                        }}
+                      >
+                        <Button onClick={() => {}} variant='solid' color='primary'>
+                          Trang sau
+                        </Button>
+                      </Link>
+                    )}
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
+          )}
 
-          <Drawer
-            sx={{
-              display: open ? "block" : "none",
-              width: drawerWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                borderTop: "1px solid #E1E1E1",
-                borderRadius: "12px 0px",
+          {!skeleton && (
+            <Drawer
+              sx={{
+                display: open ? "block" : "none",
                 width: drawerWidth,
-                top: `${sidebarStatus.headerHeight + 10}px `
-              }
-            }}
-            variant={drawerVariant}
-            anchor='right'
-            open={open}
-            // ModalProps={{
-            //   BackdropComponent: () => null // Disable the backdrop
-            // }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
-              <IconButton onClick={handleDrawerClose} variant='soft'>
-                {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </Box>
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  borderTop: "1px solid #E1E1E1",
+                  borderRadius: "12px 0px",
+                  width: drawerWidth,
+                  top: `${sidebarStatus.headerHeight + 10}px `
+                }
+              }}
+              variant={drawerVariant}
+              anchor='right'
+              open={open}
+              // ModalProps={{
+              //   BackdropComponent: () => null // Disable the backdrop
+              // }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
+                <IconButton onClick={handleDrawerClose} variant='soft'>
+                  {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+              </Box>
 
-            <Box className={classes.drawerBody}>
-              <Box className={classes.drawerFieldContainer}>
-                <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
-                  <Grid item xs={12}>
-                    <TextTitle className={classes.drawerTextTitle}>
-                      {t("take_exam_question_navigation_title")}
-                    </TextTitle>
+              <Box className={classes.drawerBody}>
+                <Box className={classes.drawerFieldContainer}>
+                  <Grid container maxHeight={"80dvh"} overflow={"auto"} rowSpacing={3}>
+                    <Grid item xs={12}>
+                      <TextTitle className={classes.drawerTextTitle}>
+                        {t("take_exam_question_navigation_title")}
+                      </TextTitle>
 
-                    <TitleWithInfoTip
-                      title={t("take_exam_question_name")}
-                      fontSize='13px'
-                      fontWeight='500'
-                    />
-                    <Autocomplete
-                      fullWidth
-                      size='small'
-                      options={questionList.filter(
-                        (value) =>
-                          selectedQtype.length === 0 ||
-                          selectedQtype.includes(value.questionData.qtype)
-                      )}
-                      getOptionLabel={(params) =>
-                        params.questionData.name ? `${params.questionData.name}` : ""
-                      }
-                      sx={{
-                        marginBottom: "16px",
-                        borderRadius: "12px",
-                        "& .MuiOutlinedInput-root": { borderRadius: "12px" }
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          placeholder='Nhập câu hỏi'
-                          size='small'
-                          sx={{ borderRadius: "12px" }}
-                        />
-                      )}
-                      isOptionEqualToValue={(option, value) =>
-                        option.questionData.name === value.questionData.name
-                      }
-                    />
-                    <TitleWithInfoTip
-                      title={t("take_exam_question_sort_question")}
-                      fontSize='13px'
-                      fontWeight='500'
-                    />
-                    <Autocomplete
-                      disablePortal
-                      fullWidth
-                      multiple
-                      size='small'
-                      limitTags={2}
-                      options={[
-                        { label: t("common_question_type_essay") },
-                        { label: t("common_question_type_multi_choice") },
-                        { label: t("common_question_type_yes_no") },
-                        { label: t("common_question_type_short") }
-                      ]}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          // placeholder={"Lọc câu hỏi"}
-                          sx={{ borderRadius: "12px" }}
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      )}
-                      sx={{
-                        marginBottom: "16px",
-                        borderRadius: "12px",
-                        "& .MuiOutlinedInput-root": { borderRadius: "12px" }
-                      }}
-                      onChange={selectQtypeHandler}
-                      isOptionEqualToValue={(option, value) => option.label === value.label}
-                    />
-
-                    <Stack direction='row' spacing={1} marginBottom={"16px"}>
                       <TitleWithInfoTip
-                        title={t("common_flagged_question")}
+                        title={t("take_exam_question_name")}
                         fontSize='13px'
                         fontWeight='500'
                       />
-                      <Checkbox
-                        onChange={(event) => {
-                          setShowFlaggedQuestion(event.target.checked);
+                      <Autocomplete
+                        fullWidth
+                        size='small'
+                        options={questionList.filter(
+                          (value) =>
+                            selectedQtype.length === 0 ||
+                            selectedQtype.includes(value.questionData.qtype)
+                        )}
+                        getOptionLabel={(params) =>
+                          params.questionData.name ? `${params.questionData.name}` : ""
+                        }
+                        sx={{
+                          marginBottom: "16px",
+                          borderRadius: "12px",
+                          "& .MuiOutlinedInput-root": { borderRadius: "12px" }
                         }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder='Nhập câu hỏi'
+                            size='small'
+                            sx={{ borderRadius: "12px" }}
+                          />
+                        )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.questionData.name === value.questionData.name
+                        }
                       />
-                    </Stack>
+                      <TitleWithInfoTip
+                        title={t("take_exam_question_sort_question")}
+                        fontSize='13px'
+                        fontWeight='500'
+                      />
+                      <Autocomplete
+                        disablePortal
+                        fullWidth
+                        multiple
+                        size='small'
+                        limitTags={2}
+                        options={[
+                          { label: t("common_question_type_essay") },
+                          { label: t("common_question_type_multi_choice") },
+                          { label: t("common_question_type_yes_no") },
+                          { label: t("common_question_type_short") }
+                        ]}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            // placeholder={"Lọc câu hỏi"}
+                            sx={{ borderRadius: "12px" }}
+                            InputLabelProps={{ shrink: true }}
+                          />
+                        )}
+                        sx={{
+                          marginBottom: "16px",
+                          borderRadius: "12px",
+                          "& .MuiOutlinedInput-root": { borderRadius: "12px" }
+                        }}
+                        onChange={selectQtypeHandler}
+                        isOptionEqualToValue={(option, value) => option.label === value.label}
+                      />
 
-                    <Grid container spacing={1} marginBottom={"10px"} sx={{ maxHeight: "30dvh" }}>
-                      {questionList
-                        .filter(
-                          (question) =>
-                            (selectedQtype.length === 0 ||
-                              selectedQtype.includes(question.questionData.qtype)) &&
-                            (showFlaggedQuestion ? question.flag : true)
-                        )
-                        .map((question, index) => (
-                          <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
-                            <Badge
-                              color='neutral'
-                              variant='outlined'
-                              badgeContent={
-                                question.questionData.qtype === qtype.essay.code ? (
-                                  <ModeIcon sx={{ width: "15px", height: "15px" }} />
-                                ) : question.questionData.qtype === qtype.short_answer.code ? (
-                                  <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                                ) : question.questionData.qtype === qtype.true_false.code ? (
-                                  <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                                ) : question.questionData.qtype === "CODE" ? (
-                                  <CodeRoundedIcon sx={{ width: "15px", height: "15px" }} />
-                                ) : (
-                                  <FormatListBulletedIcon sx={{ width: "15px", height: "15px" }} />
-                                )
-                              }
-                              anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right"
-                              }}
-                            >
+                      <Stack direction='row' spacing={1} marginBottom={"16px"}>
+                        <TitleWithInfoTip
+                          title={t("common_flagged_question")}
+                          fontSize='13px'
+                          fontWeight='500'
+                        />
+                        <Checkbox
+                          onChange={(event) => {
+                            setShowFlaggedQuestion(event.target.checked);
+                          }}
+                        />
+                      </Stack>
+
+                      <Grid container spacing={1} marginBottom={"10px"} sx={{ maxHeight: "30dvh" }}>
+                        {questionList
+                          .filter(
+                            (question) =>
+                              (selectedQtype.length === 0 ||
+                                selectedQtype.includes(question.questionData.qtype)) &&
+                              (showFlaggedQuestion ? question.flag : true)
+                          )
+                          .map((question, index) => (
+                            <Grid item key={index} marginTop={"16px"} marginRight={"8px"}>
                               <Badge
                                 color='neutral'
                                 variant='outlined'
                                 badgeContent={
-                                  <FlagIcon
-                                    sx={{
-                                      width: "10px",
-                                      height: "15px",
-                                      color: "red"
-                                    }}
-                                  />
+                                  question.questionData.qtype === qtype.essay.code ? (
+                                    <ModeIcon sx={{ width: "15px", height: "15px" }} />
+                                  ) : question.questionData.qtype === qtype.short_answer.code ? (
+                                    <ShortTextRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                  ) : question.questionData.qtype === qtype.true_false.code ? (
+                                    <RuleRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                  ) : question.questionData.qtype === "CODE" ? (
+                                    <CodeRoundedIcon sx={{ width: "15px", height: "15px" }} />
+                                  ) : (
+                                    <FormatListBulletedIcon
+                                      sx={{ width: "15px", height: "15px" }}
+                                    />
+                                  )
                                 }
                                 anchorOrigin={{
-                                  vertical: "top",
+                                  vertical: "bottom",
                                   horizontal: "right"
                                 }}
-                                invisible={!question.flag}
                               >
-                                <Button
-                                  variant={"outlined"}
-                                  sx={{
-                                    border: currentQuestionList.some(
-                                      (questionInList: any) =>
-                                        questionInList.data.question.id === question.questionData.id
-                                    )
-                                      ? "2px solid #002db3"
-                                      : "2px solid #e1e1e1",
-                                    borderRadius: "1000px",
-                                    width: "40px",
-                                    height: "40px",
-                                    backgroundColor: question.answered ? "#e1e1e1" : ""
+                                <Badge
+                                  color='neutral'
+                                  variant='outlined'
+                                  badgeContent={
+                                    <FlagIcon
+                                      sx={{
+                                        width: "10px",
+                                        height: "15px",
+                                        color: "red"
+                                      }}
+                                    />
+                                  }
+                                  anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right"
                                   }}
-                                  color={
-                                    currentQuestionList.some(
-                                      (questionInList: any) =>
-                                        questionInList.data.question.id === question.questionData.id
-                                    )
-                                      ? "primary"
-                                      : "neutral"
-                                  }
-                                  onClick={() =>
-                                    handleQuestionNavigateButton(question.questionData.id)
-                                  }
+                                  invisible={!question.flag}
                                 >
-                                  {questionList.findIndex(
-                                    (tempQuestion: any) =>
-                                      tempQuestion.questionData.id === question.questionData.id
-                                  ) + 1}
-                                </Button>
+                                  <Button
+                                    variant={"outlined"}
+                                    sx={{
+                                      border: currentQuestionList.some(
+                                        (questionInList: any) =>
+                                          questionInList.data.question.id ===
+                                          question.questionData.id
+                                      )
+                                        ? "2px solid #002db3"
+                                        : "2px solid #e1e1e1",
+                                      borderRadius: "1000px",
+                                      width: "40px",
+                                      height: "40px",
+                                      backgroundColor: question.answered ? "#e1e1e1" : ""
+                                    }}
+                                    color={
+                                      currentQuestionList.some(
+                                        (questionInList: any) =>
+                                          questionInList.data.question.id ===
+                                          question.questionData.id
+                                      )
+                                        ? "primary"
+                                        : "neutral"
+                                    }
+                                    onClick={() =>
+                                      handleQuestionNavigateButton(question.questionData.id)
+                                    }
+                                  >
+                                    {questionList.findIndex(
+                                      (tempQuestion: any) =>
+                                        tempQuestion.questionData.id === question.questionData.id
+                                    ) + 1}
+                                  </Button>
+                                </Badge>
                               </Badge>
-                            </Badge>
-                          </Grid>
-                        ))}
+                            </Grid>
+                          ))}
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                      {/* <Grid item justifyContent={"center"}>
+                    <Grid item xs={12}>
+                      <Grid container spacing={1}>
+                        {/* <Grid item justifyContent={"center"}>
                         <Pagination count={99} />
                       </Grid> */}
-                      <Grid item justifyContent={"center"} xs={12}>
-                        <Button onClick={handleSubmitExam} variant='soft' color='primary' fullWidth>
-                          Kết thúc bài làm...
-                        </Button>
+                        <Grid item justifyContent={"center"} xs={12}>
+                          <Button
+                            onClick={handleSubmitExam}
+                            variant='soft'
+                            color='primary'
+                            fullWidth
+                          >
+                            Kết thúc bài làm...
+                          </Button>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
-          </Drawer>
+            </Drawer>
+          )}
         </Box>
       </Grid>
     </>

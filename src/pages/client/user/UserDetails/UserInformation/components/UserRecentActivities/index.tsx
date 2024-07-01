@@ -3,40 +3,54 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
-import { Card, Divider, Link, Tab, Tabs } from "@mui/material";
+import { Card, Divider, Tab, Tabs } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import { useCallback, useEffect, useState } from "react";
 import UserRecentSharedSolution from "./components/UserRecentSharedSolution";
 import UserRecentCodeQuestion from "./components/UserRecentCodeQuestion";
 import classes from "./styles.module.scss";
 import CustomHeatMap from "components/heatmap/CustomHeatMap";
-import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink } from "react-router-dom";
-import { routes } from "routes/routes";
 import { useDispatch } from "react-redux";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setErrorMess } from "reduxes/AppStatus";
+import { PaginationList } from "models/general";
+import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
+
+export enum ETab {
+  PROBLEM = 0,
+  SHARED_SOLUTION = 1
+}
 
 export enum ESharedSolutionType {
   RECENT = 0,
   MOST_COMMENT = 1
 }
+
 const UserRecentActivities = () => {
   const { t } = useTranslation();
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState<ETab>(ETab.PROBLEM);
   const [sharedSolutionTypeIndex, setSharedSolutionTypeIndex] = useState<ESharedSolutionType>(
     ESharedSolutionType.RECENT
   );
 
-  const [data, setData] = useState<
+  const [heatMapData, setHeatMapData] = useState<
     {
       date: string;
       count: number;
     }[]
   >([]);
+  const [isLoadingCertificatesCompleted, setIsLoadingCertificatesCompleted] =
+    useState<boolean>(false);
+  const [certificatesCompleted, setCertificatesCompleted] = useState<
+    PaginationList<CertificateCourseEntity>
+  >({
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0,
+    items: []
+  });
 
   const dispatch = useDispatch();
 
@@ -48,7 +62,7 @@ const UserRecentActivities = () => {
           date: item.date,
           count: item.numOfSubmission
         }));
-        setData(formattedData);
+        setHeatMapData(formattedData);
       } catch (error: any) {
         console.error("error", error);
         if (error.code === 401 || error.code === 403) {
@@ -69,9 +83,47 @@ const UserRecentActivities = () => {
     fetchRecentHeatMap();
   }, [dispatch, handleGetHeatMap]);
 
+  // const handleGetMyCompletedCerCourse = useCallback(
+  //   async ({ pageNo = 0, pageSize = 4 }) => {
+  //     setIsLoadingCertificatesCompleted(true);
+  //     try {
+  //       const getMyCompletedCerCourseResponse =
+  //         await CertificateCourseService.getMyCompletedCertificateCourses();
+  //       setCertificatesCompleted({
+  //         currentPage: getMyCompletedCerCourseResponse.currentPage,
+  //         totalItems: getMyCompletedCerCourseResponse.totalItems,
+  //         totalPages: getMyCompletedCerCourseResponse.totalPages,
+  //         items: getMyCompletedCerCourseResponse.certificateCourses
+  //       });
+  //     } catch (error: any) {
+  //       console.error("error", error);
+  //       if (error.code === 401 || error.code === 403) {
+  //         dispatch(setErrorMess(t("common_please_login_to_continue")));
+  //       }
+  //     }
+  //     setIsLoadingCertificatesCompleted(false);
+  //   },
+  //   [dispatch, t]
+  // );
+
+  // useEffect(() => {
+  //   const fetchMyCompletedCerCourse = async () => {
+  //     // dispatch(setInititalLoading(true));
+  //     await handleGetMyCompletedCerCourse({});
+  //     // dispatch(setInititalLoading(false));
+  //   };
+
+  //   fetchMyCompletedCerCourse();
+  // }, [dispatch, handleGetMyCompletedCerCourse]);
+
+  // const handlePageChangeCertificateCourses = (event: React.ChangeEvent<unknown>, value: number) => {
+  //   setPageNo(value);
+  //   handleGetMyCompletedCerCourse({ pageNo: pageNo - 1 });
+  // };
+
   return (
     <Box>
-      <Card
+      {/* <Card
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -79,8 +131,8 @@ const UserRecentActivities = () => {
         }}
       >
         <Box className={classes.formBody}>
-          <Heading1 fontWeight={"500"} translation-key='user_detail_certification'>
-            {t("user_detail_certification")}
+          <Heading1 fontWeight={"500"} translation-key='user_detail_completed_certification'>
+            {t("user_detail_completed_certification")}
           </Heading1>
           <Divider />
           <Box
@@ -91,21 +143,78 @@ const UserRecentActivities = () => {
               gap: "20px"
             }}
           >
-            <ParagraphBody translation-key='user_detail_non_certification'>
-              {t("user_detail_non_certification")}
-            </ParagraphBody>
-            <ParagraphBody translation-key='user_detail_get_certification' colorname='--blue-2'>
-              <Link
-                component={RouterLink}
-                to={routes.user.course_certificate.root}
-                className={classes.textLink}
+            {isLoadingCertificatesCompleted ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: "10px"
+                }}
               >
-                {t("user_detail_get_certification")} <ChevronRightIcon />
-              </Link>
-            </ParagraphBody>
+                <CircularProgress />
+              </Box>
+            ) : certificatesCompleted.items.length === 0 ? (
+              <>
+                <ParagraphBody translation-key='user_detail_non_certification'>
+                  {t("user_detail_non_certification")}
+                </ParagraphBody>
+                <ParagraphBody translation-key='user_detail_get_certification' colorname='--blue-2'>
+                  <Link
+                    component={RouterLink}
+                    to={routes.user.course_certificate.root}
+                    className={classes.textLink}
+                  >
+                    {t("user_detail_get_certification")} <ChevronRightIcon />
+                  </Link>
+                </ParagraphBody>
+              </>
+            ) : (
+              <Stack direction={"column"} gap={2}>
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+                    <TableBody>
+                      {certificatesCompleted.items.map((course) => (
+                        <StyledTableRow key={course.certificateCourseId}>
+                          <StyledTableCell component='th' scope='row'>
+                            <Stack direction={"row"} alignItems={"center"} gap={1}>
+                              <Box className={classes.imgCourse}>
+                                <img alt='img course' src={course?.topic?.thumbnailUrl} />
+                              </Box>
+                              <Grid className={classes.nameCourse}>
+                                <Heading4>{course?.name || ""}</Heading4>
+                              </Grid>
+                            </Stack>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <CustomPagination
+                    count={certificatesCompleted.totalPages}
+                    page={pageNo}
+                    handlePageChange={handlePageChangeCertificateCourses}
+                    showFirstButton
+                    showLastButton
+                    size={"large"}
+                  />
+                </Grid>
+              </Stack>
+            )}
           </Box>
         </Box>
-      </Card>
+      </Card> */}
 
       <Card
         sx={{
@@ -119,7 +228,7 @@ const UserRecentActivities = () => {
             {t("user_detail_activity_stats")}
           </Heading1>
           <Divider />
-          <CustomHeatMap value={data} />
+          <CustomHeatMap value={heatMapData} />
         </Box>
       </Card>
 
@@ -150,15 +259,17 @@ const UserRecentActivities = () => {
                 icon={<NoteAltIcon />}
                 iconPosition='start'
                 translation-key='user_detail_problem'
+                value={ETab.PROBLEM}
               />
               <Tab
                 label={t("user_detail_shared_solution")}
                 icon={<AssignmentTurnedInIcon />}
                 iconPosition='start'
                 translation-key='user_detail_shared_solution'
+                value={ETab.SHARED_SOLUTION}
               />
             </Tabs>
-            {tabIndex === 0 ? (
+            {tabIndex === ETab.PROBLEM ? (
               <></>
             ) : (
               <Tabs

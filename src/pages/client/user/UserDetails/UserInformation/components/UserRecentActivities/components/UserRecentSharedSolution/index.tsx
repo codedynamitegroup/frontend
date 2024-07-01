@@ -14,15 +14,15 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
 import CustomPagination from "components/common/pagination/CustomPagination";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SharedSolutionEntity } from "models/codeAssessmentService/entity/SharedSolutionEntity";
-import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SharedSolutionService } from "services/codeAssessmentService/SharedSolutionService";
 import { setErrorMess } from "reduxes/AppStatus";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
 import { ESharedSolutionType } from "../..";
+import { CircularProgress } from "@mui/joy";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -53,7 +53,6 @@ export default function UserRecentSharedSolution({
 }: UserRecentSharedSolutionProps) {
   const { t } = useTranslation();
   const [data, setData] = useState<{
-    isLoading: boolean;
     sharedSolutions: {
       sharedSolutions: SharedSolutionEntity[];
       currentPage: number;
@@ -61,7 +60,6 @@ export default function UserRecentSharedSolution({
       totalPages: number;
     };
   }>({
-    isLoading: false,
     sharedSolutions: {
       sharedSolutions: [],
       currentPage: 0,
@@ -69,14 +67,8 @@ export default function UserRecentSharedSolution({
       totalPages: 0
     }
   });
-  const [searchParams] = useSearchParams();
-  const pageNo = useMemo(
-    () =>
-      Number.isNaN(parseInt(searchParams.get("page") || "1"))
-        ? 1
-        : parseInt(searchParams.get("page") || "1"),
-    [searchParams]
-  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageNo, setPageNo] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -92,6 +84,7 @@ export default function UserRecentSharedSolution({
     }) => {
       const sortBy =
         sharedSolutionType === ESharedSolutionType.RECENT ? "createdAt" : "totalComment";
+      setIsLoading(true);
       try {
         const getRecentSharedSolutionResponse = await SharedSolutionService.getRecentSharedSolution(
           pageSize,
@@ -114,27 +107,22 @@ export default function UserRecentSharedSolution({
           dispatch(setErrorMess(t("common_please_login_to_continue")));
         }
       }
+      setIsLoading(false);
     },
     [dispatch, t, sharedSolutionType]
   );
 
   useEffect(() => {
     const fetchRecentSharedSolution = async () => {
-      // dispatch(setInititalLoading(true));
       await handleRecentSharedSolution({});
-      // dispatch(setInititalLoading(false));
     };
 
     fetchRecentSharedSolution();
   }, [dispatch, handleRecentSharedSolution]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    // navigate({
-    //   pathname: routes.user.contest.root,
-    //   search: createSearchParams({
-    //     page: value.toString()
-    //   }).toString()
-    // });
+    setPageNo(value);
+    handleRecentSharedSolution({ pageNo: pageNo - 1 });
   };
 
   const [currentLang, setCurrentLang] = useState(() => {
@@ -148,7 +136,20 @@ export default function UserRecentSharedSolution({
 
   return (
     <>
-      {data.sharedSolutions.sharedSolutions.length === 0 ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: "10px"
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : data.sharedSolutions.sharedSolutions.length === 0 ? (
         <EmptyListView />
       ) : (
         <>

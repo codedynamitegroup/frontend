@@ -36,14 +36,14 @@ const LanguageSelector = () => {
               {currentLang === "vi" ? (
                 <>
                   <img alt='upload' src={images.flagIcon.flagVietnam} className={classes.imgFile} />
-                  <ParagraphBody colorname='--gray-60' fontWeight={600}>
+                  <ParagraphBody colorname='--gray-60' fontWeight={500}>
                     {i18n.t("language_vn")}
                   </ParagraphBody>
                 </>
               ) : (
                 <>
                   <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
-                  <ParagraphBody colorname='--gray-60' fontWeight={600}>
+                  <ParagraphBody colorname='--gray-60' fontWeight={500}>
                     {i18n.t("language_us")}
                   </ParagraphBody>
                 </>
@@ -68,7 +68,9 @@ const LanguageSelector = () => {
                 {language === "en" ? (
                   <Box className={classes.currentLangContainer} translation-key='language_us'>
                     <img alt='upload' src={images.flagIcon.flagUs} className={classes.imgFile} />
-                    {i18n.t("language_us")}
+                    <ParagraphBody colorname='--gray-60' fontWeight={500}>
+                      {i18n.t("language_us")}
+                    </ParagraphBody>
                   </Box>
                 ) : (
                   <Box className={classes.currentLangContainer} translation-key='language_vn'>
@@ -77,7 +79,10 @@ const LanguageSelector = () => {
                       src={images.flagIcon.flagVietnam}
                       className={classes.imgFile}
                     />
-                    {i18n.t("language_vn")}
+
+                    <ParagraphBody colorname='--gray-60' fontWeight={500}>
+                      {i18n.t("language_us")}
+                    </ParagraphBody>
                   </Box>
                 )}
               </MenuItem>

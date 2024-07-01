@@ -3,7 +3,6 @@ import { User } from "models/authService/entity/user";
 import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { selectCurrentUser, selectLoginStatus } from "reduxes/Auth";
 import { setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
@@ -12,10 +11,7 @@ import { UserService } from "services/authService/UserService";
 export default function useAuth() {
   const loggedUser: User = useSelector(selectCurrentUser);
   const isBelongToOrganization =
-    loggedUser &&
-    loggedUser?.organization !== null &&
-    loggedUser?.organization.isVerified === true &&
-    loggedUser?.organization.isDeleted === false;
+    loggedUser && loggedUser?.organization !== null && loggedUser?.organization.isDeleted === false;
   const loginStatus: Boolean = useSelector(selectLoginStatus);
   const dispatch = useDispatch();
   const navigate = useNavigate();

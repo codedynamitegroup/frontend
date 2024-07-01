@@ -4,6 +4,9 @@ import { SubmissionAssignmentEntity } from "models/courseService/entity/Submissi
 interface InitialState {
   isLoading: boolean;
   submissionAssignments: SubmissionAssignmentEntity[];
+  currentPage?: number;
+  totalItems?: number;
+  totalPages?: number;
   submissionAssignmentDetails: SubmissionAssignmentEntity | null;
   amountSubmissionToGrade: number;
   amountSubmission: number;
@@ -26,6 +29,9 @@ const submissionAssignmentSlice = createSlice({
     },
     setSubmissionAssignments: (state, action) => {
       state.submissionAssignments = action.payload.submissionAssignments;
+      state.currentPage = action.payload.currentPage;
+      state.totalItems = action.payload.totalItems;
+      state.totalPages = action.payload.totalPages;
     },
     setSubmissionAssignmentDetails: (state, action) => {
       state.submissionAssignmentDetails = action.payload;
