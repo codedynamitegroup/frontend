@@ -3,13 +3,21 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Menu from "@mui/material/Menu";
 import { Divider, Stack, Box, Chip } from "@mui/material";
 import classes from "./styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextTitle from "components/text/TextTitle";
 import NotificationItem, { NotificationType } from "./component/NotificationItem";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { SocketData } from "reduxes/Socket";
+import { setSuccessMess } from "reduxes/AppStatus";
 
 const HeaderNotification = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const socketState = useSelector((state: RootState) => state.socket);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterChips, setFilterChips] = useState({ all: true, event: false, sync: false });
   const resetFilterChips = { all: false, event: false, sync: false };
@@ -20,6 +28,20 @@ const HeaderNotification = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    if (socketState && socketState.socket) {
+      socketState.socket.on("get_message", (data: SocketData) => {
+        dispatch(setSuccessMess(data.message.fullMessage));
+      });
+    }
+
+    return () => {
+      if (socketState && socketState.socket) {
+        socketState.socket.off("get_message");
+      }
+    };
+  }, [dispatch, socketState]);
 
   return (
     <>
@@ -81,7 +103,7 @@ const HeaderNotification = () => {
           </Stack>
 
           <Divider sx={{ marginTop: "8px" }} />
-          <NotificationItem
+          {/* <NotificationItem
             className={classes["notification-item"]}
             type={NotificationType.DEADLINE}
             content={t("notification_title_deadline_content", {
@@ -114,7 +136,7 @@ const HeaderNotification = () => {
             type={NotificationType.SYNC}
             content={`${t("notification_title_system_sync_content", { courseName: "Nhập môn lập trình" })}`}
             time='12/03/2024 11:00:00'
-          />
+          /> */}
         </Stack>
       </Menu>
     </>
