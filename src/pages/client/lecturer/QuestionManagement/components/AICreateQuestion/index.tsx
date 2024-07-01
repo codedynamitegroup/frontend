@@ -76,7 +76,6 @@ const AICreationQuestion = (props: Props) => {
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
-  const [language, setLanguage] = useState<ELanguage>(ELanguage.Vietnamese);
   const [qamountAnswer, setQamountAnswer] = useState<EAmountAnswer>(EAmountAnswer.Three);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
@@ -97,29 +96,28 @@ const AICreationQuestion = (props: Props) => {
       return prevQuestions.filter((q) => q.id !== index);
     });
   };
-
   function isResponseFormatQuestion(obj: any): obj is IFormatQuestion {
     return typeof obj.qtypeId === "number" && typeof obj.questions === "object";
   }
 
   const handleGenerate = async () => {
     setLoading(true);
-    const questionsTemp = [];
     setQuestions([]);
     try {
-      const chunk = await CreateQuestionByAI(
+      for await (const chunk of CreateQuestionByAI(
         topic,
         desciption,
         qtype,
         qamountAnswer,
         number_question,
-        level,
-        language
-      );
-      if (chunk && isResponseFormatQuestion(chunk)) {
-        questionsTemp.push(...chunk?.questions);
-        setQuestions(questionsTemp);
-        setLengthQuestion(questionsTemp.length);
+        level
+      )) {
+        if (chunk && isResponseFormatQuestion(chunk)) {
+          console.log("chunk", chunk.questions);
+          const questionsTemp = chunk?.questions;
+          setQuestions(questionsTemp);
+          setLengthQuestion(questionsTemp.length);
+        }
       }
     } catch (error) {
       console.error("Error generating text:", error);
@@ -265,22 +263,6 @@ const AICreationQuestion = (props: Props) => {
                     <MenuItem value={EQuestionLevel.Easy}>Dễ</MenuItem>
                     <MenuItem value={EQuestionLevel.Medium}>Trung bình</MenuItem>
                     <MenuItem value={EQuestionLevel.Hard}>Khó</MenuItem>
-                  </Select>
-                </Grid>
-
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Ngôn ngữ</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Select
-                    value={language}
-                    onChange={(e: any) => setLanguage(e.target.value)}
-                    fullWidth={true}
-                    size='small'
-                    required
-                  >
-                    <MenuItem value={ELanguage.Vietnamese}>Tiếng Việt</MenuItem>
-                    <MenuItem value={ELanguage.English}>Tiếng Anh</MenuItem>
                   </Select>
                 </Grid>
               </Grid>
