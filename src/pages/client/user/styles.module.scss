@@ -1,8 +1,19 @@
-.userPageRoot {
-  position: relative;
+#userPageRoot {
+  display: grid;
+  grid-template-rows: 1fr auto; /* Đảm bảo footer nằm ở hàng cuối cùng */
+  grid-template-columns: 1em 1fr 1em;
+  min-height: 100vh; /* Đảm bảo trang chiếm toàn bộ chiều cao viewport */
   width: 100vw;
-  height: 100%;
-  display: flex;
-  flex-direction: column !important;
   background-color: var(--white);
+  position: relative;
+}
+
+#userPageMain {
+  grid-column: 1 / -1;
+  grid-row: 1; /* Đặt phần chính ở hàng đầu tiên */
+}
+
+footer {
+  grid-column: 1 / -1;
+  grid-row: 2; /* Đặt footer ở hàng cuối cùng */
 }

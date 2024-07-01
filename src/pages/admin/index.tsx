@@ -51,7 +51,7 @@ const SystemAdminHomepage = (props: Props) => {
     <Grid className={classes.root}>
       <SidebarSystemAdmin open={open} toggleDrawer={toggleDrawer}>
         {/* <Box className={classes.container}> */}
-        <Box className={classes.body}>
+        <Box className={classes.adminBody}>
           <Routes>
             <Route path={"contests"} element={<ContestManagement />} />
             <Route path={"contests/create"} element={<CreateContest />} />
