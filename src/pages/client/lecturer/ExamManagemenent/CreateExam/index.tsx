@@ -83,7 +83,12 @@ import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
-
+import { CourseService } from "services/courseService/CourseService";
+import { useEffect, useState } from "react";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 const drawerWidth = 400;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -149,109 +154,53 @@ export const OVERDUE_HANDLING = {
   AUTOABANDON: "autoabandon"
 };
 
+interface FormData {
+  courseId: string;
+  name: string;
+  intro: string;
+  score: number;
+  maxScore: number;
+  timeOpen: Date;
+  timeClose: Date;
+  timeLimit: number;
+  overdueHandling: string;
+  canRedoQuestions: boolean;
+  maxAttempts: number;
+  shuffleQuestions: boolean;
+  gradeMethod: string;
+  questionIds: [
+    {
+      questionId: string;
+      page: number;
+    }
+  ];
+}
+
 export default function ExamCreated() {
-  const { courseId } = useParams();
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
   const dispatch = useDispatch();
-  const submitHandler = () => {
-    const questionIds = questionCreate.questionCreate.map((item) => ({
-      questionId: item.id,
-      page: 0
-    }));
-
-    const timeLimit = (() => {
-      switch (examTimeLimitUnit) {
-        case "weeks":
-          return questionCreate.timeLimit * 604800;
-        case "days":
-          return questionCreate.timeLimit * 86400;
-        case "hours":
-          return questionCreate.timeLimit * 3600;
-        case "minutes":
-          return questionCreate.timeLimit * 60;
-        case "seconds":
-          return questionCreate.timeLimit;
-        default:
-          return 0;
-      }
-    })();
-
-    const newExam: ExamCreateRequest = {
-      courseId: courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290",
-      name: questionCreate.examName,
-      intro: questionCreate.examDescription,
-      score: questionCreate.maxScore,
-      maxScore: questionCreate.maxScore,
-      timeOpen: new Date(questionCreate.timeOpen),
-      timeClose: new Date(questionCreate.timeClose),
-      timeLimit: timeLimit,
-      overdueHandling: questionCreate.overdueHandling.toUpperCase(),
-      canRedoQuestions: true,
-      maxAttempts: questionCreate.maxAttempt,
-      shuffleQuestions: questionCreate.shuffleQuestions,
-      gradeMethod: "QUIZ_GRADEHIGHEST",
-      questionIds: questionIds
-    };
-    ExamService.createExam(newExam)
-      .then((response) => {
-        console.log(response);
-        dispatch(clearQuestionCreate());
-        dispatch(clearExamCreate());
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
   const user: User = useSelector(selectCurrentUser);
-
-  const handleGetQuestionBankCategories = async ({
-    search = "",
-    pageNo = 0,
-    pageSize = 99,
-    organizationId = user.organization.organizationId
-  }: {
-    search?: string;
-    pageNo?: number;
-    pageSize?: number;
-    organizationId?: string;
-  }) => {
-    try {
-      const getQuestionBankCategoryResponse =
-        await QuestionBankCategoryService.getQuestionBankCategories({
-          search,
-          organizationId,
-          pageNo,
-          pageSize
-        });
-      dispatch(setCategories(getQuestionBankCategoryResponse));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const { t } = useTranslation();
-  const { width } = useWindowDimensions();
   const navigate = useNavigate();
   const theme = useTheme();
+  const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
+  const dataGridToolbar = { enableToolbar: true };
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const header2Ref = React.useRef<HTMLDivElement>(null);
+  const { courseId } = useParams();
+  const { t } = useTranslation();
+  const { width } = useWindowDimensions();
+  const { height: header2Height } = useBoxDimensions({
+    ref: header2Ref
+  });
   const [open, setOpen] = React.useState(true);
-  const [examName, setExamName] = React.useState("");
-  const [examDescription, setExamDescription] = React.useState("");
-  const [examMaximumGrade, setExamMaximumGrade] = React.useState(10);
-  const [examOpenTime, setExamOpenTime] = React.useState<Moment | null>(moment());
-  const [examCloseTime, setExamCloseTime] = React.useState<Moment | null>(moment());
   const [examTimeLimitUnit, setExamTimeLimitUnit] = React.useState("minutes");
-  const [examTimeLimitNumber, setExamTimeLimitNumber] = React.useState(0);
   const [examTimeLimitEnabled, setExamTimeLimitEnabled] = React.useState(false);
-  const [overdueHandling, setOverdueHandling] = React.useState<string>(OVERDUE_HANDLING.AUTOSUBMIT);
-  const [maxAttempts, setMaxAttempts] = React.useState(0);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = React.useState(false);
   const [isAddQuestionFromBankDialogOpen, setIsAddQuestionFromBankDialogOpen] =
     React.useState(false);
   const [questionType, setQuestionType] = React.useState("essay");
-
   const [loading, setLoading] = React.useState(false);
   const [assignmentAvailability, setAssignmentAvailability] = React.useState("0");
   const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
@@ -260,7 +209,7 @@ export default function ExamCreated() {
   const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
   const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
-
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
       { field: "id", headerName: "STT", minWidth: 1 },
@@ -282,16 +231,6 @@ export default function ExamCreated() {
         field: "defaultMark",
         headerName: t("assignment_management_max_score"),
         minWidth: 50
-        // renderCell: (params) => (
-        //   <InputTextField
-        //     type='number'
-        //     value={params.value}
-        //     onChange={(e) => console.log(e.target.value)}
-        //     placeholder={t("exam_management_create_enter_score")}
-        //     translation-key='exam_management_create_enter_score'
-        //     backgroundColor='white'
-        //   />
-        // )
       },
       {
         field: "qtypeText",
@@ -341,55 +280,80 @@ export default function ExamCreated() {
       t
     ]
   );
-  const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
-  const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = () => {};
-  const pageChangeHandler = (model: GridPaginationModel) => {
-    console.log(model);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId ?? "");
+    };
+
+    fetchData();
+  }, [courseId]);
+
+  useEffect(() => {
+    if (width < 1080) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [width]);
+
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
+  const submitHandler = () => {
+    const questionIds = questionCreate.questionCreate.map((item) => ({
+      questionId: item.id,
+      page: 0
+    }));
 
-  function handleClick() {
-    setLoading(true);
-    submitHandler();
+    const timeLimit = (() => {
+      switch (examTimeLimitUnit) {
+        case "weeks":
+          return questionCreate.timeLimit * 604800;
+        case "days":
+          return questionCreate.timeLimit * 86400;
+        case "hours":
+          return questionCreate.timeLimit * 3600;
+        case "minutes":
+          return questionCreate.timeLimit * 60;
+        case "seconds":
+          return questionCreate.timeLimit;
+        default:
+          return 0;
+      }
+    })();
 
-    setTimeout(() => {
-      setLoading(false);
-      navigate(
-        routes.lecturer.course.assignment.replace(
-          ":courseId",
-          courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
-        )
-      );
-    }, 3000);
-  }
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpenAddNewQuestionDialog = () => {
-    setIsAddNewQuestionDialogOpen(true);
-  };
-
-  const handleCloseAddNewQuestionDialog = () => {
-    setIsAddNewQuestionDialogOpen(false);
-  };
-
-  const handleOpenAddQuestionFromBankDialog = () => {
-    handleGetQuestionBankCategories({});
-    setIsAddQuestionFromBankDialogOpen(true);
-  };
-
-  const handleCloseAddQuestionFromBankDialog = () => {
-    setIsAddQuestionFromBankDialogOpen(false);
+    const newExam: ExamCreateRequest = {
+      courseId: courseId ?? "",
+      name: questionCreate.examName,
+      intro: questionCreate.examDescription,
+      score: questionCreate.maxScore,
+      maxScore: questionCreate.maxScore,
+      timeOpen: new Date(questionCreate.timeOpen),
+      timeClose: new Date(questionCreate.timeClose),
+      timeLimit: timeLimit,
+      overdueHandling: questionCreate.overdueHandling.toUpperCase(),
+      canRedoQuestions: true,
+      maxAttempts: questionCreate.maxAttempt,
+      shuffleQuestions: questionCreate.shuffleQuestions,
+      gradeMethod: "QUIZ_GRADEHIGHEST",
+      questionIds: questionIds
+    };
+    ExamService.createExam(newExam)
+      .then((response) => {
+        console.log(response);
+        dispatch(clearQuestionCreate());
+        dispatch(clearExamCreate());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleComfirmQuestionFromBankDialog = async (questionIds: QuestionClone[]) => {
@@ -397,7 +361,6 @@ export default function ExamCreated() {
       questions: questionIds
     };
     const response = await QuestionService.cloneQuestionByIdIn(questions);
-
     const questionCreate: QuestionEntity[] = response.questions.map(
       (item: {
         id: string;
@@ -430,11 +393,33 @@ export default function ExamCreated() {
         updatedAt: item.updatedAt
       })
     );
-
-    console.log(questionCreate);
     dispatch(setQuestionCreateFromBank(questionCreate));
-
     handleCloseAddQuestionFromBankDialog();
+  };
+
+  const handleGetQuestionBankCategories = async ({
+    search = "",
+    pageNo = 0,
+    pageSize = 99,
+    organizationId = user.organization.organizationId
+  }: {
+    search?: string;
+    pageNo?: number;
+    pageSize?: number;
+    organizationId?: string;
+  }) => {
+    try {
+      const getQuestionBankCategoryResponse =
+        await QuestionBankCategoryService.getQuestionBankCategories({
+          search,
+          organizationId,
+          pageNo,
+          pageSize
+        });
+      dispatch(setCategories(getQuestionBankCategoryResponse));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onCreateNewQuestion = async (popupState: any) => {
@@ -449,6 +434,41 @@ export default function ExamCreated() {
 
   const handleChangeQuestionType = (value: string) => {
     setQuestionType(value);
+  };
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpenAddNewQuestionDialog = () => {
+    setIsAddNewQuestionDialogOpen(true);
+  };
+
+  const handleCloseAddNewQuestionDialog = () => {
+    setIsAddNewQuestionDialogOpen(false);
+  };
+
+  const handleOpenAddQuestionFromBankDialog = () => {
+    handleGetQuestionBankCategories({});
+    setIsAddQuestionFromBankDialogOpen(true);
+  };
+
+  const handleCloseAddQuestionFromBankDialog = () => {
+    setIsAddQuestionFromBankDialogOpen(false);
+  };
+
+  const rowSelectionHandler = () => {};
+
+  const pageChangeHandler = (model: GridPaginationModel) => {
+    console.log(model);
+  };
+
+  const rowClickHandler = (params: GridRowParams<any>) => {
+    console.log(params);
   };
 
   const onClickConfirmAddNewQuestion = () => {
@@ -473,21 +493,62 @@ export default function ExamCreated() {
     handleCloseAddNewQuestionDialog();
   };
 
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
-  React.useEffect(() => {
-    if (width < 1080) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
-  }, [width]);
+  function handleClick() {
+    setLoading(true);
+    submitHandler();
 
-  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+    setTimeout(() => {
+      setLoading(false);
+      navigate(
+        routes.lecturer.course.assignment.replace(
+          ":courseId",
+          courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
+        )
+      );
+    }, 3000);
+  }
 
-  const header2Ref = React.useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({
-    ref: header2Ref
-  });
+  // Form handler
+  const schema = React.useMemo(() => {
+    return yup.object().shape({
+      name: yup.string().required(t("exam_name_required")),
+      intro: yup.string().required(t("exam_description_required")),
+      maxScore: yup
+        .number()
+        .required(t("exam_max_score_required"))
+        .min(1, t("exam_max_score_invalid")),
+      timeOpen: yup.date().required(t("exam_time_open_required")),
+      timeClose: yup.date().required(t("exam_time_close_required")),
+      timeLimit: yup.number().required(t("exam_time_limit_required")),
+      overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
+      maxAttempts: yup.number().required("exam_max_attempt_invalid")
+    });
+  }, [t]);
+
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   trigger,
+  //   formState: { errors }
+  // } = useForm<FormData>({
+  //   resolver: yupResolver(schema),
+  //   defaultValues: {
+  //     courseId: courseId ?? "",
+  //     name: "",
+  //     intro: "",
+  //     score: 0,
+  //     maxScore: 0,
+  //     timeOpen: new Date(),
+  //     timeClose: new Date(),
+  //     timeLimit: 0,
+  //     overdueHandling: "",
+  //     canRedoQuestions: false,
+  //     maxAttempts: 0,
+  //     shuffleQuestions: false,
+  //     gradeMethod: "QUIZ_GRADEHIGHEST",
+  //     questionIds: []
+  //   }
+  // });
 
   return (
     <>
@@ -555,6 +616,8 @@ export default function ExamCreated() {
           "exam_management_create_from_bank_choose_topic"
         ]}
       />
+
+      {/* <form onSubmit={handleSubmit(submitHandler)}> */}
       <Grid className={classes.root}>
         <Header />
         <Box
@@ -585,14 +648,18 @@ export default function ExamCreated() {
                   {t("common_course_management")}
                 </ParagraphSmall>
                 <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                {/* <ParagraphSmall
+                <ParagraphSmall
                   colorname='--blue-500'
                   className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.information)}
+                  onClick={() =>
+                    navigate(
+                      routes.lecturer.course.information.replace(":courseId", courseId ?? "")
+                    )
+                  }
                 >
-                  CS202 - Nhập môn lập trình
-                </ParagraphSmall> */}
-                {/* <KeyboardDoubleArrowRightIcon id={classes.icArrow} /> */}
+                  {courseData?.name}
+                </ParagraphSmall>
+                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
                 <ParagraphSmall
                   colorname='--blue-500'
                   className={classes.cursorPointer}
@@ -1039,6 +1106,7 @@ export default function ExamCreated() {
           </Drawer>
         </Box>
       </Grid>
+      {/* </form> */}
     </>
   );
 }

@@ -739,6 +739,11 @@
   "question_bank_create_category_info": "Thông tin danh mục",
   "question_bank_create_category_name": "Tên danh mục",
 
+  "question_bank_create_category_name_required": "Tên danh mục không được để trống",
+  "question_bank_create_category_info_required": "Thông tin danh mục không được để trống",
+  "question_bank_create_category_success": "Tạo danh mục thành công",
+  "question_bank_create_category_fail": "Tạo danh mục thất bại",
+
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
   "side_bar_question_bank_management": "Ngân hàng câu hỏi",
   "side_bar_synchronize_managment": "Đồng bộ",
@@ -1100,6 +1105,18 @@
   "exam_detail_summary_no_attempt": "Chưa làm bài lần nào",
   "exam_detail_max_attempt": "Số lần làm bài tối đa",
   "exam_detail_attempt_unlimited": "Không giới hạn số lần",
+
+  "exam_name_required": "Tên bài kiểm tra không được để trống",
+  "exam_description_required": "Mô tả bài kiểm tra không được để trống",
+  "exam_max_score_required": "Điểm tối đa không được để trống",
+  "exam_time_limit_required": "Thời gian làm bài không được để trống",
+  "exam_max_score_invalid": "Điểm tối đa phải lớn hơn hoặc bằng 0",
+  "exam_time_limit_invalid": "Thời gian làm bài phải lớn hơn hoặc bằng 0",
+  "exam_time_open_invalid": "Thời gian mở bài kiểm tra không được để trống",
+  "exam_time_close_invalid": "Thời gian đóng bài kiểm tra không được để trống",
+  "exam_start_date_invalid": "Ngày bắt đầu phải trước ngày kết thúc",
+  "exam_end_date_invalid": "Ngày kết thúc phải sau ngày bắt đầu",
+  "exam_max_attempt_invalid": "Số lần làm bài tối đa phải lớn hơn hoặc bằng 0",
 
   "update_grade": "Cập nhật điểm",
   "correct_answer": "Đáp án đúng",

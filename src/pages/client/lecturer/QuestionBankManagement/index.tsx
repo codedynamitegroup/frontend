@@ -5,7 +5,8 @@ import {
   DialogActions,
   IconButton,
   DialogTitle,
-  Dialog
+  Dialog,
+  TextField
 } from "@mui/material";
 
 import Textarea from "@mui/joy/Textarea";
@@ -33,7 +34,7 @@ import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
-import { setCategories } from "reduxes/courseService/questionBankCategory";
+import { clearCategories, setCategories } from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
@@ -41,6 +42,11 @@ import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import { selectCurrentUser } from "reduxes/Auth";
 import { User } from "models/authService/entity/user";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -75,46 +81,59 @@ const QuestionBankManagement = () => {
     }
   };
 
-  const handleEdit = async () => {
+  const handleEdit = async (data: any) => {
     try {
       await QuestionBankCategoryService.updateQuestionBankCategory({
         id: selectedRowData?.id || "",
-        name: dataEdit?.name || "",
-        description: dataEdit?.description || ""
+        name: data.name || "",
+        description: data.description || ""
       });
       handleGetQuestionBankCategories({ search: searchText });
+      handleCloseEditDialog(); // Tắt dialog sau khi chỉnh sửa thành công
     } catch (error) {
       console.log(error);
     }
   };
 
   const user: User = useSelector(selectCurrentUser);
-
+ const dispatch = useDispatch<AppDispatch>();
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
 
-  const handleCreate = async () => {
+  const handleCreate = async (data: any) => {
     try {
       await QuestionBankCategoryService.createQuestionBankCategory({
-        name: dataCreate?.name || "",
-        description: dataCreate?.description || "",
+        name: data.name || "",
+        description: data.description || "",
         organizationId: user.organization.organizationId,
         isOrgQuestionBank: categoryState.tab === "1" ? true : false,
         createdBy: user.userId
       });
       handleGetQuestionBankCategories({ search: searchText });
+      handleCloseCreateDialog();
+      resetCreate();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleDeleteCategory = async (id: string) => {
-    try {
-      await QuestionBankCategoryService.deleteQuestionBankCategory(id);
-      handleGetQuestionBankCategories({ search: searchText });
-    } catch (error) {
-      console.log(error);
-    }
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
   };
+  const onDeleteConfirmDelete = async () => {
+    QuestionBankCategoryService.deleteQuestionBankCategory(deletedCategoryId)
+      .then(() => {
+        dispatch(setSuccessMess("Delete category successfully"));
+        dispatch(clearCategories());
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess("Delete category failed"));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
+
 
   useEffect(() => {
     const fetchInitialQuestionBankCategories = async () => {
@@ -238,7 +257,8 @@ const QuestionBankManagement = () => {
             label='Cancel'
             className='textPrimary'
             onClick={() => {
-              handleDeleteCategory(id as string);
+              setDeletedCategoryId(id as string);
+              setIsOpenConfirmDelete(true);
             }}
             sx={{
               color: red[500]
@@ -294,6 +314,62 @@ const QuestionBankManagement = () => {
       pageSize: model.pageSize
     });
   };
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedCategoryId, setDeletedCategoryId] = useState<string>("");
+
+  const validationSchema = yup.object({
+    name: yup.string().required("Tên danh mục không được để trống"),
+    description: yup.string().required("Mô tả không được để trống")
+  });
+
+  const {
+    control: controlCreate,
+    handleSubmit: handleSubmitCreate,
+    formState: { errors: errorsCreate },
+    reset: resetCreate
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
+
+  const {
+    control: controlEdit,
+    handleSubmit: handleSubmitEdit,
+    formState: { errors: errorsEdit },
+    reset: resetEdit
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
+
+  const handleCloseCreateDialog = () => {
+    setOpenCreateDialog(false);
+  };
+
+  const handleOpenCreateDialog = () => {
+    resetCreate();
+    setOpenCreateDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+  };
+
+  useEffect(() => {
+    if (selectedRowData) {
+      resetEdit({
+        name: selectedRowData.name,
+        description: selectedRowData.description
+      });
+    }
+  }, [selectedRowData, resetEdit]);
 
   return (
     <div>
@@ -408,125 +484,124 @@ const QuestionBankManagement = () => {
           </Stack>
         </Container>
       </TabPanel>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this category?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
       <Dialog
-        aria-labelledby='customized-dialog-title'
         open={openCreateDialog}
-        onClose={() => setOpenCreateDialog(false)}
-        maxWidth='sm'
-        fullWidth
+        onClose={handleCloseCreateDialog}
+        className={classes["dialog"]}
       >
-        <DialogTitle
-          sx={{ m: 0, p: 2 }}
-          id='customized-dialog-title'
-          translation-key='question_bank_create_category'
-        >
-          {t("question_bank_create_category")}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500]
-          }}
-          onClick={() => setOpenCreateDialog(false)}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <Stack spacing={1}>
-            <Textarea
-              translation-key='question_bank_create_category_name'
-              name='Outlined'
-              placeholder={t("question_bank_create_category_name")}
-              onChange={(e) => {
-                setDataCreate({ ...dataCreate, name: e.target.value });
-              }}
-              variant='outlined'
-              minRows={1}
+        <form onSubmit={handleSubmitCreate(handleCreate)}>
+          <DialogTitle className={classes["dialog-title"]}>
+            {t("question_bank_create_category")}
+            <IconButton
+              aria-label='close'
+              onClick={handleCloseCreateDialog}
+              className={classes["dialog-close"]}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes["dialog-content"]}>
+            <Controller
+              name='name'
+              control={controlCreate}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("question_bank_create_category_name")}
+                  variant='outlined'
+                  fullWidth
+                  margin='dense'
+                  error={!!errorsCreate.name}
+                  helperText={errorsCreate.name?.message}
+                />
+              )}
             />
-            <Textarea
-              transaltion-key='question_bank_create_category_info'
-              name='Outlined'
-              placeholder={t("question_bank_create_category_info")}
-              onChange={(e) => {
-                setDataCreate({ ...dataCreate, description: e.target.value });
-              }}
-              variant='outlined'
-              minRows={4}
+            <Controller
+              name='description'
+              control={controlCreate}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("question_bank_create_category_info")}
+                  variant='outlined'
+                  fullWidth
+                  margin='dense'
+                  error={!!errorsCreate.description}
+                  helperText={errorsCreate.description?.message}
+                />
+              )}
             />
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button btnType={BtnType.Primary} onClick={() => setOpenCreateDialog(false)}>
-            <ParagraphBody translation-key='common_save' onClick={handleCreate}>
-              {" "}
-              {t("common_save")}
-            </ParagraphBody>
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions className={classes["dialog-actions"]}>
+            <Button btnType={BtnType.Secondary} onClick={handleCloseCreateDialog}>
+              {t("cancel")}
+            </Button>
+            <Button btnType={BtnType.Primary} type='submit'>
+              {t("add")}
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
-      <Dialog
-        aria-labelledby='customized-dialog-title-edit'
-        open={openEditDialog}
-        onClose={() => {
-          setOpenEditDialog(false);
-        }}
-        maxWidth='sm'
-        fullWidth
-      >
-        <DialogTitle
-          sx={{ m: 0, p: 2 }}
-          id='customized-dialog-title-edit'
-          translation-key='question_bank_edit_category'
-        >
-          {t("question_bank_edit_category")}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500]
-          }}
-          onClick={() => setOpenEditDialog(false)}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <Stack spacing={1}>
-            <Textarea
-              translation-key='question_bank_create_category_name'
-              name='Outlined'
-              defaultValue={selectedRowData?.name || ""}
-              onChange={(e) => {
-                setDataEdit({ ...dataEdit, name: e.target.value });
-              }}
-              variant='outlined'
-              minRows={1}
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} className={classes["dialog"]}>
+        <form onSubmit={handleSubmitEdit(handleEdit)}>
+          <DialogTitle className={classes["dialog-title"]}>
+            {t("question_category_edit")}
+            <IconButton
+              aria-label='close'
+              onClick={handleCloseEditDialog}
+              className={classes["dialog-close"]}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes["dialog-content"]}>
+            <Controller
+              name='name'
+              control={controlEdit}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("question_category_name")}
+                  variant='outlined'
+                  fullWidth
+                  margin='dense'
+                  error={!!errorsEdit.name}
+                  helperText={errorsEdit.name?.message}
+                />
+              )}
             />
-            <Textarea
-              transaltion-key='question_bank_create_category_info'
-              name='Outlined'
-              defaultValue={selectedRowData?.description || ""}
-              onChange={(e) => {
-                setDataEdit({ ...dataEdit, description: e.target.value });
-              }}
-              variant='outlined'
-              minRows={4}
+            <Controller
+              name='description'
+              control={controlEdit}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("question_category_description")}
+                  variant='outlined'
+                  fullWidth
+                  margin='dense'
+                  error={!!errorsEdit.description}
+                  helperText={errorsEdit.description?.message}
+                />
+              )}
             />
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button btnType={BtnType.Primary} onClick={() => setOpenEditDialog(false)}>
-            <ParagraphBody translation-key='common_save' onClick={handleEdit}>
-              {" "}
-              {t("common_save")}
-            </ParagraphBody>
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions className={classes["dialog-actions"]}>
+            <Button btnType={BtnType.Secondary} onClick={handleCloseEditDialog}>
+              {t("cancel")}
+            </Button>
+            <Button btnType={BtnType.Primary} type='submit'>
+              {t("save")}
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </div>
   );
