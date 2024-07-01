@@ -6,6 +6,7 @@ import {
   EAmountAnswer,
   ELanguage
 } from "../../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
+import i18next from "i18next";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
@@ -76,7 +77,8 @@ const format_question: IFormatQuestion[] = [
           { id: 1, content: "Joe Biden" },
           { id: 2, content: "Donald Trump" },
           { id: 3, content: "Barack Obama" }
-        ]
+        ],
+        correctAnswer: 2
       }
     ]
   },
@@ -126,24 +128,24 @@ const format_question: IFormatQuestion[] = [
           { id: 1, content: "True" },
           { id: 2, content: "False" }
         ],
-        correctAnswer: 1
+        correctAnswer: 2
       }
     ]
   }
 ];
-async function CreateQuestionByAI(
+async function* CreateQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
   qamount_answer: EAmountAnswer,
   number_question: number,
-  level: EQuestionLevel,
-  language: ELanguage
+  level: EQuestionLevel
 ) {
   // For text-only input, use the gemini-pro model
   const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   let question_type = "";
+  const language = i18next.language === "en" ? "English" : "Vietnamese";
   if (qtype === EQType.Essay) {
     question_type = "Essay";
   } else if (qtype === EQType.MultipleChoice) {
@@ -169,12 +171,13 @@ I. YOUR ROLE:
   - Your expertise encompasses various domains, including software engineering and programming.
   - You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
-  const SYSTEM_INSTRUCTIONS = `
+  const SYSTEM_INSTRUCTIONS = (batchSize: number) => `
 	II. SYSTEM_INSTRUCTIONS:
 	A. Your Task:
-	 - Generate {{${number_question}}} questions on the topic of {{${topic}}} at the {{${levelQuestion}}} level.
+	 - Generate {{${batchSize}}} questions on the topic of {{${topic}}} at the {{${levelQuestion}}} level.
 	 - For short answer, it requires a brief response (Answer: no more than 6 words), not an essay. For example with the question "What is the capital of Vietnam?", the answer should be "Hanoi".
 	 - Provide detailed answers for essay and short answer questions to help the question creator understand the expected response.
+	 ${qtype === EQType.MultipleChoice ? `- Total answers of question multiple choice: {{${qamount_answer}}}` : ""}
 
 	B. Note for each question type:
 		- Essay: An open-ended question that requires a detailed response (a paragraph or more).
@@ -196,9 +199,9 @@ I. YOUR ROLE:
 
 	- Question Type: {{${question_type}}}
 
-  ${qtype === EQType.MultipleChoice ? `- The Amount of answer to each question: {{${qamount_answer}}}` : ""}
+  ${qtype === EQType.MultipleChoice ? `- Total answers of question multiple choice: {{${qamount_answer}}}` : ""}
 
-  - Number of Questions: {{${number_question}}}
+  - Number of Questions: {{${batchSize}}}
 
 	- Level: {{${levelQuestion}}}
 
@@ -219,7 +222,7 @@ I. YOUR ROLE:
 					** IAnswer: The data structure for an answer:
 						*** id: A number, the unique identifier for the answer.
 						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to highlight text,... For example, replace it with \\"Personal Name\\" 
-				* correctAnswer: The index of the correct answer (only applies to multiple choice and true/false questions).
+				* correctAnswer: The id of the correct answer (only applies to multiple choice and true/false questions).
 
 		For example output which is covered by triple quotes:
 		"""
@@ -230,10 +233,12 @@ I. YOUR ROLE:
 			- The example is just for reference. Don't use it to respond to user.
 			- Ensure the response is in valid {{JSON format}} !!!
 
-	F. Please use ${language === ELanguage.Vietnamese ? "{{Vietnamese}}" : "{{English}}"} everywhere to write questions and answers for students.`;
+	F. Please use {{${language}}} everywhere to write questions and answers for students.`;
 
   try {
     let result, response, text;
+    const batchSize = 3; // Adjust the batch size as needed
+    const allQuestions = [];
     result = await model.generateContentStream(AI_ROLE);
     response = await result.response;
     text = response.text;
@@ -251,13 +256,21 @@ I. YOUR ROLE:
       ]
     });
 
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = response.text();
-    const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-    const repaired = jsonrepair(cleanText);
-    const json = JSON.parse(repaired);
-    return json;
+    const numberOfBatches = Math.ceil(number_question / batchSize);
+    for (let i = 0; i < numberOfBatches; i++) {
+      const currentBatchSize = Math.min(batchSize, number_question - i * batchSize);
+      result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS(currentBatchSize));
+      response = await result.response;
+      text = await response.text();
+      const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+      const repaired = jsonrepair(cleanText);
+      const json = JSON.parse(repaired);
+      allQuestions.push(...json.questions);
+      yield {
+        qtypeId: qtype,
+        questions: allQuestions
+      };
+    }
   } catch (error) {
     return error;
   }
