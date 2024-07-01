@@ -9,204 +9,219 @@ export interface ICodeConverterResponse {
   program_language: string;
   code_stub: string;
 }
-const example_response: ICodeConverterResponse[] = [
-  {
-    program_language: "java",
-    code_stub: `
-import java.io.*;
-import java.math.*;
-import java.security.*;
-import java.text.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
-import java.util.regex.*;
-import java.util.stream.*;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+// const example_response: ICodeConverterResponse[] = [
+//   {
+//     program_language: "java",
+//     code_stub: `
+// import java.io.*;
+// import java.math.*;
+// import java.security.*;
+// import java.text.*;
+// import java.util.*;
+// import java.util.concurrent.*;
+// import java.util.function.*;
+// import java.util.regex.*;
+// import java.util.stream.*;
+// import static java.util.stream.Collectors.joining;
+// import static java.util.stream.Collectors.toList;
 
-class Result {
+// class Result {
 
-    /*
-     * Complete the 'simpleArraySum' function below.
-     *
-     * The function is expected to return an INTEGER.
-     * The function accepts INTEGER_ARRAY ar as parameter.
-     */
+//     /*
+//      * Complete the 'simpleArraySum' function below.
+//      *
+//      * The function is expected to return an INTEGER.
+//      * The function accepts INTEGER_ARRAY ar as parameter.
+//      */
 
-    public static int simpleArraySum(List<Integer> ar) {
-    // Write your code here
+//     public static int simpleArraySum(List<Integer> ar) {
+//     // Write your code here
 
-    }
+//     }
 
-}
+// }
 
-public class Solution {
-    public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+// public class Solution {
+//     public static void main(String[] args) throws IOException {
+//         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+//         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
 
-        int arCount = Integer.parseInt(bufferedReader.readLine().trim());
+//         int arCount = Integer.parseInt(bufferedReader.readLine().trim());
 
-        List<Integer> ar = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
-            .map(Integer::parseInt)
-            .collect(toList());
+//         List<Integer> ar = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+//             .map(Integer::parseInt)
+//             .collect(toList());
 
-        int result = Result.simpleArraySum(ar);
+//         int result = Result.simpleArraySum(ar);
 
-        bufferedWriter.write(String.valueOf(result));
-        bufferedWriter.newLine();
+//         bufferedWriter.write(String.valueOf(result));
+//         bufferedWriter.newLine();
 
-        bufferedReader.close();
-        bufferedWriter.close();
-    }
-}
+//         bufferedReader.close();
+//         bufferedWriter.close();
+//     }
+// }
 
-		`
-  },
-  {
-    program_language: "py",
-    code_stub: `
-#!/bin/python3
+// 		`
+//   },
+//   {
+//     program_language: "py",
+//     code_stub: `
+// #!/bin/python3
 
-import math
-import os
-import random
-import re
-import sys
+// import math
+// import os
+// import random
+// import re
+// import sys
 
-#
-# Complete the 'simpleArraySum' function below.
-#
-# The function is expected to return an INTEGER.
-# The function accepts INTEGER_ARRAY ar as parameter.
-#
+// #
+// # Complete the 'simpleArraySum' function below.
+// #
+// # The function is expected to return an INTEGER.
+// # The function accepts INTEGER_ARRAY ar as parameter.
+// #
 
-def simpleArraySum(ar):
-    # Write your code here
+// def simpleArraySum(ar):
+//     # Write your code here
 
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+// if __name__ == '__main__':
+//     fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
-    ar_count = int(input().strip())
+//     ar_count = int(input().strip())
 
-    ar = list(map(int, input().rstrip().split()))
+//     ar = list(map(int, input().rstrip().split()))
 
-    result = simpleArraySum(ar)
+//     result = simpleArraySum(ar)
 
-    fptr.write(str(result) + '\n')
+//     fptr.write(str(result) + '\n')
 
-    fptr.close()
-		`
-  },
-  {
-    program_language: "c++",
-    code_stub: `
-#include <bits/stdc++.h>
+//     fptr.close()
+// 		`
+//   },
+//   {
+//     program_language: "c++",
+//     code_stub: `
+// #include <bits/stdc++.h>
 
-using namespace std;
+// using namespace std;
 
-string ltrim(const string &);
-string rtrim(const string &);
-vector<string> split(const string &);
+// string ltrim(const string &);
+// string rtrim(const string &);
+// vector<string> split(const string &);
 
-/*
- * Complete the 'simpleArraySum' function below.
- *
- * The function is expected to return an INTEGER.
- * The function accepts INTEGER_ARRAY ar as parameter.
- */
+// /*
+//  * Complete the 'simpleArraySum' function below.
+//  *
+//  * The function is expected to return an INTEGER.
+//  * The function accepts INTEGER_ARRAY ar as parameter.
+//  */
 
-int simpleArraySum(vector<int> ar) {
+// int simpleArraySum(vector<int> ar) {
 
-}
+// }
 
-int main()
-{
-    ofstream fout(getenv("OUTPUT_PATH"));
+// int main()
+// {
+//     ofstream fout(getenv("OUTPUT_PATH"));
 
-    string ar_count_temp;
-    getline(cin, ar_count_temp);
+//     string ar_count_temp;
+//     getline(cin, ar_count_temp);
 
-    int ar_count = stoi(ltrim(rtrim(ar_count_temp)));
+//     int ar_count = stoi(ltrim(rtrim(ar_count_temp)));
 
-    string ar_temp_temp;
-    getline(cin, ar_temp_temp);
+//     string ar_temp_temp;
+//     getline(cin, ar_temp_temp);
 
-    vector<string> ar_temp = split(rtrim(ar_temp_temp));
+//     vector<string> ar_temp = split(rtrim(ar_temp_temp));
 
-    vector<int> ar(ar_count);
+//     vector<int> ar(ar_count);
 
-    for (int i = 0; i < ar_count; i++) {
-        int ar_item = stoi(ar_temp[i]);
+//     for (int i = 0; i < ar_count; i++) {
+//         int ar_item = stoi(ar_temp[i]);
 
-        ar[i] = ar_item;
-    }
+//         ar[i] = ar_item;
+//     }
 
-    int result = simpleArraySum(ar);
+//     int result = simpleArraySum(ar);
 
-    fout << result << "\n";
+//     fout << result << "\n";
 
-    fout.close();
+//     fout.close();
 
-    return 0;
-}
+//     return 0;
+// }
 
-string ltrim(const string &str) {
-    string s(str);
+// string ltrim(const string &str) {
+//     string s(str);
 
-    s.erase(
-        s.begin(),
-        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
-    );
+//     s.erase(
+//         s.begin(),
+//         find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
+//     );
 
-    return s;
-}
+//     return s;
+// }
 
-string rtrim(const string &str) {
-    string s(str);
+// string rtrim(const string &str) {
+//     string s(str);
 
-    s.erase(
-        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-        s.end()
-    );
+//     s.erase(
+//         find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
+//         s.end()
+//     );
 
-    return s;
-}
+//     return s;
+// }
 
-vector<string> split(const string &str) {
-    vector<string> tokens;
+// vector<string> split(const string &str) {
+//     vector<string> tokens;
 
-    string::size_type start = 0;
-    string::size_type end = 0;
+//     string::size_type start = 0;
+//     string::size_type end = 0;
 
-    while ((end = str.find(" ", start)) != string::npos) {
-        tokens.push_back(str.substr(start, end - start));
+//     while ((end = str.find(" ", start)) != string::npos) {
+//         tokens.push_back(str.substr(start, end - start));
 
-        start = end + 1;
-    }
+//         start = end + 1;
+//     }
 
-    tokens.push_back(str.substr(start));
+//     tokens.push_back(str.substr(start));
 
-    return tokens;
-}
+//     return tokens;
+// }
 
-`
-  }
-];
+// `
+//   }
+// ];
 interface ICodeConverterRequest {
   programming_language: string;
 }
 
 const example_request: ICodeConverterRequest[] = [
   {
-    programming_language: "py"
+    programming_language: "C (GCC 8.3.0)"
   },
   {
-    programming_language: "c++"
+    programming_language: "C++ (GCC 7.4.0)"
   },
   {
-    programming_language: "javascript"
+    programming_language: "C# (Mono 6.6.0.161)"
+  },
+  {
+    programming_language: "Java (OpenJDK 13.0.1)"
+  },
+  {
+    programming_language: "PHP (7.4.1)"
+  },
+  {
+    programming_language: "Python (3.8.1)"
+  },
+  {
+    programming_language: "Ruby (2.7.0)"
+  },
+  {
+    programming_language: "TypeScript (3.7.4)"
   }
 ];
 
@@ -221,7 +236,7 @@ I. YOUR ROLE:
 	- The programming languages you can convert to include Java, Python, C++, and more.
 	`;
 
-  const SYSTEM_INSTRUCTIONS = `
+  const SYSTEM_INSTRUCTIONS = (requests: ICodeConverterRequest[]) => `
 	II. SYSTEM_INSTRUCTIONS:
 	A. Steps to follow:
 		- Convert the given code snippet into the specified programming languages.
@@ -238,11 +253,11 @@ I. YOUR ROLE:
 
 	- Programming Language Of Code Stub which is covered by double brackets: {{${programming_language}}}
 
-  - Number of programming languages to convert which is covered by double brackets: {{${example_request.length}}}
+  - Number of programming languages to convert which is covered by double brackets: {{${requests.length}}}
 
 	- Programming Languages to Convert which is covered by triple quotes:
 		"""
-		${JSON.stringify(example_request)}
+		${JSON.stringify(requests)}
 		"""
 
 	E. Output:
@@ -267,11 +282,12 @@ I. YOUR ROLE:
 				* Data type: string
 				* Note:
 					** Not markdown format. It should be plain text.
+					** Wrapped in single quote (").
 					** Do not {{provide solution}} to the problem. If method which is provided is {{empty}}, keep it {{empty}}.
 						*** For example, if the original code snippet has a method definition with no implementation, the converted code should also have the same method definition with no implementation.
 					** Ensure that the converted code is syntactically correct and follows the best practices of the target language.
 		
-		For example output which is covered by triple quote:
+		Example output:
     """
     [
       {
@@ -293,8 +309,19 @@ I. YOUR ROLE:
 			- The example is just for reference. Don't use it to respond to user.
 			- Ensure the response is in valid {{JSON format}} !!!`;
 
+  // Helper function to chunk the array
+  function chunkArray<T>(array: T[], chunk_size: number): T[][] {
+    const results: T[][] = [];
+    for (let i = 0; i < array.length; i += chunk_size) {
+      results.push(array.slice(i, i + chunk_size));
+    }
+    return results;
+  }
+
   try {
     let result, response, text;
+    const chunks = chunkArray(example_request, 4); // Adjust the chunk size as needed
+    const allResponses = [];
     result = await model.generateContentStream(AI_ROLE);
     response = await result.response;
     text = response.text;
@@ -312,14 +339,18 @@ I. YOUR ROLE:
       ]
     });
 
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = response.text();
-    const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-    console.log("CodeConverterAI -> cleanText", cleanText);
-    const repaired = jsonrepair(cleanText);
-    const json = JSON.parse(repaired);
-    return json;
+    for (const chunk of chunks) {
+      result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS(chunk));
+      console.log("SYSTEM_INSTRUCTIONS", SYSTEM_INSTRUCTIONS(chunk));
+      response = await result.response;
+      text = await response.text();
+      const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+      const repaired = jsonrepair(cleanText);
+      const json = JSON.parse(repaired);
+      allResponses.push(...json);
+    }
+
+    return allResponses;
   } catch (error) {
     return error;
   }

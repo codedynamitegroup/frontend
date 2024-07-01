@@ -257,37 +257,40 @@ int sumOfTwoIntegers(int a, int b) {
           fontStyle={"italic"}
           fontWeight={"400"}
           colorname='--gray-50'
-          translation-key='code_management_detail_template_description'
+          translation-key='code_management_detail_template_tip'
         >
-          {t("code_management_detail_template_description")}
+          {t("code_management_detail_template_tip")}
         </Heading5>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
-            <TextTitle translation-key='code_management_detail_template_dsl'>
-              {t("code_management_detail_template_dsl")}
+            <TextTitle translation-key='code_management_detail_template'>
+              {t("code_management_detail_template")}
             </TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <Box className={classes.codeStubsWrapper}>
-              <Box className={classes.codeStubHead} ref={codeStubHead1Ref}>
-                <ParagraphBody fontWeight={700}>Code Stub</ParagraphBody>
-                <FormControl>
-                  <Select
-                    value={selectedConvertedLanguage}
-                    onChange={handleChangeConvertedLanguage}
-                    sx={{ bgcolor: "white", width: "150px" }}
-                  >
-                    <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                    <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                    <MenuItem value={ELanguage.CPP}>C++</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box
-                className={classes.codeStubBody}
-                style={{ height: `calc(100% - ${codeStubHead1Height}px)` }}
-              >
-                <CodeEditor value={convertedCodeStub} onChange={setConvertedCodeStub} />
+            <Box className={classes.codeStubsContainer}>
+              <Box className={classes.codeStubsWrapper}>
+                <Box className={classes.codeStubHead} ref={codeStubHead1Ref}>
+                  <ParagraphBody fontWeight={700}>Code Stub</ParagraphBody>
+                  <FormControl>
+                    <Select
+                      value={selectedConvertedLanguage}
+                      onChange={handleChangeConvertedLanguage}
+                      sx={{ bgcolor: "white", width: "150px" }}
+                    >
+                      <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
+                      <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
+                      <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box className={classes.codeStubBody} style={{ height: `200px` }}>
+                  <CodeEditor
+                    value={convertedCodeStub}
+                    onChange={setConvertedCodeStub}
+                    height='100%'
+                  />
+                </Box>
               </Box>
             </Box>
           </Grid>
@@ -307,33 +310,11 @@ int sumOfTwoIntegers(int a, int b) {
         fontStyle={"italic"}
         fontWeight={"400"}
         colorname='--gray-50'
-        translation-key='code_management_detail_template_dsl_description'
+        translation-key='code_management_detail_template_description'
       >
-        {t("code_management_detail_template_dsl_description")}{" "}
+        {t("code_management_detail_template_description")}
       </Heading5>
-      <Box mt={2} id={classes.codeStubsContainer}>
-        <Box className={classes.codeStubsWrapper}>
-          <Box className={classes.codeStubHead} ref={codeStubHead1Ref}>
-            <ParagraphBody fontWeight={700}>Head</ParagraphBody>
-            <FormControl>
-              <Select
-                value={selectedLanguage}
-                onChange={handleChange}
-                sx={{ bgcolor: "white", width: "150px" }}
-              >
-                <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
-                <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
-                <MenuItem value={ELanguage.CPP}>C++</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box
-            className={classes.codeStubBody}
-            style={{ height: `calc(100% - ${codeStubHead1Height}px)` }}
-          >
-            <CodeEditor value={selectedCodeStub.codeStubHead} readOnly={true} />
-          </Box>
-        </Box>
+      <Box mt={2} className={classes.codeStubsContainer}>
         <Box className={classes.codeStubsWrapper}>
           <Box className={classes.codeStubHead} ref={codeStubHead2Ref}>
             <ParagraphBody fontWeight={700}>Body</ParagraphBody>
@@ -343,19 +324,6 @@ int sumOfTwoIntegers(int a, int b) {
             style={{ height: `calc(100% - ${codeStubHead2Height}px)` }}
           >
             <CodeEditor value={selectedCodeStub.codeStubBody} readOnly={true} />
-          </Box>
-        </Box>
-        <Box className={classes.codeStubsWrapper}>
-          <Box className={classes.codeStubHead}>
-            <ParagraphBody fontWeight={700}>Tail</ParagraphBody>
-          </Box>
-          <Box
-            className={classes.codeStubBody}
-            style={{
-              height: `calc(100% - ${codeStubHead2Height}px)`
-            }}
-          >
-            <CodeEditor value={selectedCodeStub.codeStubTail} readOnly={true} />
           </Box>
         </Box>
       </Box>

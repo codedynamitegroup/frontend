@@ -169,10 +169,10 @@ I. YOUR ROLE:
   - Your expertise encompasses various domains, including software engineering and programming.
   - You can generate code-related questions of diverse types (multiple choice, true/false, short answer, essay) to aid learning and assessment in Tertiary Education.`;
 
-  const SYSTEM_INSTRUCTIONS = `
+  const SYSTEM_INSTRUCTIONS = (batchSize: number) => `
 	II. SYSTEM_INSTRUCTIONS:
 	A. Your Task:
-	 - Generate {{${number_question}}} questions on the topic of {{${topic}}} at the {{${levelQuestion}}} level.
+	 - Generate {{${batchSize}}} questions on the topic of {{${topic}}} at the {{${levelQuestion}}} level.
 	 - For short answer, it requires a brief response (Answer: no more than 6 words), not an essay. For example with the question "What is the capital of Vietnam?", the answer should be "Hanoi".
 	 - Provide detailed answers for essay and short answer questions to help the question creator understand the expected response.
 
@@ -198,7 +198,7 @@ I. YOUR ROLE:
 
   ${qtype === EQType.MultipleChoice ? `- The Amount of answer to each question: {{${qamount_answer}}}` : ""}
 
-  - Number of Questions: {{${number_question}}}
+  - Number of Questions: {{${batchSize}}}
 
 	- Level: {{${levelQuestion}}}
 
@@ -232,8 +232,18 @@ I. YOUR ROLE:
 
 	F. Please use ${language === ELanguage.Vietnamese ? "{{Vietnamese}}" : "{{English}}"} everywhere to write questions and answers for students.`;
 
+  const chunkArray = (array: any[], chunk_size: number) => {
+    const results = [];
+    for (let i = 0; i < array.length; i += chunk_size) {
+      results.push(array.slice(i, i + chunk_size));
+    }
+    return results;
+  };
+
   try {
     let result, response, text;
+    const batchSize = 3; // Adjust the batch size as needed
+    const allQuestions = [];
     result = await model.generateContentStream(AI_ROLE);
     response = await result.response;
     text = response.text;
@@ -251,13 +261,22 @@ I. YOUR ROLE:
       ]
     });
 
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = response.text();
-    const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-    const repaired = jsonrepair(cleanText);
-    const json = JSON.parse(repaired);
-    return json;
+    const numberOfBatches = Math.ceil(number_question / batchSize);
+
+    for (let i = 0; i < numberOfBatches; i++) {
+      const currentBatchSize = Math.min(batchSize, number_question - i * batchSize);
+      result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS(currentBatchSize));
+      response = await result.response;
+      text = await response.text();
+      const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+      const repaired = jsonrepair(cleanText);
+      const json = JSON.parse(repaired);
+      allQuestions.push(...json.questions);
+    }
+    return {
+      qtypeId: qtype,
+      questions: allQuestions
+    };
   } catch (error) {
     return error;
   }

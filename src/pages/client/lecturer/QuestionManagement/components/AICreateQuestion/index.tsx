@@ -4,7 +4,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { memo, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
@@ -104,36 +104,28 @@ const AICreationQuestion = (props: Props) => {
 
   const handleGenerate = async () => {
     setLoading(true);
+    const questionsTemp = [];
     setQuestions([]);
-    await CreateQuestionByAI(
-      topic,
-      desciption,
-      qtype,
-      qamountAnswer,
-      number_question,
-      level,
-      language
-    )
-      .then((data) => {
-        if (data && isResponseFormatQuestion(data)) {
-          setQuestions(data?.questions);
-          setLengthQuestion(data?.questions?.length);
-          setOpenSnackbarAlert(true);
-          setAlertContent("Tạo câu hỏi thành công");
-          setAlertType(AlertType.Success);
-        } else {
-          throw new Error("Internal server error");
-        }
-      })
-      .catch((err) => {
-        console.error("Error generating content:", err);
-        setOpenSnackbarAlert(true);
-        setAlertContent("Tạo câu hỏi thất bại, hãy thử lại lần nữa");
-        setAlertType(AlertType.Error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const chunk = await CreateQuestionByAI(
+        topic,
+        desciption,
+        qtype,
+        qamountAnswer,
+        number_question,
+        level,
+        language
+      );
+      if (chunk && isResponseFormatQuestion(chunk)) {
+        questionsTemp.push(...chunk?.questions);
+        setQuestions(questionsTemp);
+        setLengthQuestion(questionsTemp.length);
+      }
+    } catch (error) {
+      console.error("Error generating text:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleButtonClick = () => {
@@ -304,9 +296,6 @@ const AICreationQuestion = (props: Props) => {
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
                 </Button>
               )}
-              {questions?.length === 0 && (
-                <CircularProgress className={loading ? classes.loading : classes.none} />
-              )}
               {questions &&
                 questions.map((value: IQuestion, index) => {
                   return (
@@ -398,6 +387,20 @@ const AICreationQuestion = (props: Props) => {
                     </Box>
                   );
                 })}
+              {loading === true && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    gap: "10px"
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
             </Box>
           </Grid>
           <SnackbarAlert
