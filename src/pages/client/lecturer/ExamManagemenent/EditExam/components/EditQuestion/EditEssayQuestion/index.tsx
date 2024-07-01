@@ -25,11 +25,7 @@ import ErrorMessage from "components/text/ErrorMessage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Heading2 from "components/text/Heading2";
-import {
-  EssayQuestion,
-  PostEssayQuestion,
-  PutEssayQuestion
-} from "models/coreService/entity/EssayQuestionEntity";
+import { EssayQuestion, PutEssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
@@ -44,8 +40,6 @@ import Select from "@mui/joy/Select";
 import { Button, Chip } from "@mui/joy";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestionCreate } from "reduxes/coreService/questionCreate";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 import CustomBreadCrumb from "components/common/Breadcrumb";
@@ -293,7 +287,7 @@ const EditEssayQuestion = (props: Props) => {
       .then((res) => {
         dispatch(
           setSuccessMess(
-            t("question_management_create_question_success", {
+            t("question_management_edit_question_success", {
               questionType: t("common_question_type_essay")
             })
           )
@@ -309,7 +303,7 @@ const EditEssayQuestion = (props: Props) => {
         console.log(err);
         dispatch(
           setErrorMess(
-            t("question_management_create_question_failed", {
+            t("question_management_edit_question_failed", {
               questionType: t("common_question_type_essay")
             })
           )
@@ -517,7 +511,7 @@ const EditEssayQuestion = (props: Props) => {
     }
   ];
 
-  const getCouseData = async (courseId: string) => {
+  const getCourseData = async (courseId: string) => {
     try {
       const response = await CourseService.getCourseDetail(courseId);
       setCourseData(response);
@@ -528,7 +522,7 @@ const EditEssayQuestion = (props: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      getCouseData(courseId || "");
+      getCourseData(courseId || "");
 
       if (questionId) {
         const res = await handleGetEssayQuestionDetailForm(questionId);
@@ -594,7 +588,7 @@ const EditEssayQuestion = (props: Props) => {
   return (
     <>
       <Helmet>
-        <title>Create essay question</title>
+        <title>Edit essay question</title>
       </Helmet>
       {!essayQuestionData ? (
         <> </>
@@ -634,7 +628,7 @@ const EditEssayQuestion = (props: Props) => {
                   />
                 </Box>
                 <Heading2
-                  translation-key={["common_add", "common_question_type_with_question_essay"]}
+                  translation-key={["common_edit", "common_question_type_with_question_essay"]}
                 >
                   {t("common_edit").toUpperCase()}{" "}
                   {t("common_question_type_with_question_essay").toUpperCase()}
@@ -1323,7 +1317,9 @@ const EditEssayQuestion = (props: Props) => {
                           );
                         else
                           navigate(
-                            routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                            routes.lecturer.exam.edit
+                              .replace(":courseId", courseId || "")
+                              .replace(":examId", examId || "")
                           );
                       }}
                     >

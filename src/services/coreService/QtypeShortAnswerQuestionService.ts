@@ -1,4 +1,7 @@
-import { PostShortAnswerQuestion } from "models/coreService/entity/ShortAnswerQuestionEntity";
+import {
+  PostShortAnswerQuestion,
+  PutShortAnswerQuestion
+} from "models/coreService/entity/ShortAnswerQuestionEntity";
 import { API } from "constants/API";
 import api from "utils/api";
 
@@ -16,6 +19,25 @@ export class ShortAnswerQuestionService {
       }
     } catch (error: any) {
       console.error("Failed to create short answer question", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async updateShortAnswerQuestion(shortAnswerQuestionData: PutShortAnswerQuestion) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.CORE.QUESTION.SHORT_ANSWER_QUESTION.UPDATE}`, shortAnswerQuestionData);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to update short answer question", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

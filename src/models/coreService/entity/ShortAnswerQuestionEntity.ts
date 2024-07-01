@@ -1,4 +1,4 @@
-import { GetQuestion, PostAnswer } from "./QuestionEntity";
+import { GetQuestion, PostAnswer, PutQuestion } from "./QuestionEntity";
 
 export interface PostShortAnswerQuestion {
   organizationId: string;
@@ -20,4 +20,10 @@ export interface ShortAnswerQuestion {
   id: string;
   question: GetQuestion;
   caseSensitive: boolean;
+}
+
+export interface PutShortAnswerQuestion {
+  qtShortanswerQuestionId: string;
+  caseSensitive?: boolean;
+  question?: PutQuestion;
 }

@@ -101,8 +101,15 @@ const LecturerCourseAssignmentSubmissions = () => {
   const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
     dispatch(setLoading({ isLoading: true }));
     try {
-      const response =
-        await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(assignmentId);
+      const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+        assignmentId,
+        {
+          isGraded: null,
+          search: "",
+          pageNo: 0,
+          pageSize: 10
+        }
+      );
       dispatch(setSubmissionAssignments(response));
       dispatch(setLoading({ isLoading: false }));
     } catch (error) {

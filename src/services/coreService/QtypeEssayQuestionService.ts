@@ -34,7 +34,7 @@ export class EssayQuestionService {
         return response.data;
       }
     } catch (error: any) {
-      console.error("Failed to create essay question", error);
+      console.error("Failed to update essay question", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",
