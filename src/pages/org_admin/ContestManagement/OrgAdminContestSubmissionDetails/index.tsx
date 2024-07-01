@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { setLoading } from "reduxes/Loading";
 import { routes } from "routes/routes";
-import { ISourceCodeSubmission } from "services/FeedbackCodeByAI";
+import { ISourceCodeSubmission } from "services/AIService/FeedbackCodeByAI";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { ContestService } from "services/coreService/ContestService";
 import { AppDispatch } from "store";

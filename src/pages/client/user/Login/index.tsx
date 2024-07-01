@@ -113,7 +113,6 @@ export default function Login() {
         localStorage.setItem("refresh_token", response.refreshToken);
         localStorage.setItem("provider", ESocialLoginProvider.MICROSOFT);
         dispatch(loginStatus(true));
-        dispatch(setSuccessMess("Login successfully"));
         dispatch(fetchStatus(EFetchingUser.PENDING));
         if (navigateBack) navigate(navigateBack);
         else navigate(routes.user.dashboard.root);
@@ -140,7 +139,6 @@ export default function Login() {
           localStorage.setItem("refresh_token", response.refreshToken);
           localStorage.setItem("provider", ESocialLoginProvider.GOOGLE);
           dispatch(loginStatus(true));
-          dispatch(setSuccessMess("Login successfully"));
           dispatch(fetchStatus(EFetchingUser.PENDING));
           if (navigateBack) navigate(navigateBack);
           else navigate(routes.user.dashboard.root);
@@ -174,7 +172,6 @@ export default function Login() {
         localStorage.setItem("access_token", response.accessToken);
         localStorage.setItem("refresh_token", response.refreshToken);
         dispatch(loginStatus(true));
-        dispatch(setSuccessMess("Login successfully"));
         dispatch(fetchStatus(EFetchingUser.PENDING));
         if (navigateBack) navigate(navigateBack);
         else navigate(routes.user.dashboard.root);

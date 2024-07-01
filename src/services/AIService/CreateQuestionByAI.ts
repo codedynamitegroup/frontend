@@ -5,7 +5,7 @@ import {
   EQuestionLevel,
   EAmountAnswer,
   ELanguage
-} from "../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
+} from "../../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
@@ -131,7 +131,7 @@ const format_question: IFormatQuestion[] = [
     ]
   }
 ];
-async function createQuestionByAI(
+async function CreateQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
@@ -232,7 +232,6 @@ I. YOUR ROLE:
 
 	F. Please use ${language === ELanguage.Vietnamese ? "{{Vietnamese}}" : "{{English}}"} everywhere to write questions and answers for students.`;
 
-  console.log("SYSTEM_INSTRUCTIONS", SYSTEM_INSTRUCTIONS);
   try {
     let result, response, text;
     result = await model.generateContentStream(AI_ROLE);
@@ -264,4 +263,4 @@ I. YOUR ROLE:
   }
 }
 
-export default createQuestionByAI;
+export default CreateQuestionByAI;

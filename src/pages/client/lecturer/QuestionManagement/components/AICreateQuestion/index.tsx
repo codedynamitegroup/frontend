@@ -20,7 +20,10 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
-import createQuestionByAI, { IFormatQuestion, IQuestion } from "services/CreateQuestionByAI";
+import CreateQuestionByAI, {
+  IFormatQuestion,
+  IQuestion
+} from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -102,7 +105,7 @@ const AICreationQuestion = (props: Props) => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    await createQuestionByAI(
+    await CreateQuestionByAI(
       topic,
       desciption,
       qtype,

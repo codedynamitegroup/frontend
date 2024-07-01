@@ -9,6 +9,7 @@ import CodeEditor from "components/editor/CodeEditor";
 import Heading5 from "components/text/Heading5";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
+import CodeConverterAI from "services/AIService/CodeConverterAI";
 
 type Props = {};
 
@@ -206,13 +207,37 @@ int sumOfTwoIntegers(int a, int b) {
   ];
   const [selectedLanguage, setSelectedLanguage] = useState<string>(ELanguage.JAVA);
   const [selectedCodeStub, setSelectedCodeStub] = useState<QCodeStub>(codeStubs[0]);
+  const [selectedConvertedLanguage, setSelectedConvertedLanguage] = useState<ELanguage>(
+    ELanguage.JAVA
+  );
+  const [convertedCodeStub, setConvertedCodeStub] = useState<string>("");
   const handleChange = (event: SelectChangeEvent) => {
-    const selectedLanguage = event.target.value;
+    const selectedLanguageChange = event.target.value;
     setSelectedLanguage(selectedLanguage);
-    const selectedStub = codeStubs.find((stub) => stub.language === selectedLanguage);
+    const selectedStub = codeStubs.find((stub) => stub.language === selectedLanguageChange);
     if (selectedStub) {
       setSelectedCodeStub(selectedStub);
     }
+  };
+
+  const handleChangeConvertedLanguage = (event: SelectChangeEvent) => {
+    const selectedLanguageChange = event.target.value;
+    setSelectedConvertedLanguage(selectedLanguageChange as ELanguage);
+  };
+
+  const handleGenerate = async () => {
+    await CodeConverterAI(selectedConvertedLanguage, convertedCodeStub)
+      .then((data) => {
+        if (data) {
+          console.log("data", data);
+        } else {
+          throw new Error("Internal server error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error generating content:", err);
+      })
+      .finally(() => {});
   };
 
   const codeStubHead1Ref = useRef<HTMLDivElement>(null);
@@ -243,20 +268,28 @@ int sumOfTwoIntegers(int a, int b) {
             </TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <Textarea
-              defaultValue={`function(integer, sumOfTwoIntegers, integer a, integer b)
-
-integer(a)
-
-integer(b)
-
-invoke(integer, result, sumOfTwoIntegers, a, b)
-
-print(integer,result)`}
-              sx={{ backgroundColor: "white" }}
-              minRows={5}
-              maxRows={5}
-            />
+            <Box className={classes.codeStubsWrapper}>
+              <Box className={classes.codeStubHead} ref={codeStubHead1Ref}>
+                <ParagraphBody fontWeight={700}>Code Stub</ParagraphBody>
+                <FormControl>
+                  <Select
+                    value={selectedConvertedLanguage}
+                    onChange={handleChangeConvertedLanguage}
+                    sx={{ bgcolor: "white", width: "150px" }}
+                  >
+                    <MenuItem value={ELanguage.JAVA}>Java</MenuItem>
+                    <MenuItem value={ELanguage.JAVASCRIPT}>Javascript</MenuItem>
+                    <MenuItem value={ELanguage.CPP}>C++</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box
+                className={classes.codeStubBody}
+                style={{ height: `calc(100% - ${codeStubHead1Height}px)` }}
+              >
+                <CodeEditor value={convertedCodeStub} onChange={setConvertedCodeStub} />
+              </Box>
+            </Box>
           </Grid>
         </Grid>
         <Box className={classes.btnWrapper}>
@@ -264,6 +297,7 @@ print(integer,result)`}
             btnType={BtnType.Primary}
             width='150px'
             translation-key='code_management_detail_template_create'
+            onClick={handleGenerate}
           >
             {t("code_management_detail_template_create")}{" "}
           </Button>

@@ -31,7 +31,11 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { Textarea } from "@mui/joy";
 import MDEditor from "@uiw/react-md-editor";
-import { EFeedbackGradedCriteriaRate, IFeedback, QuestionEssay } from "services/GradingEssayByAI";
+import {
+  EFeedbackGradedCriteriaRate,
+  IFeedback,
+  QuestionEssay
+} from "services/AIService/GradingEssayByAI";
 
 const drawerWidth = 450;
 

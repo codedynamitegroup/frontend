@@ -11,7 +11,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import { useTranslation } from "react-i18next";
-import { ISourceCodeSubmission, feedbackCodeByAI } from "services/FeedbackCodeByAI";
+import { ISourceCodeSubmission, feedbackCodeByAI } from "services/AIService/FeedbackCodeByAI";
 import { useState } from "react";
 
 import MDEditor from "@uiw/react-md-editor";

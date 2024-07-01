@@ -75,7 +75,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
   };
 
   const [activeTab, setActiveTab] = useState("0");
-  console.log("im here");
+
   return (
     <>
       <Box>
