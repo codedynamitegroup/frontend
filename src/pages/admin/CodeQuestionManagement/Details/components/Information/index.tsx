@@ -6,17 +6,23 @@ import { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Heading5 from "components/text/Heading5";
 import { useTranslation } from "react-i18next";
-import { QuestionEntity } from "models/courseService/entity/QuestionEntity";
+import { CodeQuestionAdminEntity } from "models/codeAssessmentService/entity/CodeQuestionAdminEntity";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { CodeQuestionFormData } from "../../type/CodeQuestionFormData";
+import { Controller, useForm, useFormContext } from "react-hook-form";
 
-type Props = { question: QuestionEntity };
+type Props = { codeQuestion: CodeQuestionAdminEntity | undefined };
+type CodeQuestionInformationFormValue = {
+  name: string;
+};
 
-enum EDifficulty {
-  EASY = "EASY",
-  MEDIUM = "MEDIUM",
-  HARD = "HARD"
-}
-const CodeQuestionInformation = memo(({ question }: Props) => {
+const CodeQuestionInformation = ({ codeQuestion }: Props) => {
   const { t } = useTranslation();
+  const {
+    register,
+    control: codeQuestionControl,
+    formState: { errors: codeQuestionFormErrors }
+  } = useFormContext<CodeQuestionInformationFormValue>();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
@@ -27,7 +33,7 @@ const CodeQuestionInformation = memo(({ question }: Props) => {
   );
   const [contraints, setContraints] = useState<string>("a và b là số nguyên");
   const [questionName] = useState<string>("Tổng 2 số");
-  const [difficulty, setDifficulty] = useState<string>(EDifficulty.EASY);
+  const [difficulty, setDifficulty] = useState<string>(QuestionDifficultyEnum.EASY);
   const handleChange = (event: SelectChangeEvent) => {
     setDifficulty(event.target.value);
   };
@@ -42,12 +48,22 @@ const CodeQuestionInformation = memo(({ question }: Props) => {
       >
         {t("code_management_detail_info_description")}{" "}
       </Heading5>
-      <InputTextField
-        title={t("exam_management_create_question_name")}
-        type='text'
-        value={question.name}
-        translation-key='exam_management_create_question_name'
+      <Controller
+        name='name'
+        control={codeQuestionControl}
+        render={({ field: { onChange, value } }) => (
+          <InputTextField
+            onChange={onChange}
+            value={value}
+            errorMessage={codeQuestionFormErrors.name?.message}
+            title={t("exam_management_create_question_name")}
+            type='text'
+            width='100%'
+            translation-key='exam_management_create_question_name'
+          />
+        )}
       />
+
       <FormControl>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
@@ -56,14 +72,18 @@ const CodeQuestionInformation = memo(({ question }: Props) => {
             </TextTitle>
           </Grid>
           <Grid item xs={9}>
-            <Select value={question.difficulty} onChange={handleChange} sx={{ width: "200px" }}>
-              <MenuItem value={EDifficulty.EASY} translation-key='common_easy'>
+            <Select
+              value={codeQuestion?.difficulty}
+              onChange={handleChange}
+              sx={{ width: "200px" }}
+            >
+              <MenuItem value={QuestionDifficultyEnum.EASY} translation-key='common_easy'>
                 {t("common_easy")}
               </MenuItem>
-              <MenuItem value={EDifficulty.MEDIUM} translation-key='common_medium'>
+              <MenuItem value={QuestionDifficultyEnum.MEDIUM} translation-key='common_medium'>
                 {t("common_medium")}
               </MenuItem>
-              <MenuItem value={EDifficulty.HARD} translation-key='common_hard'>
+              <MenuItem value={QuestionDifficultyEnum.HARD} translation-key='common_hard'>
                 {t("common_hard")}
               </MenuItem>
             </Select>
@@ -78,7 +98,7 @@ const CodeQuestionInformation = memo(({ question }: Props) => {
             </TextTitle>
           </Grid>
           <Grid item xs={9} className={classes.textEditor}>
-            <TextEditor value={question.questionText} onChange={setProblemDescription} />
+            <TextEditor value={codeQuestion?.problemStatement} onChange={setProblemDescription} />
           </Grid>
         </Grid>
       </FormControl>
@@ -122,6 +142,6 @@ const CodeQuestionInformation = memo(({ question }: Props) => {
       </Grid>
     </Box>
   );
-});
+};
 
 export default CodeQuestionInformation;

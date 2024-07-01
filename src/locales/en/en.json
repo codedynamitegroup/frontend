@@ -665,6 +665,7 @@
   "phone_number_invalid": "Phone number is invalid",
   "phone_required": "Phone number is required",
   "role_required": "Role is required",
+  "name_required": "Name is required",
 
   "course_management_exam_previous": "Summary of previous exams",
   "course_management_exam_try_time": "Tries",
