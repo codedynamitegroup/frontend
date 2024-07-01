@@ -1,14 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
 import i18next from "i18next";
+import { ICodeConverterRequest } from "pages/admin/CodeQuestionManagement/Details/components/CodeStubs";
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
-export interface ICodeConverterResponse {
-  program_language: string;
-  code_stub: string;
-}
 // const example_response: ICodeConverterResponse[] = [
 //   {
 //     program_language: "java",
@@ -194,40 +191,13 @@ export interface ICodeConverterResponse {
 // `
 //   }
 // ];
-interface ICodeConverterRequest {
-  programming_language: string;
-}
 
-const example_request: ICodeConverterRequest[] = [
-  {
-    programming_language: "C (GCC 8.3.0)"
-  },
-  {
-    programming_language: "C++ (GCC 7.4.0)"
-  },
-  {
-    programming_language: "C# (Mono 6.6.0.161)"
-  },
-  {
-    programming_language: "Java (OpenJDK 13.0.1)"
-  },
-  {
-    programming_language: "PHP (7.4.1)"
-  },
-  {
-    programming_language: "Python (3.8.1)"
-  },
-  {
-    programming_language: "Ruby (2.7.0)"
-  },
-  {
-    programming_language: "TypeScript (3.7.4)"
-  }
-];
-
-async function CodeConverterAI(programming_language: string, code_stub: string) {
+async function* CodeConverterAI(
+  programming_language: string,
+  code_stub: string,
+  program_language_converted_request: ICodeConverterRequest[]
+) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-  const language = i18next.language === "en" ? "English" : "Vietnamese";
   const AI_ROLE = `
 I. YOUR ROLE:
 	- You are Code Converter AI, a large language model trained on a massive dataset of text and code.
@@ -320,7 +290,7 @@ I. YOUR ROLE:
 
   try {
     let result, response, text;
-    const chunks = chunkArray(example_request, 4); // Adjust the chunk size as needed
+    const chunks = chunkArray(program_language_converted_request, 5); // Adjust the chunk size as needed
     const allResponses = [];
     result = await model.generateContentStream(AI_ROLE);
     response = await result.response;
@@ -341,16 +311,14 @@ I. YOUR ROLE:
 
     for (const chunk of chunks) {
       result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS(chunk));
-      console.log("SYSTEM_INSTRUCTIONS", SYSTEM_INSTRUCTIONS(chunk));
       response = await result.response;
       text = await response.text();
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
       const json = JSON.parse(repaired);
       allResponses.push(...json);
+      yield allResponses;
     }
-
-    return allResponses;
   } catch (error) {
     return error;
   }

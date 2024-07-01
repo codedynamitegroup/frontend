@@ -113,7 +113,6 @@ const AICreationQuestion = (props: Props) => {
         level
       )) {
         if (chunk && isResponseFormatQuestion(chunk)) {
-          console.log("chunk", chunk.questions);
           const questionsTemp = chunk?.questions;
           setQuestions(questionsTemp);
           setLengthQuestion(questionsTemp.length);
