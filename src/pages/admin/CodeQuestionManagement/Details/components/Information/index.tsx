@@ -12,6 +12,9 @@ import { CodeQuestionFormData } from "../../type/CodeQuestionFormData";
 import { Controller, useForm, useFormContext } from "react-hook-form";
 
 type Props = { codeQuestion: CodeQuestionAdminEntity | undefined };
+type CodeQuestionInformationFormValue = {
+  name: string;
+};
 
 const CodeQuestionInformation = ({ codeQuestion }: Props) => {
   const { t } = useTranslation();
@@ -19,7 +22,7 @@ const CodeQuestionInformation = ({ codeQuestion }: Props) => {
     register,
     control: codeQuestionControl,
     formState: { errors: codeQuestionFormErrors }
-  } = useFormContext<CodeQuestionFormData>();
+  } = useFormContext<CodeQuestionInformationFormValue>();
   const [problemDescription, setProblemDescription] = useState<string>("Mô tả bài toán");
   const [problemStatement, setProblemStatement] = useState<string>("Tính tổng 2 số");
   const [inputFormat, setInputFormat] = useState<string>(
