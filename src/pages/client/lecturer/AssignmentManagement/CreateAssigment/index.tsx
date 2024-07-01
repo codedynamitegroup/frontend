@@ -92,7 +92,6 @@ export default function AssignmentCreated() {
 
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
   const courseState = useSelector((state: RootState) => state.course);
-  console.log(allowSubmissionAfterEndTime);
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);

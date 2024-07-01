@@ -4,7 +4,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
@@ -20,7 +20,10 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
-import createQuestionByAI, { IFormatQuestion, IQuestion } from "services/CreateQuestionByAI";
+import CreateQuestionByAI, {
+  IFormatQuestion,
+  IQuestion
+} from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -53,7 +56,7 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
-const AIQuestionCreated = (props: Props) => {
+const AICreationQuestion = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
 
@@ -102,7 +105,7 @@ const AIQuestionCreated = (props: Props) => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    await createQuestionByAI(
+    await CreateQuestionByAI(
       topic,
       desciption,
       qtype,
@@ -409,4 +412,4 @@ const AIQuestionCreated = (props: Props) => {
   );
 };
 
-export default AIQuestionCreated;
+export default memo(AICreationQuestion);
