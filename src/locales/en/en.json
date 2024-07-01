@@ -747,6 +747,11 @@
   "question_bank_create_category_info": "Category infomation",
   "question_bank_create_category_name": "Category name",
 
+  "question_bank_create_category_name_required": "Category name is required",
+  "question_bank_create_category_info_required": "Category information is required",
+  "question_bank_create_category_success": "Create category successfully",
+  "question_bank_create_category_fail": "Create category failed",
+
   "question_bank_management": "Question bank management",
   "side_bar_question_bank_management": "Question bank",
 
@@ -1112,6 +1117,18 @@
   "exam_detail_summary_no_attempt": "Haven't done any attempt",
   "exam_detail_max_attempt": "Maximum attempt",
   "exam_detail_attempt_unlimited": "Unlimit attempt",
+
+  "exam_name_required": "Exam name is required",
+  "exam_description_required": "Exam description is required",
+  "exam_max_score_required": "Maximum score is required",
+  "exam_time_limit_required": "Time limit is required",
+  "exam_max_score_invalid": "Maximum score must be a number greater than or equal to 0",
+  "exam_time_limit_invalid": "Time limit must be a number greater than or equal to 0",
+  "exam_time_open_invalid": "Open time must be before close time",
+  "exam_time_close_invalid": "Close time must be after open time",
+  "exam_start_date_invalid": "Start date must be before end date",
+  "exam_end_date_invalid": "End date must be after start date",
+  "exam_max_attempt_invalid": "Maximum attempt must be a number greater than or equal to 0",
 
   "create_question_true_false": "Create true / false question",
   "create_question_multiple_choice": "Create multiple choice question",
