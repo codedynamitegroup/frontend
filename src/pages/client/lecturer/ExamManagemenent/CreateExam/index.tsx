@@ -146,9 +146,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export const OVERDUE_HANDLING = {
-  AUTOSUBMIT: "autosubmit",
-  GRACEPERIOD: "graceperiod",
-  AUTOABANDON: "autoabandon"
+  AUTOSUBMIT: "AUTOSUBMIT",
+  GRACEPERIOD: "GRACEPERIOD",
+  AUTOABANDON: "AUTOABANDON"
 };
 
 interface FormData {
@@ -198,6 +198,7 @@ export default function ExamCreated() {
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
+  const [submitCount, setSubmitCount] = useState(0);
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -300,6 +301,7 @@ export default function ExamCreated() {
   };
 
   const submitHandler = async (data: any) => {
+    setLoading(true);
     const formSubmitData: FormData = { ...data };
 
     const questionIds = questionCreate.questionCreate.map((item) => ({
@@ -348,6 +350,12 @@ export default function ExamCreated() {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setLoading(false);
+          navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
+        }, 3000);
       });
   };
 
@@ -488,22 +496,6 @@ export default function ExamCreated() {
     handleCloseAddNewQuestionDialog();
   };
 
-  // function handleClick() {
-  //   setLoading(true);
-  //   submitHandler();
-
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     navigate(
-  //       routes.lecturer.course.assignment.replace(
-  //         ":courseId",
-  //         courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
-  //       )
-  //     );
-  //   }, 3000);
-  // }
-
-  // Form handler
   const schema = React.useMemo(() => {
     return yup.object().shape({
       name: yup.string().required(t("exam_name_required")),
@@ -620,7 +612,7 @@ export default function ExamCreated() {
         ]}
       />
 
-      <form onSubmit={handleSubmit(submitHandler)}>
+      <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
         <Grid className={classes.root}>
           <Header />
           <Box
@@ -737,15 +729,15 @@ export default function ExamCreated() {
                     )}
                   />
 
-                  <TitleWithInfoTip
-                    title={t("common_exam_description")}
-                    titleRequired
-                    fontSize='12px'
-                    color='var(--gray-60)'
-                    gutterBottom
-                    fontWeight='600'
-                  />
                   <Grid item xs={3} className={classes.textEditor}>
+                    <TitleWithInfoTip
+                      title={t("common_exam_description")}
+                      titleRequired
+                      fontSize='12px'
+                      color='var(--gray-60)'
+                      gutterBottom
+                      fontWeight='600'
+                    />
                     <Controller
                       defaultValue=''
                       control={control}
@@ -760,12 +752,14 @@ export default function ExamCreated() {
                           required
                           error={Boolean(errors.intro)}
                           errorMessage={errors.intro?.message}
-                          value={field.value}
-                          onChange={field.onChange}
+                          // value={field.value}
+                          // onChange={field.onChange}
                           placeholder={t("common_exam_description")}
                           backgroundColor='white'
                           translation-key={["common_exam_description"]}
                           tooltipDescription={t("question_default_score_description")}
+                          {...field}
+                          submitCount={submitCount}
                         />
                       )}
                     />
@@ -1262,7 +1256,7 @@ export default function ExamCreated() {
                   style={{ marginTop: "20px" }}
                   padding='10px'
                   loading={loading}
-                  // onClick={handleClick}
+                  onClick={handleSubmit(submitHandler)}
                   translation-key='course_lecturer_assignment_create_exam'
                 >
                   {t("course_lecturer_assignment_create_exam")}
