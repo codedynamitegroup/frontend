@@ -13,7 +13,7 @@ export enum AlertType {
 interface SnackbarAlertProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  content?: string;
+  content?: string | React.ReactNode;
   type?: AlertType;
   anchorOrigin?: {
     vertical: "top" | "bottom";
@@ -38,7 +38,7 @@ export default function SnackbarAlert({
   const horizontal = "right";
 
   return (
-    <Stack spacing={2} sx={{ width: "100%" }}>
+    <Stack spacing={2} sx={{ width: "100%", zIndex: 99999 }}>
       <Snackbar
         open={open}
         autoHideDuration={3000}

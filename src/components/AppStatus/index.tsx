@@ -1,7 +1,12 @@
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import LoadingScreen from "components/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { clearErrorMess, clearSuccessMess, selectStateSnackbar } from "reduxes/AppStatus";
+import {
+  clearErrorMess,
+  clearInfoMess,
+  clearSuccessMess,
+  selectStateSnackbar
+} from "reduxes/AppStatus";
 import { selectedIsLoadingAuth, selectedLoading } from "reduxes/Loading";
 
 export const AppStatus = () => {
@@ -47,6 +52,26 @@ export const AppStatus = () => {
           sx={{ backgroundColor: "var(--green-1)", color: "#293306", fontWeight: 500 }}
         >
           {status.success}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={!!status.info}
+        autoHideDuration={5000}
+        onClose={() => dispach(clearInfoMess(undefined))}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+      >
+        <Alert
+          elevation={6}
+          variant='filled'
+          onClose={() => dispach(clearInfoMess(undefined))}
+          severity='info'
+        >
+          {status?.info?.title || ""}
+          <Box>{status?.info?.content || ""}</Box>
         </Alert>
       </Snackbar>
     </>

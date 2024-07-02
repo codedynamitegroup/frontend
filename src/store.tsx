@@ -37,6 +37,7 @@ import SidebarStatus from "reduxes/SidebarStatus";
 import takeExamCodeQuestion, {
   TakeExamCodeQuestionInitState
 } from "reduxes/TakeExam/TakeExamCodeQuestion";
+import socketReducer from "reduxes/Socket";
 import previewCodeQuestionTestCase from "reduxes/courseService/previewCodeQuestionTestCase";
 
 const persistConfig = {
@@ -82,12 +83,14 @@ const store = configureStore({
     adminCertificateCourse: adminCertificateCourse,
     sidebarStatus: SidebarStatus,
     takeExamCodeQuestion: takeExamPersistedReducer,
+    socket: socketReducer,
     previewCodeQuestionTestCase: previewCodeQuestionTestCase
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, "socket/setSocket"],
+        ignoredPaths: ["socket"]
       }
     }),
   devTools: true

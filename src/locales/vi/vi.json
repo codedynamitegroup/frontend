@@ -251,6 +251,7 @@
   "common_add_new": "Thêm mới",
   "common_cannot_be_blank": "không được để trống",
   "common_close": "Đóng",
+  "common_unread": "Chưa đọc",
 
   "drag_drop_file_placeholder": "Kéo và thả hoặc nhấn vào để tải file lên",
 
@@ -592,6 +593,8 @@
   "assignment_create_success": "Tạo bài tập thành công",
 
   "no_data": "Không có dữ liệu",
+  "notification_no_data": "Không có thông báo nào",
+  "notification_no_more_data": "Không còn thông báo nào",
 
   "common_general": "Tổng quát",
   "common_time_setting": "Cài đặt thời gian",
@@ -901,6 +904,12 @@
   "notification_title_new_assignment_content": "Có bài tập mới trong khoá học {{courseName}}",
   "notification_title_system_sync": "Đồng bộ hệ thống",
   "notification_title_system_sync_content": "Khoá học {{courseName}} vừa đồng bộ với hệ thống",
+  "notification_mark_as_unread_success": "Đánh dấu chưa đọc thành công",
+  "notification_mark_as_read_success": "Đánh dấu đã đọc thành công",
+  "notification_mark_as_unread_fail": "Đánh dấu chưa đọc thất bại",
+  "notification_mark_as_read_fail": "Đánh dấu đã đọc thất bại",
+  "notification_delete_success": "Xóa thông báo thành công",
+  "notification_delete_fail": "Xóa thông báo thất bại",
 
   "detail_submission_AI_evaluation": "Đánh giá bằng AI",
 
