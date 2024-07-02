@@ -160,13 +160,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
-    console.log(user);
-    console.log("user", user);
     setOpenAlertDiaglog(false);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
-    console.log(categoryId, "category");
-    console.log(isQuestionBank, "isQuestionBank");
 
     const newQuestion: PostShortAnswerQuestion = {
       organizationId: isAdminQuestionBank ? "" : user.organization.organizationId,
@@ -183,7 +179,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
       isOrgQuestionBank: isOrgQuestionBank,
       caseSensitive: Boolean(formSubmittedData?.caseSensitive)
     };
-    console.log(newQuestion);
     ShortAnswerQuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
