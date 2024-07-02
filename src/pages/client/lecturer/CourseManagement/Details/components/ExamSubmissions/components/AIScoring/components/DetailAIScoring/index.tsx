@@ -31,7 +31,9 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { Textarea } from "@mui/joy";
 import MDEditor from "@uiw/react-md-editor";
-import { EFeedbackGradedCriteriaRate, IFeedback, QuestionEssay } from "services/GradingEssayByAI";
+import { QuestionEssay } from "services/AIService/GradingEssayByAI";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const drawerWidth = 450;
 
@@ -129,10 +131,7 @@ export default function DetailAIScoring() {
     }
   }, [width]);
 
-  const headerRef = React.useRef<HTMLDivElement>(null);
-  const { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
@@ -141,20 +140,9 @@ export default function DetailAIScoring() {
 
   React.useEffect(() => {
     if (feedback) {
-      const feedbackTemp: IFeedback = feedback?.feedback;
+      const feedbackTemp: string = feedback?.feedback;
       if (feedbackTemp) {
-        const feedbackTemplate = `
-#### 1. Nội dung (${feedbackTemp?.content?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question?.maxScore).toFixed(2)}):
-${feedbackTemp?.content?.content}
-
-#### 2. Hình thức (${feedbackTemp?.form?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question?.maxScore).toFixed(2)}):
-${feedbackTemp?.form?.content}
-
-#### 3. Phong cách (${feedbackTemp?.style?.score.toFixed(2)}/${(EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question?.maxScore).toFixed(2)}):
-${feedbackTemp?.style?.content}
-
-${feedbackTemp?.overall}
-`;
+        const feedbackTemplate = feedbackTemp;
         setAssignmentFeedback(feedbackTemplate);
       }
       setAssignmentMaximumGrade(feedback?.current_final_grade);
@@ -163,19 +151,19 @@ ${feedbackTemp?.overall}
 
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${headerHeight}px`,
-          height: `calc(100% - ${headerHeight}px)`
+          marginTop: `${sidebarStatus.headerHeight}px`,
+          height: `calc(100% - ${sidebarStatus.headerHeight}px)`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            top: `${headerHeight}px`,
+            top: `${sidebarStatus.headerHeight}px`,
             backgroundColor: "white"
           }}
           ref={header2Ref}
@@ -242,8 +230,8 @@ ${feedbackTemp?.overall}
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               position: "fixed",
-              top: `${headerHeight}px`,
-              height: `calc(100% - ${headerHeight}px)`,
+              top: `${sidebarStatus.headerHeight}px`,
+              height: `calc(100% - ${sidebarStatus.headerHeight}px)`,
               overflowY: "hidden"
             }
           }}

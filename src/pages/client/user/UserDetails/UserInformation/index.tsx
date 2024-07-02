@@ -45,98 +45,94 @@ const UserInformation = () => {
   };
 
   return (
-    <Grid>
-      <Grid id={classes.userInformationRoot}>
-        <Grid container direction='row' justifyContent={"center"} gap={3}>
-          <Grid item xs={3}>
-            <Box className={classes.leftContainer}>
-              <Box className={classes.leftBody}>
-                <Heading1
-                  sx={{
-                    textAlign: "center"
-                  }}
-                  translation-key='user_detail_account_management'
-                >
-                  {t("user_detail_account_management")}
-                </Heading1>
-                {data.userInfo?.firstName && data.userInfo?.lastName && (
-                  <UserAvatarAndName
-                    displayName={`${data.userInfo?.firstName} ${data.userInfo?.lastName}`}
-                    avatarUrl={data.userInfo?.avatarUrl}
-                  />
-                )}
+    <Grid id={classes.userInformationRoot}>
+      <Grid container direction='row' justifyContent={"center"} gap={3}>
+        <Grid item xs={3}>
+          <Box className={classes.leftContainer}>
+            <Box className={classes.leftBody}>
+              <Heading1
+                sx={{
+                  textAlign: "center"
+                }}
+                translation-key='user_detail_account_management'
+              >
+                {t("user_detail_account_management")}
+              </Heading1>
+              {data.userInfo?.firstName && data.userInfo?.lastName && (
+                <UserAvatarAndName
+                  displayName={`${data.userInfo?.firstName} ${data.userInfo?.lastName}`}
+                  avatarUrl={data.userInfo?.avatarUrl}
+                />
+              )}
 
-                <Button
-                  btnType={BtnType.Outlined}
-                  fullWidth
-                  onClick={() => {
-                    setData((pre) => ({
-                      ...pre,
-                      isUserInformationDetailsModalOpen: true
-                    }));
-                  }}
-                  translation-key='user_detail_edit_account'
-                >
-                  {t("user_detail_edit_account")}
-                </Button>
-                <Button
-                  btnType={BtnType.Primary}
-                  fullWidth
-                  onClick={onHanldeChangePassword}
-                  translation-key='user_detail_change_password'
-                >
-                  {t("user_detail_change_password")}
-                </Button>
-              </Box>
-              <Box className={classes.userGeneralInfo}>
-                <Heading2 translation-key='user_detail'>{t("user_detail")}</Heading2>
-                {data.userInfo?.firstName && data.userInfo?.lastName && (
-                  <Grid container spacing={1} columns={12}>
-                    <Grid item xs={12}>
-                      <TextTitle translation-key='common_fullname'>
-                        {t("common_fullname")}
-                      </TextTitle>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <ParagraphBody>{`${data.userInfo.firstName} ${data.userInfo.lastName}`}</ParagraphBody>
-                    </Grid>
-                  </Grid>
-                )}
-                {data.userInfo?.email && (
-                  <Grid container spacing={1} columns={12}>
-                    <Grid item xs={12}>
-                      <TextTitle>Email</TextTitle>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        btnType={BtnType.Text}
-                        padding='0'
-                        width='fit-content'
-                        href={`mailto:${data.userInfo?.email}`}
-                      >
-                        {data.userInfo?.email}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                )}
-                {data.userInfo?.dob && (
-                  <Grid container spacing={1} columns={12}>
-                    <Grid item xs={12}>
-                      <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <ParagraphBody>{format(data.userInfo.dob, "dd-MM-yyyy")}</ParagraphBody>
-                    </Grid>
-                  </Grid>
-                )}
-              </Box>
+              <Button
+                btnType={BtnType.Outlined}
+                fullWidth
+                onClick={() => {
+                  setData((pre) => ({
+                    ...pre,
+                    isUserInformationDetailsModalOpen: true
+                  }));
+                }}
+                translation-key='user_detail_edit_account'
+              >
+                {t("user_detail_edit_account")}
+              </Button>
+              <Button
+                btnType={BtnType.Primary}
+                fullWidth
+                onClick={onHanldeChangePassword}
+                translation-key='user_detail_change_password'
+              >
+                {t("user_detail_change_password")}
+              </Button>
             </Box>
-          </Grid>
-          <Grid item xs={7}>
-            <Container className={classes.rightContainer}>
-              <UserRecentActivities />
-            </Container>
-          </Grid>
+            <Box className={classes.userGeneralInfo}>
+              <Heading2 translation-key='user_detail'>{t("user_detail")}</Heading2>
+              {data.userInfo?.firstName && data.userInfo?.lastName && (
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle translation-key='common_fullname'>{t("common_fullname")}</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ParagraphBody>{`${data.userInfo.firstName} ${data.userInfo.lastName}`}</ParagraphBody>
+                  </Grid>
+                </Grid>
+              )}
+              {data.userInfo?.email && (
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle>Email</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      btnType={BtnType.Text}
+                      padding='0'
+                      width='fit-content'
+                      href={`mailto:${data.userInfo?.email}`}
+                    >
+                      {data.userInfo?.email}
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
+              {data.userInfo?.dob && (
+                <Grid container spacing={1} columns={12}>
+                  <Grid item xs={12}>
+                    <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ParagraphBody>{format(data.userInfo.dob, "dd-MM-yyyy")}</ParagraphBody>
+                  </Grid>
+                </Grid>
+              )}
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={7}>
+          <Container className={classes.rightContainer}>
+            <UserRecentActivities />
+          </Container>
         </Grid>
       </Grid>
       <UserInformationDetailsDialog

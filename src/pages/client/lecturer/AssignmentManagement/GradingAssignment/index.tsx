@@ -37,6 +37,8 @@ import { AssignmentResourceEntity } from "models/courseService/entity/Assignment
 import ParagraphBody from "components/text/ParagraphBody";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import useBoxDimensions from "hooks/useBoxDimensions";
+import { CourseService } from "services/courseService/CourseService";
+import { setCourseDetail } from "reduxes/courseService/course";
 import { SubmissionAssignmentEntity } from "models/courseService/entity/SubmissionAssignmentEntity";
 import { grey } from "@mui/material/colors";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -89,6 +91,7 @@ export default function AssignmentGrading() {
 
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const assignmentState = useSelector((state: RootState) => state.assignment);
+  const courseState = useSelector((state: RootState) => state.course);
   const dispatch = useDispatch();
 
   const [page, setPage] = React.useState(0);
@@ -108,6 +111,20 @@ export default function AssignmentGrading() {
       setOpen(true);
     }
   }, [width]);
+
+  const getCourseById = async (courseId: string) => {
+    if (courseState.courseDetail) return;
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      dispatch(setCourseDetail({ courseDetail: response }));
+    } catch (error) {
+      console.error("Failed to get course detail", error);
+    }
+  };
+
+  useEffect(() => {
+    getCourseById(courseId ?? "");
+  }, [courseId, getCourseById]);
 
   const handleSave = async (continueToNext = false) => {
     const submissionGrade = submissionAssignmentState.submissionAssignments.find(
@@ -371,7 +388,7 @@ export default function AssignmentGrading() {
                       ":courseId",
                       courseId ?? ""
                     ),
-                    label: "CS202 - Nhập môn lập trình"
+                    label: courseState.courseDetail?.name ?? ""
                   },
                   {
                     navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),

@@ -4,7 +4,7 @@ import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
@@ -20,10 +20,15 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
-import createQuestionByAI, { IFormatQuestion, IQuestion } from "services/CreateQuestionByAI";
+import CreateQuestionByAI, {
+  IFormatQuestion,
+  IQuestion
+} from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 interface Props {
   insideCrumb?: boolean;
 }
@@ -53,15 +58,13 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
-const AIQuestionCreated = (props: Props) => {
+const AICreationQuestion = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  let { height: headerHeight } = useBoxDimensions({
-    ref: headerRef
-  });
-  if (props.insideCrumb) headerHeight = 0;
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const [headerHeight, setHeaderHeight] = useState<number>(sidebarStatus.headerHeight);
+  if (props.insideCrumb) setHeaderHeight(0);
 
   const [modeEdit, setModeEdit] = useState(false);
   const { t } = useTranslation();
@@ -73,7 +76,6 @@ const AIQuestionCreated = (props: Props) => {
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
-  const [language, setLanguage] = useState<ELanguage>(ELanguage.Vietnamese);
   const [qamountAnswer, setQamountAnswer] = useState<EAmountAnswer>(EAmountAnswer.Three);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
@@ -94,7 +96,6 @@ const AIQuestionCreated = (props: Props) => {
       return prevQuestions.filter((q) => q.id !== index);
     });
   };
-
   function isResponseFormatQuestion(obj: any): obj is IFormatQuestion {
     return typeof obj.qtypeId === "number" && typeof obj.questions === "object";
   }
@@ -102,35 +103,26 @@ const AIQuestionCreated = (props: Props) => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
-    await createQuestionByAI(
-      topic,
-      desciption,
-      qtype,
-      qamountAnswer,
-      number_question,
-      level,
-      language
-    )
-      .then((data) => {
-        if (data && isResponseFormatQuestion(data)) {
-          setQuestions(data?.questions);
-          setLengthQuestion(data?.questions?.length);
-          setOpenSnackbarAlert(true);
-          setAlertContent("Tạo câu hỏi thành công");
-          setAlertType(AlertType.Success);
-        } else {
-          throw new Error("Internal server error");
+    try {
+      for await (const chunk of CreateQuestionByAI(
+        topic,
+        desciption,
+        qtype,
+        qamountAnswer,
+        number_question,
+        level
+      )) {
+        if (chunk && isResponseFormatQuestion(chunk)) {
+          const questionsTemp = chunk?.questions;
+          setQuestions(questionsTemp);
+          setLengthQuestion(questionsTemp.length);
         }
-      })
-      .catch((err) => {
-        console.error("Error generating content:", err);
-        setOpenSnackbarAlert(true);
-        setAlertContent("Tạo câu hỏi thất bại, hãy thử lại lần nữa");
-        setAlertType(AlertType.Error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      }
+    } catch (error) {
+      console.error("Error generating text:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleButtonClick = () => {
@@ -140,7 +132,7 @@ const AIQuestionCreated = (props: Props) => {
 
   return (
     <Grid className={classes.root}>
-      <Header ref={headerRef} />
+      <Header />
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
         <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
@@ -272,22 +264,6 @@ const AIQuestionCreated = (props: Props) => {
                     <MenuItem value={EQuestionLevel.Hard}>Khó</MenuItem>
                   </Select>
                 </Grid>
-
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Ngôn ngữ</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Select
-                    value={language}
-                    onChange={(e: any) => setLanguage(e.target.value)}
-                    fullWidth={true}
-                    size='small'
-                    required
-                  >
-                    <MenuItem value={ELanguage.Vietnamese}>Tiếng Việt</MenuItem>
-                    <MenuItem value={ELanguage.English}>Tiếng Anh</MenuItem>
-                  </Select>
-                </Grid>
               </Grid>
               <Button onClick={handleGenerate} btnType={BtnType.Primary}>
                 Tạo câu hỏi
@@ -300,9 +276,6 @@ const AIQuestionCreated = (props: Props) => {
                 <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
                   {modeEdit ? "Lưu" : "Chỉnh sửa"}
                 </Button>
-              )}
-              {questions?.length === 0 && (
-                <CircularProgress className={loading ? classes.loading : classes.none} />
               )}
               {questions &&
                 questions.map((value: IQuestion, index) => {
@@ -395,6 +368,20 @@ const AIQuestionCreated = (props: Props) => {
                     </Box>
                   );
                 })}
+              {loading === true && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    gap: "10px"
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
             </Box>
           </Grid>
           <SnackbarAlert
@@ -409,4 +396,4 @@ const AIQuestionCreated = (props: Props) => {
   );
 };
 
-export default AIQuestionCreated;
+export default memo(AICreationQuestion);

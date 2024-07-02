@@ -183,7 +183,12 @@ const AdminCodeQuestionManagement = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              navigate("/admin/code-questions/detail/:id".replace(":id", params.row.id));
+              navigate(
+                "/admin/code-questions/detail/:codeQuestionId".replace(
+                  ":codeQuestionId",
+                  params.row.id
+                )
+              );
             }}
           />,
           <GridActionsCellItem

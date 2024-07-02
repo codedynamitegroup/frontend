@@ -1,0 +1,17 @@
+.text-editor-question-text {
+  border: 0;
+  height: fit-content !important;
+  margin-bottom: 20px;
+  .ql-disabled {
+    border: 0;
+  }
+  .ql-container {
+    border: 0;
+    height: fit-content !important;
+
+    .ql-editor {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+}

@@ -19,8 +19,7 @@ export default function Result() {
   const { result, loading, error } = useAppSelector((state) => state.executeResultData);
   const currentExecuteData = useAppSelector((state) => state.executeData);
   useEffect(() => {
-    console.log(result, error, loading);
-    result.forEach((value) => console.log(decodeBase64(removeNewLine(value.compile_output ?? ""))));
+    result.forEach((value) => {});
   }, [result]);
 
   return (

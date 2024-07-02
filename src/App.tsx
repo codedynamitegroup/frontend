@@ -284,12 +284,6 @@ const router = createHashRouter(
                 element={<LecturerCodeQuestionCreation />}
               />
 
-              <Route
-                path={routes.lecturer.question.ai.create}
-                element={<AIQuestionCreated />}
-                handle={{ crumbName: "default" }}
-              />
-
               <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
             </Route>
             <Route element={<RequireAuth availableRoles={[ERoleName.STUDENT_MOODLE]} />}>
@@ -319,6 +313,11 @@ const router = createHashRouter(
             <Route
               path={routes.user.contest.detail.problems.problem_root}
               element={<TakeContestProblem />}
+            />
+            <Route
+              path={routes.lecturer.question_bank.create_question.ai.create}
+              element={<AIQuestionCreated />}
+              handle={{ crumbName: "default" }}
             />
           </Route>
         </Route>

@@ -50,6 +50,8 @@ import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
 import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import { clearAssignments } from "reduxes/courseService/assignment";
+import { useDispatch } from "react-redux";
 
 interface FormData {
   name: string;
@@ -84,6 +86,8 @@ export default function AssignmentCreated() {
   const [submissionTimeCollapseOpen, setSubmissionTimeCollapseOpen] = useState(false);
   const [submissionTypeCollapseOpen, setSubmissionTypeCollapseOpen] = useState(false);
   const [shake, setShake] = useState(false);
+
+  const dispatch = useDispatch();
 
   const [textSubmission, setTextSubmission] = useState<boolean>(false);
   const [fileSubmission, setFileSubmission] = useState<boolean>(true);
@@ -353,9 +357,8 @@ export default function AssignmentCreated() {
     } finally {
       setLoading(false);
       setOpenSuccessSnackbar(true);
-      setTimeout(() => {
-        navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
-      }, 2000);
+      dispatch(clearAssignments(assignmentState));
+      navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
     }
   };
 

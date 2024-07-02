@@ -146,6 +146,21 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
   const onSave = (data: any) => {
     // dispatch(closeNewRubric());
     alert(JSON.stringify(data));
+    console.log(JSON.stringify(data));
+    function formatAndDisplay(data: any) {
+      let formattedData = "";
+      data.criteria.forEach((criteria: any) => {
+        const length = criteria.scaleDescription.length;
+        formattedData += `- Criteria: ${criteria.criteriaName} (Total score: ${criteria.criteriaGrade}%)\n`;
+        criteria.scaleDescription.forEach((scale: any, index: any) => {
+          formattedData += `  * Score ${index + 1}/${length}: ${scale[`scale${index}`]}\n`;
+        });
+      });
+      return formattedData;
+    }
+
+    // Call the function to display the formatted data
+    console.log(formatAndDisplay(data));
   };
   const handleAddNewCriteriaField = () => {
     append({ criteriaName: "" });
@@ -298,6 +313,22 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
                               />
                               <Typography
                                 className={classes.configlabel}
+                                translation-key='grading_config_criteria_grade'
+                              >
+                                {t("grading_config_criteria_grade")}
+                              </Typography>
+                              <TextField
+                                id='outlined-basic'
+                                variant='outlined'
+                                type='number'
+                                fullWidth
+                                InputProps={{ className: classes.inputTextField }}
+                                {...register(`criteria.${index}.criteriaGrade`)}
+                                placeholder={t("grading_config_enter_criteria_name")}
+                                translation-key='grading_config_enter_criteria_name'
+                              />
+                              <Typography
+                                className={classes.configlabel}
                                 sx={{ marginTop: "10px" }}
                                 translation-key='grading_config_criteria_description'
                               >
@@ -400,7 +431,7 @@ const NestedGradeScale = ({ parentIndex, control, register }: NestedPropsData) =
             className={classes.configlabel}
             translation-key='grading_config_criteria_scale_description'
           >
-            {t("grading_config_criteria_scale_description", { index: index + 1 })}
+            {`${t("grading_config_criteria_scale_description", { index: index + 1 })}/${fields.length}`}
           </Typography>
           <ScaleTextArea
             aria-label='empty textarea'

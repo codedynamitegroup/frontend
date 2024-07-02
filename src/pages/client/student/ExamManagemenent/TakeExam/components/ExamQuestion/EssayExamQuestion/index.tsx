@@ -157,7 +157,6 @@ const EssayExamQuestion = (props: Props) => {
             maxFileSize={convertedFileSize}
             accept={fileTypeList}
             maxFiles={questionEssayQuestion.attachments}
-            stopAutoUpload
             disableDownload
             relatedId={questionEssayQuestion.question.id}
             relatedDispatch={addFileToExamQuesiton}

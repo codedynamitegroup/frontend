@@ -53,6 +53,8 @@ import {
 } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -105,9 +107,7 @@ const GradingConfig = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const rootRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const { width: rootWidth } = useBoxDimensions({ ref: rootRef });
-  const { height: headerHeight } = useBoxDimensions({ ref: headerRef });
 
   const gridHeader: GridColDef[] = [
     {
@@ -284,13 +284,15 @@ const GradingConfig = () => {
     })
   }));
 
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
   return (
     <>
       <Box className={classes.root} ref={rootRef}>
-        <Header ref={headerRef} />
+        <Header />
         <Box
           sx={{
-            marginTop: `${headerHeight + 80}px`
+            marginTop: `${sidebarStatus.headerHeight + 80}px`
           }}
         >
           <CssBaseline />
@@ -663,7 +665,7 @@ const GradingConfig = () => {
         </Stack>
       </Box>
       <SelectRubricDialog />
-      <NewRubricDialog headerHeight={headerHeight} />
+      <NewRubricDialog headerHeight={sidebarStatus.headerHeight} />
       <SelectCriteriaConfig />
     </>
   );

@@ -29,12 +29,10 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import {
   AssignmentStudent,
-  EFeedbackGradedCriteriaRate,
-  IFeedback,
   IFeedbackGradedAI,
   QuestionEssay,
   gradingEssayByAI
-} from "services/GradingEssayByAI";
+} from "services/AIService/GradingEssayByAI";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -126,14 +124,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade:
-        feedback?.length !== 0
-          ? (
-              feedback[0]?.feedback?.content?.score +
-              feedback[0]?.feedback?.form?.score +
-              feedback[0]?.feedback?.style?.score
-            ).toFixed(2)
-          : 0,
+      current_final_grade: feedback?.length !== 0 ? 5 : 0,
 
       feedback: feedback?.length !== 0 ? feedback[0]?.feedback : ""
     },
@@ -148,14 +139,7 @@ const AIScoring = () => {
           late_duration: "1 ngày 2 giờ"
         }
       },
-      current_final_grade:
-        feedback?.length !== 0
-          ? (
-              feedback[1]?.feedback?.content?.score +
-              feedback[1]?.feedback?.form?.score +
-              feedback[1]?.feedback?.style?.score
-            ).toFixed(2)
-          : 0,
+      current_final_grade: feedback?.length !== 0 ? 5 : 0,
       feedback: feedback?.length !== 0 ? feedback[1]?.feedback : ""
     }
   ];
@@ -238,22 +222,12 @@ const AIScoring = () => {
       headerName: "Phản hồi",
       width: 200,
       renderCell: (params) => {
-        const feedbackTemp: IFeedback = params.value;
+        const feedbackTemp: string = params.value;
         if (!feedbackTemp) {
           return "";
         }
 
-        const feedback = `
-1. Nội dung (${feedbackTemp?.content?.score}/${EFeedbackGradedCriteriaRate.CONTENT_FEEDBACK * question.maxScore}):
-	${feedbackTemp?.content?.content}
-
-2. Hình thức (${feedbackTemp?.form?.score}/${EFeedbackGradedCriteriaRate.FORM_FEEDBACK * question.maxScore}):
-	${feedbackTemp?.form?.content}
-
-3. Phong cách (${feedbackTemp?.style?.score}/${EFeedbackGradedCriteriaRate.STYLE_FEEDBACK * question.maxScore}):
-	${feedbackTemp?.style?.content}
-
-	- ${feedbackTemp?.overall}`;
+        const feedback = feedbackTemp;
         return (
           <Box
             sx={{
@@ -332,7 +306,103 @@ const AIScoring = () => {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
+  const rubicData = {
+    criteria: [
+      {
+        criteriaName: "Content",
+        criteriaGrade: "80",
+        criteriaDescription: "",
+        scaleDescription: [
+          {
+            scaleDescription: "",
+            scale0:
+              "The essay is incomplete, inaccurate, illogical, and uses sources inappropriately"
+          },
+          {
+            scaleDescription: "",
+            scale1:
+              "The essay is complete, accurate, but lacks logic, and uses sources somewhat appropriately"
+          },
+          {
+            scaleDescription: "",
+            scale2: "The essay is complete, accurate, and logical, and uses sources appropriately"
+          },
+          {
+            scaleDescription: "",
+            scale3:
+              "The essay is complete, accurate, logical, creative, and uses sources appropriately"
+          }
+        ]
+      },
+      {
+        criteriaName: "Form",
+        criteriaGrade: "10",
+        criteriaDescription: "",
+        scaleDescription: [
+          {
+            scaleDescription: "",
+            scale0:
+              "The essay has many errors in grammar, spelling, or punctuation, uses limited vocabulary, and has an unclear layout."
+          },
+          {
+            scaleDescription: "",
+            scale1:
+              "The essay has several errors in grammar, spelling, or punctuation, uses somewhat varied and rich vocabulary, and has a somewhat clear layout."
+          },
+          {
+            scaleDescription: "",
+            scale2:
+              "The essay has few errors in grammar, spelling, or punctuation, uses varied, rich, and appropriate vocabulary, and has a relatively clear layout."
+          },
+          {
+            scaleDescription: "",
+            scale3:
+              "The essay has no errors in grammar, spelling, or punctuation, and uses varied, rich, and appropriate vocabulary with a clear layout"
+          }
+        ]
+      },
+      {
+        criteriaName: "Style",
+        criteriaGrade: "10",
+        criteriaDescription: "",
+        scaleDescription: [
+          {
+            scaleDescription: "",
+            scale0:
+              "The essay is unclear, not engaging, and not appropriate for the topic, purpose, and audience."
+          },
+          {
+            scaleDescription: "",
+            scale1:
+              "The essay is unclear, lacks engagement, and is somewhat appropriate for the topic, purpose, and audience."
+          },
+          {
+            scaleDescription: "",
+            scale2:
+              "The essay is relatively clear, engaging, and appropriate for the topic, purpose, and audience."
+          },
+          {
+            scaleDescription: "",
+            scale3:
+              "The essay is clear, engaging, and appropriate for the topic, purpose, and audience."
+          }
+        ]
+      }
+    ],
+    name: "Rubic"
+  };
 
+  function formatAndDisplay(data: any) {
+    let formattedData = "";
+    data.criteria.forEach((criteria: any) => {
+      const length = criteria.scaleDescription.length;
+      formattedData += `- Criteria: ${criteria.criteriaName} (Total score: ${criteria.criteriaGrade}%)\n`;
+      criteria.scaleDescription.forEach((scale: any, index: any) => {
+        formattedData += `  * Score ${index + 1}/${length}: ${scale[`scale${index}`]}\n`;
+      });
+    });
+    return formattedData;
+  }
   const question: QuestionEssay = useMemo(
     () => ({
       content: "Cách Chuyển Tất Cả Các Số Không Của Mảng Về Cuối",
@@ -347,7 +417,7 @@ const AIScoring = () => {
 
 			Giải pháp trước có độ phức tạp thời gian O (n), trong đó n là kích thước của đầu vào.
 			`,
-      rubics: "Trả lời đúng các tiêu chí được nêu sẽ được tối đa điểm",
+      rubics: formatAndDisplay(rubicData),
       maxScore: 10
     }),
     []
@@ -373,62 +443,26 @@ const AIScoring = () => {
     []
   );
 
-  const effectRan = useRef(false);
-
-  function isResponseFeedbackGradedAI(obj: any): obj is IFeedbackGradedAI {
-    return (
-      typeof obj.studentSubmissionId === "number" &&
-      typeof obj.feedback === "object" &&
-      typeof obj.feedback.content === "object" &&
-      typeof obj.feedback.content.score === "number" &&
-      typeof obj.feedback.form === "object" &&
-      typeof obj.feedback.form.score === "number" &&
-      typeof obj.feedback.style === "object" &&
-      typeof obj.feedback.style.score === "number" &&
-      typeof obj.feedback.overall === "string"
-    );
-  }
-
-  useEffect(() => {
-    if (localStorage.getItem("feedback") === null) {
-      return;
-    }
-    if (effectRan.current === false) {
-      const handleGradingEssayByAI = async () => {
-        setLoading(true);
-        await gradingEssayByAI(data, question)
-          .then((results) => {
-            if (
-              results &&
-              results.length === 2 &&
-              isResponseFeedbackGradedAI(results[0]) &&
-              isResponseFeedbackGradedAI(results[1])
-            ) {
-              setFeedback(results);
-              setOpenSnackbarAlert(true);
-              setAlertContent("Chấm điểm thành công");
-              setAlertType(AlertType.Success);
-            } else {
-              throw new Error("Internal server error");
-            }
-          })
-          .catch((err) => {
-            console.error("Error generating content:", err);
-            setOpenSnackbarAlert(true);
-            setAlertContent("Chấm điểm thất bại, hãy thử lại lần nữa");
-            setAlertType(AlertType.Error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      };
-
-      handleGradingEssayByAI();
-      return () => {
-        effectRan.current = true;
-      };
-    }
-  }, [data, question]);
+  const handleGradingEssayByAI = async () => {
+    await gradingEssayByAI(data, question)
+      .then((results) => {
+        if (results) {
+          setFeedback(results);
+          setOpenSnackbarAlert(true);
+          setAlertContent("Chấm điểm thành công");
+          setAlertType(AlertType.Success);
+        } else {
+          throw new Error("Internal server error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error generating content:", err);
+        setOpenSnackbarAlert(true);
+        setAlertContent("Chấm điểm thất bại, hãy thử lại lần nữa");
+        setAlertType(AlertType.Error);
+      })
+      .finally(() => {});
+  };
 
   return (
     <>
@@ -553,6 +587,9 @@ const AIScoring = () => {
               <Grid item xs={12}>
                 <ExamSubmissionFeatureBar />
               </Grid>
+              <Button btnType={BtnType.Primary} onClick={handleGradingEssayByAI}>
+                Grading
+              </Button>
               <Grid item xs={12}>
                 <CustomDataGrid
                   dataList={submissionList}

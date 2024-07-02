@@ -39,6 +39,13 @@ const JoySelect = (props: PropsData) => {
         fontWeight: fontWeight || "400",
         width: width || "100%"
       }}
+      slotProps={{
+        listbox: {
+          sx: {
+            zIndex: 1400
+          }
+        }
+      }}
     >
       {options.map((option) => (
         <Option key={option.value} value={option.value}>

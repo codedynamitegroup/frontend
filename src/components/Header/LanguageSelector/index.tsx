@@ -81,7 +81,7 @@ const LanguageSelector = () => {
                     />
 
                     <ParagraphBody colorname='--gray-60' fontWeight={500}>
-                      {i18n.t("language_us")}
+                      {i18n.t("language_vn")}
                     </ParagraphBody>
                   </Box>
                 )}

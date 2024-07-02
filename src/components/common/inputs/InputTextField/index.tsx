@@ -68,7 +68,7 @@ const InputTextField = memo((props: InputsProps) => {
         }}
       >
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={title ? 12 : 0} md={title ? 4 : 0}>
+          <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
             {title && (
               <TitleWithInfoTip
                 fontSize={titleFontSize}
@@ -78,7 +78,7 @@ const InputTextField = memo((props: InputsProps) => {
               />
             )}
           </Grid>
-          <Grid item xs={title ? 12 : 12} md={title ? 7 : 12}>
+          <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
             {label && (
               <InputLabel
                 htmlFor='display-name'
@@ -116,10 +116,10 @@ const InputTextField = memo((props: InputsProps) => {
               inputRef={refInput}
             />
           </Grid>
-          <Grid item xs={title ? 12 : 0} md={title ? 4 : 0}>
+          <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
             <></>
           </Grid>
-          <Grid item xs={title ? 12 : 12} md={title ? 7 : 12}>
+          <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           </Grid>
         </Grid>

@@ -18,6 +18,8 @@ interface JoyRadioGroupProps {
   numbering?: string | null;
   overlay?: boolean;
   disabled?: boolean;
+  correctAnswer?: string[];
+  showCorrectAnswer?: boolean;
 }
 
 const JoyRadioGroup = (props: JoyRadioGroupProps) => {
@@ -34,7 +36,9 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
     value,
     numbering,
     overlay,
-    disabled
+    disabled,
+    correctAnswer,
+    showCorrectAnswer
   } = props;
 
   const [selectedValue, setSelectedValue] = useState(value);
@@ -52,9 +56,19 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
           "& > div": { p: 1, borderRadius: "12px", display: "flex" }
         }}
       >
-        {values?.map((value, index) =>
+        {values?.map((value: any, index) =>
           overlay ? (
-            <Sheet variant='outlined' key={index}>
+            <Sheet
+              variant={showCorrectAnswer && selectedValue === value.value ? "soft" : "outlined"}
+              key={index}
+              color={
+                !showCorrectAnswer || selectedValue !== value.value
+                  ? "primary"
+                  : selectedValue === value.value && correctAnswer?.includes(String(value.value))
+                    ? "success"
+                    : "danger"
+              }
+            >
               <Radio
                 disabled={disabled}
                 overlay

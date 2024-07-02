@@ -56,6 +56,7 @@ import classes from "./styles.module.scss";
 import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
 import { setLoading } from "reduxes/Loading";
 import useAuth from "hooks/useAuth";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 export default function DetailProblem() {
   const auth = useAuth();
@@ -267,7 +268,6 @@ export default function DetailProblem() {
         sourceCode: currentExecuteData.source_code
       })
         .then((data) => {
-          console.log("create submit response", data);
           navigate(routes.user.problem.detail.submission.replace(":problemId", problemId));
           // console.log("response data", data);
         })
@@ -335,45 +335,11 @@ export default function DetailProblem() {
       >
         <Box className={classes.breadcump} ref={breadcumpRef}>
           {problemId && (
-            <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.user.problem.root)}
-              >
-                {t("list_problem")}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>{codeQuestion?.name}</ParagraphSmall>
-            </Box>
-          )}
-          {courseId && lessonId && (
-            <Box id={classes.breadcumpWrapper} ref={breadcumpWrapperRef}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.user.course_certificate.root)}
-              >
-                Danh sách khóa học
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => {
-                  if (courseId)
-                    navigate(
-                      routes.user.course_certificate.detail.introduction.replace(
-                        ":courseId",
-                        courseId
-                      )
-                    );
-                }}
-              >
-                Học C++ cơ bản
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall colorname='--blue-500'>Hello world</ParagraphSmall>
+            <Box ref={breadcumpWrapperRef}>
+              <CustomBreadCrumb
+                breadCrumbData={[{ navLink: routes.user.problem.root, label: t("list_problem") }]}
+                lastBreadCrumbLabel={codeQuestion?.name || ""}
+              />
             </Box>
           )}
           <Box className={classes.submit}>
