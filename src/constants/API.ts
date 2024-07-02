@@ -189,6 +189,11 @@ export const API = {
       SUBMIT_ONE: "/course/question/submit-one",
       GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId",
       MARK: "/course/question/mark"
+    },
+    NOTIFICATION: {
+      MY_NOTIFICATIONS: "/course/notifications/me",
+      UPDATE_BY_ID: "/course/notifications/:id",
+      DELETE_BY_ID: "/course/notifications/:id"
     }
   },
   CODE_ASSESSMENT: {

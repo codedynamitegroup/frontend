@@ -16,10 +16,9 @@ export const SocketConnection = () => {
 
   useEffect(() => {
     const connectSocket = () => {
-      if (isLoggedIn && loggedUser) {
+      if (isLoggedIn && loggedUser && !socketState.socket) {
         // Connect to socket
         try {
-          console.log("Connecting to socket...");
           const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
             query: {
               room: `user_${loggedUser.userId}`
@@ -27,14 +26,15 @@ export const SocketConnection = () => {
           });
           dispatch(setSocket(socket));
         } catch (error) {
-          console.error("Failed to connect to socket", error);
+          dispatch(setSocket(null));
         }
-      } else {
+      } else if (!isLoggedIn && socketState.socket) {
         // Disconnect socket
-        if (socketState && socketState.socket) {
-          socketState.socket.disconnect();
-        }
+        socketState.socket.disconnect();
         dispatch(setSocket(null));
+      } else if (isLoggedIn && loggedUser && socketState.socket) {
+        // Reconnect socket
+        socketState.socket.connect();
       }
     };
 
