@@ -27,7 +27,6 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
-import InputTextField from "components/common/inputs/InputTextField";
 import MenuPopup from "components/common/menu/MenuPopup";
 import BasicSelect from "components/common/select/BasicSelect";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
@@ -49,7 +48,6 @@ import classes from "./styles.module.scss";
 import { GridRowParams } from "@mui/x-data-grid";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
 import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,19 +57,12 @@ import {
   QuestionCloneRequest,
   QuestionEntity
 } from "models/coreService/entity/QuestionEntity";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import {
   clearExamCreate,
   clearQuestionCreate,
-  setExamDescriptionCreate,
-  setExamNameCreate,
   setMaxAttemptCreate,
-  setMaxScoreCreate,
-  setOverdueHandlingCreate,
-  setQuestionCreateFromBank,
-  setTimeCloseCreate,
-  setTimeLimitCreate,
-  setTimeOpenCreate
+  setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
@@ -87,9 +78,13 @@ import { CourseService } from "services/courseService/CourseService";
 import { useEffect, useState } from "react";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import qtype from "utils/constant/Qtype";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import { Select } from "@mui/joy";
+import Option from "@mui/joy/Option";
 
 const drawerWidth = 400;
 
@@ -157,25 +152,15 @@ export const OVERDUE_HANDLING = {
 };
 
 interface FormData {
-  courseId: string;
   name: string;
   intro: string;
-  score: number;
   maxScore: number;
   timeOpen: Date;
   timeClose: Date;
   timeLimit: number;
+  timeLimitUnit: string;
   overdueHandling: string;
-  canRedoQuestions: boolean;
-  maxAttempts: number;
-  shuffleQuestions: boolean;
-  gradeMethod: string;
-  questionIds: [
-    {
-      questionId: string;
-      page: number;
-    }
-  ];
+  maxAttempts: string;
 }
 
 export default function ExamCreated() {
@@ -314,7 +299,9 @@ export default function ExamCreated() {
     }
   };
 
-  const submitHandler = () => {
+  const submitHandler = async (data: any) => {
+    const formSubmitData: FormData = { ...data };
+
     const questionIds = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
       page: 0
@@ -339,16 +326,16 @@ export default function ExamCreated() {
 
     const newExam: ExamCreateRequest = {
       courseId: courseId ?? "",
-      name: questionCreate.examName,
-      intro: questionCreate.examDescription,
-      score: questionCreate.maxScore,
-      maxScore: questionCreate.maxScore,
-      timeOpen: new Date(questionCreate.timeOpen),
-      timeClose: new Date(questionCreate.timeClose),
+      name: formSubmitData.name,
+      intro: formSubmitData.intro,
+      score: formSubmitData.maxScore,
+      maxScore: formSubmitData.maxScore,
+      timeOpen: new Date(formSubmitData.timeOpen),
+      timeClose: new Date(formSubmitData.timeClose),
       timeLimit: timeLimit,
-      overdueHandling: questionCreate.overdueHandling.toUpperCase(),
+      overdueHandling: formSubmitData.overdueHandling,
       canRedoQuestions: true,
-      maxAttempts: questionCreate.maxAttempt,
+      maxAttempts: Number(formSubmitData.maxAttempts),
       shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds
@@ -501,20 +488,20 @@ export default function ExamCreated() {
     handleCloseAddNewQuestionDialog();
   };
 
-  function handleClick() {
-    setLoading(true);
-    submitHandler();
+  // function handleClick() {
+  //   setLoading(true);
+  //   submitHandler();
 
-    setTimeout(() => {
-      setLoading(false);
-      navigate(
-        routes.lecturer.course.assignment.replace(
-          ":courseId",
-          courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
-        )
-      );
-    }, 3000);
-  }
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     navigate(
+  //       routes.lecturer.course.assignment.replace(
+  //         ":courseId",
+  //         courseId ?? "1d64ef2a-ae89-401c-be80-99fa0e84b290"
+  //       )
+  //     );
+  //   }, 3000);
+  // }
 
   // Form handler
   const schema = React.useMemo(() => {
@@ -528,35 +515,31 @@ export default function ExamCreated() {
       timeOpen: yup.date().required(t("exam_time_open_required")),
       timeClose: yup.date().required(t("exam_time_close_required")),
       timeLimit: yup.number().required(t("exam_time_limit_required")),
+      timeLimitUnit: yup.string().required(t("exam_time_limit_unit_required")),
       overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
-      maxAttempts: yup.number().required("exam_max_attempt_invalid")
+      maxAttempts: yup.string().required("exam_max_attempt_invalid")
     });
   }, [t]);
 
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   trigger,
-  //   formState: { errors }
-  // } = useForm<FormData>({
-  //   resolver: yupResolver(schema),
-  //   defaultValues: {
-  //     courseId: courseId ?? "",
-  //     name: "",
-  //     intro: "",
-  //     score: 0,
-  //     maxScore: 0,
-  //     timeOpen: new Date(),
-  //     timeClose: new Date(),
-  //     timeLimit: 0,
-  //     overdueHandling: "",
-  //     canRedoQuestions: false,
-  //     maxAttempts: 0,
-  //     shuffleQuestions: false,
-  //     gradeMethod: "QUIZ_GRADEHIGHEST",
-  //     questionIds: []
-  //   }
-  // });
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      intro: "",
+      maxScore: 10,
+      timeOpen: new Date(),
+      timeClose: new Date(),
+      timeLimit: 0,
+      timeLimitUnit: "minutes",
+      overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
+      maxAttempts: "1"
+    }
+  });
 
   return (
     <>
@@ -637,453 +620,615 @@ export default function ExamCreated() {
         ]}
       />
 
-      {/* <form onSubmit={handleSubmit(submitHandler)}> */}
-      <Grid className={classes.root}>
-        <Header />
-        <Box
-          className={classes.container}
-          sx={{
-            marginTop: `${sidebarStatus.headerHeight}px`
-          }}
-        >
-          <CssBaseline />
-          <AppBar
-            position='fixed'
+      <form onSubmit={handleSubmit(submitHandler)}>
+        <Grid className={classes.root}>
+          <Header />
+          <Box
+            className={classes.container}
             sx={{
-              top: `${sidebarStatus.headerHeight + 1}px`,
-              backgroundColor: "white",
-              boxShadow: "0px 2px 4px #00000026"
-            }}
-            ref={header2Ref}
-            open={open}
-          >
-            <Toolbar>
-              <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.management)}
-                  translation-key='common_course_management'
-                >
-                  {t("common_course_management")}
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() =>
-                    navigate(
-                      routes.lecturer.course.information.replace(":courseId", courseId ?? "")
-                    )
-                  }
-                >
-                  {courseData?.name}
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() =>
-                    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
-                  }
-                  translation-key='course_detail_assignment_list'
-                >
-                  {t("course_detail_assignment_list")}
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  translation-key='course_lecturer_assignment_create_exam'
-                >
-                  {t("course_lecturer_assignment_create_exam")}
-                </ParagraphSmall>
-              </Box>
-
-              <IconButton
-                color='inherit'
-                aria-label='open drawer'
-                edge='end'
-                onClick={handleDrawerOpen}
-                sx={{ ...(open && { display: "none" }) }}
-              >
-                <MenuIcon color='action' />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <Main
-            open={open}
-            className={classes.mainContent}
-            sx={{
-              height: `calc(100% - ${header2Height}px)`,
-              marginTop: `${header2Height}px`
+              marginTop: `${sidebarStatus.headerHeight}px`
             }}
           >
-            <Card>
-              <Box component='form' className={classes.formBody} autoComplete='off'>
-                <Heading1
-                  fontWeight={"500"}
-                  translation-key='course_lecturer_assignment_create_exam'
-                >
-                  {t("course_lecturer_assignment_create_exam")}
-                </Heading1>
-
-                <InputTextField
-                  type='text'
-                  title={t("common_exam_name")}
-                  value={questionCreate.examName}
-                  onChange={(e) => {
-                    dispatch(setExamNameCreate(e.target.value));
-                  }}
-                  placeholder={t("exam_management_create_enter_exam_name")}
-                  backgroundColor='white'
-                  translation-key={["common_exam_name", "exam_management_create_enter_exam_name"]}
-                />
-
-                <Grid container spacing={1} columns={12}>
-                  <Grid item xs={3}>
-                    <TextTitle translation-key='common_exam_description'>
-                      {t("common_exam_description")}
-                    </TextTitle>
-                  </Grid>
-                  <Grid item xs={9} className={classes.textEditor}>
-                    <TextEditor
-                      value={questionCreate.examDescription}
-                      onChange={(value) => {
-                        dispatch(setExamDescriptionCreate(value));
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <MenuPopup
-                  style={{
-                    marginTop: "20px"
-                  }}
-                  popupId='add-question-popup'
-                  triggerButtonText={t("common_add_question")}
-                  triggerButtonProps={{
-                    width: "150px"
-                  }}
-                  btnType={BtnType.Outlined}
-                  menuItems={[
-                    {
-                      label: t("exam_management_create_new_question"),
-                      onClick: onCreateNewQuestion
-                    },
-                    {
-                      label: t("exam_management_create_from_bank"),
-                      onClick: onAddQuestionFromBank
+            <CssBaseline />
+            <AppBar
+              position='fixed'
+              sx={{
+                top: `${sidebarStatus.headerHeight + 1}px`,
+                backgroundColor: "white",
+                boxShadow: "0px 2px 4px #00000026"
+              }}
+              ref={header2Ref}
+              open={open}
+            >
+              <Toolbar>
+                <Box id={classes.breadcumpWrapper}>
+                  <ParagraphSmall
+                    colorname='--blue-500'
+                    className={classes.cursorPointer}
+                    onClick={() => navigate(routes.lecturer.course.management)}
+                    translation-key='common_course_management'
+                  >
+                    {t("common_course_management")}
+                  </ParagraphSmall>
+                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                  <ParagraphSmall
+                    colorname='--blue-500'
+                    className={classes.cursorPointer}
+                    onClick={() =>
+                      navigate(
+                        routes.lecturer.course.information.replace(":courseId", courseId ?? "")
+                      )
                     }
-                  ]}
-                  translation-key={[
-                    "common_add_question",
-                    "exam_management_create_new_question",
-                    "exam_management_create_from_bank"
-                  ]}
-                />
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <Heading1
-                      fontWeight={"500"}
-                      translation-key='exam_management_create_question_list'
-                    >
-                      {t("exam_management_create_question_list")}
-                    </Heading1>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <QuestionsFeatureBar
-                      // colSearchLabel='Tìm kiếm theo cột'
-                      shuffleQuestionsLabel={t("exam_management_create_question_scramble")}
-                      // colItems={[
-                      //   { label: "Tên câu hỏi", value: "name" },
-                      //   { label: "Kiểu", value: "type" }
-                      // ]}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <CustomDataGrid
-                      dataList={questionCreate.questionCreate
-                        .filter((item) =>
-                          item.name
-                            .toLowerCase()
-                            .includes(questionCreate.searchQuestion.toLowerCase())
-                        )
-                        .map((item, index) => ({
-                          stt: index + 1,
-                          qtypeText:
-                            item.qtype === QuestionTypeEnum.SHORT_ANSWER
-                              ? "câu hỏi ngắn"
-                              : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                                ? "câu hỏi trắc nghiệm"
-                                : item.qtype === QuestionTypeEnum.ESSAY
-                                  ? "câu hỏi tự luận"
-                                  : item.qtype === QuestionTypeEnum.TRUE_FALSE
-                                    ? "câu hỏi đúng/sai"
-                                    : item.qtype === QuestionTypeEnum.CODE
-                                      ? "câu hỏi code"
-                                      : "",
-                          ...item
-                        }))}
-                      tableHeader={tableHeading}
-                      onSelectData={rowSelectionHandler}
-                      visibleColumn={visibleColumnList}
-                      dataGridToolBar={dataGridToolbar}
-                      page={1}
-                      pageSize={5}
-                      totalElement={questionCreate.questionCreate.length}
-                      onPaginationModelChange={pageChangeHandler}
-                      showVerticalCellBorder={false}
-                      onClickRow={rowClickHandler}
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </Main>
-          <Drawer
-            sx={{
-              width: drawerWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: drawerWidth,
-                position: "fixed",
-                height: `calc(100% - ${sidebarStatus.headerHeight + 1}px)`,
-                top: `${sidebarStatus.headerHeight + 1}px`
-              }
-            }}
-            variant='persistent'
-            anchor='right'
-            open={open}
-          >
-            <DrawerHeader>
-              <IconButton onClick={handleDrawerClose}>
-                {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <Box className={classes.drawerBody}>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='assignment_management_max_score'>
-                  {t("assignment_management_max_score")}
-                </TextTitle>
-                <InputTextField
-                  type='number'
-                  value={questionCreate.maxScore}
-                  onChange={(e) => {
-                    dispatch(setMaxScoreCreate(parseInt(e.target.value)));
-                  }}
-                  placeholder={t("exam_management_create_enter_score")}
-                  backgroundColor='#D9E2ED'
-                  translation-key='exam_management_create_enter_score'
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key={["course_assignment_detail_open_time", "course_detail_exam"]}
-                >
-                  {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_open_time"), "lowercase")}`}
-                </TextTitle>
-                <CustomDateTimePicker
-                  value={moment(questionCreate.timeOpen)}
-                  onHandleValueChange={(newValue) => {
-                    // setExamOpenTime(newValue);
-                    dispatch(
-                      setTimeOpenCreate(
-                        newValue?.toDate().toISOString() ?? new Date().toISOString()
+                  >
+                    {courseData?.name}
+                  </ParagraphSmall>
+                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                  <ParagraphSmall
+                    colorname='--blue-500'
+                    className={classes.cursorPointer}
+                    onClick={() =>
+                      navigate(
+                        routes.lecturer.course.assignment.replace(":courseId", courseId ?? "")
                       )
-                    );
-                  }}
-                  backgroundColor='#D9E2ED'
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key={["course_assignment_detail_close_time", "course_detail_exam"]}
+                    }
+                    translation-key='course_detail_assignment_list'
+                  >
+                    {t("course_detail_assignment_list")}
+                  </ParagraphSmall>
+                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
+                  <ParagraphSmall
+                    colorname='--blue-500'
+                    translation-key='course_lecturer_assignment_create_exam'
+                  >
+                    {t("course_lecturer_assignment_create_exam")}
+                  </ParagraphSmall>
+                </Box>
+
+                <IconButton
+                  color='inherit'
+                  aria-label='open drawer'
+                  edge='end'
+                  onClick={handleDrawerOpen}
+                  sx={{ ...(open && { display: "none" }) }}
                 >
-                  {`${t("course_detail_exam")} ${i18next.format(t("course_assignment_detail_close_time"), "lowercase")}`}
-                </TextTitle>
-                <CustomDateTimePicker
-                  value={moment(questionCreate.timeClose)}
-                  onHandleValueChange={(newValue) => {
-                    // setExamCloseTime(newValue);
-                    dispatch(
-                      setTimeCloseCreate(
-                        newValue?.toDate().toISOString() ?? new Date().toISOString()
-                      )
-                    );
-                  }}
-                  backgroundColor='#D9E2ED'
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='common_do_time'>{t("common_do_time")}</TextTitle>
-                <Grid container spacing={1} gap={1} columns={12}>
-                  <Grid item xs={4}>
-                    <InputTextField
-                      type='number'
-                      value={questionCreate.timeLimit}
-                      onChange={(e) => {
-                        // setExamTimeLimitNumber(parseInt(e.target.value));
-                        dispatch(setTimeLimitCreate(parseInt(e.target.value)));
-                      }}
-                      placeholder={t("common_enter_quan")}
-                      disabled={!examTimeLimitEnabled}
-                      backgroundColor='#D9E2ED'
-                      translation-key='common_enter_quan'
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <BasicSelect
-                      labelId='select-exam-time-limit-unit-label'
-                      value={examTimeLimitUnit}
-                      onHandleChange={(value) => setExamTimeLimitUnit(value)}
-                      style={{ marginTop: "8px" }}
-                      items={[
-                        {
-                          value: "weeks",
-                          label: t("contest_detail_feature_week")
-                        },
-                        {
-                          value: "days",
-                          label: t("contest_detail_feature_day")
-                        },
-                        {
-                          value: "hours",
-                          label: t("contest_detail_feature_hour")
-                        },
-                        {
-                          value: "minutes",
-                          label: t("contest_detail_feature_minute")
-                        },
-                        {
-                          value: "seconds",
-                          label: t("contest_detail_feature_second")
-                        }
-                      ]}
-                      disabled={!examTimeLimitEnabled}
-                      backgroundColor='#D9E2ED'
-                      translation-key={[
-                        "contest_detail_feature_week",
-                        "contest_detail_feature_day",
-                        "contest_detail_feature_hour",
-                        "contest_detail_feature_minute",
-                        "contest_detail_feature_second"
-                      ]}
-                    />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <FormControlLabel
-                      style={{ marginTop: "7px" }}
-                      control={
-                        <Checkbox
-                          checked={examTimeLimitEnabled}
-                          onChange={(e) => setExamTimeLimitEnabled(e.target.checked)}
+                  <MenuIcon color='action' />
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+            <Main
+              open={open}
+              className={classes.mainContent}
+              sx={{
+                height: `calc(100% - ${header2Height}px)`,
+                marginTop: `${header2Height}px`
+              }}
+            >
+              <Card>
+                <Box component='form' className={classes.formBody} autoComplete='off'>
+                  <Heading1
+                    fontWeight={"500"}
+                    translation-key='course_lecturer_assignment_create_exam'
+                  >
+                    {t("course_lecturer_assignment_create_exam")}
+                  </Heading1>
+
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='name'
+                    rules={{ required: t("exam_name_required") }}
+                    render={({ field }) => (
+                      <InputTextFieldColumn
+                        type='text'
+                        title={t("common_exam_name")}
+                        titleRequired={true}
+                        useDefaultTitleStyle
+                        error={Boolean(errors.name)}
+                        errorMessage={errors.name?.message}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder={t("exam_management_create_enter_exam_name")}
+                        backgroundColor='white'
+                        translation-key={[
+                          "common_exam_name",
+                          "exam_management_create_enter_exam_name"
+                        ]}
+                      />
+                    )}
+                  />
+
+                  <TitleWithInfoTip
+                    title={t("common_exam_description")}
+                    titleRequired
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
+                  <Grid item xs={3} className={classes.textEditor}>
+                    <Controller
+                      defaultValue=''
+                      control={control}
+                      name='intro'
+                      rules={{ required: t("exam_description_required") }}
+                      render={({ field }) => (
+                        <TextEditor
+                          openDialog
+                          type='text'
+                          title={t("common_exam_description")}
+                          roundedBorder={true}
+                          required
+                          error={Boolean(errors.intro)}
+                          errorMessage={errors.intro?.message}
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder={t("common_exam_description")}
+                          backgroundColor='white'
+                          translation-key={["common_exam_description"]}
+                          tooltipDescription={t("question_default_score_description")}
                         />
-                      }
-                      label={t("common_turn_on")}
-                      translation-key='common_turn_on'
+                      )}
                     />
                   </Grid>
-                </Grid>
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key='exam_management_create_when_time_end'
-                >
-                  {t("exam_management_create_when_time_end")}
-                </TextTitle>
-                <BasicSelect
-                  labelId='select-assignment-overdue-handling-label'
-                  value={questionCreate.overdueHandling}
-                  onHandleChange={(value) => {
-                    // setOverdueHandling(value);
-                    dispatch(setOverdueHandlingCreate(value));
-                  }}
-                  items={[
-                    {
-                      value: OVERDUE_HANDLING.AUTOSUBMIT,
-                      label: t("exam_management_create_when_time_end_auto")
-                    },
-                    // {
-                    //   value: OVERDUE_HANDLING.GRACEPERIOD,
-                    //   label: t("exam_management_create_when_time_end_spare")
-                    // },
-                    {
-                      value: OVERDUE_HANDLING.AUTOABANDON,
-                      label: t("exam_management_create_when_time_end_delete")
-                    }
-                  ]}
-                  backgroundColor='#D9E2ED'
-                  translation-key={[
-                    "exam_management_create_when_time_end",
-                    "exam_management_create_when_time_end_delete",
-                    "exam_management_create_when_time_end_spare"
-                  ]}
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key='exam_management_create_retry_num'
-                >
-                  {t("exam_management_create_retry_num")}
-                </TextTitle>
-                <BasicSelect
-                  labelId='select-assignment-max-attempts-label'
-                  value={questionCreate.maxAttempt.toString()}
-                  onHandleChange={(value) => {
-                    dispatch(setMaxAttemptCreate(parseInt(value)));
-                  }}
-                  items={[
-                    {
-                      value: "0",
-                      label: t("exam_management_create_retry_num_infinite")
-                    },
-                    ...Array.from(Array(10).keys()).map((i) => ({
-                      value: (i + 1).toString(),
-                      label: (i + 1).toString()
-                    }))
-                  ]}
-                  backgroundColor='#D9E2ED'
-                  translation-key='exam_management_create_retry_num_infinite'
-                />
-              </Box>
-              <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key='asingment_management_possibility'
-                >
-                  {t("asingment_management_possibility")}
-                </TextTitle>
-                <BasicSelect
-                  labelId='select-assignment-availability-label'
-                  value={assignmentAvailability}
-                  onHandleChange={(value) => setAssignmentAvailability(value)}
-                  items={[
-                    {
-                      value: "0",
-                      label: t("asingment_management_possibility_show")
-                    },
-                    {
-                      value: "1",
-                      label: t("asingment_management_possibility_hind_can_not_access")
-                    }
-                    // {
-                    //   value: "2",
-                    //   label: t("asingment_management_possibility_hide_can_access")
-                    // }
-                  ]}
-                  backgroundColor='#D9E2ED'
-                  translation-key={[
-                    "asingment_management_possibility_hind_can_not_access",
-                    "asingment_management_possibility_show",
-                    "asingment_management_possibility_hide_can_access"
-                  ]}
-                />
-              </Box>
-              {/* <Box className={classes.drawerFieldContainer}>
+
+                  <MenuPopup
+                    style={{
+                      marginTop: "20px"
+                    }}
+                    popupId='add-question-popup'
+                    triggerButtonText={t("common_add_question")}
+                    triggerButtonProps={{
+                      width: "150px"
+                    }}
+                    btnType={BtnType.Outlined}
+                    menuItems={[
+                      {
+                        label: t("exam_management_create_new_question"),
+                        onClick: onCreateNewQuestion
+                      },
+                      {
+                        label: t("exam_management_create_from_bank"),
+                        onClick: onAddQuestionFromBank
+                      }
+                    ]}
+                    translation-key={[
+                      "common_add_question",
+                      "exam_management_create_new_question",
+                      "exam_management_create_from_bank"
+                    ]}
+                  />
+                  <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                      <Heading1
+                        fontWeight={"500"}
+                        translation-key='exam_management_create_question_list'
+                      >
+                        {t("exam_management_create_question_list")}
+                      </Heading1>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <QuestionsFeatureBar
+                        // colSearchLabel='Tìm kiếm theo cột'
+                        shuffleQuestionsLabel={t("exam_management_create_question_scramble")}
+                        // colItems={[
+                        //   { label: "Tên câu hỏi", value: "name" },
+                        //   { label: "Kiểu", value: "type" }
+                        // ]}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <CustomDataGrid
+                        dataList={questionCreate.questionCreate
+                          .filter((item) =>
+                            item.name
+                              .toLowerCase()
+                              .includes(questionCreate.searchQuestion.toLowerCase())
+                          )
+                          .map((item, index) => ({
+                            stt: index + 1,
+                            qtypeText:
+                              item.qtype === QuestionTypeEnum.SHORT_ANSWER
+                                ? "câu hỏi ngắn"
+                                : item.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                                  ? "câu hỏi trắc nghiệm"
+                                  : item.qtype === QuestionTypeEnum.ESSAY
+                                    ? "câu hỏi tự luận"
+                                    : item.qtype === QuestionTypeEnum.TRUE_FALSE
+                                      ? "câu hỏi đúng/sai"
+                                      : item.qtype === QuestionTypeEnum.CODE
+                                        ? "câu hỏi code"
+                                        : "",
+                            ...item
+                          }))}
+                        tableHeader={tableHeading}
+                        onSelectData={rowSelectionHandler}
+                        visibleColumn={visibleColumnList}
+                        dataGridToolBar={dataGridToolbar}
+                        page={1}
+                        pageSize={5}
+                        totalElement={questionCreate.questionCreate.length}
+                        onPaginationModelChange={pageChangeHandler}
+                        showVerticalCellBorder={false}
+                        onClickRow={rowClickHandler}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Card>
+            </Main>
+            <Drawer
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  position: "fixed",
+                  height: `calc(100% - ${sidebarStatus.headerHeight + 1}px)`,
+                  top: `${sidebarStatus.headerHeight + 1}px`
+                }
+              }}
+              variant='persistent'
+              anchor='right'
+              open={open}
+            >
+              <DrawerHeader>
+                <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              <Box className={classes.drawerBody}>
+                <Box className={classes.drawerFieldContainer}>
+                  <Controller
+                    defaultValue={10}
+                    control={control}
+                    name='maxScore'
+                    rules={{ required: t("exam_max_score_required") }}
+                    render={({ field }) => (
+                      <InputTextFieldColumn
+                        type='number'
+                        title={t("assignment_management_max_score")}
+                        titleRequired={true}
+                        useDefaultTitleStyle
+                        error={Boolean(errors.maxScore)}
+                        errorMessage={errors.maxScore?.message}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder={t("exam_management_create_enter_score")}
+                        backgroundColor='white'
+                        translation-key={[
+                          "assignment_management_max_score",
+                          "exam_management_create_enter_score"
+                        ]}
+                      />
+                    )}
+                  />
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("course_assignment_detail_open_time")}
+                    titleRequired
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
+                  <Controller
+                    defaultValue={new Date()}
+                    control={control}
+                    name='timeOpen'
+                    rules={{ required: t("exam_time_open_required") }}
+                    render={({ field }) => (
+                      <CustomDateTimePicker
+                        value={moment(field.value)}
+                        onHandleValueChange={(newValue) => {
+                          field.onChange(newValue);
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("course_assignment_detail_close_time")}
+                    titleRequired
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
+                  <Controller
+                    defaultValue={new Date()}
+                    control={control}
+                    name='timeClose'
+                    rules={{ required: t("exam_time_close_required") }}
+                    render={({ field }) => (
+                      <CustomDateTimePicker
+                        value={moment(field.value)}
+                        onHandleValueChange={(newValue) => {
+                          field.onChange(newValue);
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  {/* <TextTitle translation-key='common_do_time'>{t("common_do_time")}</TextTitle> */}
+                  <Grid container spacing={1} gap={1} columns={12}>
+                    <Grid item xs={4}>
+                      <Controller
+                        defaultValue={0}
+                        control={control}
+                        name='timeLimit'
+                        rules={{ required: t("exam_time_limit_required") }}
+                        render={({ field }) => (
+                          <InputTextFieldColumn
+                            type='number'
+                            title={t("common_do_time")}
+                            titleRequired={true}
+                            useDefaultTitleStyle
+                            error={Boolean(errors.timeLimit)}
+                            errorMessage={errors.timeLimit?.message}
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t("common_do_time")}
+                            backgroundColor='white'
+                            translation-key={["common_do_time"]}
+                          />
+                        )}
+                      />
+
+                      {/* <InputTextField
+                        type='number'
+                        value={questionCreate.timeLimit}
+                        onChange={(e) => {
+                          // setExamTimeLimitNumber(parseInt(e.target.value));
+                          dispatch(setTimeLimitCreate(parseInt(e.target.value)));
+                        }}
+                        placeholder={t("common_enter_quan")}
+                        disabled={!examTimeLimitEnabled}
+                        backgroundColor='#D9E2ED'
+                        translation-key='common_enter_quan'
+                      /> */}
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TitleWithInfoTip
+                        title={"Đơn vị"}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
+                      <Controller
+                        defaultValue='minutes'
+                        control={control}
+                        name='timeLimitUnit'
+                        render={({ field: { value, onChange } }) => (
+                          <Select
+                            value={value}
+                            onChange={(e, newValue) => onChange(newValue)}
+                            sx={{ borderRadius: "12px", height: "40px" }}
+                          >
+                            <Option value='weeks'>{t("contest_detail_feature_week")}</Option>
+                            <Option value='days'>{t("contest_detail_feature_day")}</Option>
+                            <Option value='hours'>{t("contest_detail_feature_hour")}</Option>
+                            <Option value='minutes'>{t("contest_detail_feature_minute")}</Option>
+                            <Option value='seconds'>{t("contest_detail_feature_second")}</Option>
+                          </Select>
+                        )}
+                      />
+
+                      {/* <BasicSelect
+                        labelId='select-exam-time-limit-unit-label'
+                        value={examTimeLimitUnit}
+                        onHandleChange={(value) => setExamTimeLimitUnit(value)}
+                        style={{ marginTop: "8px" }}
+                        items={[
+                          {
+                            value: "weeks",
+                            label: t("contest_detail_feature_week")
+                          },
+                          {
+                            value: "days",
+                            label: t("contest_detail_feature_day")
+                          },
+                          {
+                            value: "hours",
+                            label: t("contest_detail_feature_hour")
+                          },
+                          {
+                            value: "minutes",
+                            label: t("contest_detail_feature_minute")
+                          },
+                          {
+                            value: "seconds",
+                            label: t("contest_detail_feature_second")
+                          }
+                        ]}
+                        disabled={!examTimeLimitEnabled}
+                        backgroundColor='#D9E2ED'
+                        translation-key={[
+                          "contest_detail_feature_week",
+                          "contest_detail_feature_day",
+                          "contest_detail_feature_hour",
+                          "contest_detail_feature_minute",
+                          "contest_detail_feature_second"
+                        ]}
+                      /> */}
+                    </Grid>
+                    <Grid item xs={3}>
+                      <FormControlLabel
+                        style={{ marginTop: "7px" }}
+                        control={
+                          <Checkbox
+                            checked={examTimeLimitEnabled}
+                            onChange={(e) => setExamTimeLimitEnabled(e.target.checked)}
+                          />
+                        }
+                        label={t("common_turn_on")}
+                        translation-key='common_turn_on'
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("exam_management_create_when_time_end")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
+                  <Controller
+                    defaultValue={OVERDUE_HANDLING.AUTOSUBMIT.toString()}
+                    control={control}
+                    name='overdueHandling'
+                    rules={{ required: t("exam_overdue_handling_required") }}
+                    render={({ field: { value, onChange } }) => (
+                      <Select
+                        value={value}
+                        onChange={(e, newValue) => onChange(newValue)}
+                        sx={{ borderRadius: "12px", height: "40px" }}
+                      >
+                        <Option value={OVERDUE_HANDLING.AUTOSUBMIT}>
+                          {t("exam_management_create_when_time_end_auto")}
+                        </Option>
+                        <Option value={OVERDUE_HANDLING.AUTOABANDON}>
+                          {t("exam_management_create_when_time_end_delete")}
+                        </Option>
+                      </Select>
+                    )}
+                  />
+
+                  {/* <TextTitle
+                    className={classes.drawerTextTitle}
+                    translation-key='exam_management_create_when_time_end'
+                  >
+                    {t("exam_management_create_when_time_end")}
+                  </TextTitle>
+                  <BasicSelect
+                    labelId='select-assignment-overdue-handling-label'
+                    value={questionCreate.overdueHandling}
+                    onHandleChange={(value) => {
+                      // setOverdueHandling(value);
+                      dispatch(setOverdueHandlingCreate(value));
+                    }}
+                    items={[
+                      {
+                        value: OVERDUE_HANDLING.AUTOSUBMIT,
+                        label: t("exam_management_create_when_time_end_auto")
+                      },
+                      // {
+                      //   value: OVERDUE_HANDLING.GRACEPERIOD,
+                      //   label: t("exam_management_create_when_time_end_spare")
+                      // },
+                      {
+                        value: OVERDUE_HANDLING.AUTOABANDON,
+                        label: t("exam_management_create_when_time_end_delete")
+                      }
+                    ]}
+                    backgroundColor='#D9E2ED'
+                    translation-key={[
+                      "exam_management_create_when_time_end",
+                      "exam_management_create_when_time_end_delete",
+                      "exam_management_create_when_time_end_spare"
+                    ]}
+                  /> */}
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("exam_management_create_retry_num")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
+
+                  <Controller
+                    control={control}
+                    name='maxAttempts'
+                    rules={{ required: "exam_max_attempt_invalid" }}
+                    render={({ field: { value, onChange } }) => (
+                      <Select
+                        value={value}
+                        onChange={(e, newValue) => onChange(newValue)}
+                        sx={{ borderRadius: "12px", height: "40px" }}
+                      >
+                        <Option value='0'>{t("exam_management_create_retry_num_infinite")}</Option>
+                        <Option value='1'>1</Option>
+                        <Option value='2'>2</Option>
+                        <Option value='3'>3</Option>
+                        <Option value='4'>4</Option>
+                        <Option value='5'>5</Option>
+                        <Option value='6'>6</Option>
+                        <Option value='7'>7</Option>
+                        <Option value='8'>8</Option>
+                        <Option value='9'>9</Option>
+                        <Option value='10'>10</Option>
+                      </Select>
+                    )}
+                  />
+
+                  {/* <TextTitle
+                    className={classes.drawerTextTitle}
+                    translation-key='exam_management_create_retry_num'
+                  >
+                    {t("exam_management_create_retry_num")}
+                  </TextTitle>
+                  <BasicSelect
+                    labelId='select-assignment-max-attempts-label'
+                    value={questionCreate.maxAttempt.toString()}
+                    onHandleChange={(value) => {
+                      dispatch(setMaxAttemptCreate(parseInt(value)));
+                    }}
+                    items={[
+                      {
+                        value: "0",
+                        label: t("exam_management_create_retry_num_infinite")
+                      },
+                      ...Array.from(Array(10).keys()).map((i) => ({
+                        value: (i + 1).toString(),
+                        label: (i + 1).toString()
+                      }))
+                    ]}
+                    backgroundColor='#D9E2ED'
+                    translation-key='exam_management_create_retry_num_infinite'
+                  /> */}
+                </Box>
+                {/* <Box className={classes.drawerFieldContainer}>
+                  <TextTitle
+                    className={classes.drawerTextTitle}
+                    translation-key='asingment_management_possibility'
+                  >
+                    {t("asingment_management_possibility")}
+                  </TextTitle>
+                  <BasicSelect
+                    labelId='select-assignment-availability-label'
+                    value={assignmentAvailability}
+                    onHandleChange={(value) => setAssignmentAvailability(value)}
+                    items={[
+                      {
+                        value: "0",
+                        label: t("asingment_management_possibility_show")
+                      },
+                      {
+                        value: "1",
+                        label: t("asingment_management_possibility_hind_can_not_access")
+                      }
+                      // {
+                      //   value: "2",
+                      //   label: t("asingment_management_possibility_hide_can_access")
+                      // }
+                    ]}
+                    backgroundColor='#D9E2ED'
+                    translation-key={[
+                      "asingment_management_possibility_hind_can_not_access",
+                      "asingment_management_possibility_show",
+                      "asingment_management_possibility_hide_can_access"
+                    ]}
+                  />
+                </Box> */}
+                {/* <Box className={classes.drawerFieldContainer}>
                 <TextTitle
                   className={classes.drawerTextTitle}
                   translation-key='common_filter_topic'
@@ -1111,22 +1256,22 @@ export default function ExamCreated() {
                   backgroundColor='#D9E2ED'
                 />
               </Box> */}
-              <LoadButton
-                btnType={BtnType.Outlined}
-                fullWidth
-                style={{ marginTop: "20px" }}
-                padding='10px'
-                loading={loading}
-                onClick={handleClick}
-                translation-key='course_lecturer_assignment_create_exam'
-              >
-                {t("course_lecturer_assignment_create_exam")}
-              </LoadButton>
-            </Box>
-          </Drawer>
-        </Box>
-      </Grid>
-      {/* </form> */}
+                <LoadButton
+                  btnType={BtnType.Outlined}
+                  fullWidth
+                  style={{ marginTop: "20px" }}
+                  padding='10px'
+                  loading={loading}
+                  // onClick={handleClick}
+                  translation-key='course_lecturer_assignment_create_exam'
+                >
+                  {t("course_lecturer_assignment_create_exam")}
+                </LoadButton>
+              </Box>
+            </Drawer>
+          </Box>
+        </Grid>
+      </form>
     </>
   );
 }
