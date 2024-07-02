@@ -30,11 +30,10 @@ export const SocketConnection = () => {
         }
       } else if (!isLoggedIn && socketState.socket) {
         // Disconnect socket
-        socketState.socket.disconnect();
+        try {
+          socketState.socket.disconnect();
+        } catch (error) {}
         dispatch(setSocket(null));
-      } else if (isLoggedIn && loggedUser && socketState.socket) {
-        // Reconnect socket
-        socketState.socket.connect();
       }
     };
 
