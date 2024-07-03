@@ -322,13 +322,13 @@ I. SYSTEM_INSTRUCTIONS:
         {
           role: "model",
           parts: [{ text: String(text) }]
+        },
+        {
+          role: "user",
+          parts: [{ text: SYSTEM_INSTRUCTIONS }]
         }
       ]
     });
-
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = await response.text();
 
     for (const chunk of chunks) {
       result = await chat.sendMessageStream(INPUT(chunk));
