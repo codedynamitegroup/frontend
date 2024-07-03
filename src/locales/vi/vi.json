@@ -214,6 +214,7 @@
   "common_active": "Hoạt động",
   "common_inactive": "Không hoạt động",
   "common_allow_import_contest": "Cho phép sử dụng trong các kì thi",
+  "common_tag": "Tag",
 
   "dialog_confirm_delete_title": "Xác nhận xoá",
   "dialog_confirm_delete_contest_description": "Bạn có chắc chắn muốn xoá cuộc thi này không ?",

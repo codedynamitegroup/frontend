@@ -26,6 +26,8 @@ import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficul
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { dA } from "@fullcalendar/core/internal-common";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
@@ -75,10 +77,12 @@ const AdminCodeQuestionDetails = (props: Props) => {
             // score: yup.number().required()
           })
         )
-        .required()
+        .required(),
+      tags: yup.array().of(yup.string().required()).required()
     });
   }, [t]);
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
+  const [tags, setTags] = useState<TagEntity[]>([]);
   const codeQuestionFormMethod = useForm<CodeQuestionFormData>({
     resolver: yupResolver(schema),
     defaultValues: useMemo(
@@ -91,7 +95,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
         contraints: codeQuestion?.constraints ?? "None",
         isPublic: codeQuestion?.isPublic ?? true,
         allowImport: codeQuestion?.allowImport ?? false,
-        testCases: codeQuestion?.testCases ?? []
+        testCases: codeQuestion?.testCases ?? [],
+        tags: codeQuestion?.tags ?? []
       }),
       [codeQuestion]
     )
@@ -99,22 +104,6 @@ const AdminCodeQuestionDetails = (props: Props) => {
   const params = useParams<{ codeQuestionId: string }>();
   const codeQuestionId = params?.codeQuestionId;
 
-  const handleGetCodeQuestionById = useCallback(
-    (codeQuestionId: string | undefined) => {
-      if (codeQuestionId) {
-        dispatch(setLoading(true));
-        CodeQuestionService.getAdminDetailCodeQuestion(codeQuestionId)
-          .then((data: CodeQuestionAdminEntity) => {
-            setCodeQuestion(data);
-          })
-          .catch((err) => console.log(err))
-          .finally(() => {
-            dispatch(setLoading(false));
-          });
-      }
-    },
-    [dispatch]
-  );
   useEffect(() => {
     codeQuestionFormMethod.reset({
       name: codeQuestion?.name ?? "",
@@ -125,16 +114,36 @@ const AdminCodeQuestionDetails = (props: Props) => {
       contraints: codeQuestion?.constraints ?? "None",
       isPublic: codeQuestion?.isPublic ?? true,
       allowImport: codeQuestion?.allowImport ?? false,
-      testCases: codeQuestion?.testCases ?? []
+      testCases: codeQuestion?.testCases ?? [],
+      tags: codeQuestion?.tags ?? []
     });
   }, [codeQuestion, codeQuestionFormMethod]);
 
   useEffect(() => {
-    handleGetCodeQuestionById(codeQuestionId);
-  }, [codeQuestionId, handleGetCodeQuestionById]);
-  useEffect(() => {
-    console.log(codeQuestionId);
-  }, []);
+    const getAllTag = async (): Promise<TagEntity[]> => {
+      let data: TagEntity[] = await TagService.getAllTag(false);
+      return data;
+    };
+    const handleGetCodeQuestionById = async (
+      codeQuestionId: string | undefined
+    ): Promise<CodeQuestionAdminEntity | undefined> => {
+      if (codeQuestionId) {
+        const data: CodeQuestionAdminEntity =
+          await CodeQuestionService.getAdminDetailCodeQuestion(codeQuestionId);
+        return data;
+      }
+      return undefined;
+    };
+    dispatch(setLoading(true));
+    Promise.all([handleGetCodeQuestionById(codeQuestionId), getAllTag()])
+      .then((data) => {
+        setCodeQuestion(data[0]);
+        setTags(data[1]);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  }, [codeQuestionId, dispatch]);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -215,7 +224,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
                 </Box>
                 <Box id={classes.codeQuestionDetailBody}>
                   <TabPanel value='0'>
-                    <CodeQuestionInformation codeQuestion={codeQuestion} />
+                    <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />
                   </TabPanel>
                   <TabPanel value='1'>
                     <CodeQuestionTestCases />
