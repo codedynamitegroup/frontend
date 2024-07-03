@@ -10,7 +10,6 @@ export interface SubmissionAssignmentEntity {
   isGraded: boolean;
   submissionAssignmentFiles: AssignmentResourceEntity[];
   submissionGrade: SubmissionGradeEntity;
-  grade: number;
   content: string;
   feedback: string;
   submitTime: Date;

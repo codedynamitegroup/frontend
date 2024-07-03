@@ -129,6 +129,9 @@ const CreateShortAnswerQuestion = (props: Props) => {
             fraction: yup.number().required(t("question_feedback_answer_required"))
           })
         )
+        .test("fraction-atleast", t("at_least_one_fraction_100"), (answer) => {
+          return answer?.some((item: any) => item.fraction === 1);
+        })
     });
   }, [t]);
 
@@ -581,6 +584,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
                     {fields.map((field, index) => (
                       <>
                         <AnswerEditor
+                          answerError={errors?.answers}
                           key={field.id}
                           answerNumber={index}
                           qtype={props.qtype}

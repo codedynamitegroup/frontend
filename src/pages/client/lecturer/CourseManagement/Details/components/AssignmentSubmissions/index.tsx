@@ -345,61 +345,6 @@ const LecturerCourseAssignmentSubmissions = () => {
         );
       }
     },
-    ...(hasOnlineText
-      ? [
-          {
-            field: "submission_online_text",
-            headerName: t("course_lecturer_sub_online_text"),
-            width: 200,
-            renderCell: (params: any) => {
-              return params.value ? (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: addAttributesAndStylesToImages(params.value, "custom-class", css)
-                  }}
-                />
-              ) : (
-                <Box>-</Box>
-              );
-            }
-          }
-        ]
-      : []),
-    {
-      field: "submission_file",
-      headerName: t("course_lecturer_sub_file_submission"),
-      width: 400,
-      renderCell: (params) =>
-        params.value ? (
-          <Box
-            sx={{
-              wordWrap: "break-word",
-              whiteSpace: "pre-wrap"
-            }}
-          >
-            <CustomFileList
-              files={
-                params.value.map((attachment: AssignmentResourceEntity) => {
-                  let f: File = new File([""], attachment.fileName, {
-                    lastModified: new Date(attachment.timemodified).getTime()
-                  });
-                  return {
-                    id: attachment.id,
-                    name: attachment.fileName,
-                    downloadUrl: attachment.fileUrl,
-                    size: attachment.fileSize,
-                    type: attachment.mimetype,
-                    file: f
-                  };
-                }) ?? []
-              }
-              treeView={false}
-            />
-          </Box>
-        ) : (
-          <Box>-</Box>
-        )
-    },
     {
       field: "last_grade_time",
       headerName: t("course_lecturer_sub_last_grading_time"),
@@ -483,7 +428,7 @@ const LecturerCourseAssignmentSubmissions = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>{submissionAssignmentState.submissionAssignments[0].assignmentName}</Heading1>
+      <Heading1>{submissionAssignmentState.submissionAssignments[0]?.assignmentName}</Heading1>
       <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
         {t("course_lecturer_sub_num_of_student")}: {submissionsCount}/{totalStudents}
       </ParagraphBody>

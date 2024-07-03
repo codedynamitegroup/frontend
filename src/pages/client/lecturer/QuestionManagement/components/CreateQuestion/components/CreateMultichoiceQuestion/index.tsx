@@ -131,7 +131,16 @@ const CreateMultichoiceQuestion = (props: Props) => {
               ),
             fraction: yup.number().required(t("question_feedback_answer_required"))
           })
-        ),
+        )
+        .test("sum-of-fraction", t("total_fraction_must_be_100"), (answerValue) => {
+          const totalFraction =
+            answerValue.reduce((sum: number, item: any) => {
+              // if fraction is negative, it means penalty
+              if (item.fraction < 0) return sum;
+              return sum + item.fraction;
+            }, 0) || 0;
+          return totalFraction === 1;
+        }),
       correctFeedback: yup.string(),
       incorrectFeedback: yup.string(),
       numbering: yup.string().required(t("question_numbering_required")),
@@ -170,6 +179,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
     name: "answers"
   });
 
+  console.log(errors);
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
@@ -277,7 +287,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
-  const questionAnswerRef = useRef<HTMLElement>(null);
+  const questionAnswerRef = useRef<HTMLDivElement>(null);
   console.log(errors);
   useEffect(() => {
     if (
@@ -769,7 +779,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                 </Grid>
               </Grid>
 
-              <div>
+              <div ref={questionAnswerRef}>
                 <ListItemButton
                   onClick={() => setAnswerOpen(!answerOpen)}
                   sx={{ paddingX: 0, marginBottom: "30px" }}
@@ -806,6 +816,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
                   <Stack spacing={{ xs: 4 }} useFlexGap>
                     {fields.map((field, index) => (
                       <AnswerEditor
+                        answerError={errors?.answers}
                         key={field.id}
                         answerNumber={index}
                         qtype={props.qtype}

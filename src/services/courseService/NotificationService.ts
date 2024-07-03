@@ -5,9 +5,11 @@ const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
 export class NotificationService {
   static async getMyNotifications({
+    isRead,
     pageNo = 0,
     pageSize = 10
   }: {
+    isRead?: boolean;
     pageNo?: number;
     pageSize?: number;
   }) {
@@ -17,6 +19,7 @@ export class NotificationService {
         isAuthorization: true
       }).get(`${API.COURSE.NOTIFICATION.MY_NOTIFICATIONS}`, {
         params: {
+          isRead,
           pageNo,
           pageSize
         }

@@ -247,6 +247,7 @@
   "calendar_event_start_required": "Event start time is required",
   "calendar_event_type_required": "Event type is required",
   "calendar_event_course_required": "Event course is required",
+  "dialog_confirm_delete_notification_description": "Are you sure you want to delete this notification?",
 
   "calendar_today": "Today",
 
@@ -1198,6 +1199,8 @@
   "correct_answer_non_plural": "The correct answer is",
   "preview_start_again": "Start again",
   "preview_check_result": "Check result",
+  "total_fraction_must_be_100": "Total fraction must be 100",
+  "at_least_one_fraction_100": "At least one question has a fraction of 100",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",

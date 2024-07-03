@@ -234,6 +234,7 @@
   "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
   "calendar_event_type_required": "Loại sự kiện không được để trống",
   "calendar_event_course_required": "Khoá học không được để trống",
+  "dialog_confirm_delete_notification_description": "Bạn có chắc chắn muốn xóa thông báo này không?",
 
   "calendar_today": "Hôm nay",
 
