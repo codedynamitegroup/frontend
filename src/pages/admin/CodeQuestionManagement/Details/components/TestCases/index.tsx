@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import React, { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -22,73 +22,106 @@ import CancelIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
 import { useTranslation } from "react-i18next";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import TextArea from "@uiw/react-md-editor/lib/components/TextArea/index.nohighlight";
 
 type Props = {};
 
-const CodeQuestionTestCases = memo((props: Props) => {
+type TestCaseFormValue = {
+  testCases: TestCaseEntity[];
+};
+
+const CodeQuestionTestCases = () => {
   const { t } = useTranslation();
   const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
   const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
-
-  const initialRows: GridRowsProp = [
-    {
-      id: 1,
-      input: "input01",
-      output: "output01",
-      inputValue: "1\n2",
-      outputValue: "3",
-      isSample: true,
-      score: 0
-    },
-    {
-      id: 2,
-      input: "input02",
-      output: "output02",
-      inputValue: "3\n2",
-      outputValue: "5",
-      isSample: true,
-      score: 10
-    },
-    {
-      id: 3,
-      input: "input03",
-      output: "output03",
-      inputValue: "2\n2",
-      outputValue: "4",
-      isSample: true,
-      score: 100
-    },
-    {
-      id: 4,
-      input: "input04",
-      output: "output04",
-      inputValue: "3\n3",
-      outputValue: "6",
-      isSample: false,
-      score: 5
-    },
-    {
-      id: 5,
-      input: "input05",
-      output: "output05",
-      inputValue: "5\n2",
-      outputValue: "7",
-      isSample: false,
-      score: 10
-    },
-    {
-      id: 6,
-      input: "input06",
-      output: "output06",
-      inputValue: "2\n12",
-      outputValue: "14",
-      isSample: false,
-      score: 10
-    }
-  ];
+  const {
+    register,
+    control: codeQuestionControl,
+    setValue,
+    getValues,
+    formState: { errors: codeQuestionFormErrors }
+  } = useFormContext<TestCaseFormValue>();
+  const {
+    fields,
+    remove: removeTC,
+    append,
+    update
+  } = useFieldArray({
+    control: codeQuestionControl,
+    name: "testCases",
+    keyName: "fieldArrayId"
+  });
+  console.log(fields);
+  const initialRows: GridRowsProp = fields.map((field, index) => ({
+    key: field.fieldArrayId,
+    id: index + 1,
+    input: `input_${index}`,
+    output: `output_${index}`,
+    isSample: field.sample
+    // score: field.score
+  }));
+  // [
+  // {
+  //   id: 1,
+  //   input: "input01",
+  //   output: "output01",
+  //   inputValue: "1\n2",
+  //   outputValue: "3",
+  //   isSample: true,
+  //   score: 0
+  // },
+  // {
+  //   id: 2,
+  //   input: "input02",
+  //   output: "output02",
+  //   inputValue: "3\n2",
+  //   outputValue: "5",
+  //   isSample: true,
+  //   score: 10
+  // },
+  // {
+  //   id: 3,
+  //   input: "input03",
+  //   output: "output03",
+  //   inputValue: "2\n2",
+  //   outputValue: "4",
+  //   isSample: true,
+  //   score: 100
+  // },
+  // {
+  //   id: 4,
+  //   input: "input04",
+  //   output: "output04",
+  //   inputValue: "3\n3",
+  //   outputValue: "6",
+  //   isSample: false,
+  //   score: 5
+  // },
+  // {
+  //   id: 5,
+  //   input: "input05",
+  //   output: "output05",
+  //   inputValue: "5\n2",
+  //   outputValue: "7",
+  //   isSample: false,
+  //   score: 10
+  // },
+  // {
+  //   id: 6,
+  //   input: "input06",
+  //   output: "output06",
+  //   inputValue: "2\n12",
+  //   outputValue: "14",
+  //   isSample: false,
+  //   score: 10
+  // }
+  // ];
 
   const [rows, setRows] = React.useState(initialRows);
+  const [itemIndex, setItemIndex] = React.useState(-1);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
@@ -98,7 +131,10 @@ const CodeQuestionTestCases = memo((props: Props) => {
   };
 
   const handleEditClick = (id: GridRowId) => () => {
-    setItemEdit(rows.find((row: any) => row.id === id));
+    // setItemEdit(rows.find((row: any) => row.id === id));
+    if (typeof id.valueOf() === "number") setItemIndex((id.valueOf() as number) - 1);
+    else setItemIndex(-1);
+    // setValue(`testCases.${0}.inputData`, "data.inputData");
     setOpenTestCasePopup(true);
   };
 
@@ -122,15 +158,15 @@ const CodeQuestionTestCases = memo((props: Props) => {
     }
   };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
+  // const processRowUpdate = (newRow: GridRowModel) => {
+  //   const updatedRow = { ...newRow, isNew: false };
+  //   setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
+  //   return updatedRow;
+  // };
 
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
+  // const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+  //   setRowModesModel(newRowModesModel);
+  // };
 
   const columns: GridColDef[] = [
     { field: "id", headerName: t("common_num_order"), width: 100, editable: false },
@@ -159,13 +195,13 @@ const CodeQuestionTestCases = memo((props: Props) => {
       editable: true,
       type: "boolean"
     },
-    {
-      field: "score",
-      headerName: t("common_score"),
-      width: 150,
-      editable: true,
-      type: "number"
-    },
+    // {
+    //   field: "score",
+    //   headerName: t("common_score"),
+    //   width: 150,
+    //   editable: true,
+    //   type: "number"
+    // },
     {
       field: "actions",
       type: "actions",
@@ -236,30 +272,49 @@ const CodeQuestionTestCases = memo((props: Props) => {
           <Button
             translation-key='code_management_detail_add_test_case'
             btnType={BtnType.Primary}
-            onClick={() => setOpenTestCasePopup(true)}
+            onClick={() => {
+              setItemIndex(-1);
+              setOpenTestCasePopup(true);
+            }}
           >
             {t("code_management_detail_add_test_case")}
           </Button>
         </Box>
       </Box>
       <DataGrid
-        rows={rows}
+        rows={initialRows}
         columns={columns}
-        editMode='row'
+        // editMode='row'
         className={classes.dataGrid}
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel }
+        initialState={{
+          pagination: { paginationModel: { pageSize: 25 } }
         }}
+        pageSizeOptions={[25, 50, 100]}
+        getRowId={(row) => row.id}
+        disableRowSelectionOnClick
+        // slotProps={{
+        //   toolbar: { setRows, setRowModesModel }
+        // }}
       />
+      {/* <Button
+        onClick={() => {
+          // console.log(getValues());
+          setValue(`testCases.${0}.inputData`, "hi");
+        }}
+      >
+        cc
+      </Button> */}
+
       <TestCasePopup
-        itemEdit={itemEdit}
+        itemIndex={itemIndex}
         open={openTestCasePopup}
+        addNewMethod={(data: TestCaseEntity) => {
+          append(data);
+        }}
+        updateMethod={(index, data) => {
+          update(index, data);
+        }}
         setOpen={setOpenTestCasePopup}
-        setItemEdit={setItemEdit}
       />
       <ConfirmAlert
         open={openConfirmAlert}
@@ -274,6 +329,6 @@ const CodeQuestionTestCases = memo((props: Props) => {
       />
     </Box>
   );
-});
+};
 
 export default CodeQuestionTestCases;
