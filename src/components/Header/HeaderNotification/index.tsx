@@ -67,6 +67,7 @@ const HeaderNotification = () => {
   const getAllMyNotifications = useCallback(
     async ({ pageNo = 0, pageSize = 10 }: { pageNo?: number; pageSize?: number }) => {
       try {
+        const isRead = filterChips.unread ? false : undefined;
         const getAllMyNotifications: {
           notifications: NotificationEntity[];
           numOfUnreadNotifications: number;
@@ -74,6 +75,7 @@ const HeaderNotification = () => {
           totalPages: number;
           totalItems: number;
         } = await NotificationService.getMyNotifications({
+          isRead,
           pageNo,
           pageSize
         });
@@ -83,13 +85,14 @@ const HeaderNotification = () => {
         return null;
       }
     },
-    []
+    [filterChips.unread]
   );
 
   const handleGetAllMyNotification = useCallback(
     async ({ pageNo = 0, pageSize = 10 }: { pageNo?: number; pageSize?: number }) => {
       setNotificationData((prevState) => ({ ...prevState, isLoading: true }));
       try {
+        const isRead = filterChips.unread ? false : undefined;
         const getAllMyNotifications: {
           notifications: NotificationEntity[];
           numOfUnreadNotifications: number;
@@ -97,6 +100,7 @@ const HeaderNotification = () => {
           totalPages: number;
           totalItems: number;
         } = await NotificationService.getMyNotifications({
+          isRead,
           pageNo,
           pageSize
         });
@@ -113,7 +117,7 @@ const HeaderNotification = () => {
         setNotificationData((prevState) => ({ ...prevState, isLoading: false }));
       }
     },
-    []
+    [filterChips.unread]
   );
 
   const fetchMoreData = useCallback(async () => {

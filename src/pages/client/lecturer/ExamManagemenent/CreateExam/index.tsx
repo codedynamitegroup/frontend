@@ -85,6 +85,7 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import { Select } from "@mui/joy";
 import Option from "@mui/joy/Option";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 
 const drawerWidth = 400;
 
@@ -199,6 +200,7 @@ export default function ExamCreated() {
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
   const [submitCount, setSubmitCount] = useState(0);
+  const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -236,7 +238,31 @@ export default function ExamCreated() {
         flex: 2,
         minWidth: 150,
         getActions: (params) => [
-          <GridActionsCellItem icon={<EditIcon />} label='Edit' />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            onClick={() => {
+              let navigateString = "";
+
+              if (params.row.qtype === qtype.essay.code) {
+                navigateString = routes.lecturer.exam.edit_new_essay_question;
+              } else if (params.row.qtype === qtype.multiple_choice.code) {
+                navigateString = routes.lecturer.exam.edit_new_multi_question;
+              } else if (params.row.qtype === qtype.short_answer.code) {
+                navigateString = routes.lecturer.exam.edit_new_short_question;
+              } else if (params.row.qtype === qtype.true_false.code) {
+                navigateString = routes.lecturer.exam.edit_new_true_false_question;
+              } else if (params.row.qtype === qtype.source_code.code) {
+                navigateString = routes.lecturer.exam.edit_new_code_question;
+              }
+
+              navigate(
+                `${navigateString
+                  .replace(":courseId", courseId ?? "")
+                  .replace(":questionId", params.row.id ?? "")}`
+              );
+            }}
+          />,
           <GridActionsCellItem
             onClick={() => {
               setPreviewQuestionId(params.row.id);
@@ -255,7 +281,7 @@ export default function ExamCreated() {
                   setOpenPreviewTrueFalse(!openPreviewTrueFalse);
                   break;
                 case qtype.source_code.code:
-                  // setOpenPreviewCodeQuestion(!openPreviewCodeQuestion);
+                  setOpenPreviewCodeQuestion(!openPreviewCodeQuestion);
                   break;
               }
             }}
@@ -271,6 +297,7 @@ export default function ExamCreated() {
       openPreviewMultipleChoiceDialog,
       openPreviewShortAnswer,
       openPreviewTrueFalse,
+      openPreviewCodeQuestion,
       t
     ]
   );
@@ -584,6 +611,17 @@ export default function ExamCreated() {
           open={openPreviewTrueFalse}
           setOpen={setOpenPreviewTrueFalse}
           aria-labelledby={"customized-dialog-title4"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
+
+      {openPreviewCodeQuestion && (
+        <PreviewCodeQuestion
+          questionId={previewQuestionId}
+          open={openPreviewCodeQuestion}
+          setOpen={setOpenPreviewCodeQuestion}
+          aria-labelledby={"customized-dialog-title5"}
           maxWidth='md'
           fullWidth
         />

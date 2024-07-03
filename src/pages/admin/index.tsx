@@ -1,41 +1,73 @@
 import { Box, Grid } from "@mui/material";
+import React, { lazy } from "react";
 import classes from "./styles.module.scss";
 import { Route, Routes } from "react-router";
-import RequireAuth from "components/common/RequireAuth";
-import { ERoleName } from "models/authService/entity/role";
-import ContestManagement from "./ContestManagement/ContestManagement";
-import CreateContest from "./ContestManagement/CreateContest";
-import EditContestDetails from "./ContestManagement/EditContestDetails";
-import SidebarSystemAdmin from "components/common/sidebars/SidebarSystemAdmin";
-import UserInformation from "pages/client/user/UserDetails/UserInformation";
-import React from "react";
-import AdminDashboard from "./Dashboard";
-import Footer from "components/Footer";
-import UserManagement from "./UserManagement/UserManagement";
-import CreateUser from "./UserManagement/CreateUser";
-import EditUserDetails from "./UserManagement/EditUserDetails";
-import CertificateCourseManagement from "./CertificateCourseManagement/CertificateCourseManagement";
-import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse";
-import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
-import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
-import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
-import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
-import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
-import qtype from "utils/constant/Qtype";
-import AdminQuestionBankManagement from "./QuestionBankManagement";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "reduxes/SidebarStatus";
-import CreateCertificateCourse from "./CertificateCourseManagement/CreateCertificateCourse";
-import AdminContestSubmissions from "./ContestManagement/AdminContestSubmissions";
-import AdminCodeQuestionManagement from "./CodeQuestionManagement";
-import AdminCodeQuestionCreation from "./CodeQuestionManagement/Create";
-import AdminContestSubmissionDetails from "./ContestManagement/AdminContestSubmissionDetails";
-import OrganizationManagement from "./OrganizationManagement/OrganizationManagement";
-import CreateOrganization from "./OrganizationManagement/CreateOrganization";
-import EditOrganizationDetails from "./OrganizationManagement/EditOrganizationDetails";
-import UpdateCertificateCourse from "./CertificateCourseManagement/UpdateCertificateCourse";
-import AdminCodeQuestionDetails from "./CodeQuestionManagement/Details";
+import qtype from "utils/constant/Qtype";
 
+const RequireAuth = lazy(() => import("components/common/RequireAuth"));
+const ContestManagement = lazy(() => import("./ContestManagement/ContestManagement"));
+const CreateContest = lazy(() => import("./ContestManagement/CreateContest"));
+const EditContestDetails = lazy(() => import("./ContestManagement/EditContestDetails"));
+const SidebarSystemAdmin = lazy(() => import("components/common/sidebars/SidebarSystemAdmin"));
+const UserInformation = lazy(() => import("pages/client/user/UserDetails/UserInformation"));
+const AdminDashboard = lazy(() => import("./Dashboard"));
+const UserManagement = lazy(() => import("./UserManagement/UserManagement"));
+const CreateUser = lazy(() => import("./UserManagement/CreateUser"));
+const EditUserDetails = lazy(() => import("./UserManagement/EditUserDetails"));
+const CertificateCourseManagement = lazy(
+  () => import("./CertificateCourseManagement/CertificateCourseManagement")
+);
+const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
+const CreateShortAnswerQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+    )
+);
+const CreateEssayQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+    )
+);
+const CreateMultichoiceQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+    )
+);
+const CreateTrueFalseQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+    )
+);
+const LecturerCodeQuestionCreation = lazy(
+  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+);
+const AdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
+const CreateCertificateCourse = lazy(
+  () => import("./CertificateCourseManagement/CreateCertificateCourse")
+);
+const AdminContestSubmissions = lazy(() => import("./ContestManagement/AdminContestSubmissions"));
+const AdminCodeQuestionManagement = lazy(() => import("./CodeQuestionManagement"));
+const AdminCodeQuestionCreation = lazy(() => import("./CodeQuestionManagement/Create"));
+const AdminContestSubmissionDetails = lazy(
+  () => import("./ContestManagement/AdminContestSubmissionDetails")
+);
+const OrganizationManagement = lazy(
+  () => import("./OrganizationManagement/OrganizationManagement")
+);
+const CreateOrganization = lazy(() => import("./OrganizationManagement/CreateOrganization"));
+const EditOrganizationDetails = lazy(
+  () => import("./OrganizationManagement/EditOrganizationDetails")
+);
+const UpdateCertificateCourse = lazy(
+  () => import("./CertificateCourseManagement/UpdateCertificateCourse")
+);
+const AdminCodeQuestionDetails = lazy(() => import("./CodeQuestionManagement/Details"));
 type Props = {};
 
 const SystemAdminHomepage = (props: Props) => {

@@ -15,29 +15,32 @@ export const SocketConnection = () => {
   const socketState = useSelector((state: RootState) => state.socket);
 
   useEffect(() => {
-    const connectSocket = () => {
-      if (isLoggedIn && loggedUser && !socketState.socket) {
-        // Connect to socket
-        try {
-          const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
-            query: {
-              room: `user_${loggedUser.userId}`
-            }
-          });
-          dispatch(setSocket(socket));
-        } catch (error) {
-          dispatch(setSocket(null));
-        }
-      } else if (!isLoggedIn && socketState.socket) {
-        // Disconnect socket
-        try {
-          socketState.socket.disconnect();
-        } catch (error) {}
+    if (isLoggedIn && loggedUser && !socketState.socket) {
+      // Connect to socket
+      try {
+        const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
+          query: {
+            room: `user_${loggedUser.userId}`
+          }
+        });
+        dispatch(setSocket(socket));
+      } catch (error) {
+        dispatch(setSocket(null));
+      }
+    } else if (!isLoggedIn && socketState.socket) {
+      // Disconnect socket
+      try {
+        socketState.socket.disconnect();
+      } catch (error) {}
+      dispatch(setSocket(null));
+    }
+
+    return () => {
+      if (socketState.socket) {
+        socketState.socket.disconnect();
         dispatch(setSocket(null));
       }
     };
-
-    connectSocket();
   }, [dispatch, isLoggedIn, loggedUser, socketState]);
 
   return <Outlet />;
