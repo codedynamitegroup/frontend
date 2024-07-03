@@ -225,6 +225,7 @@
   "common_active": "Active",
   "common_inactive": "Inactive",
   "common_close": "Close",
+  "common_unread": "Unread",
   "common_allow_import_contest": "Allow import to contests",
 
   "dialog_confirm_delete_title": "Confirm Delete",
@@ -602,6 +603,14 @@
   "assignment_create_success": "Create assignment successfully",
 
   "no_data": "No data",
+  "notification_no_data": "No notifications",
+  "notification_no_more_data": "No more notifications",
+  "notification_mark_as_unread_success": "Mark as unread successfully",
+  "notification_mark_as_read_success": "Mark as read successfully",
+  "notification_mark_as_unread_fail": "Mark as unread failed",
+  "notification_mark_as_read_fail": "Mark as read failed",
+  "notification_delete_success": "Delete notification successfully",
+  "notification_delete_fail": "Delete notification failed",
 
   "common_time_setting": "Time setting",
   "common_submission_type": "Submission types",
@@ -748,6 +757,11 @@
   "question_bank_edit_category": "Edit category",
   "question_bank_create_category_info": "Category infomation",
   "question_bank_create_category_name": "Category name",
+
+  "question_bank_create_category_name_required": "Category name is required",
+  "question_bank_create_category_info_required": "Category information is required",
+  "question_bank_create_category_success": "Create category successfully",
+  "question_bank_create_category_fail": "Create category failed",
 
   "question_bank_management": "Question bank management",
   "side_bar_question_bank_management": "Question bank",
@@ -1124,6 +1138,18 @@
   "exam_detail_max_attempt": "Maximum attempt",
   "exam_detail_attempt_unlimited": "Unlimit attempt",
 
+  "exam_name_required": "Exam name is required",
+  "exam_description_required": "Exam description is required",
+  "exam_max_score_required": "Maximum score is required",
+  "exam_time_limit_required": "Time limit is required",
+  "exam_max_score_invalid": "Maximum score must be a number greater than or equal to 0",
+  "exam_time_limit_invalid": "Time limit must be a number greater than or equal to 0",
+  "exam_time_open_invalid": "Open time must be before close time",
+  "exam_time_close_invalid": "Close time must be after open time",
+  "exam_start_date_invalid": "Start date must be before end date",
+  "exam_end_date_invalid": "End date must be after start date",
+  "exam_max_attempt_invalid": "Maximum attempt must be a number greater than or equal to 0",
+
   "create_question_true_false": "Create true / false question",
   "create_question_multiple_choice": "Create multiple choice question",
   "create_question_essay": "Create essay question",
@@ -1167,6 +1193,10 @@
   "exam_review_status_submitted": "Submitted",
   "exam_review_status_not_submitted": "Not submitted",
   "exam_review_status_graded": "Graded",
+  "correct_answer_plural": "The correct answers are",
+  "correct_answer_non_plural": "The correct answer is",
+  "preview_start_again": "Start again",
+  "preview_check_result": "Check result",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",

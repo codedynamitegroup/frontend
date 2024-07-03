@@ -3,6 +3,10 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface InitialState {
   error?: string;
   success?: string;
+  info?: {
+    title: string;
+    content: string;
+  };
 }
 
 const initState: InitialState = {};
@@ -20,14 +24,32 @@ const appStatusSlice = createSlice({
     clearErrorMess: (state, action: PayloadAction<any>) => {
       state.error = undefined;
     },
+    setInfoMess: (
+      state,
+      action: PayloadAction<{
+        title: string;
+        content: string;
+      }>
+    ) => {
+      state.info = action.payload;
+    },
+    clearInfoMess: (state, action: PayloadAction<any>) => {
+      state.info = undefined;
+    },
     clearSuccessMess: (state, action: PayloadAction<any>) => {
       state.success = undefined;
     }
   }
 });
 
-export const { setSuccessMess, setErrorMess, clearErrorMess, clearSuccessMess } =
-  appStatusSlice.actions;
+export const {
+  setSuccessMess,
+  setErrorMess,
+  clearErrorMess,
+  clearSuccessMess,
+  setInfoMess,
+  clearInfoMess
+} = appStatusSlice.actions;
 
 export default appStatusSlice.reducer;
 

@@ -129,7 +129,7 @@ const LecturerCourseInformation = () => {
             src='https://www.gstatic.com/classroom/themes/img_bookclub.jpg'
           />
           <Heading1 className={classes.nameCourseOverlay} colorname='--white'>
-            {courseData?.name}
+            {courseState.courseDetail?.name}
           </Heading1>
         </Card>
       </Grid>

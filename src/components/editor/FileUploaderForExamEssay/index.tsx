@@ -9,7 +9,7 @@ import {
 } from "@files-ui/react";
 import { saveAs } from "file-saver";
 import { random } from "lodash";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { uploadToCloudinary } from "utils/uploadToCloudinary";
@@ -27,6 +27,7 @@ interface PropsData {
   relatedRemoveDispatch?: any; // dispatch function for removing file from related object
   filesFromUrl?: { fileUrl: string; fileName: string }[]; // files from redux thats about to be modified (delete, ...)
   relatedRemoveAllDispatch?: any; // dispatch function for removing all files from related object
+  clearAllFiles?: boolean;
 }
 
 export default function AdvancedDropzoneForEssayExam(props: PropsData) {
@@ -40,7 +41,8 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
     relatedRemoveDispatch,
     relatedId,
     filesFromUrl,
-    relatedRemoveAllDispatch
+    relatedRemoveAllDispatch,
+    clearAllFiles
   } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -74,7 +76,7 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
           // (remember to revoke to cleanup after upload to CDN)
           // else upload to cloudinary if auto upload is enabled
           // if (stopAutoUpload) url = URL.createObjectURL(file);
-          url = await uploadToCloudinary(file);
+          if (!stopAutoUpload) url = await uploadToCloudinary(file);
 
           // if using related object, dispatch the file to the related object
           if (relatedId) {
@@ -123,12 +125,19 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
     }
   };
 
+  useEffect(() => {
+    if (clearAllFiles) {
+      setExtFiles([]);
+    }
+  }, [clearAllFiles]);
+
   const onDelete = (id: FileMosaicProps["id"]) => {
     // get the file url to be deleted
     let deletingFileUrl = extFiles.find((f) => f.id === id)?.downloadUrl;
 
     // remove from redux
-    dispatch(relatedRemoveDispatch({ id: relatedId, fileUrl: deletingFileUrl }));
+    if (relatedRemoveDispatch)
+      dispatch(relatedRemoveDispatch({ id: relatedId, fileUrl: deletingFileUrl }));
     setExtFiles(extFiles.filter((x) => x.id !== id));
   };
   const handleSee = (imageSource: File | string | undefined) => {
@@ -188,6 +197,8 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
         })();
         clearInterval(checkExist);
       }
+
+      return () => clearInterval(checkExist);
     }, 500); // check every 100ms
   }, []);
 
@@ -203,7 +214,9 @@ export default function AdvancedDropzoneForEssayExam(props: PropsData) {
         onUploadStart={handleStart}
         onUploadFinish={handleFinish}
         onChange={updateFiles}
-        onClean={() => setExtFiles([])}
+        onClean={() => {
+          setExtFiles([]);
+        }}
         translation-key={["drag_drop_file_placeholder"]}
         clickable={
           // disable clickable if maxFiles is reached

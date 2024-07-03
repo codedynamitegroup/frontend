@@ -13,7 +13,7 @@ const Heading6 = styled(Typography)<Props>`
   font-weight: ${(props) => props.fontWeight || 600};
   font-size: 14px;
   line-height: 24px;
-  text-wrap: ${(props) => props.textWrap || "wrap"};
+  text-wrap: ${(props) => props.textWrap || "normal"};
   color: ${(props) => `var(${props.colorname || "--eerie-black-00"})`};
 `;
 

@@ -78,13 +78,13 @@ const EventDetailsDialog = ({
               onClick={() => {
                 if (data.exam !== undefined && data.course !== undefined) {
                   navigate(
-                    routes.lecturer.exam.detail
+                    routes.student.exam.detail
                       .replace(":courseId", data.course.id || "")
                       .replace(":examId", data.exam.id)
                   );
                 } else if (data.assignment !== undefined && data.course !== undefined) {
                   navigate(
-                    routes.lecturer.assignment.detail
+                    routes.student.assignment.detail
                       .replace(":courseId", data.course.id || "")
                       .replace(":assignmentId", data.assignment.id)
                   );
@@ -226,7 +226,7 @@ const EventDetailsDialog = ({
                 onClick={() => {
                   if (data.course && data.course.id)
                     navigate(
-                      routes.lecturer.course.information.replace(":courseId", data.course.id)
+                      routes.student.course.information.replace(":courseId", data.course.id)
                     );
                 }}
               >
