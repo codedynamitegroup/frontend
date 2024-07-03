@@ -159,6 +159,9 @@ const EditShortAnswerQuestion = (props: Props) => {
             fraction: yup.number().required(t("question_feedback_answer_required"))
           })
         )
+        .test("fraction-atleast", t("at_least_one_fraction_100"), (answer) => {
+          return answer?.some((item: any) => item.fraction === 1);
+        })
     });
   }, [t]);
 
@@ -673,6 +676,7 @@ const EditShortAnswerQuestion = (props: Props) => {
                       {fields.map((field, index) => (
                         <>
                           <AnswerEditor
+                            answerError={errors?.answers}
                             key={field.id}
                             answerNumber={index}
                             qtype={props.qtype}
@@ -683,13 +687,13 @@ const EditShortAnswerQuestion = (props: Props) => {
 
                       <Grid container justifyContent={"center"}>
                         <JoyButton
-                          translation-key='common_save'
+                          translation-key='common_add'
                           onClick={addAnswer}
                           variant='soft'
                           startDecorator={<AddIcon />}
                           sx={{ width: "300px" }}
                         >
-                          {t("common_save")}
+                          {t("common_add")}
                         </JoyButton>
                       </Grid>
                     </Stack>
