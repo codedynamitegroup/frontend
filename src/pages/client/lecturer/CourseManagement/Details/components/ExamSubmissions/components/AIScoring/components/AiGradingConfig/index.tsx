@@ -173,26 +173,10 @@ const GradingConfig = () => {
     createAt: true
   };
 
-  const steps = [
-    t("grading_config_choose_question"),
-    t("grading_config_setting"),
-    t("grading_config_choose_criteria")
-  ];
+  const steps = [t("grading_config_choose_question"), t("grading_config_choose_criteria")];
   const language = [
     { label: t("language_vn"), value: "vn" },
     { label: t("language_us"), value: "en" }
-  ];
-  const textType = [
-    { label: t("common_question_type_essay"), value: "essay" },
-    { label: t("common_question_type_multi_choice"), value: "multiChoice" },
-    { label: t("common_question_type_short"), value: "short" },
-    { label: t("common_question_type_yes_no"), value: "trueFalse" },
-    { label: t("common_question_type_code"), value: "code" }
-  ];
-  const difficulty = [
-    { label: t("common_easy"), value: "easy" },
-    { label: t("common_medium"), value: "medium" },
-    { label: t("common_hard"), value: "hard" }
   ];
   const questionList = [
     {
@@ -242,11 +226,9 @@ const GradingConfig = () => {
   };
   const handleNextButton = () => {
     activeStep === 0 && setActiveStep(1);
-    activeStep === 1 && setActiveStep(2);
-    activeStep === 2 && navigate(routes.lecturer.exam.ai_scroring);
+    activeStep === 1 && navigate(routes.lecturer.exam.ai_scroring);
   };
   const handleBackButton = () => {
-    activeStep === 2 && setActiveStep(1);
     activeStep === 1 && setActiveStep(0);
     activeStep === 0 && navigate(routes.lecturer.exam.submissions);
   };
@@ -405,7 +387,7 @@ const GradingConfig = () => {
                   </Grid>
                 </Container>
               )}
-              {activeStep === 1 && (
+              {activeStep === 2 && (
                 <Container maxWidth='lg' className={classes.container}>
                   <Grid container justifyContent='center' paddingTop={"10px"} spacing={2}>
                     <Grid item xs={12}>
@@ -562,7 +544,7 @@ const GradingConfig = () => {
                 </Container>
               )}
 
-              {activeStep === 2 && (
+              {activeStep === 1 && (
                 <Container maxWidth='lg' className={classes.container}>
                   <Grid container paddingTop={"10px"} spacing={2}>
                     <Grid item xs={12}>
@@ -660,7 +642,7 @@ const GradingConfig = () => {
             translation-key='common_continue'
             onClick={handleNextButton}
           >
-            {activeStep === 2 ? t("common_finish") : t("common_continue")}
+            {activeStep === 1 ? t("common_finish") : t("common_continue")}
           </Button>
         </Stack>
       </Box>

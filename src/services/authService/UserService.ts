@@ -406,4 +406,26 @@ export class UserService {
       });
     }
   }
+
+  static async getUserStatisticsOrganizationAdmin(orgId: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.AUTH.USER.GET_ORG_ADMIN_STATISTICS}`, {
+        params: {
+          orgId
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.code || 503,
+        status: error.status || "Service Unavailable",
+        message: error.message
+      });
+    }
+  }
 }

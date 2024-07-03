@@ -44,12 +44,6 @@ const RubricCard = ({ name, criteries }: RubricCardProps) => {
           </Button>
         </Stack>
       </Stack>
-
-      {/* <EditRubricDialog
-        name='Tự luận thuật toán'
-        description='Đây là rubric cho bài thi tự luận thuật toán'
-        criteries={["Đúng", "Sai", "Không trả lời", "Không rõ"]}
-      /> */}
     </Paper>
   );
 };

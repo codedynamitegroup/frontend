@@ -1,8 +1,10 @@
 import {
   Box,
+  Chip,
   FormControl,
   Grid,
   MenuItem,
+  OutlinedInput,
   Select,
   SelectChangeEvent,
   Switch,
@@ -18,8 +20,9 @@ import { CodeQuestionAdminEntity } from "models/codeAssessmentService/entity/Cod
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { Controller, useForm, useFormContext } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 
-type Props = { codeQuestion: CodeQuestionAdminEntity | undefined };
+type Props = { codeQuestion: CodeQuestionAdminEntity | undefined; tags: TagEntity[] };
 type CodeQuestionInformationFormValue = {
   name: string;
   problemStatement: string;
@@ -29,16 +32,28 @@ type CodeQuestionInformationFormValue = {
   constraints: string;
   isPublic: boolean;
   allowImport: boolean;
+  tags: string[];
+};
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
 };
 
-const CodeQuestionInformation = ({ codeQuestion }: Props) => {
+const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
   const { t } = useTranslation();
   const {
     register,
     control: codeQuestionControl,
     formState: { errors: codeQuestionFormErrors }
   } = useFormContext<CodeQuestionInformationFormValue>();
-
+  const mapIdToTagName = new Map<string, string>();
+  tags.forEach((value) => mapIdToTagName.set(value.id, value.name));
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
       <Heading5
@@ -49,6 +64,41 @@ const CodeQuestionInformation = ({ codeQuestion }: Props) => {
       >
         {t("code_management_detail_info_description")}{" "}
       </Heading5>
+      <FormControl>
+        <Grid container spacing={1} columns={12}>
+          <Grid item xs={3}>
+            <TextTitle translation-key='common_tag'>{t("common_tag")}</TextTitle>
+          </Grid>
+          <Grid item xs={9}>
+            <Controller
+              name='tags'
+              control={codeQuestionControl}
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  multiple
+                  value={value}
+                  onChange={onChange}
+                  input={<OutlinedInput />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={mapIdToTagName.get(value) ?? ""} />
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {tags.map((value) => (
+                    <MenuItem key={value.id} value={value.id}>
+                      {value.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </Grid>
+        </Grid>
+      </FormControl>
       <Controller
         name='name'
         control={codeQuestionControl}

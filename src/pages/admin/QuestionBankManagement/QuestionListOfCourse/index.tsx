@@ -42,6 +42,7 @@ import React from "react";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
 import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -63,6 +64,7 @@ const QuestionListOfCourse = () => {
     React.useState(false);
   const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
+  const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
 
   const columnsProps: GridColDef[] = [
     {
@@ -164,7 +166,7 @@ const QuestionListOfCourse = () => {
                   setOpenPreviewTrueFalse(!openPreviewTrueFalse);
                   break;
                 case qtype.source_code.code:
-                  // setOpenPreviewCodeQuestion(!openPreviewCodeQuestion);
+                  setOpenPreviewCodeQuestion(!openPreviewCodeQuestion);
                   break;
               }
             }}
@@ -337,38 +339,60 @@ const QuestionListOfCourse = () => {
         questionType={typeToCreateNewQuestion}
         handleChangeQuestionType={setTypeToCreateNewQuestion}
       />
-      <PreviewMultipleChoice
-        questionId={previewQuestionId}
-        open={openPreviewMultipleChoiceDialog}
-        setOpen={setOpenPreviewMultipleChoiceDialog}
-        aria-labelledby={"customized-dialog-title1"}
-        maxWidth='md'
-        fullWidth
-      />
-      <PreviewEssay
-        questionId={previewQuestionId}
-        open={openPreviewEssay}
-        setOpen={setOpenPreviewEssay}
-        aria-labelledby={"customized-dialog-title2"}
-        maxWidth='md'
-        fullWidth
-      />
-      <PreviewShortAnswer
-        open={openPreviewShortAnswer}
-        questionId={previewQuestionId}
-        setOpen={setOpenPreviewShortAnswer}
-        aria-labelledby={"customized-dialog-title3"}
-        maxWidth='md'
-        fullWidth
-      />
-      <PreviewTrueFalse
-        questionId={previewQuestionId}
-        open={openPreviewTrueFalse}
-        setOpen={setOpenPreviewTrueFalse}
-        aria-labelledby={"customized-dialog-title4"}
-        maxWidth='md'
-        fullWidth
-      />
+      {openPreviewMultipleChoiceDialog && (
+        <PreviewMultipleChoice
+          questionId={previewQuestionId}
+          open={openPreviewMultipleChoiceDialog}
+          setOpen={setOpenPreviewMultipleChoiceDialog}
+          aria-labelledby={"customized-dialog-title1"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
+
+      {openPreviewEssay && (
+        <PreviewEssay
+          questionId={previewQuestionId}
+          open={openPreviewEssay}
+          setOpen={setOpenPreviewEssay}
+          aria-labelledby={"customized-dialog-title2"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
+
+      {openPreviewShortAnswer && (
+        <PreviewShortAnswer
+          open={openPreviewShortAnswer}
+          questionId={previewQuestionId}
+          setOpen={setOpenPreviewShortAnswer}
+          aria-labelledby={"customized-dialog-title3"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
+
+      {openPreviewTrueFalse && (
+        <PreviewTrueFalse
+          questionId={previewQuestionId}
+          open={openPreviewTrueFalse}
+          setOpen={setOpenPreviewTrueFalse}
+          aria-labelledby={"customized-dialog-title4"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
+
+      {openPreviewCodeQuestion && (
+        <PreviewCodeQuestion
+          questionId={previewQuestionId}
+          open={openPreviewCodeQuestion}
+          setOpen={setOpenPreviewCodeQuestion}
+          aria-labelledby={"customized-dialog-title5"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
 
       <Box className={classes.tabWrapper}>
         <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>

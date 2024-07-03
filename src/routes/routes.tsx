@@ -104,6 +104,16 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/edit/short-answer-question/:questionId",
       edit_code_question:
         "/lecturer/courses/:courseId/assignments/exams/:examId/edit/code-question/:questionId",
+      edit_new_essay_question:
+        "/lecturer/courses/:courseId/assignments/edit/essay-question/:questionId",
+      edit_new_multi_question:
+        "/lecturer/courses/:courseId/assignments/edit/multiple-choice-question/:questionId",
+      edit_new_true_false_question:
+        "/lecturer/courses/:courseId/assignments/edit/true-false-question/:questionId",
+      edit_new_short_question:
+        "/lecturer/courses/:courseId/assignments/edit/short-answer-question/:questionId",
+      edit_new_code_question:
+        "/lecturer/courses/:courseId/assignments/edit/code-question/:questionId",
 
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
@@ -328,6 +338,7 @@ export const routes = {
     }
   },
   org_admin: {
+    dashboard: "/org-admin/dashboard",
     homepage: {
       root: "/org-admin/*"
     },

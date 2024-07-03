@@ -11,5 +11,6 @@ type CodeQuestionFormData = {
   allowImport: boolean;
   difficulty: QuestionDifficultyEnum;
   testCases: { id: string; inputData: string; outputData: string; sample: boolean }[];
+  tags: string[];
 };
 export { type CodeQuestionFormData };

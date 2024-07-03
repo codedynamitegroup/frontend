@@ -17,7 +17,7 @@ export interface IFeedbackGradedAI {
 }
 
 export interface AssignmentStudent {
-  id: number;
+  id: string;
   studentAnswer: string;
 }
 async function gradingEssayByAI(data: AssignmentStudent[], question: QuestionEssay) {
@@ -116,8 +116,6 @@ I. SYSTEM_INSTRUCTIONS:
 		"feedback": "Relevance: Your explanation of the light-dependent reactions is accurate and well-explained. However, the section on light-independent reactions lacks detail. Consider elaborating on the Calvin cycle. \nAccuracy: Your description of the Calvin cycle is clear and accurate, demonstrating a good understanding of the process. \nStructure: The essay is well-structured with a clear introduction and conclusion. However, the transition between the two sections could be smoother. \nTerminology: You have used scientific terminology effectively, but remember to define complex terms for readers unfamiliar with the topic.",
 		"score_overall": 3.5
 		}
-	
-	D. Respond if you understand the instructions and are ready to proceed. I will provide you with the input and grading criteria in next conversation to start evaluating the student submissions.
 	`;
 
   const INPUT_OUTPUT = `
@@ -149,12 +147,12 @@ II. INPUT AND OUTPUT:
 			- IFeedbackGradingAI[]: The feedback results will have {{${data.length}}} elements. The data structure for a list of feedback.
 			[
 				{
-					studentSubmissionId: number,
-					feedback: string,
+					studentSubmissionId: string (uuid),
+					feedback: string (uuid),
 					score_overall: number
 				},
 				{
-					studentSubmissionId: number,
+					studentSubmissionId: string (uuid),
 					feedback: string,
 					score_overall: number
 				},
@@ -162,8 +160,8 @@ II. INPUT AND OUTPUT:
 			]
 
 			- Description: Each feedback has two attributes studentSubmissionId and feedback for each feedback (IFeedbackGradingAI): 
-				+ studentSubmissionId: (number) A unique identifier that matches the student's submission ID in the list of student submissions.
-				+ feedback (string)  Focused and specific feedback provided to the student based on the {{grading criteria}} and {{rubrics}} below. The feedback should be constructive, specific, and offer suggestions for improvement, highlighting the identified areas for improvement. Followed by {{Markdown format}}.
+				+ studentSubmissionId: (string (uuid)) A unique identifier that matches the student's submission ID in the list of student submissions.
+				+ feedback (string) Focused and specific feedback provided to the student based on the {{grading criteria}} and {{rubrics}} below. The feedback should be constructive, specific, and offer suggestions for improvement, highlighting the identified areas for improvement. Followed by {{Markdown format}}.
 				+ score_overall: (number) The overall score assigned to the student's submission based on the grading criteria and rubrics. The score should be a decimal number between 0 and {{${question.maxScore}}} and reflect the quality of the student's essay and how well it meets the grading criteria.
 			
 		Here is a {{question}} is provided by lecturer which is covered by triple quotes:
@@ -207,20 +205,20 @@ II. INPUT AND OUTPUT:
         {
           role: "model",
           parts: [{ text: String(text) }]
+        },
+        {
+          role: "user",
+          parts: [{ text: SYSTEM_INSTRUCTIONS }]
         }
       ]
     });
 
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = await response.text();
     result = await chat.sendMessageStream(INPUT_OUTPUT);
     response = await result.response;
     text = await response.text();
     const cleanText = text.replace(/```/g, "").replace(/json/g, "");
     const repaired = jsonrepair(cleanText);
     const json = JSON.parse(repaired);
-    console.log("json", json);
     return json;
   } catch (error) {
     return error;

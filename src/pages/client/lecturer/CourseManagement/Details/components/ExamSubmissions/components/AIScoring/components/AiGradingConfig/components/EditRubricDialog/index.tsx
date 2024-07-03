@@ -132,17 +132,6 @@ const EditRubricDialog = ({ name, description, criteries }: RubricConfigDialogPr
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography className={classes.configlabel} translation-key='common_description'>
-                  {t("common_description")}
-                </Typography>
-                <Textarea
-                  aria-label='empty textarea'
-                  placeholder='Positive with focus on where the user can improve'
-                  minLength={3}
-                  value={description}
-                />
-              </Grid>
-              <Grid item xs={12}>
                 <Typography sx={{ color: "black" }} translation-key='grading_config_criteria'>
                   {t("grading_config_criteria")}
                 </Typography>

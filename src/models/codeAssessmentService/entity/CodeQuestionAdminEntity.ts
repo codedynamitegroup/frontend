@@ -15,4 +15,5 @@ export interface CodeQuestionAdminEntity {
   difficulty: QuestionDifficultyEnum;
   testCases: TestCaseEntity[];
   languages: ProgrammingLanguageEntity[];
+  tags: string[];
 }

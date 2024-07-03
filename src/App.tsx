@@ -178,19 +178,54 @@ const router = createHashRouter(
             <Route element={<RequireAuth availableRoles={[ERoleName.LECTURER_MOODLE]} />}>
               <Route
                 path={routes.lecturer.exam.edit_essay_question}
-                element={<EditEssayQuestion qtype={qtype.essay.code} />}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={false} />}
               />
               <Route
                 path={routes.lecturer.exam.edit_multi_question}
-                element={<EditMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={false}
+                  />
+                }
               />
               <Route
                 path={routes.lecturer.exam.edit_short_question}
-                element={<EditShortAnswerQuestion qtype={qtype.short_answer.code} />}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={false} />
+                }
               />
               <Route
                 path={routes.lecturer.exam.edit_true_false_question}
-                element={<EditTrueFalseQuestion qtype={qtype.true_false.code} />}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
+                }
+              />
+
+              <Route
+                path={routes.lecturer.exam.edit_new_essay_question}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={true} />}
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_multi_question}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={true}
+                  />
+                }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_short_question}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={true} />
+                }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_true_false_question}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={true} />
+                }
               />
 
               <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
