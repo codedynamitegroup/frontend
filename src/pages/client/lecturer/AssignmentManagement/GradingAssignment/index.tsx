@@ -64,10 +64,7 @@ export default function AssignmentGrading() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [assignmentTypes, setAssignmentTypes] = React.useState([
-    t("common_submission_type_file"),
-    t("common_submission_type_online_text")
-  ]);
+
   const [assignmentMaximumGrade, setAssignmentMaximumGrade] = React.useState("");
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
   const { courseId, assignmentId, submissionId } = useParams<{
@@ -91,6 +88,10 @@ export default function AssignmentGrading() {
 
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const assignmentState = useSelector((state: RootState) => state.assignment);
+  const [assignmentTypes, setAssignmentTypes] = React.useState([
+    t("common_submission_type_file"),
+    t("common_submission_type_online_text")
+  ]);
   const courseState = useSelector((state: RootState) => state.course);
   const dispatch = useDispatch();
 
@@ -121,6 +122,19 @@ export default function AssignmentGrading() {
       console.error("Failed to get course detail", error);
     }
   };
+
+  useEffect(() => {
+    if (assignmentState.assignmentDetails) {
+      if (assignmentState.assignmentDetails.type === "BOTH")
+        setAssignmentTypes([
+          t("common_submission_type_file"),
+          t("common_submission_type_online_text")
+        ]);
+      else if (assignmentState.assignmentDetails.type === "FILE")
+        setAssignmentTypes([t("common_submission_type_file")]);
+      else setAssignmentTypes([t("common_submission_type_online_text")]);
+    }
+  }, [assignmentState.assignmentDetails]);
 
   useEffect(() => {
     getCourseById(courseId ?? "");

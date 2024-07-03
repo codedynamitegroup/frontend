@@ -483,7 +483,7 @@ const LecturerCourseAssignmentSubmissions = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>{submissionAssignmentState.submissionAssignments[0].assignmentName}</Heading1>
+      <Heading1>{submissionAssignmentState.submissionAssignments[0]?.assignmentName}</Heading1>
       <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
         {t("course_lecturer_sub_num_of_student")}: {submissionsCount}/{totalStudents}
       </ParagraphBody>
