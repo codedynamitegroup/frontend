@@ -14,18 +14,35 @@ import Heading4 from "components/text/Heading4";
 import CloseIcon from "@mui/icons-material/Close";
 import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Textarea } from "@mui/joy";
 import Button, { BtnType } from "components/common/buttons/Button";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import {
+  Controller,
+  FieldArrayWithId,
+  UseFieldArrayAppend,
+  useFieldArray,
+  useForm,
+  useFormContext
+} from "react-hook-form";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import ErrorMessage from "components/text/ErrorMessage";
 
 interface TestCasePopupProps {
   setOpen: Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
-  itemEdit: any;
-  setItemEdit: Dispatch<React.SetStateAction<any>>;
+  itemIndex: number;
+  addNewMethod: (data: TestCaseEntity) => void;
+  updateMethod: (index: number, data: TestCaseEntity) => void;
 }
+
+type TestCaseFormValue = {
+  testCases: TestCaseEntity[];
+};
 
 export const CustomDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -35,28 +52,86 @@ export const CustomDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1)
   }
 }));
+const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
 
-const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupProps) => {
-  const [score, setScore] = useState<number>(0);
-  const [isSample, setIsSample] = useState<boolean>(false);
+const TestCasePopup = ({
+  setOpen,
+  open,
+  itemIndex,
+  addNewMethod,
+  updateMethod
+}: TestCasePopupProps) => {
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (itemEdit) {
-      setScore(itemEdit.score);
-      setIsSample(itemEdit.isSample);
-    }
-  }, [itemEdit]);
-  const handleCheckboxChange = () => {
-    setIsSample(!isSample);
-  };
-  const handleScoreChange = (e: any) => {
-    setScore(e.target.value);
-  };
+  const schema = useMemo(
+    () =>
+      yup.object<TestCaseEntity>().shape({
+        id: yup.string().required(),
+        inputData: yup
+          .string()
+          .required(t("code_management_input_data_required"))
+          .test("not-blank", t("code_management_input_data_required"), checkEmptyString),
+        outputData: yup
+          .string()
+          .required(t("code_management_output_format_required"))
+          .test("not-blank", t("code_management_output_format_required"), checkEmptyString),
+        sample: yup.boolean().required()
+        // score: yup.number().required()
+      }),
+    [t]
+  );
+  const { control: codeQuestionControl, getValues: getTestCaseValue } =
+    useFormContext<TestCaseFormValue>();
+  const emptyTC = useMemo(
+    () => ({
+      id: "new",
+      inputData: "",
+      outputData: "",
+      // score: 0,
+      sample: false
+    }),
+    []
+  );
+  const {
+    handleSubmit: handleTestCaseSubmit,
+    control: testCaseControl,
+    formState: { errors: testCaseErrors },
+    reset: resetTestCase,
+    trigger,
+    getValues
+  } = useForm<TestCaseEntity>({
+    resolver: yupResolver(schema),
+    defaultValues: emptyTC
+  });
+  const tcLength = getTestCaseValue("testCases").length;
+  const isAddNew = useMemo(
+    (): boolean => !(itemIndex > -1 && itemIndex < tcLength),
+    [itemIndex, tcLength]
+  );
   const onClose = () => {
     setOpen(false);
-    setItemEdit(null);
   };
-  const { t } = useTranslation();
+  const handleSaveTC = async () => {
+    const check = await trigger();
+    console.log(check);
+    if (check) {
+      const data = getValues();
+      console.log(isAddNew);
+      if (isAddNew) {
+        addNewMethod(data);
+      } else {
+        updateMethod(itemIndex, data);
+      }
+    }
+    onClose();
+  };
+  useEffect(() => {
+    if (isAddNew) {
+      resetTestCase(emptyTC);
+    } else {
+      resetTestCase(getTestCaseValue(`testCases.${itemIndex}`));
+    }
+  }, [itemIndex, getTestCaseValue, isAddNew, resetTestCase, emptyTC]);
 
   return (
     <CustomDialog
@@ -67,7 +142,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
       maxWidth='md'
     >
       <DialogTitle className={classes.dialogTitle}>
-        {!!itemEdit ? (
+        {itemIndex > -1 && itemIndex < tcLength ? (
           <Heading4 translation-key='code_management_detail_update_test_case'>
             {t("code_management_detail_update_test_case")}
           </Heading4>
@@ -93,7 +168,7 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
       <DialogContent dividers className={classes.dialogContent}>
         <Box component='form' className={classes.formBody} autoComplete='off'>
           <Grid container spacing={2}>
-            <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+            {/* <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
               <FormControl>
                 <Grid container>
                   <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
@@ -109,19 +184,25 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
                   </Grid>
                 </Grid>
               </FormControl>
-            </Grid>
+            </Grid> */}
             <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
               <FormControl>
                 <Grid container>
                   <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
-                    <TextTitle translation-key='common_template'>{t("common_template")}</TextTitle>
+                    <TextTitle translation-key='common_sample'>{t("common_sample")}</TextTitle>
                   </Grid>
                   <Grid item xs={6}>
-                    <Checkbox
-                      color='primary'
-                      sx={{ "& .MuiSvgIcon-root": { fontSize: 35 } }}
-                      checked={isSample}
-                      onChange={handleCheckboxChange}
+                    <Controller
+                      name='sample'
+                      control={testCaseControl}
+                      render={({ field: { onChange, value } }) => (
+                        <Checkbox
+                          color='primary'
+                          sx={{ "& .MuiSvgIcon-root": { fontSize: 35 } }}
+                          checked={value}
+                          onChange={onChange}
+                        />
+                      )}
                     />
                   </Grid>
                 </Grid>
@@ -130,31 +211,55 @@ const TestCasePopup = ({ setOpen, open, itemEdit, setItemEdit }: TestCasePopupPr
           </Grid>
           <FormControl fullWidth className={classes.inputContainer}>
             <TextTitle>{t("detail_problem_input")}</TextTitle>
-            <Textarea
-              defaultValue={itemEdit ? itemEdit.inputValue : ""}
-              sx={{ backgroundColor: "white" }}
-              minRows={5}
-              maxRows={5}
+            <Controller
+              name='inputData'
+              control={testCaseControl}
+              render={({ field: { onChange, value } }) => (
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  sx={{ backgroundColor: "white" }}
+                  minRows={5}
+                  maxRows={5}
+                />
+              )}
             />
           </FormControl>
+          {testCaseErrors.inputData?.message && (
+            <ErrorMessage>{testCaseErrors.inputData?.message}</ErrorMessage>
+          )}
           <FormControl fullWidth className={classes.inputContainer}>
             <TextTitle translation-key='detail_problem_output'>
               {t("detail_problem_output")}
             </TextTitle>
-            <Textarea
-              defaultValue={itemEdit ? itemEdit.outputValue : ""}
-              sx={{ backgroundColor: "white" }}
-              minRows={5}
-              maxRows={5}
+            <Controller
+              name='outputData'
+              control={testCaseControl}
+              render={({ field: { onChange, value } }) => (
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  sx={{ backgroundColor: "white" }}
+                  minRows={5}
+                  maxRows={5}
+                />
+              )}
             />
           </FormControl>
+          {testCaseErrors.outputData?.message && (
+            <ErrorMessage>{testCaseErrors.outputData?.message}</ErrorMessage>
+          )}
           <Box className={classes.btnWrapper}>
             <Button btnType={BtnType.Outlined} onClick={onClose} translation-key='common_cancel'>
               {t("common_cancel")}
             </Button>
 
-            <Button btnType={BtnType.Primary} translation-key='common_add_new'>
-              {i18next.format(t("common_add_new"), "firstUppercase")}
+            <Button
+              btnType={BtnType.Primary}
+              translation-key='common_update'
+              onClick={handleSaveTC}
+            >
+              {i18next.format(t("common_update"), "firstUppercase")}
             </Button>
           </Box>
         </Box>

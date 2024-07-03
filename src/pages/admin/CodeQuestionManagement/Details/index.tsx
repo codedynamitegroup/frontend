@@ -25,6 +25,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { dA } from "@fullcalendar/core/internal-common";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
@@ -47,22 +48,34 @@ const AdminCodeQuestionDetails = (props: Props) => {
         ),
       inputFormat: yup
         .string()
-        .required(t("code_management_input_format"))
-        .test("not-blank", `${t("code_management_input_format")}`, checkEmptyString),
+        .required(t("code_management_input_format_required"))
+        .test("not-blank", `${t("code_management_input_format_required")}`, checkEmptyString),
       outputFormat: yup
         .string()
-        .required(t("code_management_output_format"))
-        .test("not-blank", `${t("code_management_output_format")}`, checkEmptyString),
+        .required(t("code_management_output_format_required"))
+        .test("not-blank", `${t("code_management_output_format_required")}`, checkEmptyString),
       contraints: yup
         .string()
-        .required(t("code_management_constraint"))
-        .test("not-blank", `${t("code_management_constraint")}`, checkEmptyString),
+        .required(t("code_management_constraint_required"))
+        .test("not-blank", `${t("code_management_constraint_required")}`, checkEmptyString),
       isPublic: yup.boolean().required(),
       allowImport: yup.boolean().required(),
       difficulty: yup
         .mixed<QuestionDifficultyEnum>()
         .oneOf(Object.values(QuestionDifficultyEnum))
-        .required(t("code_management_difficulty_required"))
+        .required(t("code_management_difficulty_required")),
+      testCases: yup
+        .array()
+        .of(
+          yup.object().shape({
+            id: yup.string().required(),
+            inputData: yup.string().required(),
+            outputData: yup.string().required(),
+            sample: yup.boolean().required()
+            // score: yup.number().required()
+          })
+        )
+        .required()
     });
   }, [t]);
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
@@ -77,7 +90,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
         outputFormat: codeQuestion?.outputFormat ?? "",
         contraints: codeQuestion?.constraints ?? "None",
         isPublic: codeQuestion?.isPublic ?? true,
-        allowImport: codeQuestion?.allowImport ?? false
+        allowImport: codeQuestion?.allowImport ?? false,
+        testCases: codeQuestion?.testCases ?? []
       }),
       [codeQuestion]
     )
@@ -110,7 +124,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
       outputFormat: codeQuestion?.outputFormat ?? "",
       contraints: codeQuestion?.constraints ?? "None",
       isPublic: codeQuestion?.isPublic ?? true,
-      allowImport: codeQuestion?.allowImport ?? false
+      allowImport: codeQuestion?.allowImport ?? false,
+      testCases: codeQuestion?.testCases ?? []
     });
   }, [codeQuestion, codeQuestionFormMethod]);
 
@@ -127,11 +142,13 @@ const AdminCodeQuestionDetails = (props: Props) => {
   const handleChange = (_: React.SyntheticEvent, newTab: string) => {
     setActiveTab(newTab);
   };
-
+  console.log(codeQuestionFormMethod.formState.errors);
+  // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
   const onSubmit = (data: CodeQuestionFormData) => {
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
     console.log(data);
+    console.log(codeQuestionFormMethod.getValues("testCases"));
   };
   return (
     <>
