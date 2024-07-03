@@ -146,24 +146,16 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
   const onSave = (data: any) => {
     // dispatch(closeNewRubric());
     alert(JSON.stringify(data));
+    console.log(data);
     console.log(JSON.stringify(data));
-    function formatAndDisplay(data: any) {
-      let formattedData = "";
-      data.criteria.forEach((criteria: any) => {
-        const length = criteria.scaleDescription.length;
-        formattedData += `- Criteria: ${criteria.criteriaName} (Total score: ${criteria.criteriaGrade}%)\n`;
-        criteria.scaleDescription.forEach((scale: any, index: any) => {
-          formattedData += `  * Score ${index + 1}/${length}: ${scale[`scale${index}`]}\n`;
-        });
-      });
-      return formattedData;
-    }
-
-    // Call the function to display the formatted data
-    console.log(formatAndDisplay(data));
   };
   const handleAddNewCriteriaField = () => {
-    append({ criteriaName: "" });
+    append({
+      criteriaName: "",
+      criteriaGrade: 0,
+      criteriaDescription: "",
+      scale: [{ score: 1, description: "" }]
+    });
   };
   const handleRemoveCriteriaField = (index: number) => {
     remove(index);
@@ -247,26 +239,7 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <Typography
-                      className={classes.configlabel}
-                      translation-key='common_description'
-                    >
-                      {t("common_description")}
-                    </Typography>
-                    <Controller
-                      name='description'
-                      control={control}
-                      render={({ field }) => (
-                        <Textarea
-                          aria-label='empty textarea'
-                          placeholder='Positive with focus on where the user can improve'
-                          minLength={3}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Grid>
+
                   <Grid item xs={12}>
                     <Typography
                       sx={{ color: "black", marginBottom: "5px" }}
@@ -382,10 +355,10 @@ const NestedGradeScale = ({ parentIndex, control, register }: NestedPropsData) =
   const { t } = useTranslation();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `criteria[${parentIndex}].scaleDescription`
+    name: `criteria[${parentIndex}].scale`
   });
   const handleAppend = () => {
-    fields.length < maxScale && append({ scaleDescription: "" });
+    fields.length < maxScale && append({ score: fields.length + 1, description: "" });
   };
   const handleRemove = () => {
     fields.length > 1 && remove(fields.length - 1);
@@ -425,19 +398,19 @@ const NestedGradeScale = ({ parentIndex, control, register }: NestedPropsData) =
           </IconButton>
         </Stack>
       </Grid>
-      {fields.map((field, index) => (
+      {fields.map((field: any, index) => (
         <Grid item xs={4} key={field.id}>
           <Typography
             className={classes.configlabel}
             translation-key='grading_config_criteria_scale_description'
           >
-            {`${t("grading_config_criteria_scale_description", { index: index + 1 })}/${fields.length}`}
+            {`${t("grading_config_criteria_scale_description", { index: field.score })}/${fields.length}`}
           </Typography>
           <ScaleTextArea
             aria-label='empty textarea'
             minLength={3}
-            {...register(`criteria[${parentIndex}].scaleDescription[${index}].scale${index}`)}
-            placeholder={t("grading_config_enter_scale", { index: index + 1 })}
+            {...register(`criteria[${parentIndex}].scale[${index}].description`)}
+            placeholder={`${t("grading_config_enter_scale", { index: index + 1 })}/${fields.length}`}
           />
         </Grid>
       ))}

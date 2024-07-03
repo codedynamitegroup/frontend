@@ -29,7 +29,7 @@ export default function TestCase(props: PropsData) {
         inputData: "",
         outputData: "",
         id: "sampleid",
-        isSample: true
+        sample: true
       });
       dispatch(setTestCases(newList));
     }
