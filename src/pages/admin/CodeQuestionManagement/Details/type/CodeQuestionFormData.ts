@@ -1,3 +1,4 @@
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 type CodeQuestionFormData = {
@@ -9,5 +10,6 @@ type CodeQuestionFormData = {
   isPublic: boolean;
   allowImport: boolean;
   difficulty: QuestionDifficultyEnum;
+  testCases: { id: string; inputData: string; outputData: string; sample: boolean }[];
 };
 export { type CodeQuestionFormData };

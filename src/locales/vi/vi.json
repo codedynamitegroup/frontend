@@ -107,6 +107,7 @@
   "common_info": "Thông tin",
   "common_language": "Ngôn ngữ",
   "common_template": "Mẫu",
+  "common_sample": "Mẫu",
   "common_use": "Sử dụng",
   "common_see_detail": "Xem chi tiết",
   "common_topic": "Danh mục",
@@ -232,6 +233,7 @@
   "calendar_event_start_required": "Thời gian bắt đầu không được để trống",
   "calendar_event_type_required": "Loại sự kiện không được để trống",
   "calendar_event_course_required": "Khoá học không được để trống",
+  "dialog_confirm_delete_notification_description": "Bạn có chắc chắn muốn xóa thông báo này không?",
 
   "calendar_today": "Hôm nay",
 
@@ -821,9 +823,11 @@
   "code_management_create_output_format": "Định dạng đầu ra",
   "code_management_statement_required": "Yêu cầu mô tả bài toán",
   "code_management_difficulty_required": "Yêu cầu độ khó cho bài toán",
-  "code_management_input_format": "Yêu cầu định dạng đầu vào",
-  "code_management_output_format": "Yêu cầu định dạng đầu ra",
-  "code_management_constraint": "Yêu cầu giới hạn đầu vào",
+  "code_management_input_data_required": "Yêu cầu dữ liệu đầu vào",
+  "code_management_output_data_required": "Yêu cầu dữ liệu đầu ra",
+  "code_management_input_format_required": "Yêu cầu định dạng đầu vào",
+  "code_management_output_format_required": "Yêu cầu định dạng đầu ra",
+  "code_management_constraint_required": "Yêu cầu giới hạn đầu vào",
   "code_management_public_tool_tip": "Câu hỏi code sẽ được công khai đến người dùng",
 
   "code_management_detail_stub": "Code mẫu",
