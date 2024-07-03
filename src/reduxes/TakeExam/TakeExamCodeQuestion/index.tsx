@@ -83,7 +83,7 @@ const takeExamCodeQuestionSlice = createSlice({
         inputData: "",
         outputData: "",
         id: "sampleid",
-        isSample: true
+        sample: true
       };
 
       if (!state.codeQuestion[action.payload.questionId].testCase) {

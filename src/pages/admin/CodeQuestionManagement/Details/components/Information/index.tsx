@@ -11,13 +11,11 @@ import {
 import InputTextField from "components/common/inputs/InputTextField";
 import TextEditor from "components/editor/TextEditor";
 import TextTitle from "components/text/TextTitle";
-import { memo, useState } from "react";
 import classes from "./styles.module.scss";
 import Heading5 from "components/text/Heading5";
 import { useTranslation } from "react-i18next";
 import { CodeQuestionAdminEntity } from "models/codeAssessmentService/entity/CodeQuestionAdminEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
-import { CodeQuestionFormData } from "../../type/CodeQuestionFormData";
 import { Controller, useForm, useFormContext } from "react-hook-form";
 import ErrorMessage from "components/text/ErrorMessage";
 
@@ -40,18 +38,6 @@ const CodeQuestionInformation = ({ codeQuestion }: Props) => {
     control: codeQuestionControl,
     formState: { errors: codeQuestionFormErrors }
   } = useFormContext<CodeQuestionInformationFormValue>();
-  const [inputFormat, setInputFormat] = useState<string>(
-    "Gồm 2 số nguyên a và b cách nhau bởi dấu cách, được nhập từ bàn phím"
-  );
-  const [outputFormat, setOutputFormat] = useState<string>(
-    "Là một số nguyên cho biết tổng của a và b"
-  );
-  const [contraints, setContraints] = useState<string>("a và b là số nguyên");
-  const [questionName] = useState<string>("Tổng 2 số");
-  const [difficulty, setDifficulty] = useState<string>(QuestionDifficultyEnum.EASY);
-  const handleChange = (event: SelectChangeEvent) => {
-    setDifficulty(event.target.value);
-  };
 
   return (
     <Box component='form' autoComplete='off' className={classes.formBody}>
