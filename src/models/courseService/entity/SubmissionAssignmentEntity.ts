@@ -9,7 +9,6 @@ export interface SubmissionAssignmentEntity {
   user: UserResponseEntity;
   isGraded: boolean;
   submissionAssignmentFiles: AssignmentResourceEntity[];
-  submissionAssignmentOnlineText: SubmissionAssignmentOnlineTextEntity;
   submissionGrade: SubmissionGradeEntity;
   grade: number;
   content: string;

@@ -42,6 +42,12 @@ const assignmentSlice = createSlice({
   }
 });
 
-export const { setAssignments, setAssignmentDetails, setListSubmission } = assignmentSlice.actions;
+export const {
+  setAssignments,
+  setAssignmentDetails,
+  setLoadingAssignments,
+  setListSubmission,
+  clearAssignments
+} = assignmentSlice.actions;
 
 export default assignmentSlice.reducer;
