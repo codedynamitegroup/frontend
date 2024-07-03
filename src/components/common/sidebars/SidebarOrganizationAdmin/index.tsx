@@ -44,16 +44,12 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 export default function SidebarOrganizationAdmin({ open, toggleDrawer, children }: any) {
   const { t } = useTranslation();
   const sideBarItemListData: SidebarItem[] = [
-    // {
-    //   name: t("common_dashboard"),
-    //   "translation-key": "common_dashboard",
-    //   icon: (
-    //     <Box className={classes.img}>
-    //       <DashboardRoundedIcon />
-    //     </Box>
-    //   ),
-    //   link: routes.admin.dashboard
-    // },
+    {
+      name: t("common_dashboard"),
+      "translation-key": "common_dashboard",
+      icon: <DashboardRoundedIcon className={classes.itemIcon} />,
+      link: routes.org_admin.dashboard
+    },
     {
       name: t("side_bar_contest_management"),
       "translation-key": "side_bar_contest_management",
