@@ -1,29 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import classes from "./styles.module.scss";
-import {
-  Box,
-  Button,
-  Chip,
-  Container,
-  CssBaseline,
-  Grid,
-  IconButton,
-  Stack,
-  Toolbar
-} from "@mui/material";
+import { Box, Button, Chip, Container, Grid, IconButton, Stack } from "@mui/material";
 import Header from "components/Header";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
 import { useTranslation } from "react-i18next";
-import StepButton from "@mui/material/StepButton";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { styled } from "@mui/material/styles";
-import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import AddIcon from "@mui/icons-material/Add";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useDispatch } from "react-redux";
 import CustomDataGrid from "components/common/CustomDataGrid";
@@ -31,7 +14,6 @@ import {
   GridCallbackDetails,
   GridColDef,
   GridPaginationModel,
-  GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -40,16 +22,17 @@ import { useSelector } from "react-redux";
 import { RootState } from "store";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading5 from "components/text/Heading5";
-import { RubricUserEntity } from "models/courseService/entity/RubricUserEntity";
 import { AssignmentService } from "services/courseService/AssignmentService";
-import { CreateReportEssayAICommand } from "models/courseService/entity/create/CreateReportEssayAICommand";
-import { setSuccessMess } from "reduxes/AppStatus";
 import {
   AssignmentAIGradeEssayEntity,
   AssignmentAIGradeEssayStatus
 } from "models/courseService/entity/AssignmentAIGradeEssayEntity";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
+import Buttons from "components/Buttons";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import Heading2 from "components/text/Heading2";
+import { setErrorMess } from "reduxes/AppStatus";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -104,12 +87,12 @@ const AIGradingReports = () => {
 
     {
       field: "feedbackLanguage",
-      headerName: t("feedback_language"),
+      headerName: t("common_language"),
       headerClassName: classes.dataGridHeader,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("feedback_language")}
+            {t("common_language")}
           </Heading5>
         );
       },
@@ -123,6 +106,13 @@ const AIGradingReports = () => {
       headerName: t("common_status"),
       headerClassName: classes.dataGridHeader,
       flex: 0.5,
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_status")}
+          </Heading5>
+        );
+      },
       renderCell: (params) => {
         return (
           <Stack direction={"row"}>
@@ -142,7 +132,7 @@ const AIGradingReports = () => {
       field: "createdAt",
       headerName: t("common_create_at"),
       headerClassName: classes.dataGridHeader,
-      flex: 1,
+      flex: 0.5,
       renderHeader: () => {
         return (
           <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
@@ -162,15 +152,22 @@ const AIGradingReports = () => {
       field: "action",
       headerName: t("common_action"),
       headerClassName: classes.dataGridHeader,
-      align: "right",
-      headerAlign: "right",
+      flex: 0.5,
+      align: "center",
+      renderHeader: () => {
+        return (
+          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
+            {t("common_action")}
+          </Heading5>
+        );
+      },
       renderCell: (params) => {
         return params.row.status === AssignmentAIGradeEssayStatus.SUCCESS ? (
           <IconButton
             onClick={() => {
               try {
                 const submissions = JSON.parse(params.row.feedbackSubmissions);
-                console.log(routes.lecturer.assignment.ai_grading_report_detail);
+                console.log(submissions[0]?.studentSubmissionId);
                 navigate(
                   routes.lecturer.assignment.ai_grading_report_detail
                     .replace(":reportId", params.row.id)
@@ -178,7 +175,9 @@ const AIGradingReports = () => {
                     .replace(":courseId", courseId || "")
                     .replace(":submissionId", submissions[0]?.studentSubmissionId)
                 );
-              } catch (e) {}
+              } catch (e) {
+                dispatch(setErrorMess("Report has some errors! Do it later!"));
+              }
             }}
           >
             <VisibilityIcon color='primary' />
@@ -281,70 +280,10 @@ const AIGradingReports = () => {
     <>
       <Box className={classes.root} ref={rootRef}>
         <Header />
-        <Box>
-          <CssBaseline />
-          <AppBar
-            position='fixed'
-            className={classes.tabs}
-            sx={{
-              marginTop: `${sidebarStatus.headerHeight}px`,
-              backgroundColor: "white"
-            }}
-            ref={header2Ref}
-            open={false}
-          >
-            <Toolbar>
-              <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.management)}
-                >
-                  Quản lý khoá học
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.information)}
-                >
-                  CS202 - Nhập môn lập trình
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.assignment)}
-                >
-                  Danh sách bài tập
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.exam.detail)}
-                >
-                  Bài kiểm tra cuối kỳ
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.exam.submissions)}
-                >
-                  Danh sách bài nộp
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorname='--blue-500'>Chấm điểm AI</ParagraphSmall>
-              </Box>
-            </Toolbar>
-          </AppBar>
-        </Box>
-        <CssBaseline />
 
         <Box
           sx={{
-            marginTop: `${sidebarStatus.headerHeight + header2Height}px`,
+            marginTop: `${sidebarStatus.headerHeight}px`,
             paddingTop: "20px",
             paddingBottom: `${stickyFooterHeight}px`
           }}
@@ -354,10 +293,33 @@ const AIGradingReports = () => {
               <Container maxWidth='lg' className={classes.container} sx={{}}>
                 <Grid container justifyContent='center' paddingTop={"10px"} spacing={2}>
                   <Grid item xs={12}>
-                    <ParagraphBody
-                      className={classes.generalDescription}
-                      translation-key='grading_config_choose_report_note'
-                    >
+                    <Buttons
+                      children={t("common_back")}
+                      btnType={"Blue"}
+                      onClick={() => {
+                        navigate(
+                          routes.lecturer.assignment.detail
+                            .replace(":courseId", courseId || "")
+                            .replace(":assignmentId", assignmentId || "")
+                        );
+                      }}
+                      startIcon={
+                        <ChevronLeftIcon
+                          sx={{
+                            color: "white"
+                          }}
+                        />
+                      }
+                      width='fit-content'
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Heading2 translation-key='grading_config_choose_report'>
+                      {t("grading_config_choose_report")}
+                    </Heading2>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ParagraphBody translation-key='grading_config_choose_report_note'>
                       {t("grading_config_choose_report_note")}
                     </ParagraphBody>
                   </Grid>

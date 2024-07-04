@@ -26,6 +26,9 @@ import { RubricUserEntity } from "models/courseService/entity/RubricUserEntity";
 import { AssignmentService } from "services/courseService/AssignmentService";
 import { CreateReportEssayAICommand } from "models/courseService/entity/create/CreateReportEssayAICommand";
 import { setSuccessMess } from "reduxes/AppStatus";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import Buttons from "components/Buttons";
+import Heading2 from "components/text/Heading2";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -164,232 +167,50 @@ const GradingConfig = () => {
     <>
       <Box className={classes.root} ref={rootRef}>
         <Header />
-        <Box>
-          <CssBaseline />
-          <AppBar
-            position='fixed'
-            className={classes.tabs}
-            sx={{
-              marginTop: `${sidebarStatus.headerHeight}px`,
-              backgroundColor: "white"
-            }}
-            ref={header2Ref}
-            open={false}
-          >
-            <Toolbar>
-              <Box id={classes.breadcumpWrapper}>
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.management)}
-                >
-                  Quản lý khoá học
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.information)}
-                >
-                  CS202 - Nhập môn lập trình
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.course.assignment)}
-                >
-                  Danh sách bài tập
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.exam.detail)}
-                >
-                  Bài kiểm tra cuối kỳ
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  className={classes.cursorPointer}
-                  onClick={() => navigate(routes.lecturer.exam.submissions)}
-                >
-                  Danh sách bài nộp
-                </ParagraphSmall>
-                <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                <ParagraphSmall colorname='--blue-500'>Chấm điểm AI</ParagraphSmall>
-              </Box>
-            </Toolbar>
-          </AppBar>
-        </Box>
-        <CssBaseline />
 
         <Box
           sx={{
-            marginTop: `${sidebarStatus.headerHeight + header2Height}px`,
+            marginTop: `${sidebarStatus.headerHeight}px`,
             paddingTop: "20px",
             paddingBottom: `${stickyFooterHeight}px`
           }}
         >
           <Grid container justifyContent='center' sx={{}} gap={5}>
             <Grid item xs={12}>
-              {/* {activeStep === 2 && (
-                <Container maxWidth='lg' className={classes.container}>
-                  <Grid container justifyContent='center' paddingTop={"10px"} spacing={2}>
-                    <Grid item xs={12}>
-                      <ParagraphBody
-                        className={classes.generalDescription}
-                        translation-key='grading_config_description'
-                      >
-                        {t("grading_config_description")}
-                      </ParagraphBody>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Grid container spacing={5}>
-                        <Grid item xs={6}>
-                          <GradingConfigSelect
-                            items={textType}
-                            label={t("grading_config_exam_type")}
-                            translation-key='grading_config_exam_type'
-                            changeItemHandler={onSelectLanguage}
-                            defaultValue='essay'
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <GradingConfigSelect
-                            items={difficulty}
-                            label={t("common_difficult_level")}
-                            changeItemHandler={onSelectLanguage}
-                            defaultValue='easy'
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <FormControl size='small'>
-                            <FormLabel
-                              id='demo-controlled-radio-buttons-group'
-                              className={clsx(classes.selectLabel, classes.configlabel)}
-                              translation-key='grading_config_scale'
-                            >
-                              {t("grading_config_scale")}
-                            </FormLabel>
-                            <RadioGroup
-                              aria-labelledby='demo-controlled-radio-buttons-group'
-                              name='controlled-radio-buttons-group'
-                              value={gradeScale}
-                              onChange={handleGradeScaleGroupChange}
-                            >
-                              <Stack
-                                direction={rootWidth >= 400 ? "row" : "column"}
-                                gap={rootWidth < 510 ? 1 : 5}
-                              >
-                                <Stack direction='row' alignItems={"center"}>
-                                  <FormControlLabel
-                                    value='letter'
-                                    control={<Radio size='small' />}
-                                    label={t("grading_config_letter_scale")}
-                                    translation-key='grading_config_letter_scale'
-                                    sx={{ marginRight: "5px" }}
-                                  />
-                                  <Tooltip
-                                    title={t("grading_config_letter_description")}
-                                    translation-key='grading_config_letter_description'
-                                    placement='top'
-                                    arrow
-                                  >
-                                    <InfoIcon className={classes.infoIcon} color='primary' />
-                                  </Tooltip>
-                                </Stack>
-                                <Stack direction='row' gap={-1} alignItems={"center"}>
-                                  <FormControlLabel
-                                    value='point'
-                                    control={<Radio size='small' />}
-                                    label={t("grading_config_point_scale")}
-                                    translation-key='grading_config_point_scale'
-                                    sx={{ marginRight: "5px" }}
-                                  />
-                                  <Tooltip
-                                    title={t("grading_config_point_description")}
-                                    placement='top'
-                                    arrow
-                                    translation-key='grading_config_point_description'
-                                  >
-                                    <InfoIcon className={classes.infoIcon} color='primary' />
-                                  </Tooltip>
-                                </Stack>
-                              </Stack>
-                              <ParagraphBody
-                                translation-key='grading_config_scale_note'
-                                sx={{ fontSize: "12px", color: "#6c757d" }}
-                              >
-                                {t("grading_config_scale_note")}
-                              </ParagraphBody>
-                            </RadioGroup>
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <Stack direction='row' spacing={0.8} alignItems={"center"}>
-                            <ParagraphBody
-                              className={classes.configlabel}
-                              translation-key='grading_config_feedback_style'
-                            >
-                              {t("grading_config_feedback_style")}
-                            </ParagraphBody>
-                            <Tooltip
-                              title={t("grading_config_feedback_style_note")}
-                              translation-key='grading_config_feedback_style_note'
-                              placement='top'
-                              arrow
-                            >
-                              <InfoIcon className={classes.infoIcon} color='primary' />
-                            </Tooltip>
-                          </Stack>
-                          <Textarea
-                            aria-label='empty textarea'
-                            placeholder='Positive with focus on where the user can improve'
-                            minLength={3}
-                          />{" "}
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Stack direction='row' spacing={0.8} alignItems={"center"}>
-                            <ParagraphBody
-                              className={classes.configlabel}
-                              translation-key='grading_config_feedback_style'
-                            >
-                              {t("grading_config_answer_objective")}
-                            </ParagraphBody>
-                            <Tooltip
-                              translation-key='grading_config_answer_objective_note'
-                              title={t("grading_config_answer_objective_note")}
-                              placement='top'
-                              arrow
-                            >
-                              <InfoIcon className={classes.infoIcon} color='primary' />
-                            </Tooltip>
-                          </Stack>
-                          <Textarea
-                            aria-label='empty textarea'
-                            placeholder='Explore the relationship of different algorithms and how they relate to different systems'
-                          />{" "}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Container>
-              )} */}
-
               <Container maxWidth='lg' className={classes.container}>
                 <Grid container paddingTop={"10px"} spacing={2}>
                   <Grid item xs={12}>
-                    <ParagraphBody
-                      className={classes.generalDescription}
-                      translation-key='grading_config_select_criteria_description'
-                    >
+                    <Buttons
+                      children={t("common_back")}
+                      btnType={"Blue"}
+                      onClick={() => {
+                        navigate(
+                          routes.lecturer.assignment.detail
+                            .replace(":courseId", courseId || "")
+                            .replace(":assignmentId", assignmentId || "")
+                        );
+                      }}
+                      startIcon={
+                        <ChevronLeftIcon
+                          sx={{
+                            color: "white"
+                          }}
+                        />
+                      }
+                      width='fit-content'
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Heading2 translation-key='grading_config_select_criteria'>
+                      {t("grading_config_select_criteria")}
+                    </Heading2>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ParagraphBody translation-key='grading_config_select_criteria_description'>
                       {t("grading_config_select_criteria_description")}
                     </ParagraphBody>
                   </Grid>
+
                   <Grid item xs={12}>
                     <Heading5 translation-key='grading_config_rubric'>
                       {`${t("grading_config_rubric")} `}
