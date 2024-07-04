@@ -336,7 +336,7 @@ export default function ExamCreated() {
     const timeLimitUnit = formSubmitData.timeLimit;
 
     const timeLimit = (() => {
-      switch (examTimeLimitUnit) {
+      switch (formSubmitData.timeLimitUnit) {
         case "weeks":
           return formSubmitData.timeLimit * 604800;
         case "days":
