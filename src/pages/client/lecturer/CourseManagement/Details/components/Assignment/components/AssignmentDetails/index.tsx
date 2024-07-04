@@ -31,6 +31,7 @@ import images from "config/images";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import { setAmountStudent } from "reduxes/courseService/courseUser";
 import TextEditor from "components/editor/TextEditor";
+import Buttons from "components/Buttons";
 
 const LecturerCourseAssignmentDetails = () => {
   const { t } = useTranslation();
@@ -279,13 +280,19 @@ const LecturerCourseAssignmentDetails = () => {
         <Button
           btnType={BtnType.Primary}
           onClick={() => {
+            if (
+              !assignmentId ||
+              !courseId ||
+              !submissionAssignmentState?.submissionAssignments[0]?.id
+            )
+              return;
             navigate(
               routes.lecturer.assignment.grading
                 .replace(":assignmentId", assignmentId ?? "")
                 .replace(":courseId", courseId ?? "")
                 .replace(
                   ":submissionId",
-                  submissionAssignmentState.submissionAssignments[0].id ?? ""
+                  submissionAssignmentState?.submissionAssignments[0]?.id ?? ""
                 )
             );
           }}
@@ -294,6 +301,32 @@ const LecturerCourseAssignmentDetails = () => {
             {t("course_lecturer_assignment_grading")}
           </ParagraphBody>
         </Button>
+        <Button
+          btnType={BtnType.Secondary}
+          onClick={() => {
+            navigate(
+              routes.lecturer.assignment.ai_grading_config
+                .replace(":assignmentId", assignmentId ?? "")
+                .replace(":courseId", courseId ?? "")
+            );
+          }}
+        >
+          <ParagraphBody translation-key='course_lecturer_ai_assignment_grading'>
+            {t("course_lecturer_ai_assignment_grading")}
+          </ParagraphBody>
+        </Button>
+        <Buttons
+          btnType='TransparentBlue'
+          children={t("course_lecturer_ai_assignment_grading_report")}
+          translation-key='course_lecturer_ai_assignment_grading_report'
+          onClick={() => {
+            navigate(
+              routes.lecturer.assignment.ai_grading_reports
+                .replace(":assignmentId", assignmentId ?? "")
+                .replace(":courseId", courseId ?? "")
+            );
+          }}
+        ></Buttons>
       </Box>
       <Heading2 translation-key={["course_lecturer_assignment_grading", "common_over"]}>
         {t("course_lecturer_assignment_grading")}
@@ -325,7 +358,7 @@ const LecturerCourseAssignmentDetails = () => {
           "common_over"
         ]}
       />
-      <Button
+      {/* <Button
         btnType={BtnType.Primary}
         onClick={() => {
           navigate(routes.lecturer.assignment.preview_submit);
@@ -335,7 +368,7 @@ const LecturerCourseAssignmentDetails = () => {
         <ParagraphBody translation-key='course_lecturer_assignment_preview_submit'>
           {t("course_lecturer_assignment_preview_submit")}
         </ParagraphBody>
-      </Button>
+      </Button> */}
     </Box>
   );
 };
