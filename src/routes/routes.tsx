@@ -341,6 +341,7 @@ export const routes = {
     }
   },
   org_admin: {
+    dashboard: "/org-admin/dashboard",
     homepage: {
       root: "/org-admin/*"
     },

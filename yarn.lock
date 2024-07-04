@@ -4707,6 +4707,14 @@ babel-preset-react-app@^10.0.1:
     babel-plugin-macros "^3.1.0"
     babel-plugin-transform-react-remove-prop-types "^0.4.24"
 
+bad-words-next@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.npmjs.org/bad-words-next/-/bad-words-next-2.3.1.tgz"
+  integrity sha512-O2OOinLpsXfJh3H8I4TQHopA1gLKa4e/sicxYbUT0G5d7kQTWxU2ujq/cemrSZh9IjGIpxidJKb2Va1wfjDZrw==
+  dependencies:
+    confusables "^1.1.1"
+    moize "^6.1.6"
+
 bail@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npmjs.org/bail/-/bail-2.0.2.tgz"
@@ -5217,6 +5225,11 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+confusables@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/confusables/-/confusables-1.1.1.tgz"
+  integrity sha512-BzFtzUrufackm00Wb2zvrZV0ItRqPdWaUprU5FXHeZiJRrOWxGmXmQl/muGTF9EQl+MdBXz+Irk99meskGZmXw==
 
 confusing-browser-globals@^1.0.11:
   version "1.0.11"
@@ -6747,6 +6760,11 @@ fast-diff@1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/fast-diff/-/fast-diff-1.1.2.tgz"
   integrity sha512-KaJUt+M9t1qaIteSvjc6P3RbMdXsNhK61GRftR6SNxqmhthcd9MGIi4T+o0jD8LUSpSnSKXE20nLtJ3fOHxQig==
+
+fast-equals@^3.0.1:
+  version "3.0.3"
+  resolved "https://registry.npmjs.org/fast-equals/-/fast-equals-3.0.3.tgz"
+  integrity sha512-NCe8qxnZFARSHGztGMZOO/PC1qa5MIFB5Hp66WdzbCRAz8U8US3bx1UTgLS49efBQPcUtO9gf5oVEY8o7y/7Kg==
 
 fast-glob@^3.2.9, fast-glob@^3.3.0:
   version "3.3.2"
@@ -9421,6 +9439,11 @@ methods@~1.1.2:
   resolved "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
   integrity sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==
 
+micro-memoize@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.npmjs.org/micro-memoize/-/micro-memoize-4.1.2.tgz"
+  integrity sha512-+HzcV2H+rbSJzApgkj0NdTakkC+bnyeiUxgT6/m7mjcz1CmM22KYFKp+EVj1sWe4UYcnriJr5uqHQD/gMHLD+g==
+
 micromark-core-commonmark@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/micromark-core-commonmark/-/micromark-core-commonmark-2.0.0.tgz"
@@ -9808,6 +9831,14 @@ mkdirp@~0.5.1:
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
+
+moize@^6.1.6:
+  version "6.1.6"
+  resolved "https://registry.npmjs.org/moize/-/moize-6.1.6.tgz"
+  integrity sha512-vSKdIUO61iCmTqhdoIDrqyrtp87nWZUmBPniNjO0fX49wEYmyDO4lvlnFXiGcaH1JLE/s/9HbiK4LSHsbiUY6Q==
+  dependencies:
+    fast-equals "^3.0.1"
+    micro-memoize "^4.1.2"
 
 moment-timezone@^0.5.45:
   version "0.5.45"

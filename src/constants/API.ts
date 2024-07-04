@@ -94,6 +94,7 @@ export const API = {
       DEFAULT: "/course/course",
       SECTION: "/course/section",
       GET_STATISTICS: "/course/course/statistics",
+      GET_ORG_ADMIN_STATISTICS: "/course/course/admin-org/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
@@ -242,6 +243,7 @@ export const API = {
       GET_ALL_USERS: "/auth/users",
       GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
       GET_STATISTICS: "/auth/users/statistics",
+      GET_ORG_ADMIN_STATISTICS: "/auth/users/admin-org/statistics",
       SOCIAL_LOGIN: "/auth/users/social-login",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",
