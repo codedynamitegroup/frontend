@@ -663,11 +663,11 @@ const AIScoring = () => {
           />
         </Grid>
       )}
-      <RubicsDialog
+      {/* <RubicsDialog
         open={openTestCasePopup}
         handleClose={() => setOpenTestCasePopup(false)}
         rubicData={rubicData}
-      />
+      /> */}
     </>
   );
 };

@@ -1,36 +1,13 @@
 import React, { useRef, useState } from "react";
 import classes from "./styles.module.scss";
-import {
-  Box,
-  Button,
-  Chip,
-  Container,
-  CssBaseline,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  IconButton,
-  Radio,
-  RadioGroup,
-  Stack,
-  Toolbar,
-  Tooltip,
-  Typography
-} from "@mui/material";
+import { Box, Button, Container, CssBaseline, Grid, Stack, Toolbar } from "@mui/material";
 import Header from "components/Header";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
 import { useTranslation } from "react-i18next";
-import StepButton from "@mui/material/StepButton";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import InfoIcon from "@mui/icons-material/InfoOutlined";
 import { styled } from "@mui/material/styles";
-import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import clsx from "clsx";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import AddIcon from "@mui/icons-material/Add";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -40,67 +17,62 @@ import SelectRubricDialog from "./components/SelectRubricDialog";
 import { useDispatch } from "react-redux";
 import { open as openSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import NewRubricDialog from "./components/NewRubricDialog";
-import CriteriaCard from "./components/CriteriaCard";
-import { open as openCriteria } from "reduxes/SelectRubricCriteriaDialog";
 import SelectCriteriaConfig from "./components/SelectCriteriaDialog";
-import CustomDataGrid from "components/common/CustomDataGrid";
-import {
-  GridCallbackDetails,
-  GridColDef,
-  GridPaginationModel,
-  GridRowParams,
-  GridRowSelectionModel
-} from "@mui/x-data-grid";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import ParagraphBody from "components/text/ParagraphBody";
+import Heading5 from "components/text/Heading5";
+import { RubricUserEntity } from "models/courseService/entity/RubricUserEntity";
+import { AssignmentService } from "services/courseService/AssignmentService";
+import { CreateReportEssayAICommand } from "models/courseService/entity/create/CreateReportEssayAICommand";
+import { setSuccessMess } from "reduxes/AppStatus";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-const Textarea = styled(BaseTextareaAutosize)(
-  ({ theme }) => `
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    min-width: 100%;
-    min-height: 150px;
-    max-height: 340px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 12px 12px 0 12px;
-    color: ${theme.palette.mode === "dark" ? "#C7D0DD" : "#1C2025"};
-    background: ${theme.palette.mode === "dark" ? "#1C2025" : "#fff"};
-    border: 1px solid ${theme.palette.mode === "dark" ? "#434D5B" : "#DAE2ED"};
-    box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? "#1C2025" : "#F3F6F9"};
+enum EFeedbackLanguage {
+  Vietnamese = "Vietnamese",
+  English = "English"
+}
+// const Textarea = styled(BaseTextareaAutosize)(
+//   ({ theme }) => `
+//     box-sizing: border-box;
+//     width: 100%;
+//     height: 100%;
+//     max-width: 100%;
+//     min-width: 100%;
+//     min-height: 150px;
+//     max-height: 340px;
+//     font-family: 'IBM Plex Sans', sans-serif;
+//     font-size: 0.875rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     padding: 12px;
+//     border-radius: 12px 12px 0 12px;
+//     color: ${theme.palette.mode === "dark" ? "#C7D0DD" : "#1C2025"};
+//     background: ${theme.palette.mode === "dark" ? "#1C2025" : "#fff"};
+//     border: 1px solid ${theme.palette.mode === "dark" ? "#434D5B" : "#DAE2ED"};
+//     box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? "#1C2025" : "#F3F6F9"};
 
-    &:hover {
-      border-color: '#3399FF';
-    }
+//     &:hover {
+//       border-color: '#3399FF';
+//     }
 
-    &:focus {
-      outline: 0;
-      border-color: '#3399FF';
-      box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? "#0072E5" : "#b6daff"};
-    }
+//     &:focus {
+//       outline: 0;
+//       border-color: '#3399FF';
+//       box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? "#0072E5" : "#b6daff"};
+//     }
 
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-);
+//     // firefox
+//     &:focus-visible {
+//       outline: 0;
+//     }
+//   `
+// );
 
 const GradingConfig = () => {
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
   const drawerWidth = 450;
 
   const { t } = useTranslation();
@@ -108,145 +80,57 @@ const GradingConfig = () => {
   const dispatch = useDispatch();
   const rootRef = useRef<HTMLDivElement>(null);
   const { width: rootWidth } = useBoxDimensions({ ref: rootRef });
+  const [rubricSelected, setRubricSelected] = useState<RubricUserEntity | undefined>(undefined);
 
-  const gridHeader: GridColDef[] = [
-    {
-      field: "id",
-      headerName: "STT",
-      headerClassName: classes.dataGridHeader,
-      width: 50
-    },
-
-    {
-      field: "name",
-      headerName: t("exam_management_create_question_name"),
-      headerClassName: classes.dataGridHeader,
-      flex: 1
-    },
-    {
-      field: "status",
-      headerName: t("common_status"),
-      headerClassName: classes.dataGridHeader,
-      flex: 0.5,
-      renderCell: (params) => {
-        return (
-          <Stack direction={"row"}>
-            <Chip
-              label={params.value}
-              className={params.value === "Graded" ? classes.graded : classes.queue}
-            />
-          </Stack>
-        );
-      }
-    },
-    {
-      field: "createAt",
-      headerName: t("common_create_at"),
-      headerClassName: classes.dataGridHeader,
-      flex: 0.5
-    },
-    {
-      field: "action",
-      headerName: t("common_action"),
-      headerClassName: classes.dataGridHeader,
-      align: "right",
-      headerAlign: "right",
-      renderCell: (params) => {
-        return params.row.status === "Graded" ? (
-          <IconButton>
-            <VisibilityIcon color='primary' />
-          </IconButton>
-        ) : (
-          <IconButton disabled>
-            <VisibilityOffIcon />
-          </IconButton>
-        );
-      }
-    }
-  ];
-  const visibleColumnList = {
-    id: true,
-    name: true,
-    Exam: true,
-    course: true,
-    status: true,
-    createAt: true
+  const onSelectRubric = (rubric: RubricUserEntity) => {
+    setRubricSelected(rubric);
+  };
+  const onDeleteSelectedRubric = () => {
+    setRubricSelected(undefined);
   };
 
-  const steps = [t("grading_config_choose_question"), t("grading_config_choose_criteria")];
+  const { courseId } = useParams<{ courseId: string }>();
+  const { assignmentId } = useParams<{ assignmentId: string }>();
+
   const language = [
-    { label: t("language_vn"), value: "vn" },
-    { label: t("language_us"), value: "en" }
+    { label: t("language_vn"), value: EFeedbackLanguage.Vietnamese },
+    { label: t("language_us"), value: EFeedbackLanguage.English }
   ];
-  const questionList = [
-    {
-      id: 1,
-      name: "Con trỏ là gì?",
-      status: "Graded",
-      createAt: "05/12/2023 10:30PM"
-    },
-    {
-      id: 2,
-      name: "Stack và Queue là gì?",
-      status: "Graded",
-      createAt: "05/12/2023 10:30PM"
-    },
-    {
-      id: 3,
-      name: "Tổng 2 số",
-      status: "Queue",
-      createAt: "05/12/2023 10:30PM"
-    },
-    {
-      id: 4,
-      name: "Cây nhị phân",
-      status: "Queue",
-      createAt: "05/12/2023 10:30PM"
-    },
-    {
-      id: 5,
-      name: "Đệ quy",
-      status: "Queue",
-      createAt: "05/12/2023 10:30PM"
-    }
-  ];
+  const [selectedFeedbackLanguage, setSelectedFeedbackLanguage] = useState<EFeedbackLanguage>(
+    EFeedbackLanguage.English
+  );
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
-  };
   const onSelectLanguage = (value: string) => {
-    console.log(value);
+    setSelectedFeedbackLanguage(value as EFeedbackLanguage);
   };
-  const [gradeScale, setGradeScale] = React.useState("letter");
+  // const [gradeScale, setGradeScale] = React.useState("letter");
 
-  const handleGradeScaleGroupChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setGradeScale((event.target as HTMLInputElement).value);
+  // const handleGradeScaleGroupChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setGradeScale((event.target as HTMLInputElement).value);
+  // };
+  const onSubmit = async () => {
+    if (!assignmentId) return;
+    const createReportEssayAICommand: CreateReportEssayAICommand = {
+      assignmentId: assignmentId,
+      rubricId: rubricSelected?.id,
+      feedbackLanguage: selectedFeedbackLanguage
+    };
+    await AssignmentService.createReportGradeEssayAI(createReportEssayAICommand)
+      .then((res) => {
+        dispatch(setSuccessMess("Create report successfully"));
+        navigate(
+          routes.lecturer.assignment.detail
+            .replace(":assignmentId", assignmentId)
+            .replace(":courseId", courseId || "")
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-  const handleNextButton = () => {
-    activeStep === 0 && setActiveStep(1);
-    activeStep === 1 && navigate(routes.lecturer.exam.ai_scroring);
-  };
-  const handleBackButton = () => {
-    activeStep === 1 && setActiveStep(0);
-    activeStep === 0 && navigate(routes.lecturer.exam.submissions);
-  };
+
   const handleChooseRubric = () => {
     dispatch(openSelectRubricDialog());
-  };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
-  };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {};
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
-  const handleAddCriteria = () => {
-    dispatch(openCriteria());
   };
 
   const AppBar = styled(MuiAppBar, {
@@ -268,23 +152,28 @@ const GradingConfig = () => {
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
+  const header2Ref = useRef<HTMLDivElement>(null);
+  const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
+
+  const stickyFooterRef = useRef<HTMLDivElement>(null);
+  const { height: stickyFooterHeight } = useBoxDimensions({ ref: stickyFooterRef });
+  const stateRubricDialog = useSelector((state: RootState) => state.selectRubricDialog);
+  const stateNewRubricDialog = useSelector((state: RootState) => state.rubricDialog);
+
   return (
     <>
       <Box className={classes.root} ref={rootRef}>
         <Header />
-        <Box
-          sx={{
-            marginTop: `${sidebarStatus.headerHeight + 80}px`
-          }}
-        >
+        <Box>
           <CssBaseline />
           <AppBar
             position='fixed'
+            className={classes.tabs}
             sx={{
-              // margin top to avoid appbar overlap with content
-              marginTop: "64px",
+              marginTop: `${sidebarStatus.headerHeight}px`,
               backgroundColor: "white"
             }}
+            ref={header2Ref}
             open={false}
           >
             <Toolbar>
@@ -336,83 +225,30 @@ const GradingConfig = () => {
         </Box>
         <CssBaseline />
 
-        <Box sx={{ marginBottom: "100px" }}>
+        <Box
+          sx={{
+            marginTop: `${sidebarStatus.headerHeight + header2Height}px`,
+            paddingTop: "20px",
+            paddingBottom: `${stickyFooterHeight}px`
+          }}
+        >
           <Grid container justifyContent='center' sx={{}} gap={5}>
-            <Grid item xs={5}>
-              <Stepper activeStep={activeStep} nonLinear alternativeLabel={rootWidth < 670}>
-                {steps.map((label, index) => (
-                  <Step key={label}>
-                    <StepButton color='inherit' onClick={handleStep(index)}>
-                      {label}
-                    </StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-            </Grid>
             <Grid item xs={12}>
-              {activeStep === 0 && (
-                <Container maxWidth='lg' className={classes.container} sx={{}}>
-                  <Grid container justifyContent='center' paddingTop={"10px"} spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography
-                        className={classes.generalDescription}
-                        translation-key='grading_config_choose_question_note'
-                      >
-                        {t("grading_config_choose_question_note")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <CustomDataGrid
-                        sx={{
-                          ".MuiDataGrid-columnSeparator": {
-                            display: "none"
-                          },
-
-                          "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                            outline: "none !important"
-                          }
-                        }}
-                        dataList={questionList}
-                        tableHeader={gridHeader}
-                        page={page}
-                        pageSize={pageSize}
-                        totalElement={totalElement}
-                        onSelectData={rowSelectionHandler}
-                        onPaginationModelChange={pageChangeHandler}
-                        showVerticalCellBorder={false}
-                        checkboxSelection={true}
-                        visibleColumn={visibleColumnList}
-                      />
-                    </Grid>
-                  </Grid>
-                </Container>
-              )}
-              {activeStep === 2 && (
+              {/* {activeStep === 2 && (
                 <Container maxWidth='lg' className={classes.container}>
                   <Grid container justifyContent='center' paddingTop={"10px"} spacing={2}>
                     <Grid item xs={12}>
-                      <Typography
+                      <ParagraphBody
                         className={classes.generalDescription}
                         translation-key='grading_config_description'
                       >
                         {t("grading_config_description")}
-                      </Typography>
+                      </ParagraphBody>
                     </Grid>
 
                     <Grid item xs={12}>
                       <Grid container spacing={5}>
                         <Grid item xs={6}>
-                          <GradingConfigSelect
-                            translation-key={["common_language", "common_automatic"]}
-                            items={language}
-                            label={t("common_language")}
-                            changeItemHandler={onSelectLanguage}
-                            defaultValue={"vn"}
-                            showIcon={true}
-                            iconDescription='Chọn ngôn ngữ dùng để đánh giá bài làm của sinh viên'
-                          />
-                        </Grid>
-                        {/* <Grid item xs={6}>
                           <GradingConfigSelect
                             items={textType}
                             label={t("grading_config_exam_type")}
@@ -420,15 +256,15 @@ const GradingConfig = () => {
                             changeItemHandler={onSelectLanguage}
                             defaultValue='essay'
                           />
-                        </Grid> */}
-                        {/* <Grid item xs={6}>
+                        </Grid>
+                        <Grid item xs={6}>
                           <GradingConfigSelect
                             items={difficulty}
                             label={t("common_difficult_level")}
                             changeItemHandler={onSelectLanguage}
                             defaultValue='easy'
                           />
-                        </Grid> */}
+                        </Grid>
                         <Grid item xs={6}>
                           <FormControl size='small'>
                             <FormLabel
@@ -483,24 +319,24 @@ const GradingConfig = () => {
                                   </Tooltip>
                                 </Stack>
                               </Stack>
-                              <Typography
+                              <ParagraphBody
                                 translation-key='grading_config_scale_note'
                                 sx={{ fontSize: "12px", color: "#6c757d" }}
                               >
                                 {t("grading_config_scale_note")}
-                              </Typography>
+                              </ParagraphBody>
                             </RadioGroup>
                           </FormControl>
                         </Grid>
 
                         <Grid item xs={6}>
                           <Stack direction='row' spacing={0.8} alignItems={"center"}>
-                            <Typography
+                            <ParagraphBody
                               className={classes.configlabel}
                               translation-key='grading_config_feedback_style'
                             >
                               {t("grading_config_feedback_style")}
-                            </Typography>
+                            </ParagraphBody>
                             <Tooltip
                               title={t("grading_config_feedback_style_note")}
                               translation-key='grading_config_feedback_style_note'
@@ -518,12 +354,12 @@ const GradingConfig = () => {
                         </Grid>
                         <Grid item xs={6}>
                           <Stack direction='row' spacing={0.8} alignItems={"center"}>
-                            <Typography
+                            <ParagraphBody
                               className={classes.configlabel}
                               translation-key='grading_config_feedback_style'
                             >
                               {t("grading_config_answer_objective")}
-                            </Typography>
+                            </ParagraphBody>
                             <Tooltip
                               translation-key='grading_config_answer_objective_note'
                               title={t("grading_config_answer_objective_note")}
@@ -542,60 +378,68 @@ const GradingConfig = () => {
                     </Grid>
                   </Grid>
                 </Container>
-              )}
+              )} */}
 
-              {activeStep === 1 && (
-                <Container maxWidth='lg' className={classes.container}>
-                  <Grid container paddingTop={"10px"} spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography
-                        className={classes.generalDescription}
-                        translation-key='grading_config_select_criteria_description'
-                      >
-                        {t("grading_config_select_criteria_description")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography
-                        className={classes.critTitle}
-                        translation-key='grading_config_rubric'
-                      >
-                        {`${t("grading_config_rubric")} `}
-                        {
-                          <Typography
-                            display={"inline"}
-                            className={classes.secondaryLabel}
-                            translation-key='grading_config_optional'
-                          >
-                            ({t("grading_config_optional")})
-                          </Typography>
-                        }
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Stack direction={"row"} spacing={2} justifyContent={"center"}>
-                        <Button
-                          variant='outlined'
-                          className={classes.addBtn}
-                          startIcon={<AddIcon color='primary' />}
-                          fullWidth
-                          onClick={handleChooseRubric}
-                          translation-key='grading_config_select_rubric'
+              <Container maxWidth='lg' className={classes.container}>
+                <Grid container paddingTop={"10px"} spacing={2}>
+                  <Grid item xs={12}>
+                    <ParagraphBody
+                      className={classes.generalDescription}
+                      translation-key='grading_config_select_criteria_description'
+                    >
+                      {t("grading_config_select_criteria_description")}
+                    </ParagraphBody>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Heading5 translation-key='grading_config_rubric'>
+                      {`${t("grading_config_rubric")} `}
+                      {
+                        <Heading5
+                          display={"inline"}
+                          fontWeight={400}
+                          translation-key='grading_config_optional'
                         >
-                          {t("grading_config_select_rubric")}{" "}
-                        </Button>
-                      </Stack>
+                          ({t("grading_config_optional")})
+                        </Heading5>
+                      }
+                    </Heading5>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Stack direction={"row"} spacing={2} justifyContent={"center"}>
+                      <Button
+                        variant='outlined'
+                        className={classes.addBtn}
+                        startIcon={<AddIcon color='primary' />}
+                        fullWidth
+                        onClick={handleChooseRubric}
+                        translation-key='grading_config_select_rubric'
+                      >
+                        {t("grading_config_select_rubric")}{" "}
+                      </Button>
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <RubricCard
+                      selectedRubric={rubricSelected}
+                      onDeleteSelectedRubric={onDeleteSelectedRubric}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <GradingConfigSelect
+                      translation-key={["common_language", "common_automatic"]}
+                      items={language}
+                      label={t("common_language")}
+                      changeItemHandler={onSelectLanguage}
+                      defaultValue={selectedFeedbackLanguage}
+                      showIcon={true}
+                      iconDescription='Chọn ngôn ngữ dùng để đánh giá bài làm của sinh viên'
+                    />
+                  </Grid>
+                  {/* <Grid item xs={12}>
+                      <ParagraphBody className={classes.critTitle}>{`Criteria `}</ParagraphBody>
                     </Grid>
                     <Grid item xs={12}>
-                      <RubricCard
-                        name='Tự luận thuật toán'
-                        criteries={["Giải thích", "Mở rộng", "Cách tổ chức"]}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography className={classes.critTitle}>{`Criteria `}</Typography>
-                    </Grid>
-                    {/* <Grid item xs={12}>
                       <Stack direction={"row"} spacing={2} justifyContent={"center"}>
                         <Button
                           variant='outlined'
@@ -608,17 +452,16 @@ const GradingConfig = () => {
                           {t("grading_config_select_criteria")}
                         </Button>
                       </Stack>
-                    </Grid> */}
+                    </Grid>
                     <Grid item xs={12}>
                       <Stack direction='column' spacing={2}>
                         <CriteriaCard name='Criteria 1' />
                         <CriteriaCard name='Criteria 2' />
                         <CriteriaCard name='Criteria 9' />
                       </Stack>
-                    </Grid>
-                  </Grid>
-                </Container>
-              )}
+                    </Grid> */}
+                </Grid>
+              </Container>
             </Grid>
           </Grid>
         </Box>
@@ -627,12 +470,19 @@ const GradingConfig = () => {
           direction={"row"}
           justifyContent={"space-between"}
           alignItems={"center"}
+          ref={stickyFooterRef}
         >
           <Button
             variant='outlined'
             className={classes.stepButton}
             translation-key='common_back'
-            onClick={handleBackButton}
+            onClick={() => {
+              navigate(
+                routes.lecturer.assignment.detail
+                  .replace(":assignmentId", assignmentId || "")
+                  .replace(":courseId", courseId || "")
+              );
+            }}
           >
             {t("common_back")}
           </Button>
@@ -640,14 +490,22 @@ const GradingConfig = () => {
             variant='contained'
             className={classes.stepButton}
             translation-key='common_continue'
-            onClick={handleNextButton}
+            onClick={onSubmit}
           >
-            {activeStep === 1 ? t("common_finish") : t("common_continue")}
+            {t("common_finish")}
           </Button>
         </Stack>
       </Box>
-      <SelectRubricDialog />
-      <NewRubricDialog headerHeight={sidebarStatus.headerHeight} />
+      {stateRubricDialog.status && (
+        <>
+          <SelectRubricDialog onSelectRubric={onSelectRubric} />
+        </>
+      )}
+
+      {stateNewRubricDialog.newRubricStatus && (
+        <NewRubricDialog headerHeight={sidebarStatus.headerHeight} />
+      )}
+
       <SelectCriteriaConfig />
     </>
   );

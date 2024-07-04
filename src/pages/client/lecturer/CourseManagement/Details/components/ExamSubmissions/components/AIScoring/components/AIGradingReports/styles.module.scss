@@ -62,7 +62,7 @@
 .stickyFooter {
   padding: 0px 50px 0 50px;
   background-color: #f8f8f8;
-  border-top: 1px solid var(--gray-30);
+  border-top: 1px solid #e7e7e7;
   text-align: center;
   position: fixed;
   left: 0;
@@ -96,7 +96,7 @@
 }
 
 .tabs {
-  box-shadow: 0px 8px 10px -15px #111;
-  border-top: 1px solid var(--gray-10);
-  border-bottom: 1px solid var(--gray-10);
+  box-shadow: 0px 8px 10px -15px #111 !important;
+  border-top: 1px solid var(--gray-10) !important;
+  border-bottom: 1px solid var(--gray-10) !important;
 }
