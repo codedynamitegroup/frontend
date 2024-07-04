@@ -5,6 +5,7 @@ import api from "utils/api";
 import { CreateAssignmentCommand } from "models/courseService/entity/create/CreateAssignmentCommand";
 import { CreateIntroAttachmentCommand } from "models/courseService/entity/create/CreateIntroAttachmentCommand";
 import { UpdateAssignmentCommand } from "models/courseService/entity/update/UpdateAssignmentCommand";
+import { CreateReportEssayAICommand } from "models/courseService/entity/create/CreateReportEssayAICommand";
 
 const courseServiceApiUrl = process.env.REACT_APP_COURSE_SERVICE_API_URL || "";
 
@@ -195,6 +196,72 @@ export class AssignmentService {
           pageSize
         }
       });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch assignment grade by student", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createReportGradeEssayAI(createReportEssayAICommand: CreateReportEssayAICommand) {
+    try {
+      const response = await this.apiClient.post(
+        `${API.COURSE.ASSIGNMENT.CREATE_REPORT_AI_GRADE_ESSAY}`,
+        createReportEssayAICommand
+      );
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return this.handleError(error);
+    }
+  }
+  static async getAllAIReportsByAssignment(
+    assignmentId: string,
+    {
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.ASSIGNMENT.GET_ALL_AI_REPORTS.replace(":assignmentId", assignmentId)}`, {
+        params: {
+          search,
+          pageNo,
+          pageSize
+        }
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch assignment grade by student", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async getAIReportDetail(reportId: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.ASSIGNMENT.GET_REPORT_DETAIL.replace(":reportId", reportId)}`);
 
       if (response.status === 200) {
         return response.data;
