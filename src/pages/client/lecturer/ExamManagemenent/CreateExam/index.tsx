@@ -83,8 +83,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import qtype from "utils/constant/Qtype";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
-import { Select } from "@mui/joy";
-import Option from "@mui/joy/Option";
 import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 
 const drawerWidth = 400;
@@ -168,7 +166,6 @@ export default function ExamCreated() {
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
   const dispatch = useDispatch();
-  const categoryState = useSelector((state: RootState) => state.questionBankCategory);
   const user: User = useSelector(selectCurrentUser);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -336,18 +333,20 @@ export default function ExamCreated() {
       page: 0
     }));
 
+    const timeLimitUnit = formSubmitData.timeLimit;
+
     const timeLimit = (() => {
       switch (examTimeLimitUnit) {
         case "weeks":
-          return questionCreate.timeLimit * 604800;
+          return formSubmitData.timeLimit * 604800;
         case "days":
-          return questionCreate.timeLimit * 86400;
+          return formSubmitData.timeLimit * 86400;
         case "hours":
-          return questionCreate.timeLimit * 3600;
+          return formSubmitData.timeLimit * 3600;
         case "minutes":
-          return questionCreate.timeLimit * 60;
+          return formSubmitData.timeLimit * 60;
         case "seconds":
-          return questionCreate.timeLimit;
+          return formSubmitData.timeLimit;
         default:
           return 0;
       }
@@ -362,6 +361,8 @@ export default function ExamCreated() {
       timeOpen: new Date(formSubmitData.timeOpen),
       timeClose: new Date(formSubmitData.timeClose),
       timeLimit: timeLimit,
+      timeLimitUnit: timeLimitUnit,
+      unit: formSubmitData.timeLimitUnit,
       overdueHandling: formSubmitData.overdueHandling,
       canRedoQuestions: true,
       maxAttempts: Number(formSubmitData.maxAttempts),
