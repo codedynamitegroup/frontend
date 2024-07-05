@@ -830,6 +830,8 @@
   "code_management_output_format_required": "Yêu cầu định dạng đầu ra",
   "code_management_constraint_required": "Yêu cầu giới hạn đầu vào",
   "code_management_public_tool_tip": "Câu hỏi code sẽ được công khai đến người dùng",
+  "code_management_timelimit_required": "Thời gian giới hạn phải là số dương",
+  "code_management_memorylimit_required": "Bộ nhớ giới hạn ít nhất 2MB",
 
   "code_management_detail_stub": "Code mẫu",
   "code_management_detail_info_description": "Dưới đây là một số thông tin cần thiết về câu hỏi code của bạn",
@@ -842,10 +844,11 @@
   "code_management_detail_template_tip": "Để đọc dữ liệu test case đầu vào một cách tiêu chuẩn, bạn có thể thêm một code mẫu vào đây và chuyển đổi sang những ngôn ngữ lập trình khác nhau",
   "code_management_detail_template": "Code mẫu",
   "code_management_detail_template_description": "Xem các đoạn mã nguồn đã được tạo tự động ở bên dưới",
+  "code_management_detail_no_language_selected": "Không có ngôn ngữ lập trình nào được chọn ",
   "code_management_detail_template_create": "Tạo code mẫu",
   "code_management_detail_lang_description": "Dưới đây là danh sách các ngôn ngữ lập trình có sẵn",
   "code_management_detail_lang_time_limit": "Giới hạn thời gian (giây)",
-  "code_management_detail_lang_storage_limit": "Giới hạn bộ nhớ (Mb)",
+  "code_management_detail_lang_storage_limit": "Giới hạn bộ nhớ (kB)",
 
   "question_management_enter_question_description": "Nhập mô tả",
   "question_management_default_score": "Điểm mặc định",

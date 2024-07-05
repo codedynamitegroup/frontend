@@ -192,7 +192,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY 
 //   }
 // ];
 
-async function* CodeConverterAI(
+async function CodeConverterAI(
   programming_language: string,
   code_stub: string,
   program_language_converted_request: ICodeConverterRequest[]
@@ -330,18 +330,19 @@ I. SYSTEM_INSTRUCTIONS:
     response = await result.response;
     text = await response.text();
 
-    for (const chunk of chunks) {
+    return chunks.map(async (chunk) => {
       result = await chat.sendMessageStream(INPUT(chunk));
       response = await result.response;
       text = await response.text();
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
       const json = JSON.parse(repaired);
-      allResponses.push(...json);
-      yield allResponses;
-    }
+      //   allResponses.push(...json);
+      let chunkResponses = [...json];
+      return chunkResponses;
+    });
   } catch (error) {
-    return error;
+    Promise.reject(error);
   }
 }
 
