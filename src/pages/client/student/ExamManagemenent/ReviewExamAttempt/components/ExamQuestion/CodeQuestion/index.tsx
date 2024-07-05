@@ -10,19 +10,20 @@ import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ReactQuill from "react-quill";
 import { decodeBase64 } from "utils/base64";
+import { CodeQuestion } from "models/coreService/entity/QuestionEntity";
 
 interface Props {
   page: number;
   questionCode?: CodeQuestionEntity;
+  coreQuestionCode: CodeQuestion;
   questionState?: any;
+  isGraded?: boolean;
 }
 
 const CodeExamQuestion = (props: Props) => {
-  const { page, questionCode, questionState } = props;
+  const { page, questionCode, questionState, isGraded, coreQuestionCode } = props;
   const { t } = useTranslation();
   const content = JSON.parse(questionState?.content || "{}");
-
-  console.log(content);
 
   return (
     <Grid container spacing={1}>
@@ -44,10 +45,9 @@ const CodeExamQuestion = (props: Props) => {
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {t("common_score_can_achieve")}
-              {": "}
-              {/* {questionShortAnswer.question.defaultMark} */}
-              MARK STRING
+              {isGraded
+                ? `${t("achieved_mark")}: ${questionState?.grade.toFixed(2) || "0.00"} / ${coreQuestionCode.question.defaultMark.toFixed(2)}`
+                : `${t("achieved_mark")}: ${t("common_not_graded")} / ${coreQuestionCode.question.defaultMark.toFixed(2)}`}
             </ParagraphBody>
           </Box>
         </Stack>

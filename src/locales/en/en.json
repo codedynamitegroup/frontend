@@ -1201,6 +1201,7 @@
   "preview_check_result": "Check result",
   "total_fraction_must_be_100": "Total fraction must be 100",
   "at_least_one_fraction_100": "At least one question has a fraction of 100",
+  "exam_review_status": "Status",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",
