@@ -7,6 +7,7 @@ import {
   RegisteredRequest,
   ResetPasswordUserRequest,
   UpdatePasswordUserRequest,
+  UpdateProfileAvatarRequest,
   UpdateProfileUserRequest,
   UpdateUserByAdminRequest,
   VerifyOTPUserRequest
@@ -206,6 +207,26 @@ export class UserService {
         lastName: updateProfileUserRequest.lastName,
         dob: updateProfileUserRequest.dob,
         phone: updateProfileUserRequest.phone
+      });
+      if (response?.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message
+      });
+    }
+  }
+  static async updateProfileAvatarUser(updateProfileAvatarRequest: UpdateProfileAvatarRequest) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.AUTH.USER.UPDATE_PROFILE_USER}`, {
+        email: updateProfileAvatarRequest.email,
+        avatarUrl: updateProfileAvatarRequest.avatarUrl
       });
       if (response?.status === 200) {
         return response.data;
