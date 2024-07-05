@@ -16,8 +16,8 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import ScrollToTop from "components/ScrollTop";
-import AIGradingReports from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AIGradingReports";
-import ReportGradeEssayAIDetail from "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/ReportGradeEssayAIDetail";
+import AIGradingReports from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AIGradingReports";
+import ReportGradeEssayAIDetail from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/ReportGradeEssayAIDetail";
 
 const EditEssayQuestion = lazy(
   () =>
@@ -76,12 +76,6 @@ const LecturerSourceCodePlagiarismManagement = lazy(
 const StudentCoursesManagement = lazy(() => import("pages/client/student"));
 const LecturerCoursesManagement = lazy(() => import("pages/client/lecturer"));
 const UserHomepage = lazy(() => import("pages/client/user"));
-const AIScoring = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring"
-    )
-);
 
 const ShareSolution = lazy(
   () => import("pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution")
@@ -117,7 +111,7 @@ const LecturerSourceCodePlagiarismClustersDetails = lazy(
 const GradingConfig = lazy(
   () =>
     import(
-      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig"
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AiGradingConfig"
     )
 );
 const CreateEssayQuestion = lazy(
@@ -237,7 +231,6 @@ const router = createHashRouter(
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
               />
-              <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
 
               <Route
                 path={routes.lecturer.assignment.preview_submit}

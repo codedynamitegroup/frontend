@@ -11,6 +11,9 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import CodeConverterAI from "services/AIService/CodeConverterAI";
 import JoyButton from "@mui/joy/Button";
+import { dispatch } from "d3";
+import { setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
@@ -103,7 +106,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
     setSelectedCodeStubLanguage(selectedLanguageChange);
   };
   const [isLoading, setIsLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const handleGenerate = async () => {
     setIsLoading(true);
     try {
@@ -113,9 +116,11 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
         convert_language_request
       )) {
         if (chunk) {
+          console.log("chunk", chunk);
           setConvertedCodeStubList(chunk);
         }
       }
+      dispatch(setSuccessMess("Generate code stub successfully"));
     } catch (error) {
       console.error("Error generating text:", error);
     } finally {
