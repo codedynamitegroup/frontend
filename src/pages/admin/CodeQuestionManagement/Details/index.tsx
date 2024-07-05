@@ -250,7 +250,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
               <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
               <TabContext value={activeTab}>
                 <Box sx={{ border: 1, borderColor: "divider" }}>
-                  <TabList onChange={handleChange}>
+                  <TabList onChange={handleChange} className={classes.tabs}>
                     <Tab
                       sx={{ textTransform: "none" }}
                       label={

@@ -6,192 +6,6 @@ import { ICodeConverterRequest } from "pages/admin/CodeQuestionManagement/Detail
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
-// const example_response: ICodeConverterResponse[] = [
-//   {
-//     program_language: "java",
-//     code_stub: `
-// import java.io.*;
-// import java.math.*;
-// import java.security.*;
-// import java.text.*;
-// import java.util.*;
-// import java.util.concurrent.*;
-// import java.util.function.*;
-// import java.util.regex.*;
-// import java.util.stream.*;
-// import static java.util.stream.Collectors.joining;
-// import static java.util.stream.Collectors.toList;
-
-// class Result {
-
-//     /*
-//      * Complete the 'simpleArraySum' function below.
-//      *
-//      * The function is expected to return an INTEGER.
-//      * The function accepts INTEGER_ARRAY ar as parameter.
-//      */
-
-//     public static int simpleArraySum(List<Integer> ar) {
-//     // Write your code here
-
-//     }
-
-// }
-
-// public class Solution {
-//     public static void main(String[] args) throws IOException {
-//         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
-
-//         int arCount = Integer.parseInt(bufferedReader.readLine().trim());
-
-//         List<Integer> ar = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
-//             .map(Integer::parseInt)
-//             .collect(toList());
-
-//         int result = Result.simpleArraySum(ar);
-
-//         bufferedWriter.write(String.valueOf(result));
-//         bufferedWriter.newLine();
-
-//         bufferedReader.close();
-//         bufferedWriter.close();
-//     }
-// }
-
-// 		`
-//   },
-//   {
-//     program_language: "py",
-//     code_stub: `
-// #!/bin/python3
-
-// import math
-// import os
-// import random
-// import re
-// import sys
-
-// #
-// # Complete the 'simpleArraySum' function below.
-// #
-// # The function is expected to return an INTEGER.
-// # The function accepts INTEGER_ARRAY ar as parameter.
-// #
-
-// def simpleArraySum(ar):
-//     # Write your code here
-
-// if __name__ == '__main__':
-//     fptr = open(os.environ['OUTPUT_PATH'], 'w')
-
-//     ar_count = int(input().strip())
-
-//     ar = list(map(int, input().rstrip().split()))
-
-//     result = simpleArraySum(ar)
-
-//     fptr.write(str(result) + '\n')
-
-//     fptr.close()
-// 		`
-//   },
-//   {
-//     program_language: "c++",
-//     code_stub: `
-// #include <bits/stdc++.h>
-
-// using namespace std;
-
-// string ltrim(const string &);
-// string rtrim(const string &);
-// vector<string> split(const string &);
-
-// /*
-//  * Complete the 'simpleArraySum' function below.
-//  *
-//  * The function is expected to return an INTEGER.
-//  * The function accepts INTEGER_ARRAY ar as parameter.
-//  */
-
-// int simpleArraySum(vector<int> ar) {
-
-// }
-
-// int main()
-// {
-//     ofstream fout(getenv("OUTPUT_PATH"));
-
-//     string ar_count_temp;
-//     getline(cin, ar_count_temp);
-
-//     int ar_count = stoi(ltrim(rtrim(ar_count_temp)));
-
-//     string ar_temp_temp;
-//     getline(cin, ar_temp_temp);
-
-//     vector<string> ar_temp = split(rtrim(ar_temp_temp));
-
-//     vector<int> ar(ar_count);
-
-//     for (int i = 0; i < ar_count; i++) {
-//         int ar_item = stoi(ar_temp[i]);
-
-//         ar[i] = ar_item;
-//     }
-
-//     int result = simpleArraySum(ar);
-
-//     fout << result << "\n";
-
-//     fout.close();
-
-//     return 0;
-// }
-
-// string ltrim(const string &str) {
-//     string s(str);
-
-//     s.erase(
-//         s.begin(),
-//         find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
-//     );
-
-//     return s;
-// }
-
-// string rtrim(const string &str) {
-//     string s(str);
-
-//     s.erase(
-//         find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-//         s.end()
-//     );
-
-//     return s;
-// }
-
-// vector<string> split(const string &str) {
-//     vector<string> tokens;
-
-//     string::size_type start = 0;
-//     string::size_type end = 0;
-
-//     while ((end = str.find(" ", start)) != string::npos) {
-//         tokens.push_back(str.substr(start, end - start));
-
-//         start = end + 1;
-//     }
-
-//     tokens.push_back(str.substr(start));
-
-//     return tokens;
-// }
-
-// `
-//   }
-// ];
-
 async function CodeConverterAI(
   programming_language: string,
   code_stub: string,
@@ -340,8 +154,7 @@ I. SYSTEM_INSTRUCTIONS:
 
   try {
     let result, response, text;
-    const chunks = chunkArray(program_language_converted_request, 6);
-    const allResponses = [];
+    const chunks = chunkArray(program_language_converted_request, 1);
 
     const chat = model.startChat({
       history: [
@@ -367,7 +180,6 @@ I. SYSTEM_INSTRUCTIONS:
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
       const json = JSON.parse(repaired);
-      //   allResponses.push(...json);
       let chunkResponses = [...json];
       return chunkResponses;
     });

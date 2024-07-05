@@ -271,6 +271,17 @@ const CodeQuestionTestCases = () => {
         initialState={{
           pagination: { paginationModel: { pageSize: 25 } }
         }}
+        sx={{
+          "& .MuiDataGrid-cell": {
+            border: "none"
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "#f5f9fb"
+          },
+          "& .MuiDataGrid-toolbarContainer": {
+            backgroundColor: "#f5f9fb"
+          }
+        }}
         pageSizeOptions={[25, 50, 100]}
         getRowId={(row) => row.id}
         disableRowSelectionOnClick
