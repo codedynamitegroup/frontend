@@ -205,8 +205,8 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
           >
             {/* Value is ID */}
             {answerList?.map((answer: any) => {
-              const isCorrectAnswer = answerOfQuestions.some(
-                (a) => a.questionId === answer.question.id
+              const isCorrectAnswer = answerOfQuestions?.some(
+                (a) => a?.questionId === answer?.question?.id
               );
               const sheetClassName = isCorrectAnswer ? "correct-answer" : "default-background";
               return (
