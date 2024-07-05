@@ -4,10 +4,12 @@ export interface ExamEntity {
   courseName?: string;
   name: string;
   scores?: number;
-  maxScores?: number;
+  maxScores: number;
   timeOpen: Date;
   timeClose: Date;
   timeLimit?: number;
+  timeLimitUnit?: number;
+  unit?: string;
   intro: string;
   overdueHanding?: string;
   canRedoQuestions?: boolean;
@@ -46,6 +48,8 @@ export interface ExamCreateRequest {
   timeOpen: Date;
   timeClose: Date;
   timeLimit: number;
+  timeLimitUnit?: number;
+  unit?: string;
   overdueHandling: string;
   canRedoQuestions: boolean;
   maxAttempts: number;

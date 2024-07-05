@@ -5,12 +5,13 @@ import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
+import { RubricUserEntity } from "models/courseService/entity/RubricUserEntity";
 interface AssignUserToOrganizationDialogProps extends DialogProps {
   title?: string;
   handleClose: () => void;
   children?: React.ReactNode;
   isConfirmLoading?: boolean;
-  rubicData: any;
+  previewRubric?: RubricUserEntity;
 }
 
 export default function RubicsDialog({
@@ -19,31 +20,30 @@ export default function RubicsDialog({
   handleClose,
   children,
   isConfirmLoading = false,
-  rubicData,
+  previewRubric,
   ...props
 }: AssignUserToOrganizationDialogProps) {
   const { t } = useTranslation();
-
+  const criteria = previewRubric?.content ? JSON.parse(previewRubric?.content) : [];
   return (
     <CustomDialog
       open={open}
       handleClose={handleClose}
-      title={title}
+      title={previewRubric?.name ? previewRubric?.name : "Rubric"}
       actionsDisabled
       minWidth={"1000px"}
       {...props}
     >
       <Grid container spacing={2}>
         <div className={classes["table-container"]}>
-          <Heading3>{rubicData.name}</Heading3>
           <table>
             <thead>
               <tr>
                 <th>
-                  <ParagraphBody fontWeight={500}>CRITERIA</ParagraphBody>
+                  <ParagraphBody fontWeight={500}>Criteria</ParagraphBody>
                 </th>
                 <th>
-                  <ParagraphBody fontWeight={500}>TOTAL SCORE</ParagraphBody>
+                  <ParagraphBody fontWeight={500}>Total score</ParagraphBody>
                 </th>
 
                 <th>
@@ -52,25 +52,29 @@ export default function RubicsDialog({
               </tr>
             </thead>
             <tbody>
-              {rubicData.criteria.map((criteria: any, index: any) => (
+              {criteria.map((criteria: any, index: any) => (
                 <tr key={index}>
                   <td>
                     <ParagraphBody>{criteria.criteriaName}</ParagraphBody>
                   </td>
                   <td>
-                    <ParagraphBody>{criteria.criteriaGrade}%</ParagraphBody>
+                    {criteria.criteriaGrade ? (
+                      <ParagraphBody>{criteria.criteriaGrade}%</ParagraphBody>
+                    ) : (
+                      <ParagraphBody>Not provided</ParagraphBody>
+                    )}
                   </td>
                   <td>
                     <ul>
-                      {criteria.scaleDescription.map((scale: any, idx: any) => (
+                      {criteria.scale.map((scale: any, idx: any) => (
                         <li key={idx}>
                           <ParagraphBody>
                             <span>
-                              Score {idx + 1}/{criteria.scaleDescription.length}:
+                              Score {scale.score}/{criteria.scale.length}:
                             </span>{" "}
                             &nbsp;
-                            {scale[`scale${idx}`]}
-                          </ParagraphBody>{" "}
+                            {scale.description}
+                          </ParagraphBody>
                         </li>
                       ))}
                     </ul>

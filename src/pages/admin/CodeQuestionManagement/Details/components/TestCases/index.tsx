@@ -54,7 +54,7 @@ const CodeQuestionTestCases = () => {
     name: "testCases",
     keyName: "fieldArrayId"
   });
-  console.log(fields);
+
   const initialRows: GridRowsProp = fields.map((field, index) => ({
     key: field.fieldArrayId,
     id: index + 1,
@@ -99,24 +99,6 @@ const CodeQuestionTestCases = () => {
   //   outputValue: "6",
   //   isSample: false,
   //   score: 5
-  // },
-  // {
-  //   id: 5,
-  //   input: "input05",
-  //   output: "output05",
-  //   inputValue: "5\n2",
-  //   outputValue: "7",
-  //   isSample: false,
-  //   score: 10
-  // },
-  // {
-  //   id: 6,
-  //   input: "input06",
-  //   output: "output06",
-  //   inputValue: "2\n12",
-  //   outputValue: "14",
-  //   isSample: false,
-  //   score: 10
   // }
   // ];
 

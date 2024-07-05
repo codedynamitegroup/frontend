@@ -1,4 +1,4 @@
-import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 
 type CodeQuestionFormData = {
@@ -12,5 +12,6 @@ type CodeQuestionFormData = {
   difficulty: QuestionDifficultyEnum;
   testCases: { id: string; inputData: string; outputData: string; sample: boolean }[];
   tags: string[];
+  programmingLanguages: ProgrammingLanguageAdminEntity[];
 };
 export { type CodeQuestionFormData };

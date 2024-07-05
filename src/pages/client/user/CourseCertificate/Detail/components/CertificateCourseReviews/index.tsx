@@ -11,7 +11,6 @@ import {
   TextareaAutosize
 } from "@mui/material";
 import CustomPagination from "components/common/pagination/CustomPagination";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
@@ -29,6 +28,7 @@ import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { calcPercentageInHundred } from "utils/number";
 import classes from "./styles.module.scss";
+import badwordsUtils from "utils/badWordsNext";
 
 const CertificateCourseReviews = ({
   reviewMetadata,
@@ -490,7 +490,7 @@ const CertificateCourseReviews = ({
                         </Stack>
                       </Stack>
                     </Stack>
-                    <ParagraphBody>{review.content}</ParagraphBody>
+                    <ParagraphBody>{badwordsUtils.filter(review.content || "")}</ParagraphBody>
                   </Stack>
                   <Divider
                     sx={{
