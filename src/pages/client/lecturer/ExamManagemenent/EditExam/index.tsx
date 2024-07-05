@@ -364,17 +364,17 @@ export default function ExamEdit() {
     const timeLimitUnit = formSubmitData.timeLimit;
 
     const timeLimit = (() => {
-      switch (examTimeLimitUnit) {
+      switch (formSubmitData.timeLimitUnit) {
         case "weeks":
-          return questionCreate.timeLimit * 604800;
+          return formSubmitData.timeLimit * 604800;
         case "days":
-          return questionCreate.timeLimit * 86400;
+          return formSubmitData.timeLimit * 86400;
         case "hours":
-          return questionCreate.timeLimit * 3600;
+          return formSubmitData.timeLimit * 3600;
         case "minutes":
-          return questionCreate.timeLimit * 60;
+          return formSubmitData.timeLimit * 60;
         case "seconds":
-          return questionCreate.timeLimit;
+          return formSubmitData.timeLimit;
         default:
           return 0;
       }

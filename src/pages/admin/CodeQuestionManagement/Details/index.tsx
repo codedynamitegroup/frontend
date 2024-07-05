@@ -28,6 +28,9 @@ import { dA } from "@fullcalendar/core/internal-common";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TagService } from "services/codeAssessmentService/TagService";
+import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
+import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
+import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
@@ -78,11 +81,33 @@ const AdminCodeQuestionDetails = (props: Props) => {
           })
         )
         .required(),
-      tags: yup.array().of(yup.string().required()).required()
+      tags: yup.array().of(yup.string().required()).required(),
+      programmingLanguages: yup
+        .array()
+        .of(
+          yup.object().shape({
+            id: yup.string().required(),
+            name: yup.string().required(),
+            timeLimit: yup
+              .number()
+              .positive(t("code_management_timelimit_required"))
+              .required(t("code_management_timelimit_required")),
+            memoryLimit: yup
+              .number()
+              .min(204800, t("code_management_memorylimit_required"))
+              .required(t("code_management_memorylimit_required")),
+            choosen: yup.bool().required(),
+            bodyCode: yup.string()
+          })
+        )
+        .required()
     });
   }, [t]);
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
   const [tags, setTags] = useState<TagEntity[]>([]);
+  const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguageAdminEntity[]>(
+    []
+  );
   const codeQuestionFormMethod = useForm<CodeQuestionFormData>({
     resolver: yupResolver(schema),
     defaultValues: useMemo(
@@ -96,7 +121,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
         isPublic: codeQuestion?.isPublic ?? true,
         allowImport: codeQuestion?.allowImport ?? false,
         testCases: codeQuestion?.testCases ?? [],
-        tags: codeQuestion?.tags ?? []
+        tags: codeQuestion?.tags ?? [],
+        programmingLanguages: codeQuestion?.programmingLanguages ?? []
       }),
       [codeQuestion]
     )
@@ -115,9 +141,10 @@ const AdminCodeQuestionDetails = (props: Props) => {
       isPublic: codeQuestion?.isPublic ?? true,
       allowImport: codeQuestion?.allowImport ?? false,
       testCases: codeQuestion?.testCases ?? [],
-      tags: codeQuestion?.tags ?? []
+      tags: codeQuestion?.tags ?? [],
+      programmingLanguages: codeQuestion?.programmingLanguages ?? programmingLanguage
     });
-  }, [codeQuestion, codeQuestionFormMethod]);
+  }, [codeQuestion, codeQuestionFormMethod, programmingLanguage]);
 
   useEffect(() => {
     const getAllTag = async (): Promise<TagEntity[]> => {
@@ -134,10 +161,46 @@ const AdminCodeQuestionDetails = (props: Props) => {
       }
       return undefined;
     };
+    const getActiveProgrammingLanguage = async (): Promise<ProgrammingLanguageAdminEntity[]> => {
+      let data: ProgrammingLanguageAdminEntity[] =
+        await ProgrammingLanuageService.getProgrammingLanguages(true);
+      return data;
+    };
     dispatch(setLoading(true));
-    Promise.all([handleGetCodeQuestionById(codeQuestionId), getAllTag()])
+    Promise.all([
+      handleGetCodeQuestionById(codeQuestionId),
+      getAllTag(),
+      getActiveProgrammingLanguage()
+    ])
       .then((data) => {
-        setCodeQuestion(data[0]);
+        let codeQuestion = data[0];
+
+        let programmingLanguage = data[2];
+
+        if (codeQuestion !== undefined) {
+          //map current language to the language set
+          let currentLanguage = new Map<string, ProgrammingLanguageAdminEntity>();
+
+          codeQuestion.programmingLanguages.forEach((value) =>
+            currentLanguage.set(value.id, value)
+          );
+          programmingLanguage.forEach((value) => {
+            if (currentLanguage.has(value.id)) {
+              let current = currentLanguage.get(value.id);
+              if (current !== undefined) {
+                value.choosen = true;
+                value.memoryLimit = current.memoryLimit;
+                value.timeLimit = current.timeLimit;
+                value.bodyCode = current.bodyCode;
+              }
+            } else {
+              value.choosen = false;
+            }
+          });
+          codeQuestion.programmingLanguages = programmingLanguage;
+        }
+        setCodeQuestion(codeQuestion);
+        setProgrammingLanguage(programmingLanguage);
         setTags(data[1]);
       })
       .finally(() => {

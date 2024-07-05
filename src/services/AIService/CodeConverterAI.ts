@@ -192,7 +192,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY 
 //   }
 // ];
 
-async function* CodeConverterAI(
+async function CodeConverterAI(
   programming_language: string,
   code_stub: string,
   program_language_converted_request: ICodeConverterRequest[]
@@ -228,7 +228,7 @@ I. SYSTEM_INSTRUCTIONS:
 				+ Convert the code stub from ${programming_language} to the target language.
 				+ Ensure all syntax is correct and follows the conventions of the target language.
 				+ Preserve the structure and formatting of the original code stub, including any empty method definitions.
-		
+
 		3. Format Output:
 			- Construct the output in JSON format, following the structure:
 			[
@@ -277,20 +277,20 @@ I. SYSTEM_INSTRUCTIONS:
 		- Validate the JSON format of the output to ensure compliance with the specified structure.
 		- Do not reuse example output for responses; generate unique converted code snippets based on the provided code stubs.
 		- Here are some bugs when parsing JSON you should to check before returning the response and ensure when I parse the JSON, it will not throw any error:
-			
+
 			"""
 			1. Invalid JSON Format:
 				Bug: The input string is not properly formatted JSON, causing parsing to fail.
 				Solution: Ensure the string is correctly formatted. Use a JSON validator to check the string before parsing.
-				
+
 				2. Unexpected Tokens:
 				Bug: Unexpected characters or tokens in the JSON string, such as single quotes instead of double quotes.
 				Solution: Ensure the JSON string uses double quotes for keys and string values
-				
+
 				3. Trailing Commas:
 				Bug: Trailing commas in objects or arrays can cause parsing to fail.
 				Solution: Remove any trailing commas from the JSON string.
-				
+
 				4. Escaping Characters:
 				Bug: Special characters not properly escaped can cause issues.
 				Solution: Ensure special characters like quotes, backslashes, and control characters are correctly escaped.
@@ -302,7 +302,7 @@ I. SYSTEM_INSTRUCTIONS:
 				6. Encoding Issues:
 				Bug: Encoding issues such as invalid UTF-8 characters.
 				Solution: Ensure the string is correctly encoded before parsing
-				
+
 				7. Handling Null or Undefined:
 				Bug: Parsing null or undefined values can cause errors.
 				Solution: Check for null or undefined before parsing
@@ -360,19 +360,19 @@ I. SYSTEM_INSTRUCTIONS:
       ]
     });
 
-    for (const chunk of chunks) {
+    return chunks.map(async (chunk) => {
       result = await chat.sendMessageStream(INPUT(chunk));
       response = await result.response;
       text = await response.text();
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
       const json = JSON.parse(repaired);
-      allResponses.push(...json);
-      yield allResponses;
-    }
+      //   allResponses.push(...json);
+      let chunkResponses = [...json];
+      return chunkResponses;
+    });
   } catch (error) {
-    console.error("Error generating text:", error);
-    return error;
+    Promise.reject(error);
   }
 }
 

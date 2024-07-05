@@ -842,6 +842,8 @@
   "code_management_output_format_required": "Output format is required",
   "code_management_constraint_required": "Contraints is required",
   "code_management_public_tool_tip": "Code question will be public to users",
+  "code_management_timelimit_required": "Time limit must be a positive number",
+  "code_management_memorylimit_required": "Memory limit must be at least 2MB",
 
   "code_management_detail_stub": "Code template",
   "code_management_detail_info_description": "Below is some essential information about your code question",
@@ -852,10 +854,11 @@
   "code_management_detail_template_tip": "To read input test case data in a standard way, you can add a sample code here and convert it to different programming languages.",
   "code_management_detail_template": "Code template",
   "code_management_detail_template_description": "See the automatically generated source code snippets below",
+  "code_management_detail_no_language_selected": "There are no programming languages selected ",
   "code_management_detail_template_create": "Create template",
   "code_management_detail_lang_description": "Below is a list of available programming languages",
   "code_management_detail_lang_time_limit": "Time limit (second)",
-  "code_management_detail_lang_storage_limit": "Storage limit (mb)",
+  "code_management_detail_lang_storage_limit": "Storage limit (kB)",
   "code_management_detail_delete_confirm": "Delete confirm",
   "code_management_detail_delete_confirm_question": "Do you really want to delete this test case ?",
 
