@@ -10,9 +10,7 @@ import {
   Stack
 } from "@mui/material";
 import Header from "components/Header";
-import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
-import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
 import TextTitle from "components/text/TextTitle";
 import * as React from "react";
@@ -36,7 +34,6 @@ import { UpdateSubmissionGradeCommand } from "models/courseService/entity/update
 import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
 import ParagraphBody from "components/text/ParagraphBody";
 import CustomBreadCrumb from "components/common/Breadcrumb";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { CourseService } from "services/courseService/CourseService";
 import { setCourseDetail } from "reduxes/courseService/course";
 import { SubmissionAssignmentEntity } from "models/courseService/entity/SubmissionAssignmentEntity";
@@ -173,7 +170,7 @@ export default function ReportGradeEssayAIDetail() {
       setOpenSuccessSnackbar(true);
       setTimeout(() => {
         setOpenSuccessSnackbar(false);
-      }, 2000);
+      }, 1000);
     } else {
       const submissionGrade: CreateSubmissionGradeCommand = {
         submissionAssignmentId: submissionId ?? "",
@@ -190,7 +187,7 @@ export default function ReportGradeEssayAIDetail() {
       setOpenSuccessSnackbar(true);
       setTimeout(() => {
         setOpenSuccessSnackbar(false);
-      }, 2000);
+      }, 1000);
     }
 
     if (continueToNext) {
@@ -325,12 +322,7 @@ export default function ReportGradeEssayAIDetail() {
 
     return doc.documentElement.outerHTML;
   }
-  const css = `
-.custom-class {
-    max-width: 100%;
-    height: auto;
-}
-`;
+
   const assignmentSubmitStudent = listStudentSubmissions.find((submission) => {
     return submission.studentSubmissionId === submissionId;
   });
@@ -357,7 +349,6 @@ export default function ReportGradeEssayAIDetail() {
     }
   };
 
-  const rowClickHandler = (params: GridRowParams<any>) => {};
   const chooseStudentHeading: GridColDef[] = [
     { field: "email", headerName: "Email", flex: 2 },
     { field: "name", headerName: "Tên", flex: 1.5 },
@@ -627,7 +618,7 @@ export default function ReportGradeEssayAIDetail() {
                     </TextTitle>
                     {submissionAssignmentState.submissionAssignments.find(
                       (submission) => submission.id === assignmentSubmissionStudent
-                    )?.submissionAssignmentFiles.length != 0 ? (
+                    )?.submissionAssignmentFiles.length !== 0 ? (
                       <CustomFileList
                         files={
                           submissionAssignmentState.submissionAssignments
@@ -662,7 +653,7 @@ export default function ReportGradeEssayAIDetail() {
                   </TextTitle>
                   {submissionAssignmentState.submissionAssignments.find(
                     (submission) => submission.id === assignmentSubmissionStudent
-                  )?.submissionAssignmentFiles.length != 0 ? (
+                  )?.submissionAssignmentFiles.length !== 0 ? (
                     <CustomFileList
                       files={
                         submissionAssignmentState.submissionAssignments

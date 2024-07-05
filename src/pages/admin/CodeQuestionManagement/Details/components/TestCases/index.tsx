@@ -54,7 +54,7 @@ const CodeQuestionTestCases = () => {
     name: "testCases",
     keyName: "fieldArrayId"
   });
-  console.log(fields);
+
   const initialRows: GridRowsProp = fields.map((field, index) => ({
     key: field.fieldArrayId,
     id: index + 1,

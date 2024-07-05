@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import classes from "./styles.module.scss";
-import { Box, Button, Chip, Container, Grid, IconButton, Stack } from "@mui/material";
+import { Box, Chip, Container, Grid, IconButton, Stack } from "@mui/material";
 import Header from "components/Header";
 import { useTranslation } from "react-i18next";
 import useBoxDimensions from "hooks/useBoxDimensions";
@@ -251,27 +251,7 @@ const AIGradingReports = () => {
     }
   }, [assignmentAIReports]);
 
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== "open"
-  })<AppBarProps>(({ theme, open }) => ({
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    ...(open && {
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginRight: drawerWidth
-    })
-  }));
-
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-
-  const header2Ref = useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
 
   const stickyFooterRef = useRef<HTMLDivElement>(null);
   const { height: stickyFooterHeight } = useBoxDimensions({ ref: stickyFooterRef });

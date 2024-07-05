@@ -214,7 +214,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
   const handleChange = (_: React.SyntheticEvent, newTab: string) => {
     setActiveTab(newTab);
   };
-  console.log(codeQuestionFormMethod.formState.errors);
+
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
   const onSubmit = (data: CodeQuestionFormData) => {
