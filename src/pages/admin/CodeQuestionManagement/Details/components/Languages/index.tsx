@@ -307,6 +307,17 @@ const CodeQuestionLanguages = ({}: Props) => {
         // slotProps={{
         //   toolbar: { setRows, setRowModesModel }
         // }}
+        sx={{
+          "& .MuiDataGrid-cell": {
+            border: "none"
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "#f5f9fb"
+          },
+          "& .MuiDataGrid-toolbarContainer": {
+            backgroundColor: "#f5f9fb"
+          }
+        }}
       />
     </Box>
   );

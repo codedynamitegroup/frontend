@@ -13,6 +13,9 @@ import CodeConverterAI from "services/AIService/CodeConverterAI";
 import JoyButton from "@mui/joy/Button";
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 import { Controller, useFormContext } from "react-hook-form";
+import { dispatch } from "d3";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
@@ -48,7 +51,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
   }, [firstSelect]);
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const handleGenerate = async () => {
     setIsLoading(true);
     try {
@@ -74,9 +77,11 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
           }
           formPointer++;
         }
+        dispatch(setSuccessMess("Code stubs generated successfully!"));
       }
     } catch (error) {
       console.error("Error generating text:", error);
+      dispatch(setErrorMess("Code stubs generated successfully!"));
     } finally {
       setIsLoading(false);
     }
