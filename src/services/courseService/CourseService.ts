@@ -99,4 +99,26 @@ export class CourseService {
       });
     }
   }
+  static async getCourseStatisticsAdminOrg(orgId: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(`${API.COURSE.COURSE.GET_ORG_ADMIN_STATISTICS}`, {
+        params: {
+          orgId
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch course detail", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
 }

@@ -38,6 +38,7 @@ import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
+import RubicsDialog from "components/RubicsDialog";
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
   NOT_SUBMITTED = "Chưa nộp"
@@ -82,7 +83,7 @@ const AIScoring = () => {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {};
-
+  const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const page = 0;
@@ -310,80 +311,81 @@ const AIScoring = () => {
     criteria: [
       {
         criteriaName: "Content",
-        criteriaGrade: "80",
+        criteriaGrade: 80,
         criteriaDescription: "",
-        scaleDescription: [
+        scale: [
           {
-            scaleDescription: "",
-            scale0:
+            score: 1,
+            description:
               "The essay is incomplete, inaccurate, illogical, and uses sources inappropriately"
           },
           {
-            scaleDescription: "",
-            scale1:
+            score: 2,
+            description:
               "The essay is complete, accurate, but lacks logic, and uses sources somewhat appropriately"
           },
           {
-            scaleDescription: "",
-            scale2: "The essay is complete, accurate, and logical, and uses sources appropriately"
+            score: 3,
+            description:
+              "The essay is complete, accurate, and logical, and uses sources appropriately"
           },
           {
-            scaleDescription: "",
-            scale3:
+            score: 4,
+            description:
               "The essay is complete, accurate, logical, creative, and uses sources appropriately"
           }
         ]
       },
       {
         criteriaName: "Form",
-        criteriaGrade: "10",
+        criteriaGrade: 10,
         criteriaDescription: "",
-        scaleDescription: [
+        scale: [
           {
-            scaleDescription: "",
-            scale0:
+            score: 1,
+            description:
               "The essay has many errors in grammar, spelling, or punctuation, uses limited vocabulary, and has an unclear layout."
           },
           {
-            scaleDescription: "",
-            scale1:
+            score: 2,
+            description:
               "The essay has several errors in grammar, spelling, or punctuation, uses somewhat varied and rich vocabulary, and has a somewhat clear layout."
           },
           {
-            scaleDescription: "",
-            scale2:
+            score: 3,
+            description:
               "The essay has few errors in grammar, spelling, or punctuation, uses varied, rich, and appropriate vocabulary, and has a relatively clear layout."
           },
           {
-            scaleDescription: "",
-            scale3:
+            score: 4,
+            description:
               "The essay has no errors in grammar, spelling, or punctuation, and uses varied, rich, and appropriate vocabulary with a clear layout"
           }
         ]
       },
       {
         criteriaName: "Style",
-        criteriaGrade: "10",
+        criteriaGrade: 10,
         criteriaDescription: "",
-        scaleDescription: [
+        scale: [
           {
-            scaleDescription: "",
-            scale0:
+            score: 1,
+            description:
               "The essay is unclear, not engaging, and not appropriate for the topic, purpose, and audience."
           },
           {
-            scaleDescription: "",
-            scale1:
+            score: 2,
+            description:
               "The essay is unclear, lacks engagement, and is somewhat appropriate for the topic, purpose, and audience."
           },
           {
-            scaleDescription: "",
-            scale2:
+            score: 3,
+            description:
               "The essay is relatively clear, engaging, and appropriate for the topic, purpose, and audience."
           },
           {
-            scaleDescription: "",
-            scale3:
+            score: 4,
+            description:
               "The essay is clear, engaging, and appropriate for the topic, purpose, and audience."
           }
         ]
@@ -426,11 +428,11 @@ const AIScoring = () => {
   const data: AssignmentStudent[] = useMemo(
     () => [
       {
-        id: 1,
+        id: "865590a2-1960-48e7-8a10-cb51dd1f574d",
         studentAnswer: "Mảng động là con trỏ"
       },
       {
-        id: 2,
+        id: "aeba4a11-2bb7-4a98-ac88-e2afa6a44130",
         studentAnswer: `
 				Đầu vào: {1,2,3,0,8,0,4,7}
 
@@ -438,6 +440,43 @@ const AIScoring = () => {
 				
 				Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.				
 				`
+      },
+      {
+        id: "b1b3b3b3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: `
+				Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+				
+				Đặt phần tử ở vị trí có sẵn sau đây trong mảng nếu phần tử hiện tại không phải là số không. Điền vào tất cả các chỉ số còn lại bằng 0 khi tất cả các mục của mảng đã được xử lý.				
+				`
+      },
+      {
+        id: "c1c3c3c3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: `
+				Đầu vào: {1,2,3,0,8,0,4,7}
+
+				Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+				
+				`
+      },
+      {
+        id: "d1d3d3d3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: `
+				Đầu vào: {1,2,3,0,8,0,4,7}
+`
+      },
+      {
+        id: "e1e3e3e3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: `
+				Đầu ra sẽ là {1,2,3,8,4,7,0,0}
+					`
+      },
+      {
+        id: "f1f3f3f3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: "Mảng động là mảng động"
+      },
+      {
+        id: "g1g3g3g3-2bb7-4a98-ac88-e2afa6a44130",
+        studentAnswer: "Danh sách liên kết khác với mảng động bởi tính linh hoạt nó mang lại"
       }
     ],
     []
@@ -590,6 +629,14 @@ const AIScoring = () => {
               <Button btnType={BtnType.Primary} onClick={handleGradingEssayByAI}>
                 Grading
               </Button>
+              <Button
+                btnType={BtnType.Primary}
+                onClick={() => {
+                  setOpenTestCasePopup(true);
+                }}
+              >
+                Rubics
+              </Button>
               <Grid item xs={12}>
                 <CustomDataGrid
                   dataList={submissionList}
@@ -616,6 +663,11 @@ const AIScoring = () => {
           />
         </Grid>
       )}
+      {/* <RubicsDialog
+        open={openTestCasePopup}
+        handleClose={() => setOpenTestCasePopup(false)}
+        rubicData={rubicData}
+      /> */}
     </>
   );
 };
