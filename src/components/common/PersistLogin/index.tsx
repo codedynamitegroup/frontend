@@ -50,7 +50,7 @@ const PersistLogin = () => {
         .catch((error) => {
           console.error("Failed to get user by email", error);
           dispatch(fetchStatus(EFetchingUser.FAILED));
-          navigate(routes.user.homepage.root);
+          // navigate(routes.user.homepage.root);
         })
         .finally(() => {
           dispatch(setLoadingAuth(false));

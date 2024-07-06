@@ -106,6 +106,7 @@ const CodeExamQuestion = (props: Props) => {
     // If no data --> check state from DB
     if (questionState.content) {
       console.log("From DB");
+
       const content = JSON.parse(questionState.content);
 
       setCodeFormat(decodeBase64(content.code));
@@ -121,22 +122,51 @@ const CodeExamQuestion = (props: Props) => {
   useEffect(() => {
     if (questionState.content && codeFormat === undefined && selectedLanguage === undefined) {
       const content = JSON.parse(questionState.content);
-      setSelectedLanguage(content.languageId);
-      setCodeFormat(decodeBase64(content.code));
 
-      dispatch(
-        setAnswered({
-          id: questionId,
-          answered: true,
-          content: JSON.stringify({
-            languageId: content.languageId,
-            codeQuestionId: questionCode?.id,
-            code: content.code
+      if (content.languageId !== null) {
+        setSelectedLanguage(content.languageId);
+        setCodeFormat(decodeBase64(content.code));
+
+        dispatch(
+          setAnswered({
+            id: questionId,
+            answered: true,
+            content: JSON.stringify({
+              languageId: content.languageId,
+              codeQuestionId: questionCode?.id,
+              code: content.code
+            })
           })
-        })
-      );
+        );
+      } else if (questionCode?.languages) {
+        setSelectedLanguage(questionCode?.languages[0]?.id);
+        setCodeFormat(
+          `${questionCode?.languages[0]?.headCode}\n\n${questionCode?.languages[0]?.bodyCode}\n\n${questionCode?.languages[0]?.tailCode}`
+        );
+        dispatch(
+          setAnswered({
+            id: questionId,
+            answered: true,
+            content: JSON.stringify({
+              languageId: questionCode?.languages[0]?.id,
+              codeQuestionId: questionCode?.id,
+              code: encodeBase64(
+                `${questionCode?.languages[0]?.headCode}\n\n${questionCode?.languages[0]?.bodyCode}\n\n${questionCode?.languages[0]?.tailCode}`
+              )
+            })
+          })
+        );
+      }
     }
-  }, []);
+  }, [
+    codeFormat,
+    dispatch,
+    questionCode?.id,
+    questionCode?.languages,
+    questionId,
+    questionState.content,
+    selectedLanguage
+  ]);
 
   const handleLanguageChange = (newValue: any) => {
     dispatch(

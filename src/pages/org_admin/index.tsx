@@ -3,28 +3,63 @@ import classes from "./styles.module.scss";
 import { Route, Routes } from "react-router";
 import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
-import UserInformation from "pages/client/user/UserDetails/UserInformation";
-import React from "react";
-import UserManagement from "./UserManagement/UserManagement";
-import EditUserDetails from "./UserManagement/EditUserDetails";
-import SidebarOrganizationAdmin from "components/common/sidebars/SidebarOrganizationAdmin";
-import OrgAdminQuestionBankManagement from "./QuestionBankManagement";
-import QuestionListOfCourse from "./QuestionBankManagement/QuestionListOfCourse";
-import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
-import CreateShortAnswerQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion";
-import CreateEssayQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion";
-import CreateMultichoiceQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion";
-import CreateTrueFalseQuestion from "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion";
-import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
-import OrgAdminContestManagement from "./ContestManagement/OrgAdminContestManagement";
-import OrgAdminCreateContest from "./ContestManagement/OrgAdminCreateContest";
-import OrgAdminEditContestDetails from "./ContestManagement/OrgAdminEditContestDetails";
-import OrgAdminContestSubmissionDetails from "./ContestManagement/OrgAdminContestSubmissionDetails";
-import OrgAdminContestSubmissions from "./ContestManagement/OrgAdminContestSubmissions";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import { useDispatch } from "react-redux";
 import SynchronizeManagement from "./SynchronizeManagement";
+import React, { lazy } from "react";
+import { routes } from "routes/routes";
+import qtype from "utils/constant/Qtype";
+const UserInformation = lazy(() => import("pages/client/user/UserDetails/UserInformation"));
+const UserManagement = lazy(() => import("./UserManagement/UserManagement"));
+const EditUserDetails = lazy(() => import("./UserManagement/EditUserDetails"));
+const SidebarOrganizationAdmin = lazy(
+  () => import("components/common/sidebars/SidebarOrganizationAdmin")
+);
+const OrgAdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
+const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
+
+const CreateShortAnswerQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+    )
+);
+const CreateEssayQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+    )
+);
+const CreateMultichoiceQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+    )
+);
+const CreateTrueFalseQuestion = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+    )
+);
+const LecturerCodeQuestionCreation = lazy(
+  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+);
+const OrgAdminContestManagement = lazy(
+  () => import("./ContestManagement/OrgAdminContestManagement")
+);
+const OrgAdminCreateContest = lazy(() => import("./ContestManagement/OrgAdminCreateContest"));
+const OrgAdminEditContestDetails = lazy(
+  () => import("./ContestManagement/OrgAdminEditContestDetails")
+);
+const OrgAdminContestSubmissionDetails = lazy(
+  () => import("./ContestManagement/OrgAdminContestSubmissionDetails")
+);
+const OrgAdminContestSubmissions = lazy(
+  () => import("./ContestManagement/OrgAdminContestSubmissions")
+);
+
+const OrganizationAdminDashboard = lazy(() => import("./Dashboard"));
 
 type Props = {};
 
@@ -89,6 +124,8 @@ const OrganizationAdminHomepage = (props: Props) => {
               element={<LecturerCodeQuestionCreation />}
             />
             <Route path={"synchronize"} element={<SynchronizeManagement />} />
+
+            <Route path={"dashboard"} element={<OrganizationAdminDashboard />} />
           </Routes>
         </Box>
         {/* </Box> */}

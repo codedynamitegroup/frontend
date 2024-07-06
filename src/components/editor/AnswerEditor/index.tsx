@@ -22,10 +22,11 @@ interface AnswerEditorProps {
   field: any;
   remove: any;
   errors: any;
+  answerError?: any;
 }
 
 const AnswerEditor = (props: AnswerEditorProps) => {
-  const { control, index, field, remove, errors } = props;
+  const { control, index, field, remove, errors, answerError } = props;
   const { t } = useTranslation();
   const removeAnswerHandler = () => {
     remove(index);
@@ -154,6 +155,12 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                     </Select>
                   )}
                 />
+                {(answerError?.type === "fraction-atleast" ||
+                  answerError?.root?.type === "fraction-atleast") && (
+                  <ErrorMessage marginBottom={"10px"}>
+                    {answerError?.message || answerError?.root?.message}
+                  </ErrorMessage>
+                )}
               </Grid>
             </Grid>
           </>
@@ -211,6 +218,12 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                   )}
                 />
               </Grid>
+              {(answerError?.type === "sum-of-fraction" ||
+                answerError?.root?.type === "sum-of-fraction") && (
+                <ErrorMessage marginBottom={"10px"}>
+                  {answerError?.message || answerError?.root?.message}
+                </ErrorMessage>
+              )}
             </Grid>
           </>
         )}

@@ -86,10 +86,15 @@ export const API = {
     }
   },
   COURSE: {
+    RUBRIC_USER: {
+      GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
+      CREATE: "/course/rubric-user"
+    },
     COURSE: {
       DEFAULT: "/course/course",
       SECTION: "/course/section",
       GET_STATISTICS: "/course/course/statistics",
+      GET_ORG_ADMIN_STATISTICS: "/course/course/admin-org/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
@@ -114,7 +119,10 @@ export const API = {
       DELETE_BY_ID: "/course/assignment/:id",
       INTRO_ATTACHMENT: "/course/assignment/intro-attachment",
       GET_ASSIGNMENT_GRADE_BY_STUDENT: "/course/assignment/grade",
-      GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES: "course/assignment/student-assignment"
+      GET_RETRIEVE_STUDENT_ASSIGNMENT_GRADES: "course/assignment/student-assignment",
+      CREATE_REPORT_AI_GRADE_ESSAY: "/course/assignment/create-report-grade-essay-ai",
+      GET_ALL_AI_REPORTS: "/course/assignment/get-reports-by-assignment/:assignmentId",
+      GET_REPORT_DETAIL: "/course/assignment/ai-reports/:reportId"
     },
     SUBMISSION_ASSIGNMENT: {
       DEFAULT: "/course/submission-assignment",
@@ -197,6 +205,9 @@ export const API = {
     }
   },
   CODE_ASSESSMENT: {
+    PROGRAMMING_LANGUAGE: {
+      DEFAULT: "/code-assessment/language"
+    },
     TAG: {
       DEFAULT: "/code-assessment/tag"
     },
@@ -235,6 +246,7 @@ export const API = {
       GET_ALL_USERS: "/auth/users",
       GET_ALL_USERS_BY_ORGANIZATION: "/auth/users/organizations/:id",
       GET_STATISTICS: "/auth/users/statistics",
+      GET_ORG_ADMIN_STATISTICS: "/auth/users/admin-org/statistics",
       SOCIAL_LOGIN: "/auth/users/social-login",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",

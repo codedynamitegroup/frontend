@@ -1,6 +1,7 @@
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { TestCaseEntity } from "./TestCaseEntity";
 import { ProgrammingLanguageEntity } from "./ProgrammingLanguageEntity";
+import { ProgrammingLanguageAdminEntity } from "./ProgrammingLanguageAdminEntity";
 
 export interface CodeQuestionAdminEntity {
   id: string;
@@ -15,4 +16,6 @@ export interface CodeQuestionAdminEntity {
   difficulty: QuestionDifficultyEnum;
   testCases: TestCaseEntity[];
   languages: ProgrammingLanguageEntity[];
+  tags: string[];
+  programmingLanguages: ProgrammingLanguageAdminEntity[];
 }

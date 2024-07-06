@@ -52,6 +52,7 @@ import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEnti
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isNewQuestion: boolean;
 }
 
 interface FormData {
@@ -158,7 +159,16 @@ const EditMultichoiceQuestion = (props: Props) => {
               ),
             fraction: yup.number().required(t("question_feedback_answer_required"))
           })
-        ),
+        )
+        .test("sum-of-fraction", t("total_fraction_must_be_100"), (answerValue) => {
+          const totalFraction =
+            answerValue.reduce((sum: number, item: any) => {
+              // if fraction is negative, it means penalty
+              if (item.fraction < 0) return sum;
+              return sum + item.fraction;
+            }, 0) || 0;
+          return totalFraction === 1;
+        }),
       correctFeedback: yup.string(),
       incorrectFeedback: yup.string(),
       numbering: yup.string().required(t("question_numbering_required")),
@@ -344,7 +354,7 @@ const EditMultichoiceQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
-  const questionAnswerRef = useRef<HTMLElement>(null);
+  const questionAnswerRef = useRef<HTMLDivElement>(null);
   console.log(errors);
   useEffect(() => {
     if (
@@ -408,10 +418,12 @@ const EditMultichoiceQuestion = (props: Props) => {
           label: t("common_type_assignment")
         },
         {
-          navLink: routes.lecturer.exam.edit
-            .replace(":courseId", courseId || "")
-            .replace(":examId", examId || ""),
-          label: `${t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
+          navLink: props.isNewQuestion
+            ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+            : routes.lecturer.exam.edit
+                .replace(":courseId", courseId || "")
+                .replace(":examId", examId || ""),
+          label: `${props.isNewQuestion ? t("common_create") : t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
         }
       ];
 
@@ -463,9 +475,11 @@ const EditMultichoiceQuestion = (props: Props) => {
               <Button
                 onClick={() => {
                   navigate(
-                    routes.lecturer.exam.edit
-                      .replace(":courseId", courseId || "")
-                      .replace(":examId", examId || "")
+                    props.isNewQuestion
+                      ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                      : routes.lecturer.exam.edit
+                          .replace(":courseId", courseId || "")
+                          .replace(":examId", examId || "")
                   );
                 }}
                 startDecorator={<ChevronLeftIcon fontSize='small' />}
@@ -855,7 +869,7 @@ const EditMultichoiceQuestion = (props: Props) => {
                   </Grid>
                 </Grid>
 
-                <div>
+                <div ref={questionAnswerRef}>
                   <ListItemButton
                     onClick={() => setAnswerOpen(!answerOpen)}
                     sx={{ paddingX: 0, marginBottom: "30px" }}
@@ -892,6 +906,7 @@ const EditMultichoiceQuestion = (props: Props) => {
                     <Stack spacing={{ xs: 4 }} useFlexGap>
                       {fields.map((field, index) => (
                         <AnswerEditor
+                          answerError={errors?.answers}
                           key={field.id}
                           answerNumber={index}
                           qtype={props.qtype}
@@ -936,9 +951,11 @@ const EditMultichoiceQuestion = (props: Props) => {
                         );
                       else
                         navigate(
-                          routes.lecturer.exam.edit
-                            .replace(":courseId", courseId || "")
-                            .replace(":examId", examId || "")
+                          props.isNewQuestion
+                            ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                            : routes.lecturer.exam.edit
+                                .replace(":courseId", courseId || "")
+                                .replace(":examId", examId || "")
                         );
                     }}
                   >

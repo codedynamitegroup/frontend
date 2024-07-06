@@ -26,6 +26,11 @@ import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficul
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { dA } from "@fullcalendar/core/internal-common";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TagService } from "services/codeAssessmentService/TagService";
+import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
+import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
+import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
@@ -75,10 +80,34 @@ const AdminCodeQuestionDetails = (props: Props) => {
             // score: yup.number().required()
           })
         )
+        .required(),
+      tags: yup.array().of(yup.string().required()).required(),
+      programmingLanguages: yup
+        .array()
+        .of(
+          yup.object().shape({
+            id: yup.string().required(),
+            name: yup.string().required(),
+            timeLimit: yup
+              .number()
+              .positive(t("code_management_timelimit_required"))
+              .required(t("code_management_timelimit_required")),
+            memoryLimit: yup
+              .number()
+              .min(204800, t("code_management_memorylimit_required"))
+              .required(t("code_management_memorylimit_required")),
+            choosen: yup.bool().required(),
+            bodyCode: yup.string()
+          })
+        )
         .required()
     });
   }, [t]);
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
+  const [tags, setTags] = useState<TagEntity[]>([]);
+  const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguageAdminEntity[]>(
+    []
+  );
   const codeQuestionFormMethod = useForm<CodeQuestionFormData>({
     resolver: yupResolver(schema),
     defaultValues: useMemo(
@@ -91,7 +120,9 @@ const AdminCodeQuestionDetails = (props: Props) => {
         contraints: codeQuestion?.constraints ?? "None",
         isPublic: codeQuestion?.isPublic ?? true,
         allowImport: codeQuestion?.allowImport ?? false,
-        testCases: codeQuestion?.testCases ?? []
+        testCases: codeQuestion?.testCases ?? [],
+        tags: codeQuestion?.tags ?? [],
+        programmingLanguages: codeQuestion?.programmingLanguages ?? []
       }),
       [codeQuestion]
     )
@@ -99,22 +130,6 @@ const AdminCodeQuestionDetails = (props: Props) => {
   const params = useParams<{ codeQuestionId: string }>();
   const codeQuestionId = params?.codeQuestionId;
 
-  const handleGetCodeQuestionById = useCallback(
-    (codeQuestionId: string | undefined) => {
-      if (codeQuestionId) {
-        dispatch(setLoading(true));
-        CodeQuestionService.getAdminDetailCodeQuestion(codeQuestionId)
-          .then((data: CodeQuestionAdminEntity) => {
-            setCodeQuestion(data);
-          })
-          .catch((err) => console.log(err))
-          .finally(() => {
-            dispatch(setLoading(false));
-          });
-      }
-    },
-    [dispatch]
-  );
   useEffect(() => {
     codeQuestionFormMethod.reset({
       name: codeQuestion?.name ?? "",
@@ -125,27 +140,115 @@ const AdminCodeQuestionDetails = (props: Props) => {
       contraints: codeQuestion?.constraints ?? "None",
       isPublic: codeQuestion?.isPublic ?? true,
       allowImport: codeQuestion?.allowImport ?? false,
-      testCases: codeQuestion?.testCases ?? []
+      testCases: codeQuestion?.testCases ?? [],
+      tags: codeQuestion?.tags ?? [],
+      programmingLanguages: codeQuestion?.programmingLanguages ?? programmingLanguage
     });
-  }, [codeQuestion, codeQuestionFormMethod]);
-
-  useEffect(() => {
-    handleGetCodeQuestionById(codeQuestionId);
-  }, [codeQuestionId, handleGetCodeQuestionById]);
-  useEffect(() => {
-    console.log(codeQuestionId);
-  }, []);
-
+  }, [codeQuestion, codeQuestionFormMethod, programmingLanguage]);
+  const isEdit = codeQuestionId !== undefined && codeQuestionId !== null;
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  useEffect(() => {
+    const getAllTag = async (): Promise<TagEntity[]> => {
+      let data: TagEntity[] = await TagService.getAllTag(false);
+      return data;
+    };
+    const handleGetCodeQuestionById = async (
+      codeQuestionId: string | undefined
+    ): Promise<CodeQuestionAdminEntity | undefined> => {
+      if (codeQuestionId) {
+        const data: CodeQuestionAdminEntity =
+          await CodeQuestionService.getAdminDetailCodeQuestion(codeQuestionId);
+        return data;
+      }
+      return undefined;
+    };
+    const getActiveProgrammingLanguage = async (): Promise<ProgrammingLanguageAdminEntity[]> => {
+      let data: ProgrammingLanguageAdminEntity[] =
+        await ProgrammingLanuageService.getProgrammingLanguages(true);
+      return data;
+    };
+    const handleFetchData = async () => {
+      dispatch(setLoading(true));
+      try {
+        if (isEdit) {
+          let data = await Promise.all([
+            handleGetCodeQuestionById(codeQuestionId),
+            getAllTag(),
+            getActiveProgrammingLanguage()
+          ]);
+          let codeQuestion = data[0];
+
+          let programmingLanguage = data[2];
+
+          if (codeQuestion !== undefined) {
+            //map current language to the language set
+            let currentLanguage = new Map<string, ProgrammingLanguageAdminEntity>();
+
+            codeQuestion.programmingLanguages.forEach((value) =>
+              currentLanguage.set(value.id, value)
+            );
+            programmingLanguage.forEach((value) => {
+              if (currentLanguage.has(value.id)) {
+                let current = currentLanguage.get(value.id);
+                if (current !== undefined) {
+                  value.choosen = true;
+                  value.memoryLimit = current.memoryLimit;
+                  value.timeLimit = current.timeLimit;
+                  value.bodyCode = current.bodyCode;
+                }
+              } else {
+                value.choosen = false;
+              }
+            });
+            codeQuestion.programmingLanguages = programmingLanguage;
+          }
+          setCodeQuestion(codeQuestion);
+          setProgrammingLanguage(programmingLanguage);
+          setTags(data[1]);
+        } else {
+          let data = await Promise.all([getAllTag(), getActiveProgrammingLanguage()]);
+          setProgrammingLanguage(data[1]);
+          setTags(data[0]);
+        }
+      } catch (err) {
+        console.error(err);
+        navigate("/admin/code-questions");
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+    handleFetchData();
+  }, [codeQuestionId, dispatch, isEdit, navigate]);
 
   const handleChange = (_: React.SyntheticEvent, newTab: string) => {
     setActiveTab(newTab);
   };
-  console.log(codeQuestionFormMethod.formState.errors);
+
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
   const onSubmit = (data: CodeQuestionFormData) => {
+    if (isEdit) {
+      const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
+      const dirtyInformationField = [
+        dirtyFields.name,
+        dirtyFields.difficulty,
+        dirtyFields.problemStatement,
+        dirtyFields.inputFormat,
+        dirtyFields.outputFormat,
+        dirtyFields.contraints,
+        dirtyFields.isPublic,
+        dirtyFields.allowImport
+      ];
+      const isDirtyInform = dirtyInformationField.some((value) => value === true);
+      const isDirtyTags = dirtyFields.tags?.some((value) => value === true);
+      const isDirtyLanguages = dirtyFields.programmingLanguages?.some((value) =>
+        Object.values(value).some((val) => val === true)
+      );
+      const isDirtyTestCase = dirtyFields.testCases?.some((value) =>
+        Object.values(value).some((val) => val === true)
+      );
+    }
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
     console.log(data);
     console.log(codeQuestionFormMethod.getValues("testCases"));
@@ -169,7 +272,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
                     if (codeQuestionId) navigate(pathname);
                   }}
                 >
-                  name
+                  {isEdit ? codeQuestion?.name ?? "" : "create code question"}
                 </span>
               </ParagraphBody>
             </Box>
@@ -178,7 +281,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
               <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
               <TabContext value={activeTab}>
                 <Box sx={{ border: 1, borderColor: "divider" }}>
-                  <TabList onChange={handleChange}>
+                  <TabList onChange={handleChange} className={classes.tabs}>
                     <Tab
                       sx={{ textTransform: "none" }}
                       label={
@@ -215,7 +318,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
                 </Box>
                 <Box id={classes.codeQuestionDetailBody}>
                   <TabPanel value='0'>
-                    <CodeQuestionInformation codeQuestion={codeQuestion} />
+                    <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />
                   </TabPanel>
                   <TabPanel value='1'>
                     <CodeQuestionTestCases />

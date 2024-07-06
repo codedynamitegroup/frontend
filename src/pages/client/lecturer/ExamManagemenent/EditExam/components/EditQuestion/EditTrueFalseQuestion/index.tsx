@@ -47,6 +47,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isNewQuestion: boolean;
 }
 
 interface FormData {
@@ -309,10 +310,12 @@ const EditTrueFalseQuestion = (props: Props) => {
           label: t("common_type_assignment")
         },
         {
-          navLink: routes.lecturer.exam.edit
-            .replace(":courseId", courseId || "")
-            .replace(":examId", examId || ""),
-          label: `${t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
+          navLink: props.isNewQuestion
+            ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+            : routes.lecturer.exam.edit
+                .replace(":courseId", courseId || "")
+                .replace(":examId", examId || ""),
+          label: `${props.isNewQuestion ? t("common_create") : t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
         }
       ];
 
@@ -360,9 +363,11 @@ const EditTrueFalseQuestion = (props: Props) => {
               <Button
                 onClick={() => {
                   navigate(
-                    routes.lecturer.exam.edit
-                      .replace(":courseId", courseId || "")
-                      .replace(":examId", examId || "")
+                    props.isNewQuestion
+                      ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                      : routes.lecturer.exam.edit
+                          .replace(":courseId", courseId || "")
+                          .replace(":examId", examId || "")
                   );
                 }}
                 startDecorator={<ChevronLeftIcon fontSize='small' />}
@@ -719,9 +724,11 @@ const EditTrueFalseQuestion = (props: Props) => {
                         );
                       else
                         navigate(
-                          routes.lecturer.exam.edit
-                            .replace(":courseId", courseId || "")
-                            .replace(":examId", examId || "")
+                          props.isNewQuestion
+                            ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                            : routes.lecturer.exam.edit
+                                .replace(":courseId", courseId || "")
+                                .replace(":examId", examId || "")
                         );
                     }}
                   >

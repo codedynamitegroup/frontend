@@ -38,8 +38,6 @@ import TestCase from "./components/TestCase";
 import Result from "./components/Result";
 import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
-import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
-import { dispatch } from "d3";
 import { useAppSelector } from "hooks";
 import { useDispatch } from "react-redux";
 import { setTestCases } from "reduxes/courseService/previewCodeQuestionTestCase";

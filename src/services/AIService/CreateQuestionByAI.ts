@@ -133,7 +133,7 @@ const format_question: IFormatQuestion[] = [
     ]
   }
 ];
-async function* CreateQuestionByAI(
+async function CreateQuestionByAI(
   topic: string,
   description: string,
   qtype: EQType,
@@ -276,9 +276,7 @@ I. SYSTEM_INSTRUCTIONS:
 
 		Note for example:
 			- The example is just for reference. Don't use it to respond to user.
-			- Ensure the response is in valid {{JSON format}} !!!
-
-	C. Respond if you understand the instructions and are ready to proceed. I will provide you with the input details for question generation.`;
+			- Ensure the response is in valid {{JSON format}} !!!`;
 
   const INPUT_OUTPUT = (numberQuestion: number) => `
 I. INPUT:
@@ -297,14 +295,14 @@ I. INPUT:
 		- Number of Questions: {{${numberQuestion}}}
 
 		- Level: {{${levelQuestion}}}
+	
+	B. Language response:
+		- Ensure all questions and answers are written in the specified language (${language}).
 		`;
   try {
     let result, response, text;
     const batchSize = 3; // Adjust the batch size as needed
-    const allQuestions = [];
-    result = await model.generateContentStream(AI_ROLE);
-    response = await result.response;
-    text = response.text;
+    const allQuestions: IQuestion[] = [];
 
     const chat = model.startChat({
       history: [
@@ -313,33 +311,28 @@ I. INPUT:
           parts: [{ text: AI_ROLE }]
         },
         {
-          role: "model",
-          parts: [{ text: String(text) }]
+          role: "user",
+          parts: [{ text: SYSTEM_INSTRUCTIONS }]
         }
       ]
     });
 
-    result = await chat.sendMessageStream(SYSTEM_INSTRUCTIONS);
-    response = await result.response;
-    text = await response.text();
-
     const numberOfBatches = Math.ceil(number_question / batchSize);
-    for (let i = 0; i < numberOfBatches; i++) {
+    const promises = Array.from({ length: numberOfBatches }, async (_, i) => {
       const currentBatchSize = Math.min(batchSize, number_question - i * batchSize);
       result = await chat.sendMessageStream(INPUT_OUTPUT(currentBatchSize));
       response = await result.response;
       text = await response.text();
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
-      const json = JSON.parse(repaired);
+      const json: IFormatQuestion = JSON.parse(repaired);
       allQuestions.push(...json.questions);
-      yield {
-        qtypeId: qtype,
-        questions: allQuestions
-      };
-    }
+      return allQuestions; // This return is now meaningful.
+    });
+
+    return Promise.all(promises);
   } catch (error) {
-    return error;
+    Promise.reject(error);
   }
 }
 

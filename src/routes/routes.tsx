@@ -32,7 +32,12 @@ export const routes = {
       grading:
         "/lecturer/courses/:courseId/assignments/:assignmentId/submissions/:submissionId/grading",
       submissions: "/lecturer/courses/:courseId/assignments/:assignmentId/submissions",
-      preview_submit: "/lecturer/courses/:courseId/assignments/:assignmentId/preview-submit"
+      preview_submit: "/lecturer/courses/:courseId/assignments/:assignmentId/preview-submit",
+      ai_grading_config: "/lecturer/courses/:courseId/assignments/:assignmentId/ai-grading-config",
+      ai_grading_reports:
+        "/lecturer/courses/:courseId/assignments/:assignmentId/ai-grading-reports",
+      ai_grading_report_detail:
+        "/lecturer/courses/:courseId/assignments/:assignmentId/reports/:reportId/submissions/:submissionId"
     },
     question: {
       essay: {
@@ -104,6 +109,16 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/edit/short-answer-question/:questionId",
       edit_code_question:
         "/lecturer/courses/:courseId/assignments/exams/:examId/edit/code-question/:questionId",
+      edit_new_essay_question:
+        "/lecturer/courses/:courseId/assignments/edit/essay-question/:questionId",
+      edit_new_multi_question:
+        "/lecturer/courses/:courseId/assignments/edit/multiple-choice-question/:questionId",
+      edit_new_true_false_question:
+        "/lecturer/courses/:courseId/assignments/edit/true-false-question/:questionId",
+      edit_new_short_question:
+        "/lecturer/courses/:courseId/assignments/edit/short-answer-question/:questionId",
+      edit_new_code_question:
+        "/lecturer/courses/:courseId/assignments/edit/code-question/:questionId",
 
       detail: "/lecturer/courses/:courseId/assignments/exams/:examId",
       grading:
@@ -127,9 +142,7 @@ export const routes = {
         "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/code-plagiarism-detection/reports/:reportId/pairs/:pairId",
       ai_scroring: "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring",
       ai_scroring_detail:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId",
-      ai_grading_config:
-        "/lecturer/courses/:courseId/assignments/exams/:examId/submisions/ai-grading-config"
+        "/lecturer/courses/:courseId/assignments/exams/:examId/submissions/ai-scoring/:submissionId"
     }
   },
   student: {
@@ -328,6 +341,7 @@ export const routes = {
     }
   },
   org_admin: {
+    dashboard: "/org-admin/dashboard",
     homepage: {
       root: "/org-admin/*"
     },

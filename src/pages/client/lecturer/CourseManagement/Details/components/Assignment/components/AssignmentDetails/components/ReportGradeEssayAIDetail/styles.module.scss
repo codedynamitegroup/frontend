@@ -1,0 +1,99 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column !important;
+  background-color: var(--gray-2);
+}
+
+.container {
+  display: flex;
+  overflow: hidden;
+}
+
+.mainContent {
+  background-color: var(--gray-2);
+  overflow: auto;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 15px;
+}
+
+.drawerBody {
+  padding: 20px;
+  overflow: auto;
+}
+
+.drawerFieldContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+  flex-grow: 1;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+.contentContainer {
+  overflow: hidden;
+  overflow-y: auto;
+}
+.gradeContainer {
+  background-color: white;
+}
+.stickyBottom {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding: 10px;
+  z-index: 100;
+  // center the button
+  border-top: 1px solid var(--gray-30);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.containerPaper {
+  background-color: var(--gray-5) !important;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  .searchWrapper {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    padding-left: 0;
+    margin-bottom: 0;
+    .colSearchContainer {
+      max-width: 150px;
+      width: 100%;
+      background-color: white;
+    }
+  }
+}
+
+.markdown {
+  font-weight: normal;
+}

@@ -1,0 +1,102 @@
+.root {
+  position: relative;
+  width: 100dvw;
+  height: 100%;
+  display: flex;
+  flex-direction: column !important;
+
+  .container {
+    border-radius: 5px;
+    padding-bottom: 20px;
+    min-height: 600px;
+
+    .generalDescription {
+      color: #6b7280;
+      font-size: 12px;
+      text-align: center;
+      margin-bottom: 2rem;
+      line-height: 14px;
+    }
+
+    .critTitle {
+      font-size: 16px;
+    }
+
+    .selectLabel {
+      margin-top: 5px;
+      margin-bottom: -5px;
+    }
+    .configlabel {
+      color: rgba(29, 33, 48, 0.749);
+      font-size: 15px;
+    }
+    .secondaryLabel {
+      color: rgba(29, 33, 48, 0.749);
+      font-size: 16px;
+    }
+    .infoIcon {
+      font-size: 15px;
+    }
+    .addBtn {
+      height: 40px;
+      border-radius: 15px;
+      max-width: 500px;
+    }
+  }
+
+  .stickyFooter {
+    background-color: white;
+    height: 80px;
+  }
+
+  .graded {
+    background-color: #c7f7d4;
+    color: #00e676;
+  }
+  .queue {
+    background-color: var(--blue-light-4);
+    color: #33c6dc;
+  }
+}
+
+.stickyFooter {
+  padding: 0px 50px 0 50px;
+  background-color: #f8f8f8;
+  border-top: 1px solid var(--gray-30);
+  text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+
+  // height: "60px",
+  width: 100%;
+
+  .stepButton {
+    height: 40px;
+  }
+}
+
+#breadcumpWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 10px;
+
+  #icArrow {
+    color: var(--blue-500);
+    width: 20px;
+    height: 15px;
+  }
+  .cursorPointer {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+
+.tabs {
+  box-shadow: 0px 8px 10px -15px #111;
+  border-top: 1px solid var(--gray-10);
+  border-bottom: 1px solid var(--gray-10);
+}

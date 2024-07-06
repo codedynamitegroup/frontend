@@ -59,10 +59,7 @@ const UserInformation = () => {
                 {t("user_detail_account_management")}
               </Heading1>
               {data.userInfo?.firstName && data.userInfo?.lastName && (
-                <UserAvatarAndName
-                  displayName={`${data.userInfo?.firstName} ${data.userInfo?.lastName}`}
-                  avatarUrl={data.userInfo?.avatarUrl}
-                />
+                <UserAvatarAndName avatarUrl={data.userInfo?.avatarUrl} />
               )}
 
               <Button

@@ -1,5 +1,5 @@
 import { Box, FormControl, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
 import { Textarea } from "@mui/joy";
@@ -11,18 +11,14 @@ import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import CodeConverterAI from "services/AIService/CodeConverterAI";
 import JoyButton from "@mui/joy/Button";
+import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
+import { Controller, useFormContext } from "react-hook-form";
+import { dispatch } from "d3";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
-enum ELanguage {
-  JAVA = "java",
-  CPP = "cpp",
-  JAVASCRIPT = "javascript"
-}
-interface QCodeStub {
-  language: ELanguage;
-  codeStub: string;
-}
 export interface ICodeConverterResponse {
   program_language: string;
   code_stub: string;
@@ -30,107 +26,77 @@ export interface ICodeConverterResponse {
 export interface ICodeConverterRequest {
   program_language: string;
 }
-
+type ProgrammingLanguageFormValue = {
+  programmingLanguages: ProgrammingLanguageAdminEntity[];
+};
 const CodeQuestionCodeStubs = memo((props: Props) => {
   const { t } = useTranslation();
+  const programmingLanguageMethod = useFormContext<ProgrammingLanguageFormValue>();
 
-  const [convertedCodeStub, setConvertedCodeStub] = useState<string>("");
+  const availableLanguage = programmingLanguageMethod.getValues("programmingLanguages");
+  const selectedLanguageNames: ICodeConverterRequest[] = availableLanguage
+    .filter((value) => value.choosen)
+    .map((value) => ({ program_language: value.name }));
+  const firstSelect = availableLanguage.findIndex((value) => value.choosen);
+  const existSelect = firstSelect !== -1;
 
-  const convert_language_request: ICodeConverterRequest[] = [
-    {
-      program_language: "C (GCC 8.3.0)"
-    },
-    {
-      program_language: "C++ (GCC 7.4.0)"
-    },
-    {
-      program_language: "C# (Mono 6.6.0.161)"
-    },
-    {
-      program_language: "Java (OpenJDK 13.0.1)"
-    },
-    {
-      program_language: "PHP (7.4.1)"
-    },
-    {
-      program_language: "Python (3.8.1)"
-    },
-    {
-      program_language: "Ruby (2.7.0)"
-    },
-    {
-      program_language: "TypeScript (3.7.4)"
-    },
-    {
-      program_language: "Swift (5.2.3)"
-    },
-    {
-      program_language: "Rust (1.40.0)"
-    },
-    {
-      program_language: "Pascal (FPC 3.0.4)"
-    },
-    {
-      program_language: "Kotlin (1.3.70)"
-    },
-    {
-      program_language: "JavaScript (Node.js 12.14.0)"
-    },
-    {
-      program_language: "Go (1.13.5)"
-    },
-    {
-      program_language: "Clojure (1.10.1)"
+  const [selectedCodeStubLanguage, setSelectedCodeStubLanguage] = useState<number>(-1);
+  const [codeStub, setCodeStub] = useState("");
+  const [selectedConvertedLanguage, setSelectedConvertedLanguage] = useState<number>(-1);
+  useEffect(() => {
+    if (firstSelect !== -1) {
+      setSelectedCodeStubLanguage(firstSelect);
+      setSelectedConvertedLanguage(firstSelect);
     }
-  ];
-  const [convertedCodeStubList, setConvertedCodeStubList] = useState<ICodeConverterResponse[]>([]);
+  }, [firstSelect]);
 
-  const [selectedConvertedLanguage, setSelectedConvertedLanguage] = useState<string>(
-    convert_language_request[0].program_language
-  );
-
-  const handleChangeConvertedLanguage = (event: SelectChangeEvent) => {
-    const selectedLanguageChange = event.target.value;
-    setSelectedConvertedLanguage(selectedLanguageChange);
-  };
-
-  const [selectedCodeStubLanguage, setSelectedCodeStubLanguage] = useState<string>(
-    convert_language_request[0].program_language
-  );
-
-  const handleChangeCodeStubLanguage = (event: SelectChangeEvent) => {
-    const selectedLanguageChange = event.target.value;
-    setSelectedCodeStubLanguage(selectedLanguageChange);
-  };
   const [isLoading, setIsLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const handleGenerate = async () => {
     setIsLoading(true);
     try {
-      for await (const chunk of CodeConverterAI(
-        selectedConvertedLanguage,
-        convertedCodeStub,
-        convert_language_request
-      )) {
-        if (chunk) {
-          setConvertedCodeStubList(chunk);
+      const genJob = await CodeConverterAI(
+        availableLanguage[selectedConvertedLanguage].name,
+        codeStub,
+        selectedLanguageNames
+      );
+
+      if (genJob !== undefined) {
+        const data = await Promise.all(genJob);
+        const flatData = data.flat(Infinity);
+        let formPointer = 0;
+        let i = 0;
+        let formLength = availableLanguage.length;
+        while (formPointer < formLength) {
+          if (availableLanguage[formPointer].choosen) {
+            programmingLanguageMethod.setValue(
+              `programmingLanguages.${formPointer}.bodyCode`,
+              flatData[i].code_stub
+            );
+            i++;
+          }
+          formPointer++;
         }
+        dispatch(setSuccessMess("Code stubs generated successfully!"));
       }
     } catch (error) {
       console.error("Error generating text:", error);
+      dispatch(setErrorMess("Code stubs generated successfully!"));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const findIndexSelectedCodeStubLanguage = () => {
-    const foundCodeStub = convertedCodeStubList.find(
-      (item) => item.program_language === selectedCodeStubLanguage
-    );
-    return foundCodeStub ? foundCodeStub : null;
-  };
-
-  return (
+  return !existSelect ? (
+    <Heading5
+      fontStyle={"italic"}
+      fontWeight={"400"}
+      colorname='--gray-50'
+      translation-key='code_management_detail_no_language_selected'
+    >
+      {t("code_management_detail_no_language_selected")}
+    </Heading5>
+  ) : (
     <>
       <Box component='form' autoComplete='off' className={classes.formBody}>
         <Heading5
@@ -154,21 +120,28 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
                   <FormControl>
                     <Select
                       value={selectedConvertedLanguage}
-                      onChange={handleChangeConvertedLanguage}
+                      onChange={(e) => {
+                        setSelectedConvertedLanguage(e.target.value as number);
+                      }}
                       sx={{ bgcolor: "white", width: "150px" }}
                     >
-                      {convert_language_request.map((item, index) => (
-                        <MenuItem key={index} value={item.program_language}>
-                          {item.program_language}
-                        </MenuItem>
-                      ))}
+                      {availableLanguage.map(
+                        (item, index) =>
+                          item.choosen === true && (
+                            <MenuItem key={index} value={index}>
+                              {item.name}
+                            </MenuItem>
+                          )
+                      )}
                     </Select>
                   </FormControl>
                 </Box>
                 <Box className={classes.codeStubBody} style={{ height: `350px` }}>
                   <CodeEditor
-                    value={convertedCodeStub}
-                    onChange={setConvertedCodeStub}
+                    value={codeStub}
+                    onChange={(value) => {
+                      setCodeStub(value);
+                    }}
                     height='100%'
                   />
                 </Box>
@@ -179,6 +152,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
         <Box className={classes.btnWrapper}>
           <JoyButton
             loading={isLoading}
+            disabled={!existSelect}
             color='primary'
             type='submit'
             translation-key='code_management_detail_template_create'
@@ -202,22 +176,27 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
             <FormControl>
               <Select
                 value={selectedCodeStubLanguage}
-                onChange={handleChangeCodeStubLanguage}
+                onChange={(e) => {
+                  setSelectedCodeStubLanguage(e.target.value as number);
+                }}
                 sx={{ bgcolor: "white", width: "150px" }}
               >
-                {convert_language_request.map((item, index) => (
-                  <MenuItem key={index} value={item.program_language}>
-                    {item.program_language}
-                  </MenuItem>
-                ))}
+                {availableLanguage.map(
+                  (item, index) =>
+                    item.choosen === true && (
+                      <MenuItem key={index} value={index}>
+                        {item.name}
+                      </MenuItem>
+                    )
+                )}
               </Select>
             </FormControl>
           </Box>
           <Box className={classes.codeStubBody} style={{ height: `350px` }}>
             <CodeEditor
               value={
-                findIndexSelectedCodeStubLanguage()
-                  ? findIndexSelectedCodeStubLanguage()?.code_stub
+                selectedCodeStubLanguage > -1
+                  ? availableLanguage[selectedCodeStubLanguage].bodyCode
                   : ""
               }
               readOnly={true}

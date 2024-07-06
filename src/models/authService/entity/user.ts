@@ -56,6 +56,11 @@ export interface UpdateProfileUserRequest {
   phone: string;
 }
 
+export interface UpdateProfileAvatarRequest {
+  email: string;
+  avatarUrl: string;
+}
+
 export interface UpdateUserByAdminRequest {
   firstName: string;
   lastName: string;

@@ -1,10 +1,6 @@
 import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
-import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
-import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
-import Lessons from "pages/client/user/CourseCertificate/Lessons";
-import OrganizationAdminHomepage from "pages/org_admin";
+
 import React, { lazy } from "react";
 import {
   Route,
@@ -16,6 +12,27 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import ScrollToTop from "components/ScrollTop";
+const LecturerCodeQuestionCreation = lazy(
+  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+);
+const SubmitAssignment = lazy(
+  () => import("pages/client/student/AssignmentManagement/SubmitAssignment")
+);
+const TakeContestProblem = lazy(() => import("pages/client/user/Contest/TakeContestProblem"));
+const Lessons = lazy(() => import("pages/client/user/CourseCertificate/Lessons"));
+const OrganizationAdminHomepage = lazy(() => import("pages/org_admin"));
+const AIGradingReports = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AIGradingReports"
+    )
+);
+const ReportGradeEssayAIDetail = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/ReportGradeEssayAIDetail"
+    )
+);
 
 const EditEssayQuestion = lazy(
   () =>
@@ -74,18 +91,7 @@ const LecturerSourceCodePlagiarismManagement = lazy(
 const StudentCoursesManagement = lazy(() => import("pages/client/student"));
 const LecturerCoursesManagement = lazy(() => import("pages/client/lecturer"));
 const UserHomepage = lazy(() => import("pages/client/user"));
-const AIScoring = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring"
-    )
-);
-const DetailAIScoring = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/DetailAIScoring"
-    )
-);
+
 const ShareSolution = lazy(
   () => import("pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution")
 );
@@ -120,7 +126,7 @@ const LecturerSourceCodePlagiarismClustersDetails = lazy(
 const GradingConfig = lazy(
   () =>
     import(
-      "pages/client/lecturer/CourseManagement/Details/components/ExamSubmissions/components/AIScoring/components/AiGradingConfig"
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AiGradingConfig"
     )
 );
 const CreateEssayQuestion = lazy(
@@ -178,19 +184,54 @@ const router = createHashRouter(
             <Route element={<RequireAuth availableRoles={[ERoleName.LECTURER_MOODLE]} />}>
               <Route
                 path={routes.lecturer.exam.edit_essay_question}
-                element={<EditEssayQuestion qtype={qtype.essay.code} />}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={false} />}
               />
               <Route
                 path={routes.lecturer.exam.edit_multi_question}
-                element={<EditMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={false}
+                  />
+                }
               />
               <Route
                 path={routes.lecturer.exam.edit_short_question}
-                element={<EditShortAnswerQuestion qtype={qtype.short_answer.code} />}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={false} />
+                }
               />
               <Route
                 path={routes.lecturer.exam.edit_true_false_question}
-                element={<EditTrueFalseQuestion qtype={qtype.true_false.code} />}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
+                }
+              />
+
+              <Route
+                path={routes.lecturer.exam.edit_new_essay_question}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={true} />}
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_multi_question}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={true}
+                  />
+                }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_short_question}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={true} />
+                }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_true_false_question}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={true} />
+                }
               />
 
               <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
@@ -198,11 +239,14 @@ const router = createHashRouter(
               <Route path={routes.lecturer.assignment.edit} element={<AssignmentUpdated />} />
               <Route path={routes.lecturer.assignment.grading} element={<AssignmentGrading />} />
               <Route
+                path={routes.lecturer.assignment.ai_grading_report_detail}
+                element={<ReportGradeEssayAIDetail />}
+              />
+              <Route
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
               />
-              <Route path={routes.lecturer.exam.ai_scroring} element={<AIScoring />} />
-              <Route path={routes.lecturer.exam.ai_scroring_detail} element={<DetailAIScoring />} />
+
               <Route
                 path={routes.lecturer.assignment.preview_submit}
                 element={<PreviewAssignmentSubmission />}
@@ -284,7 +328,14 @@ const router = createHashRouter(
                 element={<LecturerCodeQuestionCreation />}
               />
 
-              <Route path={routes.lecturer.exam.ai_grading_config} element={<GradingConfig />} />
+              <Route
+                path={routes.lecturer.assignment.ai_grading_config}
+                element={<GradingConfig />}
+              />
+              <Route
+                path={routes.lecturer.assignment.ai_grading_reports}
+                element={<AIGradingReports />}
+              />
             </Route>
             <Route element={<RequireAuth availableRoles={[ERoleName.STUDENT_MOODLE]} />}>
               <Route path={routes.student.root} element={<StudentCoursesManagement />} />
