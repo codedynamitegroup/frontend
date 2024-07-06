@@ -10,15 +10,14 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import JoyButton from "@mui/joy/Button";
 import { Box, CircularProgress, IconButton, Link, Stack, Tooltip } from "@mui/material";
 import Heading2 from "components/text/Heading2";
-import dayjs from "dayjs";
 import i18next from "i18next";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 import { NotificationEventTypeEnum } from "models/courseService/enum/NotificationEventTypeEnum";
 import moment from "moment";
+import { IFullCalendarEvent } from "pages/client/lecturer/LecturerEventCalendar";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./index.scss";
-import { IFullCalendarEvent } from "pages/client/lecturer/LecturerEventCalendar";
-import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
 
 interface CustomFullCalendarProps {
   isEventsLoading: boolean;
@@ -118,8 +117,8 @@ export default function CustomFullCalendar({
       /* @ts-ignore */
       const calendarApi = calendarRef.current.getApi();
       return (
-        calendarApi.view.title === dayjs().format("MMMM YYYY") ||
-        calendarApi.view.title === dayjs().format("DD MMMM YYYY")
+        moment(calendarApi.view.currentStart).isSameOrBefore(moment(), "day") &&
+        moment(calendarApi.view.currentEnd).isSameOrAfter(moment(), "day")
       );
     }
     return false;
@@ -130,7 +129,6 @@ export default function CustomFullCalendar({
     if (calendarRef.current) {
       /* @ts-ignore */
       const calendarApi = calendarRef.current.getApi();
-      console.log("calendarApi", calendarApi);
       setCalendarViewTitle(calendarApi.view.title);
       handleChangeCurrentRange({
         start: moment(calendarApi.view.currentStart).toISOString(),
@@ -182,9 +180,18 @@ export default function CustomFullCalendar({
         }}
       >
         <Box>
-          <Heading2>{calendarViewTitle}</Heading2>
+          <Heading2>
+            {calendarViewTitle &&
+              calendarViewTitle.charAt(0).toUpperCase() + calendarViewTitle.slice(1)}
+          </Heading2>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end"
+          }}
+        >
           <IconButton aria-label='prev' onClick={goPrev}>
             <ArrowBackIosIcon
               sx={{
@@ -229,7 +236,6 @@ export default function CustomFullCalendar({
               selectMirror={true}
               dayMaxEvents={true}
               select={(arg: DateSelectArg) => {
-                console.log("arg", arg);
                 /* @ts-ignore */
                 const calendarApi = calendarRef.current.getApi();
                 calendarApi.unselect(); // clear date selection
