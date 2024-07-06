@@ -13,7 +13,7 @@ import Heading2 from "components/text/Heading2";
 import Heading3 from "components/text/Heading3";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
-import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
+import ParagraphSmall from "components/text/ParagraphSmall";
 import images from "config/images";
 import useAuth from "hooks/useAuth";
 import i18next from "i18next";
@@ -30,7 +30,6 @@ import { ContestService } from "services/coreService/ContestService";
 import { calcCertificateCourseProgress } from "utils/coreService/calcCertificateCourseProgress";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import classes from "./styles.module.scss";
-import ParagraphSmall from "components/text/ParagraphSmall";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -51,14 +50,6 @@ export default function UserDashboard() {
       numOfParticipants: 0,
       numOfContests: 0
     }
-  });
-
-  const [registeredCertificateCourseData, setRegisteredCertificateCourseData] = React.useState<{
-    isLoading: boolean;
-    certificateCourses: CertificateCourseEntity[];
-  }>({
-    isLoading: false,
-    certificateCourses: []
   });
 
   const [certificateCourseData, setCertificateCourseData] = React.useState<{
@@ -113,26 +104,6 @@ export default function UserDashboard() {
     []
   );
 
-  const handleGetRegisteredCertificateCourses = useCallback(async () => {
-    setRegisteredCertificateCourseData((prevState) => ({
-      ...prevState,
-      isLoading: true
-    }));
-    try {
-      const getCertificateCoursesResponse =
-        await CertificateCourseService.getMyCertificateCourses("");
-      setRegisteredCertificateCourseData({
-        isLoading: false,
-        certificateCourses: getCertificateCoursesResponse.certificateCourses
-      });
-    } catch (error: any) {
-      setRegisteredCertificateCourseData((prevState) => ({
-        ...prevState,
-        isLoading: false
-      }));
-    }
-  }, []);
-
   const handleGetMostPopularContests = useCallback(async () => {
     setMostPopularContestData((prevState) => ({
       ...prevState,
@@ -153,16 +124,15 @@ export default function UserDashboard() {
   }, []);
 
   const ongoingRegisteredCourses = useMemo(() => {
-    if (!registeredCertificateCourseData) {
+    if (!certificateCourseData || !certificateCourseData.certificateCourses) {
       return [];
     }
-    return (
-      registeredCertificateCourseData.certificateCourses
-        // .filter((course) => (course?.numOfCompletedResources || 0) > 0)
-        .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
-        .slice(0, 3)
-    );
-  }, [registeredCertificateCourseData]);
+
+    return certificateCourseData.certificateCourses
+      .filter((course) => course.isRegistered === true)
+      .sort((a, b) => (b.numOfCompletedResources || 0) - (a.numOfCompletedResources || 0))
+      .slice(0, 3);
+  }, [certificateCourseData]);
 
   const otherCertificateCourses = useMemo(() => {
     if (!certificateCourseData || !certificateCourseData.certificateCourses) {
@@ -182,7 +152,6 @@ export default function UserDashboard() {
   useEffect(() => {
     const fetchInitialData = async () => {
       Promise.all([
-        handleGetRegisteredCertificateCourses(),
         handleGetCertificateCourses({
           courseName: "",
           filterTopicId: undefined,
@@ -193,11 +162,7 @@ export default function UserDashboard() {
     };
 
     fetchInitialData();
-  }, [
-    handleGetCertificateCourses,
-    handleGetMostPopularContests,
-    handleGetRegisteredCertificateCourses
-  ]);
+  }, [handleGetCertificateCourses, handleGetMostPopularContests]);
 
   return (
     <Grid id={classes.userDashboardRoot}>
