@@ -167,59 +167,71 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
         )}
       </Grid>
       {isGraded && (
-        <Grid item xs={12}>
-          <Card
-            variant='soft'
-            color={isCorrectAnswer === 1 ? "success" : isCorrectAnswer === 2 ? "warning" : "danger"}
-          >
-            {isCorrectAnswer === 1 && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentSatisfiedAltRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>{questionMultiChoice?.correctFeedback || "Thats correct!"}</Heading6>
-              </Box>
-            )}
-            {isCorrectAnswer === 0 && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentDissatisfiedRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>{questionMultiChoice?.incorrectFeedback || "Wrong!!"}</Heading6>
-              </Box>
-            )}
-            {isCorrectAnswer === 2 && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentDissatisfiedRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>
-                  {questionMultiChoice?.partiallyCorrectFeedback || "Partially correct!"}
-                </Heading6>
-              </Box>
-            )}
-            {questionMultiChoice?.question?.generalFeedback && (
-              <ParagraphSmall>{questionMultiChoice?.question?.generalFeedback}</ParagraphSmall>
-            )}
-            <ParagraphSmall fontWeight={"500"}>
-              {`${questionMultiChoice?.single ? t("correct_answer_non_plural") : t("correct_answer_plural")}:`}
-            </ParagraphSmall>
-            {correctAnswerList?.map((answer) => (
-              <ParagraphSmall key={answer}>
-                {answerList?.find((item) => item.value === answer)?.label}
+        <>
+          <Grid item xs={12}>
+            <Card
+              variant='soft'
+              color={
+                isCorrectAnswer === 1 ? "success" : isCorrectAnswer === 2 ? "warning" : "danger"
+              }
+            >
+              {isCorrectAnswer === 1 && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentSatisfiedAltRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>{questionMultiChoice?.correctFeedback || "Thats correct!"}</Heading6>
+                </Box>
+              )}
+              {isCorrectAnswer === 0 && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentDissatisfiedRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>{questionMultiChoice?.incorrectFeedback || "Wrong!!"}</Heading6>
+                </Box>
+              )}
+              {isCorrectAnswer === 2 && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentDissatisfiedRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>
+                    {questionMultiChoice?.partiallyCorrectFeedback || "Partially correct!"}
+                  </Heading6>
+                </Box>
+              )}
+              {questionMultiChoice?.question?.generalFeedback && (
+                <ParagraphSmall>{questionMultiChoice?.question?.generalFeedback}</ParagraphSmall>
+              )}
+              <ParagraphSmall fontWeight={"500"}>
+                {`${questionMultiChoice?.single ? t("correct_answer_non_plural") : t("correct_answer_plural")}:`}
               </ParagraphSmall>
-            ))}
-          </Card>
-        </Grid>
+              {correctAnswerList?.map((answer) => (
+                <ParagraphSmall key={answer}>
+                  {answerList?.find((item) => item.value === answer)?.label}
+                </ParagraphSmall>
+              ))}
+            </Card>
+          </Grid>
+          {questionSubmitContent?.feedback && (
+            <Grid item xs={12}>
+              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Card variant='soft'>
+                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+              </Card>
+            </Grid>
+          )}
+        </>
       )}
     </Grid>
   );
