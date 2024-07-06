@@ -24,6 +24,7 @@ import OrgAdminContestSubmissionDetails from "./ContestManagement/OrgAdminContes
 import OrgAdminContestSubmissions from "./ContestManagement/OrgAdminContestSubmissions";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import { useDispatch } from "react-redux";
+import SynchronizeManagement from "./SynchronizeManagement";
 
 type Props = {};
 
@@ -87,6 +88,7 @@ const OrganizationAdminHomepage = (props: Props) => {
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
             />
+            <Route path={"synchronize"} element={<SynchronizeManagement />} />
           </Routes>
         </Box>
         {/* </Box> */}
