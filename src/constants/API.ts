@@ -88,7 +88,9 @@ export const API = {
   COURSE: {
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
-      CREATE: "/course/rubric-user"
+      CREATE: "/course/rubric-user",
+      UPDATE: "/course/rubric-user/:id",
+      DELETE: "/course/rubric-user/:id"
     },
     COURSE: {
       DEFAULT: "/course/course",

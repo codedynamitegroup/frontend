@@ -962,6 +962,7 @@
   "grading_config_back_to_select_rubric": "Quay lại chọn bảng chấm",
   "grading_config_back_to_select_criteria": "Quay lại chọn tiêu chí",
   "grading_config_add_new_rubric": "Thêm bảng chấm mới",
+  "grading_config_add_edit_rubric": "Chỉnh sửa bảng chấm",
   "grading_config_add_new_criteria": "Thêm tiêu chí mới",
   "grading_config_criteria_name": "Tên tiêu chí",
   "grading_config_criteria_grade": "Phần trăm điểm tiêu chí (0 - 100%)",
