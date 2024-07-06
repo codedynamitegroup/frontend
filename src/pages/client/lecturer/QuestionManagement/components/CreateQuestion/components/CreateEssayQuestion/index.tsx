@@ -226,6 +226,7 @@ const CreateEssayQuestion = (props: Props) => {
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
+  const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
   const user: User = useSelector(selectCurrentUser);
@@ -285,8 +286,9 @@ const CreateEssayQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        if (isAdminQuestionBank)
-          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+
+        if (isLecturerCreateQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
           navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isQuestionBank)
