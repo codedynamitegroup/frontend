@@ -277,58 +277,62 @@ const LecturerCourseAssignmentDetails = () => {
             {t("course_lecturer_assignment_see_submit")}
           </ParagraphBody>
         </Button>
-        <Button
-          btnType={BtnType.Primary}
-          onClick={() => {
-            if (
-              !assignmentId ||
-              !courseId ||
-              !submissionAssignmentState?.submissionAssignments[0]?.id
-            )
-              return;
-            navigate(
-              routes.lecturer.assignment.grading
-                .replace(":assignmentId", assignmentId ?? "")
-                .replace(":courseId", courseId ?? "")
-                .replace(
-                  ":submissionId",
-                  submissionAssignmentState?.submissionAssignments[0]?.id ?? ""
-                )
-            );
-          }}
-        >
-          <ParagraphBody translation-key='course_lecturer_assignment_grading'>
-            {t("course_lecturer_assignment_grading")}
-          </ParagraphBody>
-        </Button>
-        {assignmentState?.assignmentDetails?.type === "TEXT_ONLINE" && (
+        {submissionAssignmentState?.submissionAssignments.length > 0 && (
           <>
             <Button
-              btnType={BtnType.Secondary}
+              btnType={BtnType.Primary}
               onClick={() => {
+                if (
+                  !assignmentId ||
+                  !courseId ||
+                  !submissionAssignmentState?.submissionAssignments[0]?.id
+                )
+                  return;
                 navigate(
-                  routes.lecturer.assignment.ai_grading_config
+                  routes.lecturer.assignment.grading
                     .replace(":assignmentId", assignmentId ?? "")
                     .replace(":courseId", courseId ?? "")
+                    .replace(
+                      ":submissionId",
+                      submissionAssignmentState?.submissionAssignments[0]?.id ?? ""
+                    )
                 );
               }}
             >
-              <ParagraphBody translation-key='course_lecturer_ai_assignment_grading'>
-                {t("course_lecturer_ai_assignment_grading")}
+              <ParagraphBody translation-key='course_lecturer_assignment_grading'>
+                {t("course_lecturer_assignment_grading")}
               </ParagraphBody>
             </Button>
-            <Buttons
-              btnType='TransparentBlue'
-              children={t("course_lecturer_ai_assignment_grading_report")}
-              translation-key='course_lecturer_ai_assignment_grading_report'
-              onClick={() => {
-                navigate(
-                  routes.lecturer.assignment.ai_grading_reports
-                    .replace(":assignmentId", assignmentId ?? "")
-                    .replace(":courseId", courseId ?? "")
-                );
-              }}
-            ></Buttons>
+            {assignmentState?.assignmentDetails?.type === "TEXT_ONLINE" && (
+              <>
+                <Button
+                  btnType={BtnType.Secondary}
+                  onClick={() => {
+                    navigate(
+                      routes.lecturer.assignment.ai_grading_config
+                        .replace(":assignmentId", assignmentId ?? "")
+                        .replace(":courseId", courseId ?? "")
+                    );
+                  }}
+                >
+                  <ParagraphBody translation-key='course_lecturer_ai_assignment_grading'>
+                    {t("course_lecturer_ai_assignment_grading")}
+                  </ParagraphBody>
+                </Button>
+                <Buttons
+                  btnType='TransparentBlue'
+                  children={t("course_lecturer_ai_assignment_grading_report")}
+                  translation-key='course_lecturer_ai_assignment_grading_report'
+                  onClick={() => {
+                    navigate(
+                      routes.lecturer.assignment.ai_grading_reports
+                        .replace(":assignmentId", assignmentId ?? "")
+                        .replace(":courseId", courseId ?? "")
+                    );
+                  }}
+                ></Buttons>
+              </>
+            )}
           </>
         )}
       </Box>
