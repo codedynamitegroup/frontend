@@ -69,6 +69,8 @@ import contestDashboard from "assets/img/admin/contest-dashboard.svg";
 import organizationIc from "assets/img/admin/organization.svg";
 import contactUsIc from "assets/img/contact_us.jpg";
 
+import organizationImageBg from "assets/img/org_admin/org.png";
+
 const images = {
   course: {
     courseAssignment,
@@ -121,6 +123,9 @@ const images = {
     upcomingContest,
     contestDashboard,
     organizationIc
+  },
+  org_admin: {
+    organizationImageBg
   }
 };
 const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };

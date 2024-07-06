@@ -189,7 +189,7 @@ const HeaderNotification = () => {
 
   useEffect(() => {
     if (isLoggedIn && socketState && socketState.socket) {
-      socketState.socket.on("get_message", (data: SocketData) => {
+      socketState.socket.on("get_notification", (data: SocketData) => {
         handleGetAllMyNotification({});
         dispatch(
           setInfoMess({
@@ -201,7 +201,7 @@ const HeaderNotification = () => {
     }
     return () => {
       if (socketState && socketState.socket) {
-        socketState.socket.off("get_message");
+        socketState.socket.off("get_notification");
       }
     };
   }, [dispatch, handleGetAllMyNotification, isLoggedIn, socketState]);
