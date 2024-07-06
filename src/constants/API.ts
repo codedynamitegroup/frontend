@@ -249,6 +249,7 @@ export const API = {
       GET_STATISTICS: "/auth/users/statistics",
       GET_ORG_ADMIN_STATISTICS: "/auth/users/admin-org/statistics",
       SOCIAL_LOGIN: "/auth/users/social-login",
+      LINK_SSO: "/auth/users/link-sso",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",
       LOGOUT: "/auth/users/logout/:email",

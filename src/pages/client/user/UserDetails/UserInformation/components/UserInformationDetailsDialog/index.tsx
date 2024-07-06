@@ -24,6 +24,15 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import ErrorMessage from "components/text/ErrorMessage";
 import JoyButton from "@mui/joy/Button";
 import { InputPhone } from "components/common/inputs/InputPhone";
+import Button, { BtnType } from "components/common/buttons/Button";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "services/authService/azure.config";
+import { AuthenticationResult } from "@azure/msal-browser";
+import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
+import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import MicrosoftLogin from "react-microsoft-login";
+import useAuth from "hooks/useAuth";
+
 interface IFormDataUpdateProfileUser {
   firstName: string;
   lastName: string;
@@ -96,9 +105,9 @@ const UserInformationDetailsDialog = ({
   }, [user]);
 
   const dispatch = useDispatch();
+  const { loggedUser } = useAuth();
 
   const handleUpdateProfileUser = async (data: IFormDataUpdateProfileUser) => {
-    console.log(data);
     setIsUpdateProfileLoading(true);
     UserService.updateProfileUser({
       email: user?.email,
@@ -131,6 +140,72 @@ const UserInformationDetailsDialog = ({
       .finally(() => {
         setIsUpdateProfileLoading(false);
       });
+  };
+
+  const { instance } = useMsal();
+
+  const signInWithMicrosoft = async () => {
+    const accounts = instance.getAllAccounts();
+
+    if (accounts.length === 0) {
+      return;
+    }
+
+    const request = {
+      ...loginRequest,
+      account: accounts[0]
+    };
+
+    const accessToken = await instance
+      .acquireTokenSilent(request)
+      .then((response: AuthenticationResult) => {
+        return response.accessToken;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    if (!accessToken) {
+      return;
+    }
+
+    UserService.linkSSO(accessToken, ESocialLoginProvider.MICROSOFT, loggedUser.email)
+      .then((response) => {
+        dispatch(setSuccessMess("Linked with Microsoft successfully"));
+      })
+      .catch((error: any) => {
+        dispatch(setErrorMess("Failed to login!! Please try again later"));
+        console.error("Failed to login", {
+          code: error.response?.code || 503,
+          status: error.response?.status || "Service Unavailable",
+          message: error.response?.message || error.message
+        });
+      });
+  };
+
+  const signInWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse: TokenResponse) => {
+      UserService.linkSSO(tokenResponse.access_token, ESocialLoginProvider.GOOGLE, loggedUser.email)
+        .then((response) => {
+          dispatch(setSuccessMess("Linked with google successfully"));
+        })
+        .catch((error: any) => {
+          dispatch(setErrorMess("Failed to login!! Please try again later"));
+          console.error("Failed to login", {
+            code: error.response?.code || 503,
+            status: error.response?.status || "Service Unavailable",
+            message: error.response?.message || error.message
+          });
+        });
+    },
+    onError: (error: any) => {
+      console.log(error);
+    },
+    flow: "implicit"
+  });
+
+  const microsoftLoggedHandler = (error: any, result: any) => {
+    signInWithMicrosoft();
   };
 
   return (
@@ -169,10 +244,10 @@ const UserInformationDetailsDialog = ({
           errorMessage={errors?.lastName?.message}
         />
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
           </Grid>
-          <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
+          <Grid item xs={9} display={"flex"} flexDirection={"column"} gap={"10px"}>
             <Controller
               control={control}
               name='phone'
@@ -191,10 +266,10 @@ const UserInformationDetailsDialog = ({
           </Grid>
         </Grid>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={9}>
             <Controller
               control={control}
               name='dob'
@@ -219,8 +294,8 @@ const UserInformationDetailsDialog = ({
           </Grid>
         </Grid>
         <Grid container spacing={1} columns={12}>
-          <Grid item xs={4}></Grid>
-          <Grid item xs={7}>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={9}>
             <JoyButton
               loading={isUpdateProfileLoading}
               variant='solid'
@@ -269,7 +344,7 @@ const UserInformationDetailsDialog = ({
               </Grid>
               <Grid
                 item
-                xs={9}
+                xs={6}
                 sx={{
                   display: "flex",
                   alignItems: "center"
@@ -283,6 +358,25 @@ const UserInformationDetailsDialog = ({
                   <ParagraphBody translation-key='user_detail_dialog_not_linked'>
                     {t("user_detail_dialog_not_linked")}
                   </ParagraphBody>
+                )}
+              </Grid>
+
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {!user?.isLinkedWithGoogle && (
+                  <Button
+                    btnType={BtnType.Text}
+                    translation-key='user_detail_dialog_link'
+                    onClick={() => signInWithGoogle()}
+                  >
+                    {t("user_detail_dialog_link")}
+                  </Button>
                 )}
               </Grid>
             </Grid>
@@ -317,7 +411,7 @@ const UserInformationDetailsDialog = ({
               </Grid>
               <Grid
                 item
-                xs={9}
+                xs={6}
                 sx={{
                   display: "flex",
                   alignItems: "center"
@@ -331,6 +425,31 @@ const UserInformationDetailsDialog = ({
                   <ParagraphBody translation-key='user_detail_dialog_not_linked'>
                     {t("user_detail_dialog_not_linked")}
                   </ParagraphBody>
+                )}
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                {!user?.isLinkedWithMicrosoft && (
+                  <MicrosoftLogin
+                    clientId={process.env.REACT_APP_MICROSOFT_CLIENT_ID || ""}
+                    redirectUri={process.env.REACT_APP_MICROSOFT_REDIRECT_URL || ""}
+                    authCallback={microsoftLoggedHandler}
+                    children={
+                      <Button
+                        btnType={BtnType.Text}
+                        onClick={() => {}}
+                        translation-key='user_detail_dialog_link'
+                      >
+                        {t("user_detail_dialog_link")}
+                      </Button>
+                    }
+                  />
                 )}
               </Grid>
             </Grid>

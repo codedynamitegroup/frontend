@@ -115,43 +115,53 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
         />
       </Grid>
       {isGraded && (
-        <Grid item xs={12}>
-          <Card variant='soft' color={isCorrectAnswer ? "success" : "danger"}>
-            {isCorrectAnswer && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentSatisfiedAltRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>"Thats correct!"</Heading6>
-              </Box>
-            )}
-            {questionTrueFalse?.question?.generalFeedback && (
-              <ParagraphSmall>{questionTrueFalse?.question?.generalFeedback}</ParagraphSmall>
-            )}
-            {!isCorrectAnswer && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentDissatisfiedRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>"Wrong!!"</Heading6>
-              </Box>
-            )}
+        <>
+          <Grid item xs={12}>
+            <Card variant='soft' color={isCorrectAnswer ? "success" : "danger"}>
+              {isCorrectAnswer && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentSatisfiedAltRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>"Thats correct!"</Heading6>
+                </Box>
+              )}
+              {questionTrueFalse?.question?.generalFeedback && (
+                <ParagraphSmall>{questionTrueFalse?.question?.generalFeedback}</ParagraphSmall>
+              )}
+              {!isCorrectAnswer && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentDissatisfiedRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>"Wrong!!"</Heading6>
+                </Box>
+              )}
 
-            <ParagraphSmall>
-              {`The correct answer is: ${
-                questionTrueFalse?.question?.answers?.[0].answer === "true"
-                  ? t("common_true")
-                  : t("common_false")
-              }`}
-            </ParagraphSmall>
-          </Card>
-        </Grid>
+              <ParagraphSmall>
+                {`The correct answer is: ${
+                  questionTrueFalse?.question?.answers?.[0].answer === "true"
+                    ? t("common_true")
+                    : t("common_false")
+                }`}
+              </ParagraphSmall>
+            </Card>
+          </Grid>
+          {questionSubmitContent?.feedback && (
+            <Grid item xs={12}>
+              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Card variant='soft'>
+                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+              </Card>
+            </Grid>
+          )}
+        </>
       )}
     </Grid>
   );

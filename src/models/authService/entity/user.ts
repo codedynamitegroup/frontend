@@ -14,6 +14,9 @@ export interface User {
   lastLogin: string;
   isLinkedWithGoogle: boolean;
   isLinkedWithMicrosoft: boolean;
+  isLinkedWithSystemAccount: boolean;
+  emailLinkedGoogle: string;
+  emailLinkedMicrosoft: string;
   organization: OrganizationEntity;
   createdAt: Date;
   roles: RoleEntity[];

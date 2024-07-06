@@ -1,0 +1,17 @@
+.image {
+  max-width: 100%;
+  height: auto;
+}
+
+.dataInputContainer {
+  padding: 15px 10px;
+  margin-top: 20px;
+}
+.inputContainer {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+.inputField {
+  margin-bottom: 10px;
+}

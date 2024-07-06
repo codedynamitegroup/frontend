@@ -1,0 +1,16 @@
+.stepperWrapper {
+  padding-bottom: 64px;
+}
+
+.fixedBottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 16px;
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 76%;
+  background-color: white;
+  z-index: 1;
+}

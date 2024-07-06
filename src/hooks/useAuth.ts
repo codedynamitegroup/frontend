@@ -31,10 +31,7 @@ export default function useAuth() {
       .finally(() => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        const provider = localStorage.getItem("provider");
-        if (provider === ESocialLoginProvider.MICROSOFT) {
-          sessionStorage.clear();
-        }
+        sessionStorage.clear();
         localStorage.removeItem("provider");
         navigate(routes.user.homepage.root);
         navigate(0);

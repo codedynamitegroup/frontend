@@ -61,7 +61,6 @@ import moment from "moment";
 import {
   clearExamCreate,
   clearQuestionCreate,
-  setMaxAttemptCreate,
   setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
@@ -84,6 +83,7 @@ import qtype from "utils/constant/Qtype";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
+import { h } from "@fullcalendar/core/preact";
 
 const drawerWidth = 400;
 
@@ -192,7 +192,6 @@ export default function ExamCreated() {
     React.useState(false);
   const [openPreviewEssay, setOpenPreviewEssay] = React.useState(false);
   const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
-  const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
@@ -271,7 +270,6 @@ export default function ExamCreated() {
                   setOpenPreviewEssay(!openPreviewEssay);
                   break;
                 case qtype.short_answer.code:
-                  setQuestionPreview(params.row);
                   setOpenPreviewShortAnswer(!openPreviewShortAnswer);
                   break;
                 case qtype.true_false.code:
@@ -383,6 +381,7 @@ export default function ExamCreated() {
         setTimeout(() => {
           setLoading(false);
           navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
+          localStorage.removeItem("formData");
         }, 3000);
       });
   };
@@ -541,9 +540,16 @@ export default function ExamCreated() {
     });
   }, [t]);
 
+  const handleInputChange = (name: any, value: any) => {
+    setValue(name, value);
+    localStorage.setItem("formData", JSON.stringify({ ...getValues(), [name]: value }));
+  };
   const {
     control,
     handleSubmit,
+    setValue,
+    getValues,
+    reset,
     trigger,
     formState: { errors }
   } = useForm<FormData>({
@@ -560,6 +566,31 @@ export default function ExamCreated() {
       maxAttempts: "0"
     }
   });
+
+  useEffect(() => {
+    const savedFormData = localStorage.getItem("formData");
+    if (savedFormData) {
+      const parsedFormData = JSON.parse(savedFormData);
+      Object.keys(parsedFormData).forEach((key) => {
+        if (
+          key === "name" ||
+          key === "intro" ||
+          key === "maxScore" ||
+          key === "timeOpen" ||
+          key === "timeClose" ||
+          key === "timeLimit" ||
+          key === "maxAttempts" ||
+          key === "overdueHandling" ||
+          key === "timeLimitUnit"
+        ) {
+          console.log(key, parsedFormData[key], "key", "parsedFormData[key]");
+          return setValue(key, parsedFormData[key]);
+        } else {
+          // Handle invalid key
+        }
+      });
+    }
+  }, [setValue]);
 
   return (
     <>
@@ -790,13 +821,11 @@ export default function ExamCreated() {
                           required
                           error={Boolean(errors.intro)}
                           errorMessage={errors.intro?.message}
-                          // value={field.value}
-                          // onChange={field.onChange}
                           placeholder={t("common_exam_description")}
                           backgroundColor='white'
-                          translation-key={["common_exam_description"]}
                           tooltipDescription={t("question_default_score_description")}
                           {...field}
+                          onChange={(value) => handleInputChange(field.name, value)}
                           submitCount={submitCount}
                         />
                       )}
