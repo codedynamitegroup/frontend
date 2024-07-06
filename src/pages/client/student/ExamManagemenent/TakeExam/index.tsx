@@ -197,6 +197,9 @@ export default function TakeExam() {
         userId: auth.loggedUser.userId,
         examStartTime: new Date().toISOString()
       });
+
+      await handleGetExamSubmissionDetail();
+
       dispatch(cleanCodeQuestion());
       setEndTime(new Date(response.endTime).getTime());
       setSkeleton(false);

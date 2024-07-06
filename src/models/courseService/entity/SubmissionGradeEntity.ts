@@ -10,4 +10,5 @@ export interface GradeSubmission {
   questionId: string;
   grade: number;
   rightAnswer: string;
+  feedback?: string;
 }

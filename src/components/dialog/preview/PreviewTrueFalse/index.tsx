@@ -97,9 +97,7 @@ const PreviewTrueFalse = ({
   const handleCheckResult = () => {
     console.log("Check result");
 
-    const convertedCorrectAnswer = correctAnswer?.answer === "true" ? "1" : "0";
-
-    if (convertedCorrectAnswer === radioValue) setIsCorrectAnswer(true);
+    if (correctAnswer?.answer === radioValue) setIsCorrectAnswer(true);
     else setIsCorrectAnswer(false);
 
     setShowCorrectAnswer(true);
@@ -112,8 +110,8 @@ const PreviewTrueFalse = ({
   };
 
   const answerList = [
-    { value: "1", label: t("common_true") },
-    { value: "0", label: t("common_false") }
+    { value: "true", label: t("common_true") },
+    { value: "false", label: t("common_false") }
   ];
 
   return (

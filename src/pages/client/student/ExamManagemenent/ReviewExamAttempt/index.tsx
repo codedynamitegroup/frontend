@@ -49,6 +49,8 @@ import CodeExamQuestion from "./components/ExamQuestion/CodeQuestion";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import CodeIcon from "@mui/icons-material/Code";
+import PercentRoundedIcon from "@mui/icons-material/PercentRounded";
+import FunctionsRoundedIcon from "@mui/icons-material/FunctionsRounded";
 
 const drawerWidth = 370;
 
@@ -60,6 +62,7 @@ interface QuestionDetail {
   flag: boolean;
   answered: boolean;
   id: string;
+  grade: number;
 }
 
 export default function StudentReviewExamAttempt() {
@@ -82,6 +85,21 @@ export default function StudentReviewExamAttempt() {
   const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
   const [timeClose, setTimeClose] = React.useState<Date>(new Date());
   const [mainSkeleton, setMainSkeleton] = React.useState<boolean>(true);
+  const totalMarks = React.useMemo(() => {
+    return submissionData?.questionSubmissionResponses.reduce((acc, question) => {
+      return acc + (question.grade || 0);
+    }, 0);
+  }, [submissionData]);
+  const defaultTotalMarks = React.useMemo(() => {
+    if (!questions) return 0.0;
+    return questions?.reduce((acc, question) => {
+      return acc + question.data.question.defaultMark;
+    }, 0);
+  }, [questions]);
+  const totalGrade = React.useMemo(() => {
+    return ((totalMarks || 0) / (defaultTotalMarks || 1)) * (submissionData?.maxScores || 0);
+  }, [totalMarks, defaultTotalMarks, submissionData]);
+
   const [timeTaken, setTimeTaken] = React.useState<{
     days: number;
     hours: number;
@@ -100,7 +118,8 @@ export default function StudentReviewExamAttempt() {
           acc[question.questionId] = {
             flag: question.flag,
             answered: question.answerStatus,
-            id: question.questionId
+            id: question.questionId,
+            grade: question.grade
           };
           return acc;
         },
@@ -355,88 +374,134 @@ export default function StudentReviewExamAttempt() {
                 </>
               ) : (
                 <>
-                  <ExamReviewBoxContent
-                    textTitle={t("exam_review_status")}
-                    textContent={
-                      submissionData?.status === "SUBMITTED"
-                        ? t("exam_review_status_submitted").toUpperCase()
-                        : submissionData?.status === "GRADED"
-                          ? t("exam_review_status_graded").toUpperCase()
-                          : t("exam_review_status_not_submitted").toUpperCase() ||
-                            t("common_unknown")
-                    }
-                    icon={
-                      <DonutLargeRoundedIcon
-                        sx={{
-                          fontSize: "15px",
-                          marginBottom: "3px"
-                        }}
+                  <Grid container gap={1}>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("exam_review_status")}
+                        textContent={
+                          submissionData?.status === "SUBMITTED"
+                            ? t("exam_review_status_submitted").toUpperCase()
+                            : submissionData?.status === "GRADED"
+                              ? t("exam_review_status_graded").toUpperCase()
+                              : t("exam_review_status_not_submitted").toUpperCase() ||
+                                t("common_unknown")
+                        }
+                        icon={
+                          <DonutLargeRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <ExamReviewBoxContent
-                    textTitle={t("exam_review_started_on")}
-                    textContent={t("common_show_time", {
-                      weekDay: weekdayNames[timeOpen.getDay()],
-                      day: timeOpen.getDate(),
-                      month: monthNames[timeOpen.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
-                      year: timeOpen.getFullYear(),
-                      time: `${timeOpen.getHours() < 10 ? `0${timeOpen.getHours()}` : timeOpen.getHours()}:${timeOpen.getMinutes() < 10 ? `0${timeOpen.getMinutes()}` : timeOpen.getMinutes()}`
-                    })}
-                    icon={
-                      <DateRangeRoundedIcon
-                        sx={{
-                          fontSize: "15px",
-                          marginBottom: "3px"
-                        }}
+                    </Grid>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("exam_review_started_on")}
+                        textContent={t("common_show_time", {
+                          weekDay: weekdayNames[timeOpen.getDay()],
+                          day: timeOpen.getDate(),
+                          month: monthNames[timeOpen.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                          year: timeOpen.getFullYear(),
+                          time: `${timeOpen.getHours() < 10 ? `0${timeOpen.getHours()}` : timeOpen.getHours()}:${timeOpen.getMinutes() < 10 ? `0${timeOpen.getMinutes()}` : timeOpen.getMinutes()}`
+                        })}
+                        icon={
+                          <DateRangeRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <ExamReviewBoxContent
-                    textTitle={t("exam_review_completed_on")}
-                    textContent={t("common_show_time", {
-                      weekDay: weekdayNames[timeClose.getDay()],
-                      day: timeClose.getDate(),
-                      month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
-                      year: timeClose.getFullYear(),
-                      time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
-                    })}
-                    icon={
-                      <CheckCircleOutlineRoundedIcon
-                        sx={{
-                          fontSize: "15px",
-                          marginBottom: "3px"
-                        }}
+                    </Grid>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("exam_review_completed_on")}
+                        textContent={t("common_show_time", {
+                          weekDay: weekdayNames[timeClose.getDay()],
+                          day: timeClose.getDate(),
+                          month: monthNames[timeClose.getMonth()], // getMonth returns 0-11, so add 1 to get 1-12
+                          year: timeClose.getFullYear(),
+                          time: `${timeClose.getHours() < 10 ? `0${timeClose.getHours()}` : timeClose.getHours()}:${timeClose.getMinutes() < 10 ? `0${timeClose.getMinutes()}` : timeClose.getMinutes()}`
+                        })}
+                        icon={
+                          <CheckCircleOutlineRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <ExamReviewBoxContent
-                    textTitle={t("exam_review_time_taken")}
-                    textContent={
-                      timeTaken.days > 0
-                        ? t("common_show_time_no_date_no_day", {
-                            hour: t("hour", { count: timeTaken.hours }),
-                            min: t("min", { count: timeTaken.minutes }),
-                            sec: t("sec", { count: timeTaken.seconds })
-                          })
-                        : timeTaken.minutes > 0
-                          ? t("common_show_time_no_date_no_hour", {
-                              min: t("min", { count: timeTaken.minutes }),
-                              sec: t("sec", { count: timeTaken.seconds })
-                            })
-                          : t("common_show_time_no_date_no_min", {
-                              sec: t("sec", { count: timeTaken.seconds })
-                            })
-                    }
-                    icon={
-                      <AccessTimeRoundedIcon
-                        sx={{
-                          fontSize: "15px",
-                          marginBottom: "3px"
-                        }}
+                    </Grid>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("exam_review_time_taken")}
+                        textContent={
+                          timeTaken.days > 0
+                            ? t("common_show_time_no_date_no_day", {
+                                hour: t("hour", { count: timeTaken.hours }),
+                                min: t("min", { count: timeTaken.minutes }),
+                                sec: t("sec", { count: timeTaken.seconds })
+                              })
+                            : timeTaken.minutes > 0
+                              ? t("common_show_time_no_date_no_hour", {
+                                  min: t("min", { count: timeTaken.minutes }),
+                                  sec: t("sec", { count: timeTaken.seconds })
+                                })
+                              : t("common_show_time_no_date_no_min", {
+                                  sec: t("sec", { count: timeTaken.seconds })
+                                })
+                        }
+                        icon={
+                          <AccessTimeRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
                       />
-                    }
-                  />
+                    </Grid>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("total_marks")}
+                        textContent={
+                          submissionData?.status === "GRADED"
+                            ? `${totalMarks?.toFixed(2) || "0.00"} / ${defaultTotalMarks.toFixed(2) || "0.00"}`
+                            : `${t("common_not_graded")} / ${defaultTotalMarks.toFixed(2) || "0.00"}`
+                        }
+                        icon={
+                          <FunctionsRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
+                      />
+                    </Grid>
+                    <Grid item>
+                      <ExamReviewBoxContent
+                        textTitle={t("total_grade")}
+                        textContent={
+                          submissionData?.status === "GRADED"
+                            ? `${totalGrade.toFixed(2)} / ${submissionData?.maxScores.toFixed(2) || 0} (${((totalGrade / (submissionData?.maxScores || 1)) * 100).toFixed(2)}%)`
+                            : `${t("common_not_graded")} / ${submissionData?.maxScores.toFixed(2) || 0}`
+                        }
+                        icon={
+                          <PercentRoundedIcon
+                            sx={{
+                              fontSize: "15px",
+                              marginBottom: "3px"
+                            }}
+                          />
+                        }
+                      />
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </Stack>
@@ -455,6 +520,7 @@ export default function StudentReviewExamAttempt() {
                       <Grid item xs={12} id={convertUuidToHashSlug(question.data.question.id)}>
                         {question.data.question.qtype === qtype.essay.code ? (
                           <EssayExamQuestion
+                            isGraded={submissionData?.status === "GRADED"}
                             questionIndex={index}
                             questionEssayQuestion={question.data}
                             questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -464,6 +530,7 @@ export default function StudentReviewExamAttempt() {
                           />
                         ) : question.data.question.qtype === qtype.short_answer.code ? (
                           <ShortAnswerExamQuestion
+                            isGraded={submissionData?.status === "GRADED"}
                             questionIndex={index}
                             questionShortAnswer={question.data}
                             questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -473,6 +540,7 @@ export default function StudentReviewExamAttempt() {
                           />
                         ) : question.data.question.qtype === qtype.multiple_choice.code ? (
                           <MultipleChoiceExamQuestion
+                            isGraded={submissionData?.status === "GRADED"}
                             questionIndex={index}
                             questionMultiChoice={question.data}
                             questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -482,6 +550,7 @@ export default function StudentReviewExamAttempt() {
                           />
                         ) : question.data.question.qtype === qtype.true_false.code ? (
                           <TrueFalseExamQuestion
+                            isGraded={submissionData?.status === "GRADED"}
                             questionIndex={index}
                             questionTrueFalse={question.data}
                             questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -491,6 +560,8 @@ export default function StudentReviewExamAttempt() {
                           />
                         ) : (
                           <CodeExamQuestion
+                            isGraded={submissionData?.status === "GRADED"}
+                            coreQuestionCode={question.data}
                             page={index}
                             questionCode={codeQuestion.find(
                               (codeQuestion) => codeQuestion.id === question.data.id
@@ -514,6 +585,7 @@ export default function StudentReviewExamAttempt() {
                 </Grid>
               ) : questions[questionPageIndex]?.data?.question?.qtype === qtype.essay.code ? (
                 <EssayExamQuestion
+                  isGraded={submissionData?.status === "GRADED"}
                   questionIndex={questionPageIndex}
                   questionEssayQuestion={questions[questionPageIndex].data}
                   questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -524,6 +596,7 @@ export default function StudentReviewExamAttempt() {
               ) : questions[questionPageIndex]?.data?.question?.qtype ===
                 qtype.short_answer.code ? (
                 <ShortAnswerExamQuestion
+                  isGraded={submissionData?.status === "GRADED"}
                   questionIndex={questionPageIndex}
                   questionShortAnswer={questions[questionPageIndex].data}
                   questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -534,6 +607,7 @@ export default function StudentReviewExamAttempt() {
               ) : questions[questionPageIndex]?.data?.question?.qtype ===
                 qtype.multiple_choice.code ? (
                 <MultipleChoiceExamQuestion
+                  isGraded={submissionData?.status === "GRADED"}
                   questionIndex={questionPageIndex}
                   questionMultiChoice={questions[questionPageIndex].data}
                   questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -543,6 +617,7 @@ export default function StudentReviewExamAttempt() {
                 />
               ) : questions[questionPageIndex]?.data?.question?.qtype === qtype.true_false.code ? (
                 <TrueFalseExamQuestion
+                  isGraded={submissionData?.status === "GRADED"}
                   questionIndex={questionPageIndex}
                   questionTrueFalse={questions[questionPageIndex].data}
                   questionSubmitContent={submissionData?.questionSubmissionResponses.find(
@@ -552,6 +627,8 @@ export default function StudentReviewExamAttempt() {
                 />
               ) : (
                 <CodeExamQuestion
+                  isGraded={submissionData?.status === "GRADED"}
+                  coreQuestionCode={questions[questionPageIndex].data}
                   page={questionPageIndex}
                   questionCode={codeQuestion.find(
                     (codeQuestion) => codeQuestion.id === questions[questionPageIndex].data.id
@@ -787,15 +864,26 @@ export default function StudentReviewExamAttempt() {
                           invisible={!questionDetailMap?.[question.data.question.id]?.flag}
                         >
                           <Button
-                            variant={"outlined"}
+                            color={
+                              submissionData?.status !== "GRADED"
+                                ? questionDetailMap?.[question.data.question.id]?.answered
+                                  ? "neutral"
+                                  : "primary"
+                                : questionDetailMap?.[question.data.question.id]?.grade ===
+                                    question.data.question.defaultMark
+                                  ? "success"
+                                  : "danger"
+                            }
+                            variant={
+                              submissionData?.status !== "GRADED" &&
+                              !questionDetailMap?.[question.data.question.id]?.answered
+                                ? "outlined"
+                                : "soft"
+                            }
                             sx={{
                               borderRadius: "1000px",
                               width: "40px",
-                              height: "40px",
-                              backgroundColor: questionDetailMap?.[question.data.question.id]
-                                ?.answered
-                                ? "#e1e1e1"
-                                : ""
+                              height: "40px"
                             }}
                             onClick={() => {
                               if (isShowAllQuesionsInOnePage === "0") {
