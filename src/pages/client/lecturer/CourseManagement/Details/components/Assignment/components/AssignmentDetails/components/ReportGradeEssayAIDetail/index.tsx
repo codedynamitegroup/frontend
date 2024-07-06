@@ -73,9 +73,11 @@ export default function ReportGradeEssayAIDetail() {
     submissionId: string;
     reportId: string;
   }>();
+
   const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState(
-    submissionId?.toString() ?? ""
+    submissionId?.toString()
   );
+  console.log("assignmentSubmissionStudent", assignmentSubmissionStudent);
   const [studentSubmissionCurrent, setStudentSubmissionCurrent] =
     React.useState<SubmissionAssignmentEntity | null>(null);
 
@@ -272,29 +274,32 @@ export default function ReportGradeEssayAIDetail() {
     }
   }, [handleGetReportDetail, reportId]);
 
-  // useEffect(() => {
-  //   if (assignmentSubmissionStudent) {
-  //     navigate(
-  //       routes.lecturer.assignment.grading
-  //         .replace(":assignmentId", assignmentId ?? "")
-  //         .replace(":courseId", courseId ?? "")
-  //         .replace(":submissionId", assignmentSubmissionStudent)
-  //     );
-  //   }
-  // }, [assignmentSubmissionStudent, assignmentId, courseId, navigate]);
+  useEffect(() => {
+    if (assignmentSubmissionStudent) {
+      navigate(
+        routes.lecturer.assignment.ai_grading_report_detail
+          .replace(":assignmentId", assignmentId ?? "")
+          .replace(":courseId", courseId ?? "")
+          .replace(":reportId", reportId ?? "")
+          .replace(":submissionId", assignmentSubmissionStudent)
+      );
+    }
+  }, [assignmentSubmissionStudent, assignmentId, courseId, navigate, reportId]);
 
   useEffect(() => {
     const fetchSubmissionAssignment = async () => {
+      if (!submissionId) return;
       const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
-        assignmentSubmissionStudent
+        submissionId.toString()
       );
       setStudentSubmissionCurrent(response);
       const grade = response.submissionGrade?.grade ?? -1;
+      console.log("grade", grade);
       setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
       setAssignmentFeedback(response?.feedback ?? "");
     };
     fetchSubmissionAssignment();
-  }, [assignmentSubmissionStudent]);
+  }, [submissionId]);
 
   const navigateToNextStudent = () => {
     const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(
@@ -561,8 +566,8 @@ export default function ReportGradeEssayAIDetail() {
                         }
 
                         setStudentSubmissionCurrent(params.row);
-                        setAssignmentMaximumGrade("");
-                        setAssignmentFeedback("");
+                        // setAssignmentMaximumGrade("");
+                        // setAssignmentFeedback("");
                         navigate(
                           routes.lecturer.assignment.ai_grading_report_detail
                             .replace(":reportId", reportId || "")
