@@ -1,10 +1,6 @@
 import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
-import LecturerCodeQuestionCreation from "pages/client/lecturer/CodeQuestionManagement/Create";
-import SubmitAssignment from "pages/client/student/AssignmentManagement/SubmitAssignment";
-import TakeContestProblem from "pages/client/user/Contest/TakeContestProblem";
-import Lessons from "pages/client/user/CourseCertificate/Lessons";
-import OrganizationAdminHomepage from "pages/org_admin";
+
 import React, { lazy } from "react";
 import {
   Route,
@@ -16,8 +12,27 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import ScrollToTop from "components/ScrollTop";
-import AIGradingReports from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AIGradingReports";
-import ReportGradeEssayAIDetail from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/ReportGradeEssayAIDetail";
+const LecturerCodeQuestionCreation = lazy(
+  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+);
+const SubmitAssignment = lazy(
+  () => import("pages/client/student/AssignmentManagement/SubmitAssignment")
+);
+const TakeContestProblem = lazy(() => import("pages/client/user/Contest/TakeContestProblem"));
+const Lessons = lazy(() => import("pages/client/user/CourseCertificate/Lessons"));
+const OrganizationAdminHomepage = lazy(() => import("pages/org_admin"));
+const AIGradingReports = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/AIGradingReports"
+    )
+);
+const ReportGradeEssayAIDetail = lazy(
+  () =>
+    import(
+      "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/AssignmentDetails/components/ReportGradeEssayAIDetail"
+    )
+);
 
 const EditEssayQuestion = lazy(
   () =>

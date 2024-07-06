@@ -1,21 +1,27 @@
 import { AppBar, Box, Tab, Tabs, Toolbar } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
-import { memo, useMemo } from "react";
+import { lazy, memo, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import LecturerCourseAssignment from "./components/Assignment";
-import LecturerCourseAssignmentDetails from "./components/Assignment/components/AssignmentDetails";
 import LecturerCourseGrade from "./components/Grade";
 import LecturerCourseInformation from "./components/Information";
 import LecturerCourseParticipant from "./components/Participant";
-import LecturerCourseAssignmentSubmissions from "./components/AssignmentSubmissions";
-import LecturerCourseExamSubmissions from "./components/ExamSubmissions";
 import classes from "./styles.module.scss";
-import LecturerCourseExamDetails from "./components/Assignment/components/ExamDetails";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+const LecturerCourseAssignmentDetails = lazy(
+  () => import("./components/Assignment/components/AssignmentDetails")
+);
+const LecturerCourseAssignmentSubmissions = lazy(
+  () => import("./components/AssignmentSubmissions")
+);
+const LecturerCourseExamDetails = lazy(
+  () => import("./components/Assignment/components/ExamDetails")
+);
+const LecturerCourseExamSubmissions = lazy(() => import("./components/ExamSubmissions"));
 
 interface Props {}
 
