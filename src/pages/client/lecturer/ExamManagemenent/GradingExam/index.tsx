@@ -24,12 +24,8 @@ import {
   Toolbar,
   Typography,
   Stack,
-  Skeleton,
-  Badge,
-  TextField
+  Skeleton
 } from "@mui/material";
-import IconButton2 from "@mui/joy/IconButton";
-import Badge2 from "@mui/joy/Badge";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import {
@@ -44,32 +40,23 @@ import Header from "components/Header";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
-import InputTextField from "components/common/inputs/InputTextField";
 import SearchBar from "components/common/search/SearchBar";
 
 import EditImageIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import Button from "@mui/joy/Button";
 import CustomNumberInput from "components/common/inputs/CustomNumberInput";
-import PreviewEssay from "components/dialog/preview/PreviewEssay";
-import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
-import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
-import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
-import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
-import dayjs from "dayjs";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import { millisToFormatTimeString } from "utils/time";
 import classes from "./styles.module.scss";
 import { grey } from "@mui/material/colors";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -83,47 +70,20 @@ import { ExamEntity, StudentExamSubmission } from "models/courseService/entity/E
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
-import { s } from "@fullcalendar/core/internal-common";
-import { set } from "lodash";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
-import CustomBreadCrumb from "components/common/Breadcrumb";
 import ExamReviewBoxContent from "../PreviewExam/components/BoxContent";
 import {
   GetQuestionSubmissionEntity,
   SubmissionDetail
 } from "models/courseService/entity/QuestionSubmissionEntity";
 import DonutLargeRoundedIcon from "@mui/icons-material/DonutLargeRounded";
-import ModeIcon from "@mui/icons-material/Mode";
-import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
-import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import DateRangeRoundedIcon from "@mui/icons-material/DateRangeRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import TitleWithInfoTip from "components/text/TitleWithInfo";
-import FlagIcon from "@mui/icons-material/Flag";
 import { useState } from "react";
-import exam from "reduxes/courseService/exam";
-interface SubmissionData {
-  examSubmissionId: string;
-  examId: string;
-  userId: string;
-  startTime: Date;
-  submitTime: Date;
-  status: string;
-  questionSubmissionResponses: {
-    questionId: string;
-    examSubmissionId: string;
-    userId: string;
-    passStatus: string;
-    grade: number;
-    content: string;
-    rightAnswer: string;
-    numFile: number;
-  }[];
-}
+import BasicSelect from "components/common/select/BasicSelect";
 const drawerWidth = 450;
 
 export interface QuestionDetailMap {
@@ -212,210 +172,13 @@ export default function GradingExam() {
   const [loading, setLoading] = React.useState(false);
   const submissionId = useParams<{ submissionId: string }>().submissionId;
   const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
-  const [questionList, setQuestionList] = React.useState([
-    {
-      id: 4,
-      name: "Trắc nghiệm lập trình C++",
-      description: "Hãy cho biết con trỏ trong C++ là gì?",
-      grade: 0,
-      max_grade: 10,
-      type: {
-        value: qtype.multiple_choice.code,
-        label: "Trắc nghiệm"
-      },
-      isOpenEditTitle: false
-    },
-    {
-      id: 2,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "Who is the father of Software Engineering?",
-      grade: 0,
-      max_grade: 10,
-      type: {
-        value: qtype.essay.code,
-        label: "Tự luận"
-      },
-      isOpenEditTitle: false
-    },
-    {
-      id: 3,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "What is the full form of HTML?",
-      grade: 0,
-      max_grade: 10,
-      type: {
-        value: qtype.short_answer.code,
-        label: "Trả lời ngắn"
-      },
-      isOpenEditTitle: false
-    },
-    {
-      id: 1,
-      name: "Câu hỏi về phát triển phần mềm",
-      description: "HTML stands for Hyper Text Markup Language",
-      grade: 0,
-      max_grade: 10,
-      type: {
-        value: qtype.true_false.code,
-        label: "Đúng/Sai"
-      },
-      isOpenEditTitle: false
-    }
-  ]);
-
-  const handleToggleEditTitle = React.useCallback(
-    (id: number) => {
-      setQuestionList((prev) => {
-        const newList = prev.map((item) => {
-          if (item.id === id) {
-            return {
-              ...item,
-              isOpenEditTitle: !item.isOpenEditTitle
-            };
-          }
-          return item;
-        });
-        return newList;
-      });
-    },
-    [setQuestionList]
-  );
-
-  const tableHeading: GridColDef[] = React.useMemo(
-    () =>
-      [
-        { field: "stt", headerName: "STT", minWidth: 1 },
-        {
-          field: "name",
-          headerName: t("exam_management_create_question_name"),
-          minWidth: 250
-        },
-        {
-          field: "grade",
-          headerName: t("common_grade"),
-          minWidth: 150,
-          renderCell: (params) => {
-            const maxGrade = questionList.find((item) => item.id === params.row.id)?.max_grade;
-            const isOpenEditTitle = questionList.find(
-              (item) => item.id === params.row.id
-            )?.isOpenEditTitle;
-            return (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                {isOpenEditTitle ? (
-                  <CustomNumberInput
-                    value={params.value || 0}
-                    onChange={(value) => {
-                      setQuestionList((prev) => {
-                        const newList = prev.map((item) => {
-                          if (item.id === params.row.id) {
-                            return {
-                              ...item,
-                              grade: value
-                            };
-                          }
-                          return item;
-                        });
-                        return newList;
-                      });
-                    }}
-                    maxWidth='70px'
-                    min={0}
-                    max={maxGrade}
-                    step={1}
-                  />
-                ) : (
-                  <Typography align='center'>{params.value}</Typography>
-                )}
-
-                <Box>
-                  {!isOpenEditTitle ? (
-                    <IconButton
-                      onClick={() => handleToggleEditTitle(params.row.id)}
-                      className={classes.editTopicTitleImageContainer}
-                    >
-                      <EditImageIcon />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() => handleToggleEditTitle(params.row.id)}
-                      className={classes.editTopicTitleImageContainer}
-                    >
-                      <SaveIcon />
-                    </IconButton>
-                  )}
-                </Box>
-              </Box>
-            );
-          }
-        },
-        {
-          field: "max_grade",
-          headerName: t("assignment_management_max_score"),
-          minWidth: 150
-        },
-        {
-          field: "type",
-          headerName: t("exam_management_create_question_type"),
-          minWidth: 150,
-          renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
-        },
-        {
-          field: "action",
-          headerName: t("common_action"),
-          type: "actions",
-          flex: 1,
-          getActions: (params) => [
-            <GridActionsCellItem
-              onClick={() => {
-                switch (params.row.type.value) {
-                  case qtype.multiple_choice.code:
-                    setOpenPreviewMultipleChoiceDialog(!openPreviewMultipleChoiceDialog);
-                    break;
-                  case qtype.essay.code:
-                    setOpenPreviewEssay(!openPreviewEssay);
-                    break;
-                  case qtype.short_answer.code:
-                    setOpenPreviewShortAnswer(!openPreviewShortAnswer);
-                    break;
-                  case qtype.true_false.code:
-                    setOpenPreviewTrueFalse(!openPreviewTrueFalse);
-                    break;
-                }
-              }}
-              icon={<PreviewIcon />}
-              label='Preview'
-            />
-          ]
-        }
-      ] as GridColDef[],
-    [
-      t,
-      questionList,
-      openPreviewMultipleChoiceDialog,
-      openPreviewEssay,
-      openPreviewShortAnswer,
-      openPreviewTrueFalse,
-      handleToggleEditTitle
-    ]
-  );
+  const [userId, setUserId] = React.useState("9ba179ed-d26d-4828-a0f6-8836c2063992");
+  const [examSubmissionId, setExamSubmissionId] = React.useState(submissionId);
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {
+  const rowSelectionHandler = (selectedRowId: GridRowSelectionModel) => {
     console.log(selectedRowId);
   };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+  const pageChangeHandler = (model: GridPaginationModel) => {
     console.log(model);
   };
 
@@ -424,10 +187,6 @@ export default function GradingExam() {
   const [totalElements, setTotalElements] = React.useState(0);
 
   const [searchValue, setSearchValue] = React.useState("");
-
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
 
   const handleSetGradeStatus = (examSubmissionId: string) => {
     ExamSubmissionService.setGradeStatus(examSubmissionId)
@@ -438,7 +197,7 @@ export default function GradingExam() {
         console.error("Failed to set grade status", error);
       })
       .finally(() => {
-        setDialogOpen2(true);
+        setDialogOpen(true);
       });
   };
 
@@ -527,9 +286,9 @@ export default function GradingExam() {
     StudentExamSubmission | undefined
   >(undefined);
 
+  const [listSubmission, setListSubmission] = React.useState<any[]>([]);
   const questionPageIndex = parseInt(searchParams.get("page") || "0");
   const isShowAllQuesionsInOnePage = searchParams.get("showall");
-  const [inputIndexValue, setInputIndexValue] = React.useState(1);
   const [questions, setQuestions] = React.useState<any[]>([]);
   const [submissionData, setSubmissionData] = React.useState<SubmissionDetail>();
   const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
@@ -546,30 +305,6 @@ export default function GradingExam() {
     minutes: 0,
     seconds: 0
   });
-  const questionDetailMap = React.useMemo(() => {
-    return (
-      submissionData?.questionSubmissionResponses.reduce(
-        (acc: QuestionDetailMap, question: GetQuestionSubmissionEntity) => {
-          acc[question.questionId] = {
-            flag: question.flag,
-            answered: question.answerStatus,
-            id: question.questionId
-          };
-          return acc;
-        },
-        {}
-      ) || undefined
-    );
-  }, [submissionData]);
-
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
-  React.useEffect(() => {
-    if (width < 1080) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
-  }, [width]);
 
   const handleGetExamQuestion = React.useCallback(async () => {
     if (examId === undefined) return;
@@ -643,6 +378,17 @@ export default function GradingExam() {
             minutes: diffMins,
             seconds: diffSecs
           });
+
+          ExamSubmissionService.getAllAttemptByExamIdAndUserId(res.examId, res.userId)
+            .then((res) => {
+              setListSubmission(
+                res.map((submission: any, index: number) => ({ ...submission, id: index }))
+              );
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+            .finally(() => {});
         })
         .catch((error) => {
           console.error(error);
@@ -659,40 +405,19 @@ export default function GradingExam() {
         const currentStudent = res.studentExamSubmissionResponses.find(
           (student: StudentExamSubmission) => student.examSubmissionId === submissionId
         );
-        console.log(res.studentExamSubmissionResponses, "currentStudent");
         setStudentSubmissionCurrent(currentStudent);
+        setUserId(currentStudent?.userId);
         setTotalElements(res.totalItems);
       })
       .catch((error) => {
         console.error(error);
       })
       .finally(() => {});
-  }, [examId]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      // Get exam questions
-      handleGetExamQuestion();
-
-      // Get exam submission data
-      handleGetExamSubmission();
-
-      // Get student exam submission
-      handleGetStudentExamSubmission();
-    };
-    fetchData();
-  }, [handleGetExamQuestion, handleGetExamSubmission, handleGetStudentExamSubmission]);
+  }, [examId, submissionId, userId]);
 
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
   >(width < 1080 ? "temporary" : "permanent");
-  React.useEffect(() => {
-    if (width < 1080) {
-      setDrawerVariant("temporary");
-    } else {
-      setDrawerVariant("persistent");
-    }
-  }, [width]);
 
   const monthNames = [
     t("common_january"),
@@ -734,8 +459,55 @@ export default function GradingExam() {
 
     // Get student exam submission
     handleGetStudentExamSubmission();
-    setDialogOpen2(false);
+
+    handleSetGradeStatus(submissionId || "");
+    setDialogOpen(false);
   };
+
+  React.useEffect(() => {
+    if (width < 1080) {
+      setDrawerVariant("temporary");
+    } else {
+      setDrawerVariant("persistent");
+    }
+  }, [width]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      // Get exam questions
+      handleGetExamQuestion();
+
+      // Get exam submission data
+      handleGetExamSubmission();
+
+      // Get student exam submission
+      handleGetStudentExamSubmission();
+    };
+    fetchData();
+  }, [
+    handleGetExamQuestion,
+    handleGetExamSubmission,
+    handleGetStudentExamSubmission,
+    submissionId
+  ]);
+
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      // Get exam questions
+      handleGetExamQuestion();
+
+      // Get exam submission data
+      handleGetExamSubmission();
+
+      // Get student exam submission
+      handleGetStudentExamSubmission();
+
+      handleSetGradeStatus(submissionId || "");
+    };
+    fetchData();
+  }, [location.pathname, location.search, submissionId]);
 
   return (
     <>
@@ -1212,6 +984,32 @@ export default function GradingExam() {
                   </ParagraphBody>{" "}
                   <ArrowDropDownIcon />
                 </Stack>
+
+                <Stack direction={"row"} justifyContent={"space-between"}>
+                  <BasicSelect
+                    labelId={t("common_attempt")}
+                    value={submissionId ?? ""}
+                    onHandleChange={(value) => {
+                      setStudentSubmissionCurrent(
+                        studentExamSubmission.find(
+                          (student: StudentExamSubmission) => student.examSubmissionId === value
+                        )
+                      );
+
+                      navigate(
+                        routes.lecturer.exam.grading
+                          .replace(":submissionId", value)
+                          .replace(":examId", examId || "")
+                          .replace(":courseId", courseId || "")
+                      );
+                    }}
+                    items={listSubmission.map((submission) => ({
+                      label: `Lần ${submission.id + 1}`,
+                      value: submission.examSubmissionId
+                    }))}
+                  />
+                </Stack>
+
                 <Dialog
                   open={openChooseStudent}
                   onClose={() => setOpenChooseStudent(false)}
@@ -1317,33 +1115,8 @@ export default function GradingExam() {
                   {t("exam_grade")}:{" "}
                   {studentSubmissionCurrent?.grade + " / " + studentSubmissionCurrent?.totalGrade}
                 </TextTitle>
-
-                {/* <TextTitle translation-key='course_lecturer_score_on_range'>
-                  {t("course_lecturer_score_on_range", { range: 100 })}
-                </TextTitle>
-                <InputTextField
-                  type='number'
-                  value={assignmentMaximumGrade}
-                  onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
-                  placeholder={t("exam_management_create_enter_score")}
-                  backgroundColor='#D9E2ED'
-                  translation-key='exam_management_create_enter_score'
-                /> */}
               </Box>
-              {/* <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='course_lecturer_grade_comment'>
-                  {t("course_lecturer_grade_comment")}
-                </TextTitle>
-                <Box className={classes.textEditor}>
-                  <TextEditor
-                    style={{
-                      marginTop: "10px"
-                    }}
-                    value={assignmentFeedback}
-                    onChange={setAssignmentFeedback}
-                  />
-                </Box>
-              </Box> */}
+
               <LoadButton
                 btnType={BtnType.Outlined}
                 fullWidth
