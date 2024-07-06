@@ -52,6 +52,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { clearAssignments } from "reduxes/courseService/assignment";
 import { useDispatch } from "react-redux";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import { setCourseDetail } from "reduxes/courseService/course";
+import { CourseService } from "services/courseService/CourseService";
 
 interface FormData {
   name: string;
@@ -98,6 +101,27 @@ export default function AssignmentCreated() {
   const courseState = useSelector((state: RootState) => state.course);
   const assignmentState = useSelector((state: RootState) => state.assignment);
   console.log(allowSubmissionAfterEndTime);
+
+  const handleGetCourseDetail = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      if (response) {
+        dispatch(setCourseDetail({ courseDetail: response }));
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (courseId && assignmentState?.courseId === null) {
+      handleGetCourseDetail(courseId);
+      console.log("HEHEHE");
+    }
+  }, [courseId, assignmentState]);
+
+  console.log(courseState.courseDetail);
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);
@@ -463,53 +487,27 @@ export default function AssignmentCreated() {
       <Box sx={{ marginTop: `${sidebarStatus.headerHeight}px` }} className={classes.container}>
         <Container>
           <Toolbar className={classes.toolBar}>
-            <Box id={classes.breadcumpWrapper}>
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() => navigate(routes.lecturer.course.management)}
-                translation-key='common_course_management'
-              >
-                {t("common_course_management")}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() =>
-                  navigate(routes.lecturer.course.information.replace(":courseId", courseId ?? ""))
+            <CustomBreadCrumb
+              breadCrumbData={[
+                {
+                  navLink: routes.lecturer.course.management,
+                  label: t("common_course_management")
+                },
+                {
+                  navLink: routes.lecturer.course.information.replace(":courseId", courseId ?? ""),
+                  label: courseState.courseDetail?.name || ""
+                },
+                {
+                  navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
+                  label: t("course_detail_assignment_list")
                 }
-              >
-                {courseState.courseDetail?.name}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              <ParagraphSmall
-                colorname='--blue-500'
-                className={classes.cursorPointer}
-                onClick={() =>
-                  navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""))
-                }
-                translation-key='course_detail_assignment_list'
-              >
-                {t("course_detail_assignment_list")}
-              </ParagraphSmall>
-              <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-              {assignment ? (
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  translation-key='assignment_management_update_assignment'
-                >
-                  {t("assignment_management_update_assignment")}
-                </ParagraphSmall>
-              ) : (
-                <ParagraphSmall
-                  colorname='--blue-500'
-                  translation-key='assignment_management_create_assignment'
-                >
-                  {t("assignment_management_create_assignment")}
-                </ParagraphSmall>
-              )}
-            </Box>
+              ]}
+              lastBreadCrumbLabel={
+                assignment
+                  ? t("assignment_management_update_assignment")
+                  : t("assignment_management_create_assignment")
+              }
+            />
           </Toolbar>
           <form
             className={classes.mainContent}
