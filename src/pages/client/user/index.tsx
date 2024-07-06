@@ -8,7 +8,6 @@ import HomePage from "./HomePage";
 import UserDashboard from "./Dashboard";
 import ListProblem from "./ListProblem";
 import ContestList from "./Contest/ContestList";
-import CourseCertificateDetail from "./CourseCertificate/Detail";
 import ContestDetails from "./Contest/ContestDetails";
 import Login from "./Login";
 import Register from "./Register";
@@ -23,6 +22,8 @@ import { ERoleName } from "models/authService/entity/role";
 import BusinessContact from "./BusinessContact";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
+import { lazy } from "react";
+const CourseCertificateDetail = lazy(() => import("./CourseCertificate/Detail"));
 
 type Props = {};
 

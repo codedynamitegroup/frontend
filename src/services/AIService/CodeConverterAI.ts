@@ -154,7 +154,7 @@ I. SYSTEM_INSTRUCTIONS:
 
   try {
     let result, response, text;
-    const chunks = chunkArray(program_language_converted_request, 1);
+    const chunks = chunkArray(program_language_converted_request, 6);
 
     const chat = model.startChat({
       history: [
