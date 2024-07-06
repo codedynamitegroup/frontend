@@ -47,6 +47,14 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import TextEditor from "components/editor/TextEditor";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+
+interface FormData {
+  name: string;
+  description: string;
+}
 
 const QuestionBankManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -96,7 +104,7 @@ const QuestionBankManagement = () => {
   };
 
   const user: User = useSelector(selectCurrentUser);
- const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const categoryState = useSelector((state: RootState) => state.questionBankCategory);
 
   const handleCreate = async (data: any) => {
@@ -133,7 +141,6 @@ const QuestionBankManagement = () => {
         setIsOpenConfirmDelete(false);
       });
   };
-
 
   useEffect(() => {
     const fetchInitialQuestionBankCategories = async () => {
@@ -495,110 +502,161 @@ const QuestionBankManagement = () => {
         open={openCreateDialog}
         onClose={handleCloseCreateDialog}
         className={classes["dialog"]}
+        fullWidth
       >
         <form onSubmit={handleSubmitCreate(handleCreate)}>
-          <DialogTitle className={classes["dialog-title"]}>
+          <DialogTitle
+            sx={{ m: 0, p: 2 }}
+            id='customized-dialog-title'
+            translation-key='question_bank_create_category'
+          >
             {t("question_bank_create_category")}
-            <IconButton
-              aria-label='close'
-              onClick={handleCloseCreateDialog}
-              className={classes["dialog-close"]}
-            >
-              <CloseIcon />
-            </IconButton>
           </DialogTitle>
+          <IconButton
+            aria-label='close'
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500]
+            }}
+            onClick={() => setOpenCreateDialog(false)}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent className={classes["dialog-content"]}>
             <Controller
               name='name'
               control={controlCreate}
               render={({ field }) => (
-                <TextField
+                <InputTextFieldColumn
+                  type='text'
+                  title={t("question_bank_create_category_name")}
+                  useDefaultTitleStyle
+                  titleRequired={true}
                   {...field}
-                  label={t("question_bank_create_category_name")}
-                  variant='outlined'
                   fullWidth
                   margin='dense'
                   error={!!errorsCreate.name}
-                  helperText={errorsCreate.name?.message}
+                  errorMessage={errorsCreate.name?.message}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               )}
+            />
+            <TitleWithInfoTip
+              title={t("question_bank_create_category_info")}
+              titleRequired
+              fontSize='12px'
+              color='var(--gray-60)'
+              gutterBottom
+              fontWeight='600'
             />
             <Controller
               name='description'
               control={controlCreate}
               render={({ field }) => (
-                <TextField
+                <TextEditor
+                  type='text'
+                  title={t("question_bank_create_category_info")}
+                  roundedBorder={true}
+                  required={true}
+                  placeholder={t("question_bank_create_category_info")}
+                  tooltipDescription={t("question_default_score_description")}
                   {...field}
-                  label={t("question_bank_create_category_info")}
-                  variant='outlined'
-                  fullWidth
-                  margin='dense'
                   error={!!errorsCreate.description}
-                  helperText={errorsCreate.description?.message}
+                  errorMessage={errorsCreate.description?.message}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               )}
             />
           </DialogContent>
           <DialogActions className={classes["dialog-actions"]}>
             <Button btnType={BtnType.Secondary} onClick={handleCloseCreateDialog}>
-              {t("cancel")}
+              {t("common_cancel")}
             </Button>
             <Button btnType={BtnType.Primary} type='submit'>
-              {t("add")}
+              {t("common_save")}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} className={classes["dialog"]}>
         <form onSubmit={handleSubmitEdit(handleEdit)}>
-          <DialogTitle className={classes["dialog-title"]}>
-            {t("question_category_edit")}
-            <IconButton
-              aria-label='close'
-              onClick={handleCloseEditDialog}
-              className={classes["dialog-close"]}
-            >
-              <CloseIcon />
-            </IconButton>
+          <DialogTitle
+            sx={{ m: 0, p: 2 }}
+            id='customized-dialog-title'
+            translation-key='question_bank_edit_category'
+          >
+            {t("question_bank_edit_category")}
           </DialogTitle>
+          <IconButton
+            aria-label='close'
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500]
+            }}
+            onClick={() => setOpenEditDialog(false)}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent className={classes["dialog-content"]}>
             <Controller
               name='name'
               control={controlEdit}
               render={({ field }) => (
-                <TextField
+                <InputTextFieldColumn
+                  type='text'
+                  title={t("question_bank_create_category_name")}
+                  useDefaultTitleStyle
+                  titleRequired={true}
                   {...field}
-                  label={t("question_category_name")}
-                  variant='outlined'
                   fullWidth
                   margin='dense'
                   error={!!errorsEdit.name}
-                  helperText={errorsEdit.name?.message}
+                  errorMessage={errorsEdit.name?.message}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               )}
+            />
+            <TitleWithInfoTip
+              title={t("question_bank_create_category_info")}
+              titleRequired
+              fontSize='12px'
+              color='var(--gray-60)'
+              gutterBottom
+              fontWeight='600'
             />
             <Controller
               name='description'
               control={controlEdit}
               render={({ field }) => (
-                <TextField
+                <TextEditor
+                  type='text'
+                  title={t("question_bank_create_category_info")}
+                  roundedBorder={true}
+                  required={true}
+                  placeholder={t("question_bank_create_category_info")}
+                  tooltipDescription={t("question_default_score_description")}
                   {...field}
-                  label={t("question_category_description")}
-                  variant='outlined'
-                  fullWidth
-                  margin='dense'
                   error={!!errorsEdit.description}
-                  helperText={errorsEdit.description?.message}
+                  errorMessage={errorsEdit.description?.message}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               )}
             />
           </DialogContent>
           <DialogActions className={classes["dialog-actions"]}>
             <Button btnType={BtnType.Secondary} onClick={handleCloseEditDialog}>
-              {t("cancel")}
+              {t("common_cancel")}
             </Button>
             <Button btnType={BtnType.Primary} type='submit'>
-              {t("save")}
+              {t("common_save")}
             </Button>
           </DialogActions>
         </form>
