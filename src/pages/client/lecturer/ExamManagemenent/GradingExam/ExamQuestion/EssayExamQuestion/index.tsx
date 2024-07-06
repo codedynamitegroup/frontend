@@ -1,29 +1,27 @@
-import { Box, Grid, Stack, Divider, TextField } from "@mui/material";
-import TextEditor from "components/editor/TextEditor";
-import FlagIcon from "@mui/icons-material/Flag";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import Button from "@mui/joy/Button";
+import { Box, Grid, Stack, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Checkbox, Sheet, Textarea } from "@mui/joy";
+import { Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
-import {
-  addFileToExamQuesiton,
-  removeAllFilesFromExamQuestion,
-  removeFileFromExamQuestion,
-  setAnswered,
-  setFlag
-} from "reduxes/TakeExam";
-import { useDispatch } from "react-redux";
-import AdvancedDropzoneForEssayExam from "components/editor/FileUploaderForExamEssay";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import { AlertType } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import LoadButton from "components/common/buttons/LoadingButton";
+import { BtnType } from "components/common/buttons/Button";
+
+interface FormData {
+  grade: number;
+  feedback?: string;
+}
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
@@ -34,18 +32,23 @@ interface EssayExamQuestionProps {
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
   const { t } = useTranslation();
-
-  const [mark, setMark] = useState<number>(questionSubmitContent?.grade || 0);
-
   const navigate = useNavigate();
   const submissionId = useParams<{ submissionId: string }>().submissionId;
   const courseId = useParams<{ courseId: string }>().courseId;
   const examId = useParams<{ examId: string }>().examId;
-  const handleUpdateGrade = () => {
+  const submitHandler = async (data: any) => {
+    setLoading(true);
+    const formSubmitData: FormData = { ...data };
     const questionId = questionEssayQuestion.question.id;
     const rightAnswer = "";
     const submission: GradeSubmission[] = [
-      { examSubmissionId: submissionId || "", questionId, grade: mark, rightAnswer }
+      {
+        examSubmissionId: submissionId || "",
+        questionId,
+        grade: formSubmitData.grade,
+        rightAnswer,
+        feedback: formSubmitData.feedback
+      }
     ];
 
     QuestionSubmissionService.gradeQuestionSubmission(submission)
@@ -67,12 +70,33 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
         setSnackbarType(AlertType.Success);
         setSnackbarContent(t("update_grade_success"));
         setOpenSnackbar(true);
+        setLoading(false);
       });
   };
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
   const [snackbarContent, setSnackbarContent] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      grade: yup.number().required().min(0).max(questionEssayQuestion.question.defaultMark),
+      feedback: yup.string()
+    });
+  }, [questionEssayQuestion.question.defaultMark]);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    }
+  });
 
   return (
     <Grid container spacing={1}>
@@ -172,41 +196,52 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           )}
         </Box>
       </Grid>
-
-      {/* {(questionEssayQuestion.responseFormat === "no_online" ||
-        questionEssayQuestion.attachments !== 0) && (
-        <Grid item xs={12}>
-          <AdvancedDropzoneForEssayExam
-            maxFileSize={convertedFileSize}
-            accept={fileTypeList}
-            maxFiles={questionEssayQuestion.attachments}
-            stopAutoUpload
-            disableDownload
-            relatedId={questionEssayQuestion.question.id}
-            relatedDispatch={addFileToExamQuesiton}
-            relatedRemoveDispatch={removeFileFromExamQuestion}
-            filesFromUrl={questionState?.files}
-            relatedRemoveAllDispatch={removeAllFilesFromExamQuestion}
-          />
-        </Grid>
-      )} */}
-
       <Grid item xs={12} md={12} marginTop={2}>
-        <Stack direction={"row"} spacing={2} marginTop={2}>
-          <TextField
-            id='outlined-basic'
-            label={t("common_grade")}
-            variant='outlined'
-            size='small'
-            value={mark}
-            onChange={(e) => {
-              setMark(Number(e.target.value));
-            }}
-          />
-          <Button color='primary' onClick={handleUpdateGrade}>
-            {t("update_grade")}
-          </Button>
-        </Stack>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <Box>
+            <Stack direction={"row"} spacing={2} marginTop={2}>
+              <Controller
+                name='grade'
+                control={control}
+                render={({ field }) => (
+                  <InputTextFieldColumn
+                    type='number'
+                    title={t("common_grade")}
+                    titleRequired={true}
+                    useDefaultTitleStyle
+                    error={Boolean(errors.grade)}
+                    errorMessage={errors.grade?.message}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              <Controller
+                name='feedback'
+                control={control}
+                render={({ field }) => (
+                  <InputTextFieldColumn
+                    title={t("common_feedback")}
+                    titleRequired={false}
+                    useDefaultTitleStyle
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </Stack>
+            <LoadButton
+              btnType={BtnType.Outlined}
+              color='primary'
+              style={{ marginTop: "20px" }}
+              onClick={handleSubmit(submitHandler)}
+              loading={loading}
+            >
+              {t("update_grade")}
+            </LoadButton>
+          </Box>
+        </form>
       </Grid>
       <SnackbarAlert
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}

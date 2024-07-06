@@ -6,7 +6,7 @@ import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import { MultiChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
 import { Button, Checkbox, Sheet } from "@mui/joy";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { QuestionService } from "services/coreService/QuestionService";
 import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,7 +14,16 @@ import { routes } from "routes/routes";
 import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import { AlertType } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
-
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import LoadButton from "components/common/buttons/LoadingButton";
+import { BtnType } from "components/common/buttons/Button";
+interface FormData {
+  grade: number;
+  feedback?: string;
+}
 interface PreviewMultipleChoiceProps {
   questionIndex: number;
   questionSubmitContent?: any;
@@ -24,11 +33,14 @@ interface PreviewMultipleChoiceProps {
 const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
   const { questionIndex, questionSubmitContent, questionTrueFalse } = props;
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const submissionId = useParams<{ submissionId: string }>().submissionId;
   const courseId = useParams<{ courseId: string }>().courseId;
   const examId = useParams<{ examId: string }>().examId;
-  const handleUpdateGrade = () => {
+  const submitHandler = async (data: any) => {
+    setLoading(true);
+    const formSubmitData: FormData = { ...data };
     const questionId = questionTrueFalse.question.id;
     const rightAnswer = "";
     const submission: GradeSubmission[] = [
@@ -54,6 +66,7 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
         setSnackbarType(AlertType.Success);
         setSnackbarContent(t("update_grade_success"));
         setOpenSnackbar(true);
+        setLoading(false);
       });
   };
 
@@ -100,6 +113,24 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
   useEffect(() => {
     handleGetAnsweryQuestionId(questionTrueFalse.question.id);
   }, []);
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      grade: yup.number().required().min(0).max(questionTrueFalse.question.defaultMark),
+      feedback: yup.string()
+    });
+  }, [questionTrueFalse.question.defaultMark]);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    }
+  });
 
   return (
     <Grid container spacing={1}>
@@ -216,21 +247,49 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
           />
         </Sheet>
 
-        <Stack direction={"row"} spacing={2} marginTop={2}>
-          <TextField
-            id='outlined-basic'
-            label={t("common_grade")}
-            variant='outlined'
-            size='small'
-            value={mark}
-            onChange={(e) => {
-              setMark(Number(e.target.value));
-            }}
-          />
-          <Button color='primary' onClick={handleUpdateGrade}>
+        <Box>
+          <Stack direction={"row"} spacing={2} marginTop={2}>
+            <Controller
+              name='grade'
+              control={control}
+              render={({ field }) => (
+                <InputTextFieldColumn
+                  type='number'
+                  title={t("common_grade")}
+                  titleRequired={true}
+                  useDefaultTitleStyle
+                  error={Boolean(errors.grade)}
+                  errorMessage={errors.grade?.message}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+
+            <Controller
+              name='feedback'
+              control={control}
+              render={({ field }) => (
+                <InputTextFieldColumn
+                  title={t("common_feedback")}
+                  titleRequired={false}
+                  useDefaultTitleStyle
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          </Stack>
+          <LoadButton
+            btnType={BtnType.Outlined}
+            color='primary'
+            style={{ marginTop: "20px" }}
+            onClick={handleSubmit(submitHandler)}
+            loading={loading}
+          >
             {t("update_grade")}
-          </Button>
-        </Stack>
+          </LoadButton>
+        </Box>
       </Grid>
       <SnackbarAlert
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}

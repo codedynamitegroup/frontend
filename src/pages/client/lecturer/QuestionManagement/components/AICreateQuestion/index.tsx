@@ -104,19 +104,19 @@ const AICreationQuestion = (props: Props) => {
     setLoading(true);
     setQuestions([]);
     try {
-      for await (const chunk of CreateQuestionByAI(
+      const genJob = await CreateQuestionByAI(
         topic,
         desciption,
         qtype,
         qamountAnswer,
         number_question,
         level
-      )) {
-        if (chunk && isResponseFormatQuestion(chunk)) {
-          const questionsTemp = chunk?.questions;
-          setQuestions(questionsTemp);
-          setLengthQuestion(questionsTemp.length);
-        }
+      );
+      if (genJob !== undefined) {
+        const data = await genJob;
+        const questionsTemp = data[0];
+        setQuestions(questionsTemp);
+        setLengthQuestion(questionsTemp.length);
       }
     } catch (error) {
       console.error("Error generating text:", error);
