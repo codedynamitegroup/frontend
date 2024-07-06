@@ -448,75 +448,92 @@ const CertificateCourseReviews = ({
               marginTop: "20px"
             }}
           >
-            {reviewData.reviews.reviews.map((review, index) => {
-              return (
-                <Box
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "25px"
-                  }}
-                >
-                  <Stack direction='column' gap={1}>
-                    <Stack
-                      direction='row'
-                      gap={2}
-                      alignItems='center'
-                      justifyContent='flex-start'
-                      margin={"5px"}
-                    >
-                      <Avatar
-                        sx={{
-                          bgcolor: `${generateHSLColorByRandomText(`${review.createdBy?.email || ""}${review.createdBy.firstName + review.createdBy.lastName}`)}`
-                        }}
-                        alt={review.createdBy?.email || ""}
-                        src={review.createdBy?.avatarUrl}
+            {reviewData.reviews.reviews.length === 0 ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  margin: "20px",
+                  marginLeft: "10px"
+                }}
+                translate-key='common_no_reviews'
+              >
+                <ParagraphBody>{t("common_no_reviews")}</ParagraphBody>
+              </Box>
+            ) : (
+              reviewData.reviews.reviews.map((review, index) => {
+                return (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "25px"
+                    }}
+                  >
+                    <Stack direction='column' gap={1}>
+                      <Stack
+                        direction='row'
+                        gap={2}
+                        alignItems='center'
+                        justifyContent='flex-start'
+                        margin={"5px"}
                       >
-                        {review.createdBy.firstName.charAt(0)}
-                      </Avatar>
-                      <Stack direction='column' gap={0}>
-                        <ParagraphBody width={"auto"} fontWeight={600}>
-                          {showEmailWithAsterisks(review.createdBy?.email || "")}
-                        </ParagraphBody>
-                        <Stack direction='row' gap={1}>
-                          <ParagraphSmall colorname='--gray-50'>
-                            {standardlizeUTCStringToLocaleString(
-                              review.createdAt as string,
-                              currentLang
-                            )}
-                          </ParagraphSmall>
-                          <Rating value={review.rating} readOnly size='small' />
+                        <Avatar
+                          sx={{
+                            bgcolor: `${generateHSLColorByRandomText(`${review.createdBy?.email || ""}${review.createdBy.firstName + review.createdBy.lastName}`)}`
+                          }}
+                          alt={review.createdBy?.email || ""}
+                          src={review.createdBy?.avatarUrl}
+                        >
+                          {review.createdBy.firstName.charAt(0)}
+                        </Avatar>
+                        <Stack direction='column' gap={0}>
+                          <ParagraphBody width={"auto"} fontWeight={600}>
+                            {showEmailWithAsterisks(review.createdBy?.email || "")}
+                          </ParagraphBody>
+                          <Stack direction='row' gap={1}>
+                            <ParagraphSmall colorname='--gray-50'>
+                              {standardlizeUTCStringToLocaleString(
+                                review.createdAt as string,
+                                currentLang
+                              )}
+                            </ParagraphSmall>
+                            <Rating value={review.rating} readOnly size='small' />
+                          </Stack>
                         </Stack>
                       </Stack>
+                      <ParagraphBody>{badwordsUtils.filter(review.content || "")}</ParagraphBody>
                     </Stack>
-                    <ParagraphBody>{badwordsUtils.filter(review.content || "")}</ParagraphBody>
-                  </Stack>
-                  <Divider
-                    sx={{
-                      marginBottom: "20px",
-                      width: "700px"
-                    }}
-                  />
-                </Box>
-              );
-            })}
+                    <Divider
+                      sx={{
+                        marginBottom: "20px",
+                        width: "700px"
+                      }}
+                    />
+                  </Box>
+                );
+              })
+            )}
           </Box>
         )}
-        <CustomPagination
-          count={reviewData.reviews.totalPages || 0}
-          page={reviewData.reviews.currentPage + 1 || 1}
-          handlePageChange={(event, value) => {
-            if (value === reviewData.reviews.currentPage + 1) return;
-            handleGetReviewsByCertificateCourseId({
-              certificateCourseId,
-              pageNo: value - 1
-            });
-          }}
-          showFirstButton
-          showLastButton
-          size={"medium"}
-        />
+        {reviewData.reviews.reviews.length > 0 && (
+          <CustomPagination
+            count={reviewData.reviews.totalPages || 0}
+            page={reviewData.reviews.currentPage + 1 || 1}
+            handlePageChange={(event, value) => {
+              if (value === reviewData.reviews.currentPage + 1) return;
+              handleGetReviewsByCertificateCourseId({
+                certificateCourseId,
+                pageNo: value - 1
+              });
+            }}
+            showFirstButton
+            showLastButton
+            size={"medium"}
+          />
+        )}
       </Box>
     </Box>
   );

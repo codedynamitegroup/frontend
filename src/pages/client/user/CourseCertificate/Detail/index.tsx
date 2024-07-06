@@ -165,7 +165,20 @@ const CourseCertificateDetail = () => {
         setReviewMetadata((prev) => ({
           ...prev,
           isLoading: false,
-          data: getRatingCountByCertificateCourseIdResponse
+          data: {
+            numOfOneStarReviews:
+              getRatingCountByCertificateCourseIdResponse.numOfOneStarReviews || 0,
+            numOfTwoStarReviews:
+              getRatingCountByCertificateCourseIdResponse.numOfTwoStarReviews || 0,
+            numOfThreeStarReviews:
+              getRatingCountByCertificateCourseIdResponse.numOfThreeStarReviews || 0,
+            numOfFourStarReviews:
+              getRatingCountByCertificateCourseIdResponse.numOfFourStarReviews || 0,
+            numOfFiveStarReviews:
+              getRatingCountByCertificateCourseIdResponse.numOfFiveStarReviews || 0,
+            numOfReviews: getRatingCountByCertificateCourseIdResponse.numOfReviews || 0,
+            avgRating: getRatingCountByCertificateCourseIdResponse.avgRating || 0
+          }
         }));
       } catch (error: any) {
         setReviewMetadata((prev) => ({
