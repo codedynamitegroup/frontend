@@ -422,6 +422,8 @@
   "certificate_detail_register_tooltip": "Please sign in to register for this course",
   "certificate_detail_chapter_resources": "Certificate Course Lessons",
   "certificate_detail_no_resources": "No lessons available",
+  "certificate_detail_review_success": "Review certificate course successfully",
+  "certificate_detail_review_fail": "Review certificate course failed",
 
   "dashboard_start_title": "Let's start your courses",
   "dashboard_continue_title": "Let's continue your courses",

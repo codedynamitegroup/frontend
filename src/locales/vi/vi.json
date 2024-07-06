@@ -421,6 +421,8 @@
   "certificate_detail_register_tooltip": "Hãy đăng nhập để có thể đăng ký khóa học này",
   "certificate_detail_chapter_resources": "Bài học của khóa học",
   "certificate_detail_no_resources": "Khóa học này chưa có bài học nào",
+  "certificate_detail_review_success": "Đánh giá khóa học thành công",
+  "certificate_detail_review_fail": "Đánh giá khóa học thất bại",
 
   "dashboard_start_title": "Bắt đầu khóa học của bạn",
   "dashboard_continue_title": "Tiếp tục khóa học của bạn",

@@ -122,19 +122,19 @@ const CertificateCourseReviews = ({
           content
         });
         if (createReviewResponse && createReviewResponse.reviewId) {
-          dispatch(setSuccessMess("Đánh giá thành công"));
+          dispatch(setSuccessMess(t("certificate_detail_review_success")));
           await handleGetRatingCountByCertificateCourseId(certificateCourseId);
           await handleGetReviewsByCertificateCourseId({ certificateCourseId });
         } else {
-          dispatch(setErrorMess("Đánh giá thất bại"));
+          dispatch(setErrorMess(t("certificate_detail_review_fail")));
         }
         setSubmitLoading(false);
       } catch (error: any) {
-        setErrorMess("Đánh giá thất bại");
+        setErrorMess(t("certificate_detail_review_fail"));
         setSubmitLoading(false);
       }
     },
-    [dispatch, handleGetRatingCountByCertificateCourseId, handleGetReviewsByCertificateCourseId]
+    [dispatch, handleGetRatingCountByCertificateCourseId, handleGetReviewsByCertificateCourseId, t]
   );
 
   const starPercentList = useMemo(() => {
