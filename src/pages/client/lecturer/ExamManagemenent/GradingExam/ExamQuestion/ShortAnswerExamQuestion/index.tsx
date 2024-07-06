@@ -5,13 +5,19 @@ import { useTranslation } from "react-i18next";
 import ParagraphBody from "components/text/ParagraphBody";
 import { ShortAnswerQuestion } from "models/coreService/entity/ShortAnswerQuestionEntity";
 import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { QuestionService } from "services/coreService/QuestionService";
 import { useNavigate, useParams } from "react-router-dom";
 import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
 import { QuestionSubmissionService } from "services/courseService/QuestionSubmissionService";
 import { routes } from "routes/routes";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import LoadButton from "components/common/buttons/LoadingButton";
+import { BtnType } from "components/common/buttons/Button";
 
 interface ShortAnswerExamQuestionProps {
   readOnly?: boolean;
@@ -20,21 +26,34 @@ interface ShortAnswerExamQuestionProps {
   questionIndex: number;
 }
 
+interface FormData {
+  grade: number;
+  feedback?: string;
+}
+
 const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
   const { t } = useTranslation();
   const { questionShortAnswer, questionSubmitContent, questionIndex } = props;
-
+  const [loading, setLoading] = useState(false);
   const [answerOfQuestions, setAnswerOfQuestion] = useState<AnswerOfQuestion[]>([]);
   const [mark, setMark] = useState<number>(0);
   const navigate = useNavigate();
   const submissionId = useParams<{ submissionId: string }>().submissionId;
   const courseId = useParams<{ courseId: string }>().courseId;
   const examId = useParams<{ examId: string }>().examId;
-  const handleUpdateGrade = () => {
+  const submitHandler = async (data: any) => {
+    setLoading(true);
+    const formSubmitData: FormData = { ...data };
     const questionId = questionShortAnswer.question.id;
     const rightAnswer = "";
     const submission: GradeSubmission[] = [
-      { examSubmissionId: submissionId || "", questionId, grade: mark, rightAnswer }
+      {
+        examSubmissionId: submissionId || "",
+        questionId,
+        grade: formSubmitData.grade,
+        rightAnswer,
+        feedback: formSubmitData.feedback
+      }
     ];
 
     QuestionSubmissionService.gradeQuestionSubmission(submission)
@@ -56,6 +75,7 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
         setSnackbarType(AlertType.Success);
         setSnackbarContent(t("update_grade_success"));
         setOpenSnackbar(true);
+        setLoading(false);
       });
   };
 
@@ -87,11 +107,25 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
 
   useEffect(() => {
     handleGetAnsweryQuestionId(questionShortAnswer.question.id);
-    console.log("questionShortAnswer", questionShortAnswer);
-    console.log("questionSubmitContent", questionSubmitContent);
-    console.log("questionIndex", questionIndex);
   }, []);
+  const schema = useMemo(() => {
+    return yup.object().shape({
+      grade: yup.number().required().min(0).max(questionShortAnswer.question.defaultMark),
+      feedback: yup.string()
+    });
+  }, [questionShortAnswer.question.defaultMark]);
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    }
+  });
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>
@@ -202,21 +236,49 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
             />
           </Sheet>
         ))}
-        <Stack direction={"row"} spacing={2} marginTop={2}>
-          <TextField
-            id='outlined-basic'
-            label={t("common_grade")}
-            variant='outlined'
-            size='small'
-            value={mark}
-            onChange={(e) => {
-              setMark(Number(e.target.value));
-            }}
-          />
-          <Button color='primary' onClick={handleUpdateGrade}>
+        <Box>
+          <Stack direction={"row"} spacing={2} marginTop={2}>
+            <Controller
+              name='grade'
+              control={control}
+              render={({ field }) => (
+                <InputTextFieldColumn
+                  type='number'
+                  title={t("common_grade")}
+                  titleRequired={true}
+                  useDefaultTitleStyle
+                  error={Boolean(errors.grade)}
+                  errorMessage={errors.grade?.message}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+
+            <Controller
+              name='feedback'
+              control={control}
+              render={({ field }) => (
+                <InputTextFieldColumn
+                  title={t("common_feedback")}
+                  titleRequired={false}
+                  useDefaultTitleStyle
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          </Stack>
+          <LoadButton
+            btnType={BtnType.Outlined}
+            color='primary'
+            style={{ marginTop: "20px" }}
+            onClick={handleSubmit(submitHandler)}
+            loading={loading}
+          >
             {t("update_grade")}
-          </Button>
-        </Stack>
+          </LoadButton>
+        </Box>
       </Grid>
       <SnackbarAlert
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}

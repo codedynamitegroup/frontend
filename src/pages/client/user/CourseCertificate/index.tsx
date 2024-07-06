@@ -261,20 +261,17 @@ const CourseCertificates = () => {
               <Heading5 translation-key='common_topics'>{t("common_topics")}</Heading5>
               <Box className={classes.couseCertificatesByTopic}>
                 {topicData.isLoading ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      width: "100%",
-                      gap: "10px"
-                    }}
-                  >
-                    <CircularProgress />
-                    <ParagraphBody>{t("common_loading")}</ParagraphBody>
-                  </Box>
+                  Array.from({ length: 7 }).map((_, index) => (
+                    <Skeleton
+                      key={index}
+                      variant='rectangular'
+                      width='100%'
+                      height={25}
+                      sx={{
+                        marginBottom: "15px"
+                      }}
+                    />
+                  ))
                 ) : (
                   <ToggleButtonGroup
                     orientation='vertical'
@@ -468,6 +465,22 @@ const CourseCertificates = () => {
                             <CircularProgress />
                             <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
                           </Box>
+                        ) : certificateCourses && certificateCourses.length === 0 ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              height: "100%",
+                              gap: "10px"
+                            }}
+                            translate-key='common_no_relavant_certificate_course'
+                          >
+                            <ParagraphBody>
+                              {t("common_no_relavant_certificate_course")}
+                            </ParagraphBody>
+                          </Box>
                         ) : (
                           <Grid container spacing={5}>
                             {certificateCourses?.map((course, index) => (
@@ -512,6 +525,23 @@ const CourseCertificates = () => {
                         >
                           <CircularProgress />
                           <ParagraphBody>{t("common_loading_search")}</ParagraphBody>
+                        </Box>
+                      ) : certificateCoursesByEachTopic.get(catalogActive) &&
+                        certificateCoursesByEachTopic.get(catalogActive)?.length === 0 ? (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                            gap: "10px"
+                          }}
+                          translate-key='common_no_relavant_certificate_course'
+                        >
+                          <ParagraphBody>
+                            {t("common_no_relavant_certificate_course")}
+                          </ParagraphBody>
                         </Box>
                       ) : (
                         <Grid container spacing={5}>
