@@ -72,6 +72,7 @@ const EditShortAnswerQuestion = (props: Props) => {
   const courseId = useParams<{ courseId: string }>().courseId;
   const location = useLocation();
   const isQuestionBank = location.state?.isQuestionBank;
+  const isLecturerEditQuestion = location.state?.isLecturerEditQuestion;
   const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
@@ -242,13 +243,12 @@ const EditShortAnswerQuestion = (props: Props) => {
       })
       .finally(() => {
         setSubmitLoading(false);
-        // if (isAdminQuestionBank)
-        //   navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else if (isOrgAdminQuestionBank)
-        //   navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else if (isQuestionBank)
-        //   navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+        if (isLecturerEditQuestion)
+          navigate(
+            routes.lecturer.exam.edit
+              .replace(":courseId", courseId || "")
+              .replace(":examId", examId || "")
+          );
       });
   };
 
