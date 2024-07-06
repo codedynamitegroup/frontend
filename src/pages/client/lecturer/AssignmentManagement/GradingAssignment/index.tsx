@@ -254,8 +254,9 @@ export default function AssignmentGrading() {
 
   useEffect(() => {
     const fetchSubmissionAssignment = async () => {
+      if (!submissionId) return;
       const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
-        assignmentSubmissionStudent
+        submissionId?.toString()
       );
       setStudentSubmissionCurrent(response);
       const grade = response.submissionGrade?.grade ?? -1;
@@ -263,7 +264,7 @@ export default function AssignmentGrading() {
       setAssignmentFeedback(response?.feedback ?? "");
     };
     fetchSubmissionAssignment();
-  }, [assignmentSubmissionStudent]);
+  }, [submissionId]);
 
   const navigateToNextStudent = () => {
     const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(

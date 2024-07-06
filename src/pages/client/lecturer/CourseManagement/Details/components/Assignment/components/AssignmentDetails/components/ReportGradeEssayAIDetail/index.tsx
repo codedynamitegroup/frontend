@@ -73,9 +73,11 @@ export default function ReportGradeEssayAIDetail() {
     submissionId: string;
     reportId: string;
   }>();
+
   const [assignmentSubmissionStudent, setAssignmentSubmissionStudent] = React.useState(
-    submissionId?.toString() ?? ""
+    submissionId?.toString()
   );
+
   const [studentSubmissionCurrent, setStudentSubmissionCurrent] =
     React.useState<SubmissionAssignmentEntity | null>(null);
 
@@ -152,7 +154,7 @@ export default function ReportGradeEssayAIDetail() {
 
   const handleSave = async (continueToNext = false) => {
     const submissionGrade = submissionAssignmentState.submissionAssignments.find(
-      (submission) => submission.id === assignmentSubmissionStudent
+      (submission) => submission.id === submissionId?.toString()
     )?.submissionGrade;
     if (submissionGrade) {
       const updateSubmissionGrade: UpdateSubmissionGradeCommand = {
@@ -272,21 +274,23 @@ export default function ReportGradeEssayAIDetail() {
     }
   }, [handleGetReportDetail, reportId]);
 
-  // useEffect(() => {
-  //   if (assignmentSubmissionStudent) {
-  //     navigate(
-  //       routes.lecturer.assignment.grading
-  //         .replace(":assignmentId", assignmentId ?? "")
-  //         .replace(":courseId", courseId ?? "")
-  //         .replace(":submissionId", assignmentSubmissionStudent)
-  //     );
-  //   }
-  // }, [assignmentSubmissionStudent, assignmentId, courseId, navigate]);
+  useEffect(() => {
+    if (assignmentSubmissionStudent) {
+      navigate(
+        routes.lecturer.assignment.ai_grading_report_detail
+          .replace(":assignmentId", assignmentId ?? "")
+          .replace(":courseId", courseId ?? "")
+          .replace(":reportId", reportId ?? "")
+          .replace(":submissionId", assignmentSubmissionStudent)
+      );
+    }
+  }, [assignmentSubmissionStudent, assignmentId, courseId, navigate, reportId]);
 
   useEffect(() => {
     const fetchSubmissionAssignment = async () => {
+      if (!submissionId) return;
       const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
-        assignmentSubmissionStudent
+        submissionId.toString()
       );
       setStudentSubmissionCurrent(response);
       const grade = response.submissionGrade?.grade ?? -1;
@@ -294,11 +298,11 @@ export default function ReportGradeEssayAIDetail() {
       setAssignmentFeedback(response?.feedback ?? "");
     };
     fetchSubmissionAssignment();
-  }, [assignmentSubmissionStudent]);
+  }, [submissionId]);
 
   const navigateToNextStudent = () => {
     const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(
-      (submission) => submission.id === assignmentSubmissionStudent
+      (submission) => submission.id === submissionId?.toString()
     );
     const nextIndex = (currentIndex + 1) % submissionAssignmentState.submissionAssignments.length;
     const nextStudentId = submissionAssignmentState.submissionAssignments[nextIndex].id;
@@ -561,8 +565,8 @@ export default function ReportGradeEssayAIDetail() {
                         }
 
                         setStudentSubmissionCurrent(params.row);
-                        setAssignmentMaximumGrade("");
-                        setAssignmentFeedback("");
+                        // setAssignmentMaximumGrade("");
+                        // setAssignmentFeedback("");
                         navigate(
                           routes.lecturer.assignment.ai_grading_report_detail
                             .replace(":reportId", reportId || "")
@@ -617,12 +621,12 @@ export default function ReportGradeEssayAIDetail() {
                       {t("course_lecturer_submission_file")}
                     </TextTitle>
                     {submissionAssignmentState.submissionAssignments.find(
-                      (submission) => submission.id === assignmentSubmissionStudent
+                      (submission) => submission.id === submissionId?.toString()
                     )?.submissionAssignmentFiles.length !== 0 ? (
                       <CustomFileList
                         files={
                           submissionAssignmentState.submissionAssignments
-                            .find((submission) => submission.id === assignmentSubmissionStudent)
+                            .find((submission) => submission.id === submissionId?.toString())
                             ?.submissionAssignmentFiles?.map(
                               (attachment: AssignmentResourceEntity) => {
                                 let f: File = new File([""], attachment.fileName, {
@@ -652,12 +656,12 @@ export default function ReportGradeEssayAIDetail() {
                     {t("course_lecturer_submission_file")}
                   </TextTitle>
                   {submissionAssignmentState.submissionAssignments.find(
-                    (submission) => submission.id === assignmentSubmissionStudent
+                    (submission) => submission.id === submissionId?.toString()
                   )?.submissionAssignmentFiles.length !== 0 ? (
                     <CustomFileList
                       files={
                         submissionAssignmentState.submissionAssignments
-                          .find((submission) => submission.id === assignmentSubmissionStudent)
+                          .find((submission) => submission.id === submissionId?.toString())
                           ?.submissionAssignmentFiles?.map(
                             (attachment: AssignmentResourceEntity) => {
                               let f: File = new File([""], attachment.fileName, {

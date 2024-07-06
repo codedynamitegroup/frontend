@@ -128,7 +128,7 @@ const StudentCourseInformation = () => {
                     collapseOpen[index] === undefined ? true : Boolean(collapseOpen[index]);
 
                   return (
-                    <Box className={classes.generalInfo}>
+                    <Box className={classes.generalInfo} key={index}>
                       <Box display='flex' alignItems='center' margin={1}>
                         {isOpen ? (
                           <IconButton

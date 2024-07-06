@@ -30,7 +30,7 @@ import { openEditRubric, openNewRubric } from "reduxes/NewEditRubricDialog";
 import { close as closeSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import EditRubricDialog from "../EditRubricDialog";
 import { useTranslation } from "react-i18next";
-import { RubricUserService } from "services/courseService/RubricUser";
+import { RubricUserService } from "services/courseService/RubricUserService";
 import useAuth from "hooks/useAuth";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RubricUserEntity } from "models/courseService/entity/RubricUserEntity";
@@ -39,8 +39,9 @@ import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-
-const tempCriteria = ["Innovation", "Quality", "Efficiency", "Completeness"];
+import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface RubricUserProps {
   id: string;
@@ -61,6 +62,10 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
   const status = useSelector((state: RootState) => state.selectRubricDialog.status);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const [openEditRubricDialog, setOpenEditRubricDialog] = useState(false);
+  const onClose = () => {
+    setOpenEditRubricDialog(false);
+  };
 
   const handleClose = () => {
     dispatch(close());
@@ -76,10 +81,7 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
     // onSelectRubric(params.row);
     // dispatch(closeSelectRubricDialog());
   };
-  const editHandler = (params: GridRenderCellParams<any>) => {
-    dispatch(openEditRubric());
-    dispatch(close());
-  };
+
   const addRubricHandler = () => {
     dispatch(openNewRubric());
     dispatch(closeSelectRubricDialog());
@@ -87,8 +89,24 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
 
   const { loggedUser } = useAuth();
   const [rubrics, setRubrics] = useState<RubricUserEntity[]>([]);
-  const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
+  const [openPreviewRubricDialog, setOpenPreviewRubricDialog] = useState<boolean>(false);
   const [previewRubric, setPreviewRubric] = useState<RubricUserEntity>();
+  const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
+  const [rubricIdDelete, setRubricIdDelete] = useState<string>("");
+
+  console.log("rubricIdDelete", rubricIdDelete);
+  const handleDeleteRubric = async () => {
+    if (!rubricIdDelete) return;
+    RubricUserService.deleteRubricUser(rubricIdDelete)
+      .then(() => {
+        dispatch(setSuccessMess("Delete rubric successfully"));
+        dispatch(close());
+      })
+      .catch((error) => {
+        dispatch(setErrorMess("Delete rubric failed"));
+        console.error("Failed to delete rubric", error);
+      });
+  };
 
   const getAllRubricsByUserId = useCallback(async () => {
     await RubricUserService.getAllOrganizationsByUserId({
@@ -105,6 +123,7 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
   useEffect(() => {
     getAllRubricsByUserId();
   }, [getAllRubricsByUserId]);
+
   const tableHeading: GridColDef[] = [
     {
       field: "name",
@@ -141,14 +160,25 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
       headerName: t("common_action"),
       renderCell: (params) => (
         <Stack direction='row' spacing={1}>
-          <Button variant='outlined' color='error' className={classes.iconBtn}>
+          <Button
+            variant='outlined'
+            color='error'
+            className={classes.iconBtn}
+            onClick={() => {
+              setRubricIdDelete(params.row.id);
+              setOpenConfirmAlert(true);
+            }}
+          >
             <DeleteIcon fontSize='small' color='error' />
           </Button>
           <Button
             variant='outlined'
             color='primary'
             className={classes.iconBtn}
-            onClick={() => editHandler(params)}
+            onClick={() => {
+              setPreviewRubric(params.row as RubricUserEntity);
+              setOpenEditRubricDialog(true);
+            }}
           >
             <EditRoundedIcon fontSize='small' />
           </Button>
@@ -169,7 +199,7 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
             className={classes.iconBtn}
             onClick={() => {
               setPreviewRubric(params.row as RubricUserEntity);
-              setOpenTestCasePopup(true);
+              setOpenPreviewRubricDialog(true);
             }}
           >
             <RemoveRedEyeIcon fontSize='small' />
@@ -277,16 +307,28 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <EditRubricDialog
-        criteries={tempCriteria}
-        name='Rubric 1'
-        description='Rubric 1 description'
-      />
+      {openEditRubricDialog && (
+        <EditRubricDialog
+          previewRubric={previewRubric}
+          onClose={onClose}
+          isOpen={openEditRubricDialog}
+        />
+      )}
+
       <RubicsDialog
-        open={openTestCasePopup}
+        open={openPreviewRubricDialog}
         title='Rubric'
-        handleClose={() => setOpenTestCasePopup(false)}
+        handleClose={() => setOpenPreviewRubricDialog(false)}
         previewRubric={previewRubric}
+      />
+      <ConfirmDelete
+        isOpen={openConfirmAlert}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this rubric?'
+        onCancel={() => {
+          setOpenConfirmAlert(false);
+        }}
+        onDelete={handleDeleteRubric}
       />
     </>
   );

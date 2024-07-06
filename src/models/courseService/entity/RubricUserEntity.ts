@@ -11,3 +11,10 @@ export interface CreateRubricUserCommand {
   rubricContent: string;
   userId: string;
 }
+
+export interface UpdateRubricUserCommand {
+  rubricUserId: string;
+  rubricName?: string;
+  rubricDescription?: string;
+  rubricContent?: string;
+}

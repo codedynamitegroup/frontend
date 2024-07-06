@@ -20,7 +20,7 @@ import i18next from "i18next";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestStartTimeFilterEnum } from "models/coreService/enum/ContestStartTimeFilterEnum";
 import moment from "moment";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +37,6 @@ interface ContestManagementProps extends ContestEntity {
 }
 
 const ContestManagement = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");

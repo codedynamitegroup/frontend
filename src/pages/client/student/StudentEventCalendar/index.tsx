@@ -1,6 +1,6 @@
 import { DateSelectArg } from "@fullcalendar/core";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Divider, Stack } from "@mui/material";
+import { Box, Divider, Grid, Stack } from "@mui/material";
 import CustomFullCalendar from "components/calendar/CustomFullCalendar";
 import Button, { BtnType } from "components/common/buttons/Button";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
@@ -30,7 +30,7 @@ import {
   IFullCalendarEvent
 } from "pages/client/lecturer/LecturerEventCalendar";
 
-const StudentEventCalendar = () => {
+const StudentEventCalendar = ({ inDetails }: { inDetails?: boolean }) => {
   const { t } = useTranslation();
   const { loggedUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
@@ -125,12 +125,12 @@ const StudentEventCalendar = () => {
         };
       });
       try {
-        const getCertificateCoursesResponse = await EventCalendarService.getEventCalendars({
+        const getEventCalendarsResponse = await EventCalendarService.getEventCalendars({
           courseId: data.filterCourse === "ALL" ? undefined : data.filterCourse,
           fromTime,
           toTime
         });
-        if (getCertificateCoursesResponse.calendarEvents.length === 0) {
+        if (getEventCalendarsResponse.calendarEvents.length === 0) {
           setData((pre) => {
             return {
               ...pre,
@@ -143,7 +143,7 @@ const StudentEventCalendar = () => {
         setData((pre) => {
           return {
             ...pre,
-            currentEvents: getCertificateCoursesResponse.calendarEvents.map((value: any) => {
+            currentEvents: getEventCalendarsResponse.calendarEvents.map((value: any) => {
               return {
                 id: value.calendarEventId,
                 title: value.name,
@@ -422,66 +422,71 @@ const StudentEventCalendar = () => {
       <Box id={classes.calendarBody}>
         <Heading1 translation-key='calendar_title'>{t("calendar_title")}</Heading1>
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            direction: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "10px"
-          }}
-        >
-          <Stack
-            direction='row'
-            spacing={1}
+        <Grid container spacing={2}>
+          <Grid item xs={inDetails === true ? 12 : 6}>
+            <Stack
+              direction='row'
+              spacing={1}
+              sx={{
+                alignItems: "center"
+              }}
+            >
+              <BasicSelect
+                labelId='select-calendar-type-label'
+                value={calendarViewType}
+                onHandleChange={(value) => {
+                  setCalendarViewType(value);
+                }}
+                width={"120px"}
+                items={[
+                  {
+                    value: "0",
+                    label: "Month"
+                  },
+                  {
+                    value: "1",
+                    label: "Day"
+                  }
+                ]}
+              />
+              <BasicSelect
+                labelId='select-assignment-section-label'
+                value={data.filterCourse}
+                onHandleChange={(value) => {
+                  setData((pre) => {
+                    return {
+                      ...pre,
+                      filterCourse: value
+                    };
+                  });
+                }}
+                items={selectCourseItems}
+                translation-key='calendar_all_course'
+              />
+            </Stack>
+          </Grid>
+          <Grid
+            item
+            xs={inDetails === true ? 12 : 6}
             sx={{
-              alignItems: "center"
+              display: "flex",
+              justifyContent: "flex-end"
             }}
           >
-            <BasicSelect
-              labelId='select-calendar-type-label'
-              value={calendarViewType}
-              onHandleChange={(value) => {
-                setCalendarViewType(value);
+            <Button
+              btnType={BtnType.Outlined}
+              onClick={() => {
+                openAddEventDialog();
               }}
-              width={"120px"}
-              items={[
-                {
-                  value: "0",
-                  label: "Month"
-                },
-                {
-                  value: "1",
-                  label: "Day"
-                }
-              ]}
-            />
-            <BasicSelect
-              labelId='select-assignment-section-label'
-              value={data.filterCourse}
-              onHandleChange={(value) => {
-                setData((pre) => {
-                  return {
-                    ...pre,
-                    filterCourse: value
-                  };
-                });
-              }}
-              items={selectCourseItems}
-              translation-key='calendar_all_course'
-            />
-          </Stack>
-          <Button
-            btnType={BtnType.Outlined}
-            onClick={() => {
-              openAddEventDialog();
-            }}
-            startIcon={<AddIcon />}
-            translation-key='calendar_add_event'
-          >
-            {t("calendar_add_event")}
-          </Button>
-        </Box>
+              translation-key='calendar_add_event'
+            >
+              <Stack direction='row' spacing={1}>
+                <AddIcon />
+                {t("calendar_add_event")}
+              </Stack>
+            </Button>
+          </Grid>
+        </Grid>
         <CustomFullCalendar
           isEventsLoading={data.isLoading}
           calendarViewType={calendarViewType}

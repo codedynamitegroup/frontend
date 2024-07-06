@@ -9,8 +9,6 @@ import {
   Slide,
   AppBar,
   Toolbar,
-  Container,
-  Input,
   IconButton,
   Box,
   Stack,
@@ -25,29 +23,22 @@ import { open as openSelectRubricDialog } from "reduxes/SelectRubricDialog";
 import { styled } from "@mui/material/styles";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { useTranslation } from "react-i18next";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useRef } from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import AddIcon from "@mui/icons-material/Add";
 import { useForm, useFieldArray, Controller, set } from "react-hook-form";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberInput";
 import ArrowDropUpRoundedIcon from "@mui/icons-material/ArrowDropUpRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import Heading6 from "components/text/Heading6";
 import Heading5 from "components/text/Heading5";
-import Heading3 from "components/text/Heading3";
 import Heading2 from "components/text/Heading2";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { CreateRubricUserCommand } from "models/courseService/entity/RubricUserEntity";
 import useAuth from "hooks/useAuth";
-import { RubricUserService } from "services/courseService/RubricUser";
-import { setSuccessMess } from "reduxes/AppStatus";
+import { RubricUserService } from "services/courseService/RubricUserService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
-interface PropsData {
-  name?: string;
-  description?: string;
-  headerHeight: number;
-}
 interface NestedPropsData {
   parentIndex: number;
   control: any;
@@ -126,8 +117,14 @@ const Transition = forwardRef(function Transition(
   return <Slide direction='up' ref={ref} {...props} />;
 });
 
-const NewRubricDialog = ({ headerHeight }: PropsData) => {
-  const { register, control, handleSubmit, reset, resetField, trigger, setError } = useForm({
+const NewRubricDialog = () => {
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     // defaultValues: {}; you can populate the fields by this attribute
   });
   const { fields, append, remove } = useFieldArray({
@@ -166,13 +163,13 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
         dispatch(closeNewRubric());
       })
       .catch((err) => {
+        dispatch(setErrorMess("Failed to create rubric"));
         console.error("Failed to create rubric", err);
       });
   };
   const handleAddNewCriteriaField = () => {
     append({
       criteriaName: "",
-      criteriaGrade: "",
 
       scale: [{ score: 1, description: "" }]
     });
@@ -324,7 +321,7 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
                                 placeholder={t("grading_config_enter_criteria_name")}
                                 translation-key='grading_config_enter_criteria_name'
                               />
-                              <Heading6 translation-key='grading_config_criteria_grade'>
+                              {/* <Heading6 translation-key='grading_config_criteria_grade'>
                                 {t("grading_config_criteria_grade")} (Optional)
                               </Heading6>
                               <TextField
@@ -336,7 +333,7 @@ const NewRubricDialog = ({ headerHeight }: PropsData) => {
                                 {...register(`criteria.${index}.criteriaGrade`)}
                                 placeholder={t("grading_config_criteria_grade_enter")}
                                 translation-key='grading_config_criteria_grade_enter'
-                              />
+                              /> */}
                             </Grid>
                             <Grid item xs={12}>
                               <Grid container spacing={1}>

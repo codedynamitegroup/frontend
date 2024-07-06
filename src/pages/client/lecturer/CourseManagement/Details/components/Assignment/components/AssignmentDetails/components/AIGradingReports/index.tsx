@@ -119,7 +119,7 @@ const AIGradingReports = () => {
             <Chip
               label={params.value}
               className={
-                params.value.status === AssignmentAIGradeEssayStatus.SUCCESS
+                params.value === AssignmentAIGradeEssayStatus.SUCCESS
                   ? classes.graded
                   : classes.queue
               }

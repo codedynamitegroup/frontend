@@ -19,7 +19,7 @@ export const AppStatus = () => {
       {(isLoading || isLoadingAuth) && <LoadingScreen />}
       <Snackbar
         open={!!status.error}
-        autoHideDuration={5000}
+        autoHideDuration={2000}
         onClose={() => dispach(clearErrorMess(undefined))}
         anchorOrigin={{
           vertical: "top",
@@ -37,7 +37,7 @@ export const AppStatus = () => {
       </Snackbar>
       <Snackbar
         open={!!status.success}
-        autoHideDuration={5000}
+        autoHideDuration={2000}
         onClose={() => dispach(clearSuccessMess(undefined))}
         anchorOrigin={{
           vertical: "top",
@@ -57,7 +57,7 @@ export const AppStatus = () => {
 
       <Snackbar
         open={!!status.info}
-        autoHideDuration={5000}
+        autoHideDuration={2000}
         onClose={() => dispach(clearInfoMess(undefined))}
         anchorOrigin={{
           vertical: "top",

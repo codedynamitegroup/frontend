@@ -48,6 +48,7 @@ export interface GetQuestionSubmissionEntity {
   files: SubmitQuestionFile[];
   flag: boolean;
   answerStatus: boolean;
+  feedback: string;
 }
 
 export interface GetQuestionSubmissionResponse {

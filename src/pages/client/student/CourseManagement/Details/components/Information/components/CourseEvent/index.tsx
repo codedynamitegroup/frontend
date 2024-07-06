@@ -1,72 +1,60 @@
-import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
-import classes from "./styles.module.scss";
+import { ListItemButton, Stack } from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText/ListItemText";
-import Typography from "@mui/material/Typography/Typography";
-import { Box, ListItemButton } from "@mui/material";
+import ParagraphBody from "components/text/ParagraphBody";
+import i18next from "i18next";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
 
 interface PropData {
-  id: number;
   name: string;
-  type: ECourseResourceType;
-  startDate: string;
+  type: NotificationComponentTypeEnum;
   endDate: string;
-  status: ECourseEventStatus;
 }
 
 const StudentCourseEvent = (props: PropData) => {
-  const { id, name, type, startDate, endDate, status } = props;
+  const { name, type, endDate } = props;
   const { t } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
   let courseTypeString = "";
-  const backgroundColor = status === ECourseEventStatus.submitted ? "var(--gray-3)" : "white";
-  const textDecorLine = status === ECourseEventStatus.submitted ? "line-through" : "none";
+  const backgroundColor = "white";
+  const textDecorLine = "none";
   switch (type) {
-    case ECourseResourceType.assignment:
+    case NotificationComponentTypeEnum.ASSIGNMENT:
       courseTypeString = t("common_type_assignment");
+      break;
+    case NotificationComponentTypeEnum.EXAM:
+      courseTypeString = t("common_type_exam");
       break;
     default:
       break;
   }
 
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18next.language]);
+
   return (
     <ListItem alignItems='flex-start' sx={{ backgroundColor: backgroundColor }}>
       <ListItemButton>
         <ListItemText
-          primary={
-            <>
-              <Typography
-                component='span'
-                variant='body2'
-                color='text.primary'
-                sx={{ textDecorationLine: textDecorLine }}
-              >
-                {name}
-              </Typography>
-            </>
-          }
+          primary={<ParagraphBody fontWeight={600}>{name}</ParagraphBody>}
           secondary={
             <>
-              <Typography
-                translation-key='common_type_assignment'
-                component='span'
-                variant='body2'
-                color='text.primary'
-              >
-                {courseTypeString}
-              </Typography>
-              <Box>
-                <Typography
-                  sx={{ display: "inline" }}
-                  component='span'
-                  variant='body2'
-                  color='text.primary'
-                  translation-key='common_deadline'
-                >
-                  {t("common_deadline")}:
-                </Typography>
-                {` ${endDate} `}
-              </Box>
+              <ParagraphBody fontWeight={600}>{courseTypeString}</ParagraphBody>
+              <Stack direction='row' spacing={1} alignItems='center'>
+                <ParagraphBody style={{ textDecoration: textDecorLine }} fontWeight={600}>
+                  {`${t("common_deadline")}:`}
+                </ParagraphBody>
+                <ParagraphBody style={{ textDecoration: textDecorLine }} fontWeight={300}>
+                  {standardlizeUTCStringToLocaleString(endDate as string, currentLang)}
+                </ParagraphBody>
+              </Stack>
             </>
           }
         />
