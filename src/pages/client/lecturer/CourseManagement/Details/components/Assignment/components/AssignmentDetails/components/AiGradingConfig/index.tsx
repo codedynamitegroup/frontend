@@ -256,9 +256,7 @@ const GradingConfig = () => {
         </>
       )}
 
-      {stateNewRubricDialog.newRubricStatus && (
-        <NewRubricDialog headerHeight={sidebarStatus.headerHeight} />
-      )}
+      {stateNewRubricDialog.newRubricStatus && <NewRubricDialog />}
 
       <SelectCriteriaConfig />
     </>

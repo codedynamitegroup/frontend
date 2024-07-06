@@ -96,9 +96,6 @@ const AICreationQuestion = (props: Props) => {
       return prevQuestions.filter((q) => q.id !== index);
     });
   };
-  function isResponseFormatQuestion(obj: any): obj is IFormatQuestion {
-    return typeof obj.qtypeId === "number" && typeof obj.questions === "object";
-  }
 
   const handleGenerate = async () => {
     setLoading(true);
