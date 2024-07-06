@@ -5,36 +5,34 @@ import Heading1 from "components/text/Heading1";
 import Heading2 from "components/text/Heading2";
 import TextTitle from "components/text/TextTitle";
 import { useEffect, useState } from "react";
-import UserAvatarAndName from "./components/UserAvatarAndName";
+import UserAvatarAndName from "./components/UserAvatar";
 import UserInformationDetailsDialog from "./components/UserInformationDetailsDialog";
 import UserPasswordChangeDialog from "./components/UserPasswordChangeDialog";
 import UserRecentActivities from "./components/UserRecentActivities";
 import classes from "./styles.module.scss";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "reduxes/Auth";
-import { User } from "models/authService/entity/user";
 import ParagraphBody from "components/text/ParagraphBody";
 import { format } from "date-fns";
+import useAuth from "hooks/useAuth";
 
 const UserInformation = () => {
   const { t } = useTranslation();
-  const user: User = useSelector(selectCurrentUser);
+  const { loggedUser } = useAuth();
 
   const [data, setData] = useState({
     isUserInformationDetailsModalOpen: false,
     isUserPasswordChangeModalOpen: false,
-    userInfo: user
+    userInfo: loggedUser
   });
 
   useEffect(() => {
-    if (user) {
+    if (loggedUser) {
       setData({
         ...data,
-        userInfo: user
+        userInfo: loggedUser
       });
     }
-  }, [user]);
+  }, [loggedUser, data]);
 
   const onHanldeChangePassword = () => {
     setData((pre) => ({
@@ -75,14 +73,16 @@ const UserInformation = () => {
               >
                 {t("user_detail_edit_account")}
               </Button>
-              <Button
-                btnType={BtnType.Primary}
-                fullWidth
-                onClick={onHanldeChangePassword}
-                translation-key='user_detail_change_password'
-              >
-                {t("user_detail_change_password")}
-              </Button>
+              {loggedUser?.isLinkedWithSystemAccount && (
+                <Button
+                  btnType={BtnType.Primary}
+                  fullWidth
+                  onClick={onHanldeChangePassword}
+                  translation-key='user_detail_change_password'
+                >
+                  {t("user_detail_change_password")}
+                </Button>
+              )}
             </Box>
             <Box className={classes.userGeneralInfo}>
               <Heading2 translation-key='user_detail'>{t("user_detail")}</Heading2>
@@ -99,7 +99,7 @@ const UserInformation = () => {
               {data.userInfo?.email && (
                 <Grid container spacing={1} columns={12}>
                   <Grid item xs={12}>
-                    <TextTitle>Email</TextTitle>
+                    <TextTitle>{t("common_email")}</TextTitle>
                   </Grid>
                   <Grid item xs={12}>
                     <Button
@@ -132,46 +132,51 @@ const UserInformation = () => {
           </Container>
         </Grid>
       </Grid>
-      <UserInformationDetailsDialog
-        open={data.isUserInformationDetailsModalOpen}
-        handleClose={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserInformationDetailsModalOpen: false
-          }));
-        }}
-        title={t("user_detail_dialog_title")}
-        translation-key='user_detail_dialog_title'
-      />
-      <UserPasswordChangeDialog
-        open={data.isUserPasswordChangeModalOpen}
-        handleClose={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false
-          }));
-        }}
-        title={t("user_detail_change_password")}
-        cancelText={t("common_back")}
-        confirmText={t("user_detail_change_password")}
-        onHandleCancel={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false
-          }));
-        }}
-        onHanldeConfirm={() => {
-          setData((pre) => ({
-            ...pre,
-            isUserPasswordChangeModalOpen: false
-          }));
-        }}
-        translation-key={[
-          "user_detail_change_password",
-          "common_back",
-          "user_detail_change_password"
-        ]}
-      />
+      {data.isUserInformationDetailsModalOpen && (
+        <UserInformationDetailsDialog
+          open={data.isUserInformationDetailsModalOpen}
+          handleClose={() => {
+            setData((pre) => ({
+              ...pre,
+              isUserInformationDetailsModalOpen: false
+            }));
+          }}
+          title={t("user_detail_dialog_title")}
+          translation-key='user_detail_dialog_title'
+        />
+      )}
+
+      {loggedUser?.isLinkedWithSystemAccount && data.isUserPasswordChangeModalOpen && (
+        <UserPasswordChangeDialog
+          open={data.isUserPasswordChangeModalOpen}
+          handleClose={() => {
+            setData((pre) => ({
+              ...pre,
+              isUserPasswordChangeModalOpen: false
+            }));
+          }}
+          title={t("user_detail_change_password")}
+          cancelText={t("common_back")}
+          confirmText={t("user_detail_change_password")}
+          onHandleCancel={() => {
+            setData((pre) => ({
+              ...pre,
+              isUserPasswordChangeModalOpen: false
+            }));
+          }}
+          onHanldeConfirm={() => {
+            setData((pre) => ({
+              ...pre,
+              isUserPasswordChangeModalOpen: false
+            }));
+          }}
+          translation-key={[
+            "user_detail_change_password",
+            "common_back",
+            "user_detail_change_password"
+          ]}
+        />
+      )}
     </Grid>
   );
 };

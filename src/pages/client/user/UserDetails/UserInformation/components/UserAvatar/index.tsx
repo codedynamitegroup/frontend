@@ -14,7 +14,7 @@ interface UserAvatarAndNameProps {
   avatarUrl?: string;
 }
 
-const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
+const UserAvatar = (props: UserAvatarAndNameProps) => {
   const [uploadAvatar, setUploadAvatar] = useState<File | undefined | string>(props?.avatarUrl);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -81,4 +81,4 @@ const UserAvatarAndName = (props: UserAvatarAndNameProps) => {
   );
 };
 
-export default UserAvatarAndName;
+export default UserAvatar;
