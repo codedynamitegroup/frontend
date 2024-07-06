@@ -1,15 +1,13 @@
 import { AppBar, Box, Tab, Tabs, Toolbar } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
-import { memo, useMemo } from "react";
+import { lazy, memo, useMemo } from "react";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import StudentCourseInformation from "./components/Information";
 import StudentCourseGrade from "./components/Grade";
 import StudentCourseParticipant from "./components/Participant";
 import StudentCourseAssignment from "./components/Assignment";
-import StudentCourseAssignmentDetails from "./components/Assignment/AssignmentDetails";
-import StudentCourseExamDetails from "./components/Assignment/ExamDetails";
 import { useTranslation } from "react-i18next";
 import StudentEventCalendar from "../../StudentEventCalendar";
 import { Grid } from "@mui/material";
@@ -19,6 +17,10 @@ import { Paper, Typography, List, Divider } from "@mui/material";
 import StudentCourseEvent from "./components/Information/components/CourseEvent";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+const StudentCourseAssignmentDetails = lazy(
+  () => import("./components/Assignment/AssignmentDetails")
+);
+const StudentCourseExamDetails = lazy(() => import("./components/Assignment/ExamDetails"));
 
 interface Props {}
 

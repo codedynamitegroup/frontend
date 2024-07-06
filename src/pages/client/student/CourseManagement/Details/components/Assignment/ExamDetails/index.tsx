@@ -397,7 +397,11 @@ const StudentCourseExamDetails = () => {
         <Heading2 translation-key='exam_detail_grading_method_high_score'>
           {t("exam_detail_grading_method_high_score")}
           {": "}
-          <span style={{ color: "red" }}>{highestScore}</span>
+          <span style={{ color: "red" }}>
+            {examSubmissions.some((submission) => submission.status === "SUBMITTED")
+              ? t("common_not_graded")
+              : highestScore}
+          </span>
           {" / "}
           {exam.maxScores}
         </Heading2>

@@ -2,11 +2,13 @@ import { Box, Grid, Stack, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Textarea } from "@mui/joy";
+import { Card, Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
 
 import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 import { FileCard } from "@files-ui/react";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import Heading6 from "components/text/Heading6";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
@@ -127,7 +129,25 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
         </Grid>
       )}
 
-      {isGraded && <Grid item xs={12}></Grid>}
+      {isGraded && (
+        <>
+          <Grid item xs={12}>
+            <Card variant='soft' color={"warning"}>
+              {questionEssayQuestion?.question?.generalFeedback && (
+                <ParagraphSmall>{questionEssayQuestion?.question?.generalFeedback}</ParagraphSmall>
+              )}
+            </Card>
+          </Grid>
+          {questionSubmitContent?.feedback && (
+            <Grid item xs={12}>
+              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Card variant='soft'>
+                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+              </Card>
+            </Grid>
+          )}
+        </>
+      )}
     </Grid>
   );
 };

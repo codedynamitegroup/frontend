@@ -112,8 +112,8 @@ export default function StudentExamAttemptSummaryTable({
                     time: `${submitTime.getHours() < 10 ? `0${submitTime.getHours()}` : submitTime.getHours()}:${submitTime.getMinutes() < 10 ? `0${submitTime.getMinutes()}` : submitTime.getMinutes()}`
                   })}`}</ParagraphBody>
                 </td>
-                <td>{row.mark}</td>
-                <td>{row.grade}</td>
+                <td>{row.status === "GRADED" ? row.mark : t("common_not_graded")}</td>
+                <td>{row.status === "GRADED" ? row.grade : t("common_not_graded")}</td>
                 <td>
                   <RouteLink
                     to={`${routes.student.exam.review

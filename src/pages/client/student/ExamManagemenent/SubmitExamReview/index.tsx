@@ -26,7 +26,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import FlagIcon from "@mui/icons-material/Flag";
 import Table from "@mui/joy/Table";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Chip } from "@mui/joy";
+import { Card, Chip } from "@mui/joy";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
 import moment from "moment";
 import { EndExamCommand, GetExamDetails } from "models/courseService/entity/ExamEntity";
@@ -47,6 +47,7 @@ import { QuestionSubmissionMap } from "../TakeExam";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import ParagraphSmall from "components/text/ParagraphSmall";
 
 const drawerWidth = 370;
 
@@ -61,6 +62,8 @@ const SubmitExamSummary = () => {
   const [examSubmissionId, setExamSubmissionId] = React.useState<string>("");
   const [openDialog, setOpenDialog] = React.useState(false);
   const [submitTime, setSubmitTime] = React.useState<string>("");
+  const [submitLoading, setSubmitLoading] = React.useState(false);
+  const [submitTimeReadableString, setSubmitTimeReadableString] = React.useState<string>("");
   const [examDetails, setExamDetails] = React.useState<GetExamDetails>({
     examId: "",
     courseId: "",
@@ -171,6 +174,9 @@ const SubmitExamSummary = () => {
         })
         .catch((error) => {
           dispatch(setErrorMess(t("exam_submit_failed")));
+        })
+        .finally(() => {
+          setSubmitLoading(false);
         });
     },
     [
@@ -264,6 +270,7 @@ const SubmitExamSummary = () => {
   }, []);
 
   const submitExamHandler = useCallback(async () => {
+    setSubmitLoading(true);
     handleFinalSave(submitTime);
   }, [handleFinalSave, submitTime]);
 
@@ -341,8 +348,11 @@ const SubmitExamSummary = () => {
     const tempSubmitTime = new Date(
       new Date().toLocaleString("en", { timeZone: "Asia/Bangkok" })
     ).toISOString();
+    const submitTimeDate = new Date(tempSubmitTime);
 
+    const readableString = `${weekdayNames[submitTimeDate.getDay()]}, ${submitTimeDate.getDate()} ${`${monthNames[submitTimeDate.getMonth()]}`}, ${submitTimeDate.getFullYear()} ${t("common_at").toLowerCase()} ${submitTimeDate.getHours()}:${submitTimeDate.getMinutes()}`;
     setSubmitTime(tempSubmitTime);
+    setSubmitTimeReadableString(readableString);
     setOpenDialog(true);
   };
 
@@ -396,11 +406,31 @@ const SubmitExamSummary = () => {
       {openDialog && (
         <CustomDialog
           title={t("exam_submit_and_finish")}
-          children={"Submit at " + submitTime}
+          children={
+            <>
+              <ParagraphBody fontWeight={500}>{t("take_exam_submit_confirm")}</ParagraphBody>
+              <Card
+                variant='soft'
+                color='warning'
+                sx={{
+                  margin: "10px 0"
+                }}
+              >
+                <ParagraphBody>
+                  {t("take_exam_question_without_reponse")}:{" "}
+                  {questionList.filter((question) => !question.answered).length}
+                </ParagraphBody>
+              </Card>
+              <ParagraphBody>Confirm submit at {submitTimeReadableString}</ParagraphBody>
+            </>
+          }
           open={openDialog}
           onHandleCancel={() => setOpenDialog(false)}
           onHanldeConfirm={submitExamHandler}
           handleClose={() => setOpenDialog(false)}
+          isConfirmLoading={submitLoading}
+          cancelDisabled={submitLoading}
+          closeDisabled={submitLoading}
         />
       )}
       <Grid className={classes.root}>
