@@ -6,193 +6,7 @@ import { ICodeConverterRequest } from "pages/admin/CodeQuestionManagement/Detail
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
-// const example_response: ICodeConverterResponse[] = [
-//   {
-//     program_language: "java",
-//     code_stub: `
-// import java.io.*;
-// import java.math.*;
-// import java.security.*;
-// import java.text.*;
-// import java.util.*;
-// import java.util.concurrent.*;
-// import java.util.function.*;
-// import java.util.regex.*;
-// import java.util.stream.*;
-// import static java.util.stream.Collectors.joining;
-// import static java.util.stream.Collectors.toList;
-
-// class Result {
-
-//     /*
-//      * Complete the 'simpleArraySum' function below.
-//      *
-//      * The function is expected to return an INTEGER.
-//      * The function accepts INTEGER_ARRAY ar as parameter.
-//      */
-
-//     public static int simpleArraySum(List<Integer> ar) {
-//     // Write your code here
-
-//     }
-
-// }
-
-// public class Solution {
-//     public static void main(String[] args) throws IOException {
-//         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
-
-//         int arCount = Integer.parseInt(bufferedReader.readLine().trim());
-
-//         List<Integer> ar = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
-//             .map(Integer::parseInt)
-//             .collect(toList());
-
-//         int result = Result.simpleArraySum(ar);
-
-//         bufferedWriter.write(String.valueOf(result));
-//         bufferedWriter.newLine();
-
-//         bufferedReader.close();
-//         bufferedWriter.close();
-//     }
-// }
-
-// 		`
-//   },
-//   {
-//     program_language: "py",
-//     code_stub: `
-// #!/bin/python3
-
-// import math
-// import os
-// import random
-// import re
-// import sys
-
-// #
-// # Complete the 'simpleArraySum' function below.
-// #
-// # The function is expected to return an INTEGER.
-// # The function accepts INTEGER_ARRAY ar as parameter.
-// #
-
-// def simpleArraySum(ar):
-//     # Write your code here
-
-// if __name__ == '__main__':
-//     fptr = open(os.environ['OUTPUT_PATH'], 'w')
-
-//     ar_count = int(input().strip())
-
-//     ar = list(map(int, input().rstrip().split()))
-
-//     result = simpleArraySum(ar)
-
-//     fptr.write(str(result) + '\n')
-
-//     fptr.close()
-// 		`
-//   },
-//   {
-//     program_language: "c++",
-//     code_stub: `
-// #include <bits/stdc++.h>
-
-// using namespace std;
-
-// string ltrim(const string &);
-// string rtrim(const string &);
-// vector<string> split(const string &);
-
-// /*
-//  * Complete the 'simpleArraySum' function below.
-//  *
-//  * The function is expected to return an INTEGER.
-//  * The function accepts INTEGER_ARRAY ar as parameter.
-//  */
-
-// int simpleArraySum(vector<int> ar) {
-
-// }
-
-// int main()
-// {
-//     ofstream fout(getenv("OUTPUT_PATH"));
-
-//     string ar_count_temp;
-//     getline(cin, ar_count_temp);
-
-//     int ar_count = stoi(ltrim(rtrim(ar_count_temp)));
-
-//     string ar_temp_temp;
-//     getline(cin, ar_temp_temp);
-
-//     vector<string> ar_temp = split(rtrim(ar_temp_temp));
-
-//     vector<int> ar(ar_count);
-
-//     for (int i = 0; i < ar_count; i++) {
-//         int ar_item = stoi(ar_temp[i]);
-
-//         ar[i] = ar_item;
-//     }
-
-//     int result = simpleArraySum(ar);
-
-//     fout << result << "\n";
-
-//     fout.close();
-
-//     return 0;
-// }
-
-// string ltrim(const string &str) {
-//     string s(str);
-
-//     s.erase(
-//         s.begin(),
-//         find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
-//     );
-
-//     return s;
-// }
-
-// string rtrim(const string &str) {
-//     string s(str);
-
-//     s.erase(
-//         find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-//         s.end()
-//     );
-
-//     return s;
-// }
-
-// vector<string> split(const string &str) {
-//     vector<string> tokens;
-
-//     string::size_type start = 0;
-//     string::size_type end = 0;
-
-//     while ((end = str.find(" ", start)) != string::npos) {
-//         tokens.push_back(str.substr(start, end - start));
-
-//         start = end + 1;
-//     }
-
-//     tokens.push_back(str.substr(start));
-
-//     return tokens;
-// }
-
-// `
-//   }
-// ];
-
-async function* CodeConverterAI(
+async function CodeConverterAI(
   programming_language: string,
   code_stub: string,
   program_language_converted_request: ICodeConverterRequest[]
@@ -228,6 +42,7 @@ I. SYSTEM_INSTRUCTIONS:
 				+ Convert the code stub from ${programming_language} to the target language.
 				+ Ensure all syntax is correct and follows the conventions of the target language.
 				+ Preserve the structure and formatting of the original code stub, including any empty method definitions.
+
 		3. Format Output:
 			- Construct the output in JSON format, following the structure:
 			[
@@ -243,6 +58,8 @@ I. SYSTEM_INSTRUCTIONS:
 			]
 			- Note for ""code_stub"":
 				+ Not markdown format. It should be plain text.
+				+ You need to include the entire code snippet, including imports libraries, class definitions, method implementations, class main methods, etc.
+				+ In ""java"", """" programming language, the class name have to be "Main".
 				+ Wrapped in single quote (").
 				+ Do not {{provide solution}} to the problem. If method which is provided is {{empty}}, keep it {{empty}}.
 					++ For example, if the original code snippet has a method definition with no implementation, the converted code should also have the same method definition with no implementation.
@@ -273,8 +90,38 @@ I. SYSTEM_INSTRUCTIONS:
 		5. Validation:
 		- Validate the JSON format of the output to ensure compliance with the specified structure.
 		- Do not reuse example output for responses; generate unique converted code snippets based on the provided code stubs.
+		- Here are some bugs when parsing JSON you should to check before returning the response and ensure when I parse the JSON, it will not throw any error:
 
-	C. Respond if you understand the instructions and are ready to proceed. I will provide you with the code stubs and programming languages to convert.
+			"""
+			1. Invalid JSON Format:
+				Bug: The input string is not properly formatted JSON, causing parsing to fail.
+				Solution: Ensure the string is correctly formatted. Use a JSON validator to check the string before parsing.
+
+				2. Unexpected Tokens:
+				Bug: Unexpected characters or tokens in the JSON string, such as single quotes instead of double quotes.
+				Solution: Ensure the JSON string uses double quotes for keys and string values
+
+				3. Trailing Commas:
+				Bug: Trailing commas in objects or arrays can cause parsing to fail.
+				Solution: Remove any trailing commas from the JSON string.
+
+				4. Escaping Characters:
+				Bug: Special characters not properly escaped can cause issues.
+				Solution: Ensure special characters like quotes, backslashes, and control characters are correctly escaped.
+
+				5. Data Type Issues:
+				Bug: Expecting a different data type than what is present in the JSON string.
+				Solution: Validate and handle data types appropriately after parsing.
+
+				6. Encoding Issues:
+				Bug: Encoding issues such as invalid UTF-8 characters.
+				Solution: Ensure the string is correctly encoded before parsing
+
+				7. Handling Null or Undefined:
+				Bug: Parsing null or undefined values can cause errors.
+				Solution: Check for null or undefined before parsing
+			"""
+
 `;
 
   const INPUT = (requests: ICodeConverterRequest[]) => `
@@ -307,11 +154,7 @@ I. SYSTEM_INSTRUCTIONS:
 
   try {
     let result, response, text;
-    const chunks = chunkArray(program_language_converted_request, 6);
-    const allResponses = [];
-    result = await model.generateContentStream(AI_ROLE);
-    response = await result.response;
-    text = response.text;
+    const chunks = chunkArray(program_language_converted_request, 1);
 
     const chat = model.startChat({
       history: [
@@ -330,18 +173,18 @@ I. SYSTEM_INSTRUCTIONS:
       ]
     });
 
-    for (const chunk of chunks) {
+    return chunks.map(async (chunk) => {
       result = await chat.sendMessageStream(INPUT(chunk));
       response = await result.response;
       text = await response.text();
       const cleanText = text.replace(/```/g, "").replace(/json/g, "");
       const repaired = jsonrepair(cleanText);
       const json = JSON.parse(repaired);
-      allResponses.push(...json);
-      yield allResponses;
-    }
+      let chunkResponses = [...json];
+      return chunkResponses;
+    });
   } catch (error) {
-    return error;
+    Promise.reject(error);
   }
 }
 

@@ -1,16 +1,12 @@
 import React, { useRef, useState } from "react";
 import classes from "./styles.module.scss";
-import { Box, Button, Container, CssBaseline, Grid, Stack, Toolbar } from "@mui/material";
+import { Box, Button, Container, Grid, Stack } from "@mui/material";
 import Header from "components/Header";
 import { useTranslation } from "react-i18next";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import { styled } from "@mui/material/styles";
-import ParagraphSmall from "components/text/ParagraphSmall";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import AddIcon from "@mui/icons-material/Add";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import GradingConfigSelect from "./components/GradingConfigSelect";
 import RubricCard from "./components/RubricCard";
 import SelectRubricDialog from "./components/SelectRubricDialog";
@@ -30,59 +26,16 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Buttons from "components/Buttons";
 import Heading2 from "components/text/Heading2";
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
 enum EFeedbackLanguage {
   Vietnamese = "Vietnamese",
   English = "English"
 }
-// const Textarea = styled(BaseTextareaAutosize)(
-//   ({ theme }) => `
-//     box-sizing: border-box;
-//     width: 100%;
-//     height: 100%;
-//     max-width: 100%;
-//     min-width: 100%;
-//     min-height: 150px;
-//     max-height: 340px;
-//     font-family: 'IBM Plex Sans', sans-serif;
-//     font-size: 0.875rem;
-//     font-weight: 400;
-//     line-height: 1.5;
-//     padding: 12px;
-//     border-radius: 12px 12px 0 12px;
-//     color: ${theme.palette.mode === "dark" ? "#C7D0DD" : "#1C2025"};
-//     background: ${theme.palette.mode === "dark" ? "#1C2025" : "#fff"};
-//     border: 1px solid ${theme.palette.mode === "dark" ? "#434D5B" : "#DAE2ED"};
-//     box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? "#1C2025" : "#F3F6F9"};
-
-//     &:hover {
-//       border-color: '#3399FF';
-//     }
-
-//     &:focus {
-//       outline: 0;
-//       border-color: '#3399FF';
-//       box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? "#0072E5" : "#b6daff"};
-//     }
-
-//     // firefox
-//     &:focus-visible {
-//       outline: 0;
-//     }
-//   `
-// );
 
 const GradingConfig = () => {
-  const drawerWidth = 450;
-
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const rootRef = useRef<HTMLDivElement>(null);
-  const { width: rootWidth } = useBoxDimensions({ ref: rootRef });
   const [rubricSelected, setRubricSelected] = useState<RubricUserEntity | undefined>(undefined);
 
   const onSelectRubric = (rubric: RubricUserEntity) => {
@@ -136,27 +89,7 @@ const GradingConfig = () => {
     dispatch(openSelectRubricDialog());
   };
 
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== "open"
-  })<AppBarProps>(({ theme, open }) => ({
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    ...(open && {
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginRight: drawerWidth
-    })
-  }));
-
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-
-  const header2Ref = useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
 
   const stickyFooterRef = useRef<HTMLDivElement>(null);
   const { height: stickyFooterHeight } = useBoxDimensions({ ref: stickyFooterRef });

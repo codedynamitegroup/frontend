@@ -205,6 +205,9 @@ export const API = {
     }
   },
   CODE_ASSESSMENT: {
+    PROGRAMMING_LANGUAGE: {
+      DEFAULT: "/code-assessment/language"
+    },
     TAG: {
       DEFAULT: "/code-assessment/tag"
     },

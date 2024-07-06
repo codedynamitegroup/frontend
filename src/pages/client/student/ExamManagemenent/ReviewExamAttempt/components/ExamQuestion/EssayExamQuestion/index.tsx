@@ -12,10 +12,11 @@ interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
   questionIndex: number;
   questionSubmitContent?: GetQuestionSubmissionEntity;
+  isGraded?: boolean;
 }
 
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
-  const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
+  const { questionEssayQuestion, questionIndex, questionSubmitContent, isGraded } = props;
   const { t } = useTranslation();
 
   return (
@@ -23,14 +24,6 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
           <Heading4>{`${t("common_question")} ${questionIndex + 1}`}</Heading4>
-          {/* <Button
-            variant={isFlagged ? "soft" : "outlined"}
-            color='primary'
-            startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
-            onClick={flagQuestionHandle}
-          >
-            {isFlagged ? t("common_remove_flag") : t("common_flag")}
-          </Button> */}
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
@@ -50,9 +43,9 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {t("common_score_can_achieve")}
-              {": "}
-              {questionEssayQuestion.question.defaultMark}
+              {isGraded
+                ? `${t("achieved_mark")}: ${questionSubmitContent?.grade.toFixed(2) || "0.00"} / ${questionEssayQuestion.question.defaultMark.toFixed(2)}`
+                : `${t("achieved_mark")}: ${t("common_not_graded")} / ${questionEssayQuestion.question.defaultMark.toFixed(2)}`}
             </ParagraphBody>
           </Box>
         </Stack>
@@ -133,6 +126,8 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           </Grid>
         </Grid>
       )}
+
+      {isGraded && <Grid item xs={12}></Grid>}
     </Grid>
   );
 };
