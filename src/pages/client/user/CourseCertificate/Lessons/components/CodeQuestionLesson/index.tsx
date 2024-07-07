@@ -51,6 +51,7 @@ import {
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import "react-quill/dist/quill.bubble.css";
 
 const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
   const { t } = useTranslation();
@@ -418,7 +419,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
             <Box className={classes.codeTestcaseContainer}>
               <Box className={classes.testcaseContainer}>
                 <Box className={classes.testcaseBody}>
-                  <Box id={classes.tabWrapper} ref={tabRef}>
+                  <Box className={classes.tabWrapper} ref={tabRef}>
                     <Tabs
                       value={testCaseTab}
                       onChange={handleTestCaseChange}
