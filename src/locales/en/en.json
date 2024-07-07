@@ -232,6 +232,7 @@
   "common_tag": "Tag",
   "common_no_relavant_certificate_course": "No relavant certificate courses",
   "common_no_reviews": "No reviews",
+  "common_no_to_do_event": "No to do events",
 
   "dialog_confirm_delete_title": "Confirm Delete",
   "dialog_confirm_delete_contest_description": "Are you sure you want to delete this contest?",

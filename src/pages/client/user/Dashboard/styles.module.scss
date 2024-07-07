@@ -46,9 +46,9 @@
       .learnBtn {
         text-transform: none;
         height: fit-content;
-        width: 100px;
+        width: 120px;
         & [class~="MuiButtonBase-root"] {
-          width: 100px;
+          width: 120px;
         }
         @media (max-width: 450px) {
           width: 100%;

@@ -219,6 +219,7 @@
   "common_tag": "Tag",
   "common_no_relavant_certificate_course": "Không có khóa học chứng chỉ nào",
   "common_no_reviews": "Không có đánh giá nào",
+  "common_no_to_do_event": "Không có công việc cần làm nào",
 
   "dialog_confirm_delete_title": "Xác nhận xoá",
   "dialog_confirm_delete_contest_description": "Bạn có chắc chắn muốn xoá cuộc thi này không ?",

@@ -450,7 +450,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                           <MenuItem
                             onClick={() => {
                               popupState.close();
-                              navigate(routes.org_admin.users.root);
+                              navigate(routes.org_admin.dashboard);
                             }}
                             translation-key='common_organization_page'
                           >

@@ -319,37 +319,54 @@ const CourseCertificates = () => {
                       <Heading2
                         translation-key='certificate_hot_recommend'
                         sx={{
-                          marginBottom: "10px"
+                          marginBottom: "35px"
                         }}
                       >
                         {t("certificate_hot_recommend")}
                       </Heading2>
                       <Grid container spacing={5}>
-                        {recommendedCertificateCourses.isLoading
-                          ? Array.from({ length: 3 }).map((_, index) => (
-                              <Grid item xs={4} key={index}>
-                                <Skeleton variant='rectangular' width='100%' height={320} />
+                        {recommendedCertificateCourses.isLoading ? (
+                          Array.from({ length: 3 }).map((_, index) => (
+                            <Grid item xs={4} key={index}>
+                              <Skeleton variant='rectangular' width='100%' height={320} />
+                            </Grid>
+                          ))
+                        ) : recommendedCertificateCourses.mostEnrolledCertificateCourses.length ===
+                          0 ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              height: "100%",
+                              marginTop: "20px",
+                              width: "100%"
+                            }}
+                            translate-key='common_no_relavant_certificate_course'
+                          >
+                            {t("common_no_relavant_certificate_course")}
+                          </Box>
+                        ) : (
+                          recommendedCertificateCourses.mostEnrolledCertificateCourses
+                            .slice(0, 3)
+                            .map((course, index) => (
+                              <Grid
+                                item
+                                xs={4}
+                                key={index}
+                                onClick={() =>
+                                  navigate(
+                                    routes.user.course_certificate.detail.introduction.replace(
+                                      ":courseId",
+                                      course.certificateCourseId
+                                    )
+                                  )
+                                }
+                              >
+                                <CourseCertificateCard course={course} />
                               </Grid>
                             ))
-                          : recommendedCertificateCourses.mostEnrolledCertificateCourses
-                              .slice(0, 3)
-                              .map((course, index) => (
-                                <Grid
-                                  item
-                                  xs={4}
-                                  key={index}
-                                  onClick={() =>
-                                    navigate(
-                                      routes.user.course_certificate.detail.introduction.replace(
-                                        ":courseId",
-                                        course.certificateCourseId
-                                      )
-                                    )
-                                  }
-                                >
-                                  <CourseCertificateCard course={course} />
-                                </Grid>
-                              ))}
+                        )}
                       </Grid>
                     </Card>
                     <Heading1 translation-key='common_all_courses_catalog'>
