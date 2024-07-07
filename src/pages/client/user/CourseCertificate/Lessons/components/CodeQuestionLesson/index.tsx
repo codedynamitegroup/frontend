@@ -1,4 +1,7 @@
 import CodeIcon from "@mui/icons-material/Code";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PublishIcon from "@mui/icons-material/Publish";
+import JoyButton from "@mui/joy/Button";
 import {
   Box,
   Card,
@@ -16,9 +19,9 @@ import CodeEditor from "components/editor/CodeEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import { UUID } from "crypto";
 import { useAppDispatch, useAppSelector } from "hooks";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import cloneDeep from "lodash.clonedeep";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 import { ChapterResourceEntity } from "models/coreService/entity/ChapterResourceEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import ProblemDetailDescription from "pages/client/user/DetailProblem/components/Description";
@@ -28,6 +31,7 @@ import ProblemDetailSubmission from "pages/client/user/DetailProblem/components/
 import TestCase from "pages/client/user/DetailProblem/components/TestCase";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import "react-quill/dist/quill.bubble.css";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import {
@@ -37,21 +41,16 @@ import {
   setSourceCode,
   setSystemLanguageId
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
-import { routes } from "routes/routes";
-import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
-import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PublishIcon from "@mui/icons-material/Publish";
-import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
-import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import {
   setExecuteError,
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
-import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
-import "react-quill/dist/quill.bubble.css";
+import { routes } from "routes/routes";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import classes from "./styles.module.scss";
 
 const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
   const { t } = useTranslation();
@@ -60,8 +59,6 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     lessonId: string;
   }>();
   const { pathname } = useLocation();
-
-  const [isQuestionLoading, setIsQuestionLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -111,12 +108,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     }
   };
 
-  const [timer, setTimer] = useState<number | undefined>(undefined);
-
   const tabRef = useRef<HTMLDivElement>(null);
-  const { height: tabHeight } = useBoxDimensions({
-    ref: tabRef
-  });
 
   const updateLanguageSourceCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
     const submissinMapWithLangIdKeyAndSourceCodeValue = new Map<UUID, string>();
@@ -135,24 +127,17 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   };
 
   const codeStubHeadRef = useRef<HTMLDivElement>(null);
-  const { height: codeStubHeadHeight } = useBoxDimensions({
-    ref: codeStubHeadRef
-  });
-
   useEffect(() => {
     if (
       lesson !== undefined &&
       lesson?.question !== undefined &&
       lesson.question.codeQuestionId !== undefined
     ) {
-      // dispatch(setLoading(true));
-      setIsQuestionLoading(true);
       CodeQuestionService.getDetailCodeQuestion([lesson.question.codeQuestionId])
         .then((data: CodeQuestionEntity[]) => {
           if (data.length > 0) dispatch(setCodeQuestion(updateLanguageSourceCode(data[0])));
         })
-        .catch((err) => console.log(err))
-        .finally(() => setIsQuestionLoading(false));
+        .catch((err) => console.log(err));
     }
   }, [dispatch, lesson]);
 
@@ -253,7 +238,6 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
         })
         .finally(() => dispatch(setExecuteResultLoading(false)));
     }
-    // console.log("current data", currentExecuteData);
   };
 
   const handleSubmitCode = () => {
