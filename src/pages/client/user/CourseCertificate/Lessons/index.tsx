@@ -56,6 +56,8 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
+  height: "100%",
+  backgroundColor: "var(--gray-2)",
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -123,12 +125,7 @@ export default function Lessons() {
     setOpen(false);
   };
 
-  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-
-  const header2Ref = React.useRef<HTMLDivElement>(null);
-  const { height: header2Height } = useBoxDimensions({
-    ref: header2Ref
-  });
+  const { headerHeight } = useSelector((state: RootState) => state.sidebarStatus);
 
   const currentLesson = useMemo(() => {
     if (chapterState.chapters && chapterState.chapters.length > 0) {
@@ -299,18 +296,17 @@ export default function Lessons() {
       <Box
         className={classes.container}
         sx={{
-          marginTop: `${sidebarStatus.headerHeight + 1}px`
+          marginTop: `${headerHeight + 1}px`
         }}
       >
         <CssBaseline />
         <AppBar
           position='fixed'
           sx={{
-            top: `${header2Height + 1}px`,
+            top: `${headerHeight + 1}px`,
             backgroundColor: "white",
             boxShadow: "0px 2px 4px #00000026"
           }}
-          ref={header2Ref}
           open={open}
         >
           <Toolbar>
@@ -501,7 +497,7 @@ export default function Lessons() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              marginTop: `${header2Height + 1}px`
+              marginTop: `${headerHeight + 1}px`
               // marginTop: "65px"
             }
           }}
