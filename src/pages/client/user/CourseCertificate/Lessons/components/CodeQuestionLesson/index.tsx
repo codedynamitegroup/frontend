@@ -288,87 +288,71 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   return (
     <Grid container gap={2}>
       <Grid item xs={12} md={12}>
-        {isQuestionLoading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              gap: "10px"
-            }}
-          >
-            <CircularProgress />
-            <ParagraphBody translate-key='common_loading'>{t("common_loading")}</ParagraphBody>
-          </Box>
-        ) : (
-          <Card>
-            <Box className={classes.leftBody} id='problem-detail-tab-body'>
-              <Box className={classes.tabWrapper} ref={tabRef}>
-                <Tabs
-                  value={activeTab}
-                  onChange={handleChange}
-                  aria-label='basic tabs example'
-                  className={classes.tabs}
-                >
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_description'
-                    label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
-                    value={0}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_discussion'
-                    label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                    value={1}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_submission'
-                    label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                    value={2}
-                  />
-                </Tabs>
-              </Box>
-
-              <Box
-                id={classes.tabBody}
-                style={{
-                  minHeight: `600px`,
-                  overflowY: "auto"
-                }}
+        <Card>
+          <Box className={classes.leftBody} id='problem-detail-tab-body'>
+            <Box className={classes.tabWrapper} ref={tabRef}>
+              <Tabs
+                value={activeTab}
+                onChange={handleChange}
+                aria-label='basic tabs example'
+                className={classes.tabs}
               >
-                <Routes>
-                  <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route
-                    path={"solution"}
-                    element={
-                      <ProblemDetailSolution
-                        maxHeight={700}
-                        lessonProblemId={lesson?.question?.codeQuestionId || ""}
-                      />
-                    }
-                  />
-                  <Route
-                    path={"submission"}
-                    element={
-                      <ProblemDetailSubmission
-                        submissionLoading={submissionLoading}
-                        maxHeight={600}
-                        cerCourseInfo={{
-                          cerCourseId: courseId || "",
-                          lesson: lesson
-                        }}
-                      />
-                    }
-                  />
-                </Routes>
-              </Box>
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_description'
+                  label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
+                  value={0}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_discussion'
+                  label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                  value={1}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_submission'
+                  label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                  value={2}
+                />
+              </Tabs>
             </Box>
-          </Card>
-        )}
+
+            <Box
+              id={classes.tabBody}
+              style={{
+                minHeight: `600px`,
+                overflowY: "auto"
+              }}
+            >
+              <Routes>
+                <Route path={"description"} element={<ProblemDetailDescription />} />
+                <Route
+                  path={"solution"}
+                  element={
+                    <ProblemDetailSolution
+                      maxHeight={700}
+                      lessonProblemId={lesson?.question?.codeQuestionId || ""}
+                    />
+                  }
+                />
+                <Route
+                  path={"submission"}
+                  element={
+                    <ProblemDetailSubmission
+                      submissionLoading={submissionLoading}
+                      maxHeight={600}
+                      cerCourseInfo={{
+                        cerCourseId: courseId || "",
+                        lesson: lesson
+                      }}
+                    />
+                  }
+                />
+              </Routes>
+            </Box>
+          </Box>
+        </Card>
       </Grid>
       <Grid item xs={12} md={12}>
         <Card>

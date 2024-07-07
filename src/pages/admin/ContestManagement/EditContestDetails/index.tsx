@@ -7,7 +7,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import moment from "moment";
 import NotFoundPage from "pages/common/NotFoundPage";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -50,7 +50,6 @@ export interface IFormDataType {
 }
 
 const EditContestDetails = ({ isDrawerOpen }: any) => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
