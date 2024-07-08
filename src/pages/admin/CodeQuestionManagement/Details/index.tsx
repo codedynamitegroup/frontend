@@ -34,7 +34,6 @@ import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService"
 import FormSchema from "./schema/FormSchema";
 
 interface Props {}
-const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
 const AdminCodeQuestionDetails = (props: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -186,9 +185,9 @@ const AdminCodeQuestionDetails = (props: Props) => {
       const isDirtyLanguages = dirtyFields.programmingLanguages?.some((value) =>
         Object.values(value).some((val) => val === true)
       );
-      const isDirtyTestCase = dirtyFields.testCases?.some((value) =>
-        Object.values(value).some((val) => val === true)
-      );
+      const isDirtyTestCase =
+        dirtyFields.testCases?.some((value) => Object.values(value).some((val) => val === true)) ||
+        (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
 
       setLoadingSubmit(true);
       try {
@@ -209,7 +208,6 @@ const AdminCodeQuestionDetails = (props: Props) => {
 
         let updateTestCases: Promise<any> | undefined = undefined;
         let dirtyTC = dirtyFields?.testCases;
-        console.log("here");
 
         if (isDirtyTestCase && codeQuestion !== undefined) {
           console.log("here");
@@ -244,7 +242,30 @@ const AdminCodeQuestionDetails = (props: Props) => {
             deletedTestCasesId: deletedTC
           });
         }
-        await Promise.all([updateInform, updateTestCases]);
+        let updateLanguages: Promise<any> | undefined = undefined;
+
+        if (isDirtyLanguages && codeQuestion !== undefined) {
+          let updatedLanguages = data.programmingLanguages
+            .filter((value) => value.choosen)
+            .map((value) => ({
+              id: value.id,
+              timeLimit: value.timeLimit,
+              memoryLimit: value.memoryLimit,
+              bodyCode: value.bodyCode ?? ""
+            }));
+          let deletedLangaugeIds = data.programmingLanguages
+            .filter((value) => !value.choosen)
+            .map((value) => value.id);
+          updateLanguages = CodeQuestionService.updateProgrammingLanguageOfCodeQuestion(
+            codeQuestion.id,
+            {
+              updatedLanguages,
+              deletedLangaugeIds
+            }
+          );
+        }
+
+        await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } finally {
         setLoadingSubmit(false);
       }

@@ -3,10 +3,45 @@ import { UUID } from "crypto";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import api from "utils/api";
+import { encodeBase64 } from "utils/base64";
 
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class CodeQuestionService {
+  static async updateProgrammingLanguageOfCodeQuestion(
+    codeQuestionId: string,
+    field: {
+      updatedLanguages: {
+        id: string;
+        timeLimit: number;
+        memoryLimit: number;
+        bodyCode: string;
+      }[];
+      deletedLangaugeIds: string[];
+    }
+  ) {
+    try {
+      field.updatedLanguages.forEach((value) => {
+        value.bodyCode = encodeBase64(value.bodyCode);
+      });
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).put(API.CODE_ASSESSMENT.CODE_QUESTION.LANGUAGES.replace(":id", codeQuestionId), {
+        ...field
+      });
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to update language code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async updateCodeQuestion(
     codeQuestionId: string,
     field: {
