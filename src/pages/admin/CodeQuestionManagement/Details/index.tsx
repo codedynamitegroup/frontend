@@ -31,7 +31,7 @@ import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/P
 import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
-import FormSchema from "./schema/formSchema";
+import FormSchema from "./schema/FormSchema";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
