@@ -75,7 +75,7 @@ const TestCasePopup = ({
           .string()
           .required(t("code_management_output_format_required"))
           .test("not-blank", t("code_management_output_format_required"), checkEmptyString),
-        sample: yup.boolean().required()
+        isSample: yup.boolean().required()
         // score: yup.number().required()
       }),
     [t]
@@ -113,10 +113,10 @@ const TestCasePopup = ({
   };
   const handleSaveTC = async () => {
     const check = await trigger();
-    console.log(check);
+    // console.log(check);
     if (check) {
       const data = getValues();
-      console.log(isAddNew);
+      // console.log(isAddNew);
       if (isAddNew) {
         addNewMethod(data);
       } else {
@@ -193,7 +193,7 @@ const TestCasePopup = ({
                   </Grid>
                   <Grid item xs={6}>
                     <Controller
-                      name='sample'
+                      name='isSample'
                       control={testCaseControl}
                       render={({ field: { onChange, value } }) => (
                         <Checkbox

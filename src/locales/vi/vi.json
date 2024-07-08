@@ -840,6 +840,7 @@
   "code_management_output_format_required": "Yêu cầu định dạng đầu ra",
   "code_management_constraint_required": "Yêu cầu giới hạn đầu vào",
   "code_management_public_tool_tip": "Câu hỏi code sẽ được công khai đến người dùng",
+  "code_management_grade_tool_tip": "Điểm bằng điểm tối đa * phần trăm số test case accepted",
   "code_management_timelimit_required": "Thời gian giới hạn phải là số dương",
   "code_management_memorylimit_required": "Bộ nhớ giới hạn ít nhất 2MB",
 

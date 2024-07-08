@@ -848,6 +848,7 @@
   "code_management_output_format_required": "Output format is required",
   "code_management_constraint_required": "Contraints is required",
   "code_management_public_tool_tip": "Code question will be public to users",
+  "code_management_grade_tool_tip": "Grade will be maxGrade * percent of accepted test case",
   "code_management_timelimit_required": "Time limit must be a positive number",
   "code_management_memorylimit_required": "Memory limit must be at least 2MB",
 

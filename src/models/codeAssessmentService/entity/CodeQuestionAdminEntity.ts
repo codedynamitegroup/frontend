@@ -11,6 +11,7 @@ export interface CodeQuestionAdminEntity {
   inputFormat: string;
   outputFormat: string;
   constraints: string;
+  maxGrade: number;
   isPublic: boolean;
   allowImport: boolean;
   difficulty: QuestionDifficultyEnum;
