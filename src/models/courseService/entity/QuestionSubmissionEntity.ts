@@ -33,6 +33,13 @@ export interface SubmitQuestionFile {
   fileType: string;
 }
 
+export interface GetSubmittedQuestionFile {
+  id: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+}
+
 export interface GetQuestionSubmissionCommand {
   examId: string;
   userId: string;
@@ -45,7 +52,7 @@ export interface GetQuestionSubmissionEntity {
   grade: number;
   content: string;
   rightAnswer: string;
-  files: SubmitQuestionFile[];
+  files: GetSubmittedQuestionFile[];
   flag: boolean;
   answerStatus: boolean;
   feedback: string;
