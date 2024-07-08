@@ -9,6 +9,9 @@ import { GetQuestionSubmissionEntity } from "models/courseService/entity/Questio
 import { FileCard } from "@files-ui/react";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import Heading6 from "components/text/Heading6";
+import { CourseFileService } from "services/courseService/CourseFileService";
+import { useDispatch } from "react-redux";
+import { setErrorMess } from "reduxes/AppStatus";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
@@ -18,8 +21,22 @@ interface EssayExamQuestionProps {
 }
 
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
+  const dispatch = useDispatch();
   const { questionEssayQuestion, questionIndex, questionSubmitContent, isGraded } = props;
   const { t } = useTranslation();
+
+  const handleDownloadClick = async (
+    fileId: string | number | undefined,
+    downloadUrl?: string | undefined
+  ) => {
+    if (fileId === undefined || Number(fileId)) {
+      dispatch(
+        setErrorMess("Can't download !! File's id is not valid !! Please contact to admin !!")
+      );
+      return;
+    }
+    CourseFileService.downloadEssayAttachmentFile(fileId.toString());
+  };
 
   return (
     <Grid container spacing={1}>
@@ -116,10 +133,10 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             {questionSubmitContent?.files?.map((file, index) => (
               <Grid>
                 <FileCard
-                  id={file.fileUrl}
+                  id={file.id}
                   key={index}
                   name={file.fileName}
-                  downloadUrl={file.fileUrl}
+                  onDownload={handleDownloadClick}
                   type={file.fileType}
                   size={file.fileSize}
                 />

@@ -99,8 +99,7 @@ const StudentCourseExamDetails = () => {
     let highestGrade = 0;
 
     if (exam.gradeMethod === "QUIZ_GRADEHIGHEST") {
-      const tempMark = Math.max(...examSubmissions.map((submission) => submission.markTotal));
-      highestGrade = (tempMark / (exam.scores || 1)) * (exam.maxScores || 0);
+      highestGrade = Math.max(...examSubmissions.map((submission) => submission.grade));
     } else if (exam.gradeMethod === "QUIZ_GRADEAVERAGE") {
       highestGrade =
         examSubmissions.reduce((acc, submission) => acc + submission.markTotal, 0) /

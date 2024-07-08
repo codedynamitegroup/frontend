@@ -115,10 +115,9 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             {questionSubmitContent?.files?.map((file, index) => (
               <Grid>
                 <FileCard
-                  id={file.fileUrl}
+                  id={file.id}
                   key={index}
                   name={file.fileName}
-                  downloadUrl={file.fileUrl}
                   type={file.fileType}
                   size={file.fileSize}
                 />

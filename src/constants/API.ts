@@ -86,6 +86,9 @@ export const API = {
     }
   },
   COURSE: {
+    FILE: {
+      DOWNLOAD_ESSAY_ATTACHMENT_FILE: "/course/file/download"
+    },
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
       CREATE: "/course/rubric-user",
