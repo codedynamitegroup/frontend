@@ -200,17 +200,9 @@ const OrgAdminContestEditDetails = ({
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='isPublic'
-                          render={({ field: { ref, ...field } }) => (
-                            <FormControlLabel
-                              control={
-                                <Checkbox color='primary' {...field} checked={field.value} />
-                              }
-                              label={""}
-                            />
-                          )}
+                        <FormControlLabel
+                          control={<Checkbox color='primary' {...field} checked={field.value} />}
+                          label={""}
                         />
 
                         {errors.isPublic && (
@@ -253,7 +245,7 @@ const OrgAdminContestEditDetails = ({
             >
               <Controller
                 control={control}
-                name='isPublic'
+                name='thumbnailUrl'
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
@@ -265,19 +257,12 @@ const OrgAdminContestEditDetails = ({
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='thumbnailUrl'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <AdvancedDropzoneDemo
-                              extFiles={extFiles}
-                              setExtFiles={setExtFiles}
-                              maxFileSize={maxFileSize}
-                              accept={fileTypeList}
-                              maxFiles={maxFiles}
-                            />
-                          )}
+                        <AdvancedDropzoneDemo
+                          extFiles={extFiles}
+                          setExtFiles={setExtFiles}
+                          maxFileSize={maxFileSize}
+                          accept={fileTypeList}
+                          maxFiles={maxFiles}
                         />
 
                         {errors.thumbnailUrl && (
@@ -297,8 +282,7 @@ const OrgAdminContestEditDetails = ({
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='description'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
@@ -309,19 +293,12 @@ const OrgAdminContestEditDetails = ({
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='description'
-                          // rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("description", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("description", value);
+                          }}
+                          maxLines={10}
                         />
 
                         {errors.description && (
@@ -341,8 +318,7 @@ const OrgAdminContestEditDetails = ({
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='prizes'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
@@ -350,19 +326,12 @@ const OrgAdminContestEditDetails = ({
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='prizes'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("prizes", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("prizes", value);
+                          }}
+                          maxLines={10}
                         />
 
                         {errors.prizes && (
@@ -382,32 +351,20 @@ const OrgAdminContestEditDetails = ({
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='rules'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
-                      <TitleWithInfoTip
-                        translate-key='common_rules'
-                        title={t("common_rules")}
-                        // titleRequired={true}
-                      />
+                      <TitleWithInfoTip translate-key='common_rules' title={t("common_rules")} />
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='rules'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("rules", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("rules", value);
+                          }}
+                          maxLines={10}
                         />
 
                         {errors.rules && (
@@ -427,8 +384,7 @@ const OrgAdminContestEditDetails = ({
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='scoring'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
@@ -439,19 +395,12 @@ const OrgAdminContestEditDetails = ({
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='scoring'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("scoring", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("scoring", value);
+                          }}
+                          maxLines={10}
                         />
                         {errors.scoring && (
                           <Grid item xs={12}>

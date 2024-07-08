@@ -194,19 +194,10 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='isPublic'
-                          render={({ field: { ref, ...field } }) => (
-                            <FormControlLabel
-                              control={
-                                <Checkbox color='primary' {...field} checked={field.value} />
-                              }
-                              label={""}
-                            />
-                          )}
+                        <FormControlLabel
+                          control={<Checkbox color='primary' {...field} checked={field.value} />}
+                          label={""}
                         />
-
                         {errors.isPublic && (
                           <Grid item xs={12}>
                             {errors.isPublic.message && (
@@ -247,8 +238,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             >
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='thumbnailUrl'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
@@ -259,23 +249,13 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='thumbnailUrl'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <AdvancedDropzoneDemo
-                              extFiles={extFiles}
-                              setExtFiles={setExtFiles}
-                              maxFileSize={maxFileSize}
-                              accept={fileTypeList}
-                              maxFiles={maxFiles}
-                              // width='950px'
-                            />
-                          )}
+                        <AdvancedDropzoneDemo
+                          extFiles={extFiles}
+                          setExtFiles={setExtFiles}
+                          maxFileSize={maxFileSize}
+                          accept={fileTypeList}
+                          maxFiles={maxFiles}
                         />
-
-                        {/* Show error */}
                         {errors.thumbnailUrl && (
                           <Grid item xs={12}>
                             {errors.thumbnailUrl.message && (
@@ -293,34 +273,24 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='description'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='common_description'
                         title={t("common_description")}
-                        // titleRequired={true}
                       />
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='description'
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("description", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("description", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.description && (
                           <Grid item xs={12}>
                             {errors.description.message && (
@@ -338,8 +308,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='prizes'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
@@ -347,22 +316,13 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='prizes'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("prizes", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("prizes", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.prizes && (
                           <Grid item xs={12}>
                             {errors.prizes.message && (
@@ -380,35 +340,21 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='rules'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
-                      <TitleWithInfoTip
-                        translate-key='common_rules'
-                        title={t("common_rules")}
-                        // titleRequired={true}
-                      />
+                      <TitleWithInfoTip translate-key='common_rules' title={t("common_rules")} />
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='rules'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("rules", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("rules", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.rules && (
                           <Grid item xs={12}>
                             {errors.rules.message && (
@@ -426,32 +372,23 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='scoring'
                 render={({ field: { ref, ...field } }) => (
                   <>
                     <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='common_scoring'
                         title={t("common_scoring")}
-                        // titleRequired={true}
                       />
                     </Grid>
                     <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='scoring'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("scoring", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("scoring", value);
+                          }}
+                          maxLines={10}
                         />
                         {errors.scoring && (
                           <Grid item xs={12}>
