@@ -115,41 +115,54 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
       </Grid>
 
       {isGraded && (
-        <Grid item xs={12}>
-          <Card variant='soft' color={isCorrectAnswer ? "success" : "danger"}>
-            {isCorrectAnswer && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentSatisfiedAltRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>"Thats correct!"</Heading6>
-              </Box>
-            )}
-            {questionShortAnswer?.question?.generalFeedback && (
-              <ParagraphSmall>{questionShortAnswer?.question?.generalFeedback}</ParagraphSmall>
-            )}
-            {!isCorrectAnswer && (
-              <Box display={"flex"} flexDirection='row' alignItems={"center"}>
-                <SentimentDissatisfiedRoundedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    marginRight: ".5rem"
-                  }}
-                />
-                <Heading6>"Wrong!!"</Heading6>
-              </Box>
-            )}
-            <ParagraphSmall>{`${correctAnswerList?.length > 1 ? t("correct_answer_plural") : t("correct_answer_non_plural")}: `}</ParagraphSmall>
-            {correctAnswerList?.map((answer) => (
-              <ParagraphSmall key={answer}>
-                {questionShortAnswer?.question?.answers?.find((item) => item.id === answer)?.answer}
-              </ParagraphSmall>
-            ))}
-          </Card>
-        </Grid>
+        <>
+          <Grid item xs={12}>
+            <Card variant='soft' color={isCorrectAnswer ? "success" : "danger"}>
+              {isCorrectAnswer && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentSatisfiedAltRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>"Thats correct!"</Heading6>
+                </Box>
+              )}
+              {questionShortAnswer?.question?.generalFeedback && (
+                <ParagraphSmall>{questionShortAnswer?.question?.generalFeedback}</ParagraphSmall>
+              )}
+              {!isCorrectAnswer && (
+                <Box display={"flex"} flexDirection='row' alignItems={"center"}>
+                  <SentimentDissatisfiedRoundedIcon
+                    sx={{
+                      fontSize: "1.5rem",
+                      marginRight: ".5rem"
+                    }}
+                  />
+                  <Heading6>"Wrong!!"</Heading6>
+                </Box>
+              )}
+              <ParagraphSmall>{`${correctAnswerList?.length > 1 ? t("correct_answer_plural") : t("correct_answer_non_plural")}: `}</ParagraphSmall>
+              {correctAnswerList?.map((answer) => (
+                <ParagraphSmall key={answer}>
+                  {
+                    questionShortAnswer?.question?.answers?.find((item) => item.id === answer)
+                      ?.answer
+                  }
+                </ParagraphSmall>
+              ))}
+            </Card>
+          </Grid>
+          {questionSubmitContent?.feedback && (
+            <Grid item xs={12}>
+              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Card variant='soft'>
+                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+              </Card>
+            </Grid>
+          )}
+        </>
       )}
     </Grid>
   );

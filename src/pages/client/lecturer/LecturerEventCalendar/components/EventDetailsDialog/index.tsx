@@ -185,14 +185,7 @@ const EventDetailsDialog = ({
               />
             </Grid>
             <Grid item xs={12} sm={11}>
-              <ReactQuill
-                value={data.description || ""}
-                readOnly={true}
-                theme={"bubble"}
-                style={{
-                  margin: "-12px -15px"
-                }}
-              />
+              <ReactQuill value={data.description || ""} readOnly={true} theme={"bubble"} />
             </Grid>
           </Grid>
         )}

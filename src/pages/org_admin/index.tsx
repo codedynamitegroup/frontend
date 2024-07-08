@@ -5,6 +5,7 @@ import RequireAuth from "components/common/RequireAuth";
 import { ERoleName } from "models/authService/entity/role";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import { useDispatch } from "react-redux";
+import SynchronizeManagement from "./SynchronizeManagement";
 import React, { lazy } from "react";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
@@ -122,6 +123,7 @@ const OrganizationAdminHomepage = (props: Props) => {
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
             />
+            <Route path={"synchronize"} element={<SynchronizeManagement />} />
 
             <Route path={"dashboard"} element={<OrganizationAdminDashboard />} />
           </Routes>

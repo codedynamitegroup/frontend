@@ -1,4 +1,7 @@
 import CodeIcon from "@mui/icons-material/Code";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PublishIcon from "@mui/icons-material/Publish";
+import JoyButton from "@mui/joy/Button";
 import {
   Box,
   Card,
@@ -16,9 +19,9 @@ import CodeEditor from "components/editor/CodeEditor";
 import ParagraphBody from "components/text/ParagraphBody";
 import { UUID } from "crypto";
 import { useAppDispatch, useAppSelector } from "hooks";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import cloneDeep from "lodash.clonedeep";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
 import { ChapterResourceEntity } from "models/coreService/entity/ChapterResourceEntity";
 import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 import ProblemDetailDescription from "pages/client/user/DetailProblem/components/Description";
@@ -28,6 +31,7 @@ import ProblemDetailSubmission from "pages/client/user/DetailProblem/components/
 import TestCase from "pages/client/user/DetailProblem/components/TestCase";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import "react-quill/dist/quill.bubble.css";
 import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setCodeQuestion } from "reduxes/CodeAssessmentService/CodeQuestion/Detail/DetailCodeQuestion";
 import {
@@ -37,20 +41,16 @@ import {
   setSourceCode,
   setSystemLanguageId
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute";
-import { routes } from "routes/routes";
-import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
-import classes from "./styles.module.scss";
-import JoyButton from "@mui/joy/Button";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PublishIcon from "@mui/icons-material/Publish";
-import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
-import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import {
   setExecuteError,
   setExecuteResultLoading,
   setResult
 } from "reduxes/CodeAssessmentService/CodeQuestion/Execute/ExecuteResult";
-import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import { routes } from "routes/routes";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmissionService";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import classes from "./styles.module.scss";
 
 const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
   const { t } = useTranslation();
@@ -59,8 +59,6 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     lessonId: string;
   }>();
   const { pathname } = useLocation();
-
-  const [isQuestionLoading, setIsQuestionLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -110,12 +108,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     }
   };
 
-  const [timer, setTimer] = useState<number | undefined>(undefined);
-
   const tabRef = useRef<HTMLDivElement>(null);
-  const { height: tabHeight } = useBoxDimensions({
-    ref: tabRef
-  });
 
   const updateLanguageSourceCode = (data: CodeQuestionEntity): CodeQuestionEntity => {
     const submissinMapWithLangIdKeyAndSourceCodeValue = new Map<UUID, string>();
@@ -134,24 +127,17 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   };
 
   const codeStubHeadRef = useRef<HTMLDivElement>(null);
-  const { height: codeStubHeadHeight } = useBoxDimensions({
-    ref: codeStubHeadRef
-  });
-
   useEffect(() => {
     if (
       lesson !== undefined &&
       lesson?.question !== undefined &&
       lesson.question.codeQuestionId !== undefined
     ) {
-      // dispatch(setLoading(true));
-      setIsQuestionLoading(true);
       CodeQuestionService.getDetailCodeQuestion([lesson.question.codeQuestionId])
         .then((data: CodeQuestionEntity[]) => {
           if (data.length > 0) dispatch(setCodeQuestion(updateLanguageSourceCode(data[0])));
         })
-        .catch((err) => console.log(err))
-        .finally(() => setIsQuestionLoading(false));
+        .catch((err) => console.log(err));
     }
   }, [dispatch, lesson]);
 
@@ -252,7 +238,6 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
         })
         .finally(() => dispatch(setExecuteResultLoading(false)));
     }
-    // console.log("current data", currentExecuteData);
   };
 
   const handleSubmitCode = () => {
@@ -288,87 +273,71 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   return (
     <Grid container gap={2}>
       <Grid item xs={12} md={12}>
-        {isQuestionLoading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              gap: "10px"
-            }}
-          >
-            <CircularProgress />
-            <ParagraphBody translate-key='common_loading'>{t("common_loading")}</ParagraphBody>
-          </Box>
-        ) : (
-          <Card>
-            <Box className={classes.leftBody} id='problem-detail-tab-body'>
-              <Box className={classes.tabWrapper} ref={tabRef}>
-                <Tabs
-                  value={activeTab}
-                  onChange={handleChange}
-                  aria-label='basic tabs example'
-                  className={classes.tabs}
-                >
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_description'
-                    label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
-                    value={0}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_discussion'
-                    label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
-                    value={1}
-                  />
-                  <Tab
-                    sx={{ textTransform: "none" }}
-                    translation-key='detail_problem_submission'
-                    label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
-                    value={2}
-                  />
-                </Tabs>
-              </Box>
-
-              <Box
-                id={classes.tabBody}
-                style={{
-                  minHeight: `600px`,
-                  overflowY: "auto"
-                }}
+        <Card>
+          <Box className={classes.leftBody} id='problem-detail-tab-body'>
+            <Box className={classes.tabWrapper} ref={tabRef}>
+              <Tabs
+                value={activeTab}
+                onChange={handleChange}
+                aria-label='basic tabs example'
+                className={classes.tabs}
               >
-                <Routes>
-                  <Route path={"description"} element={<ProblemDetailDescription />} />
-                  <Route
-                    path={"solution"}
-                    element={
-                      <ProblemDetailSolution
-                        maxHeight={700}
-                        lessonProblemId={lesson?.question?.codeQuestionId || ""}
-                      />
-                    }
-                  />
-                  <Route
-                    path={"submission"}
-                    element={
-                      <ProblemDetailSubmission
-                        submissionLoading={submissionLoading}
-                        maxHeight={600}
-                        cerCourseInfo={{
-                          cerCourseId: courseId || "",
-                          lesson: lesson
-                        }}
-                      />
-                    }
-                  />
-                </Routes>
-              </Box>
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_description'
+                  label={<ParagraphBody>{t("detail_problem_description")}</ParagraphBody>}
+                  value={0}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_discussion'
+                  label={<ParagraphBody>{t("detail_problem_discussion")}</ParagraphBody>}
+                  value={1}
+                />
+                <Tab
+                  sx={{ textTransform: "none" }}
+                  translation-key='detail_problem_submission'
+                  label={<ParagraphBody>{t("detail_problem_submission")}</ParagraphBody>}
+                  value={2}
+                />
+              </Tabs>
             </Box>
-          </Card>
-        )}
+
+            <Box
+              id={classes.tabBody}
+              style={{
+                minHeight: `600px`,
+                overflowY: "auto"
+              }}
+            >
+              <Routes>
+                <Route path={"description"} element={<ProblemDetailDescription />} />
+                <Route
+                  path={"solution"}
+                  element={
+                    <ProblemDetailSolution
+                      maxHeight={700}
+                      lessonProblemId={lesson?.question?.codeQuestionId || ""}
+                    />
+                  }
+                />
+                <Route
+                  path={"submission"}
+                  element={
+                    <ProblemDetailSubmission
+                      submissionLoading={submissionLoading}
+                      maxHeight={600}
+                      cerCourseInfo={{
+                        cerCourseId: courseId || "",
+                        lesson: lesson
+                      }}
+                    />
+                  }
+                />
+              </Routes>
+            </Box>
+          </Box>
+        </Card>
       </Grid>
       <Grid item xs={12} md={12}>
         <Card>
@@ -434,7 +403,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
             <Box className={classes.codeTestcaseContainer}>
               <Box className={classes.testcaseContainer}>
                 <Box className={classes.testcaseBody}>
-                  <Box id={classes.tabWrapper} ref={tabRef}>
+                  <Box className={classes.tabWrapper} ref={tabRef}>
                     <Tabs
                       value={testCaseTab}
                       onChange={handleTestCaseChange}

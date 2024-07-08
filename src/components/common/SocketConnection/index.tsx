@@ -20,7 +20,7 @@ export const SocketConnection = () => {
       try {
         const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
           query: {
-            room: `user_${loggedUser.userId}`
+            token: localStorage.getItem("access_token")
           }
         });
         dispatch(setSocket(socket));

@@ -25,6 +25,8 @@ interface CustomDialogProps extends DialogProps {
   titleBackground?: string;
   customActions?: React.ReactNode;
   onHandleSubmit?: () => void;
+  cancelDisabled?: boolean;
+  closeDisabled?: boolean;
 }
 
 export default function CustomDialog({
@@ -44,6 +46,8 @@ export default function CustomDialog({
   titleBackground,
   customActions,
   onHandleSubmit,
+  cancelDisabled,
+  closeDisabled,
   ...props
 }: CustomDialogProps) {
   const { t } = useTranslation();
@@ -72,7 +76,7 @@ export default function CustomDialog({
         <Box display='flex' alignItems='center'>
           <Box flexGrow={1}>{title || ""}</Box>
           <Box>
-            <IconButton onClick={handleClose}>
+            <IconButton onClick={handleClose} disabled={closeDisabled}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -99,6 +103,7 @@ export default function CustomDialog({
               onClick={onHandleCancel ? onHandleCancel : handleClose}
               variant='outlined'
               translation-key='common_cancel'
+              disabled={cancelDisabled}
             >
               {cancelText || t("common_cancel")}
             </JoyButton>

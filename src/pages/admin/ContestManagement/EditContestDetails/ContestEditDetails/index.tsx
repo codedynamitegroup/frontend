@@ -62,7 +62,6 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
           <Grid container gap={2} direction='column'>
             {/* Contest name */}
             <Controller
-              // defaultValue=''
               control={control}
               name='name'
               rules={{ required: true }}
@@ -91,15 +90,14 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='contest_start_time'
                         title={t("contest_start_time")}
                         titleRequired={true}
-                        // tooltipDescription={t("contest_start_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={9}>
                       <CustomDateTimePicker
                         value={moment(field.value)}
                         onHandleValueChange={(newValue) => {
@@ -109,7 +107,6 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         }}
                         width='350px'
                       />
-                      {/* Show error */}
                       {errors.startTime && (
                         <Grid item xs={12}>
                           {errors.startTime.message && (
@@ -126,13 +123,12 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             {/*  Contest end time */}
             <Grid container spacing={2} columns={12}>
               <Controller
-                // defaultValue={moment().utc().add(1, "hour").toISOString()}
                 control={control}
                 name='endTime'
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='contest_end_time'
                         title={t("contest_end_time")}
@@ -140,7 +136,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         tooltipDescription={t("contest_end_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
                         <CustomDateTimePicker
                           value={moment(field.value)}
@@ -167,7 +163,6 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                           )}
                         />
 
-                        {/* Show error */}
                         {errors.endTime && (
                           <Grid item xs={12}>
                             {errors.endTime.message && (
@@ -189,7 +184,7 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='contest_is_public'
                         title={t("contest_is_public")}
@@ -197,22 +192,12 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
                         tooltipDescription={t("contest_is_public_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='isPublic'
-                          render={({ field: { ref, ...field } }) => (
-                            <FormControlLabel
-                              control={
-                                <Checkbox color='primary' {...field} checked={field.value} />
-                              }
-                              label={""}
-                            />
-                          )}
+                        <FormControlLabel
+                          control={<Checkbox color='primary' {...field} checked={field.value} />}
+                          label={""}
                         />
-
-                        {/* Show error */}
                         {errors.isPublic && (
                           <Grid item xs={12}>
                             {errors.isPublic.message && (
@@ -253,35 +238,24 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             >
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='thumbnailUrl'
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='contest_thumbnail'
                         title={t("contest_thumbnail")}
                       />
                     </Grid>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='thumbnailUrl'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <AdvancedDropzoneDemo
-                              extFiles={extFiles}
-                              setExtFiles={setExtFiles}
-                              maxFileSize={maxFileSize}
-                              accept={fileTypeList}
-                              maxFiles={maxFiles}
-                              // width='950px'
-                            />
-                          )}
+                        <AdvancedDropzoneDemo
+                          extFiles={extFiles}
+                          setExtFiles={setExtFiles}
+                          maxFileSize={maxFileSize}
+                          accept={fileTypeList}
+                          maxFiles={maxFiles}
                         />
-
-                        {/* Show error */}
                         {errors.thumbnailUrl && (
                           <Grid item xs={12}>
                             {errors.thumbnailUrl.message && (
@@ -299,35 +273,24 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='description'
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='common_description'
                         title={t("common_description")}
-                        // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='description'
-                          // rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("description", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("description", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.description && (
                           <Grid item xs={12}>
                             {errors.description.message && (
@@ -345,35 +308,21 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='prizes'
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
-                      <TitleWithInfoTip
-                        translate-key='common_prizes'
-                        title={t("common_prizes")}
-                        // titleRequired={true}
-                      />
+                    <Grid item xs={12} md={3}>
+                      <TitleWithInfoTip translate-key='common_prizes' title={t("common_prizes")} />
                     </Grid>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='prizes'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("prizes", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("prizes", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.prizes && (
                           <Grid item xs={12}>
                             {errors.prizes.message && (
@@ -391,35 +340,21 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='rules'
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
-                      <TitleWithInfoTip
-                        translate-key='common_rules'
-                        title={t("common_rules")}
-                        // titleRequired={true}
-                      />
+                    <Grid item xs={12} md={3}>
+                      <TitleWithInfoTip translate-key='common_rules' title={t("common_rules")} />
                     </Grid>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='rules'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("rules", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("rules", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.rules && (
                           <Grid item xs={12}>
                             {errors.rules.message && (
@@ -437,35 +372,24 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
             <Grid container spacing={2} columns={12}>
               <Controller
                 control={control}
-                name='isPublic'
-                rules={{ required: true }}
+                name='scoring'
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                       <TitleWithInfoTip
                         translate-key='common_scoring'
                         title={t("common_scoring")}
-                        // titleRequired={true}
                       />
                     </Grid>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={9}>
                       <Stack direction='column' gap={1}>
-                        <Controller
-                          control={control}
-                          name='scoring'
-                          rules={{ required: true }}
-                          render={({ field: { ref, ...field } }) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) => {
-                                setValue("scoring", value);
-                              }}
-                              maxLines={10}
-                            />
-                          )}
+                        <TextEditor
+                          value={field.value}
+                          onChange={(value) => {
+                            setValue("scoring", value);
+                          }}
+                          maxLines={10}
                         />
-
-                        {/* Show error */}
                         {errors.scoring && (
                           <Grid item xs={12}>
                             {errors.scoring.message && (

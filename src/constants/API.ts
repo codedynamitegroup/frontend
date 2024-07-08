@@ -88,7 +88,9 @@ export const API = {
   COURSE: {
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
-      CREATE: "/course/rubric-user"
+      CREATE: "/course/rubric-user",
+      UPDATE: "/course/rubric-user/:id",
+      DELETE: "/course/rubric-user/:id"
     },
     COURSE: {
       DEFAULT: "/course/course",
@@ -190,7 +192,8 @@ export const API = {
       DEFAULT: "/course/calendar-events/query/my-calendar-events",
       CREATE: "/course/calendar-events/create",
       DELETE_BY_ID: "/course/calendar-events/:id",
-      UPDATE_BY_ID: "/course/calendar-events/:id"
+      UPDATE_BY_ID: "/course/calendar-events/:id",
+      TODO_BY_COURSE_ID: "/course/calendar-events/query/to-do-calendar-events"
     },
     QUESTION_SUBMISSION: {
       SUBMIT_LIST: "/course/question/submit-all",
@@ -252,6 +255,7 @@ export const API = {
       GET_STATISTICS: "/auth/users/statistics",
       GET_ORG_ADMIN_STATISTICS: "/auth/users/admin-org/statistics",
       SOCIAL_LOGIN: "/auth/users/social-login",
+      LINK_SSO: "/auth/users/link-sso",
       LOGIN: "/auth/users/login",
       REFRESH_TOKEN: "/auth/users/refresh-token",
       LOGOUT: "/auth/users/logout/:email",

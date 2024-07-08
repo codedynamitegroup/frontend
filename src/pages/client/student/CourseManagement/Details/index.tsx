@@ -1,22 +1,32 @@
-import { AppBar, Box, Tab, Tabs, Toolbar } from "@mui/material";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import { lazy, memo, useMemo } from "react";
-import { Route, Routes, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
-import { routes } from "routes/routes";
-import StudentCourseInformation from "./components/Information";
-import StudentCourseGrade from "./components/Grade";
-import StudentCourseParticipant from "./components/Participant";
-import StudentCourseAssignment from "./components/Assignment";
-import { useTranslation } from "react-i18next";
-import StudentEventCalendar from "../../StudentEventCalendar";
-import { Grid } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Toolbar
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ECourseEventStatus, ECourseResourceType } from "models/courseService/course";
-import { Paper, Typography, List, Divider } from "@mui/material";
-import StudentCourseEvent from "./components/Information/components/CourseEvent";
+import TextTitle from "components/text/TextTitle";
+import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
+import { lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { routes } from "routes/routes";
+import { EventCalendarService } from "services/courseService/EventCalendarService";
 import { RootState } from "store";
+import StudentEventCalendar from "../../StudentEventCalendar";
+import StudentCourseAssignment from "./components/Assignment";
+import StudentCourseGrade from "./components/Grade";
+import StudentCourseInformation from "./components/Information";
+import StudentCourseEvent from "./components/Information/components/CourseEvent";
+import StudentCourseParticipant from "./components/Participant";
+import classes from "./styles.module.scss";
 const StudentCourseAssignmentDetails = lazy(
   () => import("./components/Assignment/AssignmentDetails")
 );
@@ -105,43 +115,48 @@ const StudentCourseDetail = memo((props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, tabs]);
-  const eventList = [
-    {
-      id: 1,
-      name: "Assignment 1",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.submitted
-    },
-    {
-      id: 2,
-      name: "Assignment 2",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.notSubmitted
-    },
-    {
-      id: 3,
-      name: "Assignment 3",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.notSubmitted
-    },
-    {
-      id: 4,
-      name: "Assignment 4",
-      type: ECourseResourceType.assignment,
-      startDate: "01/01/2024",
-      endDate: "12/12/2024",
-      status: ECourseEventStatus.submitted
-    }
-  ];
+  const [eventList, setEventList] = useState<{
+    data: {
+      name: string;
+      type: NotificationComponentTypeEnum;
+      endDate: string;
+    }[];
+    isLoading: boolean;
+  }>({
+    data: [],
+    isLoading: false
+  });
   const location = useLocation();
   const isInformationRoute = location.pathname.includes("information");
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+
+  const handleGetAllCalendarEventsByCourseId = useCallback(async () => {
+    if (!courseId) return;
+    setEventList((pre) => ({ ...pre, isLoading: true }));
+    try {
+      const getAllCalendarEventsByCourseId =
+        await EventCalendarService.getToDoEventCalendarsByCourseId(courseId);
+      if (getAllCalendarEventsByCourseId) {
+        const eventList = getAllCalendarEventsByCourseId.calendarEvents.map((event: any) => {
+          return {
+            name: event.name,
+            type: event.component as NotificationComponentTypeEnum,
+            endDate: event.endTime
+          };
+        });
+        setTimeout(() => {
+          setEventList((pre) => ({ ...pre, data: eventList, isLoading: false }));
+        }, 1000);
+      }
+    } catch (error: any) {
+      setEventList((pre) => ({ ...pre, isLoading: false }));
+    }
+  }, [courseId]);
+
+  useEffect(() => {
+    handleGetAllCalendarEventsByCourseId();
+  }, [handleGetAllCalendarEventsByCourseId]);
+
   return (
     <>
       <Box
@@ -189,31 +204,56 @@ const StudentCourseDetail = memo((props: Props) => {
           </Grid>
           {isInformationRoute && (
             <Grid item xs={4.8}>
-              <StudentEventCalendar />
+              <StudentEventCalendar inDetails={true} />
               <Paper className={classes.eventContainer}>
-                <Typography
+                <TextTitle
                   className={classes.eventTitle}
                   translation-key='course_detail_need_to_do_title'
                 >
                   {t("course_detail_need_to_do_title")}
-                </Typography>
+                </TextTitle>
                 <Divider />
-                <List
+                <Stack
+                  direction={"column"}
                   sx={{ width: "100%", bgcolor: "background.paper" }}
                   className={classes.eventList}
                 >
-                  {eventList.map((event, index) => (
-                    <StudentCourseEvent
-                      id={event.id}
-                      key={index}
-                      name={event.name}
-                      endDate={event.endDate}
-                      startDate={event.startDate}
-                      type={event.type}
-                      status={event.status}
-                    />
-                  ))}
-                </List>
+                  {eventList.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <Skeleton
+                        key={index}
+                        variant='rectangular'
+                        width='100%'
+                        height={25}
+                        sx={{
+                          marginY: "5px"
+                        }}
+                      />
+                    ))
+                  ) : eventList.data.length === 0 ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        minHeight: "100px",
+                        marginY: "10px"
+                      }}
+                      translation-key='common_no_to_do_event'
+                    >
+                      {t("common_no_to_do_event")}
+                    </Box>
+                  ) : (
+                    eventList.data.map((event, index) => (
+                      <StudentCourseEvent
+                        key={index}
+                        name={event.name}
+                        endDate={event.endDate}
+                        type={event.type}
+                      />
+                    ))
+                  )}
+                </Stack>
               </Paper>
             </Grid>
           )}

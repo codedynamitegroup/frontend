@@ -203,12 +203,12 @@ const LecturerEventCalendar = () => {
         };
       });
       try {
-        const getCertificateCoursesResponse = await EventCalendarService.getEventCalendars({
+        const getCalendarEventsResponse = await EventCalendarService.getEventCalendars({
           courseId: data.filterCourse === "ALL" ? undefined : data.filterCourse,
           fromTime,
           toTime
         });
-        if (getCertificateCoursesResponse.calendarEvents.length === 0) {
+        if (getCalendarEventsResponse.calendarEvents.length === 0) {
           setData((pre) => {
             return {
               ...pre,
@@ -221,7 +221,7 @@ const LecturerEventCalendar = () => {
         setData((pre) => {
           return {
             ...pre,
-            currentEvents: getCertificateCoursesResponse.calendarEvents.map((value: any) => {
+            currentEvents: getCalendarEventsResponse.calendarEvents.map((value: any) => {
               let checkExistTeacherByLoggedUser = false;
               if (
                 value.eventType === NotificationEventTypeEnum.COURSE &&
@@ -231,7 +231,7 @@ const LecturerEventCalendar = () => {
                 const findTeacher = value.course.teachers.find(
                   (teacher: any) => teacher.userId === loggedUser?.userId
                 );
-                if (findTeacher && findTeacher.role === "Giảng viên 1") {
+                if (findTeacher && findTeacher.roleMoodleId === 3) {
                   checkExistTeacherByLoggedUser = true;
                 }
               }

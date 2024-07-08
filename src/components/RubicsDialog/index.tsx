@@ -43,10 +43,6 @@ export default function RubicsDialog({
                   <ParagraphBody fontWeight={500}>Criteria</ParagraphBody>
                 </th>
                 <th>
-                  <ParagraphBody fontWeight={500}>Total score</ParagraphBody>
-                </th>
-
-                <th>
                   <ParagraphBody fontWeight={500}>Scale Descriptions</ParagraphBody>
                 </th>
               </tr>
@@ -56,13 +52,6 @@ export default function RubicsDialog({
                 <tr key={index}>
                   <td>
                     <ParagraphBody>{criteria.criteriaName}</ParagraphBody>
-                  </td>
-                  <td>
-                    {criteria.criteriaGrade ? (
-                      <ParagraphBody>{criteria.criteriaGrade}%</ParagraphBody>
-                    ) : (
-                      <ParagraphBody>Not provided</ParagraphBody>
-                    )}
                   </td>
                   <td>
                     <ul>

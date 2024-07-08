@@ -64,6 +64,7 @@ import ProblemDetailSubmission from "../../DetailProblem/components/Submission";
 import TestCase from "../../DetailProblem/components/TestCase";
 import ContestTimeDisplay from "../ContestDetails/components/TimeDisplay";
 import classes from "./styles.module.scss";
+import "react-quill/dist/quill.bubble.css";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
