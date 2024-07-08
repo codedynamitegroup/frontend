@@ -48,7 +48,8 @@ const CodeQuestionTestCases = () => {
     fields,
     remove: removeTC,
     append,
-    update
+    update,
+    remove
   } = useFieldArray({
     control: codeQuestionControl,
     name: "testCases",
@@ -58,49 +59,11 @@ const CodeQuestionTestCases = () => {
   const initialRows: GridRowsProp = fields.map((field, index) => ({
     key: field.fieldArrayId,
     id: index + 1,
-    input: `input_${index}`,
-    output: `output_${index}`,
-    isSample: field.sample
+    input: `input_${index + 1}`,
+    output: `output_${index + 1}`,
+    isSample: field.isSample
     // score: field.score
   }));
-  // [
-  // {
-  //   id: 1,
-  //   input: "input01",
-  //   output: "output01",
-  //   inputValue: "1\n2",
-  //   outputValue: "3",
-  //   isSample: true,
-  //   score: 0
-  // },
-  // {
-  //   id: 2,
-  //   input: "input02",
-  //   output: "output02",
-  //   inputValue: "3\n2",
-  //   outputValue: "5",
-  //   isSample: true,
-  //   score: 10
-  // },
-  // {
-  //   id: 3,
-  //   input: "input03",
-  //   output: "output03",
-  //   inputValue: "2\n2",
-  //   outputValue: "4",
-  //   isSample: true,
-  //   score: 100
-  // },
-  // {
-  //   id: 4,
-  //   input: "input04",
-  //   output: "output04",
-  //   inputValue: "3\n3",
-  //   outputValue: "6",
-  //   isSample: false,
-  //   score: 5
-  // }
-  // ];
 
   const [rows, setRows] = React.useState(initialRows);
   const [itemIndex, setItemIndex] = React.useState(-1);
@@ -114,7 +77,8 @@ const CodeQuestionTestCases = () => {
 
   const handleEditClick = (id: GridRowId) => () => {
     // setItemEdit(rows.find((row: any) => row.id === id));
-    if (typeof id.valueOf() === "number") setItemIndex((id.valueOf() as number) - 1);
+    const index = id.valueOf();
+    if (typeof index === "number") setItemIndex(index - 1);
     else setItemIndex(-1);
     // setValue(`testCases.${0}.inputData`, "data.inputData");
     setOpenTestCasePopup(true);
@@ -125,7 +89,9 @@ const CodeQuestionTestCases = () => {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    setOpenConfirmAlert(true);
+    const index = id.valueOf();
+    if (typeof index === "number") remove(index - 1);
+    // setOpenConfirmAlert(true);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -174,7 +140,6 @@ const CodeQuestionTestCases = () => {
       field: "isSample",
       width: 150,
       headerName: t("common_template"),
-      editable: true,
       type: "boolean"
     },
     // {
@@ -191,27 +156,27 @@ const CodeQuestionTestCases = () => {
       width: 300,
       cellClassName: "actions",
       getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        // const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon className={classes.icon} />}
-              label='Save'
-              sx={{
-                color: "primary.main"
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon className={classes.icon} />}
-              label='Cancel'
-              className='textPrimary'
-              onClick={handleCancelClick(id)}
-              color='inherit'
-            />
-          ];
-        }
+        // if (isInEditMode) {
+        //   return [
+        //     <GridActionsCellItem
+        //       icon={<SaveIcon className={classes.icon} />}
+        //       label='Save'
+        //       sx={{
+        //         color: "primary.main"
+        //       }}
+        //       onClick={handleSaveClick(id)}
+        //     />,
+        //     <GridActionsCellItem
+        //       icon={<CancelIcon className={classes.icon} />}
+        //       label='Cancel'
+        //       className='textPrimary'
+        //       onClick={handleCancelClick(id)}
+        //       color='inherit'
+        //     />
+        //   ];
+        // }
 
         return [
           <GridActionsCellItem

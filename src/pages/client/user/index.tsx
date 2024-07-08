@@ -8,13 +8,10 @@ import HomePage from "./HomePage";
 import UserDashboard from "./Dashboard";
 import ListProblem from "./ListProblem";
 import ContestList from "./Contest/ContestList";
-import ContestDetails from "./Contest/ContestDetails";
 import Login from "./Login";
 import Register from "./Register";
-import ForgotPassword from "./ForgotPassword";
 import UserInformation from "./UserDetails/UserInformation";
 import VerifyOTP from "./ForgotPassword/components/VerifyOTP";
-import ResetPassword from "./ForgotPassword/components/ResetPassword";
 import ForbiddenPage from "pages/common/ForbiddenPage";
 import NotFoundPage from "pages/common/NotFoundPage";
 import RequireAuth from "components/common/RequireAuth";
@@ -24,6 +21,9 @@ import { RootState } from "store";
 import { useSelector } from "react-redux";
 import { lazy } from "react";
 const CourseCertificateDetail = lazy(() => import("./CourseCertificate/Detail"));
+const ForgotPassword = lazy(() => import("./ForgotPassword"));
+const ResetPassword = lazy(() => import("./ForgotPassword/components/ResetPassword"));
+const ContestDetails = lazy(() => import("./Contest/ContestDetails"));
 
 type Props = {};
 

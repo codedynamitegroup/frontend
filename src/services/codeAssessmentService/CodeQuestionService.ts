@@ -7,6 +7,39 @@ import api from "utils/api";
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class CodeQuestionService {
+  static async updateCodeQuestion(
+    codeQuestionId: string,
+    field: {
+      name: string;
+      problemStatement: string;
+      inputFormat: string;
+      outputFormat: string;
+      constraints: string;
+      maxGrade: number;
+      difficulty: QuestionDifficultyEnum;
+      isPublic: boolean;
+      allowImport: boolean;
+    }
+  ) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).put(API.CODE_ASSESSMENT.CODE_QUESTION.UPDATE_BY_ID.replace(":id", codeQuestionId), {
+        ...field
+      });
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch detail code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async getAdminDetailCodeQuestion(codeQuestionId: string) {
     try {
       const response = await api({

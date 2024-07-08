@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
 import classes from "./styles.module.scss";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading1 from "components/text/Heading1";
@@ -24,92 +24,27 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import isQuillEmpty from "utils/coreService/isQuillEmpty";
-import { dA } from "@fullcalendar/core/internal-common";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TagService } from "services/codeAssessmentService/TagService";
 import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
 import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
+import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
+import FormSchema from "./schema/FormSchema";
 
 interface Props {}
 const checkEmptyString = (value: string) => value !== undefined && value.trim().length > 0;
 const AdminCodeQuestionDetails = (props: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const schema = useMemo(() => {
-    return yup.object<CodeQuestionFormData>().shape({
-      name: yup
-        .string()
-        .required(t("name_required"))
-        .test("not-blank", `${t("name_required")}`, checkEmptyString),
-      problemStatement: yup
-        .string()
-        .required(t("code_management_statement_required"))
-        .test(
-          "not-blank",
-          `${t("code_management_statement_required")}`,
-          (value) => !isQuillEmpty(value)
-        ),
-      inputFormat: yup
-        .string()
-        .required(t("code_management_input_format_required"))
-        .test("not-blank", `${t("code_management_input_format_required")}`, checkEmptyString),
-      outputFormat: yup
-        .string()
-        .required(t("code_management_output_format_required"))
-        .test("not-blank", `${t("code_management_output_format_required")}`, checkEmptyString),
-      contraints: yup
-        .string()
-        .required(t("code_management_constraint_required"))
-        .test("not-blank", `${t("code_management_constraint_required")}`, checkEmptyString),
-      isPublic: yup.boolean().required(),
-      allowImport: yup.boolean().required(),
-      difficulty: yup
-        .mixed<QuestionDifficultyEnum>()
-        .oneOf(Object.values(QuestionDifficultyEnum))
-        .required(t("code_management_difficulty_required")),
-      testCases: yup
-        .array()
-        .of(
-          yup.object().shape({
-            id: yup.string().required(),
-            inputData: yup.string().required(),
-            outputData: yup.string().required(),
-            sample: yup.boolean().required()
-            // score: yup.number().required()
-          })
-        )
-        .required(),
-      tags: yup.array().of(yup.string().required()).required(),
-      programmingLanguages: yup
-        .array()
-        .of(
-          yup.object().shape({
-            id: yup.string().required(),
-            name: yup.string().required(),
-            timeLimit: yup
-              .number()
-              .positive(t("code_management_timelimit_required"))
-              .required(t("code_management_timelimit_required")),
-            memoryLimit: yup
-              .number()
-              .min(204800, t("code_management_memorylimit_required"))
-              .required(t("code_management_memorylimit_required")),
-            choosen: yup.bool().required(),
-            bodyCode: yup.string()
-          })
-        )
-        .required()
-    });
-  }, [t]);
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
   const [tags, setTags] = useState<TagEntity[]>([]);
   const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguageAdminEntity[]>(
     []
   );
   const codeQuestionFormMethod = useForm<CodeQuestionFormData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FormSchema()),
     defaultValues: useMemo(
       () => ({
         name: codeQuestion?.name ?? "",
@@ -117,7 +52,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
         difficulty: codeQuestion?.difficulty ?? QuestionDifficultyEnum.EASY,
         inputFormat: codeQuestion?.inputFormat ?? "",
         outputFormat: codeQuestion?.outputFormat ?? "",
-        contraints: codeQuestion?.constraints ?? "None",
+        constraints: codeQuestion?.constraints ?? "None",
+        maxGrade: codeQuestion?.maxGrade ?? 1,
         isPublic: codeQuestion?.isPublic ?? true,
         allowImport: codeQuestion?.allowImport ?? false,
         testCases: codeQuestion?.testCases ?? [],
@@ -137,7 +73,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
       problemStatement: codeQuestion?.problemStatement ?? "",
       inputFormat: codeQuestion?.inputFormat ?? "",
       outputFormat: codeQuestion?.outputFormat ?? "",
-      contraints: codeQuestion?.constraints ?? "None",
+      constraints: codeQuestion?.constraints ?? "None",
+      maxGrade: codeQuestion?.maxGrade ?? 1,
       isPublic: codeQuestion?.isPublic ?? true,
       allowImport: codeQuestion?.allowImport ?? false,
       testCases: codeQuestion?.testCases ?? [],
@@ -227,7 +164,10 @@ const AdminCodeQuestionDetails = (props: Props) => {
 
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
-  const onSubmit = (data: CodeQuestionFormData) => {
+  console.log(codeQuestionFormMethod.formState.errors);
+
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const onSubmit = async (data: CodeQuestionFormData) => {
     if (isEdit) {
       const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
       const dirtyInformationField = [
@@ -236,7 +176,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
         dirtyFields.problemStatement,
         dirtyFields.inputFormat,
         dirtyFields.outputFormat,
-        dirtyFields.contraints,
+        dirtyFields.constraints,
+        dirtyFields.maxGrade,
         dirtyFields.isPublic,
         dirtyFields.allowImport
       ];
@@ -248,6 +189,65 @@ const AdminCodeQuestionDetails = (props: Props) => {
       const isDirtyTestCase = dirtyFields.testCases?.some((value) =>
         Object.values(value).some((val) => val === true)
       );
+
+      setLoadingSubmit(true);
+      try {
+        let updateInform: Promise<any> | undefined = undefined;
+        if (isDirtyInform && codeQuestionId !== undefined) {
+          updateInform = CodeQuestionService.updateCodeQuestion(codeQuestionId, {
+            name: data.name,
+            difficulty: data.difficulty,
+            problemStatement: data.problemStatement,
+            inputFormat: data.inputFormat,
+            outputFormat: data.outputFormat,
+            constraints: data.constraints,
+            maxGrade: data.maxGrade,
+            isPublic: data.isPublic,
+            allowImport: data.allowImport
+          });
+        }
+
+        let updateTestCases: Promise<any> | undefined = undefined;
+        let dirtyTC = dirtyFields?.testCases;
+        console.log("here");
+
+        if (isDirtyTestCase && codeQuestion !== undefined) {
+          console.log("here");
+          const dataTC = data.testCases;
+          let mapTCs = new Map<string, TestCaseEntity>();
+          dataTC.forEach((value) => {
+            if (value.id !== "new") mapTCs.set(value.id, value);
+          });
+          let updatedTC = dataTC.filter(
+            (value, index) =>
+              value.id !== "new" &&
+              dirtyTC !== undefined &&
+              Object.values(dirtyTC[index]).some((val) => val === true)
+          );
+          let newTC = dataTC.filter((value) => value.id === "new");
+          let deletedTC = codeQuestion.testCases
+            .filter((value) => !mapTCs.has(value.id))
+            .map((value) => value.id);
+          updateTestCases = TestCaseSerivce.updateTestCases({
+            codeQuestionId: codeQuestion.id,
+            newTestCases: newTC.map((value) => ({
+              inputData: value.inputData,
+              outputData: value.outputData,
+              isSample: value.isSample
+            })),
+            updatedTestCases: updatedTC.map((value) => ({
+              inputData: value.inputData,
+              outputData: value.outputData,
+              isSample: value.isSample,
+              id: value.id
+            })),
+            deletedTestCasesId: deletedTC
+          });
+        }
+        await Promise.all([updateInform, updateTestCases]);
+      } finally {
+        setLoadingSubmit(false);
+      }
     }
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
     console.log(data);
@@ -329,15 +329,6 @@ const AdminCodeQuestionDetails = (props: Props) => {
                   <TabPanel value='3'>
                     <CodeQuestionLanguages />
                   </TabPanel>
-                  {/* <Routes>
-              <Route
-                path={"information"}
-                element={<CodeQuestionInformation question={question} />}
-              />
-              <Route path={"test-cases"} element={<CodeQuestionTestCases />} />
-              <Route path={"code-stubs"} element={<CodeQuestionCodeStubs />} />
-              <Route path={"languages"} element={<CodeQuestionLanguages />} />
-            </Routes> */}
                 </Box>
               </TabContext>
             </Box>
@@ -346,7 +337,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
             <Box className={classes.phantom} />
             <Box className={classes.stickyFooterItem}>
               <Button btnType={BtnType.Primary} type='submit' translation-key='common_save_changes'>
-                {t("common_save_changes")}
+                {loadingSubmit ? <CircularProgress size={20} /> : t("common_save_changes")}
               </Button>
             </Box>
           </Box>

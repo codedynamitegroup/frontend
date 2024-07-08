@@ -8,6 +8,7 @@ import {
   Select,
   SelectChangeEvent,
   Switch,
+  TextField,
   Tooltip
 } from "@mui/material";
 import InputTextField from "components/common/inputs/InputTextField";
@@ -30,6 +31,7 @@ type CodeQuestionInformationFormValue = {
   inputFormat: string;
   outputFormat: string;
   constraints: string;
+  maxGrade: number;
   isPublic: boolean;
   allowImport: boolean;
   tags: string[];
@@ -48,7 +50,6 @@ const MenuProps = {
 const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
   const { t } = useTranslation();
   const {
-    register,
     control: codeQuestionControl,
     formState: { errors: codeQuestionFormErrors }
   } = useFormContext<CodeQuestionInformationFormValue>();
@@ -218,6 +219,30 @@ const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
           {codeQuestionFormErrors.outputFormat?.message && (
             <ErrorMessage>{codeQuestionFormErrors.outputFormat.message}</ErrorMessage>
           )}
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={1} columns={12}>
+        <Grid item xs={3}>
+          <TextTitle translation-key='exam_detail_summary_score'>
+            {t("exam_detail_summary_score")}
+          </TextTitle>
+        </Grid>
+        <Grid item xs={9}>
+          <Controller
+            name='maxGrade'
+            control={codeQuestionControl}
+            render={({ field: { onChange, value } }) => (
+              <Tooltip title={t("code_management_grade_tool_tip")}>
+                <TextField
+                  type='number'
+                  inputProps={{ min: 1 }}
+                  onChange={onChange}
+                  value={value}
+                />
+              </Tooltip>
+            )}
+          />
         </Grid>
       </Grid>
 

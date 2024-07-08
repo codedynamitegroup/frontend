@@ -6,11 +6,12 @@ type CodeQuestionFormData = {
   problemStatement: string;
   inputFormat: string;
   outputFormat: string;
-  contraints: string;
+  constraints: string;
+  maxGrade: number;
   isPublic: boolean;
   allowImport: boolean;
   difficulty: QuestionDifficultyEnum;
-  testCases: { id: string; inputData: string; outputData: string; sample: boolean }[];
+  testCases: { id: string; inputData: string; outputData: string; isSample: boolean }[];
   tags: string[];
   programmingLanguages: ProgrammingLanguageAdminEntity[];
 };
