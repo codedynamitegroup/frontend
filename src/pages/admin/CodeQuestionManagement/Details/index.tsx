@@ -181,18 +181,21 @@ const AdminCodeQuestionDetails = (props: Props) => {
         dirtyFields.allowImport
       ];
       const isDirtyInform = dirtyInformationField.some((value) => value === true);
-      const isDirtyTags = dirtyFields.tags?.some((value) => value === true);
+      const isDirtyTags: boolean | boolean[] | undefined = dirtyFields.tags;
       const isDirtyLanguages = dirtyFields.programmingLanguages?.some((value) =>
         Object.values(value).some((val) => val === true)
       );
       const isDirtyTestCase =
         dirtyFields.testCases?.some((value) => Object.values(value).some((val) => val === true)) ||
         (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
-
+      console.log("dirtytag", isDirtyTags);
       setLoadingSubmit(true);
       try {
         let updateInform: Promise<any> | undefined = undefined;
-        if (isDirtyInform && codeQuestionId !== undefined) {
+        if ((isDirtyInform || isDirtyTags) && codeQuestionId !== undefined) {
+          let dataTagMap = new Set<string>();
+          data.tags.forEach((value) => dataTagMap.add(value));
+          let deleteTagIds = codeQuestion?.tags.filter((value) => !dataTagMap.has(value));
           updateInform = CodeQuestionService.updateCodeQuestion(codeQuestionId, {
             name: data.name,
             difficulty: data.difficulty,
@@ -202,7 +205,9 @@ const AdminCodeQuestionDetails = (props: Props) => {
             constraints: data.constraints,
             maxGrade: data.maxGrade,
             isPublic: data.isPublic,
-            allowImport: data.allowImport
+            allowImport: data.allowImport,
+            newTagIds: data.tags ?? [],
+            deletedTagIds: deleteTagIds ?? []
           });
         }
 

@@ -54,6 +54,8 @@ export class CodeQuestionService {
       difficulty: QuestionDifficultyEnum;
       isPublic: boolean;
       allowImport: boolean;
+      newTagIds: string[];
+      deletedTagIds: string[];
     }
   ) {
     try {
