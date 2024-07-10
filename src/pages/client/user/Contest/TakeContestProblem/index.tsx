@@ -499,30 +499,23 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_execute'
                   focusRipple
                   onClick={handleExecuteCode}
-                  disabled={
-                    !auth.isLoggedIn ||
-                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
-                    data.contestDetails.isRegistered !== true
-                  }
                 >
                   <PlayArrowIcon />
                   {t("detail_problem_execute")}
                 </Button>
-                <Button
-                  className={classes.submitBtn}
-                  color='primary'
-                  translation-key='detail_problem_submit'
-                  onClick={handleSubmitCode}
-                  focusRipple
-                  disabled={
-                    !auth.isLoggedIn ||
-                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
-                    data.contestDetails.isRegistered !== true
-                  }
-                >
-                  {submissionLoading && <CircularProgress size={20} />}
-                  {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
-                </Button>
+                {data.contestStatus !== ContestStartTimeFilterEnum.ENDED &&
+                  data.contestDetails.isRegistered === true && (
+                    <Button
+                      className={classes.submitBtn}
+                      color='primary'
+                      translation-key='detail_problem_submit'
+                      onClick={handleSubmitCode}
+                      focusRipple
+                    >
+                      {submissionLoading && <CircularProgress size={20} />}
+                      {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+                    </Button>
+                  )}
               </>
             )}
           </Box>
