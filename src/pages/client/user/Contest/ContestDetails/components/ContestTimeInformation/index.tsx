@@ -34,7 +34,6 @@ const ContestTimeInformation = ({
   handleChangeContestStatus
 }: PropsData) => {
   const dispatch = useDispatch<AppDispatch>();
-  // const { startDate, status, endDate, contestName } = props;
   const convertedEndDate = contestDetails.endTime ? new Date(contestDetails.endTime) : null;
 
   const [isJoinContest, setIsJoinContest] = useState(contestDetails?.isRegistered || false);

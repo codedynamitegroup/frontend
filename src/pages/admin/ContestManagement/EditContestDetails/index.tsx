@@ -435,7 +435,7 @@ const EditContestDetails = ({ isDrawerOpen }: any) => {
           >
             {t("common_save_changes")}
           </JoyButton>
-          {/* <JoyButton onClick={() => navigator.clipboard.writeText(watch("prizes") || "")}>
+          {/* <JoyButton onClick={() => navigator.clipboard.writeText(watch("scoring") || "")}>
             Copy
           </JoyButton> */}
         </Box>
