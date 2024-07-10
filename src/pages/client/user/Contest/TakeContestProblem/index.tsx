@@ -740,6 +740,7 @@ export default function TakeContestProblem() {
                           problemId: problemId
                         }}
                         isShareSolutionDisabled={data.contestDetails?.isDisabledForum}
+                        isAIEvaluationDisabled={true}
                       />
                     }
                   />

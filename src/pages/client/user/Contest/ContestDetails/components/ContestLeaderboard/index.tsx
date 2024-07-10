@@ -38,6 +38,8 @@ export default function ContestLeaderboard(props: PropsData) {
     props.setPage(newPage);
   };
   const { t } = useTranslation();
+
+  console.log("currentUserRank.contestQuestions", currentUserRank?.contestQuestions);
   return (
     <Box>
       <TableContainer component={Paper} className={classes.tableContainer}>
@@ -152,7 +154,7 @@ export default function ContestLeaderboard(props: PropsData) {
                             <Typography className={classes.tableSecondaryData}>
                               {/* {"00:02:12"} */}
                               {problem.doTime
-                                ? millisToFormatTimeString(problem.doTime)
+                                ? millisToFormatTimeString(problem.doTime * 1000)
                                 : millisToFormatTimeString(0)}
                             </Typography>
                           </Box>
@@ -217,7 +219,7 @@ export default function ContestLeaderboard(props: PropsData) {
                         </Typography>
                         <Typography className={classes.tableSecondaryData}>
                           {problem.doTime
-                            ? millisToFormatTimeString(problem.doTime)
+                            ? millisToFormatTimeString(problem.doTime * 1000)
                             : millisToFormatTimeString(0)}
                         </Typography>
                       </Box>
