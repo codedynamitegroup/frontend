@@ -106,8 +106,8 @@ const ContestEditStatistics = ({
       className={classes.container}
       sx={{
         margin: "0px 20px 20px 20px",
-        width: "calc(100% - 40px)",
-        minHeight: "600px"
+        width: "calc(100% - 40px)"
+        // minHeight: "600px"
       }}
     >
       <Grid item xs={12}>
@@ -245,6 +245,16 @@ const ContestEditStatistics = ({
               </Stack>
             </Card>
           </Grid>
+          <Grid
+            container
+            spacing={2}
+            columns={12}
+            height={
+              data.contestQuestions && data.contestQuestions.length > 0
+                ? `${(data.contestQuestions.length * 100) / 4}px`
+                : "100px"
+            }
+          ></Grid>
         </Grid>
       </Grid>
     </Grid>

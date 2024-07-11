@@ -15,7 +15,6 @@ import Heading1 from "components/text/Heading1";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
 import { ContestLeaderboardEntity } from "models/coreService/entity/ContestLeaderboardEntity";
 import { UserContestRankEntity } from "models/coreService/entity/UserContestRankEntity";

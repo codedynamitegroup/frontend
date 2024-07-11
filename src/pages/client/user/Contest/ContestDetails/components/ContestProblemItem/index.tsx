@@ -39,6 +39,8 @@ const ContestProblemItem = (props: PropsData) => {
               .replace(":contestId", contestId)
               .replace(":problemId", problemId)}
             underline='none'
+            // open in new tab
+            target='_blank'
           >
             <Stack direction={"column"} className={classes.problemDetailContainer}>
               <TextTitle className={classes.problemNameText}>{name}</TextTitle>

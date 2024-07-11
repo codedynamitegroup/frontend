@@ -33,6 +33,7 @@ interface Props {
   codeSubmissionDetail: CodeSubmissionDetailEntity | null;
   codeQuestion: CodeQuestionEntity;
   isShareSolutionDisabled?: boolean;
+  isAIEvaluationDisabled?: boolean;
 }
 
 export interface ICodeQuestion {
@@ -45,7 +46,8 @@ export default function DetailSolution({
   codeSubmissionDetail,
   languageName,
   codeQuestion,
-  isShareSolutionDisabled
+  isShareSolutionDisabled,
+  isAIEvaluationDisabled
 }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -399,14 +401,16 @@ export default function DetailSolution({
             >
               {t("detail_problem_submission_detail_your_solution")}
             </ParagraphBody>
-            <LoadingButton
-              loading={loading}
-              variant='contained'
-              color='primary'
-              onClick={handleFeedbackCodeByAI}
-            >
-              {t("detail_submission_AI_evaluation")}
-            </LoadingButton>
+            {isAIEvaluationDisabled !== true && (
+              <LoadingButton
+                loading={loading}
+                variant='contained'
+                color='primary'
+                onClick={handleFeedbackCodeByAI}
+              >
+                {t("detail_submission_AI_evaluation")}
+              </LoadingButton>
+            )}
           </Box>
           <Box data-color-mode='light'>
             <MDEditor.Markdown source={"```\n" + sourceCodeSubmission.source_code} />

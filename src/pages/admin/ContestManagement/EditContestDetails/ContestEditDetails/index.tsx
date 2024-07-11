@@ -1,19 +1,19 @@
+import { ExtFile } from "@files-ui/react";
 import { Checkbox, Divider, FormControlLabel, Grid, Stack } from "@mui/material";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
 import InputTextField from "components/common/inputs/InputTextField";
+import AdvancedDropzoneDemo from "components/editor/FileUploader";
+import TextEditor from "components/editor/TextEditor";
 import ErrorMessage from "components/text/ErrorMessage";
 import Heading4 from "components/text/Heading4";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import moment from "moment";
+import { useState } from "react";
 import { Control, Controller, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { IFormDataType } from "..";
 import classes from "./styles.module.scss";
-import TextEditor from "components/editor/TextEditor";
-import AdvancedDropzoneDemo from "components/editor/FileUploader";
-import { ExtFile } from "@files-ui/react";
-import { useEffect, useState } from "react";
 
 interface ContestEditDetailsProps {
   control: Control<IFormDataType, any>;
@@ -29,12 +29,6 @@ const ContestEditDetails = ({ control, errors, setValue, watch }: ContestEditDet
   const maxFiles = 1;
   const fileTypeList = ".bmp, .gif, .jpeg, .jpg, .png, .svg, .tif, .tiff";
   const [extFiles, setExtFiles] = useState<ExtFile[]>([]);
-
-  useEffect(() => {
-    if (extFiles.length > 0) {
-      setValue("thumbnailUrl", extFiles[0]?.downloadUrl || "");
-    }
-  }, [extFiles, setValue]);
 
   return (
     <>
