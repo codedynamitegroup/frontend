@@ -18,12 +18,14 @@ export const SocketConnection = () => {
     if (isLoggedIn && loggedUser && !socketState.socket) {
       // Connect to socket
       try {
-        const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
-          query: {
-            token: localStorage.getItem("access_token")
-          }
-        });
-        dispatch(setSocket(socket));
+        if (localStorage.getItem("access_token")) {
+          const socket: Socket<any, SocketData> = socketio(SOCKET_URL, {
+            query: {
+              token: localStorage.getItem("access_token")
+            }
+          });
+          dispatch(setSocket(socket));
+        }
       } catch (error) {
         dispatch(setSocket(null));
       }

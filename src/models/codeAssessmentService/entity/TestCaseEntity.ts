@@ -5,7 +5,7 @@ export interface TestCaseEntity {
 
   outputData: string;
 
-  sample: boolean;
+  isSample: boolean;
 
   // score: number;
 }

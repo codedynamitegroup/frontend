@@ -10,7 +10,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import { CreateContestCommand } from "models/coreService/create/CreateContestCommand";
 import moment from "moment";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -30,7 +30,6 @@ interface IFormDataType {
 }
 
 const CreateContest = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -186,7 +185,7 @@ const CreateContest = () => {
                 rules={{ required: true }}
                 render={({ field: { ref, ...field } }) => (
                   <>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                       <TitleWithInfoTip
                         translate-key='contest_start_time'
                         title={t("contest_start_time")}
@@ -194,7 +193,7 @@ const CreateContest = () => {
                         tooltipDescription={t("contest_start_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                       <CustomDateTimePicker
                         value={moment(field.value)}
                         onHandleValueChange={(newValue) => {
@@ -220,14 +219,13 @@ const CreateContest = () => {
 
             {/*  Contest end time */}
             <Controller
-              // defaultValue={moment().utc().add(1, "hour").toISOString()}
               control={control}
               name='endTime'
               rules={{ required: true }}
               render={({ field: { ref, ...field } }) => (
                 <>
                   <Grid container spacing={1} columns={12}>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                       <TitleWithInfoTip
                         translate-key='contest_end_time'
                         title={t("contest_end_time")}
@@ -235,7 +233,7 @@ const CreateContest = () => {
                         tooltipDescription={t("contest_end_time_tooltip")}
                       />
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                       <Stack direction='column' gap={1}>
                         <CustomDateTimePicker
                           value={moment(field.value)}

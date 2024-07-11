@@ -50,7 +50,7 @@ export default function TestCase() {
         inputData: "",
         outputData: "",
         id: "sampleid",
-        sample: true
+        isSample: true
       });
       setTestCases(newList);
     }

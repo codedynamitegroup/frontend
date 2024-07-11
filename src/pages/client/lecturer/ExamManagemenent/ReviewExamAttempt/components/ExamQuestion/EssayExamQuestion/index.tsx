@@ -2,20 +2,23 @@ import { Box, Grid, Stack, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
-import { Textarea } from "@mui/joy";
+import { Card, Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
 
 import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 import { FileCard } from "@files-ui/react";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import Heading6 from "components/text/Heading6";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
   questionIndex: number;
   questionSubmitContent?: GetQuestionSubmissionEntity;
+  isGraded?: boolean;
 }
 
 const EssayExamQuestion = (props: EssayExamQuestionProps) => {
-  const { questionEssayQuestion, questionIndex, questionSubmitContent } = props;
+  const { questionEssayQuestion, questionIndex, questionSubmitContent, isGraded } = props;
   const { t } = useTranslation();
 
   return (
@@ -23,14 +26,6 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
       <Grid item xs={12} md={12}>
         <Stack direction={"row"} justifyContent={"space-between"}>
           <Heading4>{`${t("common_question")} ${questionIndex + 1}`}</Heading4>
-          {/* <Button
-            variant={isFlagged ? "soft" : "outlined"}
-            color='primary'
-            startDecorator={isFlagged ? <FlagIcon /> : <FlagOutlinedIcon />}
-            onClick={flagQuestionHandle}
-          >
-            {isFlagged ? t("common_remove_flag") : t("common_flag")}
-          </Button> */}
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
@@ -50,9 +45,8 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           </Box>
           <Box sx={{ backgroundColor: "#f5f5f5" }} borderRadius={1} padding={".35rem 1rem"}>
             <ParagraphBody fontSize={"12px"} color={"#212121"}>
-              {t("common_score_can_achieve")}
-              {": "}
-              {questionEssayQuestion.question.defaultMark}
+              `${t("achieved_mark")}: ${questionSubmitContent?.grade.toFixed(2) || "0.00"} / $
+              {questionEssayQuestion.question.defaultMark.toFixed(2)}`
             </ParagraphBody>
           </Box>
         </Stack>
@@ -121,10 +115,9 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             {questionSubmitContent?.files?.map((file, index) => (
               <Grid>
                 <FileCard
-                  id={file.fileUrl}
+                  id={file.id}
                   key={index}
                   name={file.fileName}
-                  downloadUrl={file.fileUrl}
                   type={file.fileType}
                   size={file.fileSize}
                 />
@@ -132,6 +125,26 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
             ))}
           </Grid>
         </Grid>
+      )}
+
+      {isGraded && (
+        <>
+          <Grid item xs={12}>
+            <Card variant='soft' color={"warning"}>
+              {questionEssayQuestion?.question?.generalFeedback && (
+                <ParagraphSmall>{questionEssayQuestion?.question?.generalFeedback}</ParagraphSmall>
+              )}
+            </Card>
+          </Grid>
+          {questionSubmitContent?.feedback && (
+            <Grid item xs={12}>
+              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Card variant='soft'>
+                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+              </Card>
+            </Grid>
+          )}
+        </>
       )}
     </Grid>
   );

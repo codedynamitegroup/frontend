@@ -62,6 +62,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
   const isAdminQuestionBank = location.state?.isAdminQuestionBank;
+  const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
@@ -207,8 +208,8 @@ const CreateShortAnswerQuestion = (props: Props) => {
       .finally(() => {
         setSubmitLoading(false);
         setOpenSnackbar(true);
-        if (isAdminQuestionBank)
-          navigate(routes.admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
+        if (isLecturerCreateQuestionBank)
+          navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
           navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isQuestionBank)

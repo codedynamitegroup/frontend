@@ -64,6 +64,7 @@ import ProblemDetailSubmission from "../../DetailProblem/components/Submission";
 import TestCase from "../../DetailProblem/components/TestCase";
 import ContestTimeDisplay from "../ContestDetails/components/TimeDisplay";
 import classes from "./styles.module.scss";
+import "react-quill/dist/quill.bubble.css";
 
 export default function TakeContestProblem() {
   const auth = useAuth();
@@ -498,30 +499,23 @@ export default function TakeContestProblem() {
                   translation-key='detail_problem_execute'
                   focusRipple
                   onClick={handleExecuteCode}
-                  disabled={
-                    !auth.isLoggedIn ||
-                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
-                    data.contestDetails.isRegistered !== true
-                  }
                 >
                   <PlayArrowIcon />
                   {t("detail_problem_execute")}
                 </Button>
-                <Button
-                  className={classes.submitBtn}
-                  color='primary'
-                  translation-key='detail_problem_submit'
-                  onClick={handleSubmitCode}
-                  focusRipple
-                  disabled={
-                    !auth.isLoggedIn ||
-                    data.contestStatus === ContestStartTimeFilterEnum.ENDED ||
-                    data.contestDetails.isRegistered !== true
-                  }
-                >
-                  {submissionLoading && <CircularProgress size={20} />}
-                  {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
-                </Button>
+                {data.contestStatus !== ContestStartTimeFilterEnum.ENDED &&
+                  data.contestDetails.isRegistered === true && (
+                    <Button
+                      className={classes.submitBtn}
+                      color='primary'
+                      translation-key='detail_problem_submit'
+                      onClick={handleSubmitCode}
+                      focusRipple
+                    >
+                      {submissionLoading && <CircularProgress size={20} />}
+                      {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+                    </Button>
+                  )}
               </>
             )}
           </Box>
@@ -739,6 +733,7 @@ export default function TakeContestProblem() {
                           problemId: problemId
                         }}
                         isShareSolutionDisabled={data.contestDetails?.isDisabledForum}
+                        isAIEvaluationDisabled={true}
                       />
                     }
                   />

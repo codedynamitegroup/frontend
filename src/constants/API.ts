@@ -86,6 +86,9 @@ export const API = {
     }
   },
   COURSE: {
+    FILE: {
+      DOWNLOAD_ESSAY_ATTACHMENT_FILE: "/course/file/download"
+    },
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
       CREATE: "/course/rubric-user",
@@ -214,9 +217,14 @@ export const API = {
     TAG: {
       DEFAULT: "/code-assessment/tag"
     },
+    TEST_CASE: {
+      DEFAULT: "/code-assessment/test-case"
+    },
     CODE_QUESTION: {
       DEFAULT: "/code-assessment/code-question",
       GET_BY_IDS: "/code-assessment/code-question/detail",
+      UPDATE_BY_ID: "/code-assessment/code-question/:id",
+      LANGUAGES: "/code-assessment/code-question/:id/language",
       RECOMMENED: "/code-assessment/code-question/most-practicing-recently",
       ADMIN_CODE_QUESTION: "/code-assessment/code-question/admin-code-question",
       ADMIN_CODE_QUESTION_DETAIL: "/code-assessment/code-question/admin-detail/:id"

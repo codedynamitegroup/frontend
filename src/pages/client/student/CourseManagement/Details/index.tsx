@@ -1,4 +1,15 @@
-import { AppBar, Box, Divider, Grid, List, Paper, Tab, Tabs, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Toolbar
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TextTitle from "components/text/TextTitle";
 import { NotificationComponentTypeEnum } from "models/courseService/enum/NotificationComponentTypeEnum";
@@ -133,7 +144,9 @@ const StudentCourseDetail = memo((props: Props) => {
             endDate: event.endTime
           };
         });
-        setEventList((pre) => ({ ...pre, data: eventList, isLoading: false }));
+        setTimeout(() => {
+          setEventList((pre) => ({ ...pre, data: eventList, isLoading: false }));
+        }, 1000);
       }
     } catch (error: any) {
       setEventList((pre) => ({ ...pre, isLoading: false }));
@@ -200,19 +213,47 @@ const StudentCourseDetail = memo((props: Props) => {
                   {t("course_detail_need_to_do_title")}
                 </TextTitle>
                 <Divider />
-                <List
+                <Stack
+                  direction={"column"}
                   sx={{ width: "100%", bgcolor: "background.paper" }}
                   className={classes.eventList}
                 >
-                  {eventList.data.map((event, index) => (
-                    <StudentCourseEvent
-                      key={index}
-                      name={event.name}
-                      endDate={event.endDate}
-                      type={event.type}
-                    />
-                  ))}
-                </List>
+                  {eventList.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <Skeleton
+                        key={index}
+                        variant='rectangular'
+                        width='100%'
+                        height={25}
+                        sx={{
+                          marginY: "5px"
+                        }}
+                      />
+                    ))
+                  ) : eventList.data.length === 0 ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        minHeight: "100px",
+                        marginY: "10px"
+                      }}
+                      translation-key='common_no_to_do_event'
+                    >
+                      {t("common_no_to_do_event")}
+                    </Box>
+                  ) : (
+                    eventList.data.map((event, index) => (
+                      <StudentCourseEvent
+                        key={index}
+                        name={event.name}
+                        endDate={event.endDate}
+                        type={event.type}
+                      />
+                    ))
+                  )}
+                </Stack>
               </Paper>
             </Grid>
           )}

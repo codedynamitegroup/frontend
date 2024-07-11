@@ -1,0 +1,12 @@
+#introduction {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
+
+  #courseDescription {
+    [class~="ql-editor"] {
+      padding: 0px;
+    }
+  }
+}

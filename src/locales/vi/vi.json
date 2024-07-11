@@ -219,6 +219,7 @@
   "common_tag": "Tag",
   "common_no_relavant_certificate_course": "Không có khóa học chứng chỉ nào",
   "common_no_reviews": "Không có đánh giá nào",
+  "common_no_to_do_event": "Không có công việc cần làm nào",
 
   "dialog_confirm_delete_title": "Xác nhận xoá",
   "dialog_confirm_delete_contest_description": "Bạn có chắc chắn muốn xoá cuộc thi này không ?",
@@ -841,6 +842,7 @@
   "code_management_output_format_required": "Yêu cầu định dạng đầu ra",
   "code_management_constraint_required": "Yêu cầu giới hạn đầu vào",
   "code_management_public_tool_tip": "Câu hỏi code sẽ được công khai đến người dùng",
+  "code_management_grade_tool_tip": "Điểm bằng điểm tối đa * phần trăm số test case accepted",
   "code_management_timelimit_required": "Thời gian giới hạn phải là số dương",
   "code_management_memorylimit_required": "Bộ nhớ giới hạn ít nhất 2MB",
 
@@ -1134,6 +1136,7 @@
   "exam_detail_summary_open_review": "Xem đánh giá",
   "exam_detail_see_again": "Xem lại",
   "exam_detail_start": "Bắt đầu làm bài",
+  "exam_detail_end": "Kết thúc làm bài",
   "exam_detail_continue": "Tiếp tục làm bài",
   "exam_detail_test": "Làm bài thử",
   "exam_take_exam_title": "Làm bài kiểm tra",

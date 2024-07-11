@@ -33,6 +33,7 @@ interface ProblemDetailSubmissionProps {
     problemId: string;
   };
   isShareSolutionDisabled?: boolean;
+  isAIEvaluationDisabled?: boolean;
 }
 
 const ProblemDetailSubmission = memo(
@@ -41,7 +42,8 @@ const ProblemDetailSubmission = memo(
     maxHeight,
     cerCourseInfo,
     contestInfo,
-    isShareSolutionDisabled
+    isShareSolutionDisabled,
+    isAIEvaluationDisabled
   }: ProblemDetailSubmissionProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -365,6 +367,7 @@ const ProblemDetailSubmission = memo(
                   setsubmissionDetail(!submissionDetail);
                 }}
                 isShareSolutionDisabled={isShareSolutionDisabled}
+                isAIEvaluationDisabled={isAIEvaluationDisabled}
               />
             </Box>
           ) : (

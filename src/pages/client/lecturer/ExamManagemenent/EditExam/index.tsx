@@ -27,7 +27,6 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
-import InputTextField from "components/common/inputs/InputTextField";
 import MenuPopup from "components/common/menu/MenuPopup";
 import BasicSelect from "components/common/select/BasicSelect";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
@@ -37,7 +36,6 @@ import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
@@ -49,7 +47,6 @@ import classes from "./styles.module.scss";
 import { GridRowParams } from "@mui/x-data-grid";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
 import { ExamCreateRequest, ExamEntity } from "models/courseService/entity/ExamEntity";
 import { ExamService } from "services/courseService/ExamService";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,20 +56,11 @@ import {
   QuestionCloneRequest,
   QuestionEntity
 } from "models/coreService/entity/QuestionEntity";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import {
   clearExamCreate,
   clearQuestionCreate,
-  setExamDescriptionCreate,
-  setExamNameCreate,
-  setMaxAttemptCreate,
-  setMaxScoreCreate,
-  setOverdueHandlingCreate,
-  setQuestionCreate,
-  setQuestionCreateFromBank,
-  setTimeCloseCreate,
-  setTimeLimitCreate,
-  setTimeOpenCreate
+  setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
@@ -92,7 +80,6 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
-import { CircularProgress } from "@mui/joy";
 
 const drawerWidth = 400;
 
@@ -266,7 +253,10 @@ export default function ExamEdit() {
                 `${navigateString
                   .replace(":courseId", courseId ?? "")
                   .replace(":examId", examId ?? "")
-                  .replace(":questionId", params.row.id ?? "")}`
+                  .replace(":questionId", params.row.id ?? "")}`,
+                {
+                  state: { isLecturerEditQuestion: true }
+                }
               );
             }}
           />,
@@ -456,15 +446,6 @@ export default function ExamEdit() {
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
-
-  function handleClick() {
-    setLoading(true);
-    submitHandler(submitHandler);
-    navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }
 
   const handleDrawerOpen = () => {
     setOpen(true);

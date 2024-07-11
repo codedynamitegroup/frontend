@@ -45,6 +45,7 @@ import { ProgrammingLanguageEntity } from "models/coreService/entity/Programming
 import { debounce } from "lodash";
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0ResponseEntity";
+import "react-quill/dist/quill.bubble.css";
 
 interface PreviewCodeQuestionProps extends DialogProps {
   questionId: string;

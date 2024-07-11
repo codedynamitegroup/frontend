@@ -421,7 +421,7 @@ export default function DetailProblem() {
             onResize={handleResize001}
           >
             <Box className={classes.leftBody}>
-              <Box id={classes.tabWrapper} ref={tabRef}>
+              <Box className={classes.tabWrapper} ref={tabRef}>
                 <Tabs
                   value={activeTab}
                   onChange={handleChange}
@@ -515,7 +515,7 @@ export default function DetailProblem() {
               <Box className={classes.codeTestcaseContainer}>
                 <Box className={classes.testcaseContainer}>
                   <Box className={classes.testcaseBody}>
-                    <Box id={classes.tabWrapper} ref={tabRef}>
+                    <Box className={classes.tabWrapper} ref={tabRef}>
                       <Tabs
                         value={testCaseTab}
                         onChange={handleTestCaseChange}

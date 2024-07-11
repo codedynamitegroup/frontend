@@ -304,6 +304,7 @@ const QuestionListOfCourse = () => {
 
     navigate(`create/${typeToCreateNewQuestion}`, {
       state: {
+        isLecturerCreateQuestionBank: true,
         isQuestionBank: true,
         isOrgQuestionBank: tab,
         categoryName: categoryState.categoryDetails?.name

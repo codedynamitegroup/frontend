@@ -14,7 +14,7 @@ import ParagraphSmall from "components/text/ParagraphSmall";
 import { CodeSubmissionDetailEntity } from "models/codeAssessmentService/entity/CodeSubmissionDetailEntity";
 import { CodeSubmissionPaginationList } from "models/codeAssessmentService/entity/CodeSubmissionPaginationList";
 import { ContestEntity } from "models/coreService/entity/ContestEntity";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,7 +28,6 @@ import { kiloByteToMegaByte, roundedNumber } from "utils/number";
 import classes from "./styles.module.scss";
 
 const OrgAdminContestSubmissions = () => {
-  const breadcumpRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -87,6 +86,8 @@ const OrgAdminContestSubmissions = () => {
     },
     []
   );
+
+  console.log("codeSubmissions", codeSubmissions);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (

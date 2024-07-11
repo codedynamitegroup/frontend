@@ -33,6 +33,7 @@ import { Judge0ResponseEntity } from "models/codeAssessmentService/entity/Judge0
 import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 import { decodeBase64, encodeBase64 } from "utils/base64";
+import "react-quill/dist/quill.bubble.css";
 
 interface Props {
   page: number;
