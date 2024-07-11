@@ -78,7 +78,7 @@ const StudentCourseAssignmentDetails = () => {
 
     fetchAssignmentDetails();
     handleGetSubmissionAssignment(loggedUser?.userId, assignmentId ?? "");
-  }, []);
+  }, [assignmentId]);
 
   function calculateTimeDifference(
     date1: Date,
