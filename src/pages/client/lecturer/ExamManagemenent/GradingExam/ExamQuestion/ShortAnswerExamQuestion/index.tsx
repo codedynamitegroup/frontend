@@ -18,7 +18,9 @@ import { Controller, useForm } from "react-hook-form";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import LoadButton from "components/common/buttons/LoadingButton";
 import { BtnType } from "components/common/buttons/Button";
-
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import TextEditor from "components/editor/TextEditor";
+import classes from "./styles.module.scss";
 interface ShortAnswerExamQuestionProps {
   readOnly?: boolean;
   questionShortAnswer: ShortAnswerQuestion;
@@ -236,49 +238,65 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
             />
           </Sheet>
         ))}
-        <Box>
-          <Stack direction={"row"} spacing={2} marginTop={2}>
-            <Controller
-              name='grade'
-              control={control}
-              render={({ field }) => (
-                <InputTextFieldColumn
-                  type='number'
-                  title={t("common_grade")}
-                  titleRequired={true}
-                  useDefaultTitleStyle
-                  error={Boolean(errors.grade)}
-                  errorMessage={errors.grade?.message}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-
-            <Controller
-              name='feedback'
-              control={control}
-              render={({ field }) => (
-                <InputTextFieldColumn
-                  title={t("common_feedback")}
-                  titleRequired={false}
-                  useDefaultTitleStyle
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-          </Stack>
-          <LoadButton
-            btnType={BtnType.Outlined}
-            color='primary'
-            style={{ marginTop: "20px" }}
-            onClick={handleSubmit(submitHandler)}
-            loading={loading}
-          >
-            {t("update_grade")}
-          </LoadButton>
-        </Box>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <Box>
+            <Grid item xs={6}>
+              <Controller
+                name='grade'
+                control={control}
+                render={({ field }) => (
+                  <InputTextFieldColumn
+                    type='number'
+                    title={t("common_grade")}
+                    titleRequired={true}
+                    useDefaultTitleStyle
+                    error={Boolean(errors.grade)}
+                    errorMessage={errors.grade?.message}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.textEditor}>
+              <TitleWithInfoTip
+                title={t("common_feedback")}
+                titleRequired
+                fontSize='12px'
+                color='var(--gray-60)'
+                gutterBottom
+                fontWeight='600'
+              />
+              <Controller
+                name='feedback'
+                control={control}
+                render={({ field }) => (
+                  <TextEditor
+                    openDialog
+                    type='text'
+                    title={t("common_feedback")}
+                    roundedBorder={true}
+                    required
+                    placeholder={t("common_feedback")}
+                    backgroundColor='white'
+                    tooltipDescription={t("common_feedback")}
+                    {...field}
+                    onChange={(value) => field.onChange(value)}
+                  />
+                )}
+              />
+            </Grid>
+            <LoadButton
+              btnType={BtnType.Outlined}
+              color='primary'
+              style={{ marginTop: "30px" }}
+              onClick={handleSubmit(submitHandler)}
+              loading={loading}
+            >
+              {t("update_grade")}
+            </LoadButton>
+          </Box>
+        </form>
       </Grid>
       <SnackbarAlert
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
