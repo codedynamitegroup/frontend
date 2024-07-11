@@ -245,6 +245,16 @@ const OrgAdminContestEditStatictics = ({
               </Stack>
             </Card>
           </Grid>
+          <Grid
+            container
+            spacing={2}
+            columns={12}
+            height={
+              data.contestQuestions && data.contestQuestions.length > 0
+                ? `${(data.contestQuestions.length * 100) / 4}px`
+                : "100px"
+            }
+          ></Grid>
         </Grid>
       </Grid>
     </Grid>
