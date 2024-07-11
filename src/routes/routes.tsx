@@ -411,7 +411,7 @@ export const routes = {
       },
       create: "/org-admin/contests/create",
       submissions: "/org-admin/contests/:contestId/submissions",
-      submission_detail: "/admin/contests/:contestId/submissions/:submissionId"
+      submission_detail: "/org-admin/contests/:contestId/submissions/:submissionId"
     }
   }
 };
