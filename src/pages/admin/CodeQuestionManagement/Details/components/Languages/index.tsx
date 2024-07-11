@@ -118,6 +118,7 @@ const CodeQuestionLanguages = ({}: Props) => {
             type='number'
             inputProps={{
               min: 204800,
+              max: 512000,
               style: { textAlign: "center" }
             }}
             value={value}
