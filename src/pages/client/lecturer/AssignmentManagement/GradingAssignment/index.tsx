@@ -142,7 +142,7 @@ export default function AssignmentGrading() {
 
   const handleSave = async (continueToNext = false) => {
     const submissionGrade = submissionAssignmentState.submissionAssignments.find(
-      (submission) => submission.id === assignmentSubmissionStudent
+      (submission) => submission.id === submissionId
     )?.submissionGrade;
     if (submissionGrade) {
       const updateSubmissionGrade: UpdateSubmissionGradeCommand = {
@@ -268,7 +268,7 @@ export default function AssignmentGrading() {
 
   const navigateToNextStudent = () => {
     const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(
-      (submission) => submission.id === assignmentSubmissionStudent
+      (submission) => submission.id === submissionId
     );
     const nextIndex = (currentIndex + 1) % submissionAssignmentState.submissionAssignments.length;
     const nextStudentId = submissionAssignmentState.submissionAssignments[nextIndex].id;
