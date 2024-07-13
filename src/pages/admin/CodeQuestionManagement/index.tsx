@@ -39,6 +39,7 @@ import { Controller, useForm } from "react-hook-form";
 import { AddCircleRounded } from "@mui/icons-material";
 import AutoSearchBar from "components/common/search/AutoSearchBar";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import cloneDeep from "lodash.clonedeep";
 enum FilterDifficultValue {
   ALL = "ALL",
   EASY = "EASY",
@@ -218,17 +219,24 @@ const AdminCodeQuestionManagement = () => {
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
+  const [deleting, setDeleting] = useState(false);
   const onDeleteConfirmDelete = async () => {
-    QuestionService.deleteQuestion(deletedCodeQuestionId)
+    setDeleting(true);
+    CodeQuestionService.deleteCodeQuestion(deletedCodeQuestionId)
       .then(() => {
-        dispatch(setSuccessMess("Delete code question successfully"));
+        let newCodeQuestions = cloneDeep(codeQuestions).filter(
+          (value) => value.id !== deletedCodeQuestionId
+        );
+        setCodeQuestions(newCodeQuestions);
+        dispatch(setSuccessMess(t("common_delete_success")));
         dispatch(clearCodeQuestion());
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setSuccessMess("Delete code question failed"));
+        dispatch(setSuccessMess(t("common_delete_fail")));
       })
       .finally(() => {
+        setDeleting(false);
         setIsOpenConfirmDelete(false);
       });
   };
@@ -256,6 +264,7 @@ const AdminCodeQuestionManagement = () => {
         description='Are you sure you want to delete this question?'
         onCancel={onCancelConfirmDelete}
         onDelete={onDeleteConfirmDelete}
+        deleting={deleting}
       />
       <Box>
         <Grid
@@ -401,70 +410,8 @@ const AdminCodeQuestionManagement = () => {
                 </Box>
               </Stack>
             </Box>
-            {/* <CustomSearchFeatureBar
-              isLoading={codeQuestionState.isLoading}
-              searchValue={searchText}
-              setSearchValue={setSearchText}
-              onHandleChange={searchHandle}
-              createBtnText={t("code_management_create_new_title")}
-              onClickCreate={() => {
-                navigate(routes.admin.code_question.create);
-              }}
-              numOfResults={totalElement}
-              filterKeyList={[
-                {
-                  label: t("common_difficulty_level"),
-                  value: "Difficulty level"
-                },
-                {
-                  label: t("contest_is_public"),
-                  value: "Is public"
-                }
-              ]}
-              filterValueList={{
-                "Difficulty level": [
-                  {
-                    label: t("common_all"),
-                    value: FilterValue.ALL
-                  },
-                  {
-                    label: t("common_easy"),
-                    value: FilterValue.EASY
-                  },
-                  {
-                    label: t("common_medium"),
-                    value: FilterValue.MEDIUM
-                  },
-                  {
-                    label: t("common_hard"),
-                    value: FilterValue.HARD
-                  }
-                ] as { label: string; value: string }[],
-                "Is public": [
-                  {
-                    label: t("common_all"),
-                    value: "ALL"
-                  },
-                  {
-                    label: t("common_public"),
-                    value: "PUBLIC"
-                  },
-                  {
-                    label: t("common_private"),
-                    value: "PRIVATER"
-                  }
-                ] as { label: string; value: string }[]
-              }}
-              filters={filters}
-              handleChangeFilters={(filters: { key: string; value: string }[]) => {
-                setFilters(filters);
-              }}
-              onHandleApplyFilter={handleApplyFilter}
-              onHandleCancelFilter={handleCancelFilter}
-            /> */}
           </Grid>
           <Grid item xs={12}>
-            {/* #F5F9FB */}
             <CustomDataGrid
               loading={isCodeQuestionLoading}
               dataList={codeQuestions.map((question, index) => ({

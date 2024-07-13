@@ -88,12 +88,11 @@ const TestCasePopup = ({
       inputData: "",
       outputData: "",
       // score: 0,
-      sample: false
+      isSample: false
     }),
     []
   );
   const {
-    handleSubmit: handleTestCaseSubmit,
     control: testCaseControl,
     formState: { errors: testCaseErrors },
     reset: resetTestCase,
@@ -111,6 +110,8 @@ const TestCasePopup = ({
   const onClose = () => {
     setOpen(false);
   };
+
+  // console.log(testCaseErrors);
   const handleSaveTC = async () => {
     const check = await trigger();
     // console.log(check);
