@@ -1,5 +1,15 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Avatar, Box, Chip, CircularProgress, Container, Grid, Stack } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  TextField
+} from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -22,11 +32,14 @@ import {
   setSearchKey,
   setSolved
 } from "reduxes/CodeAssessmentService/CodeQuestion/Filter/SearchAndDifficultyAndSolved";
+import CodeMirror, { ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { TagService } from "services/codeAssessmentService/TagService";
 import ProblemTable from "./components/ProblemTable";
 import RecommendedProblem from "./components/RecommendedProblem";
 import useAuth from "hooks/useAuth";
 import Heading2 from "components/text/Heading2";
+import TextEditor from "components/editor/TextEditor";
+import { encodeBase64 } from "utils/base64";
 
 const ListProblem = () => {
   const auth = useAuth();
@@ -46,6 +59,9 @@ const ListProblem = () => {
       })
       .catch((reason) => console.log(reason))
       .finally(() => dispatch(setLoadingAlgorithm(false)));
+    dispatch(setSearchKey(""));
+    handleChangeSolved("0");
+    handleChangeDifficulty("0");
   }, [dispatch]);
 
   const [timer, setTimer] = useState<number | undefined>(undefined);
@@ -85,6 +101,8 @@ const ListProblem = () => {
     dispatch(setDifficulty(newValue));
   };
 
+  const [cc, setCC] = useState<string>("");
+  const [cc2, setCC2] = useState<string>("");
   // const algorithmTag = t("list_problem_algorithms", { returnObjects: true }) as Array<string>;
   return (
     <Box id={classes.listProblemRoot}>
@@ -276,6 +294,32 @@ const ListProblem = () => {
                       backgroundColor='#FFFFFF'
                     />
                   </Stack>
+                  {/* <TextEditor
+                    value={cc}
+                    onChange={(e) => {
+                      setCC(e);
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(JSON.stringify(cc).slice(1, -1));
+                    }}
+                  >
+                    copy to clip board
+                  </Button>
+                  <CodeMirror
+                    onChange={(e) => {
+                      setCC2(e);
+                    }}
+                  ></CodeMirror>
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(encodeBase64(cc2));
+                    }}
+                  >
+                    {" "}
+                    cc2
+                  </Button> */}
                   <ProblemTable />
                 </Box>
               </Grid>

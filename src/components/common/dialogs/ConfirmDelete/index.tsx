@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Dialog, Grid, IconButton } from "@mui/material";
+import { CircularProgress, Dialog, Grid, IconButton } from "@mui/material";
 import classes from "./styles.module.scss";
 
 import Buttons from "components/Buttons";
@@ -13,6 +13,7 @@ interface ConfirmDeleteProps {
   description: string;
   onCancel?: () => void;
   onDelete?: () => void;
+  deleting?: boolean;
 }
 
 const ConfirmDelete = memo((props: ConfirmDeleteProps) => {
@@ -50,11 +51,18 @@ const ConfirmDelete = memo((props: ConfirmDeleteProps) => {
             onClick={onCancel}
           />
           <Buttons
-            children={t("common_delete")}
+            children={
+              props.deleting ? (
+                <CircularProgress size={25} style={{ color: "white" }} />
+              ) : (
+                t("common_delete")
+              )
+            }
             translation-key='common_delete'
             btnType='Red'
             padding='11px 16px'
             onClick={onDelete}
+            disabled={props.deleting}
           />
         </Grid>
       </Grid>

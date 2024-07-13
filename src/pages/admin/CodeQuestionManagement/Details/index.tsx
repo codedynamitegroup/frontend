@@ -32,6 +32,7 @@ import { ProgrammingLanuageService } from "services/codeAssessmentService/Progra
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
 import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
 import FormSchema from "./schema/FormSchema";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface Props {}
 const AdminCodeQuestionDetails = (props: Props) => {
@@ -64,7 +65,6 @@ const AdminCodeQuestionDetails = (props: Props) => {
   });
   const params = useParams<{ codeQuestionId: string }>();
   const codeQuestionId = params?.codeQuestionId;
-
   useEffect(() => {
     codeQuestionFormMethod.reset({
       name: codeQuestion?.name ?? "",
@@ -115,7 +115,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
           ]);
           let codeQuestion = data[0];
 
-          let programmingLanguage = data[2];
+          let programmingLanguage = data[2].map((value) => ({ ...value, choosen: false }));
 
           if (codeQuestion !== undefined) {
             //map current language to the language set
@@ -144,11 +144,11 @@ const AdminCodeQuestionDetails = (props: Props) => {
           setTags(data[1]);
         } else {
           let data = await Promise.all([getAllTag(), getActiveProgrammingLanguage()]);
-          setProgrammingLanguage(data[1]);
+          setProgrammingLanguage(data[1].map((value) => ({ ...value, choosen: false })));
           setTags(data[0]);
         }
       } catch (err) {
-        console.error(err);
+        dispatch(setErrorMess(t("common_page_can_not_open")));
         navigate("/admin/code-questions");
       } finally {
         dispatch(setLoading(false));
@@ -164,33 +164,38 @@ const AdminCodeQuestionDetails = (props: Props) => {
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
   console.log(codeQuestionFormMethod.formState.errors);
+  console.log(programmingLanguage);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
-    if (isEdit) {
-      const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
-      const dirtyInformationField = [
-        dirtyFields.name,
-        dirtyFields.difficulty,
-        dirtyFields.problemStatement,
-        dirtyFields.inputFormat,
-        dirtyFields.outputFormat,
-        dirtyFields.constraints,
-        dirtyFields.maxGrade,
-        dirtyFields.isPublic,
-        dirtyFields.allowImport
-      ];
-      const isDirtyInform = dirtyInformationField.some((value) => value === true);
-      const isDirtyTags: boolean | boolean[] | undefined = dirtyFields.tags;
-      const isDirtyLanguages = dirtyFields.programmingLanguages?.some((value) =>
-        Object.values(value).some((val) => val === true)
-      );
-      const isDirtyTestCase =
-        dirtyFields.testCases?.some((value) => Object.values(value).some((val) => val === true)) ||
-        (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
-      console.log("dirtytag", isDirtyTags);
-      setLoadingSubmit(true);
-      try {
+    setLoadingSubmit(true);
+    try {
+      if (isEdit) {
+        const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
+        const dirtyInformationField = [
+          dirtyFields.name,
+          dirtyFields.difficulty,
+          dirtyFields.problemStatement,
+          dirtyFields.inputFormat,
+          dirtyFields.outputFormat,
+          dirtyFields.constraints,
+          dirtyFields.maxGrade,
+          dirtyFields.isPublic,
+          dirtyFields.allowImport
+        ];
+        const isDirtyInform = dirtyInformationField.some((value) => value === true);
+        const isDirtyTags: boolean | boolean[] | undefined = dirtyFields.tags;
+        const isDirtyLanguages = dirtyFields.programmingLanguages?.some((value) =>
+          Object.values(value).some((val) => val === true)
+        );
+        const isDirtyTestCase =
+          dirtyFields.testCases?.some((value) =>
+            Object.values(value).some((val) => val === true)
+          ) ||
+          (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
+
+        setLoadingSubmit(true);
+
         let updateInform: Promise<any> | undefined = undefined;
         if ((isDirtyInform || isDirtyTags) && codeQuestionId !== undefined) {
           let dataTagMap = new Set<string>();
@@ -207,7 +212,8 @@ const AdminCodeQuestionDetails = (props: Props) => {
             isPublic: data.isPublic,
             allowImport: data.allowImport,
             newTagIds: data.tags ?? [],
-            deletedTagIds: deleteTagIds ?? []
+            deletedTagIds: deleteTagIds ?? [],
+            isQuestionBank: false
           });
         }
 
@@ -271,10 +277,37 @@ const AdminCodeQuestionDetails = (props: Props) => {
         }
 
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
-      } finally {
-        setLoadingSubmit(false);
+      } else {
+        await CodeQuestionService.createCodeQuestion({
+          name: data.name,
+          problemStatement: data.problemStatement,
+          inputFormat: data.inputFormat,
+          outputFormat: data.outputFormat,
+          constraints: data.constraints,
+          maxGrade: data.maxGrade,
+          isPublic: data.isPublic,
+          difficulty: data.difficulty,
+          allowImport: data.allowImport,
+          tagIds: data.tags,
+          programmingLanuages: data.programmingLanguages
+            .filter((value) => value.choosen)
+            .map((value) => ({
+              id: value.id,
+              timeLimit: value.timeLimit,
+              memoryLimit: value.memoryLimit,
+              bodyCode: value.bodyCode ?? ""
+            }))
+        });
       }
+    } catch (err) {
+      console.error(err);
+      dispatch(setErrorMess(t("common_can_not_save")));
+    } finally {
+      setLoadingSubmit(false);
+      dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
+      navigate("/admin/code-questions");
     }
+
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
     console.log(data);
     console.log(codeQuestionFormMethod.getValues("testCases"));
