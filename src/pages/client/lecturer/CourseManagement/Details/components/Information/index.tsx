@@ -22,6 +22,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { setCourseDetail } from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import Heading1 from "components/text/Heading1";
+import CourseAnnouncement from "./components/Announcement";
+import NotificationCard from "pages/client/student/CourseManagement/Details/components/Information/components/NotificationCard";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -132,6 +134,12 @@ const LecturerCourseInformation = () => {
             {courseState.courseDetail?.name}
           </Heading1>
         </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <CourseAnnouncement />
+      </Grid>
+      <Grid item xs={12}>
+        <NotificationCard />
       </Grid>
 
       {sectionState.isLoading === false ? (

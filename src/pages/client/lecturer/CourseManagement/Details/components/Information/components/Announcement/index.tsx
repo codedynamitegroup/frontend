@@ -41,6 +41,7 @@ const CourseAnnouncement = () => {
               placeholder={t("course_lecturer_enter_announcement")}
               onChange={textEditorChangeHandler}
               translation-key='course_lecturer_enter_announcement'
+              className={classes.textEditor}
             />
           </Box>
         </AccordionDetails>

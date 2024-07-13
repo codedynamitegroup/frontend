@@ -8,7 +8,10 @@
     }
 
     .announcementContent {
-      height: 200px;
+      height: 200px !important;
+      .textEditor {
+        height: 180px;
+      }
     }
   }
 }
