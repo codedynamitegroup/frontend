@@ -24,6 +24,7 @@ import Heading2 from "components/text/Heading2";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { setCourseDetail } from "reduxes/courseService/course";
 import Heading1 from "components/text/Heading1";
+import NotificationCard from "./components/NotificationCard";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
 
@@ -116,6 +117,9 @@ const StudentCourseInformation = () => {
             {courseData?.name}
           </Heading1>
         </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <NotificationCard />
       </Grid>
 
       {sectionState.isLoading === false ? (
