@@ -89,6 +89,10 @@ export const API = {
     FILE: {
       DOWNLOAD_ESSAY_ATTACHMENT_FILE: "/course/file/download"
     },
+    SYNCHRONIZE_MOODLE: {
+      SYNCHRONIZE_MOODLE: "/course/synchronize-moodle/:id",
+      GET_BY_ORGANIZATION_ID_AND_STEP: "/course/synchronize-moodle"
+    },
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
       CREATE: "/course/rubric-user",
@@ -203,6 +207,12 @@ export const API = {
       SUBMIT_ONE: "/course/question/submit-one",
       GET_QUESITON_SUBMISSION_BY_QUESTION_ID: "/course/question/get-by-questionId",
       MARK: "/course/question/mark"
+    },
+    ORGANIZATION: {
+      GET_ALL_ORGANIZATIONS: "/course/organization",
+      GET_ORGANIZATION_BY_ID: "/course/organization/:id",
+      UPDATE_ORGANIZATION_BY_ID: "/course/organization/:id",
+      DELETE_ORGANIZATION_BY_ID: "/course/organization/:id"
     },
     NOTIFICATION: {
       MY_NOTIFICATIONS: "/course/notifications/me",

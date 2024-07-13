@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
+import { useFormContext } from "react-hook-form";
 
 interface Props {
   steps: string[];
@@ -14,27 +15,21 @@ interface Props {
 
 const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState<{
-    [k: number]: boolean;
-  }>({});
+  const [completed, setCompleted] = React.useState<{ [k: number]: boolean }>({});
+  const { handleSubmit, trigger } = useFormContext();
 
-  const totalSteps = () => {
-    return steps.length;
-  };
+  const totalSteps = () => steps.length;
 
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
+  const completedSteps = () => Object.keys(completed).length;
 
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
+  const isLastStep = () => activeStep === totalSteps() - 1;
 
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
+  const allStepsCompleted = () => completedSteps() === totalSteps();
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    const isValid = await trigger();
+    if (!isValid) return;
+
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? steps.findIndex((step, i) => !(i in completed))
@@ -67,7 +62,9 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
           <Step key={label} completed={completed[index]}>
-            <StepButton color='inherit'>{label}</StepButton>
+            <StepButton color='inherit' onClick={handleStep(index)}>
+              {label}
+            </StepButton>
           </Step>
         ))}
       </Stepper>
@@ -96,7 +93,7 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
               </Button>
               <Box />
               {activeStep !== steps.length && (
-                <Button variant='contained' onClick={handleComplete}>
+                <Button type='submit' variant='contained' onClick={handleComplete}>
                   {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
                 </Button>
               )}
