@@ -74,13 +74,15 @@ export default function PickQuestionTypeToAddDialog({
                 { value: "essay", label: t("common_question_type_essay") },
                 { value: "multiple-choice", label: t("common_question_type_multi_choice") },
                 { value: "short-answer", label: t("common_question_type_short") },
-                { value: "true-false", label: t("common_question_type_yes_no") }
+                { value: "true-false", label: t("common_question_type_yes_no") },
+                { value: "code", label: t("side_bar_code_management") }
               ]}
               translation-key={[
                 "common_question_type_essay",
                 "common_question_type_short",
                 "common_question_type_multi_choice",
-                "common_question_type_yes_no"
+                "common_question_type_yes_no",
+                "side_bar_code_management"
               ]}
             />
           </FormControl>
@@ -92,7 +94,8 @@ export default function PickQuestionTypeToAddDialog({
               "common_question_type_multi_choice",
               "common_question_type_short",
               "common_question",
-              "common_question_type_essay"
+              "common_question_type_essay",
+              "side_bar_code_management"
             ]}
           >
             {/* Display the description of the selected question type description */}
