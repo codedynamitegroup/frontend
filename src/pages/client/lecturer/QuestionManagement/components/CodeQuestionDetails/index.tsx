@@ -383,7 +383,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
                 lastBreadCrumbLabel={t("create_question_code")}
               />
               <Box className={classes.body}>
-                {isEdit && <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>}
+                {isEdit && isCloneData !== true && (
+                  <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
+                )}
                 <TabContext value={activeTab}>
                   <Box sx={{ border: 1, borderColor: "divider" }}>
                     <TabList onChange={handleChange} className={classes.tabs}>
