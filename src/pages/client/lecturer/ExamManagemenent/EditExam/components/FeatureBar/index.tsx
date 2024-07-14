@@ -98,13 +98,13 @@ const QuestionsFeatureBar = ({
           )}
         </Grid>
       </Box>
-      <Button
+      {/* <Button
         btnType={BtnType.Primary}
         startIcon={<ExportIcon sx={{ color: "white" }} />}
         sx={{ marginLeft: "15px", marginBottom: "10px" }}
       >
         Xuất dữ liệu
-      </Button>
+      </Button> */}
     </Paper>
   );
 };

@@ -25,6 +25,7 @@ import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import { setCourseDetail } from "reduxes/courseService/course";
 import Heading1 from "components/text/Heading1";
 import NotificationCard from "./components/NotificationCard";
+import { SectionService } from "services/courseService/SectionService";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
 
@@ -51,7 +52,7 @@ const StudentCourseInformation = () => {
     }
     dispatch(setLoadingSections(true));
     try {
-      const getSectionsResponse = await CourseService.getSectionsByCourseId(courseId);
+      const getSectionsResponse = await SectionService.getSectionsByCourseId(courseId);
       dispatch(setSections({ sections: getSectionsResponse.sections, courseId: courseId }));
     } catch (error) {
       console.error("Failed to fetch sections", error);
@@ -159,10 +160,10 @@ const StudentCourseInformation = () => {
                         {topic.modules.map((resource, index) => (
                           <CourseResource
                             courseId={courseId || ""}
-                            assignmentId={resource.assignmentId}
-                            name={resource.name}
+                            assignmentId={resource.assignment.id}
+                            name={resource.assignment.intro || ""}
                             type={type(resource.typeModule)}
-                            content={resource.content}
+                            content=''
                             key={index}
                           />
                         ))}

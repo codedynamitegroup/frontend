@@ -324,9 +324,9 @@ export default function ExamCreated() {
     setLoading(true);
     const formSubmitData: FormData = { ...data };
 
-    const questionIds = questionCreate.questionCreate.map((item) => ({
+    const questionIds = questionCreate.questionCreate.map((item, index) => ({
       questionId: item.id,
-      page: 0
+      page: index
     }));
 
     const timeLimitUnit = formSubmitData.timeLimit;
@@ -907,7 +907,7 @@ export default function ExamCreated() {
                         visibleColumn={visibleColumnList}
                         dataGridToolBar={dataGridToolbar}
                         page={1}
-                        pageSize={5}
+                        pageSize={10}
                         totalElement={questionCreate.questionCreate.length}
                         onPaginationModelChange={pageChangeHandler}
                         showVerticalCellBorder={false}

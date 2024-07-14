@@ -1,8 +1,9 @@
+import { AssignmentEntity } from "./AssignmentEntity";
+import { ExamEntity } from "./ExamEntity";
+
 export interface ModuleEntity {
   moduleId: string;
-  assignmentId: string;
-  name: string;
-  visible: number;
+  assignment: AssignmentEntity;
+  exam: ExamEntity;
   typeModule: string;
-  content: string;
 }

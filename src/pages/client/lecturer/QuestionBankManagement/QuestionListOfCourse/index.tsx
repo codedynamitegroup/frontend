@@ -50,7 +50,7 @@ const QuestionListOfCourse = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
