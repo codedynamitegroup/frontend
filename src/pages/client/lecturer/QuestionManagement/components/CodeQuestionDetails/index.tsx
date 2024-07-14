@@ -54,9 +54,6 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
-  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
-  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
-  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
@@ -210,10 +207,6 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         if (isLecturerCreateQuestionBank)
           navigate(
             routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
-          );
-        else if (isOrgAdminQuestionBank)
-          navigate(
-            routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
           );
         else if (isQuestionBank)
           navigate(
@@ -380,10 +373,6 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
       if (isLecturerCreateQuestionBank)
         navigate(
           routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
-        );
-      else if (isOrgAdminQuestionBank)
-        navigate(
-          routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
         );
       else if (isQuestionBank)
         navigate(
