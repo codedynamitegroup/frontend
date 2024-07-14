@@ -68,6 +68,7 @@ const UpdateCertificateCourse = lazy(
   () => import("./CertificateCourseManagement/UpdateCertificateCourse")
 );
 const AdminCodeQuestionDetails = lazy(() => import("./CodeQuestionManagement/Details"));
+const TopicManagement = lazy(() => import("./CertificateCourseManagement/TopicManagement"));
 type Props = {};
 
 const SystemAdminHomepage = (props: Props) => {
@@ -78,7 +79,6 @@ const SystemAdminHomepage = (props: Props) => {
     setOpen((pre) => !pre);
     dispatch(toggleSidebar());
   };
-
   return (
     <Grid className={classes.root}>
       <SidebarSystemAdmin open={open} toggleDrawer={toggleDrawer}>
@@ -147,6 +147,7 @@ const SystemAdminHomepage = (props: Props) => {
               element={<AdminCodeQuestionDetails />}
             />
             <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
+            <Route path={"/topics"} element={<TopicManagement />} />
           </Routes>
         </Box>
         {/* </Box> */}
