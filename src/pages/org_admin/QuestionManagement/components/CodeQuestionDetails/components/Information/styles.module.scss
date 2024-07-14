@@ -1,0 +1,12 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .textEditor {
+    height: 400px;
+  }
+  .textEditorSmall {
+    height: 200px;
+  }
+}

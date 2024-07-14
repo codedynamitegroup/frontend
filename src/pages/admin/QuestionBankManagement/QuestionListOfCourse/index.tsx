@@ -309,7 +309,7 @@ const QuestionListOfCourse = () => {
   };
 
   const handleCreateQuestionAI = () => {
-    navigate(`ai/create`);
+    // navigate(`create/ai`);
   };
   const dataGridToolbar = { enableToolbar: true };
   useEffect(() => {

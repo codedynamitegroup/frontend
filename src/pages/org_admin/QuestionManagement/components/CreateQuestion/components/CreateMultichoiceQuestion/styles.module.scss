@@ -1,0 +1,95 @@
+.root {
+  flex-direction: column !important;
+  background-color: white;
+  min-height: max-content;
+}
+
+.pageTitle {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1d2130 !important;
+}
+
+.container {
+  display: flex !important;
+  flex-direction: column;
+  border-radius: 5px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  height: 100%;
+  margin-bottom: 50px;
+}
+
+.tabWrapper {
+  border-bottom: 1px solid var(--gray-10);
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+}
+
+.formBody {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 7px;
+  gap: 15px;
+  border-radius: 12px;
+}
+
+.linkLevel {
+  span:hover {
+    cursor: pointer;
+    color: black;
+  }
+}
+.breadCump {
+  span:hover {
+    cursor: pointer;
+    color: black;
+  }
+}
+.stickyFooterItem {
+  background-color: #ffffff;
+  text-align: center;
+  padding: 4px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  z-index: 10;
+}
+
+.stickyFooterContainer {
+  position: relative;
+}
+
+.textEditor {
+  height: 200px;
+}
+
+.generalDescription {
+  color: #1d2130;
+  font-size: 12.8px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;
+}
+
+.optionalText {
+  color: #9ca3af;
+  font-size: 12px !important;
+  margin-bottom: 2rem;
+  line-height: 14px;
+}
+
+.errorTextStar {
+  color: red;
+}
+.infoIcon {
+  font-size: 12px;
+}

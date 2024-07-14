@@ -1,48 +1,46 @@
-import { Box, Stack, Container, Tabs, Tab } from "@mui/material";
-import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  GridColDef,
-  GridActionsCellItem,
-  GridEventListener,
-  GridCallbackDetails,
-  GridRowSelectionModel,
-  GridPaginationModel
-} from "@mui/x-data-grid";
-import SearchBar from "components/common/search/SearchBar";
+import TabPanel from "@mui/lab/TabPanel";
+import { Box, Container, Stack } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { useNavigate, useParams } from "react-router-dom";
-import { routes } from "routes/routes";
+import {
+  GridActionsCellItem,
+  GridCallbackDetails,
+  GridColDef,
+  GridEventListener,
+  GridPaginationModel,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
 import Button, { BtnType } from "components/common/buttons/Button";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import qtype from "utils/constant/Qtype";
-import Heading1 from "components/text/Heading1";
-import Heading5 from "components/text/Heading5";
-import PreviewEssay from "components/dialog/preview/PreviewEssay";
-import AccessedUserListDialog from "./component/AccessedUserListDialog";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "store";
-import { QuestionService } from "services/coreService/QuestionService";
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
-import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
-import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
-import dayjs from "dayjs";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
-import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
-import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
-import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
-import React from "react";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
+import PreviewEssay from "components/dialog/preview/PreviewEssay";
+import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
 import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
-import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
-import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
+import Heading1 from "components/text/Heading1";
+import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
+import dayjs from "dayjs";
+import i18next from "i18next";
+import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
+import { routes } from "routes/routes";
+import { QuestionService } from "services/coreService/QuestionService";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+import { AppDispatch, RootState } from "store";
+import qtype from "utils/constant/Qtype";
+import AccessedUserListDialog from "./component/AccessedUserListDialog";
+import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
+import classes from "./styles.module.scss";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -312,9 +310,7 @@ const QuestionListOfCourse = () => {
     });
   };
 
-  const handleCreateQuestionAI = () => {
-    navigate(`ai/create`);
-  };
+  const handleCreateQuestionAI = () => {};
 
   useEffect(() => {
     if (categoryId) {
@@ -434,14 +430,14 @@ const QuestionListOfCourse = () => {
                   {t("common_add_question")}
                 </ParagraphBody>
               </Button>
-              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+              {/* <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
                 <ParagraphBody
                   paddingX={3}
                   translation-key='question_bank_category_question_list_create_by_AI'
                 >
                   {t("question_bank_category_question_list_create_by_AI")}
                 </ParagraphBody>
-              </Button>
+              </Button> */}
             </Stack>
 
             <CustomAutocomplete

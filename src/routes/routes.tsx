@@ -79,7 +79,7 @@ export const routes = {
           create: "/lecturer/question-bank-management/:categoryId/create/code"
         },
         ai: {
-          create: "/lecturer/question-bank-management/:categoryId/ai/create"
+          create: "/lecturer/question-bank-management/:categoryId/create/ai"
         },
         paths: Object.values(qtype)
           .map((value) => value.code)
