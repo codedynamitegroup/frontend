@@ -44,24 +44,6 @@ export class CourseService {
     }
   }
 
-  static async getSectionsByCourseId(courseId: string) {
-    try {
-      const response = await api({
-        baseURL: courseServiceApiUrl,
-        isAuthorization: true
-      }).get(`${API.COURSE.COURSE.SECTION}/${courseId}`);
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error: any) {
-      console.error("Failed to fetch sections by course id", error);
-      return Promise.reject({
-        code: error.response?.data?.code || 503,
-        status: error.response?.data?.status || "Service Unavailable",
-        message: error.response?.data?.message || error.message
-      });
-    }
-  }
   static async getCourseDetail(courseId: string) {
     try {
       const response = await api({
@@ -73,7 +55,6 @@ export class CourseService {
       }
     } catch (error: any) {
       console.error("Failed to fetch course detail", error);
-      console.error("Failed to fetch sections by course id", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

@@ -25,6 +25,9 @@ const CourseResource = (props: PropsData) => {
     case ECourseResourceType.file:
       resourceImage = images.course.courseFile;
       break;
+    case ECourseResourceType.exam:
+      resourceImage = images.course.courseFile;
+      break;
     default:
       return null;
   }

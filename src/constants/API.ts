@@ -99,9 +99,14 @@ export const API = {
       UPDATE: "/course/rubric-user/:id",
       DELETE: "/course/rubric-user/:id"
     },
+    SECTION: {
+      GET_ALL_BY_COURSE_ID: "/course/section/:courseId",
+      UPDATE: "/course/section/:sectionId",
+      CREATE: "/course/section",
+      DELETE: "/course/section/:sectionId"
+    },
     COURSE: {
       DEFAULT: "/course/course",
-      SECTION: "/course/section",
       GET_STATISTICS: "/course/course/statistics",
       GET_ORG_ADMIN_STATISTICS: "/course/course/admin-org/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
