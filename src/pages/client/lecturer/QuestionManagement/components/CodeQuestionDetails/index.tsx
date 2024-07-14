@@ -1,44 +1,55 @@
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
-import classes from "./styles.module.scss";
-import ParagraphBody from "components/text/ParagraphBody";
-import Heading1 from "components/text/Heading1";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Button, { BtnType } from "components/common/buttons/Button";
-import CodeQuestionInformation from "./components/Information";
-import CodeQuestionTestCases from "./components/TestCases";
-import CodeQuestionCodeStubs from "./components/CodeStubs";
-import CodeQuestionLanguages from "./components/Languages";
-import { routes } from "routes/routes";
-import { useTranslation } from "react-i18next";
-import TabPanel from "@mui/lab/TabPanel";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import TabPanel from "@mui/lab/TabPanel";
+import { Box, CircularProgress, Container, Grid, Tab } from "@mui/material";
+import Button, { BtnType } from "components/common/buttons/Button";
+import Heading1 from "components/text/Heading1";
+import ParagraphBody from "components/text/ParagraphBody";
 import { useAppDispatch } from "hooks";
-import { setLoading } from "reduxes/Loading";
 import { CodeQuestionAdminEntity } from "models/codeAssessmentService/entity/CodeQuestionAdminEntity";
-import { CodeQuestionFormData } from "./type/CodeQuestionFormData";
-import { FormProvider, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
-import isQuillEmpty from "utils/coreService/isQuillEmpty";
-import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
-import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
-import { TagService } from "services/codeAssessmentService/TagService";
-import { ProgrammingLanguageEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageEntity";
-import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
-import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
-import FormSchema from "./schema/FormSchema";
+import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
+import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
+import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { setLoading } from "reduxes/Loading";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import { ProgrammingLanuageService } from "services/codeAssessmentService/ProgrammingLanguageService";
+import { TagService } from "services/codeAssessmentService/TagService";
+import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
+import { QuestionService } from "services/coreService/QuestionService";
+import qtype from "utils/constant/Qtype";
+import CodeQuestionCodeStubs from "./components/CodeStubs";
+import CodeQuestionInformation from "./components/Information";
+import CodeQuestionLanguages from "./components/Languages";
+import CodeQuestionTestCases from "./components/TestCases";
+import FormSchema from "./schema/FormSchema";
+import classes from "./styles.module.scss";
+import { CodeQuestionFormData } from "./type/CodeQuestionFormData";
+import Header from "components/Header";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
+import { routes } from "routes/routes";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import i18next from "i18next";
 
 interface Props {
   isCloneData?: boolean;
 }
 
-const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
+const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
+  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+  // if (props.insideCrumb) setHeaderHeight(0);
+  const location = useLocation();
+  const categoryName = location.state?.categoryName;
+
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
@@ -66,8 +77,40 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       [codeQuestion]
     )
   });
-  const params = useParams<{ codeQuestionId: string }>();
-  const codeQuestionId = params?.codeQuestionId;
+
+  const handleGetQuestionDetail = async (questionId: string) => {
+    try {
+      const questionCommands: PostQuestionDetailList = {
+        questionCommands: [
+          {
+            questionId: questionId,
+            qtype: qtype.source_code.code
+          }
+        ]
+      };
+
+      const response = await QuestionService.getQuestionDetail(questionCommands);
+
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [codeQuestionId, setCodeQuestionId] = useState<string | undefined>(undefined);
+  const params = useParams<{ questionId: string; categoryId: string }>();
+  useEffect(() => {
+    const fetchQuestionDetail = async () => {
+      if (params.questionId) {
+        const res = await handleGetQuestionDetail(params.questionId);
+        if (res) {
+          setCodeQuestionId(res.questionResponses[0].qtypeCodeQuestion.id);
+        }
+      }
+    };
+    fetchQuestionDetail();
+  }, [params.questionId]);
+
   useEffect(() => {
     codeQuestionFormMethod.reset({
       name: codeQuestion?.name ?? "",
@@ -308,105 +351,110 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
     } finally {
       setLoadingSubmit(false);
       dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
-      navigate("/admin/code-questions");
+      navigate(
+        routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+      );
     }
 
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
     console.log(data);
     console.log(codeQuestionFormMethod.getValues("testCases"));
   };
-  return (
-    <>
-      <FormProvider {...codeQuestionFormMethod}>
-        <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
-          <Box>
-            <Box className={classes.tabWrapper}>
-              <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-                <span
-                  translation-key='code_management_title'
-                  onClick={() => navigate("/admin/code-questions")}
-                >
-                  {t("code_management_title")}
-                </span>
-                {" > "}
-                <span
-                  onClick={() => {
-                    if (codeQuestionId) navigate(pathname);
-                  }}
-                >
-                  {isEdit ? codeQuestion?.name ?? "" : "create code question"}
-                </span>
-              </ParagraphBody>
-            </Box>
 
-            <Box className={classes.body}>
-              <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
-              <TabContext value={activeTab}>
-                <Box sx={{ border: 1, borderColor: "divider" }}>
-                  <TabList onChange={handleChange} className={classes.tabs}>
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      label={
-                        <ParagraphBody translation-key='common_info'>
-                          {t("common_info")}
-                        </ParagraphBody>
-                      }
-                      value='0'
-                    />
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      label={<ParagraphBody>Test cases</ParagraphBody>}
-                      value='1'
-                    />
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      label={
-                        <ParagraphBody translation-key='code_management_detail_stub'>
-                          {t("code_management_detail_stub")}
-                        </ParagraphBody>
-                      }
-                      value='2'
-                    />
-                    <Tab
-                      sx={{ textTransform: "none" }}
-                      label={
-                        <ParagraphBody translation-key='common_language'>
-                          {t("common_language")}
-                        </ParagraphBody>
-                      }
-                      value='3'
-                    />
-                  </TabList>
-                </Box>
-                <Box id={classes.codeQuestionDetailBody}>
-                  <TabPanel value='0'>
-                    <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />
-                  </TabPanel>
-                  <TabPanel value='1'>
-                    <CodeQuestionTestCases />
-                  </TabPanel>
-                  <TabPanel value='2'>
-                    <CodeQuestionCodeStubs />
-                  </TabPanel>
-                  <TabPanel value='3'>
-                    <CodeQuestionLanguages />
-                  </TabPanel>
-                </Box>
-              </TabContext>
+  const breadCrumbData = [
+    {
+      navLink: routes.lecturer.question_bank.path,
+      label: i18next.format(t("common_question_bank"), "firstUppercase")
+    },
+    {
+      navLink: `/lecturer/question-bank-management/${params["categoryId"]}`,
+      label: categoryName
+    }
+  ];
+  return (
+    <Grid className={classes.root}>
+      <Header />
+      <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+        <FormProvider {...codeQuestionFormMethod}>
+          <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
+            <Box>
+              <CustomBreadCrumb
+                breadCrumbData={breadCrumbData}
+                lastBreadCrumbLabel={t("create_question_code")}
+              />
+              <Box className={classes.body}>
+                {isEdit && <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>}
+                <TabContext value={activeTab}>
+                  <Box sx={{ border: 1, borderColor: "divider" }}>
+                    <TabList onChange={handleChange} className={classes.tabs}>
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        label={
+                          <ParagraphBody translation-key='common_info'>
+                            {t("common_info")}
+                          </ParagraphBody>
+                        }
+                        value='0'
+                      />
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        label={<ParagraphBody>Test cases</ParagraphBody>}
+                        value='1'
+                      />
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        label={
+                          <ParagraphBody translation-key='code_management_detail_stub'>
+                            {t("code_management_detail_stub")}
+                          </ParagraphBody>
+                        }
+                        value='2'
+                      />
+                      <Tab
+                        sx={{ textTransform: "none" }}
+                        label={
+                          <ParagraphBody translation-key='common_language'>
+                            {t("common_language")}
+                          </ParagraphBody>
+                        }
+                        value='3'
+                      />
+                    </TabList>
+                  </Box>
+                  <Box id={classes.codeQuestionDetailBody}>
+                    <TabPanel value='0'>
+                      <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />
+                    </TabPanel>
+                    <TabPanel value='1'>
+                      <CodeQuestionTestCases />
+                    </TabPanel>
+                    <TabPanel value='2'>
+                      <CodeQuestionCodeStubs />
+                    </TabPanel>
+                    <TabPanel value='3'>
+                      <CodeQuestionLanguages />
+                    </TabPanel>
+                  </Box>
+                </TabContext>
+              </Box>
             </Box>
-          </Box>
-          <Box className={classes.stickyFooterContainer}>
-            <Box className={classes.phantom} />
-            <Box className={classes.stickyFooterItem}>
-              <Button btnType={BtnType.Primary} type='submit' translation-key='common_save_changes'>
-                {loadingSubmit ? <CircularProgress size={20} /> : t("common_save_changes")}
-              </Button>
+            <Box className={classes.stickyFooterContainer}>
+              <Box className={classes.phantom} />
+              <Box className={classes.stickyFooterItem}>
+                <Button
+                  btnType={BtnType.Primary}
+                  type='submit'
+                  translation-key='common_save_changes'
+                >
+                  {loadingSubmit ? <CircularProgress size={20} /> : t("common_save_changes")}
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
-    </>
+          </form>
+        </FormProvider>
+      </Container>
+    </Grid>
   );
 };
 
-export default AdminCodeQuestionDetails;
+export default LecturerCodeQuestionDetails;

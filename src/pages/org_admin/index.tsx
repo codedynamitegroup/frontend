@@ -43,7 +43,7 @@ const CreateTrueFalseQuestion = lazy(
     )
 );
 const LecturerCodeQuestionCreation = lazy(
-  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+  () => import("pages/client/lecturer/QuestionManagement/components/CodeQuestionDetails")
 );
 const OrgAdminContestManagement = lazy(
   () => import("./ContestManagement/OrgAdminContestManagement")

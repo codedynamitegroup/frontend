@@ -12,8 +12,8 @@ import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
 import "./App.scss";
 import ScrollToTop from "components/ScrollTop";
-const LecturerCodeQuestionCreation = lazy(
-  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
+const LecturerCodeQuestionDetails = lazy(
+  () => import("pages/client/lecturer/QuestionManagement/components/CodeQuestionDetails")
 );
 const SubmitAssignment = lazy(
   () => import("pages/client/student/AssignmentManagement/SubmitAssignment")
@@ -95,34 +95,34 @@ const UserHomepage = lazy(() => import("pages/client/user"));
 const ShareSolution = lazy(
   () => import("pages/client/user/DetailProblem/components/ListSolution/components/ShareSolution")
 );
-const LecturerSourceCodePlagiarismPairs = lazy(
-  () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairs")
-);
-const LecturerSourceCodePlagiarismPairDetails = lazy(
-  () =>
-    import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairDetails")
-);
-const LecturerSourceCodePlagiarismFileSubmissions = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissions"
-    )
-);
-const LecturerSourceCodePlagiarismFileSubmissionDetails = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails"
-    )
-);
-const LecturerSourceCodePlagiarismClusters = lazy(
-  () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters")
-);
-const LecturerSourceCodePlagiarismClustersDetails = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails"
-    )
-);
+// const LecturerSourceCodePlagiarismPairs = lazy(
+//   () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairs")
+// );
+// const LecturerSourceCodePlagiarismPairDetails = lazy(
+//   () =>
+//     import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismPairDetails")
+// );
+// const LecturerSourceCodePlagiarismFileSubmissions = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissions"
+//     )
+// );
+// const LecturerSourceCodePlagiarismFileSubmissionDetails = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismFileSubmissionDetails"
+//     )
+// );
+// const LecturerSourceCodePlagiarismClusters = lazy(
+//   () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClusters")
+// );
+// const LecturerSourceCodePlagiarismClustersDetails = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismClustersDetails"
+//     )
+// );
 const GradingConfig = lazy(
   () =>
     import(
@@ -242,10 +242,10 @@ const router = createHashRouter(
                 path={routes.lecturer.assignment.ai_grading_report_detail}
                 element={<ReportGradeEssayAIDetail />}
               />
-              <Route
+              {/* <Route
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
-              />
+              /> */}
 
               <Route
                 path={routes.lecturer.assignment.preview_submit}
@@ -261,7 +261,7 @@ const router = createHashRouter(
               <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
               <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
               <Route path={routes.lecturer.exam.review} element={<LecturerReviewExamAttempt />} />
-              <Route
+              {/* <Route
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
               />
@@ -288,7 +288,7 @@ const router = createHashRouter(
               <Route
                 path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
                 element={<LecturerSourceCodePlagiarismClustersDetails />}
-              />
+              /> */}
               <Route
                 path={routes.lecturer.question.essay.create}
                 element={<CreateEssayQuestion qtype={qtype.essay.code} />}
@@ -325,7 +325,7 @@ const router = createHashRouter(
               />
               <Route
                 path={routes.lecturer.question_bank.create_question.code.create}
-                element={<LecturerCodeQuestionCreation />}
+                element={<LecturerCodeQuestionDetails />}
               />
 
               <Route
