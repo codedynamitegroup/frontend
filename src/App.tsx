@@ -305,6 +305,10 @@ const router = createHashRouter(
                 path={routes.lecturer.question.true_false.create}
                 element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
               />
+              <Route
+                path={routes.lecturer.question.code.create}
+                element={<LecturerCodeQuestionDetails />}
+              />
 
               {/*  question bank */}
               <Route

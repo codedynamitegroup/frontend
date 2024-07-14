@@ -38,6 +38,8 @@ import { useSelector } from "react-redux";
 import { routes } from "routes/routes";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import i18next from "i18next";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
+import { CourseService } from "services/courseService/CourseService";
 
 interface Props {
   isCloneData?: boolean;
@@ -48,7 +50,14 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   // if (props.insideCrumb) setHeaderHeight(0);
   const location = useLocation();
+  const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
+  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
+  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
+  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
+  const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -129,7 +138,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   }, [codeQuestion, codeQuestionFormMethod, programmingLanguage]);
   const isEdit = codeQuestionId !== undefined && codeQuestionId !== null;
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
   useEffect(() => {
     const getAllTag = async (): Promise<TagEntity[]> => {
       let data: TagEntity[] = await TagService.getAllTag(false);
@@ -195,7 +204,20 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         }
       } catch (err) {
         dispatch(setErrorMess(t("common_page_can_not_open")));
-        navigate("/admin/code-questions");
+        // navigate("/admin/code-questions");
+        if (isLecturerCreateQuestionBank)
+          navigate(
+            routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+          );
+        else if (isOrgAdminQuestionBank)
+          navigate(
+            routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+          );
+        else if (isQuestionBank)
+          navigate(
+            routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+          );
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
       } finally {
         dispatch(setLoading(false));
       }
@@ -351,9 +373,20 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
     } finally {
       setLoadingSubmit(false);
       dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
-      navigate(
-        routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
-      );
+
+      if (isLecturerCreateQuestionBank)
+        navigate(
+          routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+        );
+      else if (isOrgAdminQuestionBank)
+        navigate(
+          routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+        );
+      else if (isQuestionBank)
+        navigate(
+          routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
+        );
+      else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
     }
 
     console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
@@ -361,16 +394,52 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
     console.log(codeQuestionFormMethod.getValues("testCases"));
   };
 
-  const breadCrumbData = [
-    {
-      navLink: routes.lecturer.question_bank.path,
-      label: i18next.format(t("common_question_bank"), "firstUppercase")
-    },
-    {
-      navLink: `/lecturer/question-bank-management/${params["categoryId"]}`,
-      label: categoryName
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      getCouseData(courseId);
+    };
+
+    fetchData();
+  }, [courseId]);
+
+  const breadCrumbData = isQuestionBank
+    ? [
+        {
+          navLink: routes.lecturer.question_bank.path,
+          label: i18next.format(t("common_question_bank"), "firstUppercase")
+        },
+        {
+          navLink: `/lecturer/question-bank-management/${params["categoryId"]}`,
+          label: categoryName
+        }
+      ]
+    : [
+        {
+          navLink: routes.lecturer.course.management,
+          label: t("common_course_management")
+        },
+        {
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+          label: courseData?.name
+        },
+        {
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+          label: t("common_type_assignment")
+        },
+        {
+          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+          label: t("course_lecturer_assignment_create_exam")
+        }
+      ];
   return (
     <Grid className={classes.root}>
       <Header />
