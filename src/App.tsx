@@ -261,7 +261,7 @@ const router = createHashRouter(
               <Route path={routes.lecturer.exam.preview} element={<PreviewExam />} />
               <Route path={routes.lecturer.exam.grading} element={<GradingExam />} />
               <Route path={routes.lecturer.exam.review} element={<LecturerReviewExamAttempt />} />
-              <Route
+              {/* <Route
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
               />
@@ -288,7 +288,7 @@ const router = createHashRouter(
               <Route
                 path={routes.lecturer.exam.code_plagiarism_detection_clusters_detail}
                 element={<LecturerSourceCodePlagiarismClustersDetails />}
-              />
+              /> */}
               <Route
                 path={routes.lecturer.question.essay.create}
                 element={<CreateEssayQuestion qtype={qtype.essay.code} />}

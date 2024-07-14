@@ -112,7 +112,7 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/certificate-course"} element={<CertificateCourseManagement />} />
 
-            <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
+            {/* <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
             <Route
               path={"question-bank-management/:categoryId"}
               element={<QuestionListOfCourse />}
@@ -137,7 +137,7 @@ const SystemAdminHomepage = (props: Props) => {
             <Route
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
-            />
+            /> */}
             <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />
