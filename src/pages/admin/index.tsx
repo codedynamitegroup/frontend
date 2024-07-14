@@ -19,35 +19,35 @@ const EditUserDetails = lazy(() => import("./UserManagement/EditUserDetails"));
 const CertificateCourseManagement = lazy(
   () => import("./CertificateCourseManagement/CertificateCourseManagement")
 );
-const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
-const CreateShortAnswerQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
-    )
-);
-const CreateEssayQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
-    )
-);
-const CreateMultichoiceQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
-    )
-);
-const CreateTrueFalseQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
-    )
-);
-const LecturerCodeQuestionCreation = lazy(
-  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
-);
-const AdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
+// const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
+// const CreateShortAnswerQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+//     )
+// );
+// const CreateEssayQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+//     )
+// );
+// const CreateMultichoiceQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+//     )
+// );
+// const CreateTrueFalseQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+//     )
+// );
+// const LecturerCodeQuestionCreation = lazy(
+//   () => import("pages/client/lecturer/QuestionManagement/components/CodeQuestionDetails")
+// );
+// const AdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
 const CreateCertificateCourse = lazy(
   () => import("./CertificateCourseManagement/CreateCertificateCourse")
 );
