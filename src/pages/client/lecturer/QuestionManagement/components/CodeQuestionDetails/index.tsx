@@ -40,6 +40,7 @@ import CustomBreadCrumb from "components/common/Breadcrumb";
 import i18next from "i18next";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import { CourseService } from "services/courseService/CourseService";
+import useAuth from "hooks/useAuth";
 
 interface Props {
   isCloneData?: boolean;
@@ -48,6 +49,7 @@ interface Props {
 const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+  const { loggedUser } = useAuth();
   // if (props.insideCrumb) setHeaderHeight(0);
   const location = useLocation();
   const courseId = location.state?.courseId;
@@ -347,6 +349,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } else {
         await CodeQuestionService.createCodeQuestion({
+          orgId: loggedUser?.organization.organizationId,
           name: data.name,
           problemStatement: data.problemStatement,
           inputFormat: data.inputFormat,
