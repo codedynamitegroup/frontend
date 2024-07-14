@@ -1,0 +1,20 @@
+.dialogTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputContainer {
+  gap: 15px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}

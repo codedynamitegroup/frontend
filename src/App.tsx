@@ -15,6 +15,9 @@ import ScrollToTop from "components/ScrollTop";
 const LecturerCodeQuestionDetails = lazy(
   () => import("pages/client/lecturer/QuestionManagement/components/CodeQuestionDetails")
 );
+const OrgAdminCodeQuestionDetails = lazy(
+  () => import("pages/org_admin/QuestionManagement/components/CodeQuestionDetails")
+);
 const SubmitAssignment = lazy(
   () => import("pages/client/student/AssignmentManagement/SubmitAssignment")
 );
@@ -82,9 +85,7 @@ const StudentReviewExamAttempt = lazy(
   () => import("pages/client/student/ExamManagemenent/ReviewExamAttempt")
 );
 const TakeExam = lazy(() => import("pages/client/student/ExamManagemenent/TakeExam"));
-const AIQuestionCreated = lazy(
-  () => import("pages/client/lecturer/QuestionManagement/components/AICreateQuestion")
-);
+
 const LecturerSourceCodePlagiarismManagement = lazy(
   () => import("pages/client/lecturer/SourceCodePlagiarismManagement/SourceCodePlagiarismOverview")
 );
@@ -153,6 +154,31 @@ const CreateTrueFalseQuestion = lazy(
       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
     )
 );
+
+const OrgAdminCreateEssayQuestion = lazy(
+  () =>
+    import(
+      "pages/org_admin/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+    )
+);
+const OrgAdminCreateMultichoiceQuestion = lazy(
+  () =>
+    import(
+      "pages/org_admin/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+    )
+);
+const OrgAdminCreateShortAnswerQuestion = lazy(
+  () =>
+    import(
+      "pages/org_admin/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+    )
+);
+const OrgAdminCreateTrueFalseQuestion = lazy(
+  () =>
+    import(
+      "pages/org_admin/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+    )
+);
 const PersistLogin = lazy(() => import("components/common/PersistLogin"));
 const SocketConnection = lazy(() => import("components/common/SocketConnection"));
 const SubmitExamSummary = lazy(
@@ -175,12 +201,10 @@ const router = createHashRouter(
             <Route path={routes.user.problem.solution.share} element={<ShareSolution />} />
             <Route path={routes.user.homepage.root} element={<UserHomepage />} />
             <Route path={routes.user.root} element={<UserHomepage />} />
-
             <Route
               path={routes.user.course_certificate.detail.lesson.share_solution}
               element={<ShareSolution />}
             />
-
             <Route element={<RequireAuth availableRoles={[ERoleName.LECTURER_MOODLE]} />}>
               <Route
                 path={routes.lecturer.exam.edit_essay_question}
@@ -349,7 +373,6 @@ const router = createHashRouter(
               <Route path={routes.student.exam.submitSummary} element={<SubmitExamSummary />} />
               <Route path={routes.student.exam.review} element={<StudentReviewExamAttempt />} />
             </Route>
-
             <Route element={<RequireAuth availableRoles={[ERoleName.ADMIN]} />}>
               <Route path={routes.admin.homepage.root} element={<SystemAdminHomepage />} />
             </Route>
@@ -358,22 +381,45 @@ const router = createHashRouter(
                 path={routes.org_admin.homepage.root}
                 element={<OrganizationAdminHomepage />}
               />
+              <Route
+                path={routes.org_admin.question_bank.create_question.essay.create}
+                element={<OrgAdminCreateEssayQuestion qtype={qtype.essay.code} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.create_question.multiple_choice.create}
+                element={<OrgAdminCreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.create_question.short_answer.create}
+                element={<OrgAdminCreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.create_question.true_false.create}
+                element={<OrgAdminCreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.create_question.code.create}
+                element={<OrgAdminCodeQuestionDetails />}
+              />
             </Route>
-
             <Route
               path={routes.user.course_certificate.detail.lesson.detail}
               element={<Lessons />}
             />
-
             <Route
               path={routes.user.contest.detail.problems.problem_root}
               element={<TakeContestProblem />}
             />
-            <Route
+            {/* <Route
               path={routes.lecturer.question_bank.create_question.ai.create}
               element={<AIQuestionCreated />}
               handle={{ crumbName: "default" }}
             />
+            <Route
+              path={routes.org_admin.question_bank.create_question.ai.create}
+              element={<OrgAdminAICreationQuestion />}
+              handle={{ crumbName: "default" }}
+            /> */}
           </Route>
         </Route>
       </Route>
