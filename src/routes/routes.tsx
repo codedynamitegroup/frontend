@@ -85,6 +85,18 @@ export const routes = {
             code
           }))
       },
+      edit_question: {
+        edit_multi_question:
+          "/lecturer/question-bank-management/:categoryId/edit/multiple-choice-question/:questionId",
+        edit_true_false_question:
+          "/lecturer/question-bank-management/:categoryId/edit/true-false-question/:questionId",
+        edit_short_question:
+          "/lecturer/question-bank-management/:categoryId/edit/short-answer-question/:questionId",
+        edit_essay_question:
+          "/lecturer/question-bank-management/:categoryId/edit/essay-question/:questionId",
+        edit_code_question:
+          "/lecturer/question-bank-management/:categoryId/edit/code-question/:questionId"
+      },
       update_question: {
         paths: Object.values(qtype)
           .map((value) => value.code)
@@ -248,6 +260,11 @@ export const routes = {
     homepage: {
       root: "/admin/*"
     },
+    topic: {
+      root: "/admin/topics",
+      create: "/admin/topics/create",
+      detail: "/admin/topics/:topicId"
+    },
     dashboard: "/admin/dashboard",
     information: "/admin/information",
     certificate: {
@@ -330,6 +347,18 @@ export const routes = {
             code
           }))
       },
+      edit_question: {
+        edit_multi_question:
+          "/admin/question-bank-management/:categoryId/edit/multiple-choice-question/:questionId",
+        edit_true_false_question:
+          "/admin/question-bank-management/:categoryId/edit/true-false-question/:questionId",
+        edit_short_question:
+          "/admin/question-bank-management/:categoryId/edit/short-answer-question/:questionId",
+        edit_essay_question:
+          "/admin/question-bank-management/:categoryId/edit/essay-question/:questionId",
+        edit_code_question:
+          "/admin/question-bank-management/:categoryId/edit/code-question/:questionId"
+      },
       update_question: {
         paths: Object.values(qtype)
           .map((value) => value.code)
@@ -388,6 +417,18 @@ export const routes = {
             path: `:categoryId/${code === "ai" ? "ai/create" : `create/${code}`}`,
             code
           }))
+      },
+      edit_question: {
+        edit_multi_question:
+          "/org-admin/question-bank-management/:categoryId/edit/multiple-choice-question/:questionId",
+        edit_true_false_question:
+          "/org-admin/question-bank-management/:categoryId/edit/true-false-question/:questionId",
+        edit_short_question:
+          "/org-admin/question-bank-management/:categoryId/edit/short-answer-question/:questionId",
+        edit_essay_question:
+          "/org-admin/question-bank-management/:categoryId/edit/essay-question/:questionId",
+        edit_code_question:
+          "/org-admin/question-bank-management/:categoryId/edit/code-question/:questionId"
       },
 
       update_question: {
