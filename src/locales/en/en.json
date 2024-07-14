@@ -689,7 +689,7 @@
   "exam_management_create_question_type": "Question type",
   "exam_management_create_new_question": "Create new question",
   "exam_management_create_from_bank": "Get question from question bank",
-  "exam_management_create_from_bank_choose_topic": "Choose topic",
+  "exam_management_create_from_bank_choose_topic": "Choose category",
 
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
