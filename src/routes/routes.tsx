@@ -51,6 +51,9 @@ export const routes = {
       },
       true_false: {
         create: "/lecturer/questions/true-false/create"
+      },
+      code: {
+        create: "/lecturer/questions/code/create"
       }
     },
     question_bank: {

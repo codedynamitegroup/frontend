@@ -107,6 +107,7 @@ export default function PickQuestionTypeToAddDialog({
               `${t("common_question_type_short")} ${t("common_question")}`}
             {questionType === "true-false" &&
               `${t("common_question_type_yes_no")} ${t("common_question")}`}
+            {questionType === "code" && `${t("side_bar_code_management")} ${t("common_question")}`}
           </ParagraphBody>
         </Grid>
       </Grid>
