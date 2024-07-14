@@ -907,7 +907,7 @@ export default function ExamCreated() {
                         visibleColumn={visibleColumnList}
                         dataGridToolBar={dataGridToolbar}
                         page={1}
-                        pageSize={5}
+                        pageSize={10}
                         totalElement={questionCreate.questionCreate.length}
                         onPaginationModelChange={pageChangeHandler}
                         showVerticalCellBorder={false}

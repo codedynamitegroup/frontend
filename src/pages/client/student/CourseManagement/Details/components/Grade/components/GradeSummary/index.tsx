@@ -19,14 +19,14 @@ const GradeSummary = (props: Props) => {
             <Box>
               <Typography variant='h4'>{props.title}</Typography>
             </Box>
-            <Button
+            {/* <Button
               startIcon={<ExportIcon />}
               variant='outlined'
               className={classes.exportButton}
               translation-key='common_data_export'
             >
               {t("common_data_export")}
-            </Button>
+            </Button> */}
           </Box>
         </Grid>
 
