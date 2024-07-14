@@ -8,6 +8,66 @@ import { encodeBase64 } from "utils/base64";
 const codeAssessmentServiceApiUrl = process.env.REACT_APP_CODE_ASSESSMENT_SERVICE_API_URL || "";
 
 export class CodeQuestionService {
+  static async deleteCodeQuestion(id: string) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).delete(API.CODE_ASSESSMENT.CODE_QUESTION.UPDATE_BY_ID.replace(":id", id));
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to delete code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createCodeQuestion(field: {
+    orgId?: string;
+    name: string;
+    problemStatement: string;
+    inputFormat: string;
+    outputFormat: string;
+    constraints: string;
+    maxGrade: number;
+    difficulty: QuestionDifficultyEnum;
+    isPublic: boolean;
+    allowImport: boolean;
+    categoryBankId?: string;
+    isQuestionBank?: boolean;
+    programmingLanuages: {
+      id: string;
+      timeLimit: number;
+      memoryLimit: number;
+      bodyCode: string;
+      tailCode?: string;
+      headCode?: string;
+    }[];
+    tagIds: string[];
+  }) {
+    try {
+      const response = await api({
+        baseURL: codeAssessmentServiceApiUrl,
+        isAuthorization: true
+      }).post(API.CODE_ASSESSMENT.CODE_QUESTION.DEFAULT, {
+        ...field
+      });
+      if (response.status === 204) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async updateProgrammingLanguageOfCodeQuestion(
     codeQuestionId: string,
     field: {
@@ -54,6 +114,8 @@ export class CodeQuestionService {
       difficulty: QuestionDifficultyEnum;
       isPublic: boolean;
       allowImport: boolean;
+      isQuestionBank: boolean;
+      categoryBankId?: string;
       newTagIds: string[];
       deletedTagIds: string[];
     }

@@ -1,35 +1,63 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import images from "config/images";
 import classes from "./styles.module.scss";
+import { useFormContext, Controller } from "react-hook-form";
 
 const DataInput = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { control } = useFormContext();
 
   return (
     <Grid container className={classes.dataInputContainer} spacing={3}>
       <Grid item xs={6} className={classes.inputContainer}>
-        <InputTextFieldColumn
-          label={t("Nhập đường liên kết")}
-          title={t("Nhập đường liên kết")}
-          value={""}
-          onChange={(e) => {}}
-          required
-          fullWidth
-          className={classes.inputField}
+        <Controller
+          name='url'
+          control={control}
+          defaultValue=''
+          render={({ field, fieldState: { error } }) => (
+            <Box>
+              <InputTextFieldColumn
+                {...field}
+                label={t("Nhập đường liên kết")}
+                title={t("Nhập đường liên kết")}
+                required
+                fullWidth
+                className={classes.inputField}
+                error={!!error}
+              />
+              {error && (
+                <Typography color='error' variant='body2' className={classes.errorText}>
+                  {error.message}
+                </Typography>
+              )}
+            </Box>
+          )}
         />
-        <InputTextFieldColumn
-          label={t("Nhập api key")}
-          title={t("Nhập api key")}
-          value={""}
-          onChange={(e) => {}}
-          required
-          fullWidth
-          className={classes.inputField}
+        <Controller
+          name='apiKey'
+          control={control}
+          defaultValue=''
+          render={({ field, fieldState: { error } }) => (
+            <Box>
+              <InputTextFieldColumn
+                {...field}
+                label={t("Nhập api key")}
+                title={t("Nhập api key")}
+                required
+                fullWidth
+                className={classes.inputField}
+                error={!!error}
+              />
+              {error && (
+                <Typography color='error' variant='body2' className={classes.errorText}>
+                  {error.message}
+                </Typography>
+              )}
+            </Box>
+          )}
         />
       </Grid>
       <Grid item xs={6}>

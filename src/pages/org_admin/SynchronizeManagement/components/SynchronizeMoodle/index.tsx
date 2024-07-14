@@ -1,89 +1,144 @@
-import { Grid } from "@mui/material";
-import StepperComponent from "components/StepperComponent";
+import React, { useState, useEffect } from "react";
+import { Grid, Box, Typography, Avatar } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { styled } from "@mui/material/styles";
 import classes from "./styles.module.scss";
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
-import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
+import { SynchronizeMoodleService } from "services/courseService/SynchronizeMoodleService";
+import useAuth from "hooks/useAuth";
 
-const steps = [
-  {
-    label: "Người dùng",
-    description: `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`
-  },
-  {
-    label: "Khóa học",
-    description: "An ad group contains one or more ads which target a shared set of keywords."
-  },
-  {
-    label: "Tài nguyên khác",
-    description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`
-  }
-];
+enum Statuses {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SUCCESS = "SUCCESS",
+  FAIL = "FAIL"
+}
 
-export default function SynchronizeMoodle() {
-  const [activeStep, setActiveStep] = React.useState(0);
+const StatusBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "status"
+})<{ status: Statuses }>(({ theme, status }) => ({
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  maxWidth: "150px",
+  backgroundColor:
+    status === Statuses.SUCCESS
+      ? "#E8FBE8"
+      : status === Statuses.PROCESSING
+        ? "#E8F1FB"
+        : status === Statuses.FAIL
+          ? "lightcoral"
+          : "lightgrey",
+  color:
+    status === Statuses.SUCCESS
+      ? "#00B52D"
+      : status === Statuses.PROCESSING
+        ? "#002DB5"
+        : status === Statuses.FAIL
+          ? "red"
+          : "grey",
+  marginBottom: theme.spacing(2),
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center"
+}));
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+const Line = styled("div", {
+  shouldForwardProp: (prop) => prop !== "status"
+})<{ status: Statuses }>(({ theme, status }) => ({
+  width: "2px",
+  height: "100%",
+  backgroundColor: status === Statuses.SUCCESS ? "#00B52D" : "grey",
+  position: "absolute",
+  left: "20px",
+  top: "0"
+}));
+
+const NumberCircle = styled(Avatar, {
+  shouldForwardProp: (prop) => prop !== "status"
+})<{ status: Statuses }>(({ theme, status }) => ({
+  backgroundColor:
+    status === Statuses.SUCCESS ? "#00B52D" : status === Statuses.PROCESSING ? "#002DB5" : "grey",
+  color: "white",
+  width: theme.spacing(4),
+  height: theme.spacing(4),
+  fontSize: "14px",
+  marginRight: theme.spacing(1)
+}));
+
+const SynchronizeMoodle: React.FC = () => {
+  const [userStatus, setUserStatus] = useState<Statuses>(Statuses.PENDING);
+  const [courseStatus, setCourseStatus] = useState<Statuses>(Statuses.PENDING);
+  const [otherResourcesStatus, setOtherResourcesStatus] = useState<Statuses>(Statuses.PENDING);
+  const [isSynchronizing, setIsSynchronizing] = useState(false);
+  const fetchStatusFromDB = async (id: string) => {
+    try {
+      const response = await SynchronizeMoodleService.synchronizeMoodle(id);
+      if (response.status === 200) {
+        setUserStatus(Statuses.SUCCESS);
+        setCourseStatus(Statuses.SUCCESS);
+        setOtherResourcesStatus(Statuses.SUCCESS);
+        setIsSynchronizing(false);
+      }
+    } catch (error) {
+      setUserStatus(Statuses.FAIL);
+      setCourseStatus(Statuses.FAIL);
+      setOtherResourcesStatus(Statuses.FAIL);
+      setIsSynchronizing(false);
+    }
+    setTimeout(() => setUserStatus(Statuses.PROCESSING), 1000);
+    setTimeout(() => {
+      setUserStatus(Statuses.SUCCESS);
+      setCourseStatus(Statuses.PROCESSING);
+    }, 3000);
+    setTimeout(() => {
+      setCourseStatus(Statuses.SUCCESS);
+      setOtherResourcesStatus(Statuses.PROCESSING);
+    }, 5000);
+    setTimeout(() => setOtherResourcesStatus(Statuses.SUCCESS), 7000);
+    setTimeout(() => setIsSynchronizing(false), 7000);
   };
+  const { loggedUser } = useAuth();
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
+  const handleSynchronize = () => {
+    setIsSynchronizing(true);
+    fetchStatusFromDB(loggedUser.organization.organizationId);
   };
 
   return (
-    <Box
-      style={{
-        padding: "20px 10px"
-      }}
-      sx={{ maxWidth: 400 }}
-    >
-      <Stepper activeStep={activeStep} orientation='vertical'>
-        {steps.map((step, index) => (
-          <Step key={step.label}>
-            <StepLabel
-              optional={index === 2 ? <Typography variant='caption'>Last step</Typography> : null}
-            >
-              {step.label}
-            </StepLabel>
-            <StepContent>
-              <Box sx={{ mb: 2 }}>
-                <div>
-                  <Button variant='contained' onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
-                    {index === steps.length - 1 ? "Finish" : "Đồng bộ"}
-                  </Button>
-                  {/* <Button disabled={index === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
-                    Back
-                  </Button> */}
-                </div>
-              </Box>
-            </StepContent>
-          </Step>
-        ))}
-      </Stepper>
-      {activeStep === steps.length && (
-        <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-            Reset
-          </Button>
-        </Paper>
-      )}
-    </Box>
+    <Grid className={classes.root} container direction='column'>
+      <Box>
+        <Box className={classes.stepWrapper}>
+          <NumberCircle status={userStatus}>1</NumberCircle>
+          <Typography variant='body1'>Người dùng</Typography>
+        </Box>
+        <StatusBox status={userStatus}>{userStatus}</StatusBox>
+      </Box>
+      <Box>
+        <Box className={classes.stepWrapper}>
+          <NumberCircle status={courseStatus}>2</NumberCircle>
+          <Typography variant='body1'>Khóa học</Typography>
+        </Box>
+        <StatusBox status={courseStatus}>{courseStatus}</StatusBox>
+      </Box>
+      <Box>
+        <Box className={classes.stepWrapper}>
+          <NumberCircle status={otherResourcesStatus}>3</NumberCircle>
+          <Typography variant='body1'>Các tài nguyên khác</Typography>
+        </Box>
+        <StatusBox status={otherResourcesStatus}>{otherResourcesStatus}</StatusBox>
+      </Box>
+      <Box display='flex' justifyContent='center' alignItems='center' mt={2}>
+        <LoadingButton
+          variant='contained'
+          color='primary'
+          onClick={handleSynchronize}
+          loading={isSynchronizing}
+        >
+          ĐỒNG BỘ
+        </LoadingButton>
+      </Box>
+    </Grid>
   );
-}
+};
+
+export default SynchronizeMoodle;
