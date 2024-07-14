@@ -242,10 +242,10 @@ const router = createHashRouter(
                 path={routes.lecturer.assignment.ai_grading_report_detail}
                 element={<ReportGradeEssayAIDetail />}
               />
-              <Route
+              {/* <Route
                 path={routes.lecturer.exam.code_plagiarism_detection}
                 element={<LecturerSourceCodePlagiarismManagement />}
-              />
+              /> */}
 
               <Route
                 path={routes.lecturer.assignment.preview_submit}
