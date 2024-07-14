@@ -341,8 +341,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } else {
-        await CodeQuestionService.createCodeQuestion({
+        const res = await CodeQuestionService.createCodeQuestion({
           orgId: loggedUser?.organization.organizationId,
+          categoryBankId: isQuestionBank ? params.categoryId : undefined,
           name: data.name,
           problemStatement: data.problemStatement,
           inputFormat: data.inputFormat,
@@ -362,6 +363,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
               bodyCode: value.bodyCode ?? ""
             }))
         });
+        console.log("res", res);
       }
     } catch (err) {
       console.error(err);

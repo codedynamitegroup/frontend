@@ -332,6 +332,7 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       } else {
         await CodeQuestionService.createCodeQuestion({
           orgId: loggedUser?.organization.organizationId,
+          categoryBankId: params.categoryId,
           name: data.name,
           problemStatement: data.problemStatement,
           inputFormat: data.inputFormat,

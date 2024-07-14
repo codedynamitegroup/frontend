@@ -75,7 +75,7 @@ export default function PickQuestionFromQuestionBankDialog({
         minWidth: 150
       }
     ],
-    []
+    [t]
   );
 
   const [searchText, setSearchText] = React.useState("");
