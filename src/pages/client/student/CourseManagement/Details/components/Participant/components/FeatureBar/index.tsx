@@ -52,14 +52,14 @@ const CourseParticipantFeatureBar = () => {
         </FormControl>
       </Box>
 
-      <Button
+      {/* <Button
         btnType={BtnType.Primary}
         startIcon={<ExportIcon sx={{ color: "white" }} />}
         sx={{ marginLeft: "15px", marginBottom: "10px" }}
         translation-key='common_data_export'
       >
         {t("common_data_export")}
-      </Button>
+      </Button> */}
     </Paper>
   );
 };

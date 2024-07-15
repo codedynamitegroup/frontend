@@ -34,8 +34,11 @@ import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService"
 import FormSchema from "./schema/FormSchema";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
-interface Props {}
-const AdminCodeQuestionDetails = (props: Props) => {
+interface Props {
+  isCloneData?: boolean;
+}
+
+const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [codeQuestion, setCodeQuestion] = useState<CodeQuestionAdminEntity | undefined>(undefined);
@@ -170,7 +173,7 @@ const AdminCodeQuestionDetails = (props: Props) => {
   const onSubmit = async (data: CodeQuestionFormData) => {
     setLoadingSubmit(true);
     try {
-      if (isEdit) {
+      if (isEdit && isCloneData !== true) {
         const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
         const dirtyInformationField = [
           dirtyFields.name,

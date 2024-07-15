@@ -51,6 +51,9 @@ export const routes = {
       },
       true_false: {
         create: "/lecturer/questions/true-false/create"
+      },
+      code: {
+        create: "/lecturer/questions/code/create"
       }
     },
     question_bank: {
@@ -76,7 +79,7 @@ export const routes = {
           create: "/lecturer/question-bank-management/:categoryId/create/code"
         },
         ai: {
-          create: "/lecturer/question-bank-management/:categoryId/ai/create"
+          create: "/lecturer/question-bank-management/:categoryId/create/ai"
         },
         paths: Object.values(qtype)
           .map((value) => value.code)

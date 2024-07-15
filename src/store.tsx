@@ -39,6 +39,7 @@ import takeExamCodeQuestion, {
 } from "reduxes/TakeExam/TakeExamCodeQuestion";
 import socketReducer from "reduxes/Socket";
 import previewCodeQuestionTestCase from "reduxes/courseService/previewCodeQuestionTestCase";
+import post from "reduxes/courseService/post";
 
 const persistConfig = {
   key: "takeExamCodeQuestion",
@@ -84,7 +85,8 @@ const store = configureStore({
     sidebarStatus: SidebarStatus,
     takeExamCodeQuestion: takeExamPersistedReducer,
     socket: socketReducer,
-    previewCodeQuestionTestCase: previewCodeQuestionTestCase
+    previewCodeQuestionTestCase: previewCodeQuestionTestCase,
+    post: post
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -5,9 +5,9 @@ import LecturerEventCalendar from "./LecturerEventCalendar";
 import LecturerCourses from "./CourseManagement";
 import LecturerCourseDetail from "./CourseManagement/Details";
 import SidebarLecturer from "components/common/sidebars/SidebarLecturer";
-import LecturerCodeQuestionManagement from "./CodeQuestionManagement";
-import LecturerCodeQuestionDetails from "./CodeQuestionManagement/Details";
-import LecturerCodeQuestionCreation from "./CodeQuestionManagement/Create";
+// import LecturerCodeQuestionManagement from "./CodeQuestionManagement";
+// import LecturerCodeQuestionDetails from "./CodeQuestionManagement/Details";
+// import LecturerCodeQuestionCreation from "./CodeQuestionManagement/Create";
 import QuestionBankManagementLayout from "./QuestionBankManagement/QuestionBankManagementLayout";
 import QuestionBankManagement from "./QuestionBankManagement";
 import { routes } from "routes/routes";
@@ -30,12 +30,12 @@ const LecturerCoursesManagement = (props: Props) => {
             <Routes>
               <Route path={"courses"} element={<LecturerCourses />} />
               <Route path={"courses/:courseId/*"} element={<LecturerCourseDetail />} />
-              <Route path={"code-questions"} element={<LecturerCodeQuestionManagement />} />
+              {/* <Route path={"code-questions"} element={<LecturerCodeQuestionManagement />} />
               <Route path={"code-questions/create"} element={<LecturerCodeQuestionCreation />} />
               <Route
                 path={"code-questions/edit/:questionId/*"}
                 element={<LecturerCodeQuestionDetails />}
-              />
+              /> */}
               <Route path={"calendar"} element={<LecturerEventCalendar />} />
               <Route
                 path={"question-bank-management"}

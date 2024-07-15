@@ -19,35 +19,35 @@ const EditUserDetails = lazy(() => import("./UserManagement/EditUserDetails"));
 const CertificateCourseManagement = lazy(
   () => import("./CertificateCourseManagement/CertificateCourseManagement")
 );
-const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
-const CreateShortAnswerQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
-    )
-);
-const CreateEssayQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
-    )
-);
-const CreateMultichoiceQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
-    )
-);
-const CreateTrueFalseQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
-    )
-);
-const LecturerCodeQuestionCreation = lazy(
-  () => import("pages/client/lecturer/CodeQuestionManagement/Create")
-);
-const AdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
+// const QuestionListOfCourse = lazy(() => import("./QuestionBankManagement/QuestionListOfCourse"));
+// const CreateShortAnswerQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateShortAnswerQuestion"
+//     )
+// );
+// const CreateEssayQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateEssayQuestion"
+//     )
+// );
+// const CreateMultichoiceQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateMultichoiceQuestion"
+//     )
+// );
+// const CreateTrueFalseQuestion = lazy(
+//   () =>
+//     import(
+//       "pages/client/lecturer/QuestionManagement/components/CreateQuestion/components/CreateTrueFalseQuestion"
+//     )
+// );
+// const LecturerCodeQuestionCreation = lazy(
+//   () => import("pages/client/lecturer/QuestionManagement/components/CodeQuestionDetails")
+// );
+// const AdminQuestionBankManagement = lazy(() => import("./QuestionBankManagement"));
 const CreateCertificateCourse = lazy(
   () => import("./CertificateCourseManagement/CreateCertificateCourse")
 );
@@ -112,7 +112,7 @@ const SystemAdminHomepage = (props: Props) => {
 
             <Route path={"/certificate-course"} element={<CertificateCourseManagement />} />
 
-            <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
+            {/* <Route path={"question-bank-management"} element={<AdminQuestionBankManagement />} />
             <Route
               path={"question-bank-management/:categoryId"}
               element={<QuestionListOfCourse />}
@@ -137,7 +137,7 @@ const SystemAdminHomepage = (props: Props) => {
             <Route
               path={"question-bank-management/:categoryId/create/code"}
               element={<LecturerCodeQuestionCreation />}
-            />
+            /> */}
             <Route path={"/certificate-course/create"} element={<CreateCertificateCourse />} />
 
             <Route path={"/code-questions"} element={<AdminCodeQuestionManagement />} />

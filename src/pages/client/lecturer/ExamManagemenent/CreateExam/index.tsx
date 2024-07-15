@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,6 +20,7 @@ import {
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
+import { GridRowParams } from "@mui/x-data-grid";
 import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridActionsCellItem";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
@@ -27,8 +29,10 @@ import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import MenuPopup from "components/common/menu/MenuPopup";
 import BasicSelect from "components/common/select/BasicSelect";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
 import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
 import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
@@ -36,54 +40,48 @@ import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
 import ParagraphSmall from "components/text/ParagraphSmall";
-import TextTitle from "components/text/TextTitle";
-import * as React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { routes } from "routes/routes";
-import useWindowDimensions from "hooks/useWindowDimensions";
-import QuestionsFeatureBar from "./components/FeatureBar";
-import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
-import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
-import classes from "./styles.module.scss";
-import { GridRowParams } from "@mui/x-data-grid";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
 import useBoxDimensions from "hooks/useBoxDimensions";
-import { useTranslation } from "react-i18next";
-import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
-import { ExamService } from "services/courseService/ExamService";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store";
+import useWindowDimensions from "hooks/useWindowDimensions";
+import { User } from "models/authService/entity/user";
+import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
+import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
 import {
   QuestionClone,
   QuestionCloneRequest,
   QuestionEntity
 } from "models/coreService/entity/QuestionEntity";
+import { UserEntity } from "models/coreService/entity/UserEntity";
+import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
+import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import moment from "moment";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { selectCurrentUser } from "reduxes/Auth";
 import {
   clearExamCreate,
   clearQuestionCreate,
   setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
-import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
-import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+import { routes } from "routes/routes";
 import { QuestionService } from "services/coreService/QuestionService";
-import { OrganizationEntity } from "models/coreService/entity/OrganizationEntity";
-import { AnswerOfQuestion } from "models/coreService/entity/AnswerOfQuestionEntity";
-import { UserEntity } from "models/coreService/entity/UserEntity";
-import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
-import { User } from "models/authService/entity/user";
-import { selectCurrentUser } from "reduxes/Auth";
 import { CourseService } from "services/courseService/CourseService";
-import { useEffect, useState } from "react";
-import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
-import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { ExamService } from "services/courseService/ExamService";
+import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
+import { RootState } from "store";
 import qtype from "utils/constant/Qtype";
-import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
-import TitleWithInfoTip from "components/text/TitleWithInfo";
-import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
-import { h } from "@fullcalendar/core/preact";
+import * as yup from "yup";
+import QuestionsFeatureBar from "./components/FeatureBar";
+import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
+import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
+import classes from "./styles.module.scss";
 
 const drawerWidth = 400;
 
@@ -326,9 +324,9 @@ export default function ExamCreated() {
     setLoading(true);
     const formSubmitData: FormData = { ...data };
 
-    const questionIds = questionCreate.questionCreate.map((item) => ({
+    const questionIds = questionCreate.questionCreate.map((item, index) => ({
       questionId: item.id,
-      page: 0
+      page: index
     }));
 
     const timeLimitUnit = formSubmitData.timeLimit;
@@ -516,6 +514,9 @@ export default function ExamCreated() {
         break;
       case "true-false":
         navigate(routes.lecturer.question.true_false.create, { state: { courseId: courseId } });
+        break;
+      case "code":
+        navigate(routes.lecturer.question.code.create, { state: { courseId: courseId } });
         break;
       default:
         break;
@@ -906,7 +907,7 @@ export default function ExamCreated() {
                         visibleColumn={visibleColumnList}
                         dataGridToolBar={dataGridToolbar}
                         page={1}
-                        pageSize={5}
+                        pageSize={10}
                         totalElement={questionCreate.questionCreate.length}
                         onPaginationModelChange={pageChangeHandler}
                         showVerticalCellBorder={false}

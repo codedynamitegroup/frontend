@@ -23,10 +23,14 @@ const sectionSlice = createSlice({
     setSections: (state, action) => {
       state.sections = action.payload.sections;
       state.courseId = action.payload.courseId;
+    },
+    clearSections: (state) => {
+      state.sections = [];
+      state.courseId = null;
     }
   }
 });
 
-export const { setLoadingSections, setSections } = sectionSlice.actions;
+export const { setLoadingSections, setSections, clearSections } = sectionSlice.actions;
 
 export default sectionSlice.reducer;

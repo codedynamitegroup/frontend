@@ -5,7 +5,7 @@ import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
 import { memo, useCallback, useRef, useState } from "react";
-import { useMatches, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 interface Props {
   insideCrumb?: boolean;
 }
@@ -61,6 +62,9 @@ export enum EAmountAnswer {
 const AICreationQuestion = (props: Props) => {
   const navigate = useNavigate();
   const matches = useMatches();
+
+  const location = useLocation();
+  const categoryName = location.state?.categoryName;
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState<number>(sidebarStatus.headerHeight);
@@ -131,7 +135,7 @@ const AICreationQuestion = (props: Props) => {
     <Grid className={classes.root}>
       <Header />
       <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
-        <Box className={classes.tabWrapper}>
+        {/* <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
             <span
               onClick={() => navigate("/lecturer/question-bank-management")}
@@ -150,7 +154,21 @@ const AICreationQuestion = (props: Props) => {
             {"> "}
             <span>Tạo câu hỏi</span>
           </ParagraphBody>
-        </Box>
+        </Box> */}
+        <CustomBreadCrumb
+          breadCrumbData={[
+            { navLink: routes.lecturer.question_bank.path, label: t("common_question_bank") },
+            {
+              navLink: `${routes.lecturer.question_bank.detail.replace(
+                ":categoryId",
+                `${urlParams["categoryId"]}`
+              )}`,
+              label: categoryName || ""
+            },
+            { navLink: "", label: t("create_question_code") }
+          ]}
+          lastBreadCrumbLabel={t("detail_problem_submission_details")}
+        />
         <Grid container spacing={1} columns={12}>
           <Grid item xs={6}>
             <Box component='form' className={classes.formBody} autoComplete='off'>
