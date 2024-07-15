@@ -1,55 +1,103 @@
-import React from "react";
-import { Card, CardContent, Typography, Divider, Link, Box, Avatar, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  Link,
+  Box,
+  Avatar,
+  Grid,
+  Stack,
+  Tooltip,
+  IconButton
+} from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import useAuth from "hooks/useAuth";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { PostEntity } from "models/courseService/entity/PostEntity";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import i18next from "i18next";
+import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
+import classes from "./styles.module.scss";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const NotificationCard = () => {
-  const content = `
-    <ul>
-      <li>👉 Các em xem điểm tổng kết môn học trong file đính kèm (sheet Summary)</li>
-      <li>👉 Sinh viên phúc khảo bằng cách comment vào post này, ghi rõ cột điểm cần phúc khảo; riêng điểm đồ án nhóm, sinh viên gửi phúc khảo cho thầy Quý (theo thông tin đã được cung cấp ở post trước)</li>
-      <li>👉 Hạn chót phúc khảo: 21h ngày chủ nhật (4.2.2024)</li>
-    </ul>
-    <hr />
-    <p>⚠️⚠️⚠️ <strong>QUAN TRỌNG</strong> ⚠️⚠️⚠️</p>
-    <ul>
-      <li>👉 Sáng thứ 2 (5.2.2024), các em ghé I82-&gt;I84 ký tên vào bảng điểm trong khoảng thời gian <strong>9h30 - 10h30</strong></li>
-      <li>👉 Có thể ký tên thay cho bạn cùng nhóm của mình</li>
-    </ul>
-    <hr />
-    <p><a href="https://docs.google.com/spreadsheets/d/20CLC-KTPM1-WebNC-Sc" target="_blank" rel="noopener noreferrer">20CLC-KTPM1-WebNC-Sc...</a></p>
-  `;
-  const { loggedUser } = useAuth();
+interface NotificationCardProps {
+  post: PostEntity;
+}
+const NotificationCard = ({ post }: NotificationCardProps) => {
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18next.language]);
+  const { isLecturer } = useAuth();
 
   return (
-    <Card>
+    <Card className={classes.annoucementCard}>
       <CardContent>
-        <Grid container alignItems='center' spacing={2}>
+        <Grid container alignItems='center' spacing={2} flexDirection={"row"}>
           <Grid item>
             <Avatar
               sx={{
-                bgcolor: `${generateHSLColorByRandomText(`${"Tien"} ${"Ngoc"}`)}`
+                bgcolor: `${generateHSLColorByRandomText(`${post?.createdBy.firstName} ${post?.createdBy.lastName}`)}`
               }}
-              alt={loggedUser.email}
-              src={loggedUser.avatarUrl}
+              alt={post?.createdBy.email}
+              src={post?.createdBy.avatarUrl}
             >
-              {"T"}
+              {post?.createdBy.firstName.charAt(0)}
             </Avatar>
           </Grid>
-          <Grid item>
-            <Typography variant='h6' component='div'>
-              Tien Ngoc
-            </Typography>
-            <Typography variant='body2' color='text.secondary'>
-              Feb 3, 2024
-            </Typography>
+          <Grid
+            item
+            xs={11}
+            flexDirection={"row"}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Stack flexDirection={"column"}>
+              <Box>
+                <Heading5>{post?.title}</Heading5>
+              </Box>
+              <Stack flexDirection={"row"} alignItems={"center"}>
+                <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                  By&nbsp;
+                </ParagraphBody>
+                <ParagraphBody fontWeight={500} colorname='--blue-3'>
+                  {post?.createdBy.firstName} {post?.createdBy.lastName}
+                </ParagraphBody>
+                <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                  &nbsp;-&nbsp;
+                  {standardlizeUTCStringToLocaleString(post?.createdAt as string, currentLang)}
+                </ParagraphBody>
+              </Stack>
+            </Stack>
+
+            {isLecturer && (
+              <Stack flexDirection={"row"}>
+                <Tooltip title='Edit'>
+                  <IconButton onClick={() => {}}>
+                    <EditIcon className={classes.iconEdit} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title='Delete'>
+                  <IconButton onClick={() => {}}>
+                    <DeleteIcon className={classes.iconDelete} />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            )}
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />
         <Box sx={{ mt: 2 }}>
-          <ReactQuill value={content} readOnly={true} theme='bubble' />
+          <ReactQuill value={post?.content} readOnly={true} theme='bubble' />
         </Box>
       </CardContent>
     </Card>

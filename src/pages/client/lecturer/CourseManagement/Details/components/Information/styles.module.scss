@@ -15,79 +15,9 @@
     }
   }
 }
-.gridBodyContainer {
-  .resourceContainer {
-    margin: 0;
-  }
-  .resourceAccordionContainer {
-    margin: 0 10px 10px 0;
-    .resourceSummaryContainer {
-      cursor: default;
-      [class~="MuiAccordionSummary-expandIconWrapper"] {
-        transform: rotate(0deg);
-      }
-      .resourceSummaryText {
-        font-size: 20px;
-        font-weight: 800;
-      }
-      .editTopicTitleImageContainer {
-        width: 30px;
-        height: 30px;
-        margin-left: 10px;
-        svg {
-          width: 30px;
-        }
-      }
-    }
-    .accordDetail {
-      padding: 0;
-    }
-  }
-  .eventContainer {
-    align-items: start;
-    .eventTitle {
-      padding: 10px;
-    }
-    .eventList {
-      padding: 0;
-      li {
-        padding: 0;
-      }
-    }
-  }
-}
 
-.topicWrapper {
+.annoucementsWrapper {
   display: flex;
-  flex-direction: column !important;
-  box-shadow: none !important;
-}
-
-.resourceSummaryContainer {
-  box-shadow: none;
-  height: 30px !important;
-}
-
-.accordDetail {
-  box-shadow: none;
-}
-.iconButton {
-  background-color: var(--gray-5);
-  padding: 10px;
-  margin-right: 10px;
-
-  &:hover {
-    background-color: #ecf4fd;
-    color: #1976d2;
-  }
-}
-.iconButtonActive {
-  background-color: #ecf4fd;
-  padding: 10px;
-  margin-right: 10px;
-  color: #1976d2;
-  &:hover {
-    background-color: #ecf4fd;
-    color: #1976d2;
-  }
+  flex-direction: column;
+  gap: 15px;
 }

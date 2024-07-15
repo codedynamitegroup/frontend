@@ -16,3 +16,56 @@
   flex-direction: column;
   gap: 15px;
 }
+
+.gridBodyContainer {
+  .resourceContainer {
+    margin: 0;
+  }
+  .resourceAccordionContainer {
+    margin: 0 10px 10px 0;
+    .resourceSummaryContainer {
+      cursor: default;
+      [class~="MuiAccordionSummary-expandIconWrapper"] {
+        transform: rotate(0deg);
+      }
+
+      .editTopicTitleImageContainer {
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+        svg {
+          width: 30px;
+        }
+      }
+    }
+    .accordDetail {
+      padding: 0;
+    }
+  }
+  .eventContainer {
+    align-items: start;
+    .eventTitle {
+      padding: 10px;
+    }
+    .eventList {
+      padding: 0;
+      li {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.topicWrapper {
+  display: flex;
+  flex-direction: column !important;
+  box-shadow: none !important;
+}
+
+.collapse {
+  [class~="MuiCollapse-wrapperInner"] {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
