@@ -1,35 +1,40 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import classes from "./styles.module.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo } from "react";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputTextField from "components/common/inputs/InputTextField";
 import { SectionEntity } from "models/courseService/entity/SectionEntity";
 import { SectionService } from "services/courseService/SectionService";
-import { dispatch } from "d3";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { clearSections } from "reduxes/courseService/section";
+import { PostEntity } from "models/courseService/entity/PostEntity";
+import TextEditor from "components/editor/TextEditor";
+import { PostService } from "services/courseService/PostService";
+import { UpdateAnnoucementCommand } from "models/courseService/entity/update/UpdateAnnoucementCommand";
+import { clearPosts } from "reduxes/courseService/post";
 
 type EditSectionDialogProps = {
   open: boolean;
   onClose: () => void;
-  section: SectionEntity | null;
+  post: PostEntity | null;
 };
 
 interface IFormData {
-  sectionName: string;
+  title: string;
+  content: string;
 }
 
-const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) => {
+const EditAnnoucementDialog = ({ open, onClose, post }: EditSectionDialogProps) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
-      sectionName: yup.string().required(t("section_required"))
+      title: yup.string().required(t("title_required")),
+      content: yup.string().required(t("content_required"))
     });
   }, [t]);
 
@@ -37,32 +42,38 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });
 
   useEffect(() => {
-    if (section) {
+    if (post) {
       reset({
-        sectionName: section.name
+        title: post.title,
+        content: post.content
       });
     }
-  }, [section, reset]);
+  }, [post, reset]);
 
   const dispatch = useDispatch();
 
   const handleEdit = async (data: IFormData) => {
-    if (!section) return;
-    await SectionService.updateSection(section.sectionId, data.sectionName)
+    if (!post) return;
+    const updateAnnoucementCommand: UpdateAnnoucementCommand = {
+      content: data.content,
+      title: data.title
+    };
+    await PostService.updatePost(post.postId, updateAnnoucementCommand)
       .then((res) => {
-        dispatch(setSuccessMess("Edit section successfully"));
-        dispatch(clearSections());
+        dispatch(setSuccessMess("Edit annoucement successfully"));
+        dispatch(clearPosts());
         onClose();
       })
       .catch((error) => {
-        dispatch(setErrorMess("Failed to edit section"));
-        console.error("Failed to edit section", error);
+        dispatch(setErrorMess("Failed to edit annoucement"));
+        console.error("Failed to edit annoucement", error);
       });
   };
   return (
@@ -73,7 +84,7 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
           id='customized-dialog-title'
           translation-key='question_bank_edit_category'
         >
-          Edit Section
+          Edit Announcement
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -89,58 +100,31 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
         </IconButton>
         <DialogContent className={classes["dialog-content"]}>
           <InputTextField
-            label={t("section_name")}
+            label={t("course_lecturer_announcement_title")}
             type='text'
-            inputRef={register("sectionName")}
-            errorMessage={errors?.sectionName?.message}
+            inputRef={register("title")}
+            errorMessage={errors?.title?.message}
             width='100%'
           />
-          {/* <Controller
-					name='name'
-					control={controlEdit}
-					render={({ field }) => (
-						<InputTextFieldColumn
-							type='text'
-							title={t("question_bank_create_category_name")}
-							useDefaultTitleStyle
-							titleRequired={true}
-							{...field}
-							fullWidth
-							margin='dense'
-							error={!!errorsEdit.name}
-							errorMessage={errorsEdit.name?.message}
-							value={field.value}
-							onChange={field.onChange}
-						/>
-					)}
-				/>
-				<TitleWithInfoTip
-					title={t("question_bank_create_category_info")}
-					titleRequired
-					fontSize='12px'
-					color='var(--gray-60)'
-					gutterBottom
-					fontWeight='600'
-				/>
-				<Controller
-					name='description'
-					control={controlEdit}
-					render={({ field }) => (
-						<TextEditor
-							type='text'
-							title={t("question_bank_create_category_info")}
-							roundedBorder={true}
-							required={true}
-							placeholder={t("question_bank_create_category_info")}
-							tooltipDescription={t("question_default_score_description")}
-							{...field}
-							error={!!errorsEdit.description}
-							errorMessage={errorsEdit.description?.message}
-							value={field.value}
-							onChange={field.onChange}
-						/>
-					)}
-				/> */}
+          <Box className={classes.announcementContent}>
+            <Controller
+              defaultValue=''
+              control={control}
+              name='content'
+              render={({ field }) => (
+                <TextEditor
+                  title={t("course_lecturer_enter_announcement")}
+                  roundedBorder={true}
+                  error={Boolean(errors?.content)}
+                  placeholder={`${t("course_lecturer_enter_announcement")}...`}
+                  required
+                  translation-key='course_lecturer_enter_announcement'
+                  {...field}
+                  className={classes.textEditor}
+                />
+              )}
+            />
+          </Box>
         </DialogContent>
         <DialogActions className={classes["dialog-actions"]}>
           <Button btnType={BtnType.Secondary} onClick={onClose}>
@@ -155,4 +139,4 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
   );
 };
 
-export default EditSectionDialog;
+export default EditAnnoucementDialog;
