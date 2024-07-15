@@ -99,13 +99,14 @@ export class CodeSubmissionService {
     }
   }
 
-  static async getRecentCodeQuestion(pageNo: number, pageSize: number) {
+  static async getRecentCodeQuestion(email: string, pageNo: number, pageSize: number) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl,
         isAuthorization: true
       }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.RECENT_CODE_QUESTION}`, {
         params: {
+          email,
           pageNo,
           pageSize
         }
@@ -122,14 +123,15 @@ export class CodeSubmissionService {
     }
   }
 
-  static async getHeatMap(year: number) {
+  static async getHeatMap(email: string, year: number) {
     try {
       const response = await api({
         baseURL: codeAssessmentServiceApiUrl,
         isAuthorization: true
       }).get(`${API.CODE_ASSESSMENT.CODE_SUBMISSION.HEAT_MAP}`, {
         params: {
-          year
+          year,
+          email
         }
       });
       if (response.status === 200) {

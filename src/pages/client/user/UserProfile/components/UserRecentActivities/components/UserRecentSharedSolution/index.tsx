@@ -23,7 +23,7 @@ import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import i18next from "i18next";
 import { ESharedSolutionType } from "../..";
 import { CircularProgress } from "@mui/joy";
-import useAuth from "hooks/useAuth";
+import { User } from "models/authService/entity/user";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -47,10 +47,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 interface UserRecentSharedSolutionProps {
   sharedSolutionType: ESharedSolutionType;
+  user?: User;
 }
 
 export default function UserRecentSharedSolution({
-  sharedSolutionType
+  sharedSolutionType,
+  user
 }: UserRecentSharedSolutionProps) {
   const { t } = useTranslation();
   const [data, setData] = useState<{
@@ -73,8 +75,6 @@ export default function UserRecentSharedSolution({
 
   const dispatch = useDispatch();
 
-  const { loggedUser } = useAuth();
-
   const handleRecentSharedSolution = useCallback(
     async ({
       pageNo = 0,
@@ -85,13 +85,14 @@ export default function UserRecentSharedSolution({
       pageSize?: number;
       newest?: boolean;
     }) => {
-      if (!loggedUser) return;
+      if (!user) return;
       const sortBy =
         sharedSolutionType === ESharedSolutionType.RECENT ? "createdAt" : "totalComment";
       setIsLoading(true);
+
       try {
         const getRecentSharedSolutionResponse = await SharedSolutionService.getRecentSharedSolution(
-          loggedUser.email,
+          user.email,
           pageSize,
           pageNo,
           newest,
@@ -114,7 +115,7 @@ export default function UserRecentSharedSolution({
       }
       setIsLoading(false);
     },
-    [dispatch, t, sharedSolutionType, loggedUser]
+    [dispatch, t, sharedSolutionType, user]
   );
 
   useEffect(() => {
