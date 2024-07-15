@@ -1,22 +1,12 @@
-import AccordionActions from "@mui/material/AccordionActions";
 import classes from "./styles.module.scss";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
 import { useEffect, useState } from "react";
-import ParagraphBody from "components/text/ParagraphBody";
-import TextEditor from "components/editor/TextEditor";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
-import images from "config/images";
-import UploadIcon from "@mui/icons-material/Upload";
 import React from "react";
 import {
-  Card,
-  CardContent,
   Typography,
   Button,
   Box,
@@ -31,17 +21,11 @@ import {
   DialogTitle
 } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Link from "@mui/material/Link";
 import { Delete, Edit } from "@mui/icons-material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import "dayjs/locale/vi";
-import localeData from "dayjs/plugin/localeData";
-import weekday from "dayjs/plugin/weekday";
-import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Link as RouterLink } from "react-router-dom";
-import { AssignmentService } from "services/courseService/AssignmentService";
-import { useCallback } from "react";
 import i18next from "i18next";
 import { clearExamCreate } from "reduxes/coreService/questionCreate";
 import { useDispatch } from "react-redux";
@@ -167,8 +151,8 @@ const AssignmentResource = ({
         </Grid>
 
         <Grid item xs={0.7} className={classes.content}>
-          <Avatar sx={{ bgcolor: type == ResourceType.assignment ? "#eb66a2" : "#0077be" }}>
-            {type == ResourceType.assignment ? <AssignmentIcon /> : <AccessTimeFilledIcon />}
+          <Avatar sx={{ bgcolor: type === ResourceType.assignment ? "#eb66a2" : "#0077be" }}>
+            {type === ResourceType.assignment ? <AssignmentIcon /> : <AccessTimeFilledIcon />}
           </Avatar>
         </Grid>
         <Grid item xs={7.3}>

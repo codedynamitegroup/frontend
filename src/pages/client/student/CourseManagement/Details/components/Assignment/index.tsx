@@ -1,163 +1,150 @@
-import SearchBar from "components/common/search/SearchBar";
 import classes from "./styles.module.scss";
 
 import Box from "@mui/material/Box";
-import { CircularProgress, Grid } from "@mui/material";
-import Heading3 from "components/text/Heading3";
+import { CircularProgress, Collapse, Grid, IconButton } from "@mui/material";
 import Heading1 from "components/text/Heading1";
-import { useNavigate } from "react-router";
-import { routes } from "routes/routes";
 import AssignmentResource from "./Resource";
 import { ResourceType } from "pages/client/lecturer/CourseManagement/Details/components/Assignment/components/Resource";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
-import { ExamService } from "services/courseService/ExamService";
-import { setExams, setLoadingExams } from "reduxes/courseService/exam";
 import { useParams } from "react-router-dom";
-import { useCallback, useEffect } from "react";
-import { AssignmentService } from "services/courseService/AssignmentService";
-import { setAssignments, setLoadingAssignments } from "reduxes/courseService/assignment";
-import { AssignmentEntity } from "models/courseService/entity/AssignmentEntity";
+import { useCallback, useEffect, useState } from "react";
+import { SectionService } from "services/courseService/SectionService";
+import { setLoadingSections, setSections } from "reduxes/courseService/section";
+import { ArrowDropDownIcon, ArrowRightIcon } from "@mui/x-date-pickers";
+import Heading5 from "components/text/Heading5";
+import { ECourseResourceType } from "models/courseService/course";
 
 const StudentCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const examState = useSelector((state: RootState) => state.exam);
-  const assignmentState = useSelector((state: RootState) => state.assignment);
   const { courseId } = useParams<{ courseId: string }>();
+  const sectionState = useSelector((state: RootState) => state.section);
+  const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>([]);
+  const handleGetSections = useCallback(async () => {
+    if (!courseId || (sectionState.courseId === courseId && sectionState.sections.length > 0)) {
+      return;
+    }
 
-  const handleGetExams = useCallback(
-    async (id: string) => {
-      if (id === examState.courseId && examState.exams) {
-        return;
-      }
-      dispatch(setLoadingExams(true));
-      try {
-        const response = await ExamService.getExamsByCourseId(id);
-        dispatch(
-          setExams({
-            exams: response.exams,
-            courseId: id,
-            currentPage: response.currentPage,
-            totalItems: response.totalItems,
-            totalPages: response.totalPages
-          })
-        );
-      } catch (error) {
-        console.error(error);
-      }
-      dispatch(setLoadingExams(false));
-    },
-    [dispatch, examState.courseId, examState.exams]
-  );
-
-  const handleGetAssignments = useCallback(
-    async (id: string) => {
-      if (id === assignmentState.courseId && assignmentState.assignments.length > 0) {
-        return;
-      }
-      dispatch(setLoadingAssignments(true));
-      try {
-        const response = await AssignmentService.getAssignmentsByCourseId(id);
-        dispatch(
-          setAssignments({
-            assignments: response.assignments,
-            courseId: id
-          })
-        );
-      } catch (error) {
-        console.error(error);
-      }
-      dispatch(setLoadingAssignments(false));
-    },
-    [dispatch, assignmentState.courseId, assignmentState.assignments]
-  );
+    dispatch(setLoadingSections(true));
+    try {
+      const getSectionsResponse = await SectionService.getSectionsByCourseId(courseId);
+      dispatch(setSections({ sections: getSectionsResponse.sections, courseId: courseId }));
+    } catch (error) {
+      console.error("Failed to fetch sections", error);
+    }
+    dispatch(setLoadingSections(false));
+  }, [courseId, dispatch, sectionState.courseId, sectionState.sections]);
 
   useEffect(() => {
-    if (courseId) {
-      Promise.all([handleGetExams(courseId), handleGetAssignments(courseId)]);
-    }
-  }, [courseId, handleGetAssignments, handleGetExams]);
+    handleGetSections();
+  }, [courseId, handleGetSections]);
 
   const { t } = useTranslation();
-  const searchHandle = (searchVal: string) => {
-    console.log(searchVal);
-  };
-  const navigate = useNavigate();
 
+  const toggleItem = (index: number) => {
+    if (collapseOpen[index] === undefined)
+      setCollapseOpen((prevState: Array<Boolean>) => ({
+        ...prevState,
+        [index]: false
+      }));
+    else {
+      setCollapseOpen((prevState: any) => ({
+        ...prevState,
+        [index]: !Boolean(prevState[index])
+      }));
+    }
+  };
   return (
     <Box className={classes.assignmentBody}>
       <Heading1 translation-key='course_detail_assignment_list'>
         {t("course_detail_assignment_list")}
       </Heading1>
-      <Grid container>
-        <Grid item xs={12}>
-          <SearchBar onSearchClick={searchHandle} />
-        </Grid>
-      </Grid>
       <Box className={classes.assignmentsWrapper}>
-        <Box className={classes.topic}>
-          <Heading3 translation-key='course_detail_assignment'>
-            {t("course_detail_assignment")}
-          </Heading3>
-          {assignmentState.isLoading === true ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                gap: "10px"
-              }}
-            >
-              <CircularProgress />
+        {sectionState.isLoading === false ? (
+          <Grid item xs={12}>
+            <Box margin={1} padding={0}>
+              <Grid container className={classes.gridBodyContainer}>
+                <Grid item className={classes.topicWrapper} xs={12}>
+                  {sectionState.sections.map((topic, index) => {
+                    const isOpen =
+                      collapseOpen[index] === undefined ? true : Boolean(collapseOpen[index]);
+
+                    return (
+                      <Box className={classes.generalInfo} key={index}>
+                        <Box display='flex' alignItems='center' margin={1}>
+                          {isOpen ? (
+                            <IconButton
+                              className={classes.iconButtonActive}
+                              sx={{ padding: "5px" }}
+                              onClick={() => toggleItem(index)}
+                            >
+                              <ArrowDropDownIcon style={{ fontSize: 20 }} />
+                            </IconButton>
+                          ) : (
+                            <IconButton
+                              className={classes.iconButton}
+                              sx={{ padding: "5px" }}
+                              onClick={() => toggleItem(index)}
+                            >
+                              <ArrowRightIcon style={{ fontSize: 20 }} />
+                            </IconButton>
+                          )}
+                          <Heading5>{topic.name}</Heading5>
+                        </Box>
+                        <Collapse
+                          in={isOpen}
+                          timeout='auto'
+                          unmountOnExit
+                          className={classes.collapse}
+                        >
+                          {topic.modules.map((resource, resourceIndex) =>
+                            resource.typeModule === ECourseResourceType.assignment ? (
+                              <AssignmentResource
+                                key={resource.moduleId}
+                                courseId={courseId}
+                                examId={resource.assignment?.id}
+                                resourceTitle={resource.assignment?.title}
+                                resourceOpenDate={resource.assignment?.timeOpen}
+                                resourceEndedDate={resource.assignment?.timeClose}
+                                intro={resource.assignment?.intro}
+                                type={ResourceType.assignment}
+                              />
+                            ) : (
+                              <AssignmentResource
+                                key={resource.moduleId}
+                                courseId={courseId}
+                                examId={resource.exam?.id}
+                                resourceTitle={resource.exam?.name}
+                                resourceOpenDate={resource.exam?.timeOpen}
+                                resourceEndedDate={resource.exam?.timeClose}
+                                intro={resource.exam?.intro}
+                                type={ResourceType.exam}
+                              />
+                            )
+                          )}
+                        </Collapse>
+                      </Box>
+                    );
+                  })}
+                </Grid>
+              </Grid>
             </Box>
-          ) : (
-            assignmentState.assignments.length > 0 &&
-            assignmentState.assignments.map((assignment: AssignmentEntity) => (
-              <AssignmentResource
-                courseId={courseId}
-                examId={assignment.id}
-                resourceTitle={assignment.title}
-                resourceOpenDate={assignment.timeOpen}
-                resourceEndedDate={assignment.timeClose}
-                intro={assignment.intro}
-                type={ResourceType.assignment}
-              />
-            ))
-          )}
-        </Box>
-        <Box className={classes.topic}>
-          <Heading3 translation-key='course_detail_exam'>{t("course_detail_exam")}</Heading3>
-          {examState.isLoading === true ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                gap: "10px"
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            examState.exams.exams.length > 0 &&
-            examState.exams.exams.map((exam) => (
-              <AssignmentResource
-                courseId={courseId}
-                examId={exam.id}
-                resourceTitle={exam.name}
-                resourceOpenDate={exam.timeOpen}
-                resourceEndedDate={exam.timeClose}
-                intro={exam.intro}
-                type={ResourceType.exam}
-              />
-            ))
-          )}
-        </Box>
+          </Grid>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              gap: "10px"
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
       </Box>
     </Box>
   );

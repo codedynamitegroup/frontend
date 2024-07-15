@@ -3,28 +3,22 @@ import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import EditImageIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import { CircularProgress, Collapse, TextField } from "@mui/material";
-import { ECourseResourceType } from "models/courseService/course";
+import { CircularProgress } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
-import CourseResource from "./components/CourseResource";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
 import { useParams } from "react-router-dom";
 import { CourseService } from "services/courseService/CourseService";
-import { setLoadingSections, setSections } from "reduxes/courseService/section";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { setCourseDetail } from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import Heading1 from "components/text/Heading1";
 import CourseAnnouncement from "./components/Announcement";
 import NotificationCard from "pages/client/student/CourseManagement/Details/components/Information/components/NotificationCard";
-import AssignmentResource, { ResourceType } from "../Assignment/components/Resource";
+import { PaginationList } from "models/general";
+import { PostService } from "services/courseService/PostService";
+import { PostEntity } from "models/courseService/entity/PostEntity";
+import { setLoadingPosts, setPosts } from "reduxes/courseService/post";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -45,7 +39,39 @@ const LecturerCourseInformation = () => {
     },
     [dispatch]
   );
+  const postState = useSelector((state: RootState) => state.post);
 
+  const handleGetPosts = useCallback(async () => {
+    if (!courseId || (postState.courseId === courseId && postState.posts.items.length > 0)) {
+      return;
+    }
+
+    dispatch(setLoadingPosts(true));
+    try {
+      const getPostsResponse = await PostService.getPostsByCourseId(courseId, {
+        pageNo: 0,
+        pageSize: 99999
+      });
+      dispatch(
+        setPosts({
+          posts: {
+            currentPage: getPostsResponse.currentPage,
+            totalItems: getPostsResponse.totalItems,
+            totalPages: getPostsResponse.totalPages,
+            items: getPostsResponse.posts
+          },
+          courseId: courseId
+        })
+      );
+    } catch (error) {
+      console.error("Failed to fetch sections", error);
+    }
+    dispatch(setLoadingPosts(false));
+  }, [courseId, dispatch, postState.courseId, postState.posts.items.length]);
+
+  useEffect(() => {
+    handleGetPosts();
+  }, [courseId, handleGetPosts]);
   useEffect(() => {
     const course = courseState.courses.find((course: CourseEntity) => course.id === courseId);
 
@@ -75,7 +101,26 @@ const LecturerCourseInformation = () => {
         <CourseAnnouncement />
       </Grid>
       <Grid item xs={12}>
-        <NotificationCard />
+        {postState.isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              gap: "10px"
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box className={classes.annoucementsWrapper}>
+            {postState.posts.items.map((post: PostEntity) => (
+              <NotificationCard post={post} key={post.postId} />
+            ))}
+          </Box>
+        )}
       </Grid>
     </Grid>
   );

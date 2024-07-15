@@ -105,6 +105,10 @@ export const API = {
       CREATE: "/course/section",
       DELETE: "/course/section/:sectionId"
     },
+    POST: {
+      GET_ALL_BY_COURSE_ID: "/course/post/course/:courseId",
+      CREATE: "/course/post"
+    },
     COURSE: {
       DEFAULT: "/course/course",
       GET_STATISTICS: "/course/course/statistics",
