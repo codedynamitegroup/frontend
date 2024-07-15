@@ -3,7 +3,15 @@ import classes from "./styles.module.scss";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import { CircularProgress } from "@mui/material";
+import {
+  Avatar,
+  CardContent,
+  CircularProgress,
+  Divider,
+  IconButton,
+  Stack,
+  Tooltip
+} from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,11 +22,21 @@ import { setCourseDetail } from "reduxes/courseService/course";
 import { CourseEntity } from "models/courseService/entity/CourseEntity";
 import Heading1 from "components/text/Heading1";
 import CourseAnnouncement from "./components/Announcement";
-import NotificationCard from "pages/client/student/CourseManagement/Details/components/Information/components/NotificationCard";
-import { PaginationList } from "models/general";
 import { PostService } from "services/courseService/PostService";
 import { PostEntity } from "models/courseService/entity/PostEntity";
-import { setLoadingPosts, setPosts } from "reduxes/courseService/post";
+import { clearPosts, setLoadingPosts, setPosts } from "reduxes/courseService/post";
+import EditAnnoucementDialog from "./components/EditAnnouncementDialog";
+import i18next from "i18next";
+import useAuth from "hooks/useAuth";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import Heading5 from "components/text/Heading5";
+import ParagraphBody from "components/text/ParagraphBody";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReactQuill from "react-quill";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -39,7 +57,46 @@ const LecturerCourseInformation = () => {
     },
     [dispatch]
   );
+
+  const [editPost, setEditPost] = useState<PostEntity | null>(null);
+  const [isOpenEditPostDialog, setOpenEditPostDialog] = useState(false);
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedPostId, setDeletedPostId] = useState<string>("");
+
   const postState = useSelector((state: RootState) => state.post);
+  const [currentLang, setCurrentLang] = useState(() => {
+    return i18next.language;
+  });
+  useEffect(() => {
+    setCurrentLang(i18next.language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18next.language]);
+  const { isLecturer } = useAuth();
+
+  const handleCloseEditPostDialog = () => {
+    setOpenEditPostDialog(false);
+  };
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+
+  const onDeleteConfirmDelete = async () => {
+    setIsOpenConfirmDelete(false);
+    PostService.deletePostById(deletedPostId)
+      .then((res) => {
+        dispatch(setSuccessMess("Delete post successfully"));
+        dispatch(clearPosts());
+      })
+      .catch((error) => {
+        console.error("error", error);
+        dispatch(setErrorMess("Delete user failed"));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
 
   const handleGetPosts = useCallback(async () => {
     if (!courseId || (postState.courseId === courseId && postState.posts.items.length > 0)) {
@@ -117,11 +174,99 @@ const LecturerCourseInformation = () => {
         ) : (
           <Box className={classes.annoucementsWrapper}>
             {postState.posts.items.map((post: PostEntity) => (
-              <NotificationCard post={post} key={post.postId} />
+              <Card className={classes.annoucementCard}>
+                <CardContent>
+                  <Grid container alignItems='center' spacing={2} flexDirection={"row"}>
+                    <Grid item>
+                      <Avatar
+                        sx={{
+                          bgcolor: `${generateHSLColorByRandomText(`${post?.createdBy.firstName} ${post?.createdBy.lastName}`)}`
+                        }}
+                        alt={post?.createdBy.email}
+                        src={post?.createdBy.avatarUrl}
+                      >
+                        {post?.createdBy.firstName.charAt(0)}
+                      </Avatar>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={11}
+                      flexDirection={"row"}
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <Stack flexDirection={"column"}>
+                        <Box>
+                          <Heading5>{post?.title}</Heading5>
+                        </Box>
+                        <Stack flexDirection={"row"} alignItems={"center"}>
+                          <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                            By&nbsp;
+                          </ParagraphBody>
+                          <ParagraphBody fontWeight={500} colorname='--blue-3'>
+                            {post?.createdBy.firstName} {post?.createdBy.lastName}
+                          </ParagraphBody>
+                          <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                            &nbsp;-&nbsp;
+                            {standardlizeUTCStringToLocaleString(
+                              post?.createdAt as string,
+                              currentLang
+                            )}
+                          </ParagraphBody>
+                        </Stack>
+                      </Stack>
+
+                      {isLecturer && (
+                        <Stack flexDirection={"row"}>
+                          <Tooltip title='Edit'>
+                            <IconButton
+                              onClick={() => {
+                                setOpenEditPostDialog(true);
+                                setEditPost(post);
+                              }}
+                            >
+                              <EditIcon className={classes.iconEdit} />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Delete'>
+                            <IconButton
+                              onClick={() => {
+                                setIsOpenConfirmDelete(true);
+                                setDeletedPostId(post.postId);
+                              }}
+                            >
+                              <DeleteIcon className={classes.iconDelete} />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      )}
+                    </Grid>
+                  </Grid>
+                  <Divider sx={{ my: 2 }} />
+                  <Box sx={{ mt: 2 }}>
+                    <ReactQuill value={post?.content} readOnly={true} theme='bubble' />
+                  </Box>
+                </CardContent>
+              </Card>
             ))}
           </Box>
         )}
       </Grid>
+      {isOpenEditPostDialog && (
+        <EditAnnoucementDialog
+          onClose={handleCloseEditPostDialog}
+          open={isOpenEditPostDialog}
+          post={editPost}
+        />
+      )}
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this announcement?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
     </Grid>
   );
 };

@@ -17,12 +17,16 @@ import { AssignmentService } from "services/courseService/AssignmentService";
 import { clearExamCreate } from "reduxes/coreService/questionCreate";
 import { clearSections, setLoadingSections, setSections } from "reduxes/courseService/section";
 import { ArrowDropDownIcon, ArrowRightIcon } from "@mui/x-date-pickers";
-import EditImageIcon from "@mui/icons-material/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { ECourseResourceType } from "models/courseService/course";
 import { SectionService } from "services/courseService/SectionService";
 import { SectionEntity } from "models/courseService/entity/SectionEntity";
 import Heading5 from "components/text/Heading5";
 import EditSectionDialog from "./components/EditSectionDialog";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreateSectionDialog from "./components/CreateSectionDialog";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const LecturerCourseAssignment = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,7 +34,14 @@ const LecturerCourseAssignment = () => {
   const sectionState = useSelector((state: RootState) => state.section);
   const [collapseOpen, setCollapseOpen] = useState<Array<Boolean>>([]);
   const [isOpenEditTitle, setIsOpenEditTitle] = useState<Array<Boolean>>([]);
+
   const [editSection, setEditSection] = useState<SectionEntity | null>(null);
+  const [isOpenEditSectionDialog, setOpenEditSectionDialog] = useState(false);
+
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedSectionId, setDeletedSectionId] = useState<string>("");
+
+  const [isOpenCreateSectionDialog, setIsOpenCreateSectionDialog] = useState(false);
 
   const handleGetSections = useCallback(async () => {
     if (!courseId || (sectionState.courseId === courseId && sectionState.sections.length > 0)) {
@@ -50,6 +61,30 @@ const LecturerCourseAssignment = () => {
   useEffect(() => {
     handleGetSections();
   }, [courseId, handleGetSections]);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+
+  const onDeleteConfirmDelete = async () => {
+    setIsOpenConfirmDelete(false);
+    SectionService.deleteSectionById(deletedSectionId)
+      .then((res) => {
+        dispatch(setSuccessMess("Delete section successfully"));
+        dispatch(
+          setSections({
+            sections: sectionState.sections.filter((e) => e.sectionId !== deletedSectionId),
+            courseId: courseId
+          })
+        );
+      })
+      .catch((error) => {
+        dispatch(setErrorMess(error?.message));
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
+  };
 
   const handleDeleteAssignment = useCallback(
     async (id: string) => {
@@ -97,10 +132,13 @@ const LecturerCourseAssignment = () => {
     if (courseId) navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
     popupState.close();
   };
-  const [isOpenEditSectionDialog, setOpenEditSectionDialog] = useState(false);
 
   const handleCloseEditSectionDialog = () => {
     setOpenEditSectionDialog(false);
+  };
+
+  const handleCloseCreateSectionDialog = () => {
+    setIsOpenCreateSectionDialog(false);
   };
 
   const toggleItem = (index: number) => {
@@ -143,16 +181,21 @@ const LecturerCourseAssignment = () => {
   //   setIsReusedResourceOpen(false);
   // };
 
+  const onCreateNewTopic = (popupState: any) => {
+    setIsOpenCreateSectionDialog(true);
+    popupState.close();
+  };
+
   return (
     <>
       <Box className={classes.assignmentBody}>
-        <Grid container>
-          <Grid item xs={3}>
+        <Grid container display={"flex"} flexDirection={"row"} alignItems={"center"}>
+          <Grid item>
             <Heading1 translation-key='course_detail_assignment_list'>
               {t("course_detail_assignment_list")}
             </Heading1>
           </Grid>
-          <Grid item xs={1}></Grid>
+          <Grid item xs={0.5}></Grid>
           <Grid item xs={8}>
             <MenuPopup
               popupId='add-question-popup'
@@ -169,11 +212,11 @@ const LecturerCourseAssignment = () => {
                 {
                   label: t("course_lecturer_assignment_create_exam"),
                   onClick: onCreateNewExam
+                },
+                {
+                  label: "New topic",
+                  onClick: onCreateNewTopic
                 }
-                // {
-                //   label: t("course_lecturer_assignment_reuse_resource"),
-                //   onClick: onOpenReusedCourseResourceDialog
-                // }
               ]}
               translation-key={[
                 "common_add_new",
@@ -214,22 +257,29 @@ const LecturerCourseAssignment = () => {
                                 <ArrowRightIcon style={{ fontSize: 20 }} />
                               </IconButton>
                             )}
-                            {isOpenEditTitle[index] === undefined || isOpenEditTitle[index] ? (
-                              <Heading5>{topic.name}</Heading5>
-                            ) : (
-                              <TextField variant='standard' defaultValue={topic.name} />
-                            )}
+                            <Heading5>{topic.name}</Heading5>
                             <Box>
                               {isOpenEditTitle[index] || isOpenEditTitle[index] === undefined ? (
-                                <IconButton
-                                  onClick={() => {
-                                    setOpenEditSectionDialog(true);
-                                    setEditSection(topic);
-                                  }}
-                                  className={classes.editTopicTitleImageContainer}
-                                >
-                                  <EditImageIcon />
-                                </IconButton>
+                                <>
+                                  <IconButton
+                                    onClick={() => {
+                                      setOpenEditSectionDialog(true);
+                                      setEditSection(topic);
+                                    }}
+                                    className={classes.editTopicTitleImageContainer}
+                                  >
+                                    <EditIcon className={classes.iconEdit} />
+                                  </IconButton>
+                                  <IconButton
+                                    onClick={() => {
+                                      setIsOpenConfirmDelete(true);
+                                      setDeletedSectionId(topic?.sectionId);
+                                    }}
+                                    className={classes.editTopicTitleImageContainer}
+                                  >
+                                    <DeleteIcon className={classes.iconDelete} />
+                                  </IconButton>
+                                </>
                               ) : (
                                 <></>
                               )}
@@ -307,11 +357,26 @@ const LecturerCourseAssignment = () => {
         handleClose={onCloseReusedResourceDialog}
         translation-key={["course_lecturer_resource_list", "common_back"]}
       /> */}
-      <EditSectionDialog
-        section={editSection}
-        open={isOpenEditSectionDialog}
-        onClose={handleCloseEditSectionDialog}
+      {isOpenEditSectionDialog && (
+        <EditSectionDialog
+          section={editSection}
+          open={isOpenEditSectionDialog}
+          onClose={handleCloseEditSectionDialog}
+        />
+      )}
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this topic?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
       />
+      {isOpenCreateSectionDialog && (
+        <CreateSectionDialog
+          open={isOpenCreateSectionDialog}
+          onClose={handleCloseCreateSectionDialog}
+        />
+      )}
     </>
   );
 };

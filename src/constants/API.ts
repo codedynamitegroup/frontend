@@ -102,12 +102,14 @@ export const API = {
     SECTION: {
       GET_ALL_BY_COURSE_ID: "/course/section/:courseId",
       UPDATE: "/course/section/:sectionId",
-      CREATE: "/course/section",
+      CREATE: "/course/section/course/:courseId",
       DELETE: "/course/section/:sectionId"
     },
     POST: {
       GET_ALL_BY_COURSE_ID: "/course/post/course/:courseId",
-      CREATE: "/course/post"
+      CREATE: "/course/post",
+      UPDATE: "/course/post/:postId",
+      DELETE: "/course/post/:postId"
     },
     COURSE: {
       DEFAULT: "/course/course",

@@ -13,19 +13,19 @@ import { SectionService } from "services/courseService/SectionService";
 import { dispatch } from "d3";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useParams } from "react-router-dom";
 import { clearSections } from "reduxes/courseService/section";
 
-type EditSectionDialogProps = {
+type CreateSectionDialogProps = {
   open: boolean;
   onClose: () => void;
-  section: SectionEntity | null;
 };
 
 interface IFormData {
   sectionName: string;
 }
 
-const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) => {
+const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -36,38 +36,30 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });
 
-  useEffect(() => {
-    if (section) {
-      reset({
-        sectionName: section.name
-      });
-    }
-  }, [section, reset]);
-
   const dispatch = useDispatch();
+  const { courseId } = useParams<{ courseId: string }>();
 
-  const handleEdit = async (data: IFormData) => {
-    if (!section) return;
-    await SectionService.updateSection(section.sectionId, data.sectionName)
+  const handleCreate = async (data: IFormData) => {
+    if (!courseId) return;
+    await SectionService.createSection(courseId, data.sectionName)
       .then((res) => {
-        dispatch(setSuccessMess("Edit section successfully"));
+        dispatch(setSuccessMess("Create section successfully"));
         dispatch(clearSections());
         onClose();
       })
       .catch((error) => {
-        dispatch(setErrorMess("Failed to edit section"));
-        console.error("Failed to edit section", error);
+        dispatch(setErrorMess("Failed to create section"));
+        console.error("Failed to create section", error);
       });
   };
   return (
     <Dialog open={open} onClose={onClose} className={classes["dialog"]}>
-      <form onSubmit={handleSubmit(handleEdit)}>
+      <form onSubmit={handleSubmit(handleCreate)}>
         <DialogTitle
           sx={{ m: 0, p: 2 }}
           id='customized-dialog-title'
@@ -155,4 +147,4 @@ const EditSectionDialog = ({ open, onClose, section }: EditSectionDialogProps) =
   );
 };
 
-export default EditSectionDialog;
+export default CreateSectionDialog;

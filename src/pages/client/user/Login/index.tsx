@@ -205,6 +205,7 @@ export default function Login() {
                   type='text'
                   inputRef={register("email")}
                   width='100%'
+                  disabled={isLoggedLoading}
                   errorMessage={errors?.email?.message}
                 />
                 <InputTextField
@@ -212,6 +213,7 @@ export default function Login() {
                   type='password'
                   inputRef={register("password")}
                   width='100%'
+                  disabled={isLoggedLoading}
                   errorMessage={errors?.password?.message}
                 />
                 <LoadButton
