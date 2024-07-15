@@ -40,6 +40,7 @@ const CourseAnnouncement = () => {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
@@ -67,6 +68,10 @@ const CourseAnnouncement = () => {
       .then((response) => {
         dispatch(setSuccessMess("Announcement created successfully"));
         dispatch(clearPosts());
+        reset({
+          title: "",
+          content: ""
+        });
         cancelAnnoucementHandler();
       })
       .catch((error) => {

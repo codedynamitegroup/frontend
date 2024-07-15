@@ -101,3 +101,9 @@
     color: #1976d2;
   }
 }
+
+.annoucementsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

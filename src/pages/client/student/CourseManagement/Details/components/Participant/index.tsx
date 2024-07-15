@@ -8,7 +8,7 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "store";
@@ -20,6 +20,7 @@ import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import Heading5 from "components/text/Heading5";
 import classes from "./styles.module.scss";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+import { routes } from "routes/routes";
 interface CourseParticipantProps {
   id: string;
   no: number;
@@ -214,8 +215,10 @@ const StudentCourseParticipant = () => {
     }
   }, [courseUserState.users]);
 
+  const navigate = useNavigate();
+
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+    navigate(routes.user.profile.replace(":userId", params.row.userId));
   };
 
   const handleApplyFilter = useCallback(() => {
