@@ -1235,6 +1235,9 @@
   "take_exam_submit_confirm": "Once you submit your answers, you won’t be able to change them.\nAre you sure you want to submit?",
   "take_exam_question_without_reponse": "Question without response",
   "common_teacher_feedback": "Teacher feedback",
+  "num_of_certificate_courses": "Number of certificate courses",
+  "topic_name": "Topic name",
+  "is_single_programming_language": "Single programming language",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",

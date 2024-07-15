@@ -305,7 +305,7 @@ const CertificateCourseManagement = () => {
       >
         <CustomBreadCrumb
           breadCrumbData={[{ navLink: routes.admin.dashboard, label: "Home" }]}
-          lastBreadCrumbLabel='Certificate Course Management'
+          lastBreadCrumbLabel={t("certificate_course_management")}
         />
       </Box>
 

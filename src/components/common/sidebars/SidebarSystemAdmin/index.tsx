@@ -10,11 +10,9 @@ import { useTranslation } from "react-i18next";
 import Header from "components/Header";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonIcon from "@mui/icons-material/Person";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
 import images from "config/images";
-import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import CodeIcon from "@mui/icons-material/Code";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
@@ -77,6 +75,10 @@ export default function SidebarSystemAdmin({ open, toggleDrawer, children }: any
           name: t("create_certificate_course_title"),
           link: routes.admin.certificate.create
           // icon: <AddCircleRoundedIcon className={classes.itemIcon} />
+        },
+        {
+          name: t("topic_management"),
+          link: routes.admin.topic.root
         }
       ]
     },
