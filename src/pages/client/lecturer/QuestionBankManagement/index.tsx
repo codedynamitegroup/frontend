@@ -34,7 +34,11 @@ import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCategories, setCategories } from "reduxes/courseService/questionBankCategory";
+import {
+  clearCategories,
+  setCategories,
+  setLoading
+} from "reduxes/courseService/questionBankCategory";
 import { QuestionBankCategoryService } from "services/courseService/QuestionBankCategoryService";
 import dayjs from "dayjs";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
@@ -75,6 +79,7 @@ const QuestionBankManagement = () => {
     pageSize?: number;
   }) => {
     try {
+      dispatch(setLoading(true));
       const getQuestionBankCategoryResponse =
         await QuestionBankCategoryService.getQuestionBankCategories({
           isOrgQuestionBank: categoryState.tab === "1" ? true : false,
@@ -84,8 +89,10 @@ const QuestionBankManagement = () => {
           pageSize
         });
       dispath(setCategories(getQuestionBankCategoryResponse));
+      dispatch(setLoading(false));
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
     }
   };
 

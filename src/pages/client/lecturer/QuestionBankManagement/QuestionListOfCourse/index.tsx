@@ -31,7 +31,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { setLoading, setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { routes } from "routes/routes";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -41,6 +41,11 @@ import qtype from "utils/constant/Qtype";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +69,12 @@ const QuestionListOfCourse = () => {
   const dataGridToolbar = { enableToolbar: true };
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
   const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = React.useState(false);
+  const [questionToDelete, setQuestionToDelete] = React.useState<QuestionEntity | null>(null);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const columnsProps: GridColDef[] = [
     {
@@ -186,7 +197,11 @@ const QuestionListOfCourse = () => {
             icon={<DeleteIcon />}
             label='Delete'
             className='textPrimary'
-            onClick={handleDeleteQuestion.bind(null, params.row.id.toString())}
+            onClick={() => {
+              setIsOpenConfirmDelete(true);
+              setQuestionToDelete(params.row);
+            }}
+            // handleDeleteQuestion.bind(null, params.row.id.toString())}
             sx={{
               color: red[500]
             }}
@@ -233,6 +248,7 @@ const QuestionListOfCourse = () => {
     pageSize?: number;
   }) => {
     try {
+      dispatch(setLoading(true));
       const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
         categoryId,
         isOrgQuestionBank,
@@ -241,8 +257,10 @@ const QuestionListOfCourse = () => {
         pageSize
       });
       dispatch(setQuestionsCategory(getQuestionResponse));
+      dispatch(setLoading(false));
     } catch (error) {
       console.error("Failed to fetch questions by category id", error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -266,9 +284,22 @@ const QuestionListOfCourse = () => {
           pageNo: page,
           pageSize: rowsPerPage
         });
+        dispatch(setSuccessMess("Delete question successfully"));
       }
     } catch (error) {
       console.error("Failed to delete question", error);
+      dispatch(setErrorMess("Failed to delete question"));
+    }
+  };
+
+  const onDeleteConfirmDelete = () => {
+    try {
+      if (questionToDelete) {
+        handleDeleteQuestion(questionToDelete.id);
+      }
+      setIsOpenConfirmDelete(false);
+    } catch (error) {
+      setIsOpenConfirmDelete(false);
     }
   };
 
@@ -393,20 +424,27 @@ const QuestionListOfCourse = () => {
         />
       )}
 
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
+
       <TabPanel value='1' sx={{ padding: 0 }}>
-        <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span
-              onClick={() => navigate(routes.lecturer.question_bank.path)}
-              translation-key='common_question_bank'
-            >
-              {i18next.format(t("common_question_bank"), "firstUppercase")}
-            </span>{" "}
-            {"> "}
-            <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
-          </ParagraphBody>
-        </Box>
         <Container>
+          <CustomBreadCrumb
+            breadCrumbData={[
+              {
+                label:
+                  t("common_question_bank").charAt(0).toUpperCase() +
+                  t("common_question_bank").slice(1),
+                navLink: routes.lecturer.question_bank.path
+              }
+            ]}
+            lastBreadCrumbLabel={categoryState.categoryDetails?.name ?? ""}
+          />
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
             <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
             <Heading5
@@ -416,14 +454,13 @@ const QuestionListOfCourse = () => {
               translation-key='question_bank_create_category_info'
             >
               {t("question_bank_create_category_info")}:{" "}
-              {categoryState.categoryDetails?.description}
+              <ReactQuill
+                value={categoryState.categoryDetails?.description || ""}
+                readOnly={true}
+                theme={"bubble"}
+              />
             </Heading5>
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
-              {/* <Button btnType={BtnType.Primary}>
-                <ParagraphBody paddingX={3} translation-key='common_data_export'>
-                  {t("common_data_export")}
-                </ParagraphBody>
-              </Button> */}
               <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
                 <ParagraphBody paddingX={3} translation-key='common_add_question'>
                   {" "}
@@ -485,13 +522,13 @@ const QuestionListOfCourse = () => {
               totalElement={questionCategoryState.totalItems}
               onPaginationModelChange={pageChangeHandler}
               showVerticalCellBorder={false}
-              onClickRow={handleRowClick}
+              // onClickRow={handleRowClick}
             />
           </Stack>
         </Container>
       </TabPanel>
       <TabPanel value='2' sx={{ padding: 0 }}>
-        <Box className={classes.tabWrapper}>
+        {/* <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
             <span
               onClick={() => navigate(routes.lecturer.question_bank.path)}
@@ -502,8 +539,20 @@ const QuestionListOfCourse = () => {
             {"> "}
             <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
           </ParagraphBody>
-        </Box>
+        </Box> */}
         <Container>
+          <CustomBreadCrumb
+            breadCrumbData={[
+              {
+                label:
+                  t("common_question_bank").charAt(0).toUpperCase() +
+                  t("common_question_bank").slice(1),
+                navLink: routes.lecturer.question_bank.path
+              }
+            ]}
+            lastBreadCrumbLabel={categoryState.categoryDetails?.name ?? ""}
+          />
+
           <Stack spacing={2} marginBottom={3} paddingTop={1}>
             <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
             <Heading5
@@ -513,8 +562,13 @@ const QuestionListOfCourse = () => {
               translation-key='question_bank_create_category_info'
             >
               {t("question_bank_create_category_info")}:{" "}
-              {categoryState.categoryDetails?.description}
+              <ReactQuill
+                value={categoryState.categoryDetails?.description || ""}
+                readOnly={true}
+                theme={"bubble"}
+              />
             </Heading5>
+
             <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
               {/* <Button btnType={BtnType.Primary}>
                 <ParagraphBody paddingX={3} translation-key='common_data_export'>
@@ -526,14 +580,14 @@ const QuestionListOfCourse = () => {
                   {t("common_add_question")}
                 </ParagraphBody>
               </Button>
-              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+              {/* <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
                 <ParagraphBody
                   paddingX={3}
                   translation-key='question_bank_category_question_list_create_by_AI'
                 >
                   {t("question_bank_category_question_list_create_by_AI")}
                 </ParagraphBody>
-              </Button>
+              </Button> */}
             </Stack>
 
             {/* <Stack direction='row' justifyContent='space-between'>
