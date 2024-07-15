@@ -17,7 +17,7 @@ import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmis
 import { setErrorMess } from "reduxes/AppStatus";
 import { PaginationList } from "models/general";
 import { CertificateCourseEntity } from "models/coreService/entity/CertificateCourseEntity";
-import useAuth from "hooks/useAuth";
+import { User } from "models/authService/entity/user";
 
 export enum ETab {
   PROBLEM = 0,
@@ -29,7 +29,11 @@ export enum ESharedSolutionType {
   MOST_COMMENT = 1
 }
 
-const UserRecentActivities = () => {
+interface IUserRecentActivitiesProps {
+  user?: User;
+}
+
+const UserRecentActivities = ({ user }: IUserRecentActivitiesProps) => {
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState<ETab>(ETab.PROBLEM);
   const [sharedSolutionTypeIndex, setSharedSolutionTypeIndex] = useState<ESharedSolutionType>(
@@ -54,12 +58,12 @@ const UserRecentActivities = () => {
   });
 
   const dispatch = useDispatch();
-  const { loggedUser } = useAuth();
+
   const handleGetHeatMap = useCallback(
     async ({ year = 2024 }: { year?: number }) => {
-      if (!loggedUser) return;
+      if (!user?.email) return;
       try {
-        const getHeatMapResponse = await CodeSubmissionService.getHeatMap(loggedUser.email, year);
+        const getHeatMapResponse = await CodeSubmissionService.getHeatMap(user.email, year);
         const formattedData = getHeatMapResponse.map((item: any) => ({
           date: item.date,
           count: item.numOfSubmission
@@ -72,7 +76,7 @@ const UserRecentActivities = () => {
         }
       }
     },
-    [dispatch, t, loggedUser]
+    [dispatch, t, user]
   );
 
   useEffect(() => {
@@ -312,9 +316,9 @@ const UserRecentActivities = () => {
             )}
           </Box>
           {tabIndex === 0 ? (
-            <UserRecentCodeQuestion />
+            <UserRecentCodeQuestion user={user} />
           ) : (
-            <UserRecentSharedSolution sharedSolutionType={sharedSolutionTypeIndex} />
+            <UserRecentSharedSolution user={user} sharedSolutionType={sharedSolutionTypeIndex} />
           )}
         </Box>
       </Card>

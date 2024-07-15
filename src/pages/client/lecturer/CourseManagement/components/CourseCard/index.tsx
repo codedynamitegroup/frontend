@@ -18,10 +18,7 @@ import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 import { Grid } from "@mui/material";
 import Heading4 from "components/text/Heading4";
 import Heading5 from "components/text/Heading5";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "store";
-import { useEffect } from "react";
-import { setCourseDetail } from "reduxes/courseService/course";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -71,15 +68,28 @@ const CourseCard = (props: CardProps) => {
         {props.teacherList.slice(0, 2).map((teacher) => (
           <ListItem className={classes.listItem} key={teacher.userId}>
             <ListItemAvatar>
-              <Avatar alt={teacher.firstName} src={""} />
+              <Avatar
+                sx={{
+                  bgcolor: `${generateHSLColorByRandomText(`${teacher?.firstName} ${teacher?.lastName}`)}`
+                }}
+                alt={"avatar"}
+                src={""}
+                className={classes.teacherAvatar}
+              >
+                {teacher?.firstName.charAt(0)}
+              </Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Link component={RouterLink} to='#' underline='hover'>
+                <Link
+                  component={RouterLink}
+                  to={routes.user.profile.replace(":userId", teacher.userId)}
+                  underline='hover'
+                >
                   {teacher.lastName} {teacher.firstName}
                 </Link>
               }
-              secondary='Giảng viên'
+              secondary={t("role_lecturer")}
             />
           </ListItem>
         ))}
@@ -93,15 +103,28 @@ const CourseCard = (props: CardProps) => {
               {props.teacherList.map((teacher) => (
                 <ListItem key={teacher.userId} className={classes.tooltipTeacherList}>
                   <ListItemAvatar>
-                    <Avatar alt={teacher.firstName} src={""} />
+                    <Avatar
+                      sx={{
+                        bgcolor: `${generateHSLColorByRandomText(`${teacher?.firstName} ${teacher?.lastName}`)}`
+                      }}
+                      alt={"avatar"}
+                      src={""}
+                      className={classes.teacherAvatar}
+                    >
+                      {teacher?.firstName.charAt(0)}
+                    </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     primary={
-                      <Link component={RouterLink} to='#' underline='hover'>
+                      <Link
+                        component={RouterLink}
+                        to={routes.user.profile.replace(":userId", teacher.userId)}
+                        underline='hover'
+                      >
                         {teacher.lastName} {teacher.firstName}
                       </Link>
                     }
-                    secondary='Giảng viên'
+                    secondary={t("role_lecturer")}
                   />
                 </ListItem>
               ))}

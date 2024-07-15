@@ -20,6 +20,7 @@ import BusinessContact from "./BusinessContact";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
 import { lazy } from "react";
+import UserProfile from "./UserProfile";
 const CourseCertificateDetail = lazy(() => import("./CourseCertificate/Detail"));
 const ForgotPassword = lazy(() => import("./ForgotPassword"));
 const ResetPassword = lazy(() => import("./ForgotPassword/components/ResetPassword"));
@@ -55,6 +56,7 @@ const UserHomepage = (props: Props) => {
           <Route path={"home"} element={<UserDashboard />} />
           <Route element={<RequireAuth availableRoles={[ERoleName.USER]} />}>
             <Route path={"user/information"} element={<UserInformation />} />
+            <Route path={"user/profile/:userId"} element={<UserProfile />} />
           </Route>
           <Route path={"forbidden"} element={<ForbiddenPage />} />
           <Route path={"*"} element={<NotFoundPage />} />

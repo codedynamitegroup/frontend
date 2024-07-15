@@ -1,5 +1,5 @@
 import { Avatar, Box, Grid, Stack } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
@@ -18,6 +18,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import Heading5 from "components/text/Heading5";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+import { routes } from "routes/routes";
 
 interface CourseParticipantProps {
   id: string;
@@ -213,8 +214,9 @@ const LecturerCourseParticipant = () => {
     }
   }, [courseUserState.users]);
 
+  const navigate = useNavigate();
   const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+    navigate(routes.user.profile.replace(":userId", params.row.userId));
   };
 
   const handleApplyFilter = useCallback(() => {

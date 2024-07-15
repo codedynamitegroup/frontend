@@ -12,6 +12,8 @@ import { routes } from "routes/routes";
 import { Box } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
+import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { useTranslation } from "react-i18next";
 
 interface ListProps {
   courseId: string;
@@ -22,6 +24,8 @@ interface ListProps {
 }
 
 const CourseList = (props: ListProps) => {
+  const { t } = useTranslation();
+
   return (
     <Grid className={classes.container}>
       <Grid container spacing={1}>
@@ -44,7 +48,16 @@ const CourseList = (props: ListProps) => {
             {props.teacherList.map((teacher) => (
               <ListItem key={teacher.userId}>
                 <ListItemAvatar className={classes.teacherAvatarContainer}>
-                  <Avatar className={classes.teacherAvatar} alt={teacher.firstName} src={""} />
+                  <Avatar
+                    sx={{
+                      bgcolor: `${generateHSLColorByRandomText(`${teacher?.firstName} ${teacher?.lastName}`)}`
+                    }}
+                    alt={"avatar"}
+                    src={""}
+                    className={classes.teacherAvatar}
+                  >
+                    {teacher?.firstName.charAt(0)}
+                  </Avatar>
                 </ListItemAvatar>
                 <ListItemText
                   classes={{
@@ -52,11 +65,15 @@ const CourseList = (props: ListProps) => {
                     secondary: classes.secondaryTeacherText
                   }}
                   primary={
-                    <Link component={RouterLink} to='#' underline='hover'>
+                    <Link
+                      component={RouterLink}
+                      to={routes.user.profile.replace(":userId", teacher.userId)}
+                      underline='hover'
+                    >
                       {teacher.lastName} {teacher.firstName}
                     </Link>
                   }
-                  secondary='Giảng viên'
+                  secondary={t("role_lecturer")}
                 />
               </ListItem>
             ))}

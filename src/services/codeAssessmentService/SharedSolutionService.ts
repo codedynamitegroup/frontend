@@ -209,7 +209,7 @@ export class SharedSolutionService {
       });
 
       if (response.status === 200) {
-        console.log('cc')
+        console.log("cc");
         console.log(response.headers["set-cookie"]);
         return response.data;
       }
@@ -263,6 +263,7 @@ export class SharedSolutionService {
     }
   }
   static async getRecentSharedSolution(
+    email: string,
     pageSize: number,
     pageNo: number,
     newest: boolean,
@@ -274,6 +275,7 @@ export class SharedSolutionService {
         isAuthorization: true
       }).get(`${API.CODE_ASSESSMENT.SHARED_SOLUTION.GET_RECENT}`, {
         params: {
+          email,
           orderBy: newest ? "DESC" : "ASC",
           sortBy: sortBy,
           pageNo: pageNo,

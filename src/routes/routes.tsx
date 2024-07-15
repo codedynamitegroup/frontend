@@ -185,6 +185,7 @@ export const routes = {
   user: {
     root: "/*",
     information: "/user/information",
+    profile: "/user/profile/:userId",
     password_change: "/user/password/change",
     problem: {
       solution: {
