@@ -12,3 +12,11 @@ export interface ProgrammingLanguageEntity {
   tailCode: string;
   sourceCode: string | null;
 }
+
+export interface GetProgrammingLanguageEntity {
+  id: UUID;
+  name: string;
+  compilerApiId: number;
+  timeLimit: number;
+  memoryLimit: number;
+}

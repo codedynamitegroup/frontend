@@ -125,11 +125,11 @@ const CreateCertificateCourse = () => {
   const breadCrumbData = [
     {
       navLink: routes.admin.dashboard,
-      label: "Home"
+      label: t("common_dashboard")
     },
     {
       navLink: routes.admin.certificate.root,
-      label: "Certificate Course Management"
+      label: t("certificate_course_management")
     }
   ];
 
@@ -296,7 +296,7 @@ const CreateCertificateCourse = () => {
           >
             <CustomBreadCrumb
               breadCrumbData={breadCrumbData}
-              lastBreadCrumbLabel='Create Certificate Course'
+              lastBreadCrumbLabel={t("create_certificate_course_title")}
             />
           </Box>
           <Grid
