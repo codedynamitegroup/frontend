@@ -5,6 +5,44 @@ import api from "utils/api";
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
 
 export class CoreCodeQuestionService {
+  static async createCodeQuestionInCore(field: {
+    organizationId: string;
+    createdBy: string;
+    updatedBy: string;
+    difficulty: string;
+    name: string;
+    questionText: string;
+    generalFeedback: string;
+    defaultMark: number;
+    qType: QuestionDifficultyEnum;
+    dslTemplate: string;
+    outputFormat: string;
+    inputFormat: string;
+    constraint: string;
+    isPublic: boolean;
+    allowImport: boolean;
+    questionBankCategoryId?: string;
+    isOrgQuestionBank?: boolean;
+  }) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).post(API.CORE.QUESTION.CODE_QUESTION.CREATE, { ...field, answers: [] });
+
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create core code questions", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getAdminCodeQuestions({
     search,
     isPublic,

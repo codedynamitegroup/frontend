@@ -78,6 +78,7 @@ export const API = {
         UPDATE: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
+        CREATE: "/core/questions/code-question/create",
         GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",
         GET_ALL_BY_ORG_ADMIN: "/core/questions/code-question/org-admin",
         GET_IS_ALLOWED_TO_IMPORT_BY_ORG_ADMIN:
