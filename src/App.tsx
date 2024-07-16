@@ -231,6 +231,10 @@ const router = createHashRouter(
                   <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
                 }
               />
+              <Route
+                path={routes.lecturer.exam.edit_code_question}
+                element={<LecturerCodeQuestionDetails />}
+              />
 
               <Route
                 path={routes.lecturer.exam.edit_new_essay_question}
@@ -256,6 +260,10 @@ const router = createHashRouter(
                 element={
                   <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={true} />
                 }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_code_question}
+                element={<LecturerCodeQuestionDetails />}
               />
 
               <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />

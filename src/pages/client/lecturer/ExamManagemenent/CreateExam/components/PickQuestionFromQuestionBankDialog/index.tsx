@@ -18,6 +18,9 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setErrorMess } from "reduxes/AppStatus";
 import { QuestionService } from "services/coreService/QuestionService";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
@@ -53,6 +56,8 @@ export default function PickQuestionFromQuestionBankDialog({
   const { t } = useTranslation();
   const [category, setCategory] = React.useState(categoryList?.[0]?.value || "");
   const [activeTab, setActiveTab] = React.useState("0");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
   const [basicTypesQuestions, setBasicTypesQuestions] = React.useState<{
@@ -196,13 +201,10 @@ export default function PickQuestionFromQuestionBankDialog({
     handleGetQuestions({ categoryId: value });
   };
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
-
   React.useEffect(() => {
     if (activeTab === "0") {
       setPage(0);
+      setSelectedRowId([]);
       handleGetQuestions({
         categoryId: category,
         search: searchText,
@@ -212,6 +214,7 @@ export default function PickQuestionFromQuestionBankDialog({
       });
     } else {
       setPage(0);
+      setSelectedRowId([]);
       handleGetQuestions({
         categoryId: category,
         search: searchText,
@@ -222,6 +225,21 @@ export default function PickQuestionFromQuestionBankDialog({
     }
   }, [category, activeTab]);
 
+  const handleConfirm = () => {
+    if (selectedRowId.length === 0) {
+      dispatch(setErrorMess("Please select at least one question"));
+      return;
+    } else if (activeTab === "1") {
+      navigate(`lecturer/questions/code/create/${selectedRowId[0].questionId}`, {
+        state: {
+          categoryName: categoryList?.find((item) => item.value === category)?.label
+        }
+      });
+    } else if (activeTab === "0") {
+      onHanldeConfirm && onHanldeConfirm(selectedRowId);
+    }
+  };
+
   return (
     <CustomDialog
       open={open}
@@ -230,7 +248,8 @@ export default function PickQuestionFromQuestionBankDialog({
       cancelText={cancelText}
       confirmText={confirmText}
       onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm ? () => onHanldeConfirm(selectedRowId) : () => {}}
+      // onHanldeConfirm={onHanldeConfirm ? () => onHanldeConfirm(selectedRowId) : () => {}}
+      onHanldeConfirm={handleConfirm}
       minWidth='1000px'
       {...props}
     >
@@ -355,7 +374,8 @@ export default function PickQuestionFromQuestionBankDialog({
               totalElement={codeTypeQuestions.totalItems}
               onPaginationModelChange={codeTypeQuesPageChangeHandler}
               showVerticalCellBorder={false}
-              onClickRow={rowClickHandler}
+              disableRowSelectionOnClick={false}
+              // onClickRow={rowClickHandler}
             />
           </Grid>
         </Grid>

@@ -65,6 +65,22 @@ const questionCreateSlice = createSlice({
     setQuestionCreate: (state, action) => {
       state.questionCreate.push(action.payload);
     },
+    updateQuestionCreate: (
+      state,
+      action: {
+        payload: {
+          id: string;
+          name: string;
+          description: string;
+          maxScore: number;
+        };
+      }
+    ) => {
+      const index = state.questionCreate.findIndex((item) => item.id === action.payload.id);
+      state.questionCreate[index].name = action.payload.name;
+      state.questionCreate[index].questionText = action.payload.description;
+      state.questionCreate[index].defaultMark = action.payload.maxScore;
+    },
     clearQuestionCreate: (state) => {
       state.questionCreate = [];
     },
@@ -84,6 +100,9 @@ const questionCreateSlice = createSlice({
     },
     setSearchQuestion: (state, action: { payload: string }) => {
       state.searchQuestion = action.payload;
+    },
+    deleteQuestionCreate: (state, action: { payload: string }) => {
+      state.questionCreate = state.questionCreate.filter((item) => item.id !== action.payload);
     }
   }
 });
@@ -102,7 +121,9 @@ export const {
   setOverdueHandlingCreate,
   setMaxAttemptCreate,
   clearExamCreate,
-  setSearchQuestion
+  setSearchQuestion,
+  deleteQuestionCreate,
+  updateQuestionCreate
 } = questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;
