@@ -3,7 +3,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import PreviewIcon from "@mui/icons-material/Preview";
 import {
@@ -25,10 +24,12 @@ import { GridActionsCellItem } from "@mui/x-data-grid/components/cell/GridAction
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
 import Header from "components/Header";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
 import CustomDateTimePicker from "components/common/datetime/CustomDateTimePicker";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import MenuPopup from "components/common/menu/MenuPopup";
 import BasicSelect from "components/common/select/BasicSelect";
@@ -39,7 +40,6 @@ import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
 import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
 import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import ParagraphSmall from "components/text/ParagraphSmall";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
@@ -55,6 +55,7 @@ import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
+import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import moment from "moment";
 import * as React from "react";
@@ -63,10 +64,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { setSuccessMess } from "reduxes/AppStatus";
 import { selectCurrentUser } from "reduxes/Auth";
 import {
   clearExamCreate,
   clearQuestionCreate,
+  deleteQuestionCreate,
   setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
@@ -82,8 +85,6 @@ import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
-import CustomBreadCrumb from "components/common/Breadcrumb";
-import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 
 const drawerWidth = 400;
 
@@ -164,7 +165,6 @@ interface FormData {
 
 export default function ExamCreated() {
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
-  const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
   const dispatch = useDispatch();
   const user: User = useSelector(selectCurrentUser);
   const navigate = useNavigate();
@@ -197,6 +197,12 @@ export default function ExamCreated() {
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
   const [submitCount, setSubmitCount] = useState(0);
   const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -283,7 +289,14 @@ export default function ExamCreated() {
             icon={<PreviewIcon />}
             label='Preview'
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={() => {
+              setDeletedQuestionId(params.row.id);
+              setIsOpenConfirmDelete(true);
+            }}
+          />
         ]
       }
     ],
@@ -683,6 +696,18 @@ export default function ExamCreated() {
           fullWidth
         />
       )}
+
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question from exam?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={async () => {
+          dispatch(deleteQuestionCreate(deletedQuestionId));
+          setIsOpenConfirmDelete(false);
+          dispatch(setSuccessMess("Delete question successfully"));
+        }}
+      />
 
       {isAddQuestionFromBankDialogOpen && (
         <PickQuestionFromQuestionBankDialog

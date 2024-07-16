@@ -102,6 +102,7 @@ interface DataGridProps {
   personalSx?: boolean;
   getRowId?: (params: any) => string;
   changeIsCustomDataGridFirstTimeRender?: (value: boolean) => void;
+  disableRowSelectionOnClick?: boolean;
 }
 
 const CustomDataGrid = (props: DataGridProps) => {
@@ -131,7 +132,8 @@ const CustomDataGrid = (props: DataGridProps) => {
     getRowClassName,
     personalSx,
     getRowId,
-    changeIsCustomDataGridFirstTimeRender
+    changeIsCustomDataGridFirstTimeRender,
+    disableRowSelectionOnClick = true
   } = props;
   const apiRef = useGridApiRef();
 
@@ -192,7 +194,7 @@ const CustomDataGrid = (props: DataGridProps) => {
         getRowClassName={getRowClassName}
         disableColumnFilter
         disableColumnSelector
-        disableRowSelectionOnClick
+        disableRowSelectionOnClick={disableRowSelectionOnClick}
         experimentalFeatures={{ columnGrouping: true }}
         slotProps={{
           toolbar: {
