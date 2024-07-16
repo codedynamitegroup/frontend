@@ -14,3 +14,13 @@ export interface TopicEntity {
   updatedAt: string;
   updatedBy: UserEntity;
 }
+
+export interface PostTopicEntity {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  isSingleProgrammingLanguage: boolean;
+  programmingLanguageIds: string[];
+  createdBy: string;
+  updatedBy: string;
+}

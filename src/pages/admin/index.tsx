@@ -69,6 +69,7 @@ const UpdateCertificateCourse = lazy(
 );
 const AdminCodeQuestionDetails = lazy(() => import("./CodeQuestionManagement/Details"));
 const TopicManagement = lazy(() => import("./CertificateCourseManagement/TopicManagement"));
+const CreateTopic = lazy(() => import("./CertificateCourseManagement/TopicManagement/CreateTopic"));
 type Props = {};
 
 const SystemAdminHomepage = (props: Props) => {
@@ -148,6 +149,7 @@ const SystemAdminHomepage = (props: Props) => {
             />
             <Route path={"/certificate-course/:id"} element={<UpdateCertificateCourse />} />
             <Route path={"/topics"} element={<TopicManagement />} />
+            <Route path={"/topics/create"} element={<CreateTopic />} />
           </Routes>
         </Box>
         {/* </Box> */}
