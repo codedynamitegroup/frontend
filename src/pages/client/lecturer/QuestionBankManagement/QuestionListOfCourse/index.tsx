@@ -26,7 +26,6 @@ import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import dayjs from "dayjs";
-import useAuth from "hooks/useAuth";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import React, { useEffect, useState } from "react";
@@ -160,7 +159,6 @@ const QuestionListOfCourse = () => {
             icon={<PreviewIcon />}
             label='Preview'
             onClick={() => {
-              console.log(params.row, "params.row");
               setPreviewQuestionId(params.row.id);
               switch (params.row.qtype) {
                 case qtype.multiple_choice.code:
@@ -189,8 +187,27 @@ const QuestionListOfCourse = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              setIsAddNewQuestionDialogOpen(false);
-              navigate(`update/${typeToCreateNewQuestion}`);
+              navigate(
+                `edit/${
+                  params.row.qtype === "CODE"
+                    ? "code-question"
+                    : params.row.qtype === "MULTIPLE_CHOICE"
+                      ? "multiple-choice-question"
+                      : params.row.qtype === "ESSAY"
+                        ? "essay-question"
+                        : params.row.qtype === "TRUE_FALSE"
+                          ? "true-false-question"
+                          : params.row.qtype === "SHORT_ANSWER"
+                            ? "short-answer-question"
+                            : ""
+                }/${params.row.id}`,
+                {
+                  state: {
+                    isQuestionBank: true,
+                    categoryName: categoryState.categoryDetails?.name
+                  }
+                }
+              );
             }}
           />,
           <GridActionsCellItem
@@ -322,10 +339,10 @@ const QuestionListOfCourse = () => {
     }
   };
 
-  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    console.log(params);
-    // navigate(`${params.row.id}`);
-  };
+  // const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+  // console.log(params);
+  // navigate(`${params.row.id}`);
+  // };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
 
@@ -340,8 +357,6 @@ const QuestionListOfCourse = () => {
       }
     });
   };
-
-  const handleCreateQuestionAI = () => {};
 
   useEffect(() => {
     if (categoryId) {

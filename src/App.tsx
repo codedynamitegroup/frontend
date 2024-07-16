@@ -334,6 +334,11 @@ const router = createHashRouter(
                 element={<LecturerCodeQuestionDetails />}
               />
 
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_code_question}
+                element={<LecturerCodeQuestionDetails />}
+              />
+
               {/*  question bank */}
               <Route
                 path={routes.lecturer.question_bank.create_question.essay.create}
@@ -399,6 +404,11 @@ const router = createHashRouter(
               />
               <Route
                 path={routes.org_admin.question_bank.create_question.code.create}
+                element={<OrgAdminCodeQuestionDetails />}
+              />
+
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_code_question}
                 element={<OrgAdminCodeQuestionDetails />}
               />
             </Route>

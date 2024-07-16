@@ -65,7 +65,7 @@ const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
       >
         {t("code_management_detail_info_description")}{" "}
       </Heading5>
-      <FormControl>
+      {/* <FormControl>
         <Grid container spacing={1} columns={12}>
           <Grid item xs={3}>
             <TextTitle translation-key='common_tag'>{t("common_tag")}</TextTitle>
@@ -99,7 +99,7 @@ const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
             />
           </Grid>
         </Grid>
-      </FormControl>
+      </FormControl> */}
       <Controller
         name='name'
         control={codeQuestionControl}
