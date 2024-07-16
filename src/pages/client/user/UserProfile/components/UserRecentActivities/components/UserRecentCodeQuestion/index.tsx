@@ -20,7 +20,7 @@ import Heading6 from "components/text/Heading6";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { routes } from "routes/routes";
 import { CircularProgress } from "@mui/joy";
-import useAuth from "hooks/useAuth";
+import { User } from "models/authService/entity/user";
 
 interface UserRecentCodeQuestionProps {
   id: string;
@@ -49,7 +49,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
-export default function UserRecentCodeQuestion() {
+interface IUserRecentActivitiesProps {
+  user?: User;
+}
+
+export default function UserRecentCodeQuestion({ user }: IUserRecentActivitiesProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<{
@@ -93,15 +97,14 @@ export default function UserRecentCodeQuestion() {
 
   const dispatch = useDispatch();
 
-  const { loggedUser } = useAuth();
-
   const handleGetRecentCodeQuestion = useCallback(
     async ({ pageNo = 0, pageSize = 10 }: { pageNo?: number; pageSize?: number }) => {
-      if (!loggedUser) return;
+      if (!user) return;
+
       setIsLoading(true);
       try {
         const getRecentCodeQuestionResponse = await CodeSubmissionService.getRecentCodeQuestion(
-          loggedUser.email,
+          user.email,
           pageNo,
           pageSize
         );
@@ -122,7 +125,7 @@ export default function UserRecentCodeQuestion() {
       }
       setIsLoading(false);
     },
-    [dispatch, t, loggedUser]
+    [dispatch, t, user]
   );
 
   useEffect(() => {

@@ -79,6 +79,7 @@ export default function PickQuestionFromQuestionBankDialog({
   );
 
   const [searchText, setSearchText] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const handleGetQuestions = async ({
     categoryId,
@@ -92,6 +93,7 @@ export default function PickQuestionFromQuestionBankDialog({
     pageSize?: number;
   }) => {
     try {
+      setLoading(true);
       const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
         categoryId,
         search,
@@ -99,8 +101,10 @@ export default function PickQuestionFromQuestionBankDialog({
         pageSize
       });
       dispatch(setQuestionsCategory(getQuestionResponse));
+      setLoading(false);
     } catch (error) {
       console.error("Failed to fetch questions by category id", error);
+      setLoading(false);
     }
   };
 
@@ -120,11 +124,20 @@ export default function PickQuestionFromQuestionBankDialog({
   };
 
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
+    // console.log(model);
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetQuestions({ categoryId: category, pageNo: model.page, pageSize: model.pageSize });
   };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
+  // const page = 0;
+  const [page, setPage] = React.useState(0);
+  // const pageSize = 5;
+  const [pageSize, setPageSize] = React.useState(5);
+  // const totalElement = 100;
+  const totalElement = React.useMemo(
+    () => questionCategoryState.totalItems || 0,
+    [questionCategoryState]
+  );
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
@@ -159,25 +172,18 @@ export default function PickQuestionFromQuestionBankDialog({
             items={categoryList}
             backgroundColor='white'
             style={{
-              marginTop: "0px"
+              marginTop: "0px",
+              marginBottom: "15px"
             }}
           />
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        {/* <Grid item xs={12}>
-          <QuestionsFeatureBar
-            colSearchLabel='Tìm kiếm theo cột'
-            colItems={[
-              { label: "Tên câu hỏi", value: "name" },
-              { label: "Kiểu", value: "type" }
-            ]}
-          />
-        </Grid> */}
         <Grid item xs={12}>
           <CustomDataGrid
+            loading={loading}
             dataList={questionCategoryState.questions.map((question, index) => ({
-              stt: index + 1,
+              stt: page * pageSize + index + 1,
               qtypeText:
                 question.qtype === QuestionTypeEnum.SHORT_ANSWER
                   ? "câu hỏi ngắn"
@@ -202,7 +208,7 @@ export default function PickQuestionFromQuestionBankDialog({
             onPaginationModelChange={pageChangeHandler}
             showVerticalCellBorder={false}
             checkboxSelection
-            onClickRow={rowClickHandler}
+            // onClickRow={rowClickHandler}
           />
         </Grid>
       </Grid>

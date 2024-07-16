@@ -82,6 +82,7 @@ import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 const drawerWidth = 400;
 
@@ -704,48 +705,32 @@ export default function ExamCreated() {
               open={open}
             >
               <Toolbar>
-                <Box id={classes.breadcumpWrapper}>
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                    translation-key='common_course_management'
-                  >
-                    {t("common_course_management")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.information.replace(":courseId", courseId ?? "")
+                <CustomBreadCrumb
+                  breadCrumbData={[
+                    {
+                      label: t("common_course_management"),
+                      navLink: routes.lecturer.course.management.replace(
+                        ":courseId",
+                        courseId ?? ""
+                      )
+                    },
+                    {
+                      label: courseData?.name ?? "",
+                      navLink: routes.lecturer.course.information.replace(
+                        ":courseId",
+                        courseId ?? ""
+                      )
+                    },
+                    {
+                      label: t("course_detail_assignment_list"),
+                      navLink: routes.lecturer.course.assignment.replace(
+                        ":courseId",
+                        courseId ?? ""
                       )
                     }
-                  >
-                    {courseData?.name}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.assignment.replace(":courseId", courseId ?? "")
-                      )
-                    }
-                    translation-key='course_detail_assignment_list'
-                  >
-                    {t("course_detail_assignment_list")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_create_exam")}
-                  </ParagraphSmall>
-                </Box>
+                  ]}
+                  lastBreadCrumbLabel={t("course_lecturer_assignment_create_exam")}
+                />
 
                 <IconButton
                   color='inherit'

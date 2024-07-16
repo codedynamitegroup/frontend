@@ -75,3 +75,25 @@
 .iconDelete {
   color: #f44336;
 }
+
+.iconButtonActive {
+  background-color: #ecf4fd;
+  padding: 10px;
+  margin-right: 10px;
+  color: #1976d2;
+  &:hover {
+    background-color: #ecf4fd;
+    color: #1976d2;
+  }
+}
+
+.iconButton {
+  background-color: var(--gray-5);
+  padding: 10px;
+  margin-right: 10px;
+
+  &:hover {
+    background-color: #ecf4fd;
+    color: #1976d2;
+  }
+}
