@@ -20,10 +20,11 @@ interface PropsData {
   width?: string;
   extFiles: ExtFile[];
   setExtFiles: React.Dispatch<React.SetStateAction<ExtFile[]>>;
+  errors?: boolean;
 }
 
 export default function AdvancedDropzoneDemo({ extFiles, setExtFiles, ...props }: PropsData) {
-  const { maxFiles, maxFileSize, accept } = props;
+  const { maxFiles, maxFileSize, accept, errors } = props;
   const { t } = useTranslation();
   // const [extFiles, setExtFiles] = React.useState<ExtFile[]>([]);
   const [imageSrc, setImageSrc] = React.useState<File | string | undefined>(undefined);
@@ -143,6 +144,7 @@ export default function AdvancedDropzoneDemo({ extFiles, setExtFiles, ...props }
         onChange={updateFiles}
         onClean={() => setExtFiles([])}
         translation-key={["drag_drop_file_placeholder"]}
+        color={errors ? "#ff2c2c" : ""}
         // footerConfig={customFooter}
       >
         {extFiles.map((file) => (

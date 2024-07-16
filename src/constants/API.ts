@@ -15,9 +15,12 @@ export const API = {
     },
     TOPIC: {
       DEFAULT: "/core/topics",
+      CREATE: "/core/topics/create",
       GET_BY_ID: "/core/topics/:id",
       UPDATE_BY_ID: "/core/topics/:id",
-      DELETE_BY_ID: "/core/topics/:id"
+      DELETE_BY_ID: "/core/topics/:id",
+      GET_PROGRAMMING_LANGUAGE: "/core/topics/language",
+      GET_PROGRAMMING_LANGUAGE_BY_Id: "/core/topics/language/get-by-id"
     },
     REVIEW: {
       DEFAULT: "/core/reviews",
@@ -78,6 +81,7 @@ export const API = {
         UPDATE: "/core/questions/multichoice-question"
       },
       CODE_QUESTION: {
+        CREATE: "/core/questions/code-question/create",
         GET_ALL_BY_ADMIN: "/core/questions/code-question/admin",
         GET_ALL_BY_ORG_ADMIN: "/core/questions/code-question/org-admin",
         GET_IS_ALLOWED_TO_IMPORT_BY_ORG_ADMIN:

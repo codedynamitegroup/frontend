@@ -279,7 +279,7 @@ const TopicManagement = () => {
             onHandleChange={handleSearchChange}
             createBtnText={t("topic_add_btn")}
             onClickCreate={() => {
-              //   navigate(routes.admin.certificate.create);
+              navigate(routes.admin.topic.create);
             }}
             numOfResults={totalElement}
             // filterKeyList={[
