@@ -1,5 +1,6 @@
 import { API } from "constants/API";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import api from "utils/api";
 
 const coreServiceApiUrl = process.env.REACT_APP_CORE_SERVICE_API_URL || "";
@@ -14,7 +15,7 @@ export class CoreCodeQuestionService {
     questionText: string;
     generalFeedback: string;
     defaultMark: number;
-    qType: QuestionDifficultyEnum;
+    qType: QuestionTypeEnum;
     dslTemplate: string;
     outputFormat: string;
     inputFormat: string;

@@ -41,6 +41,8 @@ import CodeQuestionTestCases from "./components/TestCases";
 import FormSchema from "./schema/FormSchema";
 import classes from "./styles.module.scss";
 import { CodeQuestionFormData } from "./type/CodeQuestionFormData";
+import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 
 interface Props {
   isCloneData?: boolean;
@@ -226,8 +228,8 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
-  console.log(codeQuestionFormMethod.formState.errors);
-  console.log(programmingLanguage);
+  // console.log(codeQuestionFormMethod.formState.errors);
+  // console.log(programmingLanguage);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
@@ -255,7 +257,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           dirtyFields.testCases?.some((value) =>
             Object.values(value).some((val) => val === true)
           ) ||
-          (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
+          (codeQuestion !== undefined &&
+            codeQuestion.testCases !== undefined &&
+            data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
 
         setLoadingSubmit(true);
 
@@ -265,6 +269,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           data.tags.forEach((value) => dataTagMap.add(value));
           let deleteTagIds = codeQuestion?.tags.filter((value) => !dataTagMap.has(value));
           updateInform = CodeQuestionService.updateCodeQuestion(codeQuestionId, {
+            categoryBankId: isQuestionBank ? params.categoryId : undefined,
             name: data.name,
             difficulty: data.difficulty,
             problemStatement: data.problemStatement,
@@ -284,7 +289,6 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         let dirtyTC = dirtyFields?.testCases;
 
         if (isDirtyTestCase && codeQuestion !== undefined) {
-          console.log("here");
           const dataTC = data.testCases;
           let mapTCs = new Map<string, TestCaseEntity>();
           dataTC.forEach((value) => {
@@ -341,29 +345,24 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } else {
-        const res = await CodeQuestionService.createCodeQuestion({
-          orgId: loggedUser?.organization.organizationId,
-          categoryBankId: isQuestionBank ? params.categoryId : undefined,
+        await CoreCodeQuestionService.createCodeQuestionInCore({
+          organizationId: loggedUser?.organization.organizationId,
+          createdBy: loggedUser?.userId,
+          updatedBy: loggedUser?.userId,
+          difficulty: data.difficulty,
           name: data.name,
-          problemStatement: data.problemStatement,
+          questionText: data.problemStatement,
+          generalFeedback: "",
+          defaultMark: data.maxGrade,
+          qType: QuestionTypeEnum.CODE,
+          dslTemplate: "",
+          questionBankCategoryId: isQuestionBank ? params.categoryId : undefined,
           inputFormat: data.inputFormat,
           outputFormat: data.outputFormat,
-          constraints: data.constraints,
-          maxGrade: data.maxGrade,
+          constraint: data.constraints,
           isPublic: data.isPublic,
-          difficulty: data.difficulty,
-          allowImport: data.allowImport,
-          tagIds: data.tags,
-          programmingLanuages: data.programmingLanguages
-            .filter((value) => value.choosen)
-            .map((value) => ({
-              id: value.id,
-              timeLimit: value.timeLimit,
-              memoryLimit: value.memoryLimit,
-              bodyCode: value.bodyCode ?? ""
-            }))
+          allowImport: data.allowImport
         });
-        console.log("res", res);
       }
     } catch (err) {
       console.error(err);
@@ -383,9 +382,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
       else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
     }
 
-    console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
-    console.log(data);
-    console.log(codeQuestionFormMethod.getValues("testCases"));
+    // console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
+    // console.log(data);
+    // console.log(codeQuestionFormMethod.getValues("testCases"));
   };
 
   const getCouseData = async (courseId: string) => {
@@ -399,7 +398,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      getCouseData(courseId);
+      if (courseId) getCouseData(courseId);
     };
 
     fetchData();
@@ -450,42 +449,45 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
                   <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
                 )}
                 <TabContext value={activeTab}>
-                  <Box sx={{ border: 1, borderColor: "divider" }}>
-                    <TabList onChange={handleChange} className={classes.tabs}>
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='common_info'>
-                            {t("common_info")}
-                          </ParagraphBody>
-                        }
-                        value='0'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={<ParagraphBody>Test cases</ParagraphBody>}
-                        value='1'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='code_management_detail_stub'>
-                            {t("code_management_detail_stub")}
-                          </ParagraphBody>
-                        }
-                        value='2'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='common_language'>
-                            {t("common_language")}
-                          </ParagraphBody>
-                        }
-                        value='3'
-                      />
-                    </TabList>
-                  </Box>
+                  {isEdit === true && (
+                    <Box sx={{ border: 1, borderColor: "divider" }}>
+                      <TabList onChange={handleChange} className={classes.tabs}>
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='common_info'>
+                              {t("common_info")}
+                            </ParagraphBody>
+                          }
+                          value='0'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Test cases</ParagraphBody>}
+                          value='1'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='code_management_detail_stub'>
+                              {t("code_management_detail_stub")}
+                            </ParagraphBody>
+                          }
+                          value='2'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='common_language'>
+                              {t("common_language")}
+                            </ParagraphBody>
+                          }
+                          value='3'
+                        />
+                      </TabList>
+                    </Box>
+                  )}
+
                   <Box id={classes.codeQuestionDetailBody}>
                     <TabPanel value='0'>
                       <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />

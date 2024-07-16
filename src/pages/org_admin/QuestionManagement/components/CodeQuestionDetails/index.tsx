@@ -17,6 +17,7 @@ import { TagEntity } from "models/codeAssessmentService/entity/TagEntity";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
+import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -30,6 +31,7 @@ import { ProgrammingLanuageService } from "services/codeAssessmentService/Progra
 import { TagService } from "services/codeAssessmentService/TagService";
 import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
 import { QuestionService } from "services/coreService/QuestionService";
+import { CourseService } from "services/courseService/CourseService";
 import { RootState } from "store";
 import qtype from "utils/constant/Qtype";
 import CodeQuestionCodeStubs from "./components/CodeStubs";
@@ -39,6 +41,8 @@ import CodeQuestionTestCases from "./components/TestCases";
 import FormSchema from "./schema/FormSchema";
 import classes from "./styles.module.scss";
 import { CodeQuestionFormData } from "./type/CodeQuestionFormData";
+import { CoreCodeQuestionService } from "services/coreService/CoreCodeQuestionService";
+import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 
 interface Props {
   isCloneData?: boolean;
@@ -50,8 +54,10 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
   const { loggedUser } = useAuth();
   // if (props.insideCrumb) setHeaderHeight(0);
   const location = useLocation();
-  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
+  const courseId = location.state?.courseId;
+  const isQuestionBank = location.state?.isQuestionBank;
   const categoryName = location.state?.categoryName;
+  const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -198,7 +204,6 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
         }
       } catch (err) {
         dispatch(setErrorMess(t("common_page_can_not_open")));
-        // navigate("/admin/code-questions");
         navigate(
           routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
         );
@@ -213,10 +218,7 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
     setActiveTab(newTab);
   };
 
-  // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
-  console.log(codeQuestionFormMethod.formState.errors);
-  console.log(programmingLanguage);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
@@ -244,7 +246,9 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
           dirtyFields.testCases?.some((value) =>
             Object.values(value).some((val) => val === true)
           ) ||
-          (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
+          (codeQuestion !== undefined &&
+            codeQuestion.testCases !== undefined &&
+            data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
 
         setLoadingSubmit(true);
 
@@ -254,6 +258,7 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
           data.tags.forEach((value) => dataTagMap.add(value));
           let deleteTagIds = codeQuestion?.tags.filter((value) => !dataTagMap.has(value));
           updateInform = CodeQuestionService.updateCodeQuestion(codeQuestionId, {
+            categoryBankId: isQuestionBank ? params.categoryId : undefined,
             name: data.name,
             difficulty: data.difficulty,
             problemStatement: data.problemStatement,
@@ -273,7 +278,6 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
         let dirtyTC = dirtyFields?.testCases;
 
         if (isDirtyTestCase && codeQuestion !== undefined) {
-          console.log("here");
           const dataTC = data.testCases;
           let mapTCs = new Map<string, TestCaseEntity>();
           dataTC.forEach((value) => {
@@ -330,27 +334,24 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
 
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } else {
-        await CodeQuestionService.createCodeQuestion({
-          orgId: loggedUser?.organization.organizationId,
-          categoryBankId: params.categoryId,
+        await CoreCodeQuestionService.createCodeQuestionInCore({
+          organizationId: loggedUser?.organization.organizationId,
+          isOrgQuestionBank: true,
+          createdBy: loggedUser?.userId,
+          updatedBy: loggedUser?.userId,
+          difficulty: data.difficulty,
           name: data.name,
-          problemStatement: data.problemStatement,
+          questionText: data.problemStatement,
+          generalFeedback: "",
+          defaultMark: data.maxGrade,
+          qType: QuestionTypeEnum.CODE,
+          dslTemplate: "",
+          questionBankCategoryId: isQuestionBank ? params.categoryId : undefined,
           inputFormat: data.inputFormat,
           outputFormat: data.outputFormat,
-          constraints: data.constraints,
-          maxGrade: data.maxGrade,
+          constraint: data.constraints,
           isPublic: data.isPublic,
-          difficulty: data.difficulty,
-          allowImport: data.allowImport,
-          tagIds: data.tags,
-          programmingLanuages: data.programmingLanguages
-            .filter((value) => value.choosen)
-            .map((value) => ({
-              id: value.id,
-              timeLimit: value.timeLimit,
-              memoryLimit: value.memoryLimit,
-              bodyCode: value.bodyCode ?? ""
-            }))
+          allowImport: data.allowImport
         });
       }
     } catch (err) {
@@ -359,20 +360,36 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
     } finally {
       setLoadingSubmit(false);
       dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
-
       navigate(
         routes.org_admin.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
       );
     }
 
-    console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
-    console.log(data);
-    console.log(codeQuestionFormMethod.getValues("testCases"));
+    // console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
+    // console.log(data);
+    // console.log(codeQuestionFormMethod.getValues("testCases"));
   };
+
+  const getCouseData = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseDetail(courseId);
+      setCourseData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (courseId) getCouseData(courseId);
+    };
+
+    fetchData();
+  }, [courseId]);
 
   const breadCrumbData = [
     {
-      navLink: routes.org_admin.question_bank.detail,
+      navLink: routes.org_admin.question_bank.root,
       label: i18next.format(t("common_question_bank"), "firstUppercase")
     },
     {
@@ -380,7 +397,6 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       label: categoryName
     }
   ];
-
   return (
     <Grid className={classes.root}>
       <Header />
@@ -397,42 +413,45 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
                   <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
                 )}
                 <TabContext value={activeTab}>
-                  <Box sx={{ border: 1, borderColor: "divider" }}>
-                    <TabList onChange={handleChange} className={classes.tabs}>
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='common_info'>
-                            {t("common_info")}
-                          </ParagraphBody>
-                        }
-                        value='0'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={<ParagraphBody>Test cases</ParagraphBody>}
-                        value='1'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='code_management_detail_stub'>
-                            {t("code_management_detail_stub")}
-                          </ParagraphBody>
-                        }
-                        value='2'
-                      />
-                      <Tab
-                        sx={{ textTransform: "none" }}
-                        label={
-                          <ParagraphBody translation-key='common_language'>
-                            {t("common_language")}
-                          </ParagraphBody>
-                        }
-                        value='3'
-                      />
-                    </TabList>
-                  </Box>
+                  {isEdit === true && (
+                    <Box sx={{ border: 1, borderColor: "divider" }}>
+                      <TabList onChange={handleChange} className={classes.tabs}>
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='common_info'>
+                              {t("common_info")}
+                            </ParagraphBody>
+                          }
+                          value='0'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={<ParagraphBody>Test cases</ParagraphBody>}
+                          value='1'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='code_management_detail_stub'>
+                              {t("code_management_detail_stub")}
+                            </ParagraphBody>
+                          }
+                          value='2'
+                        />
+                        <Tab
+                          sx={{ textTransform: "none" }}
+                          label={
+                            <ParagraphBody translation-key='common_language'>
+                              {t("common_language")}
+                            </ParagraphBody>
+                          }
+                          value='3'
+                        />
+                      </TabList>
+                    </Box>
+                  )}
+
                   <Box id={classes.codeQuestionDetailBody}>
                     <TabPanel value='0'>
                       <CodeQuestionInformation codeQuestion={codeQuestion} tags={tags} />

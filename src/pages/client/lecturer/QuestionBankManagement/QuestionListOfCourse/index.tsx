@@ -2,7 +2,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Container, Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import { red } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -12,8 +12,10 @@ import {
   GridPaginationModel,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import Button, { BtnType } from "components/common/buttons/Button";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
@@ -24,13 +26,15 @@ import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import dayjs from "dayjs";
-import i18next from "i18next";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { setLoading, setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { routes } from "routes/routes";
@@ -41,11 +45,6 @@ import qtype from "utils/constant/Qtype";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
-import CustomBreadCrumb from "components/common/Breadcrumb";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.bubble.css";
-import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
-import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -160,7 +159,6 @@ const QuestionListOfCourse = () => {
             icon={<PreviewIcon />}
             label='Preview'
             onClick={() => {
-              console.log(params.row, "params.row");
               setPreviewQuestionId(params.row.id);
               switch (params.row.qtype) {
                 case qtype.multiple_choice.code:
@@ -189,8 +187,27 @@ const QuestionListOfCourse = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              setIsAddNewQuestionDialogOpen(false);
-              navigate(`update/${typeToCreateNewQuestion}`);
+              navigate(
+                `edit/${
+                  params.row.qtype === "CODE"
+                    ? "code-question"
+                    : params.row.qtype === "MULTIPLE_CHOICE"
+                      ? "multiple-choice-question"
+                      : params.row.qtype === "ESSAY"
+                        ? "essay-question"
+                        : params.row.qtype === "TRUE_FALSE"
+                          ? "true-false-question"
+                          : params.row.qtype === "SHORT_ANSWER"
+                            ? "short-answer-question"
+                            : ""
+                }/${params.row.id}`,
+                {
+                  state: {
+                    isQuestionBank: true,
+                    categoryName: categoryState.categoryDetails?.name
+                  }
+                }
+              );
             }}
           />,
           <GridActionsCellItem
@@ -322,10 +339,10 @@ const QuestionListOfCourse = () => {
     }
   };
 
-  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    console.log(params);
-    // navigate(`${params.row.id}`);
-  };
+  // const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+  // console.log(params);
+  // navigate(`${params.row.id}`);
+  // };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
 
@@ -340,8 +357,6 @@ const QuestionListOfCourse = () => {
       }
     });
   };
-
-  const handleCreateQuestionAI = () => {};
 
   useEffect(() => {
     if (categoryId) {
