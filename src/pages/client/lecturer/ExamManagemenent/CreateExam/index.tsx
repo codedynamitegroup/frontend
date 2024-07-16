@@ -83,6 +83,7 @@ import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQue
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 
 const drawerWidth = 400;
 
@@ -426,6 +427,18 @@ export default function ExamCreated() {
     handleCloseAddQuestionFromBankDialog();
   };
 
+  const [categoryList, setCategoryList] = React.useState<{
+    questionBankCategories: QuestionBankCategoryEntity[];
+    currentPage: number;
+    totalItems: number;
+    totalPages: number;
+  }>({
+    questionBankCategories: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0
+  });
+
   const handleGetQuestionBankCategories = async ({
     search = "",
     pageNo = 0,
@@ -446,6 +459,12 @@ export default function ExamCreated() {
           pageSize
         });
       dispatch(setCategories(getQuestionBankCategoryResponse));
+      setCategoryList({
+        questionBankCategories: getQuestionBankCategoryResponse.questionBankCategories,
+        currentPage: getQuestionBankCategoryResponse.currentPage,
+        totalItems: getQuestionBankCategoryResponse.totalItems,
+        totalPages: getQuestionBankCategoryResponse.totalPages
+      });
     } catch (error) {
       console.log(error);
     }
@@ -594,6 +613,10 @@ export default function ExamCreated() {
     }
   }, [setValue]);
 
+  useEffect(() => {
+    handleGetQuestionBankCategories({});
+  }, []);
+
   return (
     <>
       <PickQuestionTypeToAddDialog
@@ -661,28 +684,28 @@ export default function ExamCreated() {
         />
       )}
 
-      <PickQuestionFromQuestionBankDialog
-        open={isAddQuestionFromBankDialogOpen}
-        handleClose={handleCloseAddQuestionFromBankDialog}
-        title={t("exam_management_create_from_bank")}
-        cancelText={t("common_cancel")}
-        confirmText={t("common_add")}
-        onHanldeConfirm={handleComfirmQuestionFromBankDialog}
-        onHandleCancel={handleCloseAddQuestionFromBankDialog}
-        categoryPickTitle={t("exam_management_create_from_bank_choose_topic")}
-        categoryList={questionBankCategoriesState.categories.questionBankCategories.map(
-          (item, index) => ({
+      {isAddQuestionFromBankDialogOpen && (
+        <PickQuestionFromQuestionBankDialog
+          open={isAddQuestionFromBankDialogOpen}
+          handleClose={handleCloseAddQuestionFromBankDialog}
+          title={t("exam_management_create_from_bank")}
+          cancelText={t("common_cancel")}
+          confirmText={t("common_add")}
+          onHanldeConfirm={handleComfirmQuestionFromBankDialog}
+          onHandleCancel={handleCloseAddQuestionFromBankDialog}
+          categoryPickTitle={t("exam_management_create_from_bank_choose_topic")}
+          categoryList={categoryList.questionBankCategories.map((item, index) => ({
             value: item.id,
             label: item.name
-          })
-        )}
-        translation-key={[
-          "exam_management_create_from_bank",
-          "common_cancel",
-          "common_add",
-          "exam_management_create_from_bank_choose_topic"
-        ]}
-      />
+          }))}
+          translation-key={[
+            "exam_management_create_from_bank",
+            "common_cancel",
+            "common_add",
+            "exam_management_create_from_bank_choose_topic"
+          ]}
+        />
+      )}
 
       <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
         <Grid className={classes.root}>

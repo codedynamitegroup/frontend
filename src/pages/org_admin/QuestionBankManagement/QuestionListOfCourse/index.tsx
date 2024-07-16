@@ -30,7 +30,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { setLoading, setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { routes } from "routes/routes";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -39,6 +39,10 @@ import { AppDispatch, RootState } from "store";
 import qtype from "utils/constant/Qtype";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -61,6 +65,12 @@ const QuestionListOfCourse = () => {
   const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
   const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = React.useState(false);
+  const [questionToDelete, setQuestionToDelete] = React.useState<QuestionEntity | null>(null);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const columnsProps: GridColDef[] = [
     {
@@ -230,6 +240,7 @@ const QuestionListOfCourse = () => {
     pageSize?: number;
   }) => {
     try {
+      dispatch(setLoading(true));
       const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
         categoryId,
         isOrgQuestionBank,
@@ -238,8 +249,10 @@ const QuestionListOfCourse = () => {
         pageSize
       });
       dispatch(setQuestionsCategory(getQuestionResponse));
+      dispatch(setLoading(false));
     } catch (error) {
       console.error("Failed to fetch questions by category id", error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -266,6 +279,17 @@ const QuestionListOfCourse = () => {
       }
     } catch (error) {
       console.error("Failed to delete question", error);
+    }
+  };
+
+  const onDeleteConfirmDelete = () => {
+    try {
+      if (questionToDelete) {
+        handleDeleteQuestion(questionToDelete.id);
+      }
+      setIsOpenConfirmDelete(false);
+    } catch (error) {
+      setIsOpenConfirmDelete(false);
     }
   };
 
@@ -390,20 +414,26 @@ const QuestionListOfCourse = () => {
         />
       )}
 
-      {/* <TabPanel value='1' sx={{ padding: 0 }}> */}
-      <Box className={classes.tabWrapper}>
-        <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-          <span
-            onClick={() => navigate(routes.lecturer.question_bank.path)}
-            translation-key='common_question_bank'
-          >
-            {i18next.format(t("common_question_bank"), "firstUppercase")}
-          </span>{" "}
-          {"> "}
-          <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
-        </ParagraphBody>
-      </Box>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
+
       <Container>
+        <CustomBreadCrumb
+          breadCrumbData={[
+            {
+              label:
+                t("common_question_bank").charAt(0).toUpperCase() +
+                t("common_question_bank").slice(1),
+              navLink: routes.org_admin.question_bank.root
+            }
+          ]}
+          lastBreadCrumbLabel={categoryState.categoryDetails?.name ?? ""}
+        />
         <Stack spacing={2} marginBottom={3} paddingTop={1}>
           <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
           <Heading5
@@ -412,7 +442,12 @@ const QuestionListOfCourse = () => {
             colorname='--gray-50'
             translation-key='question_bank_create_category_info'
           >
-            {t("question_bank_create_category_info")}: {categoryState.categoryDetails?.description}
+            {t("question_bank_create_category_info")}:{" "}
+            <ReactQuill
+              value={categoryState.categoryDetails?.description || ""}
+              readOnly={true}
+              theme={"bubble"}
+            />
           </Heading5>
           <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
             <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>

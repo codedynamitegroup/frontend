@@ -193,8 +193,8 @@ const HeaderNotification = () => {
         handleGetAllMyNotification({});
         dispatch(
           setInfoMess({
-            title: data.message.subject,
-            content: data.message.fullMessage
+            title: data?.message?.subject || "Thông báo",
+            content: data?.message?.fullMessage || "Nội dung thông báo"
           })
         );
       });
