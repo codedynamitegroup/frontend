@@ -28,7 +28,7 @@ export class CoreCodeQuestionService {
       const response = await api({
         baseURL: coreServiceApiUrl,
         isAuthorization: true
-      }).post(API.CORE.QUESTION.CODE_QUESTION.CREATE, { ...field, answers: [] });
+      }).post(API.CORE.QUESTION.CODE_QUESTION.CREATE, { ...field });
 
       if (response.status === 201) {
         return response.data;
