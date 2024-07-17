@@ -268,6 +268,7 @@ export const routes = {
     topic: {
       root: "/admin/topics",
       create: "/admin/topics/create",
+      edit: "/admin/topics/edit/:topicId",
       detail: "/admin/topics/:topicId"
     },
     dashboard: "/admin/dashboard",
