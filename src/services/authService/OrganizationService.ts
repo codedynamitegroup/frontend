@@ -1,6 +1,7 @@
 import { API } from "constants/API";
 import {
   CreateOrganizationRequest,
+  UpdateOrganizationByOrgAdminRequest,
   UpdateOrganizationBySystemAdminRequest
 } from "models/authService/entity/organization";
 import api from "utils/api";
@@ -103,6 +104,29 @@ export class OrganizationService {
       }).put(
         `${API.AUTH.ORGANIZATION.UPDATE_ORGANIZATION_BY_ID.replace(":id", id)}`,
         updateOrganizationRequest
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async updateOrganizationByOrgAdmin(
+    id: string,
+    updateOrganizationByOrgAdminRequest: UpdateOrganizationByOrgAdminRequest
+  ) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
+      }).put(
+        `${API.AUTH.ORGANIZATION.UPDATE_ORGANIZATION_BY_ID.replace(":id", id)}`,
+        updateOrganizationByOrgAdminRequest
       );
       if (response.status === 200) {
         return response.data;

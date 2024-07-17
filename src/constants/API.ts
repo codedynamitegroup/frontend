@@ -118,13 +118,14 @@ export const API = {
     COURSE: {
       DEFAULT: "/course/course",
       GET_STATISTICS: "/course/course/statistics",
+      GET_ALL_COURSES_BY_ORGANIZATION_ID: "/course/course/organization/:organizationId",
       GET_ORG_ADMIN_STATISTICS: "/course/course/admin-org/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
     },
     COURSE_TYPE: {
       DEFAULT: "/course/course-type",
-      GET_BY_ORGANIZATION_ID: "/course/course-type/:id"
+      GET_BY_ORGANIZATION_ID: "/course/course-type/:organizationId"
     },
     COURSE_USER: {
       DEFAULT: "/course/course-user",

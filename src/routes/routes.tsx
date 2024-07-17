@@ -391,6 +391,20 @@ export const routes = {
       root: "/org-admin/synchronize",
       detail: "/org-admin/synchronize/:synchronizeId"
     },
+    course_type: {
+      root: "/org-admin/course-type",
+      detail: "/org-admin/course-type/:courseTypeId",
+      course: {
+        root: "/org-admin/course-type/:courseTypeId/course",
+        edit: {
+          root: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/*",
+          details: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/details",
+          list_users: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/users",
+          assign_user: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/assign-user",
+          edit_user: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/:userId"
+        }
+      }
+    },
     question_bank: {
       root: "/org-admin/question-bank-management",
       detail: "/org-admin/question-bank-management/:categoryId",

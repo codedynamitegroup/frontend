@@ -50,6 +50,12 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
       link: routes.org_admin.dashboard
     },
     {
+      name: t("common_info"),
+      "translation-key": "common_info",
+      icon: <img className={classes.img} src={images.admin.organizationIc} alt='org ic' />,
+      link: routes.org_admin.information
+    },
+    {
       name: t("side_bar_contest_management"),
       "translation-key": "side_bar_contest_management",
       icon: <EmojiEventsOutlinedIcon className={classes.itemIcon} />,
@@ -58,9 +64,15 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
     },
     {
       name: t("side_bar_user_management"),
-      "translation-key": "user_management",
+      "translation-key": "side_bar_user_management",
       icon: <PersonIcon className={classes.itemIcon} />,
       link: routes.org_admin.users.root
+    },
+    {
+      name: t("side_bar_course_management"),
+      "translation-key": "course_management",
+      icon: <PersonIcon className={classes.itemIcon} />,
+      link: routes.org_admin.course_type.root
     },
     {
       name: t("side_bar_question_bank_management"),
