@@ -2,7 +2,7 @@ import { OrganizationEntity } from "./OrganizationEntity";
 
 export interface CourseTypeEntity {
   courseTypeId: string;
-  moodleId: number;
+  moodleId?: number;
   name: string;
   organizationId: string;
 }

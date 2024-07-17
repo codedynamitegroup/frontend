@@ -35,6 +35,7 @@ const StudentCourses: React.FC = () => {
   // const [courses, setCourses] = useState<CourseEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedIdCategories, setSelectedIdCategories] = useState<string[]>([]);
   const [viewType, setViewType] = useState<EView>(EView.listView);
   const dispatch = useDispatch();
   const { loggedUser } = useAuth();
@@ -44,17 +45,31 @@ const StudentCourses: React.FC = () => {
   const fetchCourseTypes = useCallback(async () => {
     setIsLoading(true);
     try {
-      const getCourseTypeResponse = await CourseTypeService.getCourseTypes();
+      if (!loggedUser?.organization?.organizationId) return;
+
+      const getCourseTypeResponse = await CourseTypeService.getCourseTypeByOrganizationId(
+        loggedUser.organization.organizationId,
+        {
+          search: "",
+          pageNo: 0,
+          pageSize: 9999
+        }
+      );
       setCourseTypes(getCourseTypeResponse.courseTypes);
     } catch (error) {
       console.error("Failed to fetch course types", error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [loggedUser?.organization?.organizationId]);
 
   const fetchCourses = useCallback(
-    async ({ search = searchText, courseType = selectedCategories, pageNo = 0, pageSize = 4 }) => {
+    async ({
+      search = searchText,
+      courseType = selectedIdCategories,
+      pageNo = 0,
+      pageSize = 4
+    }) => {
       if (!loggedUser?.userId) return;
 
       setIsLoading(true);
@@ -73,7 +88,7 @@ const StudentCourses: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [searchText, selectedCategories, loggedUser?.userId, dispatch]
+    [searchText, selectedIdCategories, loggedUser?.userId, dispatch]
   );
 
   useEffect(() => {
@@ -82,9 +97,9 @@ const StudentCourses: React.FC = () => {
 
   useEffect(() => {
     if (loggedUser?.userId) {
-      fetchCourses({ search: searchText, courseType: selectedCategories });
+      fetchCourses({ search: searchText, courseType: selectedIdCategories });
     }
-  }, [searchText, selectedCategories, loggedUser?.userId, fetchCourses]);
+  }, [searchText, selectedIdCategories, loggedUser?.userId, fetchCourses]);
 
   const handleViewChange = useCallback((event: React.MouseEvent<HTMLElement>, nextView: EView) => {
     setViewType(nextView);
@@ -92,10 +107,18 @@ const StudentCourses: React.FC = () => {
 
   const handleCategoryFilterChange = useCallback(
     (selectedCategoryList: string[]) => {
+      const selectedCategoryListTemp: string[] = courseTypes
+        .map((courseType) => {
+          if (selectedCategoryList.includes(courseType.name)) {
+            return courseType.courseTypeId;
+          }
+          return undefined;
+        })
+        .filter((name): name is string => name !== undefined);
       setSelectedCategories(selectedCategoryList);
-      fetchCourses({ search: searchText, courseType: selectedCategoryList });
+      setSelectedIdCategories(selectedCategoryListTemp);
     },
-    [fetchCourses, searchText]
+    [courseTypes]
   );
 
   const { t } = useTranslation();
@@ -110,7 +133,7 @@ const StudentCourses: React.FC = () => {
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     if (loggedUser?.userId) {
       setPageNo(value);
-      fetchCourses({ search: searchText, courseType: selectedCategories, pageNo: value - 1 });
+      fetchCourses({ search: searchText, courseType: selectedIdCategories, pageNo: value - 1 });
     }
   };
   return (

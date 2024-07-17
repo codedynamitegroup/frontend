@@ -23,12 +23,29 @@ export class CourseTypeService {
     }
   }
 
-  static async getCourseTypeById(id: string) {
+  static async getCourseTypeByOrganizationId(
+    id: string,
+    {
+      search = "",
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
     try {
       const response = await api({
         baseURL: courseServiceApiUrl,
         isAuthorization: true
-      }).get(`${API.COURSE.COURSE_TYPE.GET_BY_ORGANIZATION_ID}`.replace(":id", id));
+      }).get(`${API.COURSE.COURSE_TYPE.GET_BY_ORGANIZATION_ID}`.replace(":organizationId", id), {
+        params: {
+          searchName: search,
+          pageNo,
+          pageSize
+        }
+      });
 
       if (response.status === 200) {
         return response.data;

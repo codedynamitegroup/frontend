@@ -10,7 +10,6 @@ import {
   Stack
 } from "@mui/material";
 import Header from "components/Header";
-import ChipMultipleFilter from "components/common/filter/ChipMultipleFilter";
 import InputTextField from "components/common/inputs/InputTextField";
 import BasicSelect from "components/common/select/BasicSelect";
 import TextEditor from "components/editor/TextEditor";
