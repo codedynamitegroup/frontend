@@ -6,6 +6,9 @@ import { useDispatch } from "react-redux";
 import SynchronizeManagement from "./SynchronizeManagement";
 import React, { lazy } from "react";
 import qtype from "utils/constant/Qtype";
+import CourseTypeManagementOrganizationAdmin from "./CourseTypeManagement";
+import CourseManagementOrganizationAdmin from "./CourseTypeManagement/CourseManagement";
+import EditCourseDetails from "./CourseTypeManagement/CourseManagement/Details";
 
 const EditOrganizationDetails = lazy(() => import("./EditOrganizationDetails"));
 const UserManagement = lazy(() => import("./UserManagement/UserManagement"));
@@ -92,6 +95,7 @@ const OrganizationAdminHomepage = (props: Props) => {
             />
 
             <Route path={"information"} element={<EditOrganizationDetails />} />
+
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
 
@@ -124,6 +128,16 @@ const OrganizationAdminHomepage = (props: Props) => {
             <Route path={"synchronize"} element={<SynchronizeManagement />} />
 
             <Route path={"dashboard"} element={<OrganizationAdminDashboard />} />
+
+            <Route path={"course-type"} element={<CourseTypeManagementOrganizationAdmin />} />
+            <Route
+              path={"course-type/:courseTypeId/course"}
+              element={<CourseManagementOrganizationAdmin />}
+            />
+            <Route
+              path={"course-type/:courseTypeId/course/edit/:courseId/*"}
+              element={<EditCourseDetails />}
+            />
           </Routes>
         </Box>
         {/* </Box> */}

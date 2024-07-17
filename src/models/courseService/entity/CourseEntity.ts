@@ -10,6 +10,6 @@ export interface CourseEntity {
   name: string;
   courseType: CourseTypeEntity;
   visible: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
