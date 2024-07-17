@@ -406,11 +406,9 @@ export default function ExamCreated() {
         console.log(error);
       })
       .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-          navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
-          localStorage.removeItem("formData");
-        }, 3000);
+        setLoading(false);
+        navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
+        localStorage.removeItem("formData");
       });
   };
 
