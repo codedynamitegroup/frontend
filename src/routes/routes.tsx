@@ -314,11 +314,11 @@ export const routes = {
     code_question: {
       root: "/admin/code-questions",
       create: "/admin/code-questions/create",
-      detail: "/admin/code-questions/edit/:questionId/*",
-      information: "/admin/code-questions/edit/:questionId/information",
-      test_cases: "/admin/code-questions/edit/:questionId/test-cases",
-      code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
-      languages: "/admin/code-questions/edit/:questionId/languages"
+      detail: "/admin/code-questions/detail/:questionId/*",
+      information: "/admin/code-questions/detail/:questionId/information",
+      test_cases: "/admin/code-questions/detail/:questionId/test-cases",
+      code_stubs: "/admin/code-questions/detail/:questionId/code-stubs",
+      languages: "/admin/code-questions/detail/:questionId/languages"
     },
     question_bank: {
       root: "/admin/question-bank-management",

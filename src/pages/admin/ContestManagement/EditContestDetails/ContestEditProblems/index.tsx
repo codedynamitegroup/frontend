@@ -244,10 +244,9 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
                         <ParagraphSmall fontWeight={"500"} className={classes.linkText}>
                           <Link
                             component={RouterLink}
-                            to={routes.user.problem.detail.description.replace(
-                              ":problemId",
-                              row.codeQuestionId
-                            )}
+                            to={routes.admin.code_question.detail
+                              .replace(":questionId", row.codeQuestionId)
+                              .replace("*", "")}
                             underline='hover'
                             color='inherit'
                           >
