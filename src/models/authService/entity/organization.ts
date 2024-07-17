@@ -27,3 +27,11 @@ export interface CreateOrganizationRequest {
 export interface UpdateOrganizationBySystemAdminRequest {
   isDeleted: boolean;
 }
+
+export interface UpdateOrganizationByOrgAdminRequest {
+  name: string;
+  description?: string;
+  email: string;
+  phone: string;
+  moodleUrl: string;
+}

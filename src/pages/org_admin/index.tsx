@@ -1,15 +1,13 @@
 import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import { Route, Routes } from "react-router";
-import RequireAuth from "components/common/RequireAuth";
-import { ERoleName } from "models/authService/entity/role";
 import { toggleSidebar } from "reduxes/SidebarStatus";
 import { useDispatch } from "react-redux";
 import SynchronizeManagement from "./SynchronizeManagement";
 import React, { lazy } from "react";
-import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-const UserInformation = lazy(() => import("pages/client/user/UserDetails/UserInformation"));
+
+const EditOrganizationDetails = lazy(() => import("./EditOrganizationDetails"));
 const UserManagement = lazy(() => import("./UserManagement/UserManagement"));
 const EditUserDetails = lazy(() => import("./UserManagement/EditUserDetails"));
 const SidebarOrganizationAdmin = lazy(
@@ -93,7 +91,7 @@ const OrganizationAdminHomepage = (props: Props) => {
               element={<OrgAdminEditContestDetails isDrawerOpen={open} />}
             />
 
-            <Route path={"information"} element={<UserInformation />} />
+            <Route path={"information"} element={<EditOrganizationDetails />} />
             <Route path={"users"} element={<UserManagement />} />
             <Route path={"users/edit/:userId/*"} element={<EditUserDetails />} />
 
