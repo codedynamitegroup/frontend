@@ -124,9 +124,9 @@ const EditTopic = () => {
       topicId: topicId,
       name: formSubmittedData.name,
       description: formSubmittedData.description,
-      // thumbnailUrl: formSubmittedData.thumbnailUrl,
+      thumbnailUrl: formSubmittedData.thumbnailUrl,
       programmingLanguageIds: languageIds,
-      // isSingleProgrammingLanguage: formSubmittedData.programmingLanguageIds.length === 1,
+      isSingleProgrammingLanguage: formSubmittedData.programmingLanguageIds.length === 1,
       updatedBy: user?.userId || ""
     };
 

@@ -46,8 +46,8 @@ export interface PutTopicEntity {
   topicId: string;
   name: string;
   description: string;
-  // thumbnailUrl: string;
-  // isSingleProgrammingLanguage: boolean;
+  thumbnailUrl: string;
+  isSingleProgrammingLanguage: boolean;
   programmingLanguageIds: string[];
   updatedBy: string;
 }
