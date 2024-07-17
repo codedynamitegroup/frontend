@@ -23,13 +23,15 @@ import { useCallback, useState } from "react";
 import { Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { routes } from "routes/routes";
 import { AppDispatch } from "store";
 import { IFormDataType } from "..";
 import AddContestProblemDialog from "./components/AddContestProblemDialog";
 import classes from "./styles.module.scss";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
+import PreviewIcon from "@mui/icons-material/Preview";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;
@@ -40,7 +42,10 @@ interface ContestEditProblemsProps {
 
 const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditProblemsProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = useState(false);
+  const [previewQuestionId, setPreviewQuestionId] = useState<string>("");
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
@@ -92,6 +97,16 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
 
   return (
     <>
+      {openPreviewCodeQuestion && (
+        <PreviewCodeQuestion
+          questionId={previewQuestionId}
+          open={openPreviewCodeQuestion}
+          setOpen={setOpenPreviewCodeQuestion}
+          aria-labelledby={"customized-dialog-title5"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
       {isOpenedAddProblemDialog && (
         <AddContestProblemDialog
           open={isOpenedAddProblemDialog}
@@ -147,7 +162,13 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
             {t("contest_add_problem_button")}
           </MenuButton>
           <Menu color='primary'>
-            <MenuItem>{t("contest_create_problem_button")}</MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate(routes.admin.code_question.create);
+              }}
+            >
+              {t("contest_create_problem_button")}
+            </MenuItem>
             <MenuItem onClick={handleOpenAddProblemDialog}>
               {t("contest_import_problem_button")}
             </MenuItem>
@@ -256,6 +277,14 @@ const ContestEditProblems = ({ control, errors, setValue, watch }: ContestEditPr
                         </Heading6>
                       </TableCell>
                       <TableCell align='center'>
+                        <IconButton
+                          onClick={() => {
+                            setPreviewQuestionId(row.questionId);
+                            setOpenPreviewCodeQuestion(true);
+                          }}
+                        >
+                          <PreviewIcon />
+                        </IconButton>
                         <IconButton
                           translate-key='contest_edit_problem_button'
                           onClick={() => {

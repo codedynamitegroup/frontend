@@ -54,6 +54,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   const { loggedUser } = useAuth();
   const location = useLocation();
+  const locationCourseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
   const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
@@ -108,6 +109,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   const [codeQuestionId, setCodeQuestionId] = useState<string | undefined>(undefined);
   const params = useParams<{ questionId: string; categoryId: string; courseId: string }>();
+  const courseId = params.courseId ?? locationCourseId;
   useEffect(() => {
     const fetchQuestionDetail = async () => {
       if (params.questionId) {
@@ -212,7 +214,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           navigate(
             routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
           );
-        else navigate(routes.lecturer.exam.create.replace(":courseId", params.courseId ?? ""));
+        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
       } finally {
         dispatch(setLoading(false));
       }
@@ -396,7 +398,7 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         navigate(
           routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
         );
-      else navigate(routes.lecturer.exam.create.replace(":courseId", params.courseId ?? ""));
+      else navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
     }
 
     // console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
@@ -415,11 +417,11 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (params.courseId) getCouseData(params.courseId);
+      if (courseId) getCouseData(courseId);
     };
 
     fetchData();
-  }, [params.courseId]);
+  }, [courseId]);
 
   const breadCrumbData = isQuestionBank
     ? [
@@ -438,15 +440,15 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           label: t("common_course_management")
         },
         {
-          navLink: routes.lecturer.course.information.replace(":courseId", params.courseId ?? ""),
+          navLink: routes.lecturer.course.information.replace(":courseId", courseId ?? ""),
           label: courseData?.name
         },
         {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", params.courseId ?? ""),
+          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
           label: t("common_type_assignment")
         },
         {
-          navLink: routes.lecturer.exam.create.replace(":courseId", params.courseId ?? ""),
+          navLink: routes.lecturer.exam.create.replace(":courseId", courseId ?? ""),
           label: t("course_lecturer_assignment_create_exam")
         }
       ];
