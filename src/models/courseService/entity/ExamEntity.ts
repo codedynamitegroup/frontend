@@ -56,6 +56,7 @@ export interface ExamCreateRequest {
   shuffleQuestions: boolean;
   gradeMethod: string;
   questionIds: ExamQuestion[];
+  sectionId?: string;
 }
 
 export interface ExamQuestion {

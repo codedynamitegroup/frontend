@@ -29,6 +29,7 @@
     "@mui/material": "^5.15.6",
     "@mui/x-charts": "^7.6.2",
     "@mui/x-data-grid": "^6.19.2",
+    "@mui/x-data-grid-pro": "^7.10.0",
     "@mui/x-date-pickers": "^6.19.2",
     "@mui/x-tree-view": "^6.17.0",
     "@react-oauth/google": "^0.12.1",

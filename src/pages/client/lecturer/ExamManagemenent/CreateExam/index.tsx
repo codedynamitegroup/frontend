@@ -85,6 +85,8 @@ import QuestionsFeatureBar from "./components/FeatureBar";
 import PickQuestionFromQuestionBankDialog from "./components/PickQuestionFromQuestionBankDialog";
 import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import { SectionService } from "services/courseService/SectionService";
+import { SectionEntity } from "models/courseService/entity/SectionEntity";
 
 const drawerWidth = 400;
 
@@ -161,6 +163,7 @@ interface FormData {
   timeLimitUnit: string;
   overdueHandling: string;
   maxAttempts: string;
+  sectionId: string;
 }
 
 export default function ExamCreated() {
@@ -199,6 +202,7 @@ export default function ExamCreated() {
   const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
   const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+  const [sections, setSections] = useState<SectionEntity[]>([]);
 
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
@@ -313,6 +317,7 @@ export default function ExamCreated() {
   useEffect(() => {
     const fetchData = async () => {
       getCouseData(courseId ?? "");
+      getSection(courseId ?? "");
     };
 
     fetchData();
@@ -325,6 +330,15 @@ export default function ExamCreated() {
       setOpen(true);
     }
   }, [width]);
+
+  const getSection = async (courseId: string) => {
+    try {
+      const response = await SectionService.getSectionsByCourseId(courseId);
+      setSections(response.sections);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getCouseData = async (courseId: string) => {
     try {
@@ -379,7 +393,8 @@ export default function ExamCreated() {
       maxAttempts: Number(formSubmitData.maxAttempts),
       shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
-      questionIds: questionIds
+      questionIds: questionIds,
+      sectionId: formSubmitData.sectionId
     };
     ExamService.createExam(newExam)
       .then((response) => {
@@ -570,7 +585,8 @@ export default function ExamCreated() {
       timeLimit: yup.number().required(t("exam_time_limit_required")),
       timeLimitUnit: yup.string().required(t("exam_time_limit_unit_required")),
       overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
-      maxAttempts: yup.string().required("exam_max_attempt_invalid")
+      maxAttempts: yup.string().required("exam_max_attempt_invalid"),
+      sectionId: yup.string().required("exam_section_required")
     });
   }, [t]);
 
@@ -597,7 +613,8 @@ export default function ExamCreated() {
       timeLimit: 0,
       timeLimitUnit: "minutes",
       overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
-      maxAttempts: "0"
+      maxAttempts: "0",
+      sectionId: ""
     }
   });
 
@@ -1250,34 +1267,37 @@ export default function ExamCreated() {
                     ]}
                   />
                 </Box>
-                {/* <Box className={classes.drawerFieldContainer}>
-                <TextTitle
-                  className={classes.drawerTextTitle}
-                  translation-key='common_filter_topic'
-                >
-                  {t("common_filter_topic")}
-                </TextTitle>
-                <BasicSelect
-                  labelId='select-assignment-section-label'
-                  value={assignmentSection}
-                  onHandleChange={(value) => setAssignmentSection(value)}
-                  items={[
-                    {
-                      value: "0",
-                      label: "Chủ đề 1"
-                    },
-                    {
-                      value: "1",
-                      label: "Chủ đề 2"
-                    },
-                    {
-                      value: "2",
-                      label: "Chủ đề 3"
-                    }
-                  ]}
-                  backgroundColor='#D9E2ED'
-                />
-              </Box> */}
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("common_filter_topic")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                    titleRequired
+                  />
+                  <Controller
+                    control={control}
+                    name='sectionId'
+                    rules={{ required: "exam_section_required" }}
+                    render={({ field: { value, onChange } }) => (
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        value={value}
+                        onHandleChange={(value) => onChange(value)}
+                        items={
+                          sections && Array.isArray(sections)
+                            ? sections.map((item) => ({
+                                value: item.sectionId,
+                                label: item.name
+                              }))
+                            : []
+                        }
+                        backgroundColor='#FBFCFE'
+                      />
+                    )}
+                  />
+                </Box>
                 <LoadButton
                   btnType={BtnType.Outlined}
                   fullWidth
