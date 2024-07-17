@@ -341,6 +341,10 @@ const router = createHashRouter(
                 path={routes.lecturer.question.code.create}
                 element={<LecturerCodeQuestionDetails />}
               />
+              <Route
+                path={routes.lecturer.question.code.clone}
+                element={<LecturerCodeQuestionDetails isCloneData={true} />}
+              />
 
               <Route
                 path={routes.lecturer.question_bank.edit_question.edit_code_question}

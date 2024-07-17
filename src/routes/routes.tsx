@@ -53,7 +53,8 @@ export const routes = {
         create: "/lecturer/questions/true-false/create"
       },
       code: {
-        create: "/lecturer/questions/code/create"
+        create: "/lecturer/questions/code/create",
+        clone: "/lecturer/courses/:courseId/questions/code/create/:questionId/clone-data"
       }
     },
     question_bank: {
