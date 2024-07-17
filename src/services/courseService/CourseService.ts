@@ -44,6 +44,51 @@ export class CourseService {
     }
   }
 
+  static async getAllCoursesByOrganizationId(
+    organizationId: string,
+    {
+      search = "",
+      courseType = [],
+      pageNo = 0,
+      pageSize = 10
+    }: {
+      search?: string;
+      courseType?: string[];
+      pageNo?: number;
+      pageSize?: number;
+    }
+  ) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(
+        `${API.COURSE.COURSE.GET_ALL_COURSES_BY_ORGANIZATION_ID.replace(":organizationId", organizationId)}`,
+        {
+          params: {
+            search,
+            courseType,
+            pageNo,
+            pageSize
+          },
+          paramsSerializer: (params) => {
+            return qs.stringify(params, { arrayFormat: "repeat" });
+          }
+        }
+      );
+      if (response.status === 200) {
+        return Promise.resolve(response.data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch courses by organization id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async getCourseDetail(courseId: string) {
     try {
       const response = await api({

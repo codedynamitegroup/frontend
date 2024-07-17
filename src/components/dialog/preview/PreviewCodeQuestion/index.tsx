@@ -143,7 +143,7 @@ const PreviewCodeQuestion = ({
             value: language.id
           }))
         );
-        setSelectedLanguage(languageList[0].id);
+        if (languageList.length > 0) setSelectedLanguage(languageList[0].id);
         setCodeByLanguageList(
           languageList.reduce((acc: any, cur: any) => {
             acc[cur.id] = `${cur.headCode}\n${cur.bodyCode}\n${cur.tailCode}`;

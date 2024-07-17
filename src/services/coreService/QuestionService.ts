@@ -52,13 +52,15 @@ export class QuestionService {
     isOrgQuestionBank,
     search = "",
     pageNo = 0,
-    pageSize = 10
+    pageSize = 10,
+    isBasicType
   }: {
     categoryId: string;
     isOrgQuestionBank?: boolean;
     search?: string;
     pageNo?: number;
     pageSize?: number;
+    isBasicType?: boolean;
   }) {
     try {
       const response = await api({
@@ -69,7 +71,8 @@ export class QuestionService {
           isOrgQuestionBank,
           search,
           pageNo,
-          pageSize
+          pageSize,
+          isBasicType
         }
       });
       if (response.status === 200) {

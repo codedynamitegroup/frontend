@@ -229,7 +229,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                     !activeRoute(routes.org_admin.homepage.root)
                       ? routes.user.dashboard.root
                       : loggedUser && activeRoute(routes.org_admin.homepage.root)
-                        ? routes.org_admin.users.root
+                        ? routes.org_admin.dashboard
                         : loggedUser && activeRoute(routes.admin.homepage.root)
                           ? routes.admin.dashboard
                           : routes.user.homepage.root
@@ -392,22 +392,22 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                         </ParagraphBody>
                       </Button>
                       <Menu className={classes.menuProfile} {...bindMenu(popupState)}>
-                        <MenuItem
-                          onClick={() => {
-                            popupState.close();
-                            activeRoute(routes.admin.homepage.root)
-                              ? navigate(routes.admin.information)
-                              : activeRoute(routes.org_admin.homepage.root)
-                                ? navigate(routes.org_admin.information)
-                                : navigate(routes.user.information);
-                          }}
-                          translation-key='common_account_info'
-                        >
-                          <ListItemIcon>
-                            <Person fontSize='small' />
-                          </ListItemIcon>
-                          {t("common_account_info")}
-                        </MenuItem>
+                        {!activeRoute(routes.admin.homepage.root) &&
+                          !activeRoute(routes.org_admin.homepage.root) && (
+                            <MenuItem
+                              onClick={() => {
+                                popupState.close();
+                                navigate(routes.user.information);
+                              }}
+                              translation-key='common_account_info'
+                            >
+                              <ListItemIcon>
+                                <Person fontSize='small' />
+                              </ListItemIcon>
+                              {t("common_account_info")}
+                            </MenuItem>
+                          )}
+
                         {isSystemAdmin && !activeRoute(routes.admin.homepage.root) && (
                           <MenuItem
                             onClick={() => {

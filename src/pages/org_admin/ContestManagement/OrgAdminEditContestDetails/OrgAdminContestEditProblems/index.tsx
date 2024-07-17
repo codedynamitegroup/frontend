@@ -31,6 +31,10 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { AppDispatch } from "store";
 import AddContestProblemDialog from "./components/OrgAdminAddContestProblemDialog";
 import classes from "./styles.module.scss";
+import { routes } from "routes/routes";
+import { useNavigate } from "react-router-dom";
+import PreviewIcon from "@mui/icons-material/Preview";
+import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 
 interface ContestEditProblemsProps {
   control: Control<IFormDataType, any>;
@@ -46,7 +50,10 @@ const OrgAdminContestEditProblems = ({
   watch
 }: ContestEditProblemsProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = useState(false);
+  const [previewQuestionId, setPreviewQuestionId] = useState<string>("");
   const problems: ContestQuestionEntity[] = watch("problems");
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
@@ -98,6 +105,17 @@ const OrgAdminContestEditProblems = ({
 
   return (
     <>
+      {" "}
+      {openPreviewCodeQuestion && (
+        <PreviewCodeQuestion
+          questionId={previewQuestionId}
+          open={openPreviewCodeQuestion}
+          setOpen={setOpenPreviewCodeQuestion}
+          aria-labelledby={"customized-dialog-title5"}
+          maxWidth='md'
+          fullWidth
+        />
+      )}
       {isOpenedAddProblemDialog && (
         <AddContestProblemDialog
           open={isOpenedAddProblemDialog}
@@ -153,7 +171,13 @@ const OrgAdminContestEditProblems = ({
             {t("contest_add_problem_button")}
           </MenuButton>
           <Menu color='primary'>
-            <MenuItem>{t("contest_create_problem_button")}</MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate(routes.org_admin.question_bank.root);
+              }}
+            >
+              {t("contest_create_problem_button")}
+            </MenuItem>
             <MenuItem onClick={handleOpenAddProblemDialog}>
               {t("contest_import_problem_button")}
             </MenuItem>
@@ -276,6 +300,14 @@ const OrgAdminContestEditProblems = ({
                                 <LockIcon />
                               </Tooltip>
                             )}
+                          </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              setPreviewQuestionId(row.questionId);
+                              setOpenPreviewCodeQuestion(true);
+                            }}
+                          >
+                            <PreviewIcon />
                           </IconButton>
                           <IconButton
                             translate-key='contest_edit_problem_button'

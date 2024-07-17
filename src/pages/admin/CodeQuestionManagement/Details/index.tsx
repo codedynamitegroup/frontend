@@ -195,7 +195,9 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
           dirtyFields.testCases?.some((value) =>
             Object.values(value).some((val) => val === true)
           ) ||
-          (codeQuestion !== undefined && data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
+          (codeQuestion !== undefined &&
+            codeQuestion.testCases !== undefined &&
+            data.testCases.length < codeQuestion.testCases.length); //remove does not make dirty field dirty
 
         setLoadingSubmit(true);
 

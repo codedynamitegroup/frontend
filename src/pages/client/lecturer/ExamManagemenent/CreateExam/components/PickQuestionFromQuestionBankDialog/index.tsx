@@ -1,5 +1,7 @@
-import { Grid } from "@mui/material";
+import { TabPanel } from "@mui/lab";
+import { Box, Grid, Tab, Tabs } from "@mui/material";
 import { DialogProps } from "@mui/material/Dialog";
+import { GridRowParams } from "@mui/x-data-grid";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
@@ -7,18 +9,20 @@ import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionM
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import BasicSelect from "components/common/select/BasicSelect";
+import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import * as React from "react";
-import QuestionsFeatureBar from "../FeatureBar";
-import { GridRowParams } from "@mui/x-data-grid";
-import { useTranslation } from "react-i18next";
-import { QuestionService } from "services/coreService/QuestionService";
-import { useDispatch, useSelector } from "react-redux";
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
-import { QuestionClone, QuestionCloneRequest } from "models/coreService/entity/QuestionEntity";
+import { QuestionClone, QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
-import { RootState } from "store";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { setErrorMess } from "reduxes/AppStatus";
+import course from "reduxes/courseService/course";
+import { QuestionService } from "services/coreService/QuestionService";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
   title?: string;
@@ -51,9 +55,36 @@ export default function PickQuestionFromQuestionBankDialog({
   ...props
 }: PickQuestionFromQuestionBankDialogProps) {
   const { t } = useTranslation();
-  const [category, setCategory] = React.useState("0");
+  const [category, setCategory] = React.useState(categoryList?.[0]?.value || "");
+  const [activeTab, setActiveTab] = React.useState("0");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { courseId } = useParams();
 
-  const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
+  // const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
+  const [basicTypesQuestions, setBasicTypesQuestions] = React.useState<{
+    questions: QuestionEntity[];
+    currentPage: number;
+    totalItems: number;
+    totalPages: number;
+  }>({
+    questions: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0
+  });
+
+  const [codeTypeQuestions, setCodeTypeQuestions] = React.useState<{
+    questions: QuestionEntity[];
+    currentPage: number;
+    totalItems: number;
+    totalPages: number;
+  }>({
+    questions: [],
+    currentPage: 0,
+    totalItems: 0,
+    totalPages: 0
+  });
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -80,17 +111,19 @@ export default function PickQuestionFromQuestionBankDialog({
 
   const [searchText, setSearchText] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const dispatch = useDispatch();
+
   const handleGetQuestions = async ({
     categoryId,
     search = searchText,
     pageNo = 0,
-    pageSize = 99
+    pageSize = 99,
+    isBasicType = true
   }: {
     categoryId: string;
     search?: string;
     pageNo?: number;
     pageSize?: number;
+    isBasicType?: boolean;
   }) => {
     try {
       setLoading(true);
@@ -98,9 +131,24 @@ export default function PickQuestionFromQuestionBankDialog({
         categoryId,
         search,
         pageNo,
-        pageSize
+        pageSize,
+        isBasicType
       });
-      dispatch(setQuestionsCategory(getQuestionResponse));
+      if (isBasicType) {
+        setBasicTypesQuestions({
+          questions: getQuestionResponse.questionResponses || [],
+          currentPage: getQuestionResponse.currentPage || 0,
+          totalItems: getQuestionResponse.totalItems || 0,
+          totalPages: getQuestionResponse.totalPages || 0
+        });
+      } else {
+        setCodeTypeQuestions({
+          questions: getQuestionResponse.questionResponses || [],
+          currentPage: getQuestionResponse.currentPage || 0,
+          totalItems: getQuestionResponse.totalItems || 0,
+          totalPages: getQuestionResponse.totalPages || 0
+        });
+      }
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch questions by category id", error);
@@ -124,28 +172,77 @@ export default function PickQuestionFromQuestionBankDialog({
   };
 
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    // console.log(model);
     setPage(model.page);
     setPageSize(model.pageSize);
-    handleGetQuestions({ categoryId: category, pageNo: model.page, pageSize: model.pageSize });
+    handleGetQuestions({
+      categoryId: category,
+      pageNo: model.page,
+      pageSize: model.pageSize,
+      isBasicType: true
+    });
   };
-  // const page = 0;
+
+  const codeTypeQuesPageChangeHandler = (
+    model: GridPaginationModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    setPage(model.page);
+    setPageSize(model.pageSize);
+    handleGetQuestions({
+      categoryId: category,
+      pageNo: model.page,
+      pageSize: model.pageSize,
+      isBasicType: false
+    });
+  };
   const [page, setPage] = React.useState(0);
-  // const pageSize = 5;
   const [pageSize, setPageSize] = React.useState(5);
-  // const totalElement = 100;
-  const totalElement = React.useMemo(
-    () => questionCategoryState.totalItems || 0,
-    [questionCategoryState]
-  );
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
     handleGetQuestions({ categoryId: value });
   };
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+  React.useEffect(() => {
+    if (activeTab === "0") {
+      setPage(0);
+      setSelectedRowId([]);
+      handleGetQuestions({
+        categoryId: category,
+        search: searchText,
+        pageNo: page,
+        pageSize: pageSize,
+        isBasicType: true
+      });
+    } else {
+      setPage(0);
+      setSelectedRowId([]);
+      handleGetQuestions({
+        categoryId: category,
+        search: searchText,
+        pageNo: page,
+        pageSize: pageSize,
+        isBasicType: false
+      });
+    }
+  }, [category, activeTab]);
+
+  const handleConfirm = () => {
+    if (selectedRowId.length === 0) {
+      dispatch(setErrorMess("Please select at least one question"));
+      return;
+    } else if (activeTab === "1") {
+      navigate(
+        `/lecturer/courses/${courseId}/questions/code/create/${selectedRowId[0].questionId}/clone-data`,
+        {
+          state: {
+            categoryName: categoryList?.find((item) => item.value === category)?.label
+          }
+        }
+      );
+    } else if (activeTab === "0") {
+      onHanldeConfirm && onHanldeConfirm(selectedRowId);
+    }
   };
 
   return (
@@ -156,10 +253,19 @@ export default function PickQuestionFromQuestionBankDialog({
       cancelText={cancelText}
       confirmText={confirmText}
       onHandleCancel={onHandleCancel}
-      onHanldeConfirm={onHanldeConfirm ? () => onHanldeConfirm(selectedRowId) : () => {}}
+      // onHanldeConfirm={onHanldeConfirm ? () => onHanldeConfirm(selectedRowId) : () => {}}
+      onHanldeConfirm={handleConfirm}
       minWidth='1000px'
       {...props}
     >
+      <Grid container spacing={0} columns={12} marginBottom={"10px"}>
+        <Heading5 translate-key='exam_management_create_question_note'>Note:</Heading5>
+        <ReactQuill
+          value={`<p>With <strong>Basic Types Questions</strong> such as <strong>Short Answer</strong>, <strong>Multiple Choice</strong>, <strong>Essay</strong>, and <strong>True/False</strong>, you can select and create multiple questions simultaneously.<br><br></p><p>However, for the <strong>Code Type Questions</strong>, you can only select and create one question at a time.</p>`}
+          readOnly={true}
+          theme={"bubble"}
+        />
+      </Grid>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
           <TextTitle>{categoryPickTitle || ""}</TextTitle>
@@ -178,40 +284,107 @@ export default function PickQuestionFromQuestionBankDialog({
           />
         </Grid>
       </Grid>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <CustomDataGrid
-            loading={loading}
-            dataList={questionCategoryState.questions.map((question, index) => ({
-              stt: page * pageSize + index + 1,
-              qtypeText:
-                question.qtype === QuestionTypeEnum.SHORT_ANSWER
-                  ? "câu hỏi ngắn"
-                  : question.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
-                    ? "câu hỏi trắc nghiệm"
-                    : question.qtype === QuestionTypeEnum.ESSAY
-                      ? "câu hỏi tự luận"
-                      : question.qtype === QuestionTypeEnum.TRUE_FALSE
-                        ? "câu hỏi đúng/sai"
-                        : question.qtype === QuestionTypeEnum.CODE
-                          ? "câu hỏi code"
-                          : "",
-              ...question
-            }))}
-            tableHeader={tableHeading}
-            onSelectData={rowSelectionHandler}
-            visibleColumn={visibleColumnList}
-            dataGridToolBar={dataGridToolbar}
-            page={page}
-            pageSize={pageSize}
-            totalElement={totalElement}
-            onPaginationModelChange={pageChangeHandler}
-            showVerticalCellBorder={false}
-            checkboxSelection
-            // onClickRow={rowClickHandler}
+      <Box
+        sx={{
+          borderRadius: "5px",
+          border: "1px solid #e0e0e0"
+        }}
+      >
+        <Tabs
+          value={activeTab}
+          onChange={(event, newValue) => setActiveTab(newValue)}
+          aria-label='basic tabs example'
+          // className={classes.tabs}
+          variant='fullWidth'
+        >
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={
+              <ParagraphBody translate-key='common_details'>Basic Types Questions</ParagraphBody>
+            }
+            value={"0"}
           />
+          <Tab
+            sx={{ textTransform: "none" }}
+            label={
+              <ParagraphBody translate-key='common_problems'>Code Type Questions</ParagraphBody>
+            }
+            value={"1"}
+          />
+        </Tabs>
+      </Box>
+      {activeTab === "0" && (
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <CustomDataGrid
+              loading={loading}
+              dataList={basicTypesQuestions.questions.map((question, index) => ({
+                stt: page * pageSize + index + 1,
+                qtypeText:
+                  question.qtype === QuestionTypeEnum.SHORT_ANSWER
+                    ? "câu hỏi ngắn"
+                    : question.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                      ? "câu hỏi trắc nghiệm"
+                      : question.qtype === QuestionTypeEnum.ESSAY
+                        ? "câu hỏi tự luận"
+                        : question.qtype === QuestionTypeEnum.TRUE_FALSE
+                          ? "câu hỏi đúng/sai"
+                          : question.qtype === QuestionTypeEnum.CODE
+                            ? "câu hỏi code"
+                            : "",
+                ...question
+              }))}
+              tableHeader={tableHeading}
+              onSelectData={rowSelectionHandler}
+              visibleColumn={visibleColumnList}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={basicTypesQuestions.totalItems}
+              onPaginationModelChange={pageChangeHandler}
+              showVerticalCellBorder={false}
+              checkboxSelection
+              // onClickRow={rowClickHandler}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      )}
+      {activeTab === "1" && (
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <CustomDataGrid
+              loading={loading}
+              dataList={codeTypeQuestions.questions.map((question, index) => ({
+                stt: page * pageSize + index + 1,
+                qtypeText:
+                  question.qtype === QuestionTypeEnum.SHORT_ANSWER
+                    ? "câu hỏi ngắn"
+                    : question.qtype === QuestionTypeEnum.MULTIPLE_CHOICE
+                      ? "câu hỏi trắc nghiệm"
+                      : question.qtype === QuestionTypeEnum.ESSAY
+                        ? "câu hỏi tự luận"
+                        : question.qtype === QuestionTypeEnum.TRUE_FALSE
+                          ? "câu hỏi đúng/sai"
+                          : question.qtype === QuestionTypeEnum.CODE
+                            ? "câu hỏi code"
+                            : "",
+                ...question
+              }))}
+              tableHeader={tableHeading}
+              onSelectData={rowSelectionHandler}
+              visibleColumn={visibleColumnList}
+              dataGridToolBar={dataGridToolbar}
+              page={page}
+              pageSize={pageSize}
+              totalElement={codeTypeQuestions.totalItems}
+              onPaginationModelChange={codeTypeQuesPageChangeHandler}
+              showVerticalCellBorder={false}
+              disableRowSelectionOnClick={false}
+              // onClickRow={rowClickHandler}
+            />
+          </Grid>
+        </Grid>
+      )}
     </CustomDialog>
   );
 }
