@@ -33,6 +33,7 @@ import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/ent
 import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService";
 import FormSchema from "./schema/FormSchema";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 
 interface Props {
   isCloneData?: boolean;
@@ -322,26 +323,20 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       <FormProvider {...codeQuestionFormMethod}>
         <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
           <Box>
-            <Box className={classes.tabWrapper}>
-              <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-                <span
-                  translation-key='code_management_title'
-                  onClick={() => navigate("/admin/code-questions")}
-                >
-                  {t("code_management_title")}
-                </span>
-                {" > "}
-                <span
-                  onClick={() => {
-                    if (codeQuestionId) navigate(pathname);
-                  }}
-                >
-                  {isEdit ? codeQuestion?.name ?? "" : "create code question"}
-                </span>
-              </ParagraphBody>
-            </Box>
-
             <Box className={classes.body}>
+              <CustomBreadCrumb
+                breadCrumbData={[
+                  {
+                    label: t("code_management_title"),
+                    navLink: "/admin/code-questions"
+                  },
+                  {
+                    label: isEdit ? codeQuestion?.name ?? "" : t("create_code_question"),
+                    navLink: pathname
+                  }
+                ]}
+                lastBreadCrumbLabel={t("create_question_code")}
+              />
               <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
               <TabContext value={activeTab}>
                 <Box sx={{ border: 1, borderColor: "divider" }}>
