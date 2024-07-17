@@ -19,8 +19,9 @@ import { useTranslation } from "react-i18next";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { setErrorMess } from "reduxes/AppStatus";
+import course from "reduxes/courseService/course";
 import { QuestionService } from "services/coreService/QuestionService";
 
 interface PickQuestionFromQuestionBankDialogProps extends DialogProps {
@@ -58,6 +59,7 @@ export default function PickQuestionFromQuestionBankDialog({
   const [activeTab, setActiveTab] = React.useState("0");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { courseId } = useParams();
 
   // const questionCategoryState = useSelector((state: RootState) => state.questionCategory);
   const [basicTypesQuestions, setBasicTypesQuestions] = React.useState<{
@@ -230,11 +232,14 @@ export default function PickQuestionFromQuestionBankDialog({
       dispatch(setErrorMess("Please select at least one question"));
       return;
     } else if (activeTab === "1") {
-      navigate(`lecturer/questions/code/create/${selectedRowId[0].questionId}`, {
-        state: {
-          categoryName: categoryList?.find((item) => item.value === category)?.label
+      navigate(
+        `/lecturer/courses/${courseId}/questions/code/create/${selectedRowId[0].questionId}/clone-data`,
+        {
+          state: {
+            categoryName: categoryList?.find((item) => item.value === category)?.label
+          }
         }
-      });
+      );
     } else if (activeTab === "0") {
       onHanldeConfirm && onHanldeConfirm(selectedRowId);
     }
