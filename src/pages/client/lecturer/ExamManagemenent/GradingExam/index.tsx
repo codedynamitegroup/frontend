@@ -24,12 +24,8 @@ import {
   Toolbar,
   Typography,
   Stack,
-  Skeleton,
-  Badge,
-  TextField
+  Skeleton
 } from "@mui/material";
-import IconButton2 from "@mui/joy/IconButton";
-import Badge2 from "@mui/joy/Badge";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import {
@@ -44,24 +40,16 @@ import Header from "components/Header";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { BtnType } from "components/common/buttons/Button";
 import LoadButton from "components/common/buttons/LoadingButton";
-import InputTextField from "components/common/inputs/InputTextField";
 import SearchBar from "components/common/search/SearchBar";
-
+import CodeExamQuestion from "./ExamQuestion/CodeQuestion";
 import EditImageIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import Button from "@mui/joy/Button";
 import CustomNumberInput from "components/common/inputs/CustomNumberInput";
-import PreviewEssay from "components/dialog/preview/PreviewEssay";
-import PreviewMultipleChoice from "components/dialog/preview/PreviewMultipleChoice";
-import PreviewShortAnswer from "components/dialog/preview/PreviewShortAnswer";
-import PreviewTrueFalse from "components/dialog/preview/PreviewTrueFalse";
-import TextEditor from "components/editor/TextEditor";
 import Heading1 from "components/text/Heading1";
-import Heading2 from "components/text/Heading2";
 import ParagraphBody from "components/text/ParagraphBody";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import TextTitle from "components/text/TextTitle";
-import dayjs from "dayjs";
 import useBoxDimensions from "hooks/useBoxDimensions";
 import useWindowDimensions from "hooks/useWindowDimensions";
 import * as React from "react";
@@ -69,7 +57,6 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import { millisToFormatTimeString } from "utils/time";
 import classes from "./styles.module.scss";
 import { grey } from "@mui/material/colors";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -83,29 +70,21 @@ import { ExamEntity, StudentExamSubmission } from "models/courseService/entity/E
 import { PostQuestionDetailList } from "models/coreService/entity/QuestionEntity";
 import { QuestionService } from "services/coreService/QuestionService";
 import { ExamSubmissionService } from "services/courseService/ExamSubmissionService";
-import { s } from "@fullcalendar/core/internal-common";
-import { set } from "lodash";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import convertUuidToHashSlug from "utils/convertUuidToHashSlug";
-import CustomBreadCrumb from "components/common/Breadcrumb";
 import ExamReviewBoxContent from "../PreviewExam/components/BoxContent";
 import {
   GetQuestionSubmissionEntity,
   SubmissionDetail
 } from "models/courseService/entity/QuestionSubmissionEntity";
 import DonutLargeRoundedIcon from "@mui/icons-material/DonutLargeRounded";
-import ModeIcon from "@mui/icons-material/Mode";
-import RuleRoundedIcon from "@mui/icons-material/RuleRounded";
-import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import DateRangeRoundedIcon from "@mui/icons-material/DateRangeRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import TitleWithInfoTip from "components/text/TitleWithInfo";
-import FlagIcon from "@mui/icons-material/Flag";
 import { useState } from "react";
-import exam from "reduxes/courseService/exam";
+import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
+import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
 interface SubmissionData {
   examSubmissionId: string;
   examId: string;
@@ -211,12 +190,7 @@ export default function GradingExam() {
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const submissionId = useParams<{ submissionId: string }>().submissionId;
-  const [assignmentFeedback, setAssignmentFeedback] = React.useState("");
-  const examDescriptionRawHTML = `
-    <div>
-    <p>Đây là mô tả bài kiểm tra</p>
-    </div>
-    `;
+  const [codeQuestion, setCodeQuestion] = React.useState<CodeQuestionEntity[]>([]);
   const [questionList, setQuestionList] = React.useState([
     {
       id: 4,
@@ -267,7 +241,6 @@ export default function GradingExam() {
       isOpenEditTitle: false
     }
   ]);
-
   const handleToggleEditTitle = React.useCallback(
     (id: number) => {
       setQuestionList((prev) => {
@@ -285,7 +258,6 @@ export default function GradingExam() {
     },
     [setQuestionList]
   );
-
   const tableHeading: GridColDef[] = React.useMemo(
     () =>
       [
@@ -409,65 +381,14 @@ export default function GradingExam() {
     ]
   );
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
-  };
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [totalElements, setTotalElements] = React.useState(0);
-
   const [searchValue, setSearchValue] = React.useState("");
-
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
-
-  const handleSetGradeStatus = (examSubmissionId: string) => {
-    ExamSubmissionService.setGradeStatus(examSubmissionId)
-      .then((res) => {
-        console.log("Set grade status successfully", res);
-      })
-      .catch((error) => {
-        console.error("Failed to set grade status", error);
-      })
-      .finally(() => {
-        setDialogOpen2(true);
-      });
-  };
-
-  function handleClick() {
-    setLoading(true);
-
-    handleSetGradeStatus(submissionId || "");
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
-  React.useEffect(() => {
-    if (width < 1080) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
-  }, [width]);
   const [openChooseStudent, setOpenChooseStudent] = React.useState(false);
   const chooseStudentHeading: GridColDef[] = [
     { field: "email", headerName: "Email", flex: 2 },
@@ -505,28 +426,22 @@ export default function GradingExam() {
     //   ]
     // }
   ];
-
   const [gradingStatus, setGradingStatus] = React.useState(0);
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-
   const header2Ref = React.useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({
     ref: header2Ref
   });
-
   const [searchParams] = useSearchParams();
   const examId = useParams<{ examId: string }>().examId;
   const courseId = useParams<{ courseId: string }>().courseId;
-
   const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
   const [studentExamSubmission, setStudentExamSubmission] = React.useState<StudentExamSubmission[]>(
     []
   );
-
   const [studentSubmissionCurrent, setStudentSubmissionCurrent] = React.useState<
     StudentExamSubmission | undefined
   >(undefined);
-
   const questionPageIndex = parseInt(searchParams.get("page") || "0");
   const isShowAllQuesionsInOnePage = searchParams.get("showall");
   const [inputIndexValue, setInputIndexValue] = React.useState(1);
@@ -602,6 +517,7 @@ export default function GradingExam() {
                 data
               };
             });
+            handleGetCodeQuestionDetail(transformList);
             setQuestions(transformList);
           })
           .catch((error) => {
@@ -617,6 +533,73 @@ export default function GradingExam() {
         setMainSkeleton(false);
       });
   }, [examId]);
+
+  const handleSetGradeStatus = (examSubmissionId: string) => {
+    ExamSubmissionService.setGradeStatus(examSubmissionId)
+      .then((res) => {
+        console.log("Set grade status successfully", res);
+      })
+      .catch((error) => {
+        console.error("Failed to set grade status", error);
+      })
+      .finally(() => {
+        setDialogOpen2(true);
+      });
+  };
+
+  const handleGetCodeQuestionDetail = async (questions: any[]) => {
+    if (questions.length === 0) return;
+    const codeQuestionIds = questions
+      .filter((question) => question.data.question.qtype === qtype.source_code.code)
+      .map((question) => question.data.id);
+
+    // Get question detail
+    CodeQuestionService.getDetailCodeQuestion(codeQuestionIds)
+      .then((res) => {
+        setCodeQuestion(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {});
+  };
+
+  function handleClick() {
+    setLoading(true);
+
+    handleSetGradeStatus(submissionId || "");
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const rowSelectionHandler = (
+    selectedRowId: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    console.log(selectedRowId);
+  };
+  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    console.log(model);
+  };
+
+  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
+  React.useEffect(() => {
+    if (width < 1080) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [width]);
 
   const handleGetExamSubmission = React.useCallback(async () => {
     if (submissionId !== undefined)
@@ -1015,7 +998,20 @@ export default function GradingExam() {
                                     submittedQuestion.questionId === question.data.question.id
                                 )}
                               />
-                            ) : null}
+                            ) : (
+                              <CodeExamQuestion
+                                isGraded={submissionData?.status === "GRADED"}
+                                coreQuestionCode={question.data}
+                                page={index}
+                                questionCode={codeQuestion.find(
+                                  (codeQuestion) => codeQuestion.id === question.data.id
+                                )}
+                                questionState={submissionData?.questionSubmissionResponses.find(
+                                  (submittedQuestion) =>
+                                    submittedQuestion.questionId === question.data.question.id
+                                )}
+                              />
+                            )}
                           </Grid>
                           <Grid item xs={12} display={"flex"} justifyContent={"center"}>
                             <Divider
