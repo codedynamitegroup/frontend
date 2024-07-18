@@ -209,7 +209,6 @@ const EditMultichoiceQuestion = (props: Props) => {
   const location = useLocation();
   const isQuestionBank = location.state?.isQuestionBank;
   const isLecturerEditQuestion = location.state?.isLecturerEditQuestion;
-  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
   const isOrgAdminQuestionBank = location.state?.isOrgAdminQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];

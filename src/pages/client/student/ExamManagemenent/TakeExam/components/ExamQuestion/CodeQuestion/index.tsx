@@ -65,6 +65,7 @@ const CodeExamQuestion = (props: Props) => {
   };
 
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
+  const [selectedLanguageName, setSelectedLanguageName] = useState<string | undefined>(undefined);
   const debouncedHandleOnInputChange = debounce((value: string, viewUpdate: ViewUpdate) => {
     let isAnswered = true;
     if (value === "") isAnswered = false;
@@ -76,6 +77,7 @@ const CodeExamQuestion = (props: Props) => {
         answered: isAnswered,
         content: JSON.stringify({
           languageId: selectedLanguage,
+          languageName: selectedLanguageName,
           codeQuestionId: questionCode.id,
           code: encodeBase64(value)
         })
@@ -126,6 +128,7 @@ const CodeExamQuestion = (props: Props) => {
 
       if (content.languageId !== null) {
         setSelectedLanguage(content.languageId);
+        setSelectedLanguageName(content.languageName);
         setCodeFormat(decodeBase64(content.code));
 
         dispatch(
@@ -141,6 +144,7 @@ const CodeExamQuestion = (props: Props) => {
         );
       } else if (questionCode?.languages) {
         setSelectedLanguage(questionCode?.languages[0]?.id);
+        setSelectedLanguageName(questionCode?.languages[0]?.name);
         setCodeFormat(
           `${questionCode?.languages[0]?.headCode}\n\n${questionCode?.languages[0]?.bodyCode}\n\n${questionCode?.languages[0]?.tailCode}`
         );
@@ -176,12 +180,14 @@ const CodeExamQuestion = (props: Props) => {
         answered: true,
         content: JSON.stringify({
           languageId: newValue,
+          languageName: languageMap?.[newValue]?.name,
           codeQuestionId: questionCode.id,
           code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue]?.code || "")
         })
       })
     );
     setSelectedLanguage(newValue);
+    setSelectedLanguageName(languageMap?.[newValue]?.name);
   };
 
   useEffect(() => {
