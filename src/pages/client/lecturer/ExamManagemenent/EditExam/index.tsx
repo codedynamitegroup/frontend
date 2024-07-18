@@ -389,7 +389,6 @@ export default function ExamEdit() {
       questionIds: questionIds
     };
 
-    console.log(newExam, "ccccc");
     ExamService.editExam(examId ?? "", newExam)
       .then((response) => {
         console.log(response);
@@ -511,7 +510,6 @@ export default function ExamEdit() {
       })
     );
 
-    console.log(questionCreate);
     dispatch(setQuestionCreateFromBank(questionCreate));
     handleCloseAddQuestionFromBankDialog();
   };
@@ -545,6 +543,11 @@ export default function ExamEdit() {
         break;
       case "true-false":
         navigate(routes.lecturer.question.true_false.create, { state: { courseId: courseId } });
+        break;
+      case "code":
+        navigate(routes.lecturer.question.code.create, {
+          state: { courseId: courseId, isCreateExam: false, examId: examId }
+        });
         break;
       default:
         break;
