@@ -198,10 +198,7 @@ export default function HomePage() {
                               image={certificateCourse.topic.thumbnailUrl}
                             />
                             <CardContent className={classes.courseCard}>
-                              <Heading3>{certificateCourse.name}</Heading3>
-                              {/* <ParagraphBody className={classes.courseDescription}>
-                                {certificateCourse.topic.description}
-                              </ParagraphBody> */}
+                              <Heading3 nonoverflow>{certificateCourse.name}</Heading3>
                               <Box className={classes.iconCourse}>
                                 <img
                                   src={images.icLevel}
