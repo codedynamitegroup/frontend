@@ -34,8 +34,6 @@ import Option from "@mui/joy/Option";
 import JoyButton from "@mui/joy/Button";
 import Footer from "components/Footer";
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
-
 import ShortTextRoundedIcon from "@mui/icons-material/ShortTextRounded";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CourseService } from "services/courseService/CourseService";
@@ -73,9 +71,7 @@ const EditShortAnswerQuestion = (props: Props) => {
   const location = useLocation();
   const isQuestionBank = location.state?.isQuestionBank;
   const isLecturerEditQuestion = location.state?.isLecturerEditQuestion;
-  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
-  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
-  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
+  const isOrgAdminQuestionBank = location.state?.isOrgAdminQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
@@ -92,15 +88,10 @@ const EditShortAnswerQuestion = (props: Props) => {
 
   // submit animation
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   if (props.insideCrumb) setHeaderHeight(0);
-
-  const urlParams = useParams();
 
   const handleGetShortAnswerQuestionDetailForm = async (questionId: string) => {
     try {
@@ -230,6 +221,20 @@ const EditShortAnswerQuestion = (props: Props) => {
             })
           )
         );
+        // navigate back to question bank if it's from question bank
+        if (isQuestionBank) {
+          navigate(
+            isLecturerEditQuestion
+              ? routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")
+              : routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || "")
+          );
+        } else {
+          navigate(
+            routes.lecturer.exam.edit
+              .replace(":courseId", courseId || "")
+              .replace(":examId", examId || "")
+          );
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -243,12 +248,6 @@ const EditShortAnswerQuestion = (props: Props) => {
       })
       .finally(() => {
         setSubmitLoading(false);
-        if (isLecturerEditQuestion)
-          navigate(
-            routes.lecturer.exam.edit
-              .replace(":courseId", courseId || "")
-              .replace(":examId", examId || "")
-          );
       });
   };
 
@@ -274,7 +273,7 @@ const EditShortAnswerQuestion = (props: Props) => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      if (courseId) getCourseData(courseId);
+      if (courseId && !isOrgAdminQuestionBank) getCourseData(courseId);
 
       if (questionId) {
         const res = await handleGetShortAnswerQuestionDetailForm(questionId);
@@ -320,11 +319,15 @@ const EditShortAnswerQuestion = (props: Props) => {
   const breadCrumbData = isQuestionBank
     ? [
         {
-          navLink: routes.lecturer.question_bank.path,
+          navLink: isLecturerEditQuestion
+            ? routes.lecturer.question_bank.path
+            : routes.org_admin.question_bank.root,
           label: i18next.format(t("common_question_bank"), "firstUppercase")
         },
         {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+          navLink: isLecturerEditQuestion
+            ? routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")
+            : routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || ""),
           label: categoryName
         }
       ]
@@ -358,14 +361,6 @@ const EditShortAnswerQuestion = (props: Props) => {
       </Helmet>
       {shortAnswerQuestionData && (
         <Grid className={classes.root}>
-          <SnackbarAlert
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            open={openSnackbar}
-            setOpen={setOpenSnackbar}
-            type={snackbarType}
-            content={snackbarContent}
-          />
-
           <Header />
 
           <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
@@ -406,13 +401,31 @@ const EditShortAnswerQuestion = (props: Props) => {
               </Stack>
               <Button
                 onClick={() => {
-                  navigate(
-                    props.isNewQuestion
-                      ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
-                      : routes.lecturer.exam.edit
-                          .replace(":courseId", courseId || "")
-                          .replace(":examId", examId || "")
-                  );
+                  if (isQuestionBank) {
+                    if (isLecturerEditQuestion) {
+                      navigate(
+                        routes.lecturer.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId || ""
+                        )
+                      );
+                    } else if (isOrgAdminQuestionBank) {
+                      navigate(
+                        routes.org_admin.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId || ""
+                        )
+                      );
+                    }
+                  } else {
+                    navigate(
+                      props.isNewQuestion
+                        ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                        : routes.lecturer.exam.edit
+                            .replace(":courseId", courseId || "")
+                            .replace(":examId", examId || "")
+                    );
+                  }
                 }}
                 startDecorator={<ChevronLeftIcon fontSize='small' />}
                 color='neutral'
@@ -713,14 +726,23 @@ const EditShortAnswerQuestion = (props: Props) => {
                     variant='outlined'
                     translation-key='common_cancel'
                     onClick={() => {
-                      if (isQuestionBank)
-                        navigate(
-                          routes.lecturer.question_bank.detail.replace(
-                            ":categoryId",
-                            categoryId ?? ""
-                          )
-                        );
-                      else
+                      if (isQuestionBank) {
+                        if (isLecturerEditQuestion) {
+                          navigate(
+                            routes.lecturer.question_bank.detail.replace(
+                              ":categoryId",
+                              categoryId || ""
+                            )
+                          );
+                        } else if (isOrgAdminQuestionBank) {
+                          navigate(
+                            routes.org_admin.question_bank.detail.replace(
+                              ":categoryId",
+                              categoryId || ""
+                            )
+                          );
+                        }
+                      } else {
                         navigate(
                           props.isNewQuestion
                             ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
@@ -728,6 +750,7 @@ const EditShortAnswerQuestion = (props: Props) => {
                                 .replace(":courseId", courseId || "")
                                 .replace(":examId", examId || "")
                         );
+                      }
                     }}
                   >
                     {t("common_cancel")}
