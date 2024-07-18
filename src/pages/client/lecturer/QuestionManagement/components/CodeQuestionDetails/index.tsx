@@ -54,7 +54,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   const { loggedUser } = useAuth();
   const location = useLocation();
+  const isCreateExam = location.state?.isCreateExam;
   const locationCourseId = location.state?.courseId;
+  const locationExamId = location.state?.examId;
   const isQuestionBank = location.state?.isQuestionBank;
   const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
@@ -108,8 +110,14 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   };
 
   const [codeQuestionId, setCodeQuestionId] = useState<string | undefined>(undefined);
-  const params = useParams<{ questionId: string; categoryId: string; courseId: string }>();
+  const params = useParams<{
+    questionId: string;
+    categoryId: string;
+    courseId: string;
+    examId: string;
+  }>();
   const courseId = params.courseId ?? locationCourseId;
+  const examId = params.examId ?? locationExamId;
   useEffect(() => {
     const fetchQuestionDetail = async () => {
       if (params.questionId) {
@@ -214,7 +222,14 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           navigate(
             routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
           );
-        else navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
+        else if (isCreateExam === true)
+          navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
+        else
+          navigate(
+            routes.lecturer.exam.edit
+              .replace(":courseId", courseId ?? "")
+              .replace(":examId", params.examId ?? "")
+          );
       } finally {
         dispatch(setLoading(false));
       }
@@ -398,7 +413,14 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         navigate(
           routes.lecturer.question_bank.detail.replace(":categoryId", params.categoryId ?? "")
         );
-      else navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
+      else if (isCreateExam === true)
+        navigate(routes.lecturer.exam.create.replace(":courseId", courseId ?? ""));
+      else
+        navigate(
+          routes.lecturer.exam.edit
+            .replace(":courseId", courseId ?? "")
+            .replace(":examId", params.examId ?? "")
+        );
     }
 
     // console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
@@ -434,24 +456,45 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           label: categoryName
         }
       ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId ?? ""),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId ?? ""),
-          label: t("course_lecturer_assignment_create_exam")
-        }
-      ];
+    : isCreateExam === true
+      ? [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId ?? ""),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId ?? ""),
+            label: t("course_lecturer_assignment_create_exam")
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId ?? ""),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.edit
+              .replace(":courseId", courseId ?? "")
+              .replace(":examId", examId ?? ""),
+            label: t("course_lecturer_assignment_edit_exam")
+          }
+        ];
   return (
     <Grid className={classes.root}>
       <Header />

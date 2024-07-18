@@ -562,7 +562,9 @@ export default function ExamCreated() {
         navigate(routes.lecturer.question.true_false.create, { state: { courseId: courseId } });
         break;
       case "code":
-        navigate(routes.lecturer.question.code.create, { state: { courseId: courseId } });
+        navigate(routes.lecturer.question.code.create, {
+          state: { courseId: courseId, isCreateExam: true }
+        });
         break;
       default:
         break;
