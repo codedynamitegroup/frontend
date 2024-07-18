@@ -198,9 +198,7 @@ const TopicManagement = () => {
               icon={<EditIcon />}
               label='Edit'
               onClick={() => {
-                navigate(
-                  routes.admin.certificate.detail.replace(":id", params.row.certificateCourseId)
-                );
+                navigate(routes.admin.topic.edit.replace(":topicId", params.row.id));
               }}
             />,
             <GridActionsCellItem

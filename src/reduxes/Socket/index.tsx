@@ -29,29 +29,31 @@ import { Socket } from "socket.io-client";
 // }
 export interface SocketData {
   type: string;
-  message: {
-    notificationId: string;
-    userFrom: {
-      userId: string;
-      fullName: string;
-      email: string;
-    };
-    userTo: {
-      userId: string;
-      fullName: string;
-      email: string;
-    };
-    subject: string;
-    fullMessage: string;
-    smallMessage: string;
-    component: string;
-    eventType: string;
-    contextUrl: string;
-    contextUrlName: string;
-    isRead: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
+  message:
+    | {
+        notificationId: string;
+        userFrom: {
+          userId: string;
+          fullName: string;
+          email: string;
+        };
+        userTo: {
+          userId: string;
+          fullName: string;
+          email: string;
+        };
+        subject: string;
+        fullMessage: string;
+        smallMessage: string;
+        component: string;
+        eventType: string;
+        contextUrl: string;
+        contextUrlName: string;
+        isRead: boolean;
+        createdAt: string;
+        updatedAt: string;
+      }
+    | any;
 }
 
 interface InitialState {

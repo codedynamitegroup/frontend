@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { BtnType } from "components/common/buttons/Button";
 import MenuPopup from "components/common/menu/MenuPopup";
 import Heading1 from "components/text/Heading1";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import AssignmentResource, { ResourceType } from "./components/Resource";
 import classes from "./styles.module.scss";
@@ -185,6 +185,11 @@ const LecturerCourseAssignment = () => {
     setIsOpenCreateSectionDialog(true);
     popupState.close();
   };
+
+  const location = useLocation();
+  useEffect(() => {
+    dispatch(clearSections());
+  }, [location, dispatch]);
 
   return (
     <>

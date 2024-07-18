@@ -53,7 +53,8 @@ export const routes = {
         create: "/lecturer/questions/true-false/create"
       },
       code: {
-        create: "/lecturer/questions/code/create"
+        create: "/lecturer/questions/code/create",
+        clone: "/lecturer/courses/:courseId/questions/code/create/:questionId/clone-data"
       }
     },
     question_bank: {
@@ -267,6 +268,7 @@ export const routes = {
     topic: {
       root: "/admin/topics",
       create: "/admin/topics/create",
+      edit: "/admin/topics/edit/:topicId",
       detail: "/admin/topics/:topicId"
     },
     dashboard: "/admin/dashboard",
@@ -313,11 +315,11 @@ export const routes = {
     code_question: {
       root: "/admin/code-questions",
       create: "/admin/code-questions/create",
-      detail: "/admin/code-questions/edit/:questionId/*",
-      information: "/admin/code-questions/edit/:questionId/information",
-      test_cases: "/admin/code-questions/edit/:questionId/test-cases",
-      code_stubs: "/admin/code-questions/edit/:questionId/code-stubs",
-      languages: "/admin/code-questions/edit/:questionId/languages"
+      detail: "/admin/code-questions/detail/:questionId/*",
+      information: "/admin/code-questions/detail/:questionId/information",
+      test_cases: "/admin/code-questions/detail/:questionId/test-cases",
+      code_stubs: "/admin/code-questions/detail/:questionId/code-stubs",
+      languages: "/admin/code-questions/detail/:questionId/languages"
     },
     question_bank: {
       root: "/admin/question-bank-management",
@@ -389,6 +391,20 @@ export const routes = {
     synchronize: {
       root: "/org-admin/synchronize",
       detail: "/org-admin/synchronize/:synchronizeId"
+    },
+    course_type: {
+      root: "/org-admin/course-type",
+      detail: "/org-admin/course-type/:courseTypeId",
+      course: {
+        root: "/org-admin/course-type/:courseTypeId/course",
+        edit: {
+          root: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/*",
+          details: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/details",
+          list_users: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/users",
+          assign_user: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/assign-user",
+          edit_user: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/:userId"
+        }
+      }
     },
     question_bank: {
       root: "/org-admin/question-bank-management",

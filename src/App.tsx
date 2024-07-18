@@ -231,6 +231,10 @@ const router = createHashRouter(
                   <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
                 }
               />
+              <Route
+                path={routes.lecturer.exam.edit_code_question}
+                element={<LecturerCodeQuestionDetails />}
+              />
 
               <Route
                 path={routes.lecturer.exam.edit_new_essay_question}
@@ -256,6 +260,10 @@ const router = createHashRouter(
                 element={
                   <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={true} />
                 }
+              />
+              <Route
+                path={routes.lecturer.exam.edit_new_code_question}
+                element={<LecturerCodeQuestionDetails />}
               />
 
               <Route path={routes.lecturer.root} element={<LecturerCoursesManagement />} />
@@ -333,6 +341,15 @@ const router = createHashRouter(
                 path={routes.lecturer.question.code.create}
                 element={<LecturerCodeQuestionDetails />}
               />
+              <Route
+                path={routes.lecturer.question.code.clone}
+                element={<LecturerCodeQuestionDetails isCloneData={true} />}
+              />
+
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_code_question}
+                element={<LecturerCodeQuestionDetails />}
+              />
 
               {/*  question bank */}
               <Route
@@ -399,6 +416,11 @@ const router = createHashRouter(
               />
               <Route
                 path={routes.org_admin.question_bank.create_question.code.create}
+                element={<OrgAdminCodeQuestionDetails />}
+              />
+
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_code_question}
                 element={<OrgAdminCodeQuestionDetails />}
               />
             </Route>

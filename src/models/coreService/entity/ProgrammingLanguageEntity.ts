@@ -13,6 +13,14 @@ export interface ProgrammingLanguageEntity {
   sourceCode: string | null;
 }
 
+export interface ProgrammingLanguageEntityWithTopic {
+  programmingLanguageId: UUID;
+  name: string;
+  compilerApiId: number;
+  timeLimit: number;
+  memoryLimit: number;
+}
+
 export interface GetProgrammingLanguageEntity {
   id: UUID;
   name: string;

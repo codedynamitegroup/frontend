@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
-import { Box, Container, Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import { red } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -11,8 +11,10 @@ import {
   GridPaginationModel,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
+import CustomBreadCrumb from "components/common/Breadcrumb";
 import Button, { BtnType } from "components/common/buttons/Button";
 import CustomDataGrid from "components/common/CustomDataGrid";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import CustomAutocomplete from "components/common/search/CustomAutocomplete";
 import PreviewCodeQuestion from "components/dialog/preview/PreviewCodeQuestion";
 import PreviewEssay from "components/dialog/preview/PreviewEssay";
@@ -23,14 +25,15 @@ import Heading1 from "components/text/Heading1";
 import Heading5 from "components/text/Heading5";
 import ParagraphBody from "components/text/ParagraphBody";
 import dayjs from "dayjs";
-import i18next from "i18next";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setQuestionsCategory } from "reduxes/coreService/questionCategory";
+import { setLoading, setQuestionsCategory } from "reduxes/coreService/questionCategory";
 import { setCategoryDetails } from "reduxes/courseService/questionBankCategory";
 import { routes } from "routes/routes";
 import { QuestionService } from "services/coreService/QuestionService";
@@ -61,6 +64,12 @@ const QuestionListOfCourse = () => {
   const [questionPreview, setQuestionPreview] = React.useState<QuestionEntity>();
   const [previewQuestionId, setPreviewQuestionId] = React.useState<string>("");
   const [openPreviewCodeQuestion, setOpenPreviewCodeQuestion] = React.useState(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = React.useState(false);
+  const [questionToDelete, setQuestionToDelete] = React.useState<QuestionEntity | null>(null);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const columnsProps: GridColDef[] = [
     {
@@ -175,8 +184,27 @@ const QuestionListOfCourse = () => {
               color: "primary.main"
             }}
             onClick={() => {
-              setIsAddNewQuestionDialogOpen(false);
-              navigate(`update/${typeToCreateNewQuestion}`);
+              navigate(
+                `edit/${
+                  params.row.qtype === "CODE"
+                    ? "code-question"
+                    : params.row.qtype === "MULTIPLE_CHOICE"
+                      ? "multiple-choice-question"
+                      : params.row.qtype === "ESSAY"
+                        ? "essay-question"
+                        : params.row.qtype === "TRUE_FALSE"
+                          ? "true-false-question"
+                          : params.row.qtype === "SHORT_ANSWER"
+                            ? "short-answer-question"
+                            : ""
+                }/${params.row.id}`,
+                {
+                  state: {
+                    isQuestionBank: true,
+                    categoryName: categoryState.categoryDetails?.name
+                  }
+                }
+              );
             }}
           />,
           <GridActionsCellItem
@@ -230,6 +258,7 @@ const QuestionListOfCourse = () => {
     pageSize?: number;
   }) => {
     try {
+      dispatch(setLoading(true));
       const getQuestionResponse = await QuestionService.getQuestionsByCategoryId({
         categoryId,
         isOrgQuestionBank,
@@ -238,8 +267,10 @@ const QuestionListOfCourse = () => {
         pageSize
       });
       dispatch(setQuestionsCategory(getQuestionResponse));
+      dispatch(setLoading(false));
     } catch (error) {
       console.error("Failed to fetch questions by category id", error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -269,6 +300,17 @@ const QuestionListOfCourse = () => {
     }
   };
 
+  const onDeleteConfirmDelete = () => {
+    try {
+      if (questionToDelete) {
+        handleDeleteQuestion(questionToDelete.id);
+      }
+      setIsOpenConfirmDelete(false);
+    } catch (error) {
+      setIsOpenConfirmDelete(false);
+    }
+  };
+
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
@@ -288,10 +330,10 @@ const QuestionListOfCourse = () => {
     }
   };
 
-  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    console.log(params);
-    // navigate(`${params.row.id}`);
-  };
+  // const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+  //   console.log(params);
+  //   // navigate(`${params.row.id}`);
+  // };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
 
@@ -307,7 +349,6 @@ const QuestionListOfCourse = () => {
     });
   };
 
-  const handleCreateQuestionAI = () => {};
   const dataGridToolbar = { enableToolbar: true };
   useEffect(() => {
     if (categoryId) {
@@ -390,20 +431,26 @@ const QuestionListOfCourse = () => {
         />
       )}
 
-      {/* <TabPanel value='1' sx={{ padding: 0 }}> */}
-      <Box className={classes.tabWrapper}>
-        <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-          <span
-            onClick={() => navigate(routes.lecturer.question_bank.path)}
-            translation-key='common_question_bank'
-          >
-            {i18next.format(t("common_question_bank"), "firstUppercase")}
-          </span>{" "}
-          {"> "}
-          <span onClick={() => navigate(".")}>{categoryState.categoryDetails?.name}</span>
-        </ParagraphBody>
-      </Box>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onDeleteConfirmDelete}
+      />
+
       <Container>
+        <CustomBreadCrumb
+          breadCrumbData={[
+            {
+              label:
+                t("common_question_bank").charAt(0).toUpperCase() +
+                t("common_question_bank").slice(1),
+              navLink: routes.org_admin.question_bank.root
+            }
+          ]}
+          lastBreadCrumbLabel={categoryState.categoryDetails?.name ?? ""}
+        />
         <Stack spacing={2} marginBottom={3} paddingTop={1}>
           <Heading1 fontWeight={500}>{categoryState.categoryDetails?.name}</Heading1>
           <Heading5
@@ -412,7 +459,12 @@ const QuestionListOfCourse = () => {
             colorname='--gray-50'
             translation-key='question_bank_create_category_info'
           >
-            {t("question_bank_create_category_info")}: {categoryState.categoryDetails?.description}
+            {t("question_bank_create_category_info")}:{" "}
+            <ReactQuill
+              value={categoryState.categoryDetails?.description || ""}
+              readOnly={true}
+              theme={"bubble"}
+            />
           </Heading5>
           <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
             <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
@@ -476,7 +528,7 @@ const QuestionListOfCourse = () => {
             totalElement={questionCategoryState.totalItems}
             onPaginationModelChange={pageChangeHandler}
             showVerticalCellBorder={false}
-            onClickRow={handleRowClick}
+            // onClickRow={handleRowClick}
           />
         </Stack>
       </Container>
