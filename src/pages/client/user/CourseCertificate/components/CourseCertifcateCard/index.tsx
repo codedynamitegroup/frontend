@@ -24,7 +24,7 @@ const CourseCertificateCard = ({ course }: Props) => {
             <img alt='img course' src={course?.topic?.thumbnailUrl} />
           </Grid>
           <Grid item xs={12} className={classes.nameCourse}>
-            <Heading4>{course?.name || ""}</Heading4>
+            <Heading4 nonoverflow>{course?.name || ""}</Heading4>
           </Grid>
         </Grid>
         <Grid item xs={2}>

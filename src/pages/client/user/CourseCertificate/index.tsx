@@ -369,9 +369,15 @@ const CourseCertificates = () => {
                         )}
                       </Grid>
                     </Card>
-                    <Heading1 translation-key='common_all_courses_catalog'>
-                      {t("common_all_courses_catalog")}
-                    </Heading1>
+                    {catalogActive === "all" ? (
+                      <Heading1 translation-key='common_all_courses_catalog'>
+                        {t("common_all_courses_catalog")}
+                      </Heading1>
+                    ) : (
+                      <Heading1 translation-key='common_my_courses_catalog'>
+                        {t("common_my_courses_catalog")}
+                      </Heading1>
+                    )}
                   </Box>
                 )}
 

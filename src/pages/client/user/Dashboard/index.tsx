@@ -301,8 +301,8 @@ export default function UserDashboard() {
                                 <img alt='img course' src={course.topic.thumbnailUrl} />
                               </Grid>
                               <Grid item xs={1}></Grid>
-                              <Grid item xs={8} className={classes.nameCourse}>
-                                <Heading5>{course.name}</Heading5>
+                              <Grid item xs={12} className={classes.nameCourse}>
+                                <Heading5 nonoverflow>{course.name}</Heading5>
                               </Grid>
                             </Grid>
                             <Divider />
