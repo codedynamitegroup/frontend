@@ -617,6 +617,12 @@ export default function ExamCreated() {
   });
 
   useEffect(() => {
+    if (sections.length > 0) {
+      setValue("sectionId", sections[0].sectionId);
+    }
+  }, [sections]);
+
+  useEffect(() => {
     const savedFormData = localStorage.getItem("formData");
     if (savedFormData) {
       const parsedFormData = JSON.parse(savedFormData);
