@@ -85,7 +85,11 @@ const questionCreateSlice = createSlice({
       state.questionCreate = [];
     },
     setQuestionCreateFromBank(state, action: { payload: QuestionEntity[] }) {
-      state.questionCreate.push(...action.payload);
+      action.payload.forEach((question) => {
+        if (!state.questionCreate.find((item) => item.id === question.id)) {
+          state.questionCreate.push(question);
+        }
+      });
     },
     clearExamCreate: (state) => {
       state.examName = "";

@@ -212,7 +212,7 @@ const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={1} columns={12}>
+      {/* <Grid container spacing={1} columns={12}>
         <Grid item xs={3}>
           <TextTitle translation-key='common_public'>{t("common_public")}</TextTitle>
         </Grid>
@@ -249,7 +249,7 @@ const CodeQuestionInformation = ({ codeQuestion, tags }: Props) => {
             <ErrorMessage>{codeQuestionFormErrors.allowImport.message}</ErrorMessage>
           )}
         </Grid>
-      </Grid>
+      </Grid> */}
     </Box>
   );
 };

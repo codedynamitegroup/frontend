@@ -562,7 +562,9 @@ export default function ExamCreated() {
         navigate(routes.lecturer.question.true_false.create, { state: { courseId: courseId } });
         break;
       case "code":
-        navigate(routes.lecturer.question.code.create, { state: { courseId: courseId } });
+        navigate(routes.lecturer.question.code.create, {
+          state: { courseId: courseId, isCreateExam: true }
+        });
         break;
       default:
         break;
@@ -615,6 +617,12 @@ export default function ExamCreated() {
       sectionId: ""
     }
   });
+
+  useEffect(() => {
+    if (sections.length > 0) {
+      setValue("sectionId", sections[0].sectionId);
+    }
+  }, [sections]);
 
   useEffect(() => {
     const savedFormData = localStorage.getItem("formData");
