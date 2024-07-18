@@ -81,8 +81,6 @@ const EditTrueFalseQuestion = (props: Props) => {
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   if (props.insideCrumb) setHeaderHeight(0);
 
-  const urlParams = useParams();
-
   const handleGetMultichoiceQuestionDetailForm = async (questionId: string) => {
     try {
       const questionCommands: PostQuestionDetailList = {
@@ -151,9 +149,7 @@ const EditTrueFalseQuestion = (props: Props) => {
   const location = useLocation();
   const isQuestionBank = location.state?.isQuestionBank;
   const isLecturerEditQuestion = location.state?.isLecturerEditQuestion;
-  const isOrgQuestionBank = location.state?.isOrgQuestionBank;
-  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
-  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
+  const isOrgAdminQuestionBank = location.state?.isOrgAdminQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
 
@@ -197,6 +193,21 @@ const EditTrueFalseQuestion = (props: Props) => {
             })
           )
         );
+
+        // navigate back to question bank if it's from question bank
+        if (isQuestionBank) {
+          navigate(
+            isLecturerEditQuestion
+              ? routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")
+              : routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || "")
+          );
+        } else {
+          navigate(
+            routes.lecturer.exam.edit
+              .replace(":courseId", courseId || "")
+              .replace(":examId", examId || "")
+          );
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -240,7 +251,7 @@ const EditTrueFalseQuestion = (props: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (courseId) getCourseData(courseId);
+      if (courseId && !isOrgAdminQuestionBank) getCourseData(courseId);
 
       if (questionId) {
         const res = await handleGetMultichoiceQuestionDetailForm(questionId);
@@ -288,11 +299,15 @@ const EditTrueFalseQuestion = (props: Props) => {
   const breadCrumbData = isQuestionBank
     ? [
         {
-          navLink: routes.lecturer.question_bank.path,
+          navLink: isLecturerEditQuestion
+            ? routes.lecturer.question_bank.path
+            : routes.org_admin.question_bank.root,
           label: i18next.format(t("common_question_bank"), "firstUppercase")
         },
         {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+          navLink: isLecturerEditQuestion
+            ? routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")
+            : routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || ""),
           label: categoryName
         }
       ]
@@ -362,13 +377,31 @@ const EditTrueFalseQuestion = (props: Props) => {
               </Stack>
               <Button
                 onClick={() => {
-                  navigate(
-                    props.isNewQuestion
-                      ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
-                      : routes.lecturer.exam.edit
-                          .replace(":courseId", courseId || "")
-                          .replace(":examId", examId || "")
-                  );
+                  if (isQuestionBank) {
+                    if (isLecturerEditQuestion) {
+                      navigate(
+                        routes.lecturer.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId || ""
+                        )
+                      );
+                    } else if (isOrgAdminQuestionBank) {
+                      navigate(
+                        routes.org_admin.question_bank.detail.replace(
+                          ":categoryId",
+                          categoryId || ""
+                        )
+                      );
+                    }
+                  } else {
+                    navigate(
+                      props.isNewQuestion
+                        ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
+                        : routes.lecturer.exam.edit
+                            .replace(":courseId", courseId || "")
+                            .replace(":examId", examId || "")
+                    );
+                  }
                 }}
                 startDecorator={<ChevronLeftIcon fontSize='small' />}
                 color='neutral'
@@ -715,14 +748,23 @@ const EditTrueFalseQuestion = (props: Props) => {
                     variant='outlined'
                     translation-key='common_cancel'
                     onClick={() => {
-                      if (isQuestionBank)
-                        navigate(
-                          routes.lecturer.question_bank.detail.replace(
-                            ":categoryId",
-                            categoryId ?? ""
-                          )
-                        );
-                      else
+                      if (isQuestionBank) {
+                        if (isLecturerEditQuestion) {
+                          navigate(
+                            routes.lecturer.question_bank.detail.replace(
+                              ":categoryId",
+                              categoryId || ""
+                            )
+                          );
+                        } else if (isOrgAdminQuestionBank) {
+                          navigate(
+                            routes.org_admin.question_bank.detail.replace(
+                              ":categoryId",
+                              categoryId || ""
+                            )
+                          );
+                        }
+                      } else {
                         navigate(
                           props.isNewQuestion
                             ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
@@ -730,6 +772,7 @@ const EditTrueFalseQuestion = (props: Props) => {
                                 .replace(":courseId", courseId || "")
                                 .replace(":examId", examId || "")
                         );
+                      }
                     }}
                   >
                     {t("common_cancel")}

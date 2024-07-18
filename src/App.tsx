@@ -350,6 +350,31 @@ const router = createHashRouter(
                 path={routes.lecturer.question_bank.edit_question.edit_code_question}
                 element={<LecturerCodeQuestionDetails />}
               />
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_essay_question}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={false} />}
+              />
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_multi_question}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={false}
+                  />
+                }
+              />
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_short_question}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={false} />
+                }
+              />
+              <Route
+                path={routes.lecturer.question_bank.edit_question.edit_true_false_question}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
+                }
+              />
 
               {/*  question bank */}
               <Route
@@ -422,6 +447,31 @@ const router = createHashRouter(
               <Route
                 path={routes.org_admin.question_bank.edit_question.edit_code_question}
                 element={<OrgAdminCodeQuestionDetails />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_essay_question}
+                element={<EditEssayQuestion qtype={qtype.essay.code} isNewQuestion={false} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_multi_question}
+                element={
+                  <EditMultichoiceQuestion
+                    qtype={qtype.multiple_choice.code}
+                    isNewQuestion={false}
+                  />
+                }
+              />
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_short_question}
+                element={
+                  <EditShortAnswerQuestion qtype={qtype.short_answer.code} isNewQuestion={false} />
+                }
+              />
+              <Route
+                path={routes.org_admin.question_bank.edit_question.edit_true_false_question}
+                element={
+                  <EditTrueFalseQuestion qtype={qtype.true_false.code} isNewQuestion={false} />
+                }
               />
             </Route>
             <Route

@@ -7,7 +7,6 @@ import {
   GridActionsCellItem,
   GridCallbackDetails,
   GridColDef,
-  GridEventListener,
   GridPaginationModel,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
@@ -201,6 +200,7 @@ const QuestionListOfCourse = () => {
                 {
                   state: {
                     isQuestionBank: true,
+                    isOrgAdminQuestionBank: true,
                     categoryName: categoryState.categoryDetails?.name
                   }
                 }

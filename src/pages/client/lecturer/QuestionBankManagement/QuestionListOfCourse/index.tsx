@@ -204,6 +204,7 @@ const QuestionListOfCourse = () => {
                 {
                   state: {
                     isQuestionBank: true,
+                    isLecturerEditQuestion: true,
                     categoryName: categoryState.categoryDetails?.name
                   }
                 }
