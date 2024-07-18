@@ -50,9 +50,9 @@ interface Props {
 
 const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
+
   const { loggedUser } = useAuth();
-  // if (props.insideCrumb) setHeaderHeight(0);
+
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
@@ -400,7 +400,10 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
   return (
     <Grid className={classes.root}>
       <Header />
-      <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+      <Container
+        style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+        className={classes.container}
+      >
         <FormProvider {...codeQuestionFormMethod}>
           <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
             <Box>

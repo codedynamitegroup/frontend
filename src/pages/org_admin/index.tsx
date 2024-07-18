@@ -9,6 +9,7 @@ import qtype from "utils/constant/Qtype";
 import CourseTypeManagementOrganizationAdmin from "./CourseTypeManagement";
 import CourseManagementOrganizationAdmin from "./CourseTypeManagement/CourseManagement";
 import EditCourseDetails from "./CourseTypeManagement/CourseManagement/Details";
+import CreateCourse from "./CourseTypeManagement/CourseManagement/Create";
 
 const EditOrganizationDetails = lazy(() => import("./EditOrganizationDetails"));
 const UserManagement = lazy(() => import("./UserManagement/UserManagement"));
@@ -138,6 +139,7 @@ const OrganizationAdminHomepage = (props: Props) => {
               path={"course-type/:courseTypeId/course/edit/:courseId/*"}
               element={<EditCourseDetails />}
             />
+            <Route path={"course-type/:courseTypeId/course/create/"} element={<CreateCourse />} />
           </Routes>
         </Box>
         {/* </Box> */}

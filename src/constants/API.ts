@@ -121,7 +121,9 @@ export const API = {
       GET_ALL_COURSES_BY_ORGANIZATION_ID: "/course/course/organization/:organizationId",
       GET_ORG_ADMIN_STATISTICS: "/course/course/admin-org/statistics",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
-      COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count"
+      COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count",
+      UPDATE: "/course/course/:courseId",
+      CREATE: "/course/course"
     },
     COURSE_TYPE: {
       DEFAULT: "/course/course-type",
