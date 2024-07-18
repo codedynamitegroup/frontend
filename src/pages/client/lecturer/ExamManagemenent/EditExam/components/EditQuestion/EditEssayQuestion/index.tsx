@@ -130,8 +130,6 @@ const EditEssayQuestion = (props: Props) => {
   const navigate = useNavigate();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
-  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -608,7 +606,10 @@ const EditEssayQuestion = (props: Props) => {
         <>
           <Grid className={classes.root}>
             <Header />
-            <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+            <Container
+              style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+              className={classes.container}
+            >
               <CustomBreadCrumb
                 breadCrumbData={breadCrumbData}
                 lastBreadCrumbLabel={`${t("common_edit")} ${t("common_question_type_with_question_essay").toLowerCase()}`}

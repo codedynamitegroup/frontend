@@ -1,0 +1,28 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  height: 100%;
+  gap: 15px;
+}
+
+.textArea {
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
+  resize: none;
+  border: 1px solid var(--gray-30);
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+  }
+}
+
+#courseCreateRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0px 20px;
+}

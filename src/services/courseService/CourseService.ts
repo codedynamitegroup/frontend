@@ -1,4 +1,6 @@
 import { API } from "constants/API";
+import { CreateCourseCommand } from "models/courseService/entity/create/CreateCourseCommand";
+import { CourseUpdateCommand } from "models/courseService/entity/update/UpdateCourseCommand";
 import qs from "qs";
 import api from "utils/api";
 
@@ -100,6 +102,42 @@ export class CourseService {
       }
     } catch (error: any) {
       console.error("Failed to fetch course detail", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async editCourse(courseId: string, courseUpdateCommand: CourseUpdateCommand) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).put(`${API.COURSE.COURSE.UPDATE.replace(":courseId", courseId)}`, courseUpdateCommand);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to edit course", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+  static async createCourse(createCourseCommand: CreateCourseCommand) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).post(`${API.COURSE.COURSE.CREATE}`, createCourseCommand);
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to create course", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

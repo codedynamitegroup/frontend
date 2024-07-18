@@ -267,6 +267,7 @@
   "side_bar_dashboard": "Dashboard",
   "side_bar_contest_management": "Contest",
   "side_bar_synchronize_managment": "Synchronize",
+  "side_bar_course_management": "Course",
 
   "drag_drop_file_placeholder": "Drag and drop file or click to upload file",
 
@@ -560,6 +561,14 @@
   "course_student_assignment_grade": "Grade",
   "course_student_assignment_feedback": "Feedback",
   "course_student_assignment_grade_on": "Grade on",
+
+  "course_type_management": "Course type management",
+  "course_type_name": "Course type name",
+  "course_name": "Course name",
+  "course_information": "Course information",
+  "course_assign_member": "Assign member",
+  "course_is_visibled": "Course is visibled",
+  "course_create": "Create course",
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",

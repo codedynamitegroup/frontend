@@ -397,6 +397,7 @@ export const routes = {
       detail: "/org-admin/course-type/:courseTypeId",
       course: {
         root: "/org-admin/course-type/:courseTypeId/course",
+        create: "/org-admin/course-type/:courseTypeId/course/create",
         edit: {
           root: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/*",
           details: "/org-admin/course-type/:courseTypeId/course/edit/:courseId/details",

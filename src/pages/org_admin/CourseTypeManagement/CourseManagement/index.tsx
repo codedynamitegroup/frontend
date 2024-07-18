@@ -365,6 +365,13 @@ const CourseManagementOrganizationAdmin = () => {
                 ]
               }}
               filters={filters}
+              createBtnText={t("common_add_new")}
+              onClickCreate={() => {
+                if (!courseTypeId) return;
+                navigate(
+                  routes.org_admin.course_type.course.create.replace(":courseTypeId", courseTypeId)
+                );
+              }}
               handleChangeFilters={(filters: { key: string; value: string }[]) => {
                 setFilters(filters);
               }}

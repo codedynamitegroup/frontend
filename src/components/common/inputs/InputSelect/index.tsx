@@ -150,7 +150,7 @@ const InputSelect = memo((props: InputSelectProps) => {
   return (
     <FormControl className={className} sx={{ width: fullWidth ? "100%" : "auto" }}>
       <Grid container spacing={1} columns={12}>
-        <Grid item xs={title ? 12 : 0} md={title ? 4 : 0}>
+        <Grid item xs={title ? 12 : 0} md={title ? 3 : 0}>
           {title && (
             <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
               <TextTitle>{title}</TextTitle>
@@ -158,7 +158,7 @@ const InputSelect = memo((props: InputSelectProps) => {
             </Box>
           )}
         </Grid>
-        <Grid item xs={title ? 12 : 12} md={title ? 7 : 12}>
+        <Grid item xs={title ? 12 : 12} md={title ? 9 : 12}>
           {control ? (
             <>
               <Controller
