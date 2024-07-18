@@ -29,6 +29,7 @@ import contestIcon from "assets/img/icon/notification/trophy-on-daily-calendar-p
 import examIcon from "assets/img/icon/notification/exam-svgrepo-com.svg";
 import homeworkIcon from "assets/img/icon/notification/homework-svgrepo-com.svg";
 import syncIcon from "assets/img/icon/notification/sync-svgrepo-com.svg";
+import announcementIcon from "assets/img/icon/notification/announcement-svgrepo-com.svg";
 
 import tempContest1 from "assets/img/temp/contest/1.png";
 import tempContest2 from "assets/img/temp/contest/2.png";
@@ -128,6 +129,13 @@ const images = {
     organizationImageBg
   }
 };
-const notificaionIcon = { deadlineIcon, contestIcon, examIcon, homeworkIcon, syncIcon };
+const notificaionIcon = {
+  deadlineIcon,
+  contestIcon,
+  examIcon,
+  homeworkIcon,
+  syncIcon,
+  announcementIcon
+};
 export { notificaionIcon };
 export default images;

@@ -27,7 +27,8 @@ enum NotificationType {
   DEADLINE,
   HOMEWORK,
   CONTEST,
-  SYNC
+  SYNC,
+  POST
 }
 interface ContentContainer {
   iconPath: string;
@@ -83,6 +84,10 @@ const NotificationItem = (props: NotificationItemProps) => {
   mapTypeToContent.set(NotificationType.SYNC, {
     iconPath: notificaionIcon.syncIcon,
     generalTitle: t("notification_title_system_sync")
+  });
+  mapTypeToContent.set(NotificationType.POST, {
+    iconPath: notificaionIcon.announcementIcon,
+    generalTitle: t("notification_title_new_post")
   });
 
   const generalContent: ContentContainer | undefined = mapTypeToContent.get(props.type);

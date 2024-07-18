@@ -23,7 +23,7 @@ import classes from "./styles.module.scss";
 const HeaderNotification = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, loggedUser } = useAuth();
 
   const socketState = useSelector((state: RootState) => state.socket);
 
@@ -191,12 +191,14 @@ const HeaderNotification = () => {
     if (isLoggedIn && socketState && socketState.socket) {
       socketState.socket.on("get_notification", (data: SocketData) => {
         handleGetAllMyNotification({});
-        dispatch(
-          setInfoMess({
-            title: data?.message?.subject || "Thông báo",
-            content: data?.message?.fullMessage || "Nội dung thông báo"
-          })
-        );
+        if (loggedUser.userId !== data?.message?.userFrom?.userId) {
+          dispatch(
+            setInfoMess({
+              title: data?.message?.subject || "",
+              content: data?.message?.component === "POST" ? "" : data?.message?.fullMessage || ""
+            })
+          );
+        }
       });
     }
     return () => {
@@ -204,7 +206,7 @@ const HeaderNotification = () => {
         socketState.socket.off("get_notification");
       }
     };
-  }, [dispatch, handleGetAllMyNotification, isLoggedIn, socketState]);
+  }, [dispatch, handleGetAllMyNotification, isLoggedIn, loggedUser.userId, socketState]);
 
   return (
     <>
@@ -348,7 +350,9 @@ const HeaderNotification = () => {
                             ? NotificationType.EXAM
                             : notification.component === NotificationComponentTypeEnum.ASSIGNMENT
                               ? NotificationType.HOMEWORK
-                              : NotificationType.SYNC
+                              : notification.component === NotificationComponentTypeEnum.POST
+                                ? NotificationType.POST
+                                : NotificationType.SYNC
                       }
                       content={notification.fullMessage}
                       time={standardlizeUTCStringToLocaleString(
