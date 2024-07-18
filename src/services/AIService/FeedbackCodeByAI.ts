@@ -6,41 +6,6 @@ import splitPrompt from "utils/SplitPrompt";
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GOOGLE_GEMINI_AI_KEY || "");
 
-interface ICorrectnessFeedback {
-  accuracy: string;
-  completeness: string;
-  consistency: string;
-}
-
-interface IEfficiencyFeedback {
-  executionTime: string;
-  memory: string;
-  complexity: string;
-}
-
-interface IMaintainabilityFeedback {
-  readability: string;
-  reuseability: string;
-  extensibility: string;
-}
-
-interface IScalabilityFeedback {
-  dataScalability: string;
-  functionalScalability: string;
-}
-
-interface IAnalysisFeedback {
-  correctness: ICorrectnessFeedback;
-  efficiency: IEfficiencyFeedback;
-  maintainability: IMaintainabilityFeedback;
-  scalability: IScalabilityFeedback;
-}
-
-interface IFeedbackCode {
-  analysis: IAnalysisFeedback;
-  conclusion: string;
-}
-
 interface IFeedbackCodeByAI {
   id: number;
   feedback: string;
