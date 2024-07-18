@@ -72,10 +72,25 @@ export default function DetailSolution({
     language: languageName
   };
   const plainDescription = `
-  ProblemStatement: ${convert(codeQuestion.problemStatement ?? "")}
-  InputFormat: ${convert(codeQuestion.inputFormat ?? "")}
-  OutputFormat: ${convert(codeQuestion.outputFormat ?? "")}
-  Constraints: ${convert(codeQuestion.constraints ?? "")}
+  ProblemStatement:
+	""
+	${convert(codeQuestion.problemStatement ?? "")}
+	""
+
+  InputFormat:
+	""
+	${convert(codeQuestion.inputFormat ?? "")}
+	""
+
+  OutputFormat: 
+	""
+	${convert(codeQuestion.outputFormat ?? "")}
+	""
+
+  Constraints:
+	""
+	${convert(codeQuestion.constraints ?? "")}
+	""
   `;
 
   const codeQuestionProblemStatement: ICodeQuestion = {
