@@ -85,8 +85,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
-  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -280,7 +278,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
           <AlertDialog isBlocking={openAlertDiaglog} />
-          <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+          <Container
+            style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+            className={classes.container}
+          >
             <CustomBreadCrumb
               breadCrumbData={breadCrumbData}
               lastBreadCrumbLabel={t("create_question_short_answer")}

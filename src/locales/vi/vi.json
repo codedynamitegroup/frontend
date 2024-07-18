@@ -552,6 +552,14 @@
   "course_student_assignment_feedback": "Nhận xét",
   "course_student_assignment_grade_on": "Ngày chấm",
 
+  "course_type_management": "Quản lý loại khóa học",
+  "course_type_name": "Tên loại khóa học",
+  "course_name": "Tên khóa học",
+  "course_information": "Thông tin khóa học",
+  "course_assign_member": "Thêm thành viên",
+  "course_is_visibled": "Hiển thị khóa học",
+  "course_create": "Tạo khóa học",
+
   "assignment_submitted": "Bài tập được nộp ",
   "assignment_overdue": "Bài tập đã quá hạn ",
   "assignment_submitted_late": "Bài tập đã nộp trễ ",
@@ -775,6 +783,7 @@
   "question_bank_management": "Quản lý ngân hàng câu hỏi",
   "side_bar_question_bank_management": "Ngân hàng câu hỏi",
   "side_bar_synchronize_managment": "Đồng bộ",
+  "side_bar_course_management": "Khóa học",
 
   "code_question_name": "Tên câu hỏi code",
   "code_question_difficulty": "Độ khó",

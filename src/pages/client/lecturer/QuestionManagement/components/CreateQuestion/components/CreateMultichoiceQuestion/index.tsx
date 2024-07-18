@@ -79,8 +79,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const navigate = useNavigate();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
-  if (props.insideCrumb) setHeaderHeight(0);
 
   const urlParams = useParams();
 
@@ -373,7 +371,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
       <Grid className={classes.root}>
         <Header />
         <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
-          <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+          <Container
+            style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+            className={classes.container}
+          >
             <CustomBreadCrumb
               breadCrumbData={breadCrumbData}
               lastBreadCrumbLabel={t("create_question_multiple_choice")}

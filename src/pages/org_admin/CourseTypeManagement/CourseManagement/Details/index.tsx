@@ -61,7 +61,7 @@ const EditCourseDetails = () => {
                     ":courseTypeId",
                     courseTypeId || ":courseTypeId"
                   ),
-                  label: t("course_management")
+                  label: t("common_course_management")
                 }
               ]}
               lastBreadCrumbLabel={t("course_information")}
@@ -100,8 +100,8 @@ const EditCourseDetails = () => {
               <Tab
                 sx={{ textTransform: "none" }}
                 label={
-                  <ParagraphBody translate-key='course_list_users'>
-                    {t("course_list_users")}
+                  <ParagraphBody translate-key='course_detail_participant'>
+                    {t("course_detail_participant")}
                   </ParagraphBody>
                 }
                 value={1}
