@@ -1240,6 +1240,10 @@
   "num_of_certificate_courses": "Number of certificate courses",
   "topic_name": "Topic name",
   "is_single_programming_language": "Single programming language",
+  "question_management_edit_question_success": "Edit {{questionType}} question successfully ",
+  "question_management_edit_question_failed": "Edit {{questionType}} question failed",
+  "question_management_create_question_failed": "Create {{questionType}} question failed",
+  "question_management_create_question_success": "Create {{questionType}} question successfully",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",

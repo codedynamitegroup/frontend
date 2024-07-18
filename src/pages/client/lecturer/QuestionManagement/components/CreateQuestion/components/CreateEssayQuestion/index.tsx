@@ -32,7 +32,6 @@ import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Footer from "components/Footer";
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
 import JoySelect from "components/common/JoySelect";
@@ -51,6 +50,7 @@ import ModeIcon from "@mui/icons-material/Mode";
 import { Card } from "@mui/joy";
 import { RootState } from "store";
 import { EssayQuestionService } from "services/coreService/QtypeEssayQuestionService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface Props {
   courseId?: string;
@@ -117,9 +117,7 @@ const CreateEssayQuestion = (props: Props) => {
   const [submitCount, setSubmitCount] = useState(0);
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
+
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const navigate = useNavigate();
@@ -267,26 +265,14 @@ const CreateEssayQuestion = (props: Props) => {
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
-        setSnackbarType(AlertType.Success);
-        setSnackbarContent(
-          t("question_management_create_question_success", {
-            questionType: t("common_question_type_multi_choice")
-          })
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-        setSnackbarType(AlertType.Error);
-        setSnackbarContent(
-          t("question_management_create_question_failed", {
-            questionType: t("common_question_type_multi_choice")
-          })
-        );
-      })
-      .finally(() => {
-        setSubmitLoading(false);
-        setOpenSnackbar(true);
 
+        dispatch(
+          setSuccessMess(
+            t("question_management_create_question_success", {
+              questionType: t("common_question_type_essay")
+            })
+          )
+        );
         if (isLecturerCreateQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
@@ -294,6 +280,19 @@ const CreateEssayQuestion = (props: Props) => {
         else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(
+          setErrorMess(
+            t("question_management_create_question_failed", {
+              questionType: t("common_question_type_essay")
+            })
+          )
+        );
+      })
+      .finally(() => {
+        setSubmitLoading(false);
       });
   };
 
@@ -1229,14 +1228,6 @@ const CreateEssayQuestion = (props: Props) => {
               </Stack>
             </Box>
           </form>
-
-          <SnackbarAlert
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            open={openSnackbar}
-            setOpen={setOpenSnackbar}
-            type={snackbarType}
-            content={snackbarContent}
-          />
         </Container>
 
         <Footer />

@@ -31,7 +31,6 @@ import Option from "@mui/joy/Option";
 import JoyButton from "@mui/joy/Button";
 import Footer from "components/Footer";
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 
@@ -42,6 +41,7 @@ import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDet
 import { Card } from "@mui/joy";
 import { RootState } from "store";
 import { ShortAnswerQuestionService } from "services/coreService/QtypeShortAnswerQuestionService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface Props {
   qtype: String;
@@ -80,9 +80,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
 
   // submit animation
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
@@ -186,28 +183,15 @@ const CreateShortAnswerQuestion = (props: Props) => {
     ShortAnswerQuestionService.createShortAnswerQuestion(newQuestion)
       .then((res) => {
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
-      })
-      .finally(() => {
-        console.log("finally");
-        setSnackbarType(AlertType.Success);
-        setSnackbarContent(
-          t("question_management_create_question_success", {
-            questionType: t("common_question_type_short")
-          })
+
+        dispatch(
+          setSuccessMess(
+            t("question_management_create_question_success", {
+              questionType: t("common_question_type_short")
+            })
+          )
         );
-      })
-      .catch((err) => {
-        console.log(err);
-        setSnackbarType(AlertType.Error);
-        setSnackbarContent(
-          t("question_management_create_question_failed", {
-            questionType: t("common_question_type_short")
-          })
-        );
-      })
-      .finally(() => {
-        setSubmitLoading(false);
-        setOpenSnackbar(true);
+
         if (isLecturerCreateQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
@@ -215,6 +199,20 @@ const CreateShortAnswerQuestion = (props: Props) => {
         else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+      })
+
+      .catch((err) => {
+        console.log(err);
+        dispatch(
+          setErrorMess(
+            t("question_management_create_question_failed", {
+              questionType: t("common_question_type_short")
+            })
+          )
+        );
+      })
+      .finally(() => {
+        setSubmitLoading(false);
       });
   };
 
@@ -286,13 +284,6 @@ const CreateShortAnswerQuestion = (props: Props) => {
   return (
     <>
       <Grid className={classes.root}>
-        <SnackbarAlert
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          open={openSnackbar}
-          setOpen={setOpenSnackbar}
-          type={snackbarType}
-          content={snackbarContent}
-        />
         <Helmet>
           <title>Course | Create short answer question</title>
         </Helmet>

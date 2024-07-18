@@ -24,7 +24,6 @@ import isQuillEmpty from "utils/coreService/isQuillEmpty";
 import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Footer from "components/Footer";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoySelect from "components/common/JoySelect";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
@@ -41,6 +40,7 @@ import { Card } from "@mui/joy";
 import { RootState } from "store";
 import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface Props {
   qtype: String;
@@ -70,9 +70,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
   });
   const [answerOpen, setAnswerOpen] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const navigate = useNavigate();
@@ -182,9 +179,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const location = useLocation();
   const courseId = location.state?.courseId;
   const isQuestionBank = location.state?.isQuestionBank;
-  const isAdminQuestionBank = location.state?.isAdminQuestionBank;
-  const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
-  const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
+
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
@@ -221,33 +216,28 @@ const CreateMultichoiceQuestion = (props: Props) => {
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
-        setSnackbarType(AlertType.Success);
-        setSnackbarContent(
-          t("question_management_create_question_success", {
-            questionType: t("common_question_type_multi_choice")
-          })
+
+        dispatch(
+          setSuccessMess(
+            t("question_management_create_question_success", {
+              questionType: t("common_question_type_multi_choice")
+            })
+          )
         );
+        navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
       })
       .catch((err) => {
         console.log(err);
-        setSnackbarType(AlertType.Error);
-        setSnackbarContent(
-          t("question_management_create_question_failed", {
-            questionType: t("common_question_type_multi_choice")
-          })
+        dispatch(
+          setErrorMess(
+            t("question_management_create_question_failed", {
+              questionType: t("common_question_type_multi_choice")
+            })
+          )
         );
       })
       .finally(() => {
         setSubmitLoading(false);
-        setOpenSnackbar(true);
-        // if (isLecturerCreateQuestionBank)
-        //   navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else if (isOrgAdminQuestionBank)
-        //   navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else if (isQuestionBank)
-        //   navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
-        // else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
-        navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
       });
   };
 
@@ -339,13 +329,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
   ];
   return (
     <>
-      <SnackbarAlert
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        type={snackbarType}
-        content={snackbarContent}
-      />
       <Helmet>
         <title>Create multiple choice question</title>
       </Helmet>
@@ -833,14 +816,9 @@ const CreateMultichoiceQuestion = (props: Props) => {
                   variant='outlined'
                   translation-key='common_cancel'
                   onClick={() => {
-                    if (isQuestionBank)
-                      navigate(
-                        routes.lecturer.question_bank.detail.replace(
-                          ":categoryId",
-                          categoryId ?? ""
-                        )
-                      );
-                    else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+                    navigate(
+                      routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? "")
+                    );
                   }}
                 >
                   {t("common_cancel")}

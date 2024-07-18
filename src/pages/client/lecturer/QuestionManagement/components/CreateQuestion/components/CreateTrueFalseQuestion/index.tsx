@@ -1,11 +1,10 @@
 import { Box, Container, Grid, Stack, Divider } from "@mui/material";
 import Header from "components/Header";
 import TextEditor from "components/editor/TextEditor";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { PostMultipleChoiceQuestion } from "models/coreService/entity/MultipleChoiceQuestionEntity";
@@ -20,7 +19,6 @@ import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn"
 import Footer from "components/Footer";
 
 import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
-import SnackbarAlert, { AlertType } from "components/common/SnackbarAlert";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
@@ -38,6 +36,7 @@ import { Card } from "@mui/joy";
 import ParagraphBody from "components/text/ParagraphBody";
 import { RootState } from "store";
 import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 
 interface Props {
   qtype: String;
@@ -61,9 +60,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
     return i18next.language;
   });
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<AlertType>(AlertType.Error);
-  const [snackbarContent, setSnackbarContent] = useState<string>("");
+
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
@@ -172,25 +169,14 @@ const CreateTrueFalseQuestion = (props: Props) => {
       .then((res) => {
         console.log(res);
         if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
-        setSnackbarType(AlertType.Success);
-        setSnackbarContent(
-          t("question_management_create_question_success", {
-            questionType: t("common_question_type_multi_choice")
-          })
+
+        dispatch(
+          setSuccessMess(
+            t("question_management_create_question_success", {
+              questionType: t("common_question_type_yes_no")
+            })
+          )
         );
-      })
-      .catch((err) => {
-        console.log(err);
-        setSnackbarType(AlertType.Error);
-        setSnackbarContent(
-          t("question_management_create_question_failed", {
-            questionType: t("common_question_type_multi_choice")
-          })
-        );
-      })
-      .finally(() => {
-        setSubmitLoading(false);
-        setOpenSnackbar(true);
         if (isLecturerCreateQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
@@ -198,6 +184,19 @@ const CreateTrueFalseQuestion = (props: Props) => {
         else if (isQuestionBank)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else navigate(routes.lecturer.exam.create.replace(":courseId", courseId));
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(
+          setErrorMess(
+            t("question_management_create_question_failed", {
+              questionType: t("common_question_type_yes_no")
+            })
+          )
+        );
+      })
+      .finally(() => {
+        setSubmitLoading(false);
       });
   };
 
@@ -276,13 +275,6 @@ const CreateTrueFalseQuestion = (props: Props) => {
 
   return (
     <>
-      <SnackbarAlert
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        type={snackbarType}
-        content={snackbarContent}
-      />
       <Helmet>
         <title>Course | Create true false question</title>
       </Helmet>
