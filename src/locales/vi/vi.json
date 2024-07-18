@@ -863,7 +863,7 @@
   "code_management_detail_update_test_case": "Cập nhật test case",
   "code_management_detail_template_tip": "Để đọc dữ liệu test case đầu vào một cách tiêu chuẩn, bạn có thể thêm một code mẫu vào đây và chuyển đổi sang những ngôn ngữ lập trình khác nhau",
   "code_management_detail_template": "Code mẫu",
-  "code_management_detail_template_description": "Xem các đoạn mã nguồn đã được tạo tự động ở bên dưới",
+  "code_management_detail_template_description": "Xem các đoạn mã nguồn đã được tạo tự động ở bên dưới. Bạn có thể thay đổi bên dưới nếu AI không đưa ra kết quả mà bạn mong muốn",
   "code_management_detail_no_language_selected": "Không có ngôn ngữ lập trình nào được chọn ",
   "code_management_detail_template_create": "Tạo code mẫu",
   "code_management_detail_lang_description": "Dưới đây là danh sách các ngôn ngữ lập trình có sẵn",

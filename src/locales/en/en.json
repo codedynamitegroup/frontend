@@ -868,7 +868,7 @@
   "code_management_detail_update_test_case": "Update test case",
   "code_management_detail_template_tip": "To read input test case data in a standard way, you can add a sample code here and convert it to different programming languages.",
   "code_management_detail_template": "Code template",
-  "code_management_detail_template_description": "See the automatically generated source code snippets below",
+  "code_management_detail_template_description": "See the automatically generated source code snippets below. You can edit here if the AI does not deliver your desire result",
   "code_management_detail_no_language_selected": "There are no programming languages selected ",
   "code_management_detail_template_create": "Create template",
   "code_management_detail_lang_description": "Below is a list of available programming languages",
