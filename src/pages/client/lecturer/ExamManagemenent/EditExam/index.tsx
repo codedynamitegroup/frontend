@@ -60,6 +60,7 @@ import moment from "moment";
 import {
   clearExamCreate,
   clearQuestionCreate,
+  deleteQuestionCreate,
   setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
@@ -80,6 +81,11 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setSuccessMess } from "reduxes/AppStatus";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import "react-quill/dist/quill.bubble.css";
+import ReactQuill from "react-quill";
 
 const drawerWidth = 400;
 
@@ -195,6 +201,11 @@ export default function ExamEdit() {
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const [exam, setExam] = useState<ExamEntity>();
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -208,7 +219,18 @@ export default function ExamEdit() {
       {
         field: "questionText",
         headerName: t("exam_management_create_question_description"),
-        renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
+        renderCell: (params) => (
+          <Box
+            height={"100%"}
+            overflow={"auto"}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <ReactQuill value={params.value ?? ""} readOnly={true} theme={"bubble"} />
+          </Box>
+        ),
         flex: 2,
         minWidth: 300
       },
@@ -285,7 +307,14 @@ export default function ExamEdit() {
             icon={<PreviewIcon />}
             label='Preview'
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={() => {
+              setDeletedQuestionId(params.row.id);
+              setIsOpenConfirmDelete(true);
+            }}
+          />
         ]
       }
     ],
@@ -673,6 +702,18 @@ export default function ExamEdit() {
         />
       )}
 
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question from exam?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={async () => {
+          dispatch(deleteQuestionCreate(deletedQuestionId));
+          setIsOpenConfirmDelete(false);
+          dispatch(setSuccessMess("Delete question successfully"));
+        }}
+      />
+
       <PickQuestionFromQuestionBankDialog
         open={isAddQuestionFromBankDialogOpen}
         handleClose={handleCloseAddQuestionFromBankDialog}
@@ -717,48 +758,29 @@ export default function ExamEdit() {
               open={open}
             >
               <Toolbar>
-                <Box id={classes.breadcumpWrapper}>
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                    translation-key='common_course_management'
-                  >
-                    {t("common_course_management")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.information.replace(":courseId", courseId ?? "")
+                <CustomBreadCrumb
+                  breadCrumbData={[
+                    {
+                      label: t("common_course_management"),
+                      navLink: routes.lecturer.course.management
+                    },
+                    {
+                      label: courseData?.name ?? "",
+                      navLink: routes.lecturer.course.information.replace(
+                        ":courseId",
+                        courseId ?? ""
+                      )
+                    },
+                    {
+                      label: t("course_detail_assignment_list"),
+                      navLink: routes.lecturer.course.assignment.replace(
+                        ":courseId",
+                        courseId ?? ""
                       )
                     }
-                  >
-                    {courseData?.name}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.assignment.replace(":courseId", courseId ?? "")
-                      )
-                    }
-                    translation-key='course_detail_assignment_list'
-                  >
-                    {t("course_detail_assignment_list")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_edit_exam")}
-                  </ParagraphSmall>
-                </Box>
+                  ]}
+                  lastBreadCrumbLabel={t("course_lecturer_assignment_edit_exam")}
+                />
 
                 <IconButton
                   color='inherit'

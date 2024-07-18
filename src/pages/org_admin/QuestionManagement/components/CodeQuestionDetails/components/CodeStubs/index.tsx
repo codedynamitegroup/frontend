@@ -12,10 +12,11 @@ import { useTranslation } from "react-i18next";
 import CodeConverterAI from "services/AIService/CodeConverterAI";
 import JoyButton from "@mui/joy/Button";
 import { ProgrammingLanguageAdminEntity } from "models/codeAssessmentService/entity/ProgrammingLanguageAdminEntity";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { dispatch } from "d3";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { useDispatch } from "react-redux";
+import { encodeBase64 } from "utils/base64";
 
 type Props = {};
 
@@ -32,7 +33,11 @@ type ProgrammingLanguageFormValue = {
 const CodeQuestionCodeStubs = memo((props: Props) => {
   const { t } = useTranslation();
   const programmingLanguageMethod = useFormContext<ProgrammingLanguageFormValue>();
-
+  const programmingLanguageFieldArray = useFieldArray({
+    control: programmingLanguageMethod.control,
+    name: "programmingLanguages",
+    keyName: "plid"
+  });
   const availableLanguage = programmingLanguageMethod.getValues("programmingLanguages");
   const selectedLanguageNames: ICodeConverterRequest[] = availableLanguage
     .filter((value) => value.choosen)
@@ -193,15 +198,31 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
             </FormControl>
           </Box>
           <Box className={classes.codeStubBody} style={{ height: `350px` }}>
-            <CodeEditor
-              value={
-                selectedCodeStubLanguage > -1
-                  ? availableLanguage[selectedCodeStubLanguage].bodyCode
-                  : ""
-              }
-              readOnly={true}
-              height='100%'
-            />
+            {programmingLanguageFieldArray.fields.map(
+              (value, index) =>
+                value.choosen &&
+                index === selectedCodeStubLanguage && (
+                  <Controller
+                    key={value.plid}
+                    name={`programmingLanguages.${index}.bodyCode`}
+                    control={programmingLanguageMethod.control}
+                    render={({ field: { value, onChange } }) => (
+                      <CodeEditor
+                        value={
+                          value
+                          // selectedCodeStubLanguage > -1
+                          //   ? availableLanguage[selectedCodeStubLanguage].bodyCode
+                          //   : ""
+                        }
+                        onChange={(val) => {
+                          onChange(val);
+                        }}
+                        height='100%'
+                      />
+                    )}
+                  />
+                )
+            )}
           </Box>
         </Box>
       </Box>

@@ -2,13 +2,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import TabPanel from "@mui/lab/TabPanel";
-import { Container, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { red } from "@mui/material/colors";
 import {
   GridActionsCellItem,
   GridCallbackDetails,
   GridColDef,
-  GridEventListener,
   GridPaginationModel,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
@@ -31,7 +30,6 @@ import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.bubble.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
@@ -45,6 +43,7 @@ import qtype from "utils/constant/Qtype";
 import AccessedUserListDialog from "./component/AccessedUserListDialog";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import "react-quill/dist/quill.bubble.css";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -102,9 +101,16 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return (
-          <ParagraphBody>
-            <div dangerouslySetInnerHTML={{ __html: params.row.questionText ?? "" }}></div>
-          </ParagraphBody>
+          <Box
+            height={"100%"}
+            overflow={"auto"}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <ReactQuill value={params.row.questionText ?? ""} readOnly={true} theme={"bubble"} />
+          </Box>
         );
       }
     },
