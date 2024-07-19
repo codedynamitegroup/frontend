@@ -18,6 +18,7 @@ export interface ExamEntity {
   gradeMethod: string;
   createdAt?: Date;
   updatedAt?: Date;
+  sectionId?: string;
 }
 
 export interface ReduxExamEntity {

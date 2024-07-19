@@ -69,8 +69,6 @@ const AICreateQuestion = (props: Props) => {
   const { categoryId } = useParams<{ categoryId: string }>();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState<number>(sidebarStatus.headerHeight);
-  if (props.insideCrumb) setHeaderHeight(0);
 
   const [modeEdit, setModeEdit] = useState(false);
   const [questions, setQuestions] = useState<IQuestion[]>([]);
@@ -172,7 +170,10 @@ const AICreateQuestion = (props: Props) => {
   return (
     <Grid className={classes.root}>
       <Header />
-      <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+      <Container
+        style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+        className={classes.container}
+      >
         {/* <Box className={classes.tabWrapper}>
           <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
             <span

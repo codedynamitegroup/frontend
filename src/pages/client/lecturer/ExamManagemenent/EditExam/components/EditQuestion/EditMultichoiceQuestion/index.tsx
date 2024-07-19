@@ -89,8 +89,6 @@ const EditMultichoiceQuestion = (props: Props) => {
   const navigate = useNavigate();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
-  const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
-  if (props.insideCrumb) setHeaderHeight(0);
 
   const handleGetMultichoiceQuestionDetailForm = async (questionId: string) => {
     try {
@@ -446,7 +444,10 @@ const EditMultichoiceQuestion = (props: Props) => {
           <Header />
 
           <form onSubmit={handleSubmit(submitHandler, () => setSubmitCount((count) => count + 1))}>
-            <Container style={{ marginTop: `${headerHeight}px` }} className={classes.container}>
+            <Container
+              style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+              className={classes.container}
+            >
               <CustomBreadCrumb
                 breadCrumbData={breadCrumbData}
                 lastBreadCrumbLabel={`${t("common_edit")} ${t("common_question_type_with_question_multichoice").toLowerCase()}`}

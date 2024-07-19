@@ -60,6 +60,7 @@ import moment from "moment";
 import {
   clearExamCreate,
   clearQuestionCreate,
+  deleteQuestionCreate,
   setQuestionCreateFromBank
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
@@ -80,6 +81,13 @@ import { CourseService } from "services/courseService/CourseService";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
+import { setSuccessMess } from "reduxes/AppStatus";
+import CustomBreadCrumb from "components/common/Breadcrumb";
+import "react-quill/dist/quill.bubble.css";
+import ReactQuill from "react-quill";
+import { SectionService } from "services/courseService/SectionService";
+import { SectionEntity } from "models/courseService/entity/SectionEntity";
 
 const drawerWidth = 400;
 
@@ -156,6 +164,7 @@ interface FormData {
   timeLimitUnit: string;
   overdueHandling: string;
   maxAttempts: string;
+  sectionId: string;
 }
 
 export default function ExamEdit() {
@@ -195,6 +204,12 @@ export default function ExamEdit() {
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const [exam, setExam] = useState<ExamEntity>();
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [deletedQuestionId, setDeletedQuestionId] = useState<string>("");
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
+  const [sections, setSections] = useState<SectionEntity[]>([]);
 
   const tableHeading: GridColDef[] = React.useMemo(
     () => [
@@ -208,7 +223,18 @@ export default function ExamEdit() {
       {
         field: "questionText",
         headerName: t("exam_management_create_question_description"),
-        renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
+        renderCell: (params) => (
+          <Box
+            height={"100%"}
+            overflow={"auto"}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <ReactQuill value={params.value ?? ""} readOnly={true} theme={"bubble"} />
+          </Box>
+        ),
         flex: 2,
         minWidth: 300
       },
@@ -285,7 +311,14 @@ export default function ExamEdit() {
             icon={<PreviewIcon />}
             label='Preview'
           />,
-          <GridActionsCellItem icon={<DeleteIcon />} label='Delete' />
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={() => {
+              setDeletedQuestionId(params.row.id);
+              setIsOpenConfirmDelete(true);
+            }}
+          />
         ]
       }
     ],
@@ -319,6 +352,7 @@ export default function ExamEdit() {
   useEffect(() => {
     const fetchData = async () => {
       getCouseData(courseId ?? "");
+      getSection(courseId ?? "");
     };
 
     fetchData();
@@ -331,6 +365,15 @@ export default function ExamEdit() {
       setOpen(true);
     }
   }, [width]);
+
+  const getSection = async (courseId: string) => {
+    try {
+      const response = await SectionService.getSectionsByCourseId(courseId);
+      setSections(response.sections);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getCouseData = async (courseId: string) => {
     try {
@@ -349,8 +392,6 @@ export default function ExamEdit() {
     }));
 
     const formSubmitData: FormData = { ...data };
-    console.log(formSubmitData, "formSubmitData");
-
     const timeLimitUnit = formSubmitData.timeLimit;
 
     const timeLimit = (() => {
@@ -386,7 +427,8 @@ export default function ExamEdit() {
       maxAttempts: Number(formSubmitData.maxAttempts),
       shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
-      questionIds: questionIds
+      questionIds: questionIds,
+      sectionId: formSubmitData.sectionId
     };
 
     ExamService.editExam(examId ?? "", newExam)
@@ -399,10 +441,8 @@ export default function ExamEdit() {
         console.log(error);
       })
       .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-          navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
-        }, 3000);
+        setLoading(false);
+        navigate(routes.lecturer.course.assignment.replace(":courseId", courseId ?? ""));
       });
   };
 
@@ -568,7 +608,8 @@ export default function ExamEdit() {
       timeLimit: yup.number().required(t("exam_time_limit_required")),
       timeLimitUnit: yup.string().required(t("exam_time_limit_unit_required")),
       overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
-      maxAttempts: yup.string().required("exam_max_attempt_invalid")
+      maxAttempts: yup.string().required("exam_max_attempt_invalid"),
+      sectionId: yup.string().required("exam_section_required")
     });
   }, [t]);
 
@@ -588,7 +629,8 @@ export default function ExamEdit() {
       timeLimit: 0,
       timeLimitUnit: "minutes",
       overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
-      maxAttempts: "0"
+      maxAttempts: "0",
+      sectionId: ""
     }
   });
 
@@ -603,7 +645,8 @@ export default function ExamEdit() {
         timeLimit: exam.timeLimitUnit,
         timeLimitUnit: exam.unit,
         overdueHandling: exam.overdueHanding,
-        maxAttempts: exam.maxAttempts?.toString() ?? "0"
+        maxAttempts: exam.maxAttempts?.toString() ?? "0",
+        sectionId: exam.sectionId ?? ""
       });
     }
   }, [exam, reset]);
@@ -673,6 +716,18 @@ export default function ExamEdit() {
         />
       )}
 
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this question from exam?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={async () => {
+          dispatch(deleteQuestionCreate(deletedQuestionId));
+          setIsOpenConfirmDelete(false);
+          dispatch(setSuccessMess("Delete question successfully"));
+        }}
+      />
+
       <PickQuestionFromQuestionBankDialog
         open={isAddQuestionFromBankDialogOpen}
         handleClose={handleCloseAddQuestionFromBankDialog}
@@ -717,48 +772,29 @@ export default function ExamEdit() {
               open={open}
             >
               <Toolbar>
-                <Box id={classes.breadcumpWrapper}>
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() => navigate(routes.lecturer.course.management)}
-                    translation-key='common_course_management'
-                  >
-                    {t("common_course_management")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.information.replace(":courseId", courseId ?? "")
+                <CustomBreadCrumb
+                  breadCrumbData={[
+                    {
+                      label: t("common_course_management"),
+                      navLink: routes.lecturer.course.management
+                    },
+                    {
+                      label: courseData?.name ?? "",
+                      navLink: routes.lecturer.course.information.replace(
+                        ":courseId",
+                        courseId ?? ""
+                      )
+                    },
+                    {
+                      label: t("course_detail_assignment_list"),
+                      navLink: routes.lecturer.course.assignment.replace(
+                        ":courseId",
+                        courseId ?? ""
                       )
                     }
-                  >
-                    {courseData?.name}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    className={classes.cursorPointer}
-                    onClick={() =>
-                      navigate(
-                        routes.lecturer.course.assignment.replace(":courseId", courseId ?? "")
-                      )
-                    }
-                    translation-key='course_detail_assignment_list'
-                  >
-                    {t("course_detail_assignment_list")}
-                  </ParagraphSmall>
-                  <KeyboardDoubleArrowRightIcon id={classes.icArrow} />
-                  <ParagraphSmall
-                    colorname='--blue-500'
-                    translation-key='course_lecturer_assignment_create_exam'
-                  >
-                    {t("course_lecturer_assignment_edit_exam")}
-                  </ParagraphSmall>
-                </Box>
+                  ]}
+                  lastBreadCrumbLabel={t("course_lecturer_assignment_edit_exam")}
+                />
 
                 <IconButton
                   color='inherit'
@@ -1224,6 +1260,38 @@ export default function ExamEdit() {
                       "asingment_management_possibility_show",
                       "asingment_management_possibility_hide_can_access"
                     ]}
+                  />
+                </Box>
+
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("common_filter_topic")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                    titleRequired
+                  />
+                  <Controller
+                    control={control}
+                    name='sectionId'
+                    rules={{ required: "exam_section_required" }}
+                    render={({ field: { value, onChange } }) => (
+                      <BasicSelect
+                        labelId='select-assignment-section-label'
+                        value={value}
+                        onHandleChange={(value) => onChange(value)}
+                        items={
+                          sections && Array.isArray(sections)
+                            ? sections.map((item) => ({
+                                value: item.sectionId,
+                                label: item.name
+                              }))
+                            : []
+                        }
+                        backgroundColor='#FBFCFE'
+                      />
+                    )}
                   />
                 </Box>
                 <LoadButton

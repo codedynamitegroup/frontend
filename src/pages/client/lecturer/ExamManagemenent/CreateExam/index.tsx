@@ -87,6 +87,8 @@ import PickQuestionTypeToAddDialog from "./components/PickQuestionTypeToAddDialo
 import classes from "./styles.module.scss";
 import { SectionService } from "services/courseService/SectionService";
 import { SectionEntity } from "models/courseService/entity/SectionEntity";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
 
 const drawerWidth = 400;
 
@@ -221,7 +223,18 @@ export default function ExamCreated() {
       {
         field: "questionText",
         headerName: t("exam_management_create_question_description"),
-        renderCell: (params) => <div dangerouslySetInnerHTML={{ __html: params.value }}></div>,
+        renderCell: (params) => (
+          <Box
+            height={"100%"}
+            overflow={"auto"}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <ReactQuill value={params.value ?? ""} readOnly={true} theme={"bubble"} />
+          </Box>
+        ),
         flex: 2,
         minWidth: 300
       },

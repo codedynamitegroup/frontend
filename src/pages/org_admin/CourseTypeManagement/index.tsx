@@ -241,13 +241,13 @@ const CourseTypeManagementOrganizationAdmin = () => {
   }, [handleGetCourseTypes, searchValue]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchCourseTypes = async () => {
       await handleGetCourseTypes({
         searchName: ""
       });
     };
 
-    fetchUsers();
+    fetchCourseTypes();
   }, [handleGetCourseTypes]);
 
   const rowClickHandler = (params: GridRowParams<any>) => {
@@ -298,6 +298,8 @@ const CourseTypeManagementOrganizationAdmin = () => {
                   }
                 ]
               }}
+              createBtnText={t("common_add_new")}
+              onClickCreate={() => {}}
               filters={filters}
               handleChangeFilters={(filters: { key: string; value: string }[]) => {
                 setFilters(filters);

@@ -220,61 +220,6 @@ export default function AssignUserToCourseDialog({
       }
     },
     {
-      field: "isDeleted",
-      headerName: t("common_is_blocked"),
-      flex: 0.6,
-      align: "center",
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_is_blocked")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <Checkbox
-            disableRipple
-            checked={params.row.isDeleted === true ? true : false}
-            color={params.row.isDeleted ? "success" : "error"}
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent !important",
-                cursor: "default"
-              }
-            }}
-          />
-        );
-      }
-    },
-    {
-      field: "isBelongToOrganization",
-      headerName: t("common_is_belong_to_organization"),
-      flex: 0.6,
-      align: "center",
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_is_belong_to_organization")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <Checkbox
-            disableRipple
-            checked={params.row.isBelongToOrganization === true ? true : false}
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent !important",
-                cursor: "default"
-              }
-            }}
-          />
-        );
-      }
-    },
-    {
       field: "roleName",
       headerName: t("common_role"),
       flex: 1,

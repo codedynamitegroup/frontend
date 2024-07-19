@@ -386,9 +386,9 @@ const CourseUserManagement = () => {
                 setIsOpenedAddUserDialog(true);
               }}
               btnType={BtnType.Secondary}
-              translation-key='user_assign_to_course'
+              translation-key='course_assign_member'
             >
-              {t("user_assign_to_course")}
+              {t("course_assign_member")}
             </Button>
           </Box>
         </Grid>

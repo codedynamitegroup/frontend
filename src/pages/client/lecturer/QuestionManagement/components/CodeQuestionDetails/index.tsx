@@ -419,13 +419,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
         navigate(
           routes.lecturer.exam.edit
             .replace(":courseId", courseId ?? "")
-            .replace(":examId", params.examId ?? "")
+            .replace(":examId", examId ?? "")
         );
     }
-
-    // console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
-    // console.log(data);
-    // console.log(codeQuestionFormMethod.getValues("testCases"));
   };
 
   const getCouseData = async (courseId: string) => {

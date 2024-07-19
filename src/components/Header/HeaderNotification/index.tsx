@@ -191,14 +191,12 @@ const HeaderNotification = () => {
     if (isLoggedIn && socketState && socketState.socket) {
       socketState.socket.on("get_notification", (data: SocketData) => {
         handleGetAllMyNotification({});
-        if (loggedUser.userId !== data?.message?.userFrom?.userId) {
-          dispatch(
-            setInfoMess({
-              title: data?.message?.subject || "",
-              content: data?.message?.component === "POST" ? "" : data?.message?.fullMessage || ""
-            })
-          );
-        }
+        dispatch(
+          setInfoMess({
+            title: data?.message?.subject || "",
+            content: data?.message?.component === "POST" ? "" : data?.message?.fullMessage || ""
+          })
+        );
       });
     }
     return () => {
@@ -206,7 +204,7 @@ const HeaderNotification = () => {
         socketState.socket.off("get_notification");
       }
     };
-  }, [dispatch, handleGetAllMyNotification, isLoggedIn, loggedUser.userId, socketState]);
+  }, [dispatch, handleGetAllMyNotification, isLoggedIn, socketState]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
-import { Container, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { red } from "@mui/material/colors";
 import {
   GridActionsCellItem,
@@ -56,7 +56,6 @@ const QuestionListOfCourse = () => {
   const [isAddNewQuestionDialogOpen, setIsAddNewQuestionDialogOpen] = useState(false);
   const [typeToCreateNewQuestion, setTypeToCreateNewQuestion] = useState(qtype.essay.code);
   const [openPreviewEssay, setOpenPreviewEssay] = useState(false);
-  const [openAccessDialog, setOpenAccessDialog] = useState(false);
   const [openPreviewShortAnswer, setOpenPreviewShortAnswer] = React.useState(false);
   const [openPreviewTrueFalse, setOpenPreviewTrueFalse] = React.useState(false);
   const [openPreviewMultipleChoiceDialog, setOpenPreviewMultipleChoiceDialog] =
@@ -98,9 +97,16 @@ const QuestionListOfCourse = () => {
       headerClassName: classes["table-head"],
       renderCell: (params) => {
         return (
-          <ParagraphBody>
-            <div dangerouslySetInnerHTML={{ __html: params.row.questionText ?? "" }}></div>
-          </ParagraphBody>
+          <Box
+            height={"100%"}
+            overflow={"auto"}
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <ReactQuill value={params.row.questionText ?? ""} readOnly={true} theme={"bubble"} />
+          </Box>
         );
       }
     },
