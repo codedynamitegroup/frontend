@@ -21,7 +21,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { routes } from "routes/routes";
 import { AppDispatch } from "store";
-import { setErrorMess } from "reduxes/AppStatus";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import useAuth from "hooks/useAuth";
 import { PaginationList } from "models/general";
 import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
@@ -29,6 +29,9 @@ import { CourseTypeService } from "services/courseService/CourseTypeService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { red } from "@mui/material/colors";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import CreateCourseTypeDialog from "./Create";
+import EditCourseTypeDialog from "./Edit";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 interface CourseTypeDataGridProps {
   id: number;
@@ -42,6 +45,9 @@ const CourseTypeManagementOrganizationAdmin = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
   const { loggedUser } = useAuth();
+  const [isOpenCreateCourseTypeDialog, setIsOpenCreateCourseTypeDialog] = useState(false);
+  const [isOpenEditCourseTypeDialog, setIsOpenEditCourseTypeDialog] = useState(false);
+  const [editCourseType, setEditCourseType] = useState<CourseTypeEntity | undefined>();
 
   const [filters, setFilters] = useState<
     {
@@ -62,6 +68,12 @@ const CourseTypeManagementOrganizationAdmin = () => {
     items: []
   });
   const [isLoadingListCourseTypes, setIsLoadingListCourseTypes] = useState<boolean>(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [idDeletedCourseType, setIdDeletedCourseType] = useState<string | null>(null);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -180,13 +192,19 @@ const CourseTypeManagementOrganizationAdmin = () => {
             sx={{
               color: "primary.main"
             }}
-            onClick={() => {}}
+            onClick={() => {
+              setIsOpenEditCourseTypeDialog(true);
+              setEditCourseType(params.row);
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label='Cancel'
             className='textPrimary'
-            onClick={() => {}}
+            onClick={() => {
+              setIdDeletedCourseType(params.row.courseTypeId);
+              setIsOpenConfirmDelete(true);
+            }}
             sx={{
               color: red[500]
             }}
@@ -250,12 +268,60 @@ const CourseTypeManagementOrganizationAdmin = () => {
     fetchCourseTypes();
   }, [handleGetCourseTypes]);
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+  const rowClickHandler = (params: GridRowParams<any>) => {};
+  const onCloseCreateCourseTypeDialog = () => {
+    setIsOpenCreateCourseTypeDialog(false);
+  };
+  const onCloseEditCourseTypeDialog = () => {
+    setIsOpenEditCourseTypeDialog(false);
+  };
+  const onConfirmDelete = async () => {
+    if (!idDeletedCourseType) {
+      setIsOpenConfirmDelete(false);
+      return;
+    }
+    await CourseTypeService.deleteCourseType(idDeletedCourseType)
+      .then(() => {
+        dispatch(setSuccessMess("Delete course type successfully"));
+        handleGetCourseTypes({
+          searchName: ""
+        });
+      })
+      .catch((error) => {
+        dispatch(setErrorMess(error?.message));
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
   };
 
   return (
     <>
+      {isOpenCreateCourseTypeDialog && (
+        <CreateCourseTypeDialog
+          open={isOpenCreateCourseTypeDialog}
+          onClose={onCloseCreateCourseTypeDialog}
+          handleGetCourseTypes={handleGetCourseTypes}
+        />
+      )}
+      {isOpenEditCourseTypeDialog && (
+        <EditCourseTypeDialog
+          open={isOpenEditCourseTypeDialog}
+          onClose={onCloseEditCourseTypeDialog}
+          courseType={editCourseType}
+        />
+      )}
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this course type?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onConfirmDelete}
+      />
       <Box>
         <Grid
           container
@@ -299,7 +365,9 @@ const CourseTypeManagementOrganizationAdmin = () => {
                 ]
               }}
               createBtnText={t("common_add_new")}
-              onClickCreate={() => {}}
+              onClickCreate={() => {
+                setIsOpenCreateCourseTypeDialog(true);
+              }}
               filters={filters}
               handleChangeFilters={(filters: { key: string; value: string }[]) => {
                 setFilters(filters);

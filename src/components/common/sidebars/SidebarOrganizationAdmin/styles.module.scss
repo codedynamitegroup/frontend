@@ -7,8 +7,10 @@
 .img {
   width: 16px;
   height: 16px;
+  color: inherit;
   img {
     width: 100%;
+    color: inherit;
     height: 100%;
     object-fit: cover;
   }

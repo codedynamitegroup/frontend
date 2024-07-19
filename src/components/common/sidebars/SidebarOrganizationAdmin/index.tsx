@@ -17,6 +17,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import { RootState } from "store";
 import { useSelector, useDispatch } from "react-redux";
 import { setSidebarWidth } from "reduxes/SidebarStatus";
+import SchoolIcon from "@mui/icons-material/School";
 
 const drawerWidth = 270;
 
@@ -71,7 +72,7 @@ export default function SidebarOrganizationAdmin({ open, toggleDrawer, children 
     {
       name: t("side_bar_course_management"),
       "translation-key": "course_management",
-      icon: <PersonIcon className={classes.itemIcon} />,
+      icon: <SchoolIcon className={classes.itemIcon} />,
       link: routes.org_admin.course_type.root
     },
     {
