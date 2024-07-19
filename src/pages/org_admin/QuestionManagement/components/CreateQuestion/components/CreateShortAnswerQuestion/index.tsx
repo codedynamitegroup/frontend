@@ -46,6 +46,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {
@@ -67,7 +68,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
-
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const { t, i18n } = useTranslation();
 
   const [currentLang, setCurrentLang] = useState(() => {
@@ -133,6 +137,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     trigger,
@@ -249,6 +254,14 @@ const CreateShortAnswerQuestion = (props: Props) => {
       label: categoryName
     }
   ];
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+    }
+  }, [aiQuestion]);
+
   return (
     <>
       <Grid className={classes.root}>

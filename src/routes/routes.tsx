@@ -65,16 +65,23 @@ export const routes = {
       },
       create_question: {
         essay: {
-          create: "/lecturer/question-bank-management/:categoryId/create/essay"
+          create: "/lecturer/question-bank-management/:categoryId/create/essay",
+          createAI: "/lecturer/question-bank-management/:categoryId/AI/create/essay/:aiQuestionId"
         },
         multiple_choice: {
-          create: "/lecturer/question-bank-management/:categoryId/create/multiple-choice"
+          create: "/lecturer/question-bank-management/:categoryId/create/multiple-choice",
+          createAI:
+            "/lecturer/question-bank-management/:categoryId/AI/create/multiple-choice/:aiQuestionId"
         },
         short_answer: {
-          create: "/lecturer/question-bank-management/:categoryId/create/short-answer"
+          create: "/lecturer/question-bank-management/:categoryId/create/short-answer",
+          createAI:
+            "/lecturer/question-bank-management/:categoryId/AI/create/short-answer/:aiQuestionId"
         },
         true_false: {
-          create: "/lecturer/question-bank-management/:categoryId/create/true-false"
+          create: "/lecturer/question-bank-management/:categoryId/create/true-false",
+          createAI:
+            "/lecturer/question-bank-management/:categoryId/AI/create/true-false/:aiQuestionId"
         },
         code: {
           create: "/lecturer/question-bank-management/:categoryId/create/code"
@@ -414,16 +421,23 @@ export const routes = {
       },
       create_question: {
         essay: {
-          create: "/org-admin/question-bank-management/:categoryId/create/essay"
+          create: "/org-admin/question-bank-management/:categoryId/create/essay",
+          createAI: "/org-admin/question-bank-management/:categoryId/AI/create/essay/:aiQuestionId"
         },
         multiple_choice: {
-          create: "/org-admin/question-bank-management/:categoryId/create/multiple-choice"
+          create: "/org-admin/question-bank-management/:categoryId/create/multiple-choice",
+          createAI:
+            "/org-admin/question-bank-management/:categoryId/AI/create/multiple-choice/:aiQuestionId"
         },
         short_answer: {
-          create: "/org-admin/question-bank-management/:categoryId/create/short-answer"
+          create: "/org-admin/question-bank-management/:categoryId/create/short-answer",
+          createAI:
+            "/org-admin/question-bank-management/:categoryId/AI/create/short-answer/:aiQuestionId"
         },
         true_false: {
-          create: "/org-admin/question-bank-management/:categoryId/create/true-false"
+          create: "/org-admin/question-bank-management/:categoryId/create/true-false",
+          createAI:
+            "/org-admin/question-bank-management/:categoryId/AI/create/true-false/:aiQuestionId"
         },
         code: {
           create: "/org-admin/question-bank-management/:categoryId/create/code"

@@ -40,6 +40,7 @@ import takeExamCodeQuestion, {
 import socketReducer from "reduxes/Socket";
 import previewCodeQuestionTestCase from "reduxes/courseService/previewCodeQuestionTestCase";
 import post from "reduxes/courseService/post";
+import createQuestion, { CreateQuestionInitState } from "reduxes/CreateQuestion";
 
 const persistConfig = {
   key: "takeExamCodeQuestion",
@@ -47,8 +48,19 @@ const persistConfig = {
   whitelist: ["codeQuestion"],
   debug: true
 };
+
 const takeExamPersistedReducer: Reducer<TakeExamCodeQuestionInitState & PersistPartial> =
   persistReducer(persistConfig, takeExamCodeQuestion);
+
+const createQuestionPersistConfig = {
+  key: "createQuestion",
+  storage,
+  whitelist: ["questions"],
+  debug: true
+};
+
+const createQuestionPersistedReducer: Reducer<CreateQuestionInitState & PersistPartial> =
+  persistReducer(createQuestionPersistConfig, createQuestion);
 
 const store = configureStore({
   reducer: {
@@ -84,6 +96,7 @@ const store = configureStore({
     adminCertificateCourse: adminCertificateCourse,
     sidebarStatus: SidebarStatus,
     takeExamCodeQuestion: takeExamPersistedReducer,
+    createQuestion: createQuestionPersistedReducer,
     socket: socketReducer,
     previewCodeQuestionTestCase: previewCodeQuestionTestCase,
     post: post

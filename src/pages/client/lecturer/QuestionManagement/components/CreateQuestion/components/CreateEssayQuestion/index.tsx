@@ -57,6 +57,7 @@ interface Props {
   courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {

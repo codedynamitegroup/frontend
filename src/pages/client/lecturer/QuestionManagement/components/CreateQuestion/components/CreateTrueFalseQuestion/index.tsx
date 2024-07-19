@@ -41,6 +41,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {

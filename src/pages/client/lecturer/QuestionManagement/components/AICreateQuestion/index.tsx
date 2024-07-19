@@ -4,13 +4,12 @@ import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useState } from "react";
 import { useLocation, useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 // import Button from "@mui/joy/Button";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { routes } from "routes/routes";
-import useBoxDimensions from "hooks/useBoxDimensions";
 import { Textarea } from "@mui/joy";
 import Heading6 from "components/text/Heading6";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -20,18 +19,17 @@ import Heading4 from "components/text/Heading4";
 import Delete from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
-import CreateQuestionByAI, {
-  IFormatQuestion,
-  IQuestion
-} from "services/AIService/CreateQuestionByAI";
+import CreateQuestionByAI, { IQuestion } from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import { addQuestion } from "reduxes/CreateQuestion";
+import { useDispatch } from "react-redux";
 interface Props {
   insideCrumb?: boolean;
+  isOrg?: boolean;
 }
 export enum AlertType {
   Success = "success",
@@ -59,19 +57,22 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
-const AICreationQuestion = (props: Props) => {
+const AICreateQuestion = (props: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches();
+  const dispatch = useDispatch();
 
   const location = useLocation();
   const categoryName = location.state?.categoryName;
+  const isOrgAdmin = location.state?.isOrgAdmin;
+  const { categoryId } = useParams<{ categoryId: string }>();
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState<number>(sidebarStatus.headerHeight);
   if (props.insideCrumb) setHeaderHeight(0);
 
   const [modeEdit, setModeEdit] = useState(false);
-  const { t } = useTranslation();
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [lengthQuestion, setLengthQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -80,6 +81,7 @@ const AICreationQuestion = (props: Props) => {
   const [number_question, setNumberQuestion] = useState(5);
   const [level, setLevel] = useState<EQuestionLevel>(EQuestionLevel.Easy);
   const [qtype, setQtype] = useState<EQType>(EQType.MultipleChoice);
+  const [answeredQtype, setAnsweredQtype] = useState<EQType>(EQType.MultipleChoice);
   const [qamountAnswer, setQamountAnswer] = useState<EAmountAnswer>(EAmountAnswer.Three);
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
@@ -104,6 +106,7 @@ const AICreationQuestion = (props: Props) => {
   const handleGenerate = async () => {
     setLoading(true);
     setQuestions([]);
+    setAnsweredQtype(qtype);
     try {
       const genJob = await CreateQuestionByAI(
         topic,
@@ -129,7 +132,42 @@ const AICreationQuestion = (props: Props) => {
   const handleButtonClick = () => {
     setModeEdit(!modeEdit);
   };
+
   const urlParams = useParams();
+  const handleQuestionClick = (questionData: IQuestion) => {
+    if (!categoryId) return;
+
+    const newId = crypto.randomUUID();
+    const tempQuestion = {
+      ...questionData,
+      tempId: newId,
+      qType: answeredQtype
+    };
+    dispatch(addQuestion(tempQuestion));
+
+    let navigateLink = "";
+    if (answeredQtype === EQType.Essay) {
+      navigateLink = isOrgAdmin
+        ? routes.org_admin.question_bank.create_question.essay.createAI
+        : routes.lecturer.question_bank.create_question.essay.createAI;
+    } else if (answeredQtype === EQType.MultipleChoice) {
+      navigateLink = isOrgAdmin
+        ? routes.org_admin.question_bank.create_question.multiple_choice.createAI
+        : routes.lecturer.question_bank.create_question.multiple_choice.createAI;
+    } else if (answeredQtype === EQType.ShortAnswer) {
+      navigateLink = isOrgAdmin
+        ? routes.org_admin.question_bank.create_question.short_answer.createAI
+        : routes.lecturer.question_bank.create_question.short_answer.createAI;
+    } else {
+      navigateLink = isOrgAdmin
+        ? routes.org_admin.question_bank.create_question.true_false.createAI
+        : routes.lecturer.question_bank.create_question.true_false.createAI;
+    }
+
+    navigateLink = navigateLink.replace(":categoryId", categoryId).replace(":aiQuestionId", newId);
+
+    window.open(`#${navigateLink}`);
+  };
 
   return (
     <Grid className={classes.root}>
@@ -295,7 +333,11 @@ const AICreationQuestion = (props: Props) => {
               {questions &&
                 questions.map((value: IQuestion, index) => {
                   return (
-                    <Box className={classes.questionCard} key={index}>
+                    <Box
+                      className={classes.questionCard}
+                      key={index}
+                      onClick={() => handleQuestionClick(value)}
+                    >
                       <Heading6 fontWeight={"500"}>
                         {index + 1}/{lengthQuestion}
                       </Heading6>
@@ -411,4 +453,4 @@ const AICreationQuestion = (props: Props) => {
   );
 };
 
-export default memo(AICreationQuestion);
+export default memo(AICreateQuestion);

@@ -57,6 +57,7 @@ interface Props {
   courseName?: string;
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {
@@ -118,6 +119,10 @@ const CreateEssayQuestion = (props: Props) => {
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
 
   const navigate = useNavigate();
 
@@ -493,6 +498,13 @@ const CreateEssayQuestion = (props: Props) => {
 
     fetchData();
   }, [courseId]);
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+    }
+  }, [aiQuestion]);
 
   const breadCrumbData = [
     {

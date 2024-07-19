@@ -190,6 +190,9 @@ const SubmitExamSummaryLecturer = lazy(
 );
 const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
+const AICreateQuestion = lazy(
+  () => import("pages/client/lecturer/QuestionManagement/components/AICreateQuestion")
+);
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -377,22 +380,47 @@ const router = createHashRouter(
               />
 
               {/*  question bank */}
+
+              {/* ESSAY */}
               <Route
                 path={routes.lecturer.question_bank.create_question.essay.create}
                 element={<CreateEssayQuestion qtype={qtype.essay.code} />}
               />
               <Route
+                path={routes.lecturer.question_bank.create_question.essay.createAI}
+                element={<CreateEssayQuestion qtype={qtype.essay.code} isAI />}
+              />
+
+              {/* MULTIPLE CHOICE */}
+              <Route
                 path={routes.lecturer.question_bank.create_question.multiple_choice.create}
                 element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
               />
+              <Route
+                path={routes.lecturer.question_bank.create_question.multiple_choice.createAI}
+                element={<CreateMultichoiceQuestion qtype={qtype.multiple_choice.code} isAI />}
+              />
+
+              {/* SHORT ANSWER */}
               <Route
                 path={routes.lecturer.question_bank.create_question.short_answer.create}
                 element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
               />
               <Route
+                path={routes.lecturer.question_bank.create_question.short_answer.createAI}
+                element={<CreateShortAnswerQuestion qtype={qtype.short_answer.code} isAI />}
+              />
+
+              {/* TRUE FALSE */}
+              <Route
                 path={routes.lecturer.question_bank.create_question.true_false.create}
                 element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} />}
               />
+              <Route
+                path={routes.lecturer.question_bank.create_question.true_false.createAI}
+                element={<CreateTrueFalseQuestion qtype={qtype.true_false.code} isAI />}
+              />
+
               <Route
                 path={routes.lecturer.question_bank.create_question.code.create}
                 element={<LecturerCodeQuestionDetails />}
@@ -423,21 +451,46 @@ const router = createHashRouter(
                 path={routes.org_admin.homepage.root}
                 element={<OrganizationAdminHomepage />}
               />
+              {/* ESSAY */}
               <Route
                 path={routes.org_admin.question_bank.create_question.essay.create}
                 element={<OrgAdminCreateEssayQuestion qtype={qtype.essay.code} />}
               />
               <Route
+                path={routes.org_admin.question_bank.create_question.essay.createAI}
+                element={<OrgAdminCreateEssayQuestion qtype={qtype.essay.code} isAI />}
+              />
+
+              {/* MULTIPLE CHOICE */}
+              <Route
                 path={routes.org_admin.question_bank.create_question.multiple_choice.create}
                 element={<OrgAdminCreateMultichoiceQuestion qtype={qtype.multiple_choice.code} />}
               />
+              <Route
+                path={routes.org_admin.question_bank.create_question.multiple_choice.createAI}
+                element={
+                  <OrgAdminCreateMultichoiceQuestion qtype={qtype.multiple_choice.code} isAI />
+                }
+              />
+
+              {/* SHORT ANSWER */}
               <Route
                 path={routes.org_admin.question_bank.create_question.short_answer.create}
                 element={<OrgAdminCreateShortAnswerQuestion qtype={qtype.short_answer.code} />}
               />
               <Route
+                path={routes.org_admin.question_bank.create_question.short_answer.createAI}
+                element={<OrgAdminCreateShortAnswerQuestion qtype={qtype.short_answer.code} isAI />}
+              />
+
+              {/* TRUE FALSE */}
+              <Route
                 path={routes.org_admin.question_bank.create_question.true_false.create}
                 element={<OrgAdminCreateTrueFalseQuestion qtype={qtype.true_false.code} />}
+              />
+              <Route
+                path={routes.org_admin.question_bank.create_question.true_false.createAI}
+                element={<OrgAdminCreateTrueFalseQuestion qtype={qtype.true_false.code} isAI />}
               />
               <Route
                 path={routes.org_admin.question_bank.create_question.code.create}
@@ -482,16 +535,16 @@ const router = createHashRouter(
               path={routes.user.contest.detail.problems.problem_root}
               element={<TakeContestProblem />}
             />
-            {/* <Route
+            <Route
               path={routes.lecturer.question_bank.create_question.ai.create}
-              element={<AIQuestionCreated />}
+              element={<AICreateQuestion />}
               handle={{ crumbName: "default" }}
             />
             <Route
               path={routes.org_admin.question_bank.create_question.ai.create}
-              element={<OrgAdminAICreationQuestion />}
+              element={<AICreateQuestion isOrg />}
               handle={{ crumbName: "default" }}
-            /> */}
+            />
           </Route>
         </Route>
       </Route>

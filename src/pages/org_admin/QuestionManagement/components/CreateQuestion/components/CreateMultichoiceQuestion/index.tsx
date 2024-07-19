@@ -45,6 +45,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {
@@ -73,7 +74,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const navigate = useNavigate();
-
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
   const [headerHeight, setHeaderHeight] = useState(sidebarStatus.headerHeight);
   if (props.insideCrumb) setHeaderHeight(0);
@@ -148,6 +152,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     trigger,
@@ -291,6 +296,22 @@ const CreateMultichoiceQuestion = (props: Props) => {
       questionAnswerRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [errors.answers]);
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+
+      const answers = aiQuestion.answers.map((answer) => {
+        return {
+          answer: answer.content,
+          fraction: answer.id === aiQuestion.correctAnswer ? 1 : 0,
+          feedback: ""
+        };
+      });
+      setValue("answers", answers);
+    }
+  }, [aiQuestion]);
 
   const numberingOptions = [
     { value: "abc", label: "a., b., c." },

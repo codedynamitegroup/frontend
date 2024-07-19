@@ -41,6 +41,7 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 interface Props {
   qtype: String;
   insideCrumb?: boolean;
+  isAI?: boolean;
 }
 
 interface FormData {
@@ -99,6 +100,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
@@ -125,6 +127,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
 
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
 
   const user: User = useSelector(selectCurrentUser);
 
@@ -244,6 +250,17 @@ const CreateTrueFalseQuestion = (props: Props) => {
       label: categoryName
     }
   ];
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+
+      const correctAnswer = aiQuestion.answers.find(
+        (answer) => answer.id === aiQuestion.correctAnswer
+      );
+      setValue("showNumCorrect", correctAnswer?.content === "True" ? "1" : "0");
+    }
+  }, [aiQuestion]);
 
   return (
     <>

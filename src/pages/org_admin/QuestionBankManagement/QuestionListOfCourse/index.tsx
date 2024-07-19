@@ -41,6 +41,7 @@ import { AppDispatch, RootState } from "store";
 import qtype from "utils/constant/Qtype";
 import PickQuestionTypeToAddDialog from "./component/PickQuestionTypeToAddDialog";
 import classes from "./styles.module.scss";
+import { stat } from "fs";
 
 const QuestionListOfCourse = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -334,6 +335,18 @@ const QuestionListOfCourse = () => {
   //   console.log(params);
   //   // navigate(`${params.row.id}`);
   // };
+
+  const handleCreateQuestionAI = () => {
+    if (categoryId)
+      navigate(
+        routes.org_admin.question_bank.create_question.ai.create.replace(":categoryId", categoryId),
+        {
+          state: {
+            isOrgAdmin: true
+          }
+        }
+      );
+  };
   const handleCreateQuestion = () => {
     setIsAddNewQuestionDialogOpen(false);
 
@@ -473,14 +486,14 @@ const QuestionListOfCourse = () => {
                 {t("common_add_question")}
               </ParagraphBody>
             </Button>
-            {/* <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+            <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
               <ParagraphBody
                 paddingX={3}
                 translation-key='question_bank_category_question_list_create_by_AI'
               >
                 {t("question_bank_category_question_list_create_by_AI")}
               </ParagraphBody>
-            </Button> */}
+            </Button>
           </Stack>
 
           <CustomAutocomplete
