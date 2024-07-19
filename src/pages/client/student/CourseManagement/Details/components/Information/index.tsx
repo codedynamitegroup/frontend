@@ -20,6 +20,8 @@ import NotificationCard from "./components/NotificationCard";
 import { PostService } from "services/courseService/PostService";
 import { setLoadingPosts, setPosts } from "reduxes/courseService/post";
 import { PostEntity } from "models/courseService/entity/PostEntity";
+import Heading2 from "components/text/Heading2";
+import images from "config/images";
 const StudentCourseInformation = () => {
   const { t } = useTranslation();
 
@@ -115,9 +117,18 @@ const StudentCourseInformation = () => {
           </Box>
         ) : (
           <Box className={classes.annoucementsWrapper}>
-            {postState.posts.items.map((post: PostEntity) => (
-              <NotificationCard post={post} key={post.postId} />
-            ))}
+            {postState.posts.items.length > 0 ? (
+              postState.posts.items.map((post: PostEntity) => (
+                <NotificationCard post={post} key={post.postId} />
+              ))
+            ) : (
+              <Box className={classes.noAnnouncement}>
+                <Box className={classes.announcementImg}>
+                  <img src={images.announcementIc} alt='empty-announcement' />
+                </Box>
+                <Heading2>{t("course_no_announcement")}</Heading2>
+              </Box>
+            )}
           </Box>
         )}
       </Grid>

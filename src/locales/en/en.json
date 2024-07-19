@@ -570,6 +570,7 @@
   "course_unassign_member": "Unassign member",
   "course_is_visibled": "Course is visibled",
   "course_create": "Create course",
+  "course_no_announcement": "No announcement",
 
   "assignment_submitted": "Assignment was submitted ",
   "assignment_overdue": "Assignment is overdue by ",

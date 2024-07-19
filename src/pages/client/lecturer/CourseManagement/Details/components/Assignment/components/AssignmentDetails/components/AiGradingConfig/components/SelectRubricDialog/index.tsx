@@ -162,17 +162,6 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
         <Stack direction='row' spacing={1}>
           <Button
             variant='outlined'
-            color='error'
-            className={classes.iconBtn}
-            onClick={() => {
-              setRubricIdDelete(params.row.id);
-              setOpenConfirmAlert(true);
-            }}
-          >
-            <DeleteIcon fontSize='small' color='error' />
-          </Button>
-          <Button
-            variant='outlined'
             color='primary'
             className={classes.iconBtn}
             onClick={() => {
@@ -203,6 +192,17 @@ const SelectRubricConfig = ({ onSelectRubric }: SelectRubricConfigProps) => {
             }}
           >
             <RemoveRedEyeIcon fontSize='small' />
+          </Button>
+          <Button
+            variant='outlined'
+            color='error'
+            className={classes.iconBtn}
+            onClick={() => {
+              setRubricIdDelete(params.row.id);
+              setOpenConfirmAlert(true);
+            }}
+          >
+            <DeleteIcon fontSize='small' color='error' />
           </Button>
         </Stack>
       ),
