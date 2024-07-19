@@ -29,6 +29,9 @@ import { PaginationList } from "models/general";
 import { CourseUserResponse } from "models/courseService/entity/UserCourseEntity";
 import { CourseUserService } from "services/courseService/CourseUserService";
 import AssignUserToCourseDialog from "./AssignUser";
+import { ERoleMoodle } from "models/courseService/enum/ERoleMoodle";
+import { UserResponseEntity } from "models/courseService/entity/UserResponseEntity";
+import { UnassignUsersToCourseCommand } from "models/courseService/entity/custom/UnassignUsersToCourseCommand";
 
 interface CourseUserManagementProps {
   id: string;
@@ -56,7 +59,7 @@ const CourseUserManagement = () => {
     }
   ]);
 
-  const [userState, setUserState] = useState<PaginationList<CourseUserResponse>>({
+  const [userState, setUserState] = useState<PaginationList<UserResponseEntity>>({
     currentPage: 0,
     totalItems: 0,
     totalPages: 0,
@@ -64,6 +67,23 @@ const CourseUserManagement = () => {
   });
   const [isLoadingListUsers, setIsLoadingListUsers] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+
+  const roleMapping = useMemo(
+    () => [
+      { name: ERoleMoodle.ADMIN, label: t("role_system_admin") },
+      { name: ERoleMoodle.LECTURER, label: t("role_lecturer") },
+      { name: ERoleMoodle.STUDENT, label: t("role_student") }
+    ],
+    [t]
+  );
+
+  const mappingRole = useCallback(
+    (roleMoodleId: string) => {
+      const matchedRole = roleMapping.find((role) => roleMoodleId === role.name);
+      return matchedRole ? matchedRole.label : "";
+    },
+    [roleMapping]
+  );
 
   const handleGetUsers = useCallback(
     async ({
@@ -180,43 +200,6 @@ const CourseUserManagement = () => {
       renderCell: (params) => {
         return <ParagraphBody width={"auto"}>{params.row.role}</ParagraphBody>;
       }
-    },
-    {
-      field: "action",
-      headerName: t("common_action"),
-      type: "actions",
-      flex: 0.8,
-      renderHeader: () => {
-        return (
-          <TextTitle width={"auto"} sx={{ textAlign: "left" }}>
-            {t("common_action")}
-          </TextTitle>
-        );
-      },
-      getActions: (params) => {
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label='Edit'
-            onClick={() => {
-              // if (organizationId)
-              //   navigate(
-              //     routes.admin.organizations.edit.edit_user
-              //       .replace(":userId", params.row.userId)
-              //       .replace(":organizationId", organizationId)
-              //   );
-            }}
-          />,
-          <GridActionsCellItem
-            onClick={() => {
-              setUnassignedUserId(params.row.userId);
-              setIsOpenConfirmDelete(true);
-            }}
-            icon={<DeleteIcon />}
-            label='Delete'
-          />
-        ];
-      }
     }
   ];
 
@@ -225,10 +208,14 @@ const CourseUserManagement = () => {
   const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
 
   const dataGridToolbar = { enableToolbar: true };
+  const [selectedRowsId, setSelectedRowsId] = useState<string[]>([]);
+
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {};
+  ) => {
+    setSelectedRowsId(selectedRowId.map((row) => row.toString()));
+  };
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     setPage(model.page);
     setPageSize(model.pageSize);
@@ -247,12 +234,12 @@ const CourseUserManagement = () => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role
+        role: mappingRole(`${user.roleMoodleId}`)
       }));
     } else {
       return [];
     }
-  }, [userState.items]);
+  }, [userState.items, mappingRole]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
@@ -281,21 +268,33 @@ const CourseUserManagement = () => {
   };
 
   const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
-  const [unassignedUserId, setUnassignedUserId] = useState<string>("");
+
   const onCancelConfirmDelete = () => {
     setIsOpenConfirmDelete(false);
   };
   const onUnassignedUserConfirmDelete = async () => {
-    UserService.unassignedUserToOrganization(unassignedUserId)
-      .then((res) => {
-        dispatch(setSuccessMess("Unassigned user successfully"));
-        handleGetUsers({
-          searchName: searchValue
-        });
+    if (!courseId) {
+      dispatch(setErrorMess("Course ID is not found"));
+      setIsOpenConfirmDelete(false);
+      return;
+    } else if (selectedRowsId.length === 0) {
+      dispatch(setErrorMess("Please select at least one user"));
+      setIsOpenConfirmDelete(false);
+      return;
+    }
+
+    const unassignUsersToCourseCommand: UnassignUsersToCourseCommand = {
+      courseId: courseId,
+      userIds: selectedRowsId
+    };
+    await CourseUserService.unassignUsersToCourse(unassignUsersToCourseCommand)
+      .then(() => {
+        dispatch(setSuccessMess("Unassign users to course successfully"));
+        handleGetUsers({ searchName: "" });
       })
-      .catch((error) => {
+      .catch((error: any) => {
+        dispatch(setErrorMess("Unassign users to course failed"));
         console.error("error", error);
-        dispatch(setErrorMess("Delete user failed"));
       })
       .finally(() => {
         setIsOpenConfirmDelete(false);
@@ -324,7 +323,7 @@ const CourseUserManagement = () => {
       <ConfirmDelete
         isOpen={isOpenConfirmDelete}
         title={"Confirm unassigned user"}
-        description='Are you sure you want to unassigned this user to organization?'
+        description='Are you sure you want to unassigned this user to course?'
         onCancel={onCancelConfirmDelete}
         onDelete={onUnassignedUserConfirmDelete}
       />
@@ -334,6 +333,7 @@ const CourseUserManagement = () => {
           title={t("user_select_from_list")}
           handleClose={handleCloseAddUserDialog}
           handleUserSelected={handleUserSelected}
+          handleGetUsersProps={handleGetUsers}
           maxWidth='md'
         />
       )}
@@ -385,10 +385,19 @@ const CourseUserManagement = () => {
               onClick={() => {
                 setIsOpenedAddUserDialog(true);
               }}
-              btnType={BtnType.Secondary}
+              btnType={BtnType.Primary}
               translation-key='course_assign_member'
             >
               {t("course_assign_member")}
+            </Button>
+            <Button
+              onClick={() => {
+                setIsOpenConfirmDelete(true);
+              }}
+              btnType={BtnType.Secondary}
+              translation-key='course_unassign_member'
+            >
+              {t("course_unassign_member")}
             </Button>
           </Box>
         </Grid>
@@ -403,6 +412,7 @@ const CourseUserManagement = () => {
             page={page}
             pageSize={pageSize}
             totalElement={totalElement}
+            checkboxSelection
             onPaginationModelChange={pageChangeHandler}
             showVerticalCellBorder={true}
             getRowHeight={() => "auto"}

@@ -123,19 +123,27 @@ export const API = {
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count",
       UPDATE: "/course/course/:courseId",
+      DELETE: "/course/course/:courseId",
       CREATE: "/course/course"
     },
     COURSE_TYPE: {
       DEFAULT: "/course/course-type",
-      GET_BY_ORGANIZATION_ID: "/course/course-type/:organizationId"
+      GET_BY_ORGANIZATION_ID: "/course/course-type/organization/:organizationId",
+      GET_BY_ID: "/course/course-type/:id",
+      UPDATE_BY_ID: "/course/course-type/:id",
+      DELETE_BY_ID: "/course/course-type/:id",
+      CREATE: "/course/course-type"
     },
     COURSE_USER: {
       DEFAULT: "/course/course-user",
       GET_BY_COURSE_ID: "/course/course-user/course/:id",
       GET_BY_USER_ID: "/course/course-user/user/:id",
       GET_USER_BY_COURSE_ID: "/course/course-user/:id/user",
+      GET_ALL_USERS_ABLE_TO_ASSIGN_TO_COURSE: "/course/course-user/query-all-users-able-to-assign",
       COUNT_STUDENT_BY_COURSE_ID: "/course/course-user/:id/count",
-      GET_ALL_COURSE_BY_USER_ID: "/course/course-user/user/:id"
+      GET_ALL_COURSE_BY_USER_ID: "/course/course-user/user/:id",
+      ASSIGN_USERS_TO_COURSE: "/course/course-user/assign",
+      UNASSIGN_USERS_TO_COURSE: "/course/course-user/un-assign"
     },
     ASSIGNMENT: {
       DEFAULT: "/course/assignment",

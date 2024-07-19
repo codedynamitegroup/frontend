@@ -567,6 +567,7 @@
   "course_name": "Course name",
   "course_information": "Course information",
   "course_assign_member": "Assign member",
+  "course_unassign_member": "Unassign member",
   "course_is_visibled": "Course is visibled",
   "course_create": "Create course",
 

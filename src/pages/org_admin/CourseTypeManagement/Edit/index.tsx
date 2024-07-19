@@ -15,57 +15,63 @@ import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { useParams } from "react-router-dom";
 import { clearSections } from "reduxes/courseService/section";
+import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
 
-type CreateSectionDialogProps = {
+type EditCourseTypeDialogProps = {
   open: boolean;
   onClose: () => void;
+  courseType?: CourseTypeEntity;
 };
 
 interface IFormData {
-  sectionName: string;
+  name: string;
 }
 
-const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
+const EditCourseTypeDialog = ({ open, onClose, courseType }: EditCourseTypeDialogProps) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
-      sectionName: yup.string().required(t("section_required"))
+      name: yup.string().required(t("course_type_name_required"))
     });
   }, [t]);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (courseType) {
+      reset({
+        name: courseType.name
+      });
+    }
+  }, [courseType, reset]);
   const { courseId } = useParams<{ courseId: string }>();
 
   const handleCreate = async (data: IFormData) => {
     if (!courseId) return;
-    await SectionService.createSection(courseId, data.sectionName)
-      .then((res) => {
-        dispatch(setSuccessMess("Create section successfully"));
-        dispatch(clearSections());
-        onClose();
-      })
-      .catch((error) => {
-        dispatch(setErrorMess("Failed to create section"));
-        console.error("Failed to create section", error);
-      });
+    // await SectionService.createSection(courseId, data.sectionName)
+    //   .then((res) => {
+    //     dispatch(setSuccessMess("Create section successfully"));
+    //     dispatch(clearSections());
+    //     onClose();
+    //   })
+    //   .catch((error) => {
+    //     dispatch(setErrorMess("Failed to create section"));
+    //     console.error("Failed to create section", error);
+    //   });
   };
   return (
     <Dialog open={open} onClose={onClose} className={classes["dialog"]}>
       <form onSubmit={handleSubmit(handleCreate)}>
-        <DialogTitle
-          sx={{ m: 0, p: 2 }}
-          id='customized-dialog-title'
-          translation-key='question_bank_edit_category'
-        >
-          Create Section
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          Edit Course Type
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -81,10 +87,10 @@ const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
         </IconButton>
         <DialogContent className={classes["dialog-content"]}>
           <InputTextField
-            label={t("section_name")}
+            label={t("course_type_name")}
             type='text'
-            inputRef={register("sectionName")}
-            errorMessage={errors?.sectionName?.message}
+            inputRef={register("name")}
+            errorMessage={errors?.name?.message}
             width='100%'
           />
         </DialogContent>
@@ -101,4 +107,4 @@ const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
   );
 };
 
-export default CreateSectionDialog;
+export default EditCourseTypeDialog;

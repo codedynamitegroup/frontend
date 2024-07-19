@@ -557,6 +557,7 @@
   "course_name": "Tên khóa học",
   "course_information": "Thông tin khóa học",
   "course_assign_member": "Thêm thành viên",
+  "course_unassign_member": "Xóa thành viên",
   "course_is_visibled": "Hiển thị khóa học",
   "course_create": "Tạo khóa học",
 
