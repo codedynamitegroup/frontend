@@ -254,7 +254,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
       setValue("questionDescription", aiQuestion.question || "");
 
       const correctAnswer = aiQuestion.answers.find(
-        (answer) => answer.id === aiQuestion.correctAnswer
+        (answer) => answer.id === aiQuestion.correctAnswer?.[0]
       );
       setValue("showNumCorrect", correctAnswer?.content === "True" ? "1" : "0");
     }
