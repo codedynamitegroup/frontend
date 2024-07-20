@@ -216,15 +216,31 @@ const CertificateCourseManagement = () => {
         flex: 1,
         renderCell: (params) => {
           return (
-            <Grid container spacing={1}>
-              {params.row.topic.programmingLanguages?.map(
-                (language: ProgrammingLanguageEntity, index: number) => (
-                  <Grid item>
-                    <Chip key={index} label={language.name} size='small' />
-                  </Grid>
-                )
-              )}
-            </Grid>
+            <Box
+              height='100%'
+              width='100%'
+              display='flex'
+              alignItems='center'
+              overflow='auto'
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "4px"
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "var(--gray-20)"
+                }
+              }}
+            >
+              <Grid container spacing={1}>
+                {params.row.topic.programmingLanguages?.map(
+                  (language: ProgrammingLanguageEntity, index: number) => (
+                    <Grid item>
+                      <Chip key={index} label={language.name} size='small' />
+                    </Grid>
+                  )
+                )}
+              </Grid>
+            </Box>
           );
         }
       },

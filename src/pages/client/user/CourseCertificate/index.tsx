@@ -506,23 +506,35 @@ const CourseCertificates = () => {
                           </Box>
                         ) : (
                           <Grid container spacing={5}>
-                            {certificateCourses?.map((course, index) => (
-                              <Grid
-                                item
-                                xs={4}
-                                key={index}
-                                onClick={() =>
-                                  navigate(
-                                    routes.user.course_certificate.detail.introduction.replace(
-                                      ":courseId",
-                                      course.certificateCourseId
-                                    )
-                                  )
-                                }
-                              >
-                                <CourseCertificateCard course={course} />
-                              </Grid>
-                            ))}
+                            {certificateCourses &&
+                              certificateCourses.length > 0 &&
+                              certificateCourses
+                                .sort((a, b) => {
+                                  if (a.skillLevel === SkillLevelEnum.BASIC) {
+                                    return -1;
+                                  } else if (a.skillLevel === SkillLevelEnum.INTERMEDIATE) {
+                                    return 0;
+                                  } else {
+                                    return 1;
+                                  }
+                                })
+                                .map((course, index) => (
+                                  <Grid
+                                    item
+                                    xs={4}
+                                    key={index}
+                                    onClick={() =>
+                                      navigate(
+                                        routes.user.course_certificate.detail.introduction.replace(
+                                          ":courseId",
+                                          course.certificateCourseId
+                                        )
+                                      )
+                                    }
+                                  >
+                                    <CourseCertificateCard course={course} />
+                                  </Grid>
+                                ))}
                           </Grid>
                         )}
                       </Box>
