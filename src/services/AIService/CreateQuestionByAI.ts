@@ -3,8 +3,7 @@ import { jsonrepair } from "jsonrepair";
 import {
   EQType,
   EQuestionLevel,
-  EAmountAnswer,
-  ELanguage
+  EAmountAnswer
 } from "../../pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 import i18next from "i18next";
 
@@ -20,7 +19,7 @@ export interface IQuestion {
   id: number;
   question: string;
   answers: IAnswer[];
-  correctAnswer?: number;
+  correctAnswer?: number[];
 }
 
 export interface IAnswer {
@@ -68,7 +67,7 @@ const format_question: IFormatQuestion[] = [
           { id: 2, content: "Nguyễn Quốc Tuấn" },
           { id: 3, content: "Trương Gia Tiến" }
         ],
-        correctAnswer: 1
+        correctAnswer: [1]
       },
       {
         id: 1,
@@ -76,9 +75,10 @@ const format_question: IFormatQuestion[] = [
         answers: [
           { id: 1, content: "Joe Biden" },
           { id: 2, content: "Donald Trump" },
-          { id: 3, content: "Barack Obama" }
+          { id: 3, content: "Barack Obama" },
+          { id: 4, content: "George W. Bush" }
         ],
-        correctAnswer: 2
+        correctAnswer: [1, 2, 4]
       }
     ]
   },
@@ -119,7 +119,7 @@ const format_question: IFormatQuestion[] = [
           { id: 1, content: "True" },
           { id: 2, content: "False" }
         ],
-        correctAnswer: 1
+        correctAnswer: [1]
       },
       {
         id: 1,
@@ -128,7 +128,7 @@ const format_question: IFormatQuestion[] = [
           { id: 1, content: "True" },
           { id: 2, content: "False" }
         ],
-        correctAnswer: 2
+        correctAnswer: [2]
       }
     ]
   }
@@ -138,6 +138,7 @@ async function CreateQuestionByAI(
   description: string,
   qtype: EQType,
   qamount_answer: EAmountAnswer,
+  allowMultipleCorrectAnswer: boolean,
   number_question: number,
   level: EQuestionLevel
 ) {
@@ -193,7 +194,8 @@ I. SYSTEM_INSTRUCTIONS:
 			+ Provide detailed expected responses for context.
 
 		- Multiple Choice Questions:
-			+ Create questions with one correct answer and multiple distractors.
+			+ When allow multiple correct answer is false, create questions with one correct answer and multiple distractors.
+      + when allow multiple correct answer is true, create questions with multiple correct answers (the total number of correct answers must never exceed the total number of answers of each question) and atleast one distractor.
 			+ Example: "What is the capital of Japan?"
 			+ Answers: Tokyo, Osaka, Kyoto, Nagoya
 			+ Correct Answer: Tokyo
@@ -225,7 +227,7 @@ I. SYSTEM_INSTRUCTIONS:
 						},
 						...
 					],
-					"correctAnswer": number
+					"correctAnswer": [number]
 				},
 				...
 			]
@@ -267,7 +269,7 @@ I. SYSTEM_INSTRUCTIONS:
 					** IAnswer: The data structure for an answer:
 						*** id: A number, the unique identifier for the answer.
 						*** content: A string, the content of the answer. Do not use "" (Quotation Marks) on any character in the string. Instead, if you want to highlight text,... For example, replace it with \\"Personal Name\\" 
-				* correctAnswer: The id of the correct answer (only applies to multiple choice and true/false questions).
+				* correctAnswer: An array of the ids of the correct answers (only applies to multiple choice and true/false questions).
 
 		For example output which is covered by triple quotes:
 		"""
@@ -291,6 +293,8 @@ I. INPUT:
 		- Question Type: {{${question_type}}}
 
 		${qtype === EQType.MultipleChoice ? `- Number of answers of each question multiple choice: {{${qamount_answer}}}` : ""}
+
+    ${qtype === EQType.MultipleChoice ? `- Allow multiple correct answer for question multiple choice: {{${allowMultipleCorrectAnswer}}}` : ""}
 
 		- Number of Questions: {{${numberQuestion}}}
 

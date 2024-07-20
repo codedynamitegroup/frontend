@@ -63,6 +63,7 @@ const CodeExamQuestion = (props: Props) => {
   const flagQuestionHandle = () => {
     if (isFlagged !== undefined) dispatch(setFlag({ id: questionId, flag: !isFlagged }));
   };
+  const callBackUrl = process.env.REACT_APP_GATEWAY_SERVICE_API_URL || "";
 
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
   const [selectedLanguageName, setSelectedLanguageName] = useState<string | undefined>(undefined);
@@ -79,7 +80,8 @@ const CodeExamQuestion = (props: Props) => {
           languageId: selectedLanguage,
           languageName: selectedLanguageName,
           codeQuestionId: questionCode.id,
-          code: encodeBase64(value)
+          code: encodeBase64(value),
+          callBackUrl: callBackUrl
         })
       })
     );
@@ -138,7 +140,8 @@ const CodeExamQuestion = (props: Props) => {
             content: JSON.stringify({
               languageId: content.languageId,
               codeQuestionId: questionCode?.id,
-              code: content.code
+              code: content.code,
+              callBackUrl: callBackUrl
             })
           })
         );
@@ -157,7 +160,8 @@ const CodeExamQuestion = (props: Props) => {
               codeQuestionId: questionCode?.id,
               code: encodeBase64(
                 `${questionCode?.languages[0]?.headCode}\n\n${questionCode?.languages[0]?.bodyCode}\n\n${questionCode?.languages[0]?.tailCode}`
-              )
+              ),
+              callBackUrl: callBackUrl
             })
           })
         );
@@ -182,7 +186,8 @@ const CodeExamQuestion = (props: Props) => {
           languageId: newValue,
           languageName: languageMap?.[newValue]?.name,
           codeQuestionId: questionCode.id,
-          code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue]?.code || "")
+          code: encodeBase64(codeQuestionLanguageState?.codes?.[newValue]?.code || ""),
+          callBackUrl: callBackUrl
         })
       })
     );
