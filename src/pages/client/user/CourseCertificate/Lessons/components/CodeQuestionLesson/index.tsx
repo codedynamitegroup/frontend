@@ -13,7 +13,8 @@ import {
   SelectChangeEvent,
   Stack,
   Tab,
-  Tabs
+  Tabs,
+  Tooltip
 } from "@mui/material";
 import CodeEditor from "components/editor/CodeEditor";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -83,8 +84,15 @@ const CodeQuestionLesson = ({
   languageList?.forEach((value, index) => {
     mapLanguages.set(value.id, { pLanguage: value, index });
   });
-  console.log("languageList", languageList);
-  console.log("topicProgrammingLanguages", topicProgrammingLanguages);
+
+  const programmingLanguageAvailable = useMemo(() => {
+    if (codeQuestion?.languages === undefined) return [];
+    return codeQuestion?.languages.filter((value) =>
+      topicProgrammingLanguages
+        .map((it: ProgrammingLanguageEntity) => it.programmingLanguageId)
+        .includes(value.id)
+    );
+  }, [codeQuestion?.languages, topicProgrammingLanguages]);
 
   const tabs: string[] = useMemo(() => {
     return [
@@ -359,17 +367,11 @@ const CodeQuestionLesson = ({
                     onChange={handleChangeLanguage}
                     sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                   >
-                    {codeQuestion?.languages
-                      .filter((value) =>
-                        topicProgrammingLanguages
-                          .map((it: ProgrammingLanguageEntity) => it.programmingLanguageId)
-                          .includes(value.id)
-                      )
-                      .map((value: ProgrammingLanguageEntity) => (
-                        <MenuItem key={value.id} value={value.id}>
-                          {value.name}
-                        </MenuItem>
-                      ))}
+                    {programmingLanguageAvailable.map((value: ProgrammingLanguageEntity) => (
+                      <MenuItem key={value.id} value={value.id}>
+                        {value.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Box>
@@ -378,7 +380,15 @@ const CodeQuestionLesson = ({
                   height: `300px`
                 }}
               >
-                <CodeEditor value={selectedLanguage.sourceCode} onChange={onSourceCodeChange} />
+                <CodeEditor
+                  value={
+                    programmingLanguageAvailable.length === 0
+                      ? "No language available for this problem"
+                      : selectedLanguage.sourceCode
+                  }
+                  onChange={onSourceCodeChange}
+                  readOnly={programmingLanguageAvailable.length === 0}
+                />
               </Box>
             </Box>
           </Box>
@@ -392,23 +402,45 @@ const CodeQuestionLesson = ({
           justifyContent={"flex-end"}
           alignItems={"center"}
         >
-          <JoyButton
-            color='success'
-            translation-key='detail_problem_execute'
-            onClick={handleExecuteCode}
-            startDecorator={<PlayArrowIcon />}
+          <Tooltip
+            title={
+              programmingLanguageAvailable.length === 0
+                ? "No language available for this problem"
+                : ""
+            }
           >
-            {t("detail_problem_execute")}
-          </JoyButton>
-          <JoyButton
-            color='primary'
-            variant='outlined'
-            translation-key='detail_problem_submit'
-            onClick={handleSubmitCode}
+            <span>
+              <JoyButton
+                color='success'
+                translation-key='detail_problem_execute'
+                onClick={handleExecuteCode}
+                startDecorator={<PlayArrowIcon />}
+                disabled={programmingLanguageAvailable.length === 0}
+              >
+                {t("detail_problem_execute")}
+              </JoyButton>
+            </span>
+          </Tooltip>
+          <Tooltip
+            title={
+              programmingLanguageAvailable.length === 0
+                ? "No language available for this problem"
+                : ""
+            }
           >
-            {submissionLoading && <CircularProgress size={15} sx={{ marginRight: 1 }} />}
-            {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
-          </JoyButton>
+            <span>
+              <JoyButton
+                color='primary'
+                variant='outlined'
+                translation-key='detail_problem_submit'
+                onClick={handleSubmitCode}
+                disabled={programmingLanguageAvailable.length === 0}
+              >
+                {submissionLoading && <CircularProgress size={15} sx={{ marginRight: 1 }} />}
+                {!submissionLoading && <PublishIcon />} {t("detail_problem_submit")}
+              </JoyButton>
+            </span>
+          </Tooltip>
         </Stack>
       </Grid>
       <Grid item xs={12} md={12}>
