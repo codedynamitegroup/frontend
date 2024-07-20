@@ -9,7 +9,7 @@ import {
   ModalDialog
 } from "@mui/joy";
 import Modal from "@mui/joy/Modal";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import {
   GridCallbackDetails,
   GridColDef,
@@ -22,6 +22,7 @@ import ParagraphBody from "components/text/ParagraphBody";
 import { GetAllQuestionWithPaginationResponse } from "models/courseService/entity/QuestionEntity";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ReactQuill from "react-quill";
 import { QuestionService } from "services/coreService/QuestionService";
 
 interface PropsData {
@@ -116,9 +117,25 @@ const CodeQuestionDialog = (props: PropsData) => {
         },
         renderCell: (params) => {
           return (
-            <ParagraphBody fontSize={"12px"} color={"#525151"} fontWeight={"400"}>
-              {params.row.name}
-            </ParagraphBody>
+            <Box
+              height='100%'
+              width='100%'
+              display='flex'
+              alignItems='center'
+              overflow='auto'
+              sx={{
+                "&::-webkit-scrollbar": {
+                  height: "4px"
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "var(--gray-20)"
+                }
+              }}
+            >
+              <ParagraphBody fontSize={"12px"} color={"#525151"} fontWeight={"400"}>
+                {params.row.name}
+              </ParagraphBody>
+            </Box>
           );
         }
       },
@@ -129,7 +146,7 @@ const CodeQuestionDialog = (props: PropsData) => {
         renderHeader: () => {
           return (
             <ParagraphBody fontSize={"12px"} color={"#525151"} fontWeight={"500"}>
-              {t("common_name")}
+              {t("common_difficulty_level")}
             </ParagraphBody>
           );
         },
@@ -150,9 +167,23 @@ const CodeQuestionDialog = (props: PropsData) => {
         },
         renderCell: (params) => {
           return (
-            <ParagraphBody fontSize={"12px"} color={"#525151"} fontWeight={"400"}>
-              {params.row.questionText}
-            </ParagraphBody>
+            <Box
+              height='100%'
+              width='100%'
+              display='flex'
+              alignItems='center'
+              overflow='auto'
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "4px"
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "var(--gray-20)"
+                }
+              }}
+            >
+              <ReactQuill value={params.row.questionText || ""} readOnly={true} theme={"bubble"} />
+            </Box>
           );
         }
       }
