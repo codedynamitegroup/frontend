@@ -41,6 +41,7 @@ import { RootState } from "store";
 import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
 import TitleWithInfoTip from "components/text/TitleWithInfo";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import AnswerPoint from "utils/AnswerPoint";
 
 interface Props {
   qtype: String;
@@ -81,6 +82,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const urlParams = useParams();
+  const answerPoint = AnswerPoint.map((point) => point.percentNumber);
 
   useEffect(() => {
     setCurrentLang(i18next.language);
@@ -298,16 +300,45 @@ const CreateMultichoiceQuestion = (props: Props) => {
   useEffect(() => {
     if (aiQuestion) {
       setValue("questionDescription", aiQuestion.question || "");
-      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
 
-      const answers = aiQuestion.answers.map((answer) => {
-        return {
-          answer: answer.content,
-          fraction: answer.id === aiQuestion.correctAnswer ? 1 : 0,
-          feedback: ""
-        };
-      });
-      setValue("answers", answers);
+      if (aiQuestion.correctAnswer?.length) {
+        if (aiQuestion.correctAnswer.length > 1) setValue("single", "2");
+
+        let pointOfEachAnswer = 1 / aiQuestion.correctAnswer.length;
+
+        if (aiQuestion.correctAnswer.length % 2 !== 0) {
+          for (let i = 1; i < answerPoint.length; i++) {
+            if (answerPoint[i] < pointOfEachAnswer) {
+              console.log(answerPoint[i]);
+
+              if (answerPoint[i] * aiQuestion.correctAnswer.length === 1)
+                pointOfEachAnswer = answerPoint[i];
+              else if (
+                i + 1 < answerPoint.length &&
+                answerPoint[i + 1] * aiQuestion.correctAnswer.length === 1
+              )
+                pointOfEachAnswer = answerPoint[i + 1];
+              else if (answerPoint[i - 1] * aiQuestion.correctAnswer.length === 1)
+                pointOfEachAnswer = answerPoint[i - 1];
+              else pointOfEachAnswer = answerPoint[i];
+
+              break;
+            }
+          }
+        }
+
+        console.log(pointOfEachAnswer);
+        const answers = aiQuestion.answers.map((answer) => {
+          return {
+            answer: answer.content,
+            fraction: aiQuestion.correctAnswer?.some((answerAI) => answerAI === answer.id)
+              ? pointOfEachAnswer
+              : 0,
+            feedback: ""
+          };
+        });
+        setValue("answers", answers);
+      }
     }
   }, [aiQuestion]);
 

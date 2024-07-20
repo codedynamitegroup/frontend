@@ -70,7 +70,6 @@ const AICreateQuestion = (props: Props) => {
 
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
-  const [modeEdit, setModeEdit] = useState(false);
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [lengthQuestion, setLengthQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -84,22 +83,7 @@ const AICreateQuestion = (props: Props) => {
   const [openSnackbarAlert, setOpenSnackbarAlert] = useState(false);
   const [alertContent, setAlertContent] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.Success);
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    setQuestions((prevQuestions) => {
-      return prevQuestions.map((q) => {
-        if (q.id === index) {
-          return { ...q, correctAnswer: parseInt(event.target.value) };
-        } else {
-          return q;
-        }
-      });
-    });
-  };
-  const handleDelete = (index: number) => {
-    setQuestions((prevQuestions) => {
-      return prevQuestions.filter((q) => q.id !== index);
-    });
-  };
+  const [allowMultipleCorrectAnswer, setAllowMultipleCorrectAnswer] = useState(true);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -111,10 +95,12 @@ const AICreateQuestion = (props: Props) => {
         desciption,
         qtype,
         qamountAnswer,
+        allowMultipleCorrectAnswer,
         number_question,
         level
       );
       if (genJob !== undefined) {
+        console.log("genJob", genJob);
         const data = await genJob;
         const questionsTemp = data[0];
         setQuestions(questionsTemp);
@@ -125,10 +111,6 @@ const AICreateQuestion = (props: Props) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleButtonClick = () => {
-    setModeEdit(!modeEdit);
   };
 
   const urlParams = useParams();
@@ -326,11 +308,6 @@ const AICreateQuestion = (props: Props) => {
           </Grid>
           <Grid item xs={6}>
             <Box className={classes.listQuestion}>
-              {questions?.length !== 0 && (
-                <Button btnType={BtnType.Primary} onClick={handleButtonClick}>
-                  {modeEdit ? "Lưu" : "Chỉnh sửa"}
-                </Button>
-              )}
               {questions &&
                 questions.map((value: IQuestion, index) => {
                   return (
@@ -342,11 +319,7 @@ const AICreateQuestion = (props: Props) => {
                       <Heading6 fontWeight={"500"}>
                         {index + 1}/{lengthQuestion}
                       </Heading6>
-                      <Heading4
-                        className={modeEdit ? classes.questionEdit : classes.question}
-                        fontWeight={"600"}
-                        contentEditable={modeEdit}
-                      >
+                      <Heading4 className={classes.question} fontWeight={"600"}>
                         {value.question}
                       </Heading4>
                       <Box className={classes.answer}>
@@ -355,7 +328,6 @@ const AICreateQuestion = (props: Props) => {
                           defaultValue='female'
                           name='radio-buttons-group'
                           value={value.correctAnswer}
-                          onChange={(event) => handleChange(event, value.id)}
                         >
                           {value.answers &&
                             value.answers.map((answer, index) => {
@@ -365,45 +337,28 @@ const AICreateQuestion = (props: Props) => {
                                     <>
                                       <FormControlLabel
                                         value={index + 1}
-                                        control={modeEdit ? <Radio /> : <></>}
+                                        control={<></>}
                                         label={String.fromCharCode(65 + index)}
                                         labelPlacement='start'
                                         className={classes.radio}
                                       />
-                                      {value.correctAnswer === index + 1 && (
+                                      {value?.correctAnswer?.some(
+                                        (answer) => answer === index + 1
+                                      ) ? (
                                         <ParagraphBody
-                                          className={
-                                            modeEdit
-                                              ? classes.answerContentEdit
-                                              : classes.answerContent
-                                          }
-                                          contentEditable={modeEdit}
+                                          className={classes.answerContent}
                                           colorname='--green-500'
                                         >
                                           {answer.content}
                                         </ParagraphBody>
-                                      )}
-                                      {value.correctAnswer !== index + 1 && (
-                                        <ParagraphBody
-                                          className={
-                                            modeEdit
-                                              ? classes.answerContentEdit
-                                              : classes.answerContent
-                                          }
-                                          contentEditable={modeEdit}
-                                        >
+                                      ) : (
+                                        <ParagraphBody className={classes.answerContent}>
                                           {answer.content}
                                         </ParagraphBody>
                                       )}
                                     </>
                                   ) : (
-                                    <Box
-                                      data-color-mode='light'
-                                      className={
-                                        modeEdit ? classes.answerContentEdit : classes.answerContent
-                                      }
-                                      contentEditable={modeEdit}
-                                    >
+                                    <Box data-color-mode='light' className={classes.answerContent}>
                                       <MDEditor.Markdown
                                         source={answer.content}
                                         className={classes.markdown}
@@ -414,14 +369,6 @@ const AICreateQuestion = (props: Props) => {
                               );
                             })}
                         </RadioGroup>
-                      </Box>
-                      <Box className={modeEdit ? classes.btnContainer : classes.none}>
-                        <IconButton
-                          className={classes.deleteBtn}
-                          onClick={() => handleDelete(index)}
-                        >
-                          <Delete />
-                        </IconButton>
                       </Box>
                     </Box>
                   );

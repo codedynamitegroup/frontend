@@ -257,6 +257,13 @@ const CreateShortAnswerQuestion = (props: Props) => {
     if (aiQuestion) {
       setValue("questionDescription", aiQuestion.question || "");
       setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+
+      const answers = aiQuestion.answers.map((answer) => ({
+        answer: answer.content,
+        feedback: "",
+        fraction: 1
+      }));
+      setValue("answers", answers);
     }
   }, [aiQuestion]);
 
