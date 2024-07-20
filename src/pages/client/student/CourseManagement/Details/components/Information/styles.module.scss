@@ -78,32 +78,29 @@
   height: 30px !important;
 }
 
-.accordDetail {
-  box-shadow: none;
-}
-.iconButton {
-  background-color: var(--gray-5);
-  padding: 10px;
-  margin-right: 10px;
-
-  &:hover {
-    background-color: #ecf4fd;
-    color: #1976d2;
-  }
-}
-.iconButtonActive {
-  background-color: #ecf4fd;
-  padding: 10px;
-  margin-right: 10px;
-  color: #1976d2;
-  &:hover {
-    background-color: #ecf4fd;
-    color: #1976d2;
-  }
-}
-
 .annoucementsWrapper {
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+.noAnnouncement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  padding: 20px 0px;
+
+  .announcementImg {
+    width: 140px;
+    height: 140px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+  }
 }

@@ -21,7 +21,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import { AppDispatch } from "store";
-import { setErrorMess } from "reduxes/AppStatus";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import useAuth from "hooks/useAuth";
 import { PaginationList } from "models/general";
 import { CourseTypeEntity } from "models/courseService/entity/CourseTypeEntity";
@@ -35,6 +35,7 @@ import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import classes from "./styles.module.scss";
+import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 
 interface CourseDataGridProps {
   id: number;
@@ -79,6 +80,12 @@ const CourseManagementOrganizationAdmin = () => {
   });
   const [isFetchingCourse, setIsFetchingCourse] = useState<boolean>(false);
   const [isLoadingListCourseTypes, setIsLoadingListCourseTypes] = useState<boolean>(false);
+  const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+  const [idDeletedCourse, setIdDeletedCourse] = useState<string | null>(null);
+
+  const onCancelConfirmDelete = () => {
+    setIsOpenConfirmDelete(false);
+  };
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -236,7 +243,10 @@ const CourseManagementOrganizationAdmin = () => {
             icon={<DeleteIcon />}
             label='Cancel'
             className='textPrimary'
-            onClick={() => {}}
+            onClick={() => {
+              setIsOpenConfirmDelete(true);
+              setIdDeletedCourse(params.row.courseId);
+            }}
             sx={{
               color: red[500]
             }}
@@ -303,12 +313,42 @@ const CourseManagementOrganizationAdmin = () => {
     fetchCourses();
   }, [handleGetCourses]);
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
+  const rowClickHandler = (params: GridRowParams<any>) => {};
+
+  const onConfirmDelete = async () => {
+    if (!idDeletedCourse) {
+      setIsOpenConfirmDelete(false);
+      return;
+    }
+    await CourseService.deleteCourse(idDeletedCourse)
+      .then(() => {
+        dispatch(setSuccessMess("Delete course successfully"));
+        setIsFetchingCourse(false);
+        handleGetCourses({
+          searchName: ""
+        });
+      })
+      .catch((error) => {
+        dispatch(setErrorMess(error?.message));
+        console.error("error", error);
+        if (error.code === 401 || error.code === 403) {
+          dispatch(setErrorMess(t("common_please_login_to_continue")));
+        }
+      })
+      .finally(() => {
+        setIsOpenConfirmDelete(false);
+      });
   };
 
   return (
     <>
+      <ConfirmDelete
+        isOpen={isOpenConfirmDelete}
+        title={"Confirm delete"}
+        description='Are you sure you want to delete this course?'
+        onCancel={onCancelConfirmDelete}
+        onDelete={onConfirmDelete}
+      />
       <Box>
         <Grid
           container

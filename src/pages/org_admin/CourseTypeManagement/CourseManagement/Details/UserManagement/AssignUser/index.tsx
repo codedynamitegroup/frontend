@@ -10,24 +10,22 @@ import {
 import CustomDataGrid from "components/common/CustomDataGrid";
 import CustomDialog from "components/common/dialogs/CustomDialog";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
-import Heading3 from "components/text/Heading3";
 import ParagraphBody from "components/text/ParagraphBody";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import classes from "./styles.module.scss";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import i18next from "i18next";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
-import { setErrorMess } from "reduxes/AppStatus";
-import { UserService } from "services/authService/UserService";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import Heading5 from "components/text/Heading5";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
-import { standardlizeUTCStringToLocaleString } from "utils/moment";
-import { ERoleName } from "models/authService/entity/role";
-import { EBelongToOrg, User } from "models/authService/entity/user";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PaginationList } from "models/general";
 import useAuth from "hooks/useAuth";
+import { UserResponseEntity } from "models/courseService/entity/UserResponseEntity";
+import { CourseUserService } from "services/courseService/CourseUserService";
+import { ERoleMoodle } from "models/courseService/enum/ERoleMoodle";
+import { AssignUsersToCourseCommand } from "models/courseService/entity/custom/AssignUsersToCourseCommand";
 
 export interface UserManagementProps {
   id: string;
@@ -35,17 +33,8 @@ export interface UserManagementProps {
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
-  avatarUrl: string;
-  address: string;
-  dob: Date;
-  lastLogin: string;
-  isLinkedWithGoogle: boolean;
-  isLinkedWithMicrosoft: boolean;
-  createdAt: Date;
   roleName: string;
-  isDeleted: boolean;
-  isBelongToOrganization: boolean;
+  avatarUrl: string;
 }
 
 interface AssignUserToCourseDialogProps extends DialogProps {
@@ -54,6 +43,7 @@ interface AssignUserToCourseDialogProps extends DialogProps {
   handleUserSelected: (user: any) => void;
   children?: React.ReactNode;
   isConfirmLoading?: boolean;
+  handleGetUsersProps: (params: { searchName: string; pageNo?: number; pageSize?: number }) => void;
 }
 
 export default function AssignUserToCourseDialog({
@@ -63,17 +53,18 @@ export default function AssignUserToCourseDialog({
   children,
   isConfirmLoading = false,
   handleUserSelected,
+  handleGetUsersProps,
   ...props
 }: AssignUserToCourseDialogProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
   });
   const { loggedUser } = useAuth();
+  const { courseId } = useParams<{ courseId: string }>();
 
-  const [userState, setUserState] = useState<PaginationList<User>>({
+  const [userState, setUserState] = useState<PaginationList<UserResponseEntity>>({
     currentPage: 0,
     totalItems: 0,
     totalPages: 0,
@@ -99,22 +90,21 @@ export default function AssignUserToCourseDialog({
     async ({
       searchName,
       pageNo = 0,
-      pageSize = 10,
-      belongToOrg = EBelongToOrg.NOT_BELONG_TO_ORGANIZATION
+      pageSize = 10
     }: {
       searchName: string;
       pageNo?: number;
       pageSize?: number;
-      belongToOrg?: EBelongToOrg;
     }) => {
-      if (!loggedUser?.organization?.organizationId) return;
+      if (!loggedUser?.organization?.organizationId || !courseId) return;
       setIsLoadingListUserss(true);
       try {
-        const getUsersResponse = await UserService.getAllUserByOrganization({
-          searchName,
+        const getUsersResponse = await CourseUserService.getAllUsersAbleToAssignToCourse({
+          search: searchName,
           pageNo,
           pageSize,
-          id: loggedUser.organization.organizationId
+          courseId: courseId,
+          organizationId: loggedUser.organization.organizationId
         });
         setUserState({
           currentPage: getUsersResponse.currentPage,
@@ -132,7 +122,7 @@ export default function AssignUserToCourseDialog({
         setIsLoadingListUserss(false);
       }
     },
-    [dispatch, t, loggedUser?.organization?.organizationId]
+    [dispatch, t, loggedUser?.organization?.organizationId, courseId]
   );
 
   const handleSearchChange = useCallback(
@@ -201,25 +191,6 @@ export default function AssignUserToCourseDialog({
       }
     },
     {
-      field: "lastLogin",
-      headerName: t("common_last_login"),
-      flex: 1,
-      renderHeader: () => {
-        return (
-          <Heading5 width={"auto"} sx={{ textAlign: "left" }} textWrap='wrap'>
-            {t("common_last_login")}
-          </Heading5>
-        );
-      },
-      renderCell: (params) => {
-        return (
-          <ParagraphBody width={"auto"}>
-            {standardlizeUTCStringToLocaleString(params.row.lastLogin as string, currentLang)}
-          </ParagraphBody>
-        );
-      }
-    },
-    {
       field: "roleName",
       headerName: t("common_role"),
       flex: 1,
@@ -239,12 +210,15 @@ export default function AssignUserToCourseDialog({
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const totalElement = useMemo(() => userState.totalItems || 0, [userState.totalItems]);
+  const [selectedRowsId, setSelectedRowsId] = useState<string[]>([]);
 
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
-  ) => {};
+  ) => {
+    setSelectedRowsId(selectedRowId.map((row) => row.toString()));
+  };
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     setPage(model.page);
     setPageSize(model.pageSize);
@@ -257,22 +231,19 @@ export default function AssignUserToCourseDialog({
 
   const roleMapping = useMemo(
     () => [
-      { name: ERoleName.ADMIN, label: t("role_system_admin") },
-      { name: ERoleName.ADMIN_MOODLE, label: t("role_org_admin") },
-      { name: ERoleName.LECTURER_MOODLE, label: t("role_lecturer") },
-      { name: ERoleName.STUDENT_MOODLE, label: t("role_student") }
+      { name: ERoleMoodle.ADMIN, label: t("role_system_admin") },
+      { name: ERoleMoodle.LECTURER, label: t("role_lecturer") },
+      { name: ERoleMoodle.STUDENT, label: t("role_student") }
     ],
     [t]
   );
 
   const mappingRole = useCallback(
-    (user: User) => {
-      const matchedRole = roleMapping.find((role) =>
-        user?.roles.some((userRole) => userRole?.name === role.name)
-      );
-      return matchedRole ? matchedRole.label : t("role_user");
+    (roleMoodleId: string) => {
+      const matchedRole = roleMapping.find((role) => roleMoodleId === role.name);
+      return matchedRole ? matchedRole.label : "";
     },
-    [roleMapping, t]
+    [roleMapping]
   );
 
   const userListTable: UserManagementProps[] = useMemo(() => {
@@ -284,21 +255,12 @@ export default function AssignUserToCourseDialog({
         firstName: user.firstName,
         lastName: user.lastName,
         avatarUrl: user.avatarUrl,
-        lastLogin: user.lastLogin,
-        phone: user.phone,
-        address: user.address,
-        dob: user.dob,
-        isLinkedWithGoogle: user.isLinkedWithGoogle,
-        isLinkedWithMicrosoft: user.isLinkedWithMicrosoft,
-        createdAt: user.createdAt,
-        roleName: mappingRole(user),
-        isDeleted: user.isDeleted,
-        isBelongToOrganization: user.organization ? true : false
+        roleName: mappingRole(user.roleMoodleId)
       }));
     } else {
       return [];
     }
-  }, [mappingRole, userState.items]);
+  }, [userState.items, mappingRole]);
 
   const handleApplyFilter = useCallback(() => {
     handleGetUsers({
@@ -326,9 +288,31 @@ export default function AssignUserToCourseDialog({
     fetchUsers();
   }, [dispatch, handleGetUsers]);
 
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    handleUserSelected(params.row as UserManagementProps);
-    handleClose();
+  const rowClickHandler = (params: GridRowParams<any>) => {};
+
+  const onHandleConfirm = async () => {
+    if (!courseId) {
+      dispatch(setErrorMess("Course ID is not found"));
+      return;
+    } else if (selectedRowsId.length === 0) {
+      dispatch(setErrorMess("Please select at least one user"));
+      return;
+    }
+
+    const assignUsersToCourseCommand: AssignUsersToCourseCommand = {
+      courseId: courseId,
+      userIds: selectedRowsId
+    };
+    await CourseUserService.assignUsersToCourse(assignUsersToCourseCommand)
+      .then(() => {
+        dispatch(setSuccessMess("Assign users to course successfully"));
+        handleGetUsersProps({ searchName: "" });
+        handleClose();
+      })
+      .catch((error: any) => {
+        dispatch(setErrorMess("Assign users to course failed"));
+        console.error("error", error);
+      });
   };
 
   return (
@@ -336,8 +320,8 @@ export default function AssignUserToCourseDialog({
       open={open}
       handleClose={handleClose}
       title={title}
-      actionsDisabled
       minWidth={"1000px"}
+      onHanldeConfirm={onHandleConfirm}
       {...props}
     >
       <Grid container spacing={2}>
@@ -385,6 +369,7 @@ export default function AssignUserToCourseDialog({
             tableHeader={tableHeading}
             onSelectData={rowSelectionHandler}
             dataGridToolBar={dataGridToolbar}
+            checkboxSelection
             page={page}
             pageSize={pageSize}
             totalElement={totalElement}

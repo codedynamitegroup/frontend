@@ -73,6 +73,8 @@ import contactUsIc from "assets/img/contact_us.jpg";
 import organizationImageBg from "assets/img/org_admin/org.png";
 import emptyBox from "assets/img/icon/course/courseDetail/empty_box.png";
 
+import announcementIc from "assets/img/classroom/announcement.svg";
+
 const images = {
   course: {
     courseAssignment,
@@ -104,6 +106,7 @@ const images = {
   icAlmostEqualTo,
   error: { notFoundError, forbiddenError },
   contactUsIc,
+  announcementIc,
   admin: {
     contest,
     adminManagement,

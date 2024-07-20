@@ -9,7 +9,7 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "components/common/inputs/InputTextField";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import classes from "./styles.module.scss";
 import { Box, Checkbox, Grid } from "@mui/material";
@@ -26,7 +26,7 @@ import { CreateCourseCommand } from "models/courseService/entity/create/CreateCo
 type Props = {};
 
 interface IFormDataType {
-  isVisibled: boolean;
+  isVisibled?: boolean;
   name: string;
   courseType: IOptionItem;
 }
@@ -37,7 +37,7 @@ const CreateCourse = (props: Props) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
-      isVisibled: yup.boolean().required(t("course_is_visibled_required")),
+      isVisibled: yup.boolean(),
       name: yup.string().required(t("course_name_required")),
       courseType: yup
         .object()
@@ -119,12 +119,14 @@ const CreateCourse = (props: Props) => {
     const formSubmittedData: IFormDataType = { ...data };
     const createCourseCommand: CreateCourseCommand = {
       name: formSubmittedData.name,
-      visible: formSubmittedData.isVisibled,
+      visible: formSubmittedData.isVisibled != null ? formSubmittedData.isVisibled : false,
       courseTypeId: formSubmittedData.courseType.id,
       organizationId: loggedUser?.organization?.organizationId
     };
     await handleCreateCourse(createCourseCommand);
   };
+
+  const navigate = useNavigate();
 
   const handleCreateCourse = useCallback(
     async (createCourseCommand: CreateCourseCommand) => {
@@ -133,6 +135,12 @@ const CreateCourse = (props: Props) => {
         await CourseService.createCourse(createCourseCommand);
         setSubmitLoading(false);
         dispatch(setSuccessMess("Created course successfully"));
+        navigate(
+          routes.org_admin.course_type.course.root.replace(
+            ":courseTypeId",
+            courseTypeId || ":courseTypeId"
+          )
+        );
       } catch (error: any) {
         console.error("error", error);
         dispatch(setErrorMess("Course is created failed!!! please check your input information"));
@@ -142,7 +150,7 @@ const CreateCourse = (props: Props) => {
         setSubmitLoading(false);
       }
     },
-    [dispatch, t]
+    [dispatch, t, courseTypeId]
   );
 
   return (

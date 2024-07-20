@@ -37,6 +37,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ReactQuill from "react-quill";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import images from "config/images";
+import Heading2 from "components/text/Heading2";
 
 const LecturerCourseInformation = () => {
   const { t } = useTranslation();
@@ -173,83 +175,92 @@ const LecturerCourseInformation = () => {
           </Box>
         ) : (
           <Box className={classes.annoucementsWrapper}>
-            {postState.posts.items.map((post: PostEntity) => (
-              <Card className={classes.annoucementCard}>
-                <CardContent>
-                  <Grid container alignItems='center' spacing={2} flexDirection={"row"}>
-                    <Grid item>
-                      <Avatar
-                        sx={{
-                          bgcolor: `${generateHSLColorByRandomText(`${post?.createdBy.firstName} ${post?.createdBy.lastName}`)}`
-                        }}
-                        alt={post?.createdBy.email}
-                        src={post?.createdBy.avatarUrl}
+            {postState.posts.items.length > 0 ? (
+              postState.posts.items.map((post: PostEntity) => (
+                <Card className={classes.annoucementCard}>
+                  <CardContent>
+                    <Grid container alignItems='center' spacing={2} flexDirection={"row"}>
+                      <Grid item>
+                        <Avatar
+                          sx={{
+                            bgcolor: `${generateHSLColorByRandomText(`${post?.createdBy.firstName} ${post?.createdBy.lastName}`)}`
+                          }}
+                          alt={post?.createdBy.email}
+                          src={post?.createdBy.avatarUrl}
+                        >
+                          {post?.createdBy.firstName.charAt(0)}
+                        </Avatar>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={11}
+                        flexDirection={"row"}
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
                       >
-                        {post?.createdBy.firstName.charAt(0)}
-                      </Avatar>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={11}
-                      flexDirection={"row"}
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Stack flexDirection={"column"}>
-                        <Box>
-                          <Heading5>{post?.title}</Heading5>
-                        </Box>
-                        <Stack flexDirection={"row"} alignItems={"center"}>
-                          <ParagraphBody fontWeight={500} colorname='--gray-50'>
-                            By&nbsp;
-                          </ParagraphBody>
-                          <ParagraphBody fontWeight={500} colorname='--blue-3'>
-                            {post?.createdBy.firstName} {post?.createdBy.lastName}
-                          </ParagraphBody>
-                          <ParagraphBody fontWeight={500} colorname='--gray-50'>
-                            &nbsp;-&nbsp;
-                            {standardlizeUTCStringToLocaleString(
-                              post?.createdAt as string,
-                              currentLang
-                            )}
-                          </ParagraphBody>
+                        <Stack flexDirection={"column"}>
+                          <Box>
+                            <Heading5>{post?.title}</Heading5>
+                          </Box>
+                          <Stack flexDirection={"row"} alignItems={"center"}>
+                            <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                              By&nbsp;
+                            </ParagraphBody>
+                            <ParagraphBody fontWeight={500} colorname='--blue-3'>
+                              {post?.createdBy.firstName} {post?.createdBy.lastName}
+                            </ParagraphBody>
+                            <ParagraphBody fontWeight={500} colorname='--gray-50'>
+                              &nbsp;-&nbsp;
+                              {standardlizeUTCStringToLocaleString(
+                                post?.createdAt as string,
+                                currentLang
+                              )}
+                            </ParagraphBody>
+                          </Stack>
                         </Stack>
-                      </Stack>
 
-                      {isLecturer && (
-                        <Stack flexDirection={"row"}>
-                          <Tooltip title='Edit'>
-                            <IconButton
-                              onClick={() => {
-                                setOpenEditPostDialog(true);
-                                setEditPost(post);
-                              }}
-                            >
-                              <EditIcon className={classes.iconEdit} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title='Delete'>
-                            <IconButton
-                              onClick={() => {
-                                setIsOpenConfirmDelete(true);
-                                setDeletedPostId(post.postId);
-                              }}
-                            >
-                              <DeleteIcon className={classes.iconDelete} />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      )}
+                        {isLecturer && (
+                          <Stack flexDirection={"row"}>
+                            <Tooltip title='Edit'>
+                              <IconButton
+                                onClick={() => {
+                                  setOpenEditPostDialog(true);
+                                  setEditPost(post);
+                                }}
+                              >
+                                <EditIcon className={classes.iconEdit} />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title='Delete'>
+                              <IconButton
+                                onClick={() => {
+                                  setIsOpenConfirmDelete(true);
+                                  setDeletedPostId(post.postId);
+                                }}
+                              >
+                                <DeleteIcon className={classes.iconDelete} />
+                              </IconButton>
+                            </Tooltip>
+                          </Stack>
+                        )}
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Divider sx={{ my: 2 }} />
-                  <Box sx={{ mt: 2 }}>
-                    <ReactQuill value={post?.content} readOnly={true} theme='bubble' />
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
+                    <Divider sx={{ my: 2 }} />
+                    <Box sx={{ mt: 2 }}>
+                      <ReactQuill value={post?.content} readOnly={true} theme='bubble' />
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Box className={classes.noAnnouncement}>
+                <Box className={classes.announcementImg}>
+                  <img src={images.announcementIc} alt='empty-announcement' />
+                </Box>
+                <Heading2>{t("course_no_announcement")}</Heading2>
+              </Box>
+            )}
           </Box>
         )}
       </Grid>

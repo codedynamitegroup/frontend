@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 
 export interface ProgrammingLanguageEntity {
+  programmingLanguageId: string;
   id: UUID;
   name: string;
   judge0Id: number;

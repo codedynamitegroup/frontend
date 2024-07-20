@@ -54,6 +54,7 @@ const CourseDetails = (props: Props) => {
         .required(t("course_type_required"))
     });
   }, [t]);
+
   const {
     handleSubmit,
     control,
@@ -84,7 +85,9 @@ const CourseDetails = (props: Props) => {
   useEffect(() => {
     if (course) {
       reset({
-        courseType: mappingCourseType(course.courseType.courseTypeId)
+        courseType: mappingCourseType(course.courseType.courseTypeId),
+        isVisibled: course.visible,
+        name: course.name
       });
     }
   }, [course, mappingCourseType, reset]);

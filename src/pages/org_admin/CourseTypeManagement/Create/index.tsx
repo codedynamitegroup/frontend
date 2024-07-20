@@ -3,33 +3,45 @@ import classes from "./styles.module.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import Button, { BtnType } from "components/common/buttons/Button";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputTextField from "components/common/inputs/InputTextField";
-import { SectionEntity } from "models/courseService/entity/SectionEntity";
-import { SectionService } from "services/courseService/SectionService";
-import { dispatch } from "d3";
 import { useDispatch } from "react-redux";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
-import { useParams } from "react-router-dom";
 import { clearSections } from "reduxes/courseService/section";
+import { CourseTypeService } from "services/courseService/CourseTypeService";
+import useAuth from "hooks/useAuth";
+import { CreateCourseTypeCommand } from "models/courseService/entity/create/CreateCourseTypeCommand";
 
-type CreateSectionDialogProps = {
+type CreateCourseTypeDialogProps = {
   open: boolean;
   onClose: () => void;
+  handleGetCourseTypes: ({
+    searchName,
+    pageNo,
+    pageSize
+  }: {
+    searchName: string;
+    pageNo?: number;
+    pageSize?: number;
+  }) => void;
 };
 
 interface IFormData {
-  sectionName: string;
+  name: string;
 }
 
-const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
+const CreateCourseTypeDialog = ({
+  open,
+  onClose,
+  handleGetCourseTypes
+}: CreateCourseTypeDialogProps) => {
   const { t } = useTranslation();
   const schema = useMemo(() => {
     return yup.object().shape({
-      sectionName: yup.string().required(t("section_required"))
+      name: yup.string().required(t("course_type_name_required"))
     });
   }, [t]);
 
@@ -42,30 +54,31 @@ const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
   });
 
   const dispatch = useDispatch();
-  const { courseId } = useParams<{ courseId: string }>();
+  const { loggedUser } = useAuth();
 
   const handleCreate = async (data: IFormData) => {
-    if (!courseId) return;
-    await SectionService.createSection(courseId, data.sectionName)
+    if (!loggedUser?.organization?.organizationId) return;
+    const createCourseTypeCommand: CreateCourseTypeCommand = {
+      name: data.name,
+      organizationId: loggedUser.organization.organizationId
+    };
+    await CourseTypeService.createCourseType(createCourseTypeCommand)
       .then((res) => {
-        dispatch(setSuccessMess("Create section successfully"));
-        dispatch(clearSections());
+        dispatch(setSuccessMess("Create course type successfully"));
+        handleGetCourseTypes({ searchName: "" });
         onClose();
       })
       .catch((error) => {
-        dispatch(setErrorMess("Failed to create section"));
-        console.error("Failed to create section", error);
+        dispatch(setErrorMess("Failed to create course type"));
+        console.error("Failed to create course type", error);
       });
   };
+
   return (
     <Dialog open={open} onClose={onClose} className={classes["dialog"]}>
       <form onSubmit={handleSubmit(handleCreate)}>
-        <DialogTitle
-          sx={{ m: 0, p: 2 }}
-          id='customized-dialog-title'
-          translation-key='question_bank_edit_category'
-        >
-          Create Section
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          Create Course Type
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -81,10 +94,10 @@ const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
         </IconButton>
         <DialogContent className={classes["dialog-content"]}>
           <InputTextField
-            label={t("section_name")}
+            label={t("course_type_name")}
             type='text'
-            inputRef={register("sectionName")}
-            errorMessage={errors?.sectionName?.message}
+            inputRef={register("name")}
+            errorMessage={errors?.name?.message}
             width='100%'
           />
         </DialogContent>
@@ -101,4 +114,4 @@ const CreateSectionDialog = ({ open, onClose }: CreateSectionDialogProps) => {
   );
 };
 
-export default CreateSectionDialog;
+export default CreateCourseTypeDialog;
