@@ -81,7 +81,6 @@ const HeaderNotification = () => {
         });
         return getAllMyNotifications;
       } catch (error: any) {
-        console.error("error", error);
         return null;
       }
     },
@@ -113,7 +112,6 @@ const HeaderNotification = () => {
           totalItems: getAllMyNotifications.totalItems
         }));
       } catch (error: any) {
-        console.error("error", error);
         setNotificationData((prevState) => ({ ...prevState, isLoading: false }));
       }
     },
